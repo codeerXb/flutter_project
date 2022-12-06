@@ -1,0 +1,91 @@
+name: flutter_template
+description: A new Flutter application.
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.17.3 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # 图标库
+  font_awesome_flutter: ^10.1.0
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^1.0.2
+  # http
+  dio: ^4.0.6
+  dio_cookie_manager: ^2.0.0
+  cookie_jar: ^3.0.1
+  # 路径
+  path_provider: ^2.0.11
+  # 提示
+  oktoast: ^3.2.0
+  # 更新
+  flutter_xupdate: ^2.0.2
+  # 简单数据存储
+  shared_preferences: ^2.0.15
+  # 路由管理 & 状态管理
+  get: ^4.6.5
+  # 轮播图
+  card_swiper: ^2.0.4
+  # 屏幕尺寸
+  flutter_screenutil: ^5.5.3+2
+  # 提示条数
+  badges: ^2.0.3
+  # url 处理 打开网页、打电话、发邮件等
+  url_launcher: ^6.1.3
+  # 滚动插件  - 通讯录使用
+  scrollable_positioned_list: ^0.3.2
+  # 上拉下拉刷新
+  pull_to_refresh_flutter3: ^2.0.1
+  # 日期格式化
+  date_format: ^2.0.6
+  # html 处理
+  flutter_html: ^3.0.0-alpha.5
+  # 获取版本信息
+  package_info: ^2.0.2
+  # 扫码
+  qr_code_scanner: ^1.0.0
+  # 图表
+  syncfusion_flutter_charts: ^20.2.36
+  # 图片选择 -- 头像上传
+  image_picker: ^0.8.5+3
+  # 文件下载
+  flutter_downloader: ^1.8.0+1
+  # 权限
+  permission_handler: ^10.0.0
+  # 文件选择器
+  file_picker: ^4.6.1
+  # 定位
+  amap_location_fluttify: ^0.22.0-rc.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+
+flutter:
+
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+
+  # fonts:
+  #   - family: Schyler
+  #     fonts:
+  #       - asset: fonts/Schyler-Regular.ttf
+  #       - asset: fonts/Schyler-Italic.ttf
+  #         style: italic
+  #   - family: Trajan Pro
+  #     fonts:
+  #       - asset: fonts/TrajanPro.ttf
+  #       - asset: fonts/TrajanPro_Bold.ttf
+  #         weight: 700
+  #

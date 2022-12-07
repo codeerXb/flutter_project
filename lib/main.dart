@@ -17,7 +17,7 @@ Future<void> main() async {
   await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
   // 初始化请求过滤器
   XHttp.init();
-  // 初始化定位
+  // 初始化定位 
   await AmapLocation.instance.updatePrivacyShow(true);
   await AmapLocation.instance.updatePrivacyAgree(true);
   await AmapLocation.instance.init(iosKey: BaseConfig.gdIosKey);

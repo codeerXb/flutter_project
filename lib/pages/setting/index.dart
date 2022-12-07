@@ -64,7 +64,7 @@ class _SettingState extends State<Setting> {
                       /// 扫一扫
                       scanCode(),
 
-                      /// 常见问题
+                      /// 设备信息
                       commonProblem(),
 
                       /// 意见反馈
@@ -205,10 +205,10 @@ class _SettingState extends State<Setting> {
         });
   }
 
-  /// 常见问题
+  /// 设备信息
   Widget commonProblem() {
     return CommonWidget.simpleWidgetWithMine(
-        title: '常见问题',
+        title: '设备信息',
         icon: const Icon(Icons.report_gmailerrorred_outlined,
             color: Color.fromRGBO(255, 148, 6, 1)),
         callBack: () {

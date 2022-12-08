@@ -3,8 +3,8 @@ import 'package:flutter_template/pages/setting/about_us.dart';
 import 'package:flutter_template/pages/setting/clear_cache.dart';
 import 'package:flutter_template/pages/setting/equ_info.dart';
 import 'package:flutter_template/pages/setting/contact_customer.dart';
-import 'package:flutter_template/pages/setting/feed_back.dart';
 import 'package:flutter_template/pages/setting/file_upload_download.dart';
+import 'package:flutter_template/pages/setting/net_type.dart';
 import 'package:flutter_template/pages/setting/user_detail.dart';
 import 'package:flutter_template/splash.dart';
 
@@ -48,8 +48,8 @@ class GlobalRouter {
     '/common_problem': (BuildContext context, {Object? args}) =>
         const EquInfo(),
 
-    /// 意见反馈
-    '/feed_back': (BuildContext context, {Object? args}) => const FeedBack(),
+    /// 以太网
+    '/feed_back': (BuildContext context, {Object? args}) => const NetType(),
 
     /// 修改密码
     '/account_security': (BuildContext context, {Object? args}) =>

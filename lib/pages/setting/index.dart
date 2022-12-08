@@ -67,7 +67,7 @@ class _SettingState extends State<Setting> {
                       /// 设备信息
                       commonProblem(),
 
-                      /// 意见反馈
+                      /// 以太网
                       feedback(),
 
                       /// 账号安全
@@ -216,10 +216,10 @@ class _SettingState extends State<Setting> {
         });
   }
 
-  /// 意见反馈
+  /// 以太网
   Widget feedback() {
     return CommonWidget.simpleWidgetWithMine(
-        title: '意见反馈',
+        title: '以太网',
         icon: const Icon(Icons.headset_mic_outlined,
             color: Color.fromRGBO(95, 154, 255, 1)),
         callBack: () {

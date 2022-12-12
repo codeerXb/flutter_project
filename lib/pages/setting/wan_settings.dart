@@ -57,12 +57,4 @@ class _WanSettingsState extends State<WanSettings> {
       ),
     );
   }
-
-  List<Widget> problemListWidget() {
-    List<Widget> list = [];
-    list.add(CommonWidget.simpleWidgetWithUserDetail("WAN设置", callBack: () {
-      print("WAN设置"); //wan_settings
-    }));
-    return list;
-  }
 }

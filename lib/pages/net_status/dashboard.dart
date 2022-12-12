@@ -24,7 +24,7 @@ class Dashboard extends StatelessWidget {
     return Column(children: [
       Stack(
         children: [
-          ArcProgresssBar(progress: _progress),
+          ArcProgresssBar(width: 1.sw, height: 1.sw, progress: _progress),
           Positioned(
               top: 0.22.sh,
               right: 0.37.sw,

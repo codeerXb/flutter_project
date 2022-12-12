@@ -10,4 +10,5 @@ const List<TopoItemData> topoData = [
   TopoItemData('宜居四五环', false, false),
   TopoItemData('喧嚣三里屯', false, false),
   TopoItemData('比邻十号线', false, false),
+  TopoItemData('比邻二号线', false, false),
 ];

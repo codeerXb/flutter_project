@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_template/pages/setting/about_us.dart';
 import 'package:flutter_template/pages/setting/clear_cache.dart';
-import 'package:flutter_template/pages/setting/common_problem.dart';
+import 'package:flutter_template/pages/setting/equ_info.dart';
 import 'package:flutter_template/pages/setting/contact_customer.dart';
-import 'package:flutter_template/pages/setting/feed_back.dart';
 import 'package:flutter_template/pages/setting/file_upload_download.dart';
+import 'package:flutter_template/pages/setting/net_type.dart';
 import 'package:flutter_template/pages/setting/user_detail.dart';
 import 'package:flutter_template/splash.dart';
 
@@ -44,12 +44,12 @@ class GlobalRouter {
     /// 扫一扫
     '/scan_code': (BuildContext context, {Object? args}) => const ScanCode(),
 
-    /// 常见问题
+    /// 设备信息
     '/common_problem': (BuildContext context, {Object? args}) =>
-        const CommonProblem(),
+        const EquInfo(),
 
-    /// 意见反馈
-    '/feed_back': (BuildContext context, {Object? args}) => const FeedBack(),
+    /// 以太网
+    '/feed_back': (BuildContext context, {Object? args}) => const NetType(),
 
     /// 修改密码
     '/account_security': (BuildContext context, {Object? args}) =>

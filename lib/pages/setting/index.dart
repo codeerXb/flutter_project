@@ -64,10 +64,10 @@ class _SettingState extends State<Setting> {
                       /// 扫一扫
                       scanCode(),
 
-                      /// 常见问题
+                      /// 设备信息
                       commonProblem(),
 
-                      /// 意见反馈
+                      /// 以太网
                       feedback(),
 
                       /// 账号安全
@@ -205,10 +205,10 @@ class _SettingState extends State<Setting> {
         });
   }
 
-  /// 常见问题
+  /// 设备信息
   Widget commonProblem() {
     return CommonWidget.simpleWidgetWithMine(
-        title: '常见问题',
+        title: '设备信息',
         icon: const Icon(Icons.report_gmailerrorred_outlined,
             color: Color.fromRGBO(255, 148, 6, 1)),
         callBack: () {
@@ -216,10 +216,10 @@ class _SettingState extends State<Setting> {
         });
   }
 
-  /// 意见反馈
+  /// 以太网
   Widget feedback() {
     return CommonWidget.simpleWidgetWithMine(
-        title: '意见反馈',
+        title: '以太网',
         icon: const Icon(Icons.headset_mic_outlined,
             color: Color.fromRGBO(95, 154, 255, 1)),
         callBack: () {

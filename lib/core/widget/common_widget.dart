@@ -386,9 +386,10 @@ class CommonWidget {
   /// 按钮
   /// @param {String} title 按钮名称
   /// @param {Function} callBack 回调
-  /// @param {Color} background 背景颜色
+  /// @param {Color} background 背景颜色 
   /// @param {Color} fontColor 字体颜色
   static Widget buttonWidget({String title = '提交', Color background = const Color.fromRGBO(41, 121, 255, 1),
+  
     Color fontColor = const Color(0xffffffff), Function? callBack, EdgeInsetsGeometry? margin, EdgeInsetsGeometry? padding}){
     margin ??= EdgeInsets.only(top: 50.w);
     padding ??= EdgeInsets.only(left: 40.w, right: 40.w);

@@ -13,92 +13,95 @@ class _EquInfoState extends State<EquInfo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppbar(context: context, title: '设备信息'),
-      body: Container(
-        padding: const EdgeInsets.all(10.0),
-          decoration:
-            const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            //1系统信息
-            const TitleWidger(title: '系统信息'),
-            const InfoBox(
-              boxCotainer: RowContainer(
-                leftText: '运行时长',
-                righText: '05d 20h 01m',
-              ),
-            ),
+        appBar: customAppbar(context: context, title: '设备信息'),
+        body: Container(
+            padding: const EdgeInsets.all(10.0),
+            decoration:
+                const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
+            child: Expanded(
+              flex: 1,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    //1系统信息
+                    const TitleWidger(title: '系统信息'),
+                    const InfoBox(
+                      boxCotainer: RowContainer(
+                        leftText: '运行时长',
+                        righText: '05d 20h 01m',
+                      ),
+                    ),
 
-            //2版本信息
-            const TitleWidger(title: '版本信息'),
-            InfoBox(
-              boxCotainer: Column(
-                children: const [
-                  BottomLine(
-                      rowtem: RowContainer(
-                    leftText: '产品型号',
-                    righText: 'SRS621-a',
-                  )),
-                  BottomLine(
-                      rowtem: RowContainer(
-                    leftText: '硬件版本',
-                    righText: 'V1.0',
-                  )),
-                  BottomLine(
-                      rowtem: RowContainer(
-                    leftText: '软件版本',
-                    righText: 'SQXR60_V1.0.2',
-                  )),
-                  BottomLine(
-                      rowtem: RowContainer(
-                    leftText: 'UBOOT版本',
-                    righText: 'V1.1.0',
-                  )),
-                  BottomLine(
-                      rowtem: RowContainer(
-                    leftText: '产品序列号',
-                    righText: 'RS621A00211700113',
-                  )),
-                  BottomLine(
-                      rowtem: RowContainer(
-                    leftText: 'IMEI',
-                    righText: '862165040976175',
-                  )),
-                  RowContainer(
-                    leftText: 'IMSI',
-                    righText: '— —',
-                  )
-                ],
-              ),
-            ),
+                    //2版本信息
+                    const TitleWidger(title: '版本信息'),
+                    InfoBox(
+                      boxCotainer: Column(
+                        children: const [
+                          BottomLine(
+                              rowtem: RowContainer(
+                            leftText: '产品型号',
+                            righText: 'SRS621-a',
+                          )),
+                          BottomLine(
+                              rowtem: RowContainer(
+                            leftText: '硬件版本',
+                            righText: 'V1.0',
+                          )),
+                          BottomLine(
+                              rowtem: RowContainer(
+                            leftText: '软件版本',
+                            righText: 'SQXR60_V1.0.2',
+                          )),
+                          BottomLine(
+                              rowtem: RowContainer(
+                            leftText: 'UBOOT版本',
+                            righText: 'V1.1.0',
+                          )),
+                          BottomLine(
+                              rowtem: RowContainer(
+                            leftText: '产品序列号',
+                            righText: 'RS621A00211700113',
+                          )),
+                          BottomLine(
+                              rowtem: RowContainer(
+                            leftText: 'IMEI',
+                            righText: '862165040976175',
+                          )),
+                          RowContainer(
+                            leftText: 'IMSI',
+                            righText: '— —',
+                          )
+                        ],
+                      ),
+                    ),
 
-            //3.0LAN口状态
-            const TitleWidger(title: 'LAN口状态'),
-            InfoBox(
-              boxCotainer: Column(
-                children: const [
-                  BottomLine(
-                      rowtem: RowContainer(
-                    leftText: 'MAC地址',
-                    righText: '88:12:3D:03:6F:66',
-                  )),
-                  BottomLine(
-                      rowtem: RowContainer(
-                    leftText: 'IP地址',
-                    righText: '192.168.1.1',
-                  )),
-                  RowContainer(
-                    leftText: '子网掩码',
-                    righText: '255.255.255.06',
-                  )
-                ],
+                    //3.0LAN口状态
+                    const TitleWidger(title: 'LAN口状态'),
+                    InfoBox(
+                      boxCotainer: Column(
+                        children: const [
+                          BottomLine(
+                              rowtem: RowContainer(
+                            leftText: 'MAC地址',
+                            righText: '88:12:3D:03:6F:66',
+                          )),
+                          BottomLine(
+                              rowtem: RowContainer(
+                            leftText: 'IP地址',
+                            righText: '192.168.1.1',
+                          )),
+                          RowContainer(
+                            leftText: '子网掩码',
+                            righText: '255.255.255.06',
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
-      ),
-    );
+            )));
   }
 }
 

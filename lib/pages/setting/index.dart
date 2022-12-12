@@ -113,6 +113,7 @@ class _SettingState extends State<Setting> {
 
                       /// 无线开关
                       wirelessSwitch(),
+                      const Divider(),
                     ],
                   ),
                 ))

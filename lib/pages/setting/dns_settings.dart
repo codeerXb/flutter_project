@@ -17,22 +17,37 @@ class _DnsSettingsState extends State<DnsSettings> {
       appBar: customAppbar(context: context, title: 'DNS设置'),
       body: SingleChildScrollView(
         child: Container(
+          padding: const EdgeInsets.all(5),
           decoration:
               const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: problemListWidget(),
+            children: [
+              Row(children: const [
+                Icon(Icons.priority_high, color: Colors.red),
+                Flexible(
+                  child: Text(
+                    '静态DNS，VPN DNS具有最高优先级，LTE DNS具有最低优先级. 如果要恢复VPN / LTE DNS，请清除两个DNS配置并提交',
+                    style: TextStyle(fontSize: 12, color: Colors.red),
+                  ),
+                ),
+              ]),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                ElevatedButton(
+                  onPressed: () {},
+                  child: const Text('提交'),
+                ),
+                ElevatedButton(
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.red)),
+                  onPressed: () {},
+                  child: const Text('取消'),
+                ),
+              ])
+            ],
           ),
         ),
       ),
     );
-  }
-
-  List<Widget> problemListWidget() {
-    List<Widget> list = [];
-    list.add(CommonWidget.simpleWidgetWithUserDetail("DNS设置", callBack: () {
-      print("DNS设置"); //dns_settings
-    }));
-    return list;
   }
 }

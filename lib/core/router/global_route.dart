@@ -4,6 +4,7 @@ import 'package:flutter_template/pages/setting/clear_cache.dart';
 import 'package:flutter_template/pages/setting/equ_info.dart';
 import 'package:flutter_template/pages/setting/contact_customer.dart';
 import 'package:flutter_template/pages/setting/file_upload_download.dart';
+import 'package:flutter_template/pages/setting/net_set.dart';
 import 'package:flutter_template/pages/setting/net_type.dart';
 import 'package:flutter_template/pages/setting/user_detail.dart';
 import 'package:flutter_template/pages/topo/access_equipment.dart';
@@ -116,6 +117,9 @@ class GlobalRouter {
     /// 无线开关
     '/wireless_switch': (BuildContext context, {Object? args}) =>
         const WirelessSwitch(),
+
+    /// 以太网设置
+    '/net_set': (BuildContext context, {Object? args}) => const NetSet(),
 
     /// 接入设备
     '/access_equipment': (BuildContext context, {Object? args}) =>

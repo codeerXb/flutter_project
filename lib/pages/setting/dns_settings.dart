@@ -27,7 +27,6 @@ class _DnsSettingsState extends State<DnsSettings> {
           decoration:
               const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(children: const [
                 Icon(Icons.priority_high, color: Colors.red),
@@ -39,9 +38,9 @@ class _DnsSettingsState extends State<DnsSettings> {
                 ),
               ]),
               Column(children: [
+                const Padding(padding: EdgeInsets.only(top: 60)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  // Container(),
                   children: [
                     const Text('主DNS'),
                     OtpInput(_fieldOne, false),
@@ -62,6 +61,7 @@ class _DnsSettingsState extends State<DnsSettings> {
                   ],
                 ),
               ]),
+              const Padding(padding: EdgeInsets.only(top: 100)),
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 ElevatedButton(
                   onPressed: () {},

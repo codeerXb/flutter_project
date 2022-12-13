@@ -3,6 +3,11 @@ import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:flutter_template/model/user_model.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/pages/wifi_set/ap_admin.dart';
+import 'package:flutter_template/pages/wifi_set/major_set.dart';
+import 'package:flutter_template/pages/wifi_set/visitor_net.dart';
+import 'package:flutter_template/pages/wifi_set/wlan_set.dart';
+import 'package:flutter_template/pages/wifi_set/wps_set.dart';
 import 'package:get/get.dart';
 import '../../core/utils/shared_preferences_util.dart';
 import '../../core/utils/string_util.dart';
@@ -113,9 +118,27 @@ class _SettingState extends State<Setting> {
 
                       /// 无线开关
                       wirelessSwitch(),
-                      
+
                       ///以太网设置
                       netSet(),
+
+                      /// WLAN状态
+                      wlanType(),
+
+                      /// WLAN设置
+                      wlanSet(),
+
+                      /// 接入管理
+                      apAdmin(),
+
+                      /// 访客网络
+                      visitorNet(),
+
+                      /// 专业设置
+                      majorSet(),
+
+                      /// WPS设置
+                      wpsSet(),
                       const Divider(),
                     ],
                   ),
@@ -448,10 +471,76 @@ class _SettingState extends State<Setting> {
   Widget netSet() {
     return CommonWidget.simpleWidgetWithMine(
         title: '以太网设置',
-        icon: const Icon(Icons.question_mark_rounded,
+        icon: const Icon(Icons.wifi,
             color: Color.fromRGBO(95, 154, 255, 1)),
         callBack: () {
           Get.toNamed("/net_set");
+        });
+  }
+
+  /// WLAN状态
+  Widget wlanType() {
+    return CommonWidget.simpleWidgetWithMine(
+        title: 'WLAN状态',
+        icon: const Icon(Icons.wifi,
+            color: Color.fromRGBO(95, 154, 255, 1)),
+        callBack: () {
+          Get.toNamed("/wlan_type");
+        });
+  }
+
+  /// WLAN设置
+  Widget wlanSet() {
+    return CommonWidget.simpleWidgetWithMine(
+        title: 'WLAN设置',
+        icon: const Icon(Icons.wifi,
+            color: Color.fromRGBO(95, 154, 255, 1)),
+        callBack: () {
+          Get.toNamed("/wlan_set");
+        });
+  }
+
+  /// 接入管理
+  Widget apAdmin() {
+    return CommonWidget.simpleWidgetWithMine(
+        title: '接入管理',
+        icon: const Icon(Icons.wifi,
+            color: Color.fromRGBO(95, 154, 255, 1)),
+        callBack: () {
+          Get.toNamed("/ap_adim");
+        });
+  }
+
+  /// 访客网络
+  Widget visitorNet() {
+    return CommonWidget.simpleWidgetWithMine(
+        title: '访客网络',
+        icon: const Icon(Icons.wifi,
+            color: Color.fromRGBO(95, 154, 255, 1)),
+        callBack: () {
+          Get.toNamed("/visitor_net");
+        });
+  }
+
+  /// 专业设置
+  Widget majorSet() {
+    return CommonWidget.simpleWidgetWithMine(
+        title: '专业设置',
+        icon: const Icon(Icons.wifi,
+            color: Color.fromRGBO(95, 154, 255, 1)),
+        callBack: () {
+          Get.toNamed("/major_set");
+        });
+  }
+
+  /// WPS设置
+  Widget wpsSet() {
+    return CommonWidget.simpleWidgetWithMine(
+        title: 'WPS设置',
+        icon: const Icon(Icons.wifi,
+            color: Color.fromRGBO(95, 154, 255, 1)),
+        callBack: () {
+          Get.toNamed("/wps_set");
         });
   }
 }

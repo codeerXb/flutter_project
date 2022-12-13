@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_template/core/widget/common_widget.dart';
-import 'package:get/get.dart';
 import '../../../core/widget/custom_app_bar.dart';
 
 /// Radio设置

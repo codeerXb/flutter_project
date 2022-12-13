@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import '../../config/base_config.dart';
 import 'http_interceptor.dart';
+import 'package:dio/adapter.dart';
 
 class XHttp {
   XHttp._internal();
@@ -12,10 +13,17 @@ class XHttp {
     baseUrl: BaseConfig.baseUrl,
     connectTimeout: 5000,
     receiveTimeout: 3000,
+    headers: BaseConfig.header,
   ));
 
   ///初始化dio
   static init() {
+    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+        (client) {
+      client.badCertificateCallback = (cert, host, port) {
+        return true; // 返回true强制通过
+      };
+    };
     dio.interceptors.add(CookieManager(CookieJar()));
     //添加拦截器
     dio.interceptors.add(HttpInterceptors());
@@ -33,8 +41,10 @@ class XHttp {
   }
 
   ///post请求
-  static Future post(String url, {Map<String, dynamic>? params, Map<String, dynamic>? data}) async {
-    Response response = await dio.post(url, queryParameters: params, data: data);
+  static Future post(String url,
+      {Map<String, dynamic>? params, Map<String, dynamic>? data}) async {
+    Response response =
+        await dio.post(url, queryParameters: params, data: data);
     return response.data;
   }
 
@@ -48,7 +58,8 @@ class XHttp {
   static Future downloadFile(urlPath, savePath) async {
     late Response response;
     try {
-      response = await dio.download(urlPath, savePath,onReceiveProgress: (int count, int total) {
+      response = await dio.download(urlPath, savePath,
+          onReceiveProgress: (int count, int total) {
         //进度
         print("$count $total");
       });

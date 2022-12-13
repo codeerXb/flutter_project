@@ -13,6 +13,7 @@ import 'package:flutter_template/pages/wifi_set/visitor_net.dart';
 import 'package:flutter_template/pages/wifi_set/wlan_set.dart';
 import 'package:flutter_template/pages/wifi_set/wlan_type.dart';
 import 'package:flutter_template/pages/wifi_set/wps_set.dart';
+import 'package:flutter_template/pages/topo/access_equipment.dart';
 import 'package:flutter_template/splash.dart';
 
 import '../../pages/address_book/address_book_detail.dart';
@@ -143,6 +144,9 @@ class GlobalRouter {
 
     /// WPS设置
     '/wps_set': (BuildContext context, {Object? args}) => const WpsSet(),
+    /// 接入设备
+    '/access_equipment': (BuildContext context, {Object? args}) =>
+        const AccessEquipment(),
   };
 
   static GlobalRouter? _singleton;

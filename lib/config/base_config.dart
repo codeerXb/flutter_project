@@ -1,9 +1,7 @@
-
 /// 基础信息配置
 class BaseConfig {
-
   /// 服务器路径
-  static const baseUrl = "http://192.168.0.184:8080";
+  static const baseUrl = "https://172.16.20.68/data.html?";
 
   /// 版本更新路径
   static const updateUrl = "$baseUrl/";
@@ -17,4 +15,8 @@ class BaseConfig {
   ///高德定位Android key和iOS key
   static const gdIosKey = "c59c6723ee079e25746cda7e37e11101";
 
+  static const Map<String, dynamic> header = {
+    "Cookie":
+        '-goahead-session-=::webs.session::6abbd4faffd74f5cc7418a60d439a715; token=06b642a7-b698-40c7-a3c7-a12c17c5694a'
+  };
 }

@@ -1,11 +1,44 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_template/core/http/http.dart';
+import 'package:flutter_template/core/utils/map_encode.dart';
+import 'package:flutter_template/pages/topo/equipment_datas.dart';
 
 import 'topo_data.dart';
 import 'topo_item.dart';
 
 //网络拓扑
-class Topo extends StatelessWidget {
+class Topo extends StatefulWidget {
   const Topo({Key? key}) : super(key: key);
+
+  @override
+  State<Topo> createState() => _TopoState();
+}
+
+class _TopoState extends State<Topo> {
+  EquipmentDatas topoData = EquipmentDatas(onlineDeviceTable: [], max: null);
+  @override
+  void initState() {
+    super.initState();
+    getTopoData();
+  }
+
+  void getTopoData() {
+    Map<String, dynamic> data = {
+      'method': 'tab_dump',
+      'param': '["OnlineDeviceTable"]',
+      '_csrf_token': '91d75824-3c99-4d89-bb9b-88c209d48e3a'
+    };
+    XHttp.get('${MapEncode.toEncode(data)}').then((res) {
+      print("\n==================  ==========================");
+      var d = json.decode(res.toString());
+      setState(() {
+        topoData = EquipmentDatas.fromJson(d);
+      });
+      print(topoData);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -130,13 +163,13 @@ class Topo extends StatelessWidget {
             ],
           ),
           Container(
-            padding: const EdgeInsets.all(5),
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               border: Border.all(
                   color: const Color.fromARGB(255, 0, 0, 0), width: 0.5),
               borderRadius: BorderRadius.circular((5.0)),
             ),
-            margin: const EdgeInsets.all(10),
+            margin: const EdgeInsets.all(15),
             child: Column(
               children: [
                 Center(
@@ -194,12 +227,13 @@ class Topo extends StatelessWidget {
             shrinkWrap: true,
             crossAxisCount: 4,
             childAspectRatio: 1.0,
-            children: topoData
+            children: topoData.onlineDeviceTable!
                 .map(
                   (e) => TopoItem(
-                    title: e.title,
-                    isNative: e.isNative,
-                    isShow: e.isShow,
+                    title: e.hostName!,
+                    isNative: false,
+                    isShow: true,
+                    topoData: e,
                   ),
                 )
                 .toList(),

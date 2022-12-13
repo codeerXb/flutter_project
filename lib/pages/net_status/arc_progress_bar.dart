@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'dart:math' as Math;
 import 'dart:ui' as UI;
 
+import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 class ArcProgresssBar extends StatelessWidget {
   final double width;
   final double height;
@@ -12,8 +15,8 @@ class ArcProgresssBar extends StatelessWidget {
 
   const ArcProgresssBar({
     Key? key,
-    this.width = 408,
-    this.height = 408,
+    this.width = 200,
+    this.height = 200,
     this.min = 0,
     this.max = 100,
     this.progress = 0,
@@ -30,7 +33,7 @@ class ArcProgresssBar extends StatelessWidget {
 
 class _ArcProgressBarPainter extends CustomPainter {
   final Paint _paint = Paint();
-  double _strokeSize = 8;
+  double _strokeSize = 4.sp;
   num progress = 0;
   num min;
   num max;
@@ -45,9 +48,9 @@ class _ArcProgressBarPainter extends CustomPainter {
   }
   @override
   void paint(Canvas canvas, Size size) {
-    double radius = size.width / 4;
-    double cx = radius * 2;
-    double cy = radius * 2;
+    double radius = size.width / 2 - 80.sp;
+    double cx = size.width / 2;
+    double cy = size.width / 2;
     _drawProgressArc(canvas, size);
     _drawArcProgressPoint(canvas, cx, cy, radius);
     _drawArcPointLine(canvas, cx, cy, radius);
@@ -55,14 +58,9 @@ class _ArcProgressBarPainter extends CustomPainter {
 
 // 进度条的绘制
   void _drawProgressArc(Canvas canvas, Size size) {
-    // 外层圈距离内层距离
-    num toInnerWidth = 33;
     // 外层圈
-    Rect rectOut = Rect.fromLTWH(
-        size.width / 4 - toInnerWidth,
-        size.height / 4 - toInnerWidth,
-        size.width / 2 + toInnerWidth * 2,
-        size.height / 2 + toInnerWidth * 2);
+    Rect rectOut = Rect.fromLTWH(0 + _strokeSize / 2, 0 + _strokeSize / 2,
+        size.width - _strokeSize, size.height - _strokeSize);
     _paint
       ..isAntiAlias = true
       ..style = PaintingStyle.stroke
@@ -84,25 +82,28 @@ class _ArcProgressBarPainter extends CustomPainter {
         _paint);
     // 绘制背景
     // 白色底大圆
-    Rect bgRectOutter = Rect.fromLTWH(size.width / 4 - 21, size.width / 4 - 21,
-        size.width / 2 + 42, size.width / 2 + 42);
+    Rect bgRectOutter = Rect.fromLTWH(
+        _strokeSize + 20.sp,
+        _strokeSize + 20.sp,
+        size.width - _strokeSize * 2 - 40.sp,
+        size.height - _strokeSize * 2 - 40.sp);
     _paint
       ..isAntiAlias = true
       ..style = PaintingStyle.fill
       ..strokeCap = StrokeCap.butt
-      ..strokeWidth = 2
+      ..strokeWidth = 2.sp
       ..color = const Color(0xff000000)
       ..shader = const SweepGradient(colors: [Colors.white, Colors.white])
           .createShader(bgRectOutter);
     canvas.drawArc(bgRectOutter, _toRadius(0), _toRadius(360), false, _paint);
     // 淡色底小圆
-    Rect bgRectInner = Rect.fromLTWH(size.width / 4 + 48, size.width / 4 + 48,
-        size.width / 2 - 96, size.width / 2 - 96);
+    Rect bgRectInner = Rect.fromLTWH(size.width / 4 + 20.sp,
+        size.width / 4 + 20.sp, size.width / 2 - 40.sp, size.width / 2 - 40.sp);
     _paint
       ..isAntiAlias = true
       ..style = PaintingStyle.fill
       ..strokeCap = StrokeCap.butt
-      ..strokeWidth = 2
+      ..strokeWidth = 2.sp
       ..color = const Color(0xff000000)
       ..shader = const SweepGradient(colors: [
         Color(0x2f49bcf6),
@@ -111,25 +112,28 @@ class _ArcProgressBarPainter extends CustomPainter {
     canvas.drawArc(bgRectInner, _toRadius(0), _toRadius(360), false, _paint);
     // 画内层装饰圈
     // 装饰圆1，外层
-    Rect rectInner1 = Rect.fromLTWH(size.width / 4 + 30, size.width / 4 + 30,
-        size.width / 2 - 60, size.width / 2 - 60);
+    Rect rectInner1 = Rect.fromLTWH(
+        size.width / 4 - 25.sp,
+        size.height / 4 - 25.sp,
+        size.width / 2 + 50.sp,
+        size.height / 2 + 50.sp);
     _paint
       ..isAntiAlias = true
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.butt
-      ..strokeWidth = 1
+      ..strokeWidth = 1.sp
       ..color = const Color(0xff000000)
       ..shader = const SweepGradient(colors: [Colors.grey, Colors.grey])
           .createShader(rectInner1);
     canvas.drawArc(rectInner1, _toRadius(0), _toRadius(360), false, _paint);
     // 装饰圆2，内层
-    Rect rectInner2 = Rect.fromLTWH(size.width / 4 + 40, size.width / 4 + 40,
-        size.width / 2 - 80, size.width / 2 - 80);
+    Rect rectInner2 = Rect.fromLTWH(size.width / 4 - 0.sp,
+        size.width / 4 - 0.sp, size.width / 2 + 0.sp, size.width / 2 + 0.sp);
     _paint
       ..isAntiAlias = true
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.butt
-      ..strokeWidth = 2
+      ..strokeWidth = 2.sp
       ..color = const Color(0xff000000)
       ..shader = const SweepGradient(colors: [Colors.black, Colors.black])
           .createShader(rectInner2);
@@ -140,7 +144,7 @@ class _ArcProgressBarPainter extends CustomPainter {
   void _drawArcProgressPoint(
       Canvas canvas, double cx, double cy, double radius) {
     final Paint paintProgress = Paint();
-    paintProgress.strokeWidth = 2;
+    paintProgress.strokeWidth = 4.sp;
     canvas.save();
     canvas.translate(cx, cy);
     canvas.rotate(_toRadius(0));
@@ -152,11 +156,11 @@ class _ArcProgressBarPainter extends CustomPainter {
         paintProgress.color = Colors.grey;
       }
       double evaDegree = i * _toRadius(360 / (max - min));
-      double b = i % 10 == 0 ? -5 : 0;
-      double x = cx + (radius - 12 + b) * Math.cos(evaDegree);
-      double y = cy + (radius - 12 + b) * Math.sin(evaDegree);
-      double x1 = cx + (radius - 4) * Math.cos(evaDegree);
-      double y1 = cx + (radius - 4) * Math.sin(evaDegree);
+      double b = i % 10 == 0 ? -8.sp : 0;
+      double x = cx + (radius - 12.sp + b) * Math.cos(evaDegree);
+      double y = cy + (radius - 12.sp + b) * Math.sin(evaDegree);
+      double x1 = cx + (radius - 4.sp) * Math.cos(evaDegree);
+      double y1 = cx + (radius - 4.sp) * Math.sin(evaDegree);
       canvas.drawLine(Offset(x, y), Offset(x1, y1), paintProgress);
     }
     canvas.translate(cx, cy);
@@ -176,7 +180,7 @@ class _ArcProgressBarPainter extends CustomPainter {
     // 0%对应位置left:338,top:189,right:382,bottom:195
     paintPoint
       ..style = PaintingStyle.fill
-      ..strokeWidth = 100
+      ..strokeWidth = 100.sp
       ..color = Colors.black;
     double degree = _toRadius(360 / (max - min)) * progress;
     double x = cx + radius * Math.cos(degree);
@@ -184,7 +188,7 @@ class _ArcProgressBarPainter extends CustomPainter {
     // 指针斜边长度
     const pointLen = 20;
     // 指针三角形顶角角度
-    const pointDeg = Math.pi / 8;
+    const pointDeg = Math.pi / 10;
     double tx = x + pointLen * Math.cos(pointDeg / 2 + degree);
     double ty = y + pointLen * Math.sin(pointDeg / 2 + degree);
     double bx = x + pointLen * Math.cos(degree - pointDeg / 2);

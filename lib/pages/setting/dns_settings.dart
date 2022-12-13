@@ -27,7 +27,6 @@ class _DnsSettingsState extends State<DnsSettings> {
           decoration:
               const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
           child: Column(
-            // crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(children: const [

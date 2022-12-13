@@ -16,8 +16,6 @@ class _WanSettingsState extends State<WanSettings> {
   int status = 1;
   bool flag = true;
 
-  get child => null;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

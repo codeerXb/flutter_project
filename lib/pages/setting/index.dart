@@ -90,6 +90,33 @@ class _SettingState extends State<Setting> {
 
                       /// 文件上传与下载
                       fileUplodAndDownload(),
+
+                      const Divider(),
+
+                      /// WAN设置
+                      wanSettings(),
+
+                      /// DNS设置
+                      dnsSettings(),
+
+                      /// Radio设置
+                      radioSettings(),
+
+                      /// PIN码管理
+                      pinSettings(),
+
+                      /// LAN设置
+                      lanSettings(),
+
+                      /// 静态路由
+                      staticRoute(),
+
+                      /// 无线开关
+                      wirelessSwitch(),
+                      
+                      ///以太网设置
+                      netSet(),
+                      const Divider(),
                     ],
                   ),
                 ))
@@ -313,5 +340,118 @@ class _SettingState extends State<Setting> {
             Get.toNamed("/file_upload_download");
           }),
     );
+  }
+
+  /// 网络设置
+  Widget networkSettings() {
+    // return CommonWidget.simpleWidgetWithUserDetail("头像",
+    //     value: userModel.avatar, isImage: true, callBack: () {
+    //   print("更换头像");
+    // });
+
+    return Container(
+        padding: const EdgeInsets.fromLTRB(2, 0, 10, 0),
+        height: 50,
+        width: 200,
+        decoration: const BoxDecoration(color: Colors.white),
+        child:
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          CommonWidget.simpleWidgetWithMine(
+              title: '网络设置',
+              icon: const Icon(Icons.settings_applications_outlined,
+                  color: Color.fromRGBO(255, 148, 6, 1)),
+              callBack: () {
+                Get.toNamed("/network_settings");
+              }),
+          const Icon(Icons.navigate_next, color: Colors.grey),
+        ]));
+  }
+
+  /// WAN设置
+  Widget wanSettings() {
+    return CommonWidget.simpleWidgetWithMine(
+        title: 'WAN设置',
+        icon: const Icon(Icons.headset_mic_outlined,
+            color: Color.fromRGBO(95, 154, 255, 1)),
+        callBack: () {
+          Get.toNamed("/wan_settings");
+        });
+  }
+
+  /// DNS设置
+  Widget dnsSettings() {
+    return CommonWidget.simpleWidgetWithMine(
+        title: 'DNS设置',
+        icon: const Icon(Icons.headset_mic_outlined,
+            color: Color.fromRGBO(95, 154, 255, 1)),
+        callBack: () {
+          Get.toNamed("/dns_settings");
+        });
+  }
+
+  /// Radio设置
+  Widget radioSettings() {
+    return CommonWidget.simpleWidgetWithMine(
+        title: 'Radio设置',
+        icon: const Icon(Icons.headset_mic_outlined,
+            color: Color.fromRGBO(95, 154, 255, 1)),
+        callBack: () {
+          Get.toNamed("/radio_settings");
+        });
+  }
+
+  /// PIN码管理
+  Widget pinSettings() {
+    return CommonWidget.simpleWidgetWithMine(
+        title: 'PIN码管理',
+        icon: const Icon(Icons.headset_mic_outlined,
+            color: Color.fromRGBO(95, 154, 255, 1)),
+        callBack: () {
+          Get.toNamed("/pin_settings");
+        });
+  }
+
+  /// LAN设置
+  Widget lanSettings() {
+    return CommonWidget.simpleWidgetWithMine(
+        title: 'LAN设置',
+        icon: const Icon(Icons.headset_mic_outlined,
+            color: Color.fromRGBO(95, 154, 255, 1)),
+        callBack: () {
+          Get.toNamed("/lan_settings");
+        });
+  }
+
+  /// 静态路由
+  Widget staticRoute() {
+    return CommonWidget.simpleWidgetWithMine(
+        title: '静态路由',
+        icon: const Icon(Icons.headset_mic_outlined,
+            color: Color.fromRGBO(95, 154, 255, 1)),
+        callBack: () {
+          Get.toNamed("/static_route");
+        });
+  }
+
+  /// 无线开关
+  Widget wirelessSwitch() {
+    return CommonWidget.simpleWidgetWithMine(
+        title: '无线开关',
+        icon: const Icon(Icons.headset_mic_outlined,
+            color: Color.fromRGBO(95, 154, 255, 1)),
+        callBack: () {
+          Get.toNamed("/wireless_switch");
+        });
+  }
+
+  /// 以太网设置
+  Widget netSet() {
+    return CommonWidget.simpleWidgetWithMine(
+        title: '以太网设置',
+        icon: const Icon(Icons.question_mark_rounded,
+            color: Color.fromRGBO(95, 154, 255, 1)),
+        callBack: () {
+          Get.toNamed("/net_set");
+        });
   }
 }

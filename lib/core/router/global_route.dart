@@ -4,6 +4,7 @@ import 'package:flutter_template/pages/setting/clear_cache.dart';
 import 'package:flutter_template/pages/setting/equ_info.dart';
 import 'package:flutter_template/pages/setting/contact_customer.dart';
 import 'package:flutter_template/pages/setting/file_upload_download.dart';
+import 'package:flutter_template/pages/setting/net_set.dart';
 import 'package:flutter_template/pages/setting/net_type.dart';
 import 'package:flutter_template/pages/setting/user_detail.dart';
 import 'package:flutter_template/splash.dart';
@@ -16,6 +17,13 @@ import '../../pages/setting/chart_demo.dart';
 import '../../pages/setting/scan_code.dart';
 import '../../pages/setting/system_settings.dart';
 import '../../pages/toolbar.dart';
+import '../../pages/setting/wan_settings.dart';
+import '../../pages/setting/dns_settings.dart';
+import '../../pages/setting/radio_settings.dart';
+import '../../pages/setting/pin_settings.dart';
+import '../../pages/setting/lan_settings.dart';
+import '../../pages/setting/static_route.dart';
+import '../../pages/setting/wireless_switch.dart';
 
 /// 路由
 class GlobalRouter {
@@ -80,6 +88,38 @@ class GlobalRouter {
     ///通讯录详情
     '/address_book_detail': (BuildContext context, {Object? args}) =>
         const AddressBookDetail(),
+
+    /// WAN设置
+    '/wan_settings': (BuildContext context, {Object? args}) =>
+        const WanSettings(),
+
+    /// DNS设置
+    '/dns_settings': (BuildContext context, {Object? args}) =>
+        const DnsSettings(),
+
+    /// Radio设置
+    '/radio_settings': (BuildContext context, {Object? args}) =>
+        const RadioSettings(),
+
+    /// PIN码管理
+    '/pin_settings': (BuildContext context, {Object? args}) =>
+        const PinSettings(),
+
+    /// LAN设置
+    '/lan_settings': (BuildContext context, {Object? args}) =>
+        const LanSettings(),
+
+    /// 静态路由
+    '/static_route': (BuildContext context, {Object? args}) =>
+        const StaticRoute(),
+
+    /// 无线开关
+    '/wireless_switch': (BuildContext context, {Object? args}) =>
+        const WirelessSwitch(),
+
+    /// 以太网设置
+    '/net_set': (BuildContext context, {Object? args}) =>
+        const NetSet(),
   };
 
   static GlobalRouter? _singleton;

@@ -19,7 +19,7 @@ class NetStatus extends StatefulWidget {
 }
 
 class _NetStatusState extends State<NetStatus> {
-  double _progress = 95.5;
+  double _progress = 95;
   int get progress {
     return _progress.truncate();
   }
@@ -37,25 +37,24 @@ class _NetStatusState extends State<NetStatus> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('TL-WDR5620'),
+        title: Row(
+          children: const [
+            Text('TL-WDR5620'),
+            FaIcon(FontAwesomeIcons.chevronDown)
+          ],
+        ),
         backgroundColor: const Color.fromARGB(255, 2, 0, 12),
-        actions: [
-          TextButton(
-            onPressed: () => {},
-            child: Row(children: const [
-              Text(
-                '中文',
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-              FaIcon(
-                FontAwesomeIcons.globe,
-                color: Colors.white,
-              )
-            ]),
-          )
-        ],
+        // actions: [
+        //   TextButton(
+        //     onPressed: () => {},
+        //     child: Row(children: const [
+        //       FaIcon(
+        //         FontAwesomeIcons.user,
+        //         color: Colors.white,
+        //       )
+        //     ]),
+        //   )
+        // ],
       ),
       body: Container(
         // alignment: Alignment.center,
@@ -70,7 +69,7 @@ class _NetStatusState extends State<NetStatus> {
               padding: const EdgeInsets.only(
                   left: 18, right: 18, top: 0, bottom: 30),
               width: 1.sw,
-              height: 120,
+              height: 240.sp,
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
@@ -121,8 +120,8 @@ class _NetStatusState extends State<NetStatus> {
                   ]),
             ),
             Dashboard(
-              progress2: _progress,
-              progress: progress,
+              progress: _progress,
+              progressInt: progress,
               pressUp: pressUp,
               pressDown: pressDown,
             ),

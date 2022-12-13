@@ -7,42 +7,49 @@ import 'arc_progress_bar.dart';
 class Dashboard extends StatelessWidget {
   const Dashboard({
     Key? key,
-    required double progress2,
-    required this.progress,
+    required double progress,
+    required this.progressInt,
     required this.pressUp,
     required this.pressDown,
-  })  : _progress = progress2,
+  })  : _progress = progress,
         super(key: key);
 
   final double _progress;
-  final int progress;
+  final int progressInt;
   final void Function() pressUp;
   final void Function() pressDown;
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      Stack(
+    String progressDecimals = _progress.toString().split('.')[1];
+    return Container(
+      height: 1.sh - 510.sp,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          ArcProgresssBar(width: 1.sw, height: 1.sw, progress: _progress),
-          Positioned(
-              top: 0.22.sh,
-              right: 0.37.sw,
-              width: 200.sp,
-              child: Column(
+          Stack(
+            alignment: AlignmentDirectional.center,
+            children: [
+              Container(
+                width: 0.8.sw,
+                height: 0.8.sw,
+                child: ArcProgresssBar(
+                    width: 1.sw, height: 1.sw, progress: _progress),
+              ),
+              Column(
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text('$progress',
+                      Text('$progressInt',
                           style: TextStyle(
                             fontSize: 64.sp,
                             fontWeight: FontWeight.w700,
                             height: 1.sp,
                           )),
                       Text(
-                        'MB',
+                        '.$progressDecimals MB',
                         style: TextStyle(
                           fontSize: 28.sp,
                           height: 2.sp,
@@ -70,40 +77,43 @@ class Dashboard extends StatelessWidget {
                     ],
                   )
                 ],
-              )),
-          Positioned(
-            top: 0.1.sh,
-            left: 0.sw,
-            child: TextButton(onPressed: pressUp, child: const Text('增加')),
+              ),
+              Positioned(
+                top: 0.1.sh,
+                left: 0.sw,
+                child: TextButton(onPressed: pressUp, child: const Text('增加')),
+              ),
+              Positioned(
+                top: 0.2.sh,
+                left: 0.sw,
+                child: TextButton(
+                    onPressed: pressDown,
+                    child: Text('减少', style: TextStyle(fontSize: 30.sp))),
+              )
+            ],
           ),
-          Positioned(
-            top: 0.2.sh,
-            left: 0.sw,
-            child: TextButton(
-                onPressed: pressDown,
-                child: Text('减少', style: TextStyle(fontSize: 30.sp))),
+          Center(
+            child: Container(
+                margin: const EdgeInsets.only(right: 15, left: 15),
+                padding: const EdgeInsets.only(top: 15, bottom: 15),
+                width: 1.sw - 30,
+                decoration: const BoxDecoration(
+                  // 背景色
+                  color: Color.fromARGB(255, 255, 255, 255),
+                  borderRadius: BorderRadius.all(Radius.circular(15)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: const [
+                    UploadSpeed(),
+                    DownloadSpeed(),
+                    OnlineCount(),
+                  ],
+                )),
           )
         ],
       ),
-      Center(
-        child: Container(
-            margin: const EdgeInsets.only(right: 15, left: 15),
-            padding: const EdgeInsets.only(top: 15, bottom: 15),
-            decoration: const BoxDecoration(
-              // 背景色
-              color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(15)),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: const [
-                UploadSpeed(),
-                DownloadSpeed(),
-                OnlineCount(),
-              ],
-            )),
-      )
-    ]);
+    );
   }
 }
 

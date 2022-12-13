@@ -6,6 +6,7 @@ import 'package:flutter_template/pages/setting/contact_customer.dart';
 import 'package:flutter_template/pages/setting/file_upload_download.dart';
 import 'package:flutter_template/pages/setting/net_type.dart';
 import 'package:flutter_template/pages/setting/user_detail.dart';
+import 'package:flutter_template/pages/topo/access_equipment.dart';
 import 'package:flutter_template/splash.dart';
 
 import '../../pages/address_book/address_book_detail.dart';
@@ -115,6 +116,10 @@ class GlobalRouter {
     /// 无线开关
     '/wireless_switch': (BuildContext context, {Object? args}) =>
         const WirelessSwitch(),
+
+    /// 接入设备
+    '/access_equipment': (BuildContext context, {Object? args}) =>
+        const AccessEquipment(),
   };
 
   static GlobalRouter? _singleton;

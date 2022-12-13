@@ -113,6 +113,9 @@ class _SettingState extends State<Setting> {
 
                       /// 无线开关
                       wirelessSwitch(),
+                      
+                      ///以太网设置
+                      netSet(),
                       const Divider(),
                     ],
                   ),
@@ -438,6 +441,17 @@ class _SettingState extends State<Setting> {
             color: Color.fromRGBO(95, 154, 255, 1)),
         callBack: () {
           Get.toNamed("/wireless_switch");
+        });
+  }
+
+  /// 以太网设置
+  Widget netSet() {
+    return CommonWidget.simpleWidgetWithMine(
+        title: '以太网设置',
+        icon: const Icon(Icons.question_mark_rounded,
+            color: Color.fromRGBO(95, 154, 255, 1)),
+        callBack: () {
+          Get.toNamed("/net_set");
         });
   }
 }

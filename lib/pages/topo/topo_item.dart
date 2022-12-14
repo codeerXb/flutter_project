@@ -35,8 +35,8 @@ class TopoItem extends StatelessWidget {
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
                   clipBehavior: Clip.hardEdge,
-                  height: 100.h,
-                  width: 100.w,
+                  height: 120.h,
+                  width: 120.h,
                   margin: const EdgeInsets.all(5),
                   child: Image.network(
                       'https://z4a.net/images/2022/12/13/20221213-175814.jpg',

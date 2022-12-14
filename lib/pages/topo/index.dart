@@ -30,7 +30,7 @@ class _TopoState extends State<Topo> {
     Map<String, dynamic> data = {
       'method': 'tab_dump',
       'param': '["OnlineDeviceTable"]',
-      '_csrf_token': '91d75824-3c99-4d89-bb9b-88c209d48e3a'
+      '_csrf_token': '346fd6ee-7b84-4a82-b37b-6b89ff46c2e1'
     };
     XHttp.get(MapEncode.toEncode(data)).then((res) {
       print("\n==================  ==========================");

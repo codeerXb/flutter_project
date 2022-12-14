@@ -25,18 +25,18 @@ class _LanSettingsState extends State<LanSettings> {
       appBar: customAppbar(context: context, title: 'LAN设置'),
       body: SingleChildScrollView(
         child: Container(
-          padding: const EdgeInsets.all(10),
-          height: 780,
+          padding: EdgeInsets.all(20.sp),
+          height: 1340.sp,
           decoration:
               const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
           child: Column(
             children: [
-              const Padding(padding: EdgeInsets.only(top: 40)),
+              Padding(padding: EdgeInsets.only(top: 80.sp)),
               Row(children: const [
                 TitleWidger(title: 'LAN主机设置'),
               ]),
               Column(children: [
-                const Padding(padding: EdgeInsets.only(top: 30)),
+                Padding(padding: EdgeInsets.only(top: 40.sp)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
@@ -51,7 +51,7 @@ class _LanSettingsState extends State<LanSettings> {
                     )
                   ],
                 ),
-                const Padding(padding: EdgeInsets.only(top: 30)),
+                Padding(padding: EdgeInsets.only(top: 40.sp)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
@@ -67,17 +67,17 @@ class _LanSettingsState extends State<LanSettings> {
                   ],
                 ),
               ]),
-              const Padding(padding: EdgeInsets.only(top: 40)),
+              Padding(padding: EdgeInsets.only(top: 80.sp)),
               Row(children: const [
                 TitleWidger(title: 'DHCP 配置'),
               ]),
               Column(children: [
-                const Padding(padding: EdgeInsets.only(top: 30)),
+                Padding(padding: EdgeInsets.only(top: 40.sp)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     const Text('DHCP 服务器'),
-                    const Padding(padding: EdgeInsets.only(right: 160)),
+                    Padding(padding: EdgeInsets.only(right: 200.sp)),
                     Checkbox(
                       value: status,
                       // 改变后的事件
@@ -94,7 +94,7 @@ class _LanSettingsState extends State<LanSettings> {
                     const Text('启用'),
                   ],
                 ),
-                const Padding(padding: EdgeInsets.only(top: 30)),
+                Padding(padding: EdgeInsets.only(top: 40.sp)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
@@ -109,7 +109,7 @@ class _LanSettingsState extends State<LanSettings> {
                     )
                   ],
                 ),
-                const Padding(padding: EdgeInsets.only(top: 30)),
+                Padding(padding: EdgeInsets.only(top: 40.sp)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
@@ -124,13 +124,13 @@ class _LanSettingsState extends State<LanSettings> {
                     )
                   ],
                 ),
-                const Padding(padding: EdgeInsets.only(top: 30)),
+                Padding(padding: EdgeInsets.only(top: 40.sp)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     const Text('租约时间'),
                     SizedBox(
-                      width: 500.sp,
+                      width: 510.sp,
                       child: const TextField(
                         obscureText: true,
                         decoration: InputDecoration(
@@ -146,7 +146,7 @@ class _LanSettingsState extends State<LanSettings> {
                   ],
                 ),
               ]),
-              const Padding(padding: EdgeInsets.only(top: 100)),
+              Padding(padding: EdgeInsets.only(top: 200.sp)),
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 ElevatedButton(
                   onPressed: () {},

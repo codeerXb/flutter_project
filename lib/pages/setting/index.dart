@@ -3,11 +3,6 @@ import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:flutter_template/model/user_model.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_template/pages/wifi_set/ap_admin.dart';
-import 'package:flutter_template/pages/wifi_set/major_set.dart';
-import 'package:flutter_template/pages/wifi_set/visitor_net.dart';
-import 'package:flutter_template/pages/wifi_set/wlan_set.dart';
-import 'package:flutter_template/pages/wifi_set/wps_set.dart';
 import 'package:get/get.dart';
 import '../../core/utils/shared_preferences_util.dart';
 import '../../core/utils/string_util.dart';
@@ -67,13 +62,9 @@ class _SettingState extends State<Setting> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       /// 扫一扫
-                      scanCode(),
-
-                      /// 设备信息
-                      commonProblem(),
-
-                      /// 以太网
-                      feedback(),
+                      // scanCode(),
+                      /// 系统设置
+                      systemSettings(),
 
                       /// 账号安全
                       accountSecurity(),
@@ -82,20 +73,42 @@ class _SettingState extends State<Setting> {
                       clearCache(),
 
                       /// 关于我们
-                      aboutUs(),
+                      // aboutUs(),
 
                       /// 联系客服
-                      contactCustomer(),
-
-                      /// 系统设置
-                      systemSettings(),
+                      // contactCustomer(),
 
                       /// 图表统计
-                      chartCal(),
+                      // chartCal(),
 
                       /// 文件上传与下载
-                      fileUplodAndDownload(),
+                      // fileUplodAndDownload(),
 
+                      const Divider(),
+
+                      /// WLAN设置
+                      wlanSet(),
+
+                      /// 访客网络
+                      visitorNet(),
+
+                      /// 专业设置
+                      majorSet(),
+
+                      /// WPS设置
+                      wpsSet(),
+                      const Divider(),
+
+                      /// 设备信息
+                      commonProblem(),
+
+                      const Divider(),
+
+                      /// 以太网状态
+                      feedback(),
+
+                      ///以太网设置
+                      netSet(),
                       const Divider(),
 
                       /// WAN设置
@@ -107,38 +120,13 @@ class _SettingState extends State<Setting> {
                       /// Radio设置
                       radioSettings(),
 
-                      /// PIN码管理
-                      pinSettings(),
-
                       /// LAN设置
                       lanSettings(),
 
-                      /// 静态路由
-                      staticRoute(),
+                      const Divider(),
 
-                      /// 无线开关
-                      wirelessSwitch(),
+                      const Divider(),
 
-                      ///以太网设置
-                      netSet(),
-
-                      /// WLAN状态
-                      wlanType(),
-
-                      /// WLAN设置
-                      wlanSet(),
-
-                      /// 接入管理
-                      apAdmin(),
-
-                      /// 访客网络
-                      visitorNet(),
-
-                      /// 专业设置
-                      majorSet(),
-
-                      /// WPS设置
-                      wpsSet(),
                       const Divider(),
                     ],
                   ),
@@ -266,11 +254,11 @@ class _SettingState extends State<Setting> {
         });
   }
 
-  /// 以太网
+  /// 以太网状态
   Widget feedback() {
     return CommonWidget.simpleWidgetWithMine(
-        title: '以太网',
-        icon: const Icon(Icons.headset_mic_outlined,
+        title: '以太网状态',
+        icon: const Icon(Icons.share_location,
             color: Color.fromRGBO(95, 154, 255, 1)),
         callBack: () {
           Get.toNamed("/feed_back");
@@ -423,17 +411,6 @@ class _SettingState extends State<Setting> {
         });
   }
 
-  /// PIN码管理
-  Widget pinSettings() {
-    return CommonWidget.simpleWidgetWithMine(
-        title: 'PIN码管理',
-        icon: const Icon(Icons.headset_mic_outlined,
-            color: Color.fromRGBO(95, 154, 255, 1)),
-        callBack: () {
-          Get.toNamed("/pin_settings");
-        });
-  }
-
   /// LAN设置
   Widget lanSettings() {
     return CommonWidget.simpleWidgetWithMine(
@@ -445,47 +422,14 @@ class _SettingState extends State<Setting> {
         });
   }
 
-  /// 静态路由
-  Widget staticRoute() {
-    return CommonWidget.simpleWidgetWithMine(
-        title: '静态路由',
-        icon: const Icon(Icons.headset_mic_outlined,
-            color: Color.fromRGBO(95, 154, 255, 1)),
-        callBack: () {
-          Get.toNamed("/static_route");
-        });
-  }
-
-  /// 无线开关
-  Widget wirelessSwitch() {
-    return CommonWidget.simpleWidgetWithMine(
-        title: '无线开关',
-        icon: const Icon(Icons.headset_mic_outlined,
-            color: Color.fromRGBO(95, 154, 255, 1)),
-        callBack: () {
-          Get.toNamed("/wireless_switch");
-        });
-  }
-
   /// 以太网设置
   Widget netSet() {
     return CommonWidget.simpleWidgetWithMine(
         title: '以太网设置',
-        icon: const Icon(Icons.wifi,
+        icon: const Icon(Icons.share_location,
             color: Color.fromRGBO(95, 154, 255, 1)),
         callBack: () {
           Get.toNamed("/net_set");
-        });
-  }
-
-  /// WLAN状态
-  Widget wlanType() {
-    return CommonWidget.simpleWidgetWithMine(
-        title: 'WLAN状态',
-        icon: const Icon(Icons.wifi,
-            color: Color.fromRGBO(95, 154, 255, 1)),
-        callBack: () {
-          Get.toNamed("/wlan_type");
         });
   }
 
@@ -493,21 +437,9 @@ class _SettingState extends State<Setting> {
   Widget wlanSet() {
     return CommonWidget.simpleWidgetWithMine(
         title: 'WLAN设置',
-        icon: const Icon(Icons.wifi,
-            color: Color.fromRGBO(95, 154, 255, 1)),
+        icon: const Icon(Icons.wifi, color: Color.fromRGBO(95, 154, 255, 1)),
         callBack: () {
           Get.toNamed("/wlan_set");
-        });
-  }
-
-  /// 接入管理
-  Widget apAdmin() {
-    return CommonWidget.simpleWidgetWithMine(
-        title: '接入管理',
-        icon: const Icon(Icons.wifi,
-            color: Color.fromRGBO(95, 154, 255, 1)),
-        callBack: () {
-          Get.toNamed("/ap_adim");
         });
   }
 
@@ -515,8 +447,7 @@ class _SettingState extends State<Setting> {
   Widget visitorNet() {
     return CommonWidget.simpleWidgetWithMine(
         title: '访客网络',
-        icon: const Icon(Icons.wifi,
-            color: Color.fromRGBO(95, 154, 255, 1)),
+        icon: const Icon(Icons.wifi, color: Color.fromRGBO(95, 154, 255, 1)),
         callBack: () {
           Get.toNamed("/visitor_net");
         });
@@ -526,8 +457,7 @@ class _SettingState extends State<Setting> {
   Widget majorSet() {
     return CommonWidget.simpleWidgetWithMine(
         title: '专业设置',
-        icon: const Icon(Icons.wifi,
-            color: Color.fromRGBO(95, 154, 255, 1)),
+        icon: const Icon(Icons.wifi, color: Color.fromRGBO(95, 154, 255, 1)),
         callBack: () {
           Get.toNamed("/major_set");
         });
@@ -537,8 +467,7 @@ class _SettingState extends State<Setting> {
   Widget wpsSet() {
     return CommonWidget.simpleWidgetWithMine(
         title: 'WPS设置',
-        icon: const Icon(Icons.wifi,
-            color: Color.fromRGBO(95, 154, 255, 1)),
+        icon: const Icon(Icons.wifi, color: Color.fromRGBO(95, 154, 255, 1)),
         callBack: () {
           Get.toNamed("/wps_set");
         });

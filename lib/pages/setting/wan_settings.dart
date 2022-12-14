@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/widget/custom_app_bar.dart';
 
 /// WAN设置
@@ -20,20 +21,20 @@ class _WanSettingsState extends State<WanSettings> {
       appBar: customAppbar(context: context, title: 'WAN设置'),
       body: SingleChildScrollView(
         child: Container(
-            padding: const EdgeInsets.all(10),
-            height: 780,
+            padding: EdgeInsets.all(20.sp),
+            height: 1340.sp,
             decoration:
                 const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
             child: Column(children: [
-              const SizedBox(
-                height: 40,
+              SizedBox(
+                height: 80.sp,
               ),
               Row(children: [
-                const Flexible(
-                  child: Text('网络模式', style: TextStyle(fontSize: 20)),
+                Flexible(
+                  child: Text('网络模式', style: TextStyle(fontSize: 40.sp)),
                 ),
-                const SizedBox(
-                  width: 60,
+                SizedBox(
+                  width: 120.sp,
                 ),
                 Radio(
                   // 按钮的值
@@ -48,8 +49,8 @@ class _WanSettingsState extends State<WanSettings> {
                   groupValue: sex,
                 ),
                 const Text("NAT"),
-                const SizedBox(
-                  width: 20,
+                SizedBox(
+                  width: 40.sp,
                 ),
                 Radio(
                   value: 2,
@@ -62,8 +63,8 @@ class _WanSettingsState extends State<WanSettings> {
                 ),
                 const Text("BRIDGE"),
               ]),
-              const SizedBox(
-                height: 60,
+              SizedBox(
+                height: 120.sp,
               ),
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 ElevatedButton(

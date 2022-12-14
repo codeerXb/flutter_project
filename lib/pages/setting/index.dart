@@ -113,12 +113,6 @@ class _SettingState extends State<Setting> {
                       /// LAN设置
                       lanSettings(),
 
-                      /// 静态路由
-                      staticRoute(),
-
-                      /// 无线开关
-                      wirelessSwitch(),
-
                       ///以太网设置
                       netSet(),
 
@@ -445,34 +439,11 @@ class _SettingState extends State<Setting> {
         });
   }
 
-  /// 静态路由
-  Widget staticRoute() {
-    return CommonWidget.simpleWidgetWithMine(
-        title: '静态路由',
-        icon: const Icon(Icons.headset_mic_outlined,
-            color: Color.fromRGBO(95, 154, 255, 1)),
-        callBack: () {
-          Get.toNamed("/static_route");
-        });
-  }
-
-  /// 无线开关
-  Widget wirelessSwitch() {
-    return CommonWidget.simpleWidgetWithMine(
-        title: '无线开关',
-        icon: const Icon(Icons.headset_mic_outlined,
-            color: Color.fromRGBO(95, 154, 255, 1)),
-        callBack: () {
-          Get.toNamed("/wireless_switch");
-        });
-  }
-
   /// 以太网设置
   Widget netSet() {
     return CommonWidget.simpleWidgetWithMine(
         title: '以太网设置',
-        icon: const Icon(Icons.wifi,
-            color: Color.fromRGBO(95, 154, 255, 1)),
+        icon: const Icon(Icons.wifi, color: Color.fromRGBO(95, 154, 255, 1)),
         callBack: () {
           Get.toNamed("/net_set");
         });
@@ -482,8 +453,7 @@ class _SettingState extends State<Setting> {
   Widget wlanType() {
     return CommonWidget.simpleWidgetWithMine(
         title: 'WLAN状态',
-        icon: const Icon(Icons.wifi,
-            color: Color.fromRGBO(95, 154, 255, 1)),
+        icon: const Icon(Icons.wifi, color: Color.fromRGBO(95, 154, 255, 1)),
         callBack: () {
           Get.toNamed("/wlan_type");
         });
@@ -493,8 +463,7 @@ class _SettingState extends State<Setting> {
   Widget wlanSet() {
     return CommonWidget.simpleWidgetWithMine(
         title: 'WLAN设置',
-        icon: const Icon(Icons.wifi,
-            color: Color.fromRGBO(95, 154, 255, 1)),
+        icon: const Icon(Icons.wifi, color: Color.fromRGBO(95, 154, 255, 1)),
         callBack: () {
           Get.toNamed("/wlan_set");
         });
@@ -504,8 +473,7 @@ class _SettingState extends State<Setting> {
   Widget apAdmin() {
     return CommonWidget.simpleWidgetWithMine(
         title: '接入管理',
-        icon: const Icon(Icons.wifi,
-            color: Color.fromRGBO(95, 154, 255, 1)),
+        icon: const Icon(Icons.wifi, color: Color.fromRGBO(95, 154, 255, 1)),
         callBack: () {
           Get.toNamed("/ap_adim");
         });
@@ -515,8 +483,7 @@ class _SettingState extends State<Setting> {
   Widget visitorNet() {
     return CommonWidget.simpleWidgetWithMine(
         title: '访客网络',
-        icon: const Icon(Icons.wifi,
-            color: Color.fromRGBO(95, 154, 255, 1)),
+        icon: const Icon(Icons.wifi, color: Color.fromRGBO(95, 154, 255, 1)),
         callBack: () {
           Get.toNamed("/visitor_net");
         });
@@ -526,8 +493,7 @@ class _SettingState extends State<Setting> {
   Widget majorSet() {
     return CommonWidget.simpleWidgetWithMine(
         title: '专业设置',
-        icon: const Icon(Icons.wifi,
-            color: Color.fromRGBO(95, 154, 255, 1)),
+        icon: const Icon(Icons.wifi, color: Color.fromRGBO(95, 154, 255, 1)),
         callBack: () {
           Get.toNamed("/major_set");
         });
@@ -537,8 +503,7 @@ class _SettingState extends State<Setting> {
   Widget wpsSet() {
     return CommonWidget.simpleWidgetWithMine(
         title: 'WPS设置',
-        icon: const Icon(Icons.wifi,
-            color: Color.fromRGBO(95, 154, 255, 1)),
+        icon: const Icon(Icons.wifi, color: Color.fromRGBO(95, 154, 255, 1)),
         callBack: () {
           Get.toNamed("/wps_set");
         });

@@ -63,14 +63,6 @@ class _SettingState extends State<Setting> {
                     children: [
                       /// 扫一扫
                       // scanCode(),
-                      /// 系统设置
-                      systemSettings(),
-
-                      /// 账号安全
-                      accountSecurity(),
-
-                      /// 清除缓存
-                      clearCache(),
 
                       /// 关于我们
                       // aboutUs(),
@@ -104,6 +96,13 @@ class _SettingState extends State<Setting> {
 
                       const Divider(),
 
+                      /// 维护设置
+                      maintainSettings(),
+
+                      /// 登录管理
+                      accountSecurity(),
+                      const Divider(),
+
                       /// 以太网状态
                       feedback(),
 
@@ -122,11 +121,13 @@ class _SettingState extends State<Setting> {
 
                       /// LAN设置
                       lanSettings(),
+                      // const Divider(),
 
-                      const Divider(),
+                      /// 系统设置
+                      systemSettings(),
 
-                      const Divider(),
-
+                      /// 清除缓存
+                      clearCache(),
                       const Divider(),
                     ],
                   ),
@@ -265,10 +266,21 @@ class _SettingState extends State<Setting> {
         });
   }
 
-  /// 账号安全
+  /// 维护设置
+  Widget maintainSettings() {
+    return CommonWidget.simpleWidgetWithMine(
+        title: '维护设置',
+        icon: const Icon(Icons.security_outlined,
+            color: Color.fromRGBO(95, 154, 255, 1)),
+        callBack: () {
+          Get.toNamed("/maintain_settings");
+        });
+  }
+
+  /// 登录管理
   Widget accountSecurity() {
     return CommonWidget.simpleWidgetWithMine(
-        title: '账号安全',
+        title: '登录管理',
         icon: const Icon(Icons.security_outlined,
             color: Color.fromRGBO(49, 110, 222, 1)),
         callBack: () {
@@ -351,31 +363,6 @@ class _SettingState extends State<Setting> {
             Get.toNamed("/file_upload_download");
           }),
     );
-  }
-
-  /// 网络设置
-  Widget networkSettings() {
-    // return CommonWidget.simpleWidgetWithUserDetail("头像",
-    //     value: userModel.avatar, isImage: true, callBack: () {
-    //   print("更换头像");
-    // });
-
-    return Container(
-        padding: const EdgeInsets.fromLTRB(2, 0, 10, 0),
-        height: 50,
-        width: 200,
-        decoration: const BoxDecoration(color: Colors.white),
-        child:
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-          CommonWidget.simpleWidgetWithMine(
-              title: '网络设置',
-              icon: const Icon(Icons.settings_applications_outlined,
-                  color: Color.fromRGBO(255, 148, 6, 1)),
-              callBack: () {
-                Get.toNamed("/network_settings");
-              }),
-          const Icon(Icons.navigate_next, color: Colors.grey),
-        ]));
   }
 
   /// WAN设置

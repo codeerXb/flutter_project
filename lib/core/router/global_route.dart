@@ -27,6 +27,7 @@ import '../../pages/setting/wan_settings.dart';
 import '../../pages/setting/dns_settings.dart';
 import '../../pages/setting/radio_settings.dart';
 import '../../pages/setting/lan_settings.dart';
+import '../../pages/setting/maintain_settings.dart';
 
 /// 路由
 class GlobalRouter {
@@ -127,6 +128,10 @@ class GlobalRouter {
     /// 接入设备
     '/access_equipment': (BuildContext context, {Object? args}) =>
         const AccessEquipment(),
+
+    /// 维护设置
+    '/maintain_settings': (BuildContext context, {Object? args}) =>
+        const MaintainSettings(),
 
     /// 接入设备
     '/odu': (BuildContext context, {Object? args}) => const ODU(),

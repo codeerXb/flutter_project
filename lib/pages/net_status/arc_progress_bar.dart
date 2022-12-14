@@ -48,7 +48,7 @@ class _ArcProgressBarPainter extends CustomPainter {
   }
   @override
   void paint(Canvas canvas, Size size) {
-    double radius = size.width / 2 - 80.sp;
+    double radius = size.width / 2 - 80.w;
     double cx = size.width / 2;
     double cy = size.width / 2;
     _drawProgressArc(canvas, size);

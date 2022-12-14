@@ -66,18 +66,18 @@ class _NetStatusState extends State<NetStatus> {
             Container(
               alignment: Alignment.topCenter,
               color: const Color.fromARGB(255, 2, 0, 12),
-              padding: const EdgeInsets.only(
-                  left: 18, right: 18, top: 0, bottom: 30),
+              padding: EdgeInsets.only(
+                  left: 36.sp, right: 36.sp, top: 0, bottom: 30.sp),
               width: 1.sw,
-              height: 240.sp,
+              height: 240.h,
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Row(mainAxisAlignment: MainAxisAlignment.start, children: [
                       Container(
-                        height: 40.sp,
-                        padding: const EdgeInsets.only(
-                            left: 8, right: 8, top: 0, bottom: 0),
+                        height: 40.h,
+                        padding: EdgeInsets.only(
+                            left: 16.sp, right: 16.sp, top: 0, bottom: 0),
                         decoration: BoxDecoration(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(8.sp)),

@@ -22,8 +22,8 @@ class Dashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String progressDecimals = _progress.toString().split('.')[1];
-    return Container(
-      height: 1.sh - 510.sp,
+    return SizedBox(
+      height: 1.sh - 510.h,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [

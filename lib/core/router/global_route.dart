@@ -7,11 +7,9 @@ import 'package:flutter_template/pages/setting/contact_customer.dart';
 import 'package:flutter_template/pages/setting/file_upload_download.dart';
 import 'package:flutter_template/pages/Ethernet/net_type.dart';
 import 'package:flutter_template/pages/setting/user_detail.dart';
-import 'package:flutter_template/pages/wifi_set/ap_admin.dart';
 import 'package:flutter_template/pages/wifi_set/major_set.dart';
 import 'package:flutter_template/pages/wifi_set/visitor_net.dart';
 import 'package:flutter_template/pages/wifi_set/wlan_set.dart';
-import 'package:flutter_template/pages/wifi_set/wlan_type.dart';
 import 'package:flutter_template/pages/wifi_set/wps_set.dart';
 import 'package:flutter_template/pages/topo/access_equipment.dart';
 import 'package:flutter_template/splash.dart';
@@ -127,14 +125,12 @@ class GlobalRouter {
     /// 以太网设置
     '/net_set': (BuildContext context, {Object? args}) => const NetSet(),
 
-    /// WLAN状态
-    '/wlan_type': (BuildContext context, {Object? args}) => const WlanType(),
+   
 
     /// WLAN设置
     '/wlan_set': (BuildContext context, {Object? args}) => const WlanSet(),
 
-    /// 接入管理
-    '/ap_adim': (BuildContext context, {Object? args}) => const ApAdmin(),
+    
 
     /// 访客网络
     '/visitor_net': (BuildContext context, {Object? args}) => const VisitorNet(),

@@ -62,7 +62,9 @@ class _SettingState extends State<Setting> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       /// 扫一扫
-                      scanCode(),
+                      // scanCode(),
+                      /// 系统设置
+                      systemSettings(),
 
                       /// 账号安全
                       accountSecurity(),
@@ -71,49 +73,17 @@ class _SettingState extends State<Setting> {
                       clearCache(),
 
                       /// 关于我们
-                      aboutUs(),
+                      // aboutUs(),
 
                       /// 联系客服
-                      contactCustomer(),
-
-                      /// 系统设置
-                      systemSettings(),
+                      // contactCustomer(),
 
                       /// 图表统计
-                      chartCal(),
+                      // chartCal(),
 
                       /// 文件上传与下载
-                      fileUplodAndDownload(),
+                      // fileUplodAndDownload(),
 
-                      const Divider(),
-
-                      /// 设备信息
-                      commonProblem(),
-
-                      const Divider(),
-
-                      /// WAN设置
-                      wanSettings(),
-
-                      /// DNS设置
-                      dnsSettings(),
-
-                      /// Radio设置
-                      radioSettings(),
-
-                      /// PIN码管理
-                      pinSettings(),
-
-                      /// LAN设置
-                      lanSettings(),
-
-                      const Divider(),
-
-                      /// 以太网状态
-                      feedback(),
-
-                      ///以太网设置
-                      netSet(),
                       const Divider(),
 
                       /// WLAN设置
@@ -127,6 +97,36 @@ class _SettingState extends State<Setting> {
 
                       /// WPS设置
                       wpsSet(),
+                      const Divider(),
+
+                      /// 设备信息
+                      commonProblem(),
+
+                      const Divider(),
+
+                      /// 以太网状态
+                      feedback(),
+
+                      ///以太网设置
+                      netSet(),
+                      const Divider(),
+
+                      /// WAN设置
+                      wanSettings(),
+
+                      /// DNS设置
+                      dnsSettings(),
+
+                      /// Radio设置
+                      radioSettings(),
+
+                      /// LAN设置
+                      lanSettings(),
+
+                      const Divider(),
+
+                      const Divider(),
+
                       const Divider(),
                     ],
                   ),
@@ -411,17 +411,6 @@ class _SettingState extends State<Setting> {
         });
   }
 
-  /// PIN码管理
-  Widget pinSettings() {
-    return CommonWidget.simpleWidgetWithMine(
-        title: 'PIN码管理',
-        icon: const Icon(Icons.headset_mic_outlined,
-            color: Color.fromRGBO(95, 154, 255, 1)),
-        callBack: () {
-          Get.toNamed("/pin_settings");
-        });
-  }
-
   /// LAN设置
   Widget lanSettings() {
     return CommonWidget.simpleWidgetWithMine(
@@ -432,10 +421,6 @@ class _SettingState extends State<Setting> {
           Get.toNamed("/lan_settings");
         });
   }
-
-
-
-
 
   /// 以太网设置
   Widget netSet() {

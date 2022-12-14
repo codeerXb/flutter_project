@@ -25,7 +25,6 @@ import '../../pages/toolbar.dart';
 import '../../pages/setting/wan_settings.dart';
 import '../../pages/setting/dns_settings.dart';
 import '../../pages/setting/radio_settings.dart';
-import '../../pages/setting/pin_settings.dart';
 import '../../pages/setting/lan_settings.dart';
 
 /// 路由
@@ -104,10 +103,6 @@ class GlobalRouter {
     '/radio_settings': (BuildContext context, {Object? args}) =>
         const RadioSettings(),
 
-    /// PIN码管理
-    '/pin_settings': (BuildContext context, {Object? args}) =>
-        const PinSettings(),
-
     /// LAN设置
     '/lan_settings': (BuildContext context, {Object? args}) =>
         const LanSettings(),
@@ -115,12 +110,8 @@ class GlobalRouter {
     /// 以太网设置
     '/net_set': (BuildContext context, {Object? args}) => const NetSet(),
 
-   
-
     /// WLAN设置
     '/wlan_set': (BuildContext context, {Object? args}) => const WlanSet(),
-
-    
 
     /// 访客网络
     '/visitor_net': (BuildContext context, {Object? args}) =>

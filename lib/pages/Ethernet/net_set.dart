@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../core/widget/custom_app_bar.dart';
 
 /// 以太网设置
@@ -38,8 +39,8 @@ class _NetSetState extends State<NetSet> {
                               color: Color.fromARGB(255, 5, 0, 0),
                               fontSize: 14)),
                       SizedBox(
-                        height: 25,
-                        width: 150,
+                        height: 50.sp,
+                        width: 300.sp,
                         child: TextField(
                           autofocus: true,
                           keyboardType: TextInputType.number,
@@ -94,8 +95,8 @@ class _NetSetState extends State<NetSet> {
                               color: Color.fromARGB(255, 5, 0, 0),
                               fontSize: 14)),
                       SizedBox(
-                        height: 25,
-                        width: 150,
+                        height: 50.sp,
+                        width: 300.sp,
                         child: TextField(
                           autofocus: true,
                           keyboardType: TextInputType.number,
@@ -123,8 +124,8 @@ class _NetSetState extends State<NetSet> {
                               color: Color.fromARGB(255, 5, 0, 0),
                               fontSize: 14)),
                       SizedBox(
-                        height: 25,
-                        width: 150,
+                        height: 50.sp,
+                        width: 300.sp,
                         child: TextField(
                           autofocus: true,
                           keyboardType: TextInputType.number,
@@ -141,24 +142,21 @@ class _NetSetState extends State<NetSet> {
                   ),
                 ),
 
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Container(
-                        margin:const EdgeInsets.only(right: 8),
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          child: const Text('提交'),
-                        ),
-                      ),
-                      ElevatedButton(
-                        style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.all(Colors.red)),
-                        onPressed: () {},
-                        child: const Text('取消'),
-                      ),
-                    ])
+                Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                  Container(
+                    margin: const EdgeInsets.only(right: 8),
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      child: const Text('提交'),
+                    ),
+                  ),
+                  ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(Colors.red)),
+                    onPressed: () {},
+                    child: const Text('取消'),
+                  ),
+                ])
               ],
             ),
           ),

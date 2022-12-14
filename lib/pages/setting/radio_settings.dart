@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/widget/custom_app_bar.dart';
 
 /// Radio设置
@@ -20,13 +21,13 @@ class _RadioSettingsState extends State<RadioSettings> {
       appBar: customAppbar(context: context, title: 'Radio设置'),
       body: SingleChildScrollView(
         child: Container(
-            padding: const EdgeInsets.all(10),
-            height: 780,
+            padding: EdgeInsets.all(20.sp),
+            height: 1340.sp,
             decoration:
                 const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
             child: Column(children: [
-              const SizedBox(
-                height: 40,
+              SizedBox(
+                height: 40.sp,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -35,15 +36,15 @@ class _RadioSettingsState extends State<RadioSettings> {
                   Text('SIM卡未准备完成', style: TextStyle(fontSize: 20))
                 ],
               ),
-              const SizedBox(
-                height: 20,
+              SizedBox(
+                height: 40.sp,
               ),
               Row(children: [
                 const Flexible(
                   child: Text('连接方式', style: TextStyle(fontSize: 20)),
                 ),
-                const SizedBox(
-                  width: 120,
+                SizedBox(
+                  width: 120.sp,
                 ),
                 Radio(
                   // 按钮的值
@@ -58,8 +59,8 @@ class _RadioSettingsState extends State<RadioSettings> {
                   groupValue: sex,
                 ),
                 const Text("手动"),
-                const SizedBox(
-                  width: 20,
+                SizedBox(
+                  width: 20.sp,
                 ),
                 Radio(
                   value: 2,
@@ -72,8 +73,8 @@ class _RadioSettingsState extends State<RadioSettings> {
                 ),
                 const Text("自动"),
               ]),
-              const SizedBox(
-                height: 30,
+              SizedBox(
+                height: 40.sp,
               ),
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 ElevatedButton(
@@ -88,14 +89,14 @@ class _RadioSettingsState extends State<RadioSettings> {
                 ),
               ]),
               Column(children: [
-                const SizedBox(
-                  height: 40,
+                SizedBox(
+                  height: 50.sp,
                 ),
                 Row(children: const [
                   TitleWidger(title: '4G状态'),
                 ]),
-                const SizedBox(
-                  height: 10,
+                SizedBox(
+                  height: 20.sp,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -104,8 +105,8 @@ class _RadioSettingsState extends State<RadioSettings> {
                     Text('- - MHZ', style: TextStyle(fontSize: 16))
                   ],
                 ),
-                const SizedBox(
-                  height: 10,
+                SizedBox(
+                  height: 20.sp,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -114,8 +115,8 @@ class _RadioSettingsState extends State<RadioSettings> {
                     Text('- - MHZ', style: TextStyle(fontSize: 16))
                   ],
                 ),
-                const SizedBox(
-                  height: 10,
+                SizedBox(
+                  height: 20.sp,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -124,8 +125,8 @@ class _RadioSettingsState extends State<RadioSettings> {
                     Text('- - ', style: TextStyle(fontSize: 16))
                   ],
                 ),
-                const SizedBox(
-                  height: 10,
+                SizedBox(
+                  height: 20.sp,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -134,8 +135,8 @@ class _RadioSettingsState extends State<RadioSettings> {
                     Text('- - MHZ', style: TextStyle(fontSize: 16))
                   ],
                 ),
-                const SizedBox(
-                  height: 10,
+                SizedBox(
+                  height: 20.sp,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -144,8 +145,8 @@ class _RadioSettingsState extends State<RadioSettings> {
                     Text('- - dBm', style: TextStyle(fontSize: 16))
                   ],
                 ),
-                const SizedBox(
-                  height: 10,
+                SizedBox(
+                  height: 20.sp,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -154,8 +155,8 @@ class _RadioSettingsState extends State<RadioSettings> {
                     Text('- - dBm', style: TextStyle(fontSize: 16))
                   ],
                 ),
-                const SizedBox(
-                  height: 10,
+                SizedBox(
+                  height: 20.sp,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -164,8 +165,8 @@ class _RadioSettingsState extends State<RadioSettings> {
                     Text('- - dB', style: TextStyle(fontSize: 16))
                   ],
                 ),
-                const SizedBox(
-                  height: 10,
+                SizedBox(
+                  height: 20.sp,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -174,8 +175,8 @@ class _RadioSettingsState extends State<RadioSettings> {
                     Text('- - dB', style: TextStyle(fontSize: 16))
                   ],
                 ),
-                const SizedBox(
-                  height: 10,
+                SizedBox(
+                  height: 20.sp,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -184,8 +185,8 @@ class _RadioSettingsState extends State<RadioSettings> {
                     Text('- - dBm', style: TextStyle(fontSize: 16))
                   ],
                 ),
-                const SizedBox(
-                  height: 10,
+                SizedBox(
+                  height: 20.sp,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -194,8 +195,8 @@ class _RadioSettingsState extends State<RadioSettings> {
                     Text('- - ', style: TextStyle(fontSize: 16))
                   ],
                 ),
-                const SizedBox(
-                  height: 10,
+                SizedBox(
+                  height: 20.sp,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -204,8 +205,8 @@ class _RadioSettingsState extends State<RadioSettings> {
                     Text('- - ', style: TextStyle(fontSize: 16))
                   ],
                 ),
-                const SizedBox(
-                  height: 10,
+                SizedBox(
+                  height: 20.sp,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -214,8 +215,8 @@ class _RadioSettingsState extends State<RadioSettings> {
                     Text('- - MHZ', style: TextStyle(fontSize: 16))
                   ],
                 ),
-                const SizedBox(
-                  height: 10,
+                SizedBox(
+                  height: 20.sp,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -224,8 +225,8 @@ class _RadioSettingsState extends State<RadioSettings> {
                     Text('- - MHZ', style: TextStyle(fontSize: 16))
                   ],
                 ),
-                const SizedBox(
-                  height: 10,
+                SizedBox(
+                  height: 20.sp,
                 ),
               ])
             ])),

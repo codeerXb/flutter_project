@@ -23,12 +23,11 @@ class MESHItem extends StatelessWidget {
               value: CSSFilterMatrix().opacity(!isShow ? 0.3 : 1),
               child: Container(
                 decoration: const BoxDecoration(
-                  color: Colors.red,
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
                 clipBehavior: Clip.hardEdge,
-                height: 120.h,
-                width: 120.h,
+                height: 110.w,
+                width: 110.w,
                 margin: const EdgeInsets.all(5),
                 child: Image.network(
                     'https://img.redocn.com/sheying/20200324/shujiashangdeshuji_10870699.jpg',

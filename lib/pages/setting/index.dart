@@ -107,11 +107,6 @@ class _SettingState extends State<Setting> {
                       /// LAN设置
                       lanSettings(),
 
-                      /// 静态路由
-                      staticRoute(),
-
-                      /// 无线开关
-                      wirelessSwitch(),
                       const Divider(),
 
                       /// 以太网状态
@@ -438,27 +433,9 @@ class _SettingState extends State<Setting> {
         });
   }
 
-  /// 静态路由
-  Widget staticRoute() {
-    return CommonWidget.simpleWidgetWithMine(
-        title: '静态路由',
-        icon: const Icon(Icons.headset_mic_outlined,
-            color: Color.fromRGBO(95, 154, 255, 1)),
-        callBack: () {
-          Get.toNamed("/static_route");
-        });
-  }
 
-  /// 无线开关
-  Widget wirelessSwitch() {
-    return CommonWidget.simpleWidgetWithMine(
-        title: '无线开关',
-        icon: const Icon(Icons.headset_mic_outlined,
-            color: Color.fromRGBO(95, 154, 255, 1)),
-        callBack: () {
-          Get.toNamed("/wireless_switch");
-        });
-  }
+
+
 
   /// 以太网设置
   Widget netSet() {

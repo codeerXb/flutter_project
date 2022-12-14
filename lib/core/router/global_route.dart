@@ -27,8 +27,6 @@ import '../../pages/setting/dns_settings.dart';
 import '../../pages/setting/radio_settings.dart';
 import '../../pages/setting/pin_settings.dart';
 import '../../pages/setting/lan_settings.dart';
-import '../../pages/setting/static_route.dart';
-import '../../pages/setting/wireless_switch.dart';
 
 /// 路由
 class GlobalRouter {
@@ -114,14 +112,6 @@ class GlobalRouter {
     '/lan_settings': (BuildContext context, {Object? args}) =>
         const LanSettings(),
 
-    /// 静态路由
-    '/static_route': (BuildContext context, {Object? args}) =>
-        const StaticRoute(),
-
-    /// 无线开关
-    '/wireless_switch': (BuildContext context, {Object? args}) =>
-        const WirelessSwitch(),
-
     /// 以太网设置
     '/net_set': (BuildContext context, {Object? args}) => const NetSet(),
 
@@ -133,13 +123,15 @@ class GlobalRouter {
     
 
     /// 访客网络
-    '/visitor_net': (BuildContext context, {Object? args}) => const VisitorNet(),
+    '/visitor_net': (BuildContext context, {Object? args}) =>
+        const VisitorNet(),
 
     /// 专业设置
     '/major_set': (BuildContext context, {Object? args}) => const MajorSet(),
 
     /// WPS设置
     '/wps_set': (BuildContext context, {Object? args}) => const WpsSet(),
+
     /// 接入设备
     '/access_equipment': (BuildContext context, {Object? args}) =>
         const AccessEquipment(),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_template/pages/Ethernet/net_set.dart';
+import 'package:flutter_template/pages/odu/index.dart';
 import 'package:flutter_template/pages/setting/about_us.dart';
 import 'package:flutter_template/pages/setting/clear_cache.dart';
 import 'package:flutter_template/pages/setting/equ_info.dart';
@@ -126,6 +127,9 @@ class GlobalRouter {
     /// 接入设备
     '/access_equipment': (BuildContext context, {Object? args}) =>
         const AccessEquipment(),
+
+    /// 接入设备
+    '/odu': (BuildContext context, {Object? args}) => const ODU(),
   };
 
   static GlobalRouter? _singleton;

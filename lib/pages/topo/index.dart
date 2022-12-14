@@ -6,6 +6,7 @@ import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/utils/map_encode.dart';
 import 'package:flutter_template/pages/topo/equipment_datas.dart';
 import 'package:flutter_template/pages/topo/mesh_item.dart';
+import 'package:get/get.dart';
 
 import 'topo_data.dart';
 import 'topo_item.dart';
@@ -112,40 +113,46 @@ class _TopoState extends State<Topo> {
               ),
               Column(
                 children: [
-                  Stack(
-                    children: [
-                      Container(
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                        clipBehavior: Clip.hardEdge,
-                        height: 96.w,
-                        width: 96.w,
-                        margin: const EdgeInsets.all(5),
-                        child: Image.network(
-                            'https://img.redocn.com/sheying/20200324/shujiashangdeshuji_10870699.jpg',
-                            fit: BoxFit.cover),
-                      ),
-                      Positioned(
-                        right: 0,
-                        top: 0,
-                        child: Container(
+                  GestureDetector(
+                    onTap: (() {
+                      Get.toNamed("/odu");
+                    }),
+                    child: Stack(
+                      children: [
+                        Container(
                           decoration: const BoxDecoration(
-                            color: Color.fromARGB(255, 94, 164, 245),
-                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
                           ),
-                          height: 32.w,
-                          width: 32.w,
-                          child: Text(
-                            meshData.length.toString(),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 24.sp,
+                          clipBehavior: Clip.hardEdge,
+                          height: 96.w,
+                          width: 96.w,
+                          margin: const EdgeInsets.all(5),
+                          child: Image.network(
+                              'https://img.redocn.com/sheying/20200324/shujiashangdeshuji_10870699.jpg',
+                              fit: BoxFit.cover),
+                        ),
+                        Positioned(
+                          right: 0,
+                          top: 0,
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              color: Color.fromARGB(255, 94, 164, 245),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8)),
+                            ),
+                            height: 32.w,
+                            width: 32.w,
+                            child: Text(
+                              meshData.length.toString(),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 24.sp,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   Text(
                     'ODU',

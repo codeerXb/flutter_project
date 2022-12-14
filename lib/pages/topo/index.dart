@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/utils/map_encode.dart';
 import 'package:flutter_template/pages/topo/equipment_datas.dart';
@@ -30,13 +31,17 @@ class _TopoState extends State<Topo> {
       'param': '["OnlineDeviceTable"]',
       '_csrf_token': '91d75824-3c99-4d89-bb9b-88c209d48e3a'
     };
-    XHttp.get('${MapEncode.toEncode(data)}').then((res) {
+    XHttp.get(MapEncode.toEncode(data)).then((res) {
       print("\n==================  ==========================");
-      var d = json.decode(res.toString());
-      setState(() {
-        topoData = EquipmentDatas.fromJson(d);
-      });
-      print(topoData);
+      try {
+        var d = json.decode(res.toString());
+        setState(() {
+          topoData = EquipmentDatas.fromJson(d);
+        });
+      } on FormatException catch (e) {
+        print('The provided string is not valid JSON');
+        print(e);
+      }
     });
   }
 
@@ -222,22 +227,30 @@ class _TopoState extends State<Topo> {
                   fit: BoxFit.fill),
             ),
           ),
-          GridView.count(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            crossAxisCount: 4,
-            childAspectRatio: 1.0,
-            children: topoData.onlineDeviceTable!
-                .map(
-                  (e) => TopoItem(
-                    title: e.hostName!,
-                    isNative: false,
-                    isShow: true,
-                    topoData: e,
-                  ),
-                )
-                .toList(),
-          ),
+          if (topoData.onlineDeviceTable!.isNotEmpty)
+            GridView.count(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              crossAxisCount: 4,
+              childAspectRatio: 1.0,
+              children: topoData.onlineDeviceTable!
+                  .map(
+                    (e) => TopoItem(
+                      title: e.hostName!,
+                      isNative: false,
+                      isShow: true,
+                      topoData: e,
+                    ),
+                  )
+                  .toList(),
+            ),
+          if (!topoData.onlineDeviceTable!.isNotEmpty)
+            Center(
+              child: Container(
+                  margin: EdgeInsets.only(top: 50.sp),
+                  height: 100,
+                  child: const Text('暂无设备连接')),
+            )
         ],
       ),
     );

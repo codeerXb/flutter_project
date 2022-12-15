@@ -8,6 +8,8 @@ import 'package:dio/adapter.dart';
 
 class XHttp {
   XHttp._internal();
+  // 定义token
+  static const String token = 'b73ef7f1-38eb-40e6-81f8-94b95e3a1278';
 
   ///网络请求配置
   static final Dio dio = Dio(BaseOptions(
@@ -36,7 +38,7 @@ class XHttp {
     if (params != null) {
       response = await dio.get(url, queryParameters: {
         ...params,
-        '_csrf_token': '0b21f271-494f-4087-9135-79b968e3efc3'
+        '_csrf_token': token,
       });
     } else {
       response = await dio.get(url);
@@ -48,9 +50,8 @@ class XHttp {
   static Future post(String url,
       {Map<String, dynamic>? params, Map<String, dynamic>? data}) async {
     Response response = await dio.post(url,
-        queryParameters: params != null
-            ? {...params, '_csrf_token': '0b21f271-494f-4087-9135-79b968e3efc3'}
-            : null,
+        queryParameters:
+            params != null ? {...params, '_csrf_token': token} : null,
         data: data);
     return response.data;
   }

@@ -47,16 +47,12 @@ class _LoginState extends State<Login> {
                   children: <Widget>[
                     /// logo
                     Container(
-                      clipBehavior: Clip.hardEdge,
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(68)),
-                      ),
                       margin: EdgeInsets.only(bottom: 20.w),
                       width: 136.w,
                       height: 136.w,
                       child: Image.asset(
                         'assets/images/logo.png',
-                        fit: BoxFit.fill,
+                        // fit: BoxFit.fill,
                       ),
                     ),
                     Text(

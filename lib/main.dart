@@ -1,5 +1,6 @@
 import 'package:amap_location_fluttify/amap_location_fluttify.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_template/config/base_config.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -17,10 +18,13 @@ Future<void> main() async {
   await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
   // 初始化请求过滤器
   XHttp.init();
-  // 初始化定位 
+  // 初始化定位
   await AmapLocation.instance.updatePrivacyShow(true);
   await AmapLocation.instance.updatePrivacyAgree(true);
   await AmapLocation.instance.init(iosKey: BaseConfig.gdIosKey);
+  //顶部状态栏透明
+  SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
   runApp(MyApp());
 }
 
@@ -44,6 +48,6 @@ class MyApp extends StatelessWidget {
             initialRoute: '/',
             onGenerateRoute: router.getRoutes,
           ));
-    });
+        });
   }
 }

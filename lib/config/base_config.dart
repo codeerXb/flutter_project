@@ -1,7 +1,10 @@
 /// 基础信息配置
 class BaseConfig {
+  // 定义token
+  static const String token = '9016f7cb-4f01-4474-a3c9-39776bc9add3';
+
   /// 服务器路径
-  static const baseUrl = "https://172.16.20.68/data.html?";
+  static const baseUrl = "https://172.16.20.68/data.html";
 
   /// 版本更新路径
   static const updateUrl = "$baseUrl/";
@@ -17,6 +20,6 @@ class BaseConfig {
 
   static const Map<String, dynamic> header = {
     "Cookie":
-        '-goahead-session-=::webs.session::6abbd4faffd74f5cc7418a60d439a715; token=06b642a7-b698-40c7-a3c7-a12c17c5694a'
+        '-goahead-session-=::webs.session::dd962ca6bbad8907b142f4bde5c6d765; token=$token'
   };
 }

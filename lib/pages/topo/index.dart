@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
-import 'package:flutter_template/core/utils/map_encode.dart';
 import 'package:flutter_template/pages/topo/equipment_datas.dart';
 import 'package:flutter_template/pages/topo/mesh_item.dart';
 import 'package:get/get.dart';
@@ -31,9 +30,8 @@ class _TopoState extends State<Topo> {
     Map<String, dynamic> data = {
       'method': 'tab_dump',
       'param': '["OnlineDeviceTable"]',
-      '_csrf_token': '346fd6ee-7b84-4a82-b37b-6b89ff46c2e1'
     };
-    XHttp.get(MapEncode.toEncode(data)).then((res) {
+    XHttp.get('', data).then((res) {
       print("\n==================  ==========================");
       try {
         var d = json.decode(res.toString());

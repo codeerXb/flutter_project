@@ -19,7 +19,6 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-
   final GlobalKey _formKey = GlobalKey<FormState>();
   // 点击空白  关闭键盘 时传的一个对象
   FocusNode blankNode = FocusNode();
@@ -33,62 +32,81 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: customAppbar(borderBottom: false),
-      body: InkWell(
-        onTap: () => closeKeyboard(context),
-        child: SingleChildScrollView(
-          child: Container(
-            color: Colors.white,
-            padding: EdgeInsets.only(left: 70.w, right: 70.w),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: <Widget>[
-                  /// logo
-                  Container(
-                    margin: EdgeInsets.only(bottom: 40.w),
-                    width: 500.w,
-                    height: 400.w,
-                    child: Image.asset(
-                      'assets/images/logo.png',
-                      fit: BoxFit.fill,
+        resizeToAvoidBottomInset: false,
+        appBar: customAppbar(borderBottom: false),
+        body: InkWell(
+          onTap: () => closeKeyboard(context),
+          child: SingleChildScrollView(
+            child: Container(
+              height: 1.sh,
+              color: Colors.white,
+              padding: EdgeInsets.only(left: 70.w, right: 70.w),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: <Widget>[
+                    /// logo
+                    Container(
+                      clipBehavior: Clip.hardEdge,
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(68)),
+                      ),
+                      margin: EdgeInsets.only(bottom: 20.w),
+                      width: 136.w,
+                      height: 136.w,
+                      child: Image.asset(
+                        'assets/images/logo.png',
+                        fit: BoxFit.fill,
+                      ),
                     ),
-                  ),
-                  /// 账号
-                  buildAccountTextField(),
-                  /// 密码
-                  buildPasswordTextField(),
-                  /// 登录
-                  buildLoginButton(),
-                  /// 协议
-                  Container(
-                    margin: EdgeInsets.only(top: 30.w),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        const Text(
-                          '点击登录，即表示以阅读并同意',
-                          style: TextStyle(
-                              fontSize: 12, color: Color.fromRGBO(153, 153, 153, 1)),
-                        ),
-                        InkWell(
-                            child: const Text(
-                              '《会员服务条款》',
-                              style: TextStyle(color: Color.fromRGBO(85, 122, 157, 1), fontSize: 12),
-                            ),
-                            onTap: () =>
-                                Get.toNamed("/user_agreement")
-                        )
-                      ],
+                    Text(
+                      'CPE管理平台',
+                      style: TextStyle(fontSize: 48.sp),
                     ),
-                  )
-                ],
-              ),),
+                    Text(
+                      '路由器数据管理平台',
+                      style: TextStyle(
+                          fontSize: 28.sp, color: const Color(0xFF828095)),
+                    ),
+
+                    /// 账号
+                    // buildAccountTextField(),
+
+                    /// 密码
+                    buildPasswordTextField(),
+                    Padding(padding: EdgeInsets.only(top: 100.h)),
+
+                    /// 登录
+                    buildLoginButton(),
+
+                    /// 协议
+                    Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          const Text(
+                            '点击登录，即表示以阅读并同意',
+                            style: TextStyle(
+                                fontSize: 12,
+                                color: Color.fromRGBO(153, 153, 153, 1)),
+                          ),
+                          InkWell(
+                              child: const Text(
+                                '《会员服务条款》',
+                                style: TextStyle(
+                                    color: Color.fromRGBO(85, 122, 157, 1),
+                                    fontSize: 12),
+                              ),
+                              onTap: () => Get.toNamed("/user_agreement"))
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
           ),
-        ),
-      )
-    );
+        ));
   }
 
   ///账号
@@ -98,7 +116,9 @@ class _LoginState extends State<Login> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("账号",style: TextStyle(fontSize: 32.sp, color: const Color(0xff737A83))),
+          Text("账号",
+              style:
+                  TextStyle(fontSize: 32.sp, color: const Color(0xff737A83))),
           Container(
             height: 90.w,
             padding: EdgeInsets.only(left: 40.w),
@@ -106,23 +126,24 @@ class _LoginState extends State<Login> {
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10.w),
                 color: const Color(0xffEEEFF2),
-                border: Border.all(color: _accountBorderColor,width: 1.w)
-            ),
+                border: Border.all(color: _accountBorderColor, width: 1.w)),
             child: TextFormField(
                 initialValue: _account,
-                style: TextStyle(fontSize: 32.sp, color: const Color(0xff051220)),
+                style:
+                    TextStyle(fontSize: 32.sp, color: const Color(0xff051220)),
                 decoration: InputDecoration(
                   // 表单提示信息
                   hintText: "请输入账号",
-                  hintStyle: TextStyle(fontSize: 32.sp, color: const Color(0xff737A83)),
+                  hintStyle: TextStyle(
+                      fontSize: 32.sp, color: const Color(0xff737A83)),
                   // 取消自带的下边框
                   border: InputBorder.none,
                 ),
                 onSaved: (String? value) => {
-                  _account = value! ,
-                },
+                      _account = value!,
+                    },
                 onChanged: (String value) => _account = value,
-                onTap: (){
+                onTap: () {
                   setState(() {
                     _passwordBorderColor = Colors.white;
                     _accountBorderColor = const Color(0xff2692F0);
@@ -130,8 +151,7 @@ class _LoginState extends State<Login> {
                 },
                 inputFormatters: [
                   LengthLimitingTextInputFormatter(50),
-                ]
-            ),
+                ]),
           ),
         ],
       ),
@@ -145,57 +165,60 @@ class _LoginState extends State<Login> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("密码",style: TextStyle(fontSize: 32.sp, color: const Color(0xff737A83)),),
-          Container(
-              height: 90.w,
-              padding: EdgeInsets.only(left: 40.w),
-              margin: EdgeInsets.only(top: 24.w),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.w),
-                  color: const Color(0xffEEEFF2),
-                  border: Border.all(color: _passwordBorderColor,width: 1.w)
-              ),
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 450.w,
-                    child: TextFormField(
-                        initialValue: _password,
-                        style: TextStyle(fontSize: 32.sp, color: const Color(0xff051220)),
-                        decoration: InputDecoration(
-                          // 表单提示信息
-                          hintText: "请输入密码",
-                          hintStyle: TextStyle(fontSize: 32.sp, color: const Color(0xff737A83)),
-                          // 取消自带的下边框
-                          border: InputBorder.none,
-                        ),
-                        obscureText: _isObscure,
-                        onSaved: (String? value) => _password = value!,
-                        onChanged: (String value) => _password = value,
-                        onTap: (){
-                          setState(() {
-                            _accountBorderColor = Colors.white;
-                            _passwordBorderColor = const Color(0xff2692F0);
-                          });
-                        },
-                        inputFormatters: [
-                          LengthLimitingTextInputFormatter(50),
-                        ]
-                    ),
-                  ),
-                  const Expanded(child: Text("")),
-                  IconButton(
-                      iconSize: 30.w,
-                      icon: Icon(Icons.remove_red_eye,color: _eyeColor,),
-                      onPressed: () {
+          // Text(
+          //   "密码",
+          //   style: TextStyle(fontSize: 32.sp, color: const Color(0xff737A83)),
+          // ),
+          Row(
+            children: [
+              Container(
+                decoration: const BoxDecoration(
+                  border: Border(
+                      bottom: BorderSide(color: Color(0XFF302F4F), width: 0.0)),
+                ),
+                child: SizedBox(
+                  width: 1.sw - 140.w,
+                  child: TextFormField(
+                      initialValue: _password,
+                      style: TextStyle(
+                          fontSize: 32.sp, color: const Color(0xff051220)),
+                      decoration: InputDecoration(
+                        icon: const Icon(Icons.lock),
+                        // 表单提示信息
+                        hintText: "请输入密码",
+                        hintStyle: TextStyle(
+                            fontSize: 32.sp, color: const Color(0xff737A83)),
+                        // 取消自带的下边框
+                        border: InputBorder.none,
+                      ),
+                      obscureText: _isObscure,
+                      onSaved: (String? value) => _password = value!,
+                      onChanged: (String value) => _password = value,
+                      onTap: () {
                         setState(() {
-                          _eyeColor = _isObscure ? Colors.blue : Colors.grey;
-                          _isObscure = !_isObscure;
+                          _accountBorderColor = Colors.white;
+                          _passwordBorderColor = const Color(0xff2692F0);
                         });
-                      }
-                  )
-                ],
-              )
+                      },
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(50),
+                      ]),
+                ),
+              ),
+              // const Expanded(child: Text("")),
+              // IconButton(
+              //     iconSize: 30.w,
+              //     icon: Icon(
+              //       Icons.remove_red_eye,
+              //       color: _eyeColor,
+              //     ),
+              //     onPressed: () {
+              //       setState(() {
+              //         _eyeColor = _isObscure ? Colors.blue : Colors.grey;
+              //         _isObscure = !_isObscure;
+              //       });
+              //     })
+            ],
           ),
         ],
       ),
@@ -206,11 +229,14 @@ class _LoginState extends State<Login> {
   SizedBox buildLoginButton() {
     return SizedBox(
       width: 630.w,
-      child: CommonWidget.buttonWidget(title: '登录', padding: const EdgeInsets.only(left: 0, right: 0), callBack: (){
-        if ((_formKey.currentState as FormState).validate()) {
-          onSubmit(context);
-        }
-      }),
+      child: CommonWidget.buttonWidget(
+          title: '登录',
+          padding: const EdgeInsets.only(left: 0, right: 0),
+          callBack: () {
+            if ((_formKey.currentState as FormState).validate()) {
+              onSubmit(context);
+            }
+          }),
     );
   }
 
@@ -220,18 +246,29 @@ class _LoginState extends State<Login> {
   }
 
   ///执行提交方法
-  void onSubmit(BuildContext context){
+  void onSubmit(BuildContext context) {
     closeKeyboard(context);
-    if(_account.trim().isEmpty){
+    if (_account.trim().isEmpty) {
       ToastUtils.toast("账号不能为空");
-    } else if(_password.trim().isEmpty) {
+    } else if (_password.trim().isEmpty) {
       ToastUtils.toast("密码不能为空");
     } else {
-      Map<String, dynamic> data = {'username': _account.trim(),'password': base64Encode(utf8.encode(_password.trim().trim())), 'rememberMe': 'true','ismoble': 'ismoble'};
+      Map<String, dynamic> data = {
+        'username': _account.trim(),
+        'password': base64Encode(utf8.encode(_password.trim().trim())),
+        'rememberMe': 'true',
+        'ismoble': 'ismoble'
+      };
       List<String> loginInfo;
-      if(data['username'] == 'admin' && data['password'] == base64Encode(utf8.encode('admin123'))){
-        loginInfo = [data['username'], data['password'], '管理员', 'http://c.hiphotos.baidu.com/image/pic/item/9c16fdfaaf51f3de1e296fa390eef01f3b29795a.jpg'];
-        sharedAddAndUpdate("loginInfo",List, loginInfo); //把登录信息保存到本地
+      if (data['username'] == 'admin' &&
+          data['password'] == base64Encode(utf8.encode('admin123'))) {
+        loginInfo = [
+          data['username'],
+          data['password'],
+          '管理员',
+          'http://c.hiphotos.baidu.com/image/pic/item/9c16fdfaaf51f3de1e296fa390eef01f3b29795a.jpg'
+        ];
+        sharedAddAndUpdate("loginInfo", List, loginInfo); //把登录信息保存到本地
         Get.offNamed("/home");
       } else {
         ToastUtils.toast('用户名或密码错误');

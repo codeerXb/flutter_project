@@ -5,7 +5,6 @@ import 'package:flutter_template/core/widget/common_picker.dart';
 import '../../core/widget/custom_app_bar.dart';
 
 /// 专业设置
-
 class MajorSet extends StatefulWidget {
   const MajorSet({Key? key}) : super(key: key);
 

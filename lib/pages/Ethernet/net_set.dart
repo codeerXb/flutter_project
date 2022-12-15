@@ -35,14 +35,14 @@ class _NetSetState extends State<NetSet> {
                 InfoBox(
                     boxCotainer: Column(
                   children: [
-                    //仅以太网
+                    //连接模式
                     BottomLine(
                       rowtem: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                           Text('连接模式',
+                          Text('连接模式',
                               style: TextStyle(
-                                  color:const Color.fromARGB(255, 5, 0, 0),
+                                  color: const Color.fromARGB(255, 5, 0, 0),
                                   fontSize: 28.sp)),
                           GestureDetector(
                             onTap: () {
@@ -89,9 +89,9 @@ class _NetSetState extends State<NetSet> {
                       rowtem: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                           Text('仅以太网',
+                          Text('仅以太网',
                               style: TextStyle(
-                                  color:const Color.fromARGB(255, 5, 0, 0),
+                                  color: const Color.fromARGB(255, 5, 0, 0),
                                   fontSize: 28.sp)),
                           Row(
                             children: [
@@ -119,46 +119,49 @@ class _NetSetState extends State<NetSet> {
                                   color: const Color.fromARGB(255, 5, 0, 0),
                                   fontSize: 28.sp)),
                           SizedBox(
-                            height: 50.h,
-                            width: 100.w,
-                            child: TextField(
-                              keyboardType: TextInputType.number,
-                              textAlign: TextAlign.center,
-                              cursorColor: Theme.of(context).primaryColor,
+                            width: 300.w,
+                            child: TextFormField(
+                              style: TextStyle(
+                                  fontSize: 26.sp,
+                                  color: const Color(0xff051220)),
                               decoration: InputDecoration(
-                                  border: const OutlineInputBorder(),
-                                  counterText: '',
-                                  hintStyle: TextStyle(
-                                      color: Colors.black, fontSize: 20.0.sp)),
+                                hintText: "输入MTU",
+                                hintStyle: TextStyle(
+                                    fontSize: 26.sp,
+                                    color: const Color(0xff737A83)),
+                                border: InputBorder.none,
+                              ),
                             ),
                           ),
                         ],
                       ),
                     ),
-
                     //检测服务器
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('检测服务器',
-                            style: TextStyle(
-                                color: const Color.fromARGB(255, 5, 0, 0),
-                                fontSize: 28.sp)),
-                        SizedBox(
-                          height: 50.h,
-                          width: 100.w,
-                          child: TextField(
-                            keyboardType: TextInputType.number,
-                            textAlign: TextAlign.center,
-                            cursorColor: Theme.of(context).primaryColor,
-                            decoration: InputDecoration(
-                                border: const OutlineInputBorder(),
-                                counterText: '',
+                    BottomLine(
+                      rowtem: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('检测服务器',
+                              style: TextStyle(
+                                  color: const Color.fromARGB(255, 5, 0, 0),
+                                  fontSize: 28.sp)),
+                          SizedBox(
+                            width: 300.w,
+                            child: TextFormField(
+                              style: TextStyle(
+                                  fontSize: 26.sp,
+                                  color: const Color(0xff051220)),
+                              decoration: InputDecoration(
+                                hintText: "输入检测服务器",
                                 hintStyle: TextStyle(
-                                    color: Colors.black, fontSize: 20.0.sp)),
+                                    fontSize: 26.sp,
+                                    color: const Color(0xff737A83)),
+                                border: InputBorder.none,
+                              ),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ],
                 )),
@@ -185,4 +188,3 @@ class _NetSetState extends State<NetSet> {
         ));
   }
 }
-

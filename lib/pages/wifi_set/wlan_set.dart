@@ -367,8 +367,76 @@ class _WlanSetState extends State<WlanSet> {
                 InfoBox(
                     boxCotainer: Column(
                   children: [
+                    //SSID
+                    BottomLine(
+                      rowtem: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('SSID',
+                              style: TextStyle(
+                                  color: const Color.fromARGB(255, 5, 0, 0),
+                                  fontSize: 28.sp)),
+                           SizedBox(
+                            width: 400.w,
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  width: 300.w,
+                                  child: TextFormField(
+                                    style: TextStyle(
+                                        fontSize: 26.sp,
+                                        color: const Color(0xff051220)),
+                                    decoration: InputDecoration(
+                                      hintText: "输入SSID",
+                                      hintStyle: TextStyle(
+                                          fontSize: 26.sp,
+                                          color: const Color(0xff737A83)),
+                                      border: InputBorder.none,
+                                    ),
+                                  ),
+                                ),
+                                const Expanded(child: Text("")),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     //最大设备数
-
+                    BottomLine(
+                      rowtem: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('最大设备数',
+                              style: TextStyle(
+                                  color: const Color.fromARGB(255, 5, 0, 0),
+                                  fontSize: 28.sp)),
+                             SizedBox(
+                            width: 400.w,
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  width: 300.w,
+                                  child: TextFormField(
+                                    style: TextStyle(
+                                        fontSize: 26.sp,
+                                        color: const Color(0xff051220)),
+                                    decoration: InputDecoration(
+                                      hintText: "最大设备数",
+                                      hintStyle: TextStyle(
+                                          fontSize: 26.sp,
+                                          color: const Color(0xff737A83)),
+                                      border: InputBorder.none,
+                                    ),
+                                  ),
+                                ),
+                                const Expanded(child: Text("")),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     //隐藏SSID网络
                     BottomLine(
                       rowtem: Row(
@@ -475,7 +543,7 @@ class _WlanSetState extends State<WlanSet> {
                       rowtem: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('安全',
+                          Text('WPA加密',
                               style: TextStyle(
                                   color: const Color.fromARGB(255, 5, 0, 0),
                                   fontSize: 28.sp)),
@@ -524,6 +592,42 @@ class _WlanSetState extends State<WlanSet> {
                       ),
                     ),
                     //密码
+                    BottomLine(
+                      rowtem: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "密码",
+                            style: TextStyle(
+                                color: const Color.fromARGB(255, 5, 0, 0),
+                                fontSize: 28.sp),
+                          ),
+                          SizedBox(
+                            width: 400.w,
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  width: 300.w,
+                                  child: TextFormField(
+                                    style: TextStyle(
+                                        fontSize: 26.sp,
+                                        color: const Color(0xff051220)),
+                                    decoration: InputDecoration(
+                                      hintText: "输入新密码",
+                                      hintStyle: TextStyle(
+                                          fontSize: 26.sp,
+                                          color: const Color(0xff737A83)),
+                                      border: InputBorder.none,
+                                    ),
+                                  ),
+                                ),
+                                const Expanded(child: Text("")),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 )),
               ],

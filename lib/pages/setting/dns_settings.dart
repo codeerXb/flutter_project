@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/widget/custom_app_bar.dart';
 import '../../core/widget/otp_input.dart';
 
@@ -21,8 +22,8 @@ class _DnsSettingsState extends State<DnsSettings> {
       appBar: customAppbar(context: context, title: 'DNS设置'),
       body: SingleChildScrollView(
         child: Container(
-          padding: const EdgeInsets.all(10),
-          height: 780,
+          padding: EdgeInsets.all(20.sp),
+          height: 1340.sp,
           decoration:
               const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
           child: Column(
@@ -37,7 +38,7 @@ class _DnsSettingsState extends State<DnsSettings> {
                 ),
               ]),
               Column(children: [
-                const Padding(padding: EdgeInsets.only(top: 60)),
+                Padding(padding: EdgeInsets.only(top: 120.sp)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
@@ -48,7 +49,7 @@ class _DnsSettingsState extends State<DnsSettings> {
                     OtpInput(_fieldOne3, false),
                   ],
                 ),
-                const Padding(padding: EdgeInsets.only(top: 50)),
+                Padding(padding: EdgeInsets.only(top: 100.sp)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
@@ -60,7 +61,7 @@ class _DnsSettingsState extends State<DnsSettings> {
                   ],
                 ),
               ]),
-              const Padding(padding: EdgeInsets.only(top: 100)),
+              Padding(padding: EdgeInsets.only(top: 200.sp)),
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 ElevatedButton(
                   onPressed: () {},

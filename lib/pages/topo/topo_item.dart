@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:css_filter/css_filter.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/core/widget/common_picker.dart';
 import 'package:flutter_template/pages/topo/equipment_datas.dart';
 import 'package:get/get.dart';
 
-class TopoItem extends StatelessWidget {
+class TopoItem extends StatefulWidget {
   final String title;
   final bool isShow;
   final bool isNative;
@@ -18,32 +19,46 @@ class TopoItem extends StatelessWidget {
       : super(key: key);
 
   @override
+  State<TopoItem> createState() => _TopoItemState();
+}
+
+class _TopoItemState extends State<TopoItem> {
+  // int value = 0;
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Get.toNamed("/access_equipment", arguments: topoData);
+        Get.toNamed("/access_equipment", arguments: widget.topoData);
+        // var result = CommonPicker.showPicker(
+        //   context: context,
+        //   options: ['高楼层', '中楼层', '低楼层'],
+        //   value: value,
+        // );
+        // result?.then((selectedValue) => {
+        //       if (value != selectedValue && selectedValue != null)
+        //         {setState(() => value = selectedValue!)}
+        //     });
       },
       child: Column(
         children: [
           Stack(
             children: [
               CSSFilter.apply(
-                value: CSSFilterMatrix().opacity(!isShow ? 0.3 : 1),
+                value: CSSFilterMatrix().opacity(!widget.isShow ? 0.3 : 1),
                 child: Container(
                   decoration: const BoxDecoration(
-                    color: Colors.red,
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
                   clipBehavior: Clip.hardEdge,
-                  height: 100.h,
-                  width: 100.w,
+                  height: 120.w,
+                  width: 120.w,
                   margin: const EdgeInsets.all(5),
                   child: Image.network(
                       'https://z4a.net/images/2022/12/13/20221213-175814.jpg',
                       fit: BoxFit.cover),
                 ),
               ),
-              if (isNative)
+              if (widget.isNative)
                 Positioned(
                   right: 5,
                   top: 5,
@@ -68,7 +83,7 @@ class TopoItem extends StatelessWidget {
           ),
           Flexible(
             child: Text(
-              title,
+              widget.title,
               style: TextStyle(fontSize: 22.sp),
               overflow: TextOverflow.ellipsis,
             ),

@@ -5,6 +5,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/utils/map_encode.dart';
 import 'package:flutter_template/pages/topo/equipment_datas.dart';
+import 'package:flutter_template/pages/topo/mesh_item.dart';
+import 'package:get/get.dart';
 
 import 'topo_data.dart';
 import 'topo_item.dart';
@@ -29,7 +31,7 @@ class _TopoState extends State<Topo> {
     Map<String, dynamic> data = {
       'method': 'tab_dump',
       'param': '["OnlineDeviceTable"]',
-      '_csrf_token': '91d75824-3c99-4d89-bb9b-88c209d48e3a'
+      '_csrf_token': '346fd6ee-7b84-4a82-b37b-6b89ff46c2e1'
     };
     XHttp.get(MapEncode.toEncode(data)).then((res) {
       print("\n==================  ==========================");
@@ -76,24 +78,24 @@ class _TopoState extends State<Topo> {
               Column(
                 children: [
                   SizedBox(
-                    height: 48,
-                    width: 48,
+                    height: 96.w,
+                    width: 96.w,
                     // margin: const EdgeInsets.only(top: 20, bottom: 5),
                     child: ClipOval(
                         child: Image.network(
                             "http://imgsrc.baidu.com/forum/w=580/sign=ae2a4e35ba19ebc4c0787691b226cf79/5e13af1c8701a18b50cd631f972f07082938fe80.jpg",
                             fit: BoxFit.cover)),
                   ),
-                  const Text(
+                  Text(
                     'Internet',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 12,
+                      fontSize: 24.sp,
                     ),
                   ),
                   Container(
-                    height: 46,
-                    width: 12,
+                    height: 92.w,
+                    width: 24.w,
                     margin: const EdgeInsets.all(5),
                     child: Image.network(
                         'https://z4a.net/images/2022/12/06/shu.jpg',
@@ -102,8 +104,8 @@ class _TopoState extends State<Topo> {
                 ],
               ),
               Container(
-                height: 28,
-                width: 100,
+                height: 56.w,
+                width: 200.w,
                 margin: const EdgeInsets.all(5),
                 child: Image.network(
                     'https://z4a.net/images/2022/12/12/odu.jpg',
@@ -111,52 +113,58 @@ class _TopoState extends State<Topo> {
               ),
               Column(
                 children: [
-                  Stack(
-                    children: [
-                      Container(
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                        clipBehavior: Clip.hardEdge,
-                        height: 48,
-                        width: 48,
-                        margin: const EdgeInsets.all(5),
-                        child: Image.network(
-                            'https://img.redocn.com/sheying/20200324/shujiashangdeshuji_10870699.jpg',
-                            fit: BoxFit.cover),
-                      ),
-                      Positioned(
-                        right: 0,
-                        top: 0,
-                        child: Container(
+                  GestureDetector(
+                    onTap: (() {
+                      Get.toNamed("/odu");
+                    }),
+                    child: Stack(
+                      children: [
+                        Container(
                           decoration: const BoxDecoration(
-                            color: Color.fromARGB(255, 94, 164, 245),
-                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
                           ),
-                          height: 16,
-                          width: 16,
-                          child: Text(
-                            meshData.length.toString(),
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontSize: 12,
+                          clipBehavior: Clip.hardEdge,
+                          height: 96.w,
+                          width: 96.w,
+                          margin: const EdgeInsets.all(5),
+                          child: Image.network(
+                              'https://img.redocn.com/sheying/20200324/shujiashangdeshuji_10870699.jpg',
+                              fit: BoxFit.cover),
+                        ),
+                        Positioned(
+                          right: 0,
+                          top: 0,
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              color: Color.fromARGB(255, 94, 164, 245),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8)),
+                            ),
+                            height: 32.w,
+                            width: 32.w,
+                            child: Text(
+                              meshData.length.toString(),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 24.sp,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                  const Text(
+                  Text(
                     'ODU',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 12,
+                      fontSize: 24.sp,
                     ),
                   ),
                   Center(
                     child: Container(
-                      height: 38,
-                      width: 12,
+                      height: 76.w,
+                      width: 24.w,
                       margin: const EdgeInsets.all(5),
                       child: Image.network(
                           'https://z4a.net/images/2022/12/06/shu.jpg',
@@ -179,8 +187,8 @@ class _TopoState extends State<Topo> {
               children: [
                 Center(
                   child: Container(
-                    height: 65,
-                    width: 65,
+                    height: 130.w,
+                    width: 130.w,
                     margin: const EdgeInsets.all(5),
                     child: Image.network(
                         'https://z4a.net/images/2022/12/12/wifi.jpg',
@@ -195,7 +203,7 @@ class _TopoState extends State<Topo> {
                   childAspectRatio: 1.0,
                   children: meshData
                       .map(
-                        (e) => TopoItem(
+                        (e) => MESHItem(
                           title: e.title,
                           isNative: e.isNative,
                           isShow: e.isShow,
@@ -206,23 +214,23 @@ class _TopoState extends State<Topo> {
               ],
             ),
           ),
-          const Center(
+          Center(
             child: Text(
               'MESH组网',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 12,
+                fontSize: 24.sp,
               ),
             ),
           ),
           Center(
             child: Container(
-              height: 48,
+              height: 96.w,
               width: MediaQuery.of(context).size.width - 74,
               margin:
                   const EdgeInsets.only(top: 5, bottom: 5, left: 37, right: 37),
               child: Image.network('https://z4a.net/images/2022/12/06/22.jpg',
-                  height: 48,
+                  height: 96.w,
                   width: MediaQuery.of(context).size.width - 74,
                   fit: BoxFit.fill),
             ),
@@ -247,8 +255,8 @@ class _TopoState extends State<Topo> {
           if (!topoData.onlineDeviceTable!.isNotEmpty)
             Center(
               child: Container(
-                  margin: EdgeInsets.only(top: 50.sp),
-                  height: 100,
+                  margin: EdgeInsets.only(top: 100.sp),
+                  height: 200.w,
                   child: const Text('暂无设备连接')),
             )
         ],

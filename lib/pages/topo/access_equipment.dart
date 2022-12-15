@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/custom_app_bar.dart';
-import 'package:flutter_template/pages/setting/equ_info.dart';
 import 'package:flutter_template/pages/topo/equipment_datas.dart';
 import 'package:get/get.dart';
 

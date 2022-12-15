@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 //底部线
 class BottomLine extends StatelessWidget {
@@ -9,9 +10,9 @@ class BottomLine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 30,
-      padding: const EdgeInsets.only(bottom: 6),
-      margin: const EdgeInsets.only(bottom: 6),
+      height: 60.h,
+      padding:  EdgeInsets.only(bottom: 6.h),
+      margin:  EdgeInsets.only(bottom: 6.h),
       decoration: const BoxDecoration(
           border: Border(bottom: BorderSide(color: Colors.black12))),
       child: rowtem,
@@ -33,12 +34,12 @@ class RowContainer extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(leftText,
-            style: const TextStyle(
-                color: Color.fromARGB(255, 5, 0, 0), fontSize: 14)),
+            style:  TextStyle(
+                color:const Color.fromARGB(255, 5, 0, 0), fontSize: 28.sp)),
         Text(
           righText,
-          style: const TextStyle(
-              color: Color.fromARGB(255, 37, 37, 36), fontSize: 13),
+          style:  TextStyle(
+              color:const Color.fromARGB(255, 37, 37, 36), fontSize: 26.sp),
         ),
       ],
     );
@@ -54,10 +55,10 @@ class TitleWidger extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(bottom: 10.0),
+      padding:  EdgeInsets.only(bottom: 10.0.h),
       child: Text(
         title,
-        style: const TextStyle(color: Colors.black, fontSize: 15),
+        style:  TextStyle(color: Colors.black, fontSize: 30.sp),
       ),
     );
   }
@@ -72,11 +73,11 @@ class InfoBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: const EdgeInsets.all(14.0),
-        margin: const EdgeInsets.only(bottom: 20),
+        padding:  EdgeInsets.all(28.0.w),
+        margin:  EdgeInsets.only(bottom: 20.h),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(8.w),
         ),
         child: boxCotainer);
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_picker.dart';
-import 'package:flutter_template/core/widget/common_widget.dart';
 import '../../core/widget/custom_app_bar.dart';
 
 /// 以太网设置
@@ -186,58 +186,3 @@ class _NetSetState extends State<NetSet> {
   }
 }
 
-//标题
-class TitleWidger extends StatelessWidget {
-  final String title;
-
-  const TitleWidger({super.key, required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(bottom: 10.0),
-      child: Text(
-        title,
-        style: const TextStyle(color: Colors.black, fontSize: 15),
-      ),
-    );
-  }
-}
-
-//信息盒子
-class InfoBox extends StatelessWidget {
-  final Widget boxCotainer;
-
-  const InfoBox({super.key, required this.boxCotainer});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        padding: const EdgeInsets.all(14.0),
-        margin: const EdgeInsets.only(bottom: 20),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: boxCotainer);
-  }
-}
-
-//底部线
-class BottomLine extends StatelessWidget {
-  final Widget rowtem;
-
-  const BottomLine({super.key, required this.rowtem});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 60.h,
-      padding: EdgeInsets.only(bottom: 12.h),
-      margin: EdgeInsets.only(bottom: 12.h),
-      decoration: const BoxDecoration(
-          border: Border(bottom: BorderSide(color: Colors.black12))),
-      child: rowtem,
-    );
-  }
-}

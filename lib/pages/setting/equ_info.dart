@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_template/core/widget/common_box.dart';
 import '../../core/widget/custom_app_bar.dart';
 
 /// 设备信息
@@ -76,7 +77,7 @@ class _EquInfoState extends State<EquInfo> {
                 ),
 
                 //3.0LAN口状态
-                const TitleWidger(title: 'LAN口状态'),
+                 TitleWidger(title: 'LAN口状态'),
                 InfoBox(
                   boxCotainer: Column(
                     children: const [
@@ -104,117 +105,3 @@ class _EquInfoState extends State<EquInfo> {
   }
 }
 
-//底部线
-class BottomLine extends StatelessWidget {
-  final Widget rowtem;
-
-  const BottomLine({super.key, required this.rowtem});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 30,
-      padding: const EdgeInsets.only(bottom: 6),
-      margin: const EdgeInsets.only(bottom: 6),
-      decoration: const BoxDecoration(
-          border: Border(bottom: BorderSide(color: Colors.black12))),
-      child: rowtem,
-    );
-  }
-}
-
-//信息每行
-class RowContainer extends StatelessWidget {
-  final String leftText;
-  final String righText;
-
-  const RowContainer(
-      {super.key, required this.leftText, required this.righText});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(leftText,
-            style: const TextStyle(
-                color: Color.fromARGB(255, 5, 0, 0), fontSize: 14)),
-        Text(
-          righText,
-          style: const TextStyle(
-              color: Color.fromARGB(255, 37, 37, 36), fontSize: 13),
-        ),
-      ],
-    );
-  }
-}
-
-//标题
-class TitleWidger extends StatelessWidget {
-  final String title;
-
-  const TitleWidger({super.key, required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(bottom: 10.0),
-      child: Text(
-        title,
-        style: const TextStyle(color: Colors.black, fontSize: 15),
-      ),
-    );
-  }
-}
-
-//信息盒子
-class InfoBox extends StatelessWidget {
-  final Widget boxCotainer;
-
-  const InfoBox({super.key, required this.boxCotainer});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        padding: const EdgeInsets.all(14.0),
-        margin: const EdgeInsets.only(bottom: 20),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: boxCotainer);
-  }
-}
-
-            //标题1 系统信息
-            // InfoItem(leftText: '运行时长', rigjtText: '05d 20h 01m'),
-
-
-            //标题2 版本信息
-            // InfoItem(leftText: '产品型号', rigjtText: 'SRS621-a'),
-            // //硬件版本
-            // InfoItem(leftText: '硬件版本', rigjtText: 'V1.0'),
-            // //软件版本
-            // InfoItem(leftText: '软件版本', rigjtText: 'SQXR60_V1.0.2'),
-            // //UBOOT版本
-            // InfoItem(leftText: 'UBOOT版本', rigjtText: 'V1.1.0'),
-            // //产品序列号
-            // InfoItem(leftText: '产品序列号', rigjtText: 'RS621A00211700113'),
-            // //IMEI
-            // InfoItem(leftText: 'IMEI', rigjtText: '862165040976175'),
-            // //IMSI
-            // Padding(
-            //   padding: EdgeInsets.only(bottom: 10.0),
-            //   child: InfoItem(leftText: 'IMSI', rigjtText: '— —'),
-            // ),
-
-            //标题3 LAN口状态
-            // ItemInfo(
-            //   title: 'LAN口状态',
-            //   iteminfo:
-            //       InfoItem(leftText: 'MAC地址', rigjtText: '88:12:3D:03:6F:66'),
-            // ),
-            // //IMSI
-            // InfoItem(leftText: 'IP地址', rigjtText: '192.168.1.1'),
-            // //IMSI
-            // InfoItem(leftText: '子网掩码', rigjtText: '255.255.255.06')

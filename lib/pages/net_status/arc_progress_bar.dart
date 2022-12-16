@@ -27,13 +27,13 @@ class ArcProgresssBar extends StatelessWidget {
       aspectRatio: 1,
       child: CustomPaint(
         size: Size(width, height),
-        painter: _ArcProgressBarPainter(20, progress, min: min, max: max),
+        painter: _ArcProgressBarPainter(32.sp, progress, min: min, max: max),
       ));
 }
 
 class _ArcProgressBarPainter extends CustomPainter {
   final Paint _paint = Paint();
-  double _strokeSize = 4.sp;
+  double _strokeSize = 0;
   num progress = 0;
   num min;
   num max;
@@ -66,9 +66,18 @@ class _ArcProgressBarPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.butt
       ..strokeWidth = _strokeSize;
-    _paint.shader = const SweepGradient(
-      colors: [Color(0xff49bcf6), Color(0xff49deb2)],
-    ).createShader(rectOut);
+
+    if (progress <= 20) {
+      _paint.shader = LinearGradient(
+        colors: [Colors.pink.shade100, Colors.red.shade400],
+      ).createShader(rectOut);
+    } else {
+      _paint.shader = const LinearGradient(
+        begin: Alignment.bottomRight,
+        end: Alignment.topRight,
+        colors: [Color(0xff49bcf6), Color(0xff49deb2)],
+      ).createShader(rectOut);
+    }
     canvas.drawArc(rectOut, _toRadius(0),
         progress * _toRadius(360 / (max - min)), false, _paint);
     _paint.shader =
@@ -97,8 +106,8 @@ class _ArcProgressBarPainter extends CustomPainter {
           .createShader(bgRectOutter);
     canvas.drawArc(bgRectOutter, _toRadius(0), _toRadius(360), false, _paint);
     // 淡色底小圆
-    Rect bgRectInner = Rect.fromLTWH(size.width / 4 + 20.sp,
-        size.width / 4 + 20.sp, size.width / 2 - 40.sp, size.width / 2 - 40.sp);
+    Rect bgRectInner = Rect.fromLTWH(size.width / 4 + 9.sp,
+        size.width / 4 + 9.sp, size.width / 2 - 18.sp, size.width / 2 - 18.sp);
     _paint
       ..isAntiAlias = true
       ..style = PaintingStyle.fill
@@ -121,19 +130,19 @@ class _ArcProgressBarPainter extends CustomPainter {
       ..isAntiAlias = true
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.butt
-      ..strokeWidth = 1.sp
+      ..strokeWidth = 2.sp
       ..color = const Color(0xff000000)
       ..shader = const SweepGradient(colors: [Colors.grey, Colors.grey])
           .createShader(rectInner1);
     canvas.drawArc(rectInner1, _toRadius(0), _toRadius(360), false, _paint);
     // 装饰圆2，内层
-    Rect rectInner2 = Rect.fromLTWH(size.width / 4 - 0.sp,
-        size.width / 4 - 0.sp, size.width / 2 + 0.sp, size.width / 2 + 0.sp);
+    Rect rectInner2 = Rect.fromLTWH(size.width / 4 - 9.sp,
+        size.width / 4 - 9.sp, size.width / 2 + 18.sp, size.width / 2 + 18.sp);
     _paint
       ..isAntiAlias = true
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.butt
-      ..strokeWidth = 2.sp
+      ..strokeWidth = 4.sp
       ..color = const Color(0xff000000)
       ..shader = const SweepGradient(colors: [Colors.black, Colors.black])
           .createShader(rectInner2);
@@ -156,11 +165,11 @@ class _ArcProgressBarPainter extends CustomPainter {
         paintProgress.color = Colors.grey;
       }
       double evaDegree = i * _toRadius(360 / (max - min));
-      double b = i % 10 == 0 ? -8.sp : 0;
-      double x = cx + (radius - 12.sp + b) * Math.cos(evaDegree);
-      double y = cy + (radius - 12.sp + b) * Math.sin(evaDegree);
-      double x1 = cx + (radius - 4.sp) * Math.cos(evaDegree);
-      double y1 = cx + (radius - 4.sp) * Math.sin(evaDegree);
+      double b = i % 10 == 0 ? 6.sp : 0;
+      double x = cx + (radius + 12.sp) * Math.cos(evaDegree);
+      double y = cy + (radius + 12.sp) * Math.sin(evaDegree);
+      double x1 = cx + (radius - b) * Math.cos(evaDegree);
+      double y1 = cx + (radius - b) * Math.sin(evaDegree);
       canvas.drawLine(Offset(x, y), Offset(x1, y1), paintProgress);
     }
     canvas.translate(cx, cy);
@@ -183,12 +192,12 @@ class _ArcProgressBarPainter extends CustomPainter {
       ..strokeWidth = 100.sp
       ..color = Colors.black;
     double degree = _toRadius(360 / (max - min)) * progress;
-    double x = cx + radius * Math.cos(degree);
-    double y = cy + radius * Math.sin(degree);
+    double x = cx + (radius + 12.sp) * Math.cos(degree);
+    double y = cy + (radius + 12.sp) * Math.sin(degree);
     // 指针斜边长度
-    const pointLen = 20;
+    var pointLen = 34.sp;
     // 指针三角形顶角角度
-    const pointDeg = Math.pi / 10;
+    const pointDeg = Math.pi / 14;
     double tx = x + pointLen * Math.cos(pointDeg / 2 + degree);
     double ty = y + pointLen * Math.sin(pointDeg / 2 + degree);
     double bx = x + pointLen * Math.cos(degree - pointDeg / 2);

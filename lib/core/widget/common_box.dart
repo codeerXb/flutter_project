@@ -10,9 +10,9 @@ class BottomLine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 60.h,
-      padding:  EdgeInsets.only(bottom: 6.h),
-      margin:  EdgeInsets.only(bottom: 6.h),
+      height: 70.w,
+      padding:  EdgeInsets.only(bottom: 6.w),
+      margin:  EdgeInsets.only(bottom: 6.w),
       decoration: const BoxDecoration(
           border: Border(bottom: BorderSide(color: Colors.black12))),
       child: rowtem,
@@ -55,7 +55,7 @@ class TitleWidger extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding:  EdgeInsets.only(bottom: 10.0.h),
+      padding:  EdgeInsets.only(bottom: 10.0.w),
       child: Text(
         title,
         style:  TextStyle(color: Colors.black, fontSize: 30.sp),
@@ -74,7 +74,7 @@ class InfoBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         padding:  EdgeInsets.all(28.0.w),
-        margin:  EdgeInsets.only(bottom: 20.h),
+        margin:  EdgeInsets.only(bottom: 20.w),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(8.w),

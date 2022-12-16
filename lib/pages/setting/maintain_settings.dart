@@ -21,7 +21,6 @@ class _MaintainSettingsState extends State<MaintainSettings> {
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.all(20.sp),
-          height: 1340.sp,
           decoration:
               const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
           child: Column(
@@ -45,7 +44,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                         });
                       },
                       // 选中后的颜色
-                      activeColor: Colors.blue,
+                      activeColor: Colors.blueAccent,
                       // 选中后对号的颜色
                       checkColor: Colors.white,
                     ),
@@ -61,6 +60,9 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                     height: 70.sp,
                     width: 700.sp,
                     child: ElevatedButton(
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(
+                              const Color.fromARGB(255, 48, 118, 250))),
                       onPressed: () {},
                       child: const Text('提交'),
                     ),
@@ -83,6 +85,9 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                       ),
                       Padding(padding: EdgeInsets.only(right: 100.sp)),
                       ElevatedButton(
+                        style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(
+                                const Color.fromARGB(255, 48, 118, 250))),
                         onPressed: () {},
                         child: const Text('重启'),
                       ),
@@ -106,6 +111,9 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                       ),
                       Padding(padding: EdgeInsets.only(right: 20.sp)),
                       ElevatedButton(
+                        style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(
+                                const Color.fromARGB(255, 48, 118, 250))),
                         onPressed: () {},
                         child: const Text('恢复出厂'),
                       ),
@@ -132,7 +140,7 @@ class TitleWidger extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 10.0),
       child: Text(
         title,
-        style: TextStyle(color: Colors.blue, fontSize: 32.sp),
+        style: TextStyle(color: Colors.blueAccent, fontSize: 32.sp),
       ),
     );
   }

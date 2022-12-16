@@ -26,7 +26,6 @@ class _LanSettingsState extends State<LanSettings> {
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.all(20.sp),
-          height: 1340.sp,
           decoration:
               const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
           child: Column(
@@ -91,7 +90,7 @@ class _LanSettingsState extends State<LanSettings> {
                           });
                         },
                         // 选中后的颜色
-                        activeColor: Colors.blue,
+                        activeColor: Colors.blueAccent,
                         // 选中后对号的颜色
                         checkColor: Colors.white,
                       ),
@@ -160,8 +159,14 @@ class _LanSettingsState extends State<LanSettings> {
                     height: 70.sp,
                     width: 700.sp,
                     child: ElevatedButton(
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(
+                              const Color.fromARGB(255, 48, 118, 250))),
                       onPressed: () {},
-                      child: const Text('提交'),
+                      child: Text(
+                        '提交',
+                        style: TextStyle(fontSize: 36.sp),
+                      ),
                     ),
                   )
                 ],
@@ -185,7 +190,7 @@ class TitleWidger extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 10.0),
       child: Text(
         title,
-        style: TextStyle(color: Colors.blue, fontSize: 30.sp),
+        style: TextStyle(color: Colors.blueAccent, fontSize: 30.sp),
       ),
     );
   }

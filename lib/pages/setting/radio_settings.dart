@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/widget/custom_app_bar.dart';
 import '../../core/widget/common_box.dart';
+import '../../core/widget/common_widget.dart';
 
 /// Radio设置
 class RadioSettings extends StatefulWidget {
@@ -23,7 +24,6 @@ class _RadioSettingsState extends State<RadioSettings> {
       body: SingleChildScrollView(
         child: Container(
             padding: EdgeInsets.all(20.sp),
-            height: 1440.sp,
             decoration:
                 const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
             child: Column(children: [
@@ -31,21 +31,20 @@ class _RadioSettingsState extends State<RadioSettings> {
                 height: 10.sp,
               ),
               InfoBox(
-                boxCotainer: Row(
+                  boxCotainer: Column(children: [
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('状态', style: TextStyle(fontSize: 30.sp)),
-                    Text('SIM卡未准备完成', style: TextStyle(fontSize: 30.sp))
+                    Text('SIM卡未准备完成', style: TextStyle(fontSize: 30.sp)),
                   ],
                 ),
-              ),
-              InfoBox(
-                boxCotainer: Row(children: [
+                Row(children: [
                   Flexible(
                     child: Text('连接方式', style: TextStyle(fontSize: 30.sp)),
                   ),
                   SizedBox(
-                    width: 220.sp,
+                    width: 240.sp,
                   ),
                   Radio(
                     // 按钮的值
@@ -74,7 +73,7 @@ class _RadioSettingsState extends State<RadioSettings> {
                   ),
                   const Text("自动"),
                 ]),
-              ),
+              ])),
               SizedBox(
                 height: 30.sp,
               ),
@@ -85,8 +84,14 @@ class _RadioSettingsState extends State<RadioSettings> {
                     height: 70.sp,
                     width: 700.sp,
                     child: ElevatedButton(
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(
+                              const Color.fromARGB(255, 48, 118, 250))),
                       onPressed: () {},
-                      child: const Text('提交'),
+                      child: Text(
+                        '提交',
+                        style: TextStyle(fontSize: 36.sp),
+                      ),
                     ),
                   )
                 ],
@@ -187,7 +192,7 @@ class TitleWidger extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 10.0),
       child: Text(
         title,
-        style: TextStyle(color: Colors.blue, fontSize: 32.sp),
+        style: TextStyle(color: Colors.blueAccent, fontSize: 32.sp),
       ),
     );
   }

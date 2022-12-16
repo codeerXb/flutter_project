@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/widget/custom_app_bar.dart';
+import '../../core/widget/common_widget.dart';
 
 /// WAN设置
 class WanSettings extends StatefulWidget {
@@ -22,7 +23,6 @@ class _WanSettingsState extends State<WanSettings> {
       body: SingleChildScrollView(
         child: Container(
             padding: EdgeInsets.all(20.sp),
-            height: 1340.sp,
             decoration:
                 const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
             child: Column(children: [
@@ -75,12 +75,18 @@ class _WanSettingsState extends State<WanSettings> {
                     height: 70.sp,
                     width: 700.sp,
                     child: ElevatedButton(
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(
+                              const Color.fromARGB(255, 48, 118, 250))),
                       onPressed: () {},
-                      child: const Text('提交'),
+                      child: Text(
+                        '提交',
+                        style: TextStyle(fontSize: 36.sp),
+                      ),
                     ),
                   )
                 ],
-              )
+              ),
             ])),
       ),
     );

@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
+import 'package:flutter_template/pages/equInfo/equinfo_datas.dart';
 import '../../core/widget/custom_app_bar.dart';
 
 /// 设备信息
@@ -11,6 +15,32 @@ class EquInfo extends StatefulWidget {
 }
 
 class _EquInfoState extends State<EquInfo> {
+  EquinfoDatas equinfoData = EquinfoDatas();
+  @override
+  void initState() {
+    super.initState();
+    getEquinfoDatas();
+  }
+
+  void getEquinfoDatas() {
+    Map<String, dynamic> data = {
+      'method': 'obj_get',
+      'param':
+          '["systemProductModel","systemVersionHw","systemVersionRunning","systemVersionUboot","systemVersionSn","lteImei","lteImsi","networkLanSettingsMac","networkLanSettingIp","networkLanSettingMask","systemRunningTime"]',
+    };
+    XHttp.get('', data).then((res) {
+      try {
+        var d = json.decode(res.toString());
+        setState(() {
+          equinfoData = EquinfoDatas.fromJson(d);
+          print(equinfoData.lteImei);
+        });
+      } on FormatException catch (e) {
+        print(e);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,7 +107,7 @@ class _EquInfoState extends State<EquInfo> {
                 ),
 
                 //3.0LAN口状态
-                 TitleWidger(title: 'LAN口状态'),
+                TitleWidger(title: 'LAN口状态'),
                 InfoBox(
                   boxCotainer: Column(
                     children: const [
@@ -104,4 +134,3 @@ class _EquInfoState extends State<EquInfo> {
         ));
   }
 }
-

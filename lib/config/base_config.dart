@@ -1,7 +1,7 @@
 /// 基础信息配置
 class BaseConfig {
   // 定义token
-  static const String token = '67d54723-80dc-48d5-b98b-3402276bb40a';
+  static const String token = '63545f20-2975-43eb-8049-262e04552377';
 
   /// 服务器路径
   static const baseUrl = "https://172.16.20.68/data.html";

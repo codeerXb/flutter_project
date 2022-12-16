@@ -3,7 +3,7 @@ import 'package:flutter_template/pages/Ethernet/net_set.dart';
 import 'package:flutter_template/pages/odu/index.dart';
 import 'package:flutter_template/pages/setting/about_us.dart';
 import 'package:flutter_template/pages/setting/clear_cache.dart';
-import 'package:flutter_template/pages/setting/equ_info.dart';
+import 'package:flutter_template/pages/equInfo/equ_info.dart';
 import 'package:flutter_template/pages/setting/contact_customer.dart';
 import 'package:flutter_template/pages/setting/file_upload_download.dart';
 import 'package:flutter_template/pages/Ethernet/net_type.dart';

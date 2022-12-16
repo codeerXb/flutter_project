@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_picker.dart';
+import 'package:flutter_template/core/widget/common_widget.dart';
 import '../../core/widget/custom_app_bar.dart';
 
 /// WLAN设置
@@ -51,6 +52,8 @@ class _WlanSetState extends State<WlanSet> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                CommonWidget.buttonWidget(title:'保存'),
+                //一般设置
                 const TitleWidger(title: '一般设置'),
                 InfoBox(
                     boxCotainer: Column(
@@ -101,7 +104,6 @@ class _WlanSetState extends State<WlanSet> {
                         ],
                       ),
                     ),
-
                     //WLAN
                     BottomLine(
                       rowtem: Row(
@@ -126,7 +128,6 @@ class _WlanSetState extends State<WlanSet> {
                         ],
                       ),
                     ),
-
                     //模式
                     BottomLine(
                       rowtem: Row(
@@ -363,6 +364,7 @@ class _WlanSetState extends State<WlanSet> {
                     ),
                   ],
                 )),
+                //配置
                 const TitleWidger(title: '配置'),
                 InfoBox(
                     boxCotainer: Column(
@@ -376,12 +378,12 @@ class _WlanSetState extends State<WlanSet> {
                               style: TextStyle(
                                   color: const Color.fromARGB(255, 5, 0, 0),
                                   fontSize: 28.sp)),
-                           SizedBox(
-                            width: 400.w,
+                          SizedBox(
+                            width: 250.w,
                             child: Row(
                               children: [
                                 SizedBox(
-                                  width: 300.w,
+                                  width: 250.w,
                                   child: TextFormField(
                                     style: TextStyle(
                                         fontSize: 26.sp,
@@ -411,12 +413,12 @@ class _WlanSetState extends State<WlanSet> {
                               style: TextStyle(
                                   color: const Color.fromARGB(255, 5, 0, 0),
                                   fontSize: 28.sp)),
-                             SizedBox(
-                            width: 400.w,
+                          SizedBox(
+                            width: 250.w,
                             child: Row(
                               children: [
                                 SizedBox(
-                                  width: 300.w,
+                                  width: 250.w,
                                   child: TextFormField(
                                     style: TextStyle(
                                         fontSize: 26.sp,
@@ -603,11 +605,11 @@ class _WlanSetState extends State<WlanSet> {
                                 fontSize: 28.sp),
                           ),
                           SizedBox(
-                            width: 400.w,
+                            width: 250.w,
                             child: Row(
                               children: [
                                 SizedBox(
-                                  width: 300.w,
+                                  width: 250.w,
                                   child: TextFormField(
                                     style: TextStyle(
                                         fontSize: 26.sp,

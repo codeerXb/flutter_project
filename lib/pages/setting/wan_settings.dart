@@ -29,57 +29,78 @@ class _WanSettingsState extends State<WanSettings> {
               SizedBox(
                 height: 80.sp,
               ),
-              Row(children: [
-                Flexible(
-                  child: Text('网络模式', style: TextStyle(fontSize: 40.sp)),
-                ),
-                SizedBox(
-                  width: 120.sp,
-                ),
-                Radio(
-                  // 按钮的值
-                  value: 1,
-                  // 改变事件
-                  onChanged: (value) {
-                    setState(() {
-                      sex = value.hashCode;
-                    });
-                  },
-                  // 按钮组的值
-                  groupValue: sex,
-                ),
-                const Text("NAT"),
-                SizedBox(
-                  width: 40.sp,
-                ),
-                Radio(
-                  value: 2,
-                  onChanged: (value) {
-                    setState(() {
-                      sex = value.hashCode;
-                    });
-                  },
-                  groupValue: sex,
-                ),
-                const Text("BRIDGE"),
-              ]),
+              InfoBox(
+                boxCotainer: Row(children: [
+                  Flexible(
+                    child: Text('网络模式', style: TextStyle(fontSize: 32.sp)),
+                  ),
+                  SizedBox(
+                    width: 200.sp,
+                  ),
+                  Radio(
+                    // 按钮的值
+                    value: 1,
+                    // 改变事件
+                    onChanged: (value) {
+                      setState(() {
+                        sex = value.hashCode;
+                      });
+                    },
+                    // 按钮组的值
+                    groupValue: sex,
+                  ),
+                  const Text("NAT"),
+                  SizedBox(
+                    width: 40.sp,
+                  ),
+                  Radio(
+                    value: 2,
+                    onChanged: (value) {
+                      setState(() {
+                        sex = value.hashCode;
+                      });
+                    },
+                    groupValue: sex,
+                  ),
+                  const Text("BRIDGE"),
+                ]),
+              ),
               SizedBox(
                 height: 120.sp,
               ),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                ElevatedButton(
-                  onPressed: () {},
-                  child: const Text('提交'),
-                ),
-                ElevatedButton(
-                  style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.red)),
-                  onPressed: () {},
-                  child: const Text('取消'),
-                ),
-              ])
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  SizedBox(
+                    height: 70.sp,
+                    width: 700.sp,
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      child: const Text('提交'),
+                    ),
+                  )
+                ],
+              )
             ])),
       ),
     );
+  }
+}
+
+class InfoBox extends StatelessWidget {
+  final Widget boxCotainer;
+
+  const InfoBox({super.key, required this.boxCotainer});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        padding: EdgeInsets.all(2.0.sp),
+        margin: EdgeInsets.only(bottom: 5.sp),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: boxCotainer);
   }
 }

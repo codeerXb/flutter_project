@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
-import 'package:flutter_template/pages/topo/equipment_datas.dart';
+import 'package:flutter_template/pages/topo/model/equipment_datas.dart';
 import 'package:flutter_template/pages/topo/mesh_item.dart';
 import 'package:get/get.dart';
 
@@ -32,8 +32,8 @@ class _TopoState extends State<Topo> {
       'param': '["OnlineDeviceTable"]',
     };
     XHttp.get('', data).then((res) {
-      print("\n==================  ==========================");
       try {
+        print("\n==================  ==========================");
         var d = json.decode(res.toString());
         setState(() {
           topoData = EquipmentDatas.fromJson(d);
@@ -42,6 +42,8 @@ class _TopoState extends State<Topo> {
         print('The provided string is not valid JSON');
         print(e);
       }
+    }).catchError((onError) {
+      debugPrint(onError.toString());
     });
   }
 

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:css_filter/css_filter.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/widget/common_picker.dart';
-import 'package:flutter_template/pages/topo/equipment_datas.dart';
+import 'package:flutter_template/pages/topo/model/equipment_datas.dart';
 import 'package:get/get.dart';
 
 class TopoItem extends StatefulWidget {

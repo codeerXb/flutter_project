@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:kg_charts/kg_charts.dart';
 
 class ODU extends StatefulWidget {
@@ -30,20 +31,27 @@ class _ODUState extends State<ODU> {
     return IndicatorModel("", 30);
   });
   var _timer;
+  bool isShow = true;
   int _index = 0;
   showTimer() {
     // print(123123);
+    isShow = false;
+    _index = 0;
+    mapData = List.generate(36, (index) {
+      return 0;
+    });
     _timer = Timer.periodic(const Duration(milliseconds: 300), (t) {
       //需要执行的内容
       setState(() {
-        _index++;
-        if (_index <= 36) {
-          mapData[_index - 1] = random(3, 28);
+        if (_index < 36) {
+          mapData[_index] = random(3, 28);
+          _index++;
+
           // mapData = mapData;
         } else {
+          isShow = true;
           _timer?.cancel();
         }
-        print(123123);
       });
       //t.cancel();		//根据需要停止定时器
     });
@@ -59,6 +67,7 @@ class _ODUState extends State<ODU> {
       ),
       body: Column(
         children: [
+          Padding(padding: EdgeInsets.only(top: 100.w)),
           RadarWidget(
             skewing: 0,
             radarMap: RadarMapModel(
@@ -98,22 +107,32 @@ class _ODUState extends State<ODU> {
               return data > 0 ? "$data" : '';
             },
           ),
-          ElevatedButton(
-            onPressed: () {
-              showTimer();
-            },
-            child: const Text('开始搜索'),
+          Text('当前旋转角度${(_index) * 10}°'),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              ElevatedButton(
+                onPressed: isShow ? showTimer : null,
+                child: Row(
+                  children: const [
+                    Text('开始搜索'),
+                    // if (isShow) const CircularProgressIndicator(value: 0.5),
+                    // const Icon(Icons.local_dining)
+                  ],
+                ),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    isShow = true;
+                  });
+
+                  _timer?.cancel();
+                },
+                child: const Text('停止搜索'),
+              ),
+            ],
           ),
-          ElevatedButton(
-            onPressed: () {
-              // setState(() {
-              //   _index = 0;
-              // });
-              _timer?.cancel();
-            },
-            child: const Text('停止搜索'),
-          ),
-          Text('$_index')
         ],
       ),
     );

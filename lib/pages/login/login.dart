@@ -267,7 +267,7 @@ class _LoginState extends State<Login> {
           'http://c.hiphotos.baidu.com/image/pic/item/9c16fdfaaf51f3de1e296fa390eef01f3b29795a.jpg'
         ];
         sharedAddAndUpdate("loginInfo", List, loginInfo); //把登录信息保存到本地
-        Get.toNamed("/home");
+        Get.offNamed("/home");
       } else {
         ToastUtils.toast('用户名或密码错误');
       }

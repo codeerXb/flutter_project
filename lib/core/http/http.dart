@@ -34,15 +34,21 @@ class XHttp {
   ///get请求
   static Future get(String url, [Map<String, dynamic>? params]) async {
     Response response;
-    if (params != null) {
-      response = await dio.get(url, queryParameters: {
-        ...params,
-        '_csrf_token': BaseConfig.token,
-      });
-    } else {
-      response = await dio.get(url);
+    try {
+      if (params != null) {
+        response = await dio.get(url, queryParameters: {
+          ...params,
+          '_csrf_token': BaseConfig.token,
+        });
+      } else {
+        response = await dio.get(url);
+      }
+      return response.data;
+    } catch (e) {
+      debugPrint('-------get err-------');
+
+      debugPrint(e.toString());
     }
-    return response.data;
   }
 
   ///post请求

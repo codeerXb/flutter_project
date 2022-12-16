@@ -19,57 +19,36 @@ class NetStatus extends StatefulWidget {
 }
 
 class _NetStatusState extends State<NetStatus> {
-  double _progress = 95;
-  int get progress {
-    return _progress.truncate();
-  }
-
   @override
   Widget build(BuildContext context) {
-    //舍弃当前变量的小数部分，结果为 33。返回值为 int 类型。
-    void pressUp() {
-      setState(() => ++_progress);
-    }
-
-    void pressDown() {
-      setState((() => --_progress));
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          children: const [
-            Text('TL-WDR5620'),
-            FaIcon(FontAwesomeIcons.chevronDown)
-          ],
+    return Container(
+      decoration: const BoxDecoration(
+          image: DecorationImage(
+              alignment: Alignment.topCenter,
+              image: AssetImage('assets/images/picture_home_bg.png'),
+              fit: BoxFit.fitWidth)),
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          title: Row(
+            children: const [
+              Text('TL-WDR5620'),
+              FaIcon(FontAwesomeIcons.chevronDown)
+            ],
+          ),
+          backgroundColor: Colors.transparent,
         ),
-        backgroundColor: const Color.fromARGB(255, 2, 0, 12),
-        // actions: [
-        //   TextButton(
-        //     onPressed: () => {},
-        //     child: Row(children: const [
-        //       FaIcon(
-        //         FontAwesomeIcons.user,
-        //         color: Colors.white,
-        //       )
-        //     ]),
-        //   )
-        // ],
-      ),
-      body: Container(
-        // alignment: Alignment.center,
-        decoration:
-            const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
-        child: Column(
-          // mainAxisAlignment: MainAxisAlignment.center,
+        backgroundColor: Colors.transparent,
+        body: Column(
           children: <Widget>[
+            // 头部widget
             Container(
               alignment: Alignment.topCenter,
-              color: const Color.fromARGB(255, 2, 0, 12),
               padding: EdgeInsets.only(
                   left: 36.sp, right: 36.sp, top: 0, bottom: 30.sp),
               width: 1.sw,
               height: 240.h,
+              color: Colors.transparent,
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
@@ -83,7 +62,7 @@ class _NetStatusState extends State<NetStatus> {
                                 BorderRadius.all(Radius.circular(8.sp)),
                             border: Border.all(width: 1, color: Colors.white)),
                         child: const Text(
-                          '正常上网',
+                          '套餐总量：G',
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
@@ -119,12 +98,8 @@ class _NetStatusState extends State<NetStatus> {
                     )
                   ]),
             ),
-            Dashboard(
-              progress: _progress,
-              progressInt: progress,
-              pressUp: pressUp,
-              pressDown: pressDown,
-            ),
+            // 仪表盘和数值显示
+            const Expanded(flex: 1, child: Dashboard()),
           ],
         ),
       ),

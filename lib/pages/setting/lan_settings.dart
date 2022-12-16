@@ -26,139 +26,151 @@ class _LanSettingsState extends State<LanSettings> {
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.all(20.sp),
-          height: 1340.sp,
           decoration:
               const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
           child: Column(
             children: [
-              Padding(padding: EdgeInsets.only(top: 80.sp)),
+              Padding(padding: EdgeInsets.only(top: 20.sp)),
               Row(children: const [
                 TitleWidger(title: 'LAN主机设置'),
               ]),
-              Column(children: [
-                Padding(padding: EdgeInsets.only(top: 40.sp)),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    const Text('IP地址'),
-                    OtpInput(_fieldOne, false),
-                    OtpInput(_fieldOne1, false),
-                    OtpInput(_fieldOne2, false),
-                    OtpInput(_fieldOne3, false),
-                    const Text(
-                      '*',
-                      style: TextStyle(color: Colors.red),
-                    )
-                  ],
-                ),
-                Padding(padding: EdgeInsets.only(top: 40.sp)),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    const Text('子网掩码'),
-                    OtpInput(_fieldOne, false),
-                    OtpInput(_fieldOne1, false),
-                    OtpInput(_fieldOne2, false),
-                    OtpInput(_fieldOne3, false),
-                    const Text(
-                      '*',
-                      style: TextStyle(color: Colors.red),
-                    )
-                  ],
-                ),
-              ]),
+              InfoBox(
+                boxCotainer: Column(children: [
+                  Padding(padding: EdgeInsets.only(top: 40.sp)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      const Text('IP地址'),
+                      OtpInput(_fieldOne, false),
+                      OtpInput(_fieldOne1, false),
+                      OtpInput(_fieldOne2, false),
+                      OtpInput(_fieldOne3, false),
+                      const Text(
+                        '*',
+                        style: TextStyle(color: Colors.red),
+                      )
+                    ],
+                  ),
+                  Padding(padding: EdgeInsets.only(top: 40.sp)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      const Text('子网掩码'),
+                      OtpInput(_fieldOne, false),
+                      OtpInput(_fieldOne1, false),
+                      OtpInput(_fieldOne2, false),
+                      OtpInput(_fieldOne3, false),
+                      const Text(
+                        '*',
+                        style: TextStyle(color: Colors.red),
+                      )
+                    ],
+                  ),
+                  Padding(padding: EdgeInsets.only(bottom: 20.sp)),
+                ]),
+              ),
               Padding(padding: EdgeInsets.only(top: 80.sp)),
               Row(children: const [
                 TitleWidger(title: 'DHCP 配置'),
               ]),
-              Column(children: [
-                Padding(padding: EdgeInsets.only(top: 40.sp)),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    const Text('DHCP 服务器'),
-                    Padding(padding: EdgeInsets.only(right: 200.sp)),
-                    Checkbox(
-                      value: status,
-                      // 改变后的事件
-                      onChanged: (value) {
-                        setState(() {
-                          status = value!;
-                        });
-                      },
-                      // 选中后的颜色
-                      activeColor: Colors.blue,
-                      // 选中后对号的颜色
-                      checkColor: Colors.white,
-                    ),
-                    const Text('启用'),
-                  ],
-                ),
-                Padding(padding: EdgeInsets.only(top: 40.sp)),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    const Text('起始地址'),
-                    OtpInput(_fieldOne, false),
-                    OtpInput(_fieldOne1, false),
-                    OtpInput(_fieldOne2, false),
-                    OtpInput(_fieldOne3, false),
-                    const Text(
-                      '*',
-                      style: TextStyle(color: Colors.red),
-                    )
-                  ],
-                ),
-                Padding(padding: EdgeInsets.only(top: 40.sp)),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    const Text('结束地址'),
-                    OtpInput(_fieldOne, false),
-                    OtpInput(_fieldOne1, false),
-                    OtpInput(_fieldOne2, false),
-                    OtpInput(_fieldOne3, false),
-                    const Text(
-                      '*',
-                      style: TextStyle(color: Colors.red),
-                    )
-                  ],
-                ),
-                Padding(padding: EdgeInsets.only(top: 40.sp)),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    const Text('租约时间'),
-                    SizedBox(
-                      width: 510.sp,
-                      child: const TextField(
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          labelText: "请输入租约时间（2/m~1440/m）",
-                          border: OutlineInputBorder(),
+              InfoBox(
+                boxCotainer: Column(children: [
+                  Padding(padding: EdgeInsets.only(top: 20.sp)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      const Text('DHCP 服务器'),
+                      Padding(padding: EdgeInsets.only(right: 200.sp)),
+                      Checkbox(
+                        value: status,
+                        // 改变后的事件
+                        onChanged: (value) {
+                          setState(() {
+                            status = value!;
+                          });
+                        },
+                        // 选中后的颜色
+                        activeColor: Colors.blueAccent,
+                        // 选中后对号的颜色
+                        checkColor: Colors.white,
+                      ),
+                      const Text('启用'),
+                    ],
+                  ),
+                  Padding(padding: EdgeInsets.only(top: 40.sp)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      const Text('起始地址'),
+                      OtpInput(_fieldOne, false),
+                      OtpInput(_fieldOne1, false),
+                      OtpInput(_fieldOne2, false),
+                      OtpInput(_fieldOne3, false),
+                      const Text(
+                        '*',
+                        style: TextStyle(color: Colors.red),
+                      )
+                    ],
+                  ),
+                  Padding(padding: EdgeInsets.only(top: 40.sp)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      const Text('结束地址'),
+                      OtpInput(_fieldOne, false),
+                      OtpInput(_fieldOne1, false),
+                      OtpInput(_fieldOne2, false),
+                      OtpInput(_fieldOne3, false),
+                      const Text(
+                        '*',
+                        style: TextStyle(color: Colors.red),
+                      )
+                    ],
+                  ),
+                  Padding(padding: EdgeInsets.only(top: 40.sp)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      const Text('租约时间'),
+                      SizedBox(
+                        width: 510.sp,
+                        child: const TextField(
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            labelText: "请输入租约时间（2/m~1440/m）",
+                            border: OutlineInputBorder(),
+                          ),
                         ),
                       ),
+                      const Text(
+                        '*',
+                        style: TextStyle(color: Colors.red),
+                      )
+                    ],
+                  ),
+                  Padding(padding: EdgeInsets.only(bottom: 20.sp)),
+                ]),
+              ),
+              Padding(padding: EdgeInsets.only(top: 150.sp)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  SizedBox(
+                    height: 70.sp,
+                    width: 700.sp,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(
+                              const Color.fromARGB(255, 48, 118, 250))),
+                      onPressed: () {},
+                      child: Text(
+                        '提交',
+                        style: TextStyle(fontSize: 36.sp),
+                      ),
                     ),
-                    const Text(
-                      '*',
-                      style: TextStyle(color: Colors.red),
-                    )
-                  ],
-                ),
-              ]),
-              Padding(padding: EdgeInsets.only(top: 200.sp)),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                ElevatedButton(
-                  onPressed: () {},
-                  child: const Text('提交'),
-                ),
-                ElevatedButton(
-                  style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.red)),
-                  onPressed: () {},
-                  child: const Text('取消'),
-                ),
-              ])
+                  )
+                ],
+              )
             ],
           ),
         ),
@@ -178,8 +190,26 @@ class TitleWidger extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 10.0),
       child: Text(
         title,
-        style: const TextStyle(color: Colors.blue, fontSize: 18),
+        style: TextStyle(color: Colors.blueAccent, fontSize: 30.sp),
       ),
     );
+  }
+}
+
+class InfoBox extends StatelessWidget {
+  final Widget boxCotainer;
+
+  const InfoBox({super.key, required this.boxCotainer});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        padding: EdgeInsets.all(10.0.w),
+        margin: EdgeInsets.only(bottom: 3.h),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8.w),
+        ),
+        child: boxCotainer);
   }
 }

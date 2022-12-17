@@ -75,13 +75,14 @@ class _ArcProgressBarPainter extends CustomPainter {
       _paint.shader = const LinearGradient(
         begin: Alignment.bottomRight,
         end: Alignment.topRight,
-        colors: [Color(0xff49bcf6), Color(0xff49deb2)],
+        colors: [Color(0xFF2F5AF5), Color(0xFF2F5AF5)],
       ).createShader(rectOut);
     }
     canvas.drawArc(rectOut, _toRadius(0),
         progress * _toRadius(360 / (max - min)), false, _paint);
+    // 绘制空白的外层圈
     _paint.shader =
-        SweepGradient(colors: [Colors.grey.shade300, Colors.grey.shade300])
+        const SweepGradient(colors: [Color(0xFFE0E8FD), Color(0xFFE0E8FD)])
             .createShader(rectOut);
     canvas.drawArc(
         rectOut,
@@ -89,6 +90,11 @@ class _ArcProgressBarPainter extends CustomPainter {
         _toRadius(360) - progress * _toRadius(360 / (max - min)),
         false,
         _paint);
+    // 绘制白色大圆和色彩圈的空隙
+    Rect rectOutGap = Rect.fromLTWH(0 + _strokeSize, 0 + _strokeSize,
+        size.width - _strokeSize * 2, size.height - _strokeSize * 2);
+    _paint.style = PaintingStyle.fill;
+    canvas.drawArc(rectOutGap, _toRadius(0), _toRadius(360), false, _paint);
     // 绘制背景
     // 白色底大圆
     Rect bgRectOutter = Rect.fromLTWH(
@@ -115,8 +121,8 @@ class _ArcProgressBarPainter extends CustomPainter {
       ..strokeWidth = 2.sp
       ..color = const Color(0xff000000)
       ..shader = const SweepGradient(colors: [
-        Color(0x2f49bcf6),
-        Color(0x2f49bcf6),
+        Color(0xFFE0E8FD),
+        Color(0xFFE0E8FD),
       ]).createShader(bgRectInner);
     canvas.drawArc(bgRectInner, _toRadius(0), _toRadius(360), false, _paint);
     // 画内层装饰圈
@@ -132,8 +138,10 @@ class _ArcProgressBarPainter extends CustomPainter {
       ..strokeCap = StrokeCap.butt
       ..strokeWidth = 2.sp
       ..color = const Color(0xff000000)
-      ..shader = const SweepGradient(colors: [Colors.grey, Colors.grey])
-          .createShader(rectInner1);
+      ..shader = const SweepGradient(colors: [
+        Color.fromARGB(100, 47, 90, 245),
+        Color.fromARGB(100, 47, 90, 245),
+      ]).createShader(rectInner1);
     canvas.drawArc(rectInner1, _toRadius(0), _toRadius(360), false, _paint);
     // 装饰圆2，内层
     Rect rectInner2 = Rect.fromLTWH(size.width / 4 - 9.sp,
@@ -142,10 +150,12 @@ class _ArcProgressBarPainter extends CustomPainter {
       ..isAntiAlias = true
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.butt
-      ..strokeWidth = 4.sp
+      ..strokeWidth = 2.sp
       ..color = const Color(0xff000000)
-      ..shader = const SweepGradient(colors: [Colors.black, Colors.black])
-          .createShader(rectInner2);
+      ..shader = const SweepGradient(colors: [
+        Color(0xFF2F5AF5),
+        Color(0xFF2F5AF5),
+      ]).createShader(rectInner2);
     canvas.drawArc(rectInner2, _toRadius(0), _toRadius(360), false, _paint);
   }
 
@@ -153,23 +163,25 @@ class _ArcProgressBarPainter extends CustomPainter {
   void _drawArcProgressPoint(
       Canvas canvas, double cx, double cy, double radius) {
     final Paint paintProgress = Paint();
-    paintProgress.strokeWidth = 4.sp;
+    paintProgress
+      ..strokeWidth = 4.sp
+      ..strokeCap = StrokeCap.round;
     canvas.save();
     canvas.translate(cx, cy);
     canvas.rotate(_toRadius(0));
     canvas.translate(-cx, -cy);
     for (int i = 0; i <= (max - min); i++) {
       if (i <= progress) {
-        paintProgress.color = Colors.black;
+        paintProgress.color = const Color(0xFF2F5AF5);
       } else {
-        paintProgress.color = Colors.grey;
+        paintProgress.color = const Color(0xFFD8D8D8);
       }
       double evaDegree = i * _toRadius(360 / (max - min));
       double b = i % 10 == 0 ? 6.sp : 0;
       double x = cx + (radius + 12.sp) * Math.cos(evaDegree);
       double y = cy + (radius + 12.sp) * Math.sin(evaDegree);
-      double x1 = cx + (radius - b) * Math.cos(evaDegree);
-      double y1 = cx + (radius - b) * Math.sin(evaDegree);
+      double x1 = cx + (radius + 4.sp - b) * Math.cos(evaDegree);
+      double y1 = cx + (radius + 4.sp - b) * Math.sin(evaDegree);
       canvas.drawLine(Offset(x, y), Offset(x1, y1), paintProgress);
     }
     canvas.translate(cx, cy);
@@ -190,7 +202,7 @@ class _ArcProgressBarPainter extends CustomPainter {
     paintPoint
       ..style = PaintingStyle.fill
       ..strokeWidth = 100.sp
-      ..color = Colors.black;
+      ..color = const Color(0xFF2F5AF5);
     double degree = _toRadius(360 / (max - min)) * progress;
     double x = cx + (radius + 12.sp) * Math.cos(degree);
     double y = cy + (radius + 12.sp) * Math.sin(degree);

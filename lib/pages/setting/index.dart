@@ -54,84 +54,84 @@ class _SettingState extends State<Setting> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             /// 头部
-            topWidget(),
+            // topWidget(),
             Expanded(
-                flex: 1,
+                // flex: 1,
                 child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      /// 扫一扫
-                      // scanCode(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  /// 扫一扫
+                  // scanCode(),
 
-                      /// 关于我们
-                      // aboutUs(),
+                  /// 关于我们
+                  // aboutUs(),
 
-                      /// 联系客服
-                      // contactCustomer(),
+                  /// 联系客服
+                  // contactCustomer(),
 
-                      /// 图表统计
-                      // chartCal(),
+                  /// 图表统计
+                  // chartCal(),
 
-                      /// 文件上传与下载
-                      // fileUplodAndDownload(),
+                  /// 文件上传与下载
+                  // fileUplodAndDownload(),
 
-                      const Divider(),
+                  const Divider(),
 
-                      /// WLAN设置
-                      wlanSet(),
+                  /// WLAN设置
+                  wlanSet(),
 
-                      /// 访客网络
-                      visitorNet(),
+                  /// 访客网络
+                  visitorNet(),
 
-                      /// 专业设置
-                      majorSet(),
+                  /// 专业设置
+                  majorSet(),
 
-                      /// WPS设置
-                      wpsSet(),
-                      const Divider(),
+                  /// WPS设置
+                  wpsSet(),
+                  const Divider(),
 
-                      /// 设备信息
-                      commonProblem(),
+                  /// 设备信息
+                  commonProblem(),
 
-                      const Divider(),
+                  const Divider(),
 
-                      /// 维护设置
-                      maintainSettings(),
+                  /// 维护设置
+                  maintainSettings(),
 
-                      /// 登录管理
-                      accountSecurity(),
-                      const Divider(),
+                  /// 登录管理
+                  accountSecurity(),
+                  const Divider(),
 
-                      /// 以太网状态
-                      feedback(),
+                  /// 以太网状态
+                  feedback(),
 
-                      ///以太网设置
-                      netSet(),
-                      const Divider(),
+                  ///以太网设置
+                  netSet(),
+                  const Divider(),
 
-                      /// WAN设置
-                      wanSettings(),
+                  /// WAN设置
+                  wanSettings(),
 
-                      /// DNS设置
-                      dnsSettings(),
+                  /// DNS设置
+                  dnsSettings(),
 
-                      /// Radio设置
-                      radioSettings(),
+                  /// Radio设置
+                  radioSettings(),
 
-                      /// LAN设置
-                      lanSettings(),
-                      // const Divider(),
+                  /// LAN设置
+                  lanSettings(),
+                  // const Divider(),
 
-                      /// 系统设置
-                      systemSettings(),
+                  /// 系统设置
+                  systemSettings(),
 
-                      /// 清除缓存
-                      clearCache(),
-                      const Divider(),
-                    ],
-                  ),
-                ))
+                  /// 清除缓存
+                  clearCache(),
+                  const Divider(),
+                ],
+              ),
+            ))
           ],
         ),
       ),

@@ -65,11 +65,10 @@ class _DnsSettingsState extends State<DnsSettings> {
                 ]),
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   SizedBox(
                     height: 70.sp,
-                    width: 700.sp,
+                    width: 710.sp,
                     child: ElevatedButton(
                       style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all(

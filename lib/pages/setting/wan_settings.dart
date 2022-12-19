@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/widget/custom_app_bar.dart';
-import '../../core/widget/common_widget.dart';
+import '../../core/widget/common_picker.dart';
 
 /// WAN设置
 class WanSettings extends StatefulWidget {
@@ -12,9 +12,8 @@ class WanSettings extends StatefulWidget {
 }
 
 class _WanSettingsState extends State<WanSettings> {
-  int sex = 1;
-  int status = 1;
-  bool flag = true;
+  String showVal = 'NAT';
+  int val = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -27,65 +26,53 @@ class _WanSettingsState extends State<WanSettings> {
                 const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
             child: Column(children: [
               SizedBox(
-                height: 80.sp,
+                height: 40.sp,
               ),
+              Padding(padding: EdgeInsets.only(top: 30.sp)),
               InfoBox(
-                boxCotainer: Row(children: [
-                  Flexible(
-                    child: Text('网络模式', style: TextStyle(fontSize: 32.sp)),
-                  ),
-                  SizedBox(
-                    width: 200.sp,
-                  ),
-                  Radio(
-                    // 按钮的值
-                    value: 1,
-                    // 改变事件
-                    onChanged: (value) {
-                      setState(() {
-                        sex = value.hashCode;
-                      });
-                    },
-                    // 按钮组的值
-                    groupValue: sex,
-                  ),
-                  const Text("NAT"),
-                  SizedBox(
-                    width: 40.sp,
-                  ),
-                  Radio(
-                    value: 2,
-                    onChanged: (value) {
-                      setState(() {
-                        sex = value.hashCode;
-                      });
-                    },
-                    groupValue: sex,
-                  ),
-                  const Text("BRIDGE"),
-                ]),
+                boxCotainer: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('网络模式',
+                          style: TextStyle(
+                              color: const Color.fromARGB(255, 5, 0, 0),
+                              fontSize: 32.sp)),
+                      GestureDetector(
+                        onTap: () {
+                          var result = CommonPicker.showPicker(
+                            context: context,
+                            options: ['NAT', 'BPIDGE'],
+                            value: val,
+                          );
+                          result?.then((selectedValue) => {
+                                if (val != selectedValue &&
+                                    selectedValue != null)
+                                  {
+                                    setState(() => {
+                                          val = selectedValue,
+                                          showVal = ['NAT', 'BPIDGE'][val]
+                                        })
+                                  }
+                              });
+                        },
+                        child: Row(
+                          children: [
+                            Text(showVal,
+                                style: TextStyle(
+                                    color: const Color.fromARGB(255, 5, 0, 0),
+                                    fontSize: 32.sp)),
+                            Icon(
+                              Icons.arrow_forward_ios_outlined,
+                              color: const Color.fromRGBO(144, 147, 153, 1),
+                              size: 30.w,
+                            )
+                          ],
+                        ),
+                      ),
+                    ]),
               ),
               SizedBox(
-                height: 120.sp,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  SizedBox(
-                    height: 70.sp,
-                    width: 700.sp,
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(
-                              const Color.fromARGB(255, 48, 118, 250))),
-                      onPressed: () {},
-                      child: Text(
-                        '提交',
-                        style: TextStyle(fontSize: 36.sp),
-                      ),
-                    ),
-                  )
-                ],
+                height: 60.sp,
               ),
             ])),
       ),
@@ -101,7 +88,7 @@ class InfoBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(2.0.sp),
+        padding: EdgeInsets.all(20.0.sp),
         margin: EdgeInsets.only(bottom: 5.sp),
         decoration: BoxDecoration(
           color: Colors.white,

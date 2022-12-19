@@ -11,8 +11,7 @@ class MaintainSettings extends StatefulWidget {
 }
 
 class _MaintainSettingsState extends State<MaintainSettings> {
-  // 多选框
-  var status = true;
+  bool isCheck = true;
 
   @override
   Widget build(BuildContext context) {
@@ -31,34 +30,26 @@ class _MaintainSettingsState extends State<MaintainSettings> {
               ]),
               InfoBox(
                 boxCotainer: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text('开启重启定时'),
-                    Padding(padding: EdgeInsets.only(right: 20.sp)),
-                    Checkbox(
-                      value: status,
-                      // 改变后的事件
-                      onChanged: (value) {
+                    Switch(
+                      value: isCheck,
+                      onChanged: (newVal) {
                         setState(() {
-                          status = value!;
+                          isCheck = newVal;
                         });
                       },
-                      // 选中后的颜色
-                      activeColor: Colors.blueAccent,
-                      // 选中后对号的颜色
-                      checkColor: Colors.white,
                     ),
-                    const Text('启用'),
                   ],
                 ),
               ),
               Padding(padding: EdgeInsets.only(top: 40.sp)),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   SizedBox(
                     height: 70.sp,
-                    width: 700.sp,
+                    width: 710.sp,
                     child: ElevatedButton(
                       style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all(

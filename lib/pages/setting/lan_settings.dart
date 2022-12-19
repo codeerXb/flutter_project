@@ -16,8 +16,8 @@ class _LanSettingsState extends State<LanSettings> {
   final TextEditingController _fieldOne1 = TextEditingController();
   final TextEditingController _fieldOne2 = TextEditingController();
   final TextEditingController _fieldOne3 = TextEditingController();
-  // 多选框
-  var status = true;
+
+  bool isCheck = true;
 
   @override
   Widget build(BuildContext context) {
@@ -77,26 +77,18 @@ class _LanSettingsState extends State<LanSettings> {
                 boxCotainer: Column(children: [
                   Padding(padding: EdgeInsets.only(top: 20.sp)),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      const Text('DHCP 服务器'),
-                      Padding(padding: EdgeInsets.only(right: 200.sp)),
-                      Checkbox(
-                        value: status,
-                        // 改变后的事件
-                        onChanged: (value) {
-                          setState(() {
-                            status = value!;
-                          });
-                        },
-                        // 选中后的颜色
-                        activeColor: Colors.blueAccent,
-                        // 选中后对号的颜色
-                        checkColor: Colors.white,
-                      ),
-                      const Text('启用'),
-                    ],
-                  ),
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('DHCP 服务器'),
+                        Switch(
+                          value: isCheck,
+                          onChanged: (newVal) {
+                            setState(() {
+                              isCheck = newVal;
+                            });
+                          },
+                        ),
+                      ]),
                   Padding(padding: EdgeInsets.only(top: 40.sp)),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -153,11 +145,10 @@ class _LanSettingsState extends State<LanSettings> {
               ),
               Padding(padding: EdgeInsets.only(top: 150.sp)),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   SizedBox(
                     height: 70.sp,
-                    width: 700.sp,
+                    width: 710.sp,
                     child: ElevatedButton(
                       style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all(

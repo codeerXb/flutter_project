@@ -14,20 +14,21 @@ import 'package:flutter_template/pages/wifi_set/wlan_set.dart';
 import 'package:flutter_template/pages/wifi_set/wps_set.dart';
 import 'package:flutter_template/pages/topo/access_equipment.dart';
 import 'package:flutter_template/splash.dart';
+import 'package:flutter_template/pages/net_status/net_server_settings.dart';
 
 import '../../pages/address_book/address_book_detail.dart';
 import '../../pages/login/login.dart';
 import '../../pages/login/user_agreement.dart';
-import '../../pages/setting/account_security.dart';
+import '../../pages/network_settings/dns_settings.dart';
+import '../../pages/network_settings/lan_settings.dart';
+import '../../pages/network_settings/radio_settings.dart';
+import '../../pages/network_settings/wan_settings.dart';
 import '../../pages/setting/chart_demo.dart';
 import '../../pages/setting/scan_code.dart';
 import '../../pages/setting/system_settings.dart';
+import '../../pages/system_settings/maintain_settings.dart';
+import '../../pages/system_settings/account_security.dart';
 import '../../pages/toolbar.dart';
-import '../../pages/setting/wan_settings.dart';
-import '../../pages/setting/dns_settings.dart';
-import '../../pages/setting/radio_settings.dart';
-import '../../pages/setting/lan_settings.dart';
-import '../../pages/setting/maintain_settings.dart';
 
 /// 路由
 class GlobalRouter {
@@ -135,6 +136,10 @@ class GlobalRouter {
 
     /// 接入设备
     '/odu': (BuildContext context, {Object? args}) => const ODU(),
+
+    // 套餐设置
+    '/net_server_settings': (BuildContext context, {Object? args}) =>
+        const NetServerSettings(),
   };
 
   static GlobalRouter? _singleton;

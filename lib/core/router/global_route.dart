@@ -14,6 +14,7 @@ import 'package:flutter_template/pages/wifi_set/wlan_set.dart';
 import 'package:flutter_template/pages/wifi_set/wps_set.dart';
 import 'package:flutter_template/pages/topo/access_equipment.dart';
 import 'package:flutter_template/splash.dart';
+import 'package:flutter_template/pages/net_status/net_server_settings.dart';
 
 import '../../pages/address_book/address_book_detail.dart';
 import '../../pages/login/login.dart';
@@ -135,6 +136,10 @@ class GlobalRouter {
 
     /// 接入设备
     '/odu': (BuildContext context, {Object? args}) => const ODU(),
+
+    // 套餐设置
+    '/net_server_settings': (BuildContext context, {Object? args}) =>
+        const NetServerSettings(),
   };
 
   static GlobalRouter? _singleton;

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/widget/custom_app_bar.dart';
 import '../../core/widget/common_box.dart';
-import '../../core/widget/common_widget.dart';
+import '../../core/widget/common_picker.dart';
 
 /// Radio设置
 class RadioSettings extends StatefulWidget {
@@ -13,9 +13,8 @@ class RadioSettings extends StatefulWidget {
 }
 
 class _RadioSettingsState extends State<RadioSettings> {
-  int sex = 1;
-  int status = 1;
-  bool flag = true;
+  String showVal = '手动';
+  int val = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -39,63 +38,50 @@ class _RadioSettingsState extends State<RadioSettings> {
                     Text('SIM卡未准备完成', style: TextStyle(fontSize: 30.sp)),
                   ],
                 ),
-                Row(children: [
-                  Flexible(
-                    child: Text('连接方式', style: TextStyle(fontSize: 30.sp)),
-                  ),
-                  SizedBox(
-                    width: 240.sp,
-                  ),
-                  Radio(
-                    // 按钮的值
-                    value: 1,
-                    // 改变事件
-                    onChanged: (value) {
-                      setState(() {
-                        sex = value.hashCode;
-                      });
-                    },
-                    // 按钮组的值
-                    groupValue: sex,
-                  ),
-                  const Text("手动"),
-                  SizedBox(
-                    width: 20.sp,
-                  ),
-                  Radio(
-                    value: 2,
-                    onChanged: (value) {
-                      setState(() {
-                        sex = value.hashCode;
-                      });
-                    },
-                    groupValue: sex,
-                  ),
-                  const Text("自动"),
-                ]),
-              ])),
-              SizedBox(
-                height: 30.sp,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  SizedBox(
-                    height: 70.sp,
-                    width: 700.sp,
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(
-                              const Color.fromARGB(255, 48, 118, 250))),
-                      onPressed: () {},
-                      child: Text(
-                        '提交',
-                        style: TextStyle(fontSize: 36.sp),
+                SizedBox(
+                  height: 20.sp,
+                ),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('连接方式',
+                          style: TextStyle(
+                              color: const Color.fromARGB(255, 5, 0, 0),
+                              fontSize: 32.sp)),
+                      GestureDetector(
+                        onTap: () {
+                          var result = CommonPicker.showPicker(
+                            context: context,
+                            options: ['手动', '自动'],
+                            value: val,
+                          );
+                          result?.then((selectedValue) => {
+                                if (val != selectedValue &&
+                                    selectedValue != null)
+                                  {
+                                    setState(() => {
+                                          val = selectedValue,
+                                          showVal = ['手动', '自动'][val]
+                                        })
+                                  }
+                              });
+                        },
+                        child: Row(
+                          children: [
+                            Text(showVal,
+                                style: TextStyle(
+                                    color: const Color.fromARGB(255, 5, 0, 0),
+                                    fontSize: 32.sp)),
+                            Icon(
+                              Icons.arrow_forward_ios_outlined,
+                              color: const Color.fromRGBO(144, 147, 153, 1),
+                              size: 30.w,
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                  )
-                ],
-              ),
+                    ]),
+              ])),
               Column(children: [
                 SizedBox(
                   height: 40.sp,
@@ -206,7 +192,7 @@ class InfoBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(10.0.w),
+        padding: EdgeInsets.all(20.0.w),
         margin: EdgeInsets.only(bottom: 3.h),
         decoration: BoxDecoration(
           color: Colors.white,

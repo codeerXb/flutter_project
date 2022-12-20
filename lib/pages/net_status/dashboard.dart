@@ -71,7 +71,7 @@ class _DashboardState extends State<Dashboard> {
       'param': '["FlowTable"]',
     };
     try {
-      var obj = await XHttp.get('', flowStatistics);
+      var obj = await XHttp.get('/data.html', flowStatistics);
       var jsonObj = json.decode(obj);
       var flowTable = FlowStatistics.fromJson(jsonObj).flowTable?[4];
       if (flowTable != null) {

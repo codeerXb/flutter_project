@@ -28,7 +28,7 @@ class _EquInfoState extends State<EquInfo> {
       'param':
           '["systemProductModel","systemVersionHw","systemVersionRunning","systemVersionUboot","systemVersionSn","lteImei","lteImsi","networkLanSettingsMac","networkLanSettingIp","networkLanSettingMask","systemRunningTime"]',
     };
-    XHttp.get('', data).then((res) {
+    XHttp.get('/data.html', data).then((res) {
       try {
         var d = json.decode(res.toString());
         setState(() {

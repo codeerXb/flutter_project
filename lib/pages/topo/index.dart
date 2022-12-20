@@ -31,7 +31,7 @@ class _TopoState extends State<Topo> {
       'method': 'tab_dump',
       'param': '["OnlineDeviceTable"]',
     };
-    XHttp.get('', data).then((res) {
+    XHttp.get('/data.html', data).then((res) {
       try {
         print("\n==================  ==========================");
         var d = json.decode(res.toString());
@@ -39,6 +39,9 @@ class _TopoState extends State<Topo> {
           topoData = EquipmentDatas.fromJson(d);
         });
       } on FormatException catch (e) {
+        setState(() {
+          topoData = EquipmentDatas(onlineDeviceTable: [], max: null);
+        });
         print('The provided string is not valid JSON');
         print(e);
       }
@@ -58,6 +61,7 @@ class _TopoState extends State<Topo> {
         leading: IconButton(
             onPressed: () {
               //刷新
+              getTopoData();
             },
             icon: const Icon(Icons.refresh)),
         actions: [

@@ -47,7 +47,7 @@ class _NetStatusState extends State<NetStatus> {
           '["systemRebootFlag","webGuiRestartFlag","webGuiRestartFlag","lteMainStatusGet","systemLedModeThree","lteSignalStrengthGet","lteRoam","systemDataRateDlCurrent","systemDataRateUlCurrent","wifiHaveOrNot","wifi5gHaveOrNot","wifiEnable","wifi5gEnable","ethernetConnectionStatus","systemVoiceServiceType","volteStatus","voipInfoRegistrationStatus","voipInfoLineStatus"]'
     };
     try {
-      var response = await XHttp.get('', netStatus);
+      var response = await XHttp.get('/data.html', netStatus);
       var resObj = NetConnecStatus.fromJson(json.decode(response));
       String wanStatus = resObj.ethernetConnectionStatus == '1' ? '1' : '0';
       String wifiStatus =

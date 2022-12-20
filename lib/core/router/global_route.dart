@@ -18,16 +18,16 @@ import 'package:flutter_template/splash.dart';
 import '../../pages/address_book/address_book_detail.dart';
 import '../../pages/login/login.dart';
 import '../../pages/login/user_agreement.dart';
-import '../../pages/setting/account_security.dart';
+import '../../pages/network_settings/dns_settings.dart';
+import '../../pages/network_settings/lan_settings.dart';
+import '../../pages/network_settings/radio_settings.dart';
+import '../../pages/network_settings/wan_settings.dart';
 import '../../pages/setting/chart_demo.dart';
 import '../../pages/setting/scan_code.dart';
 import '../../pages/setting/system_settings.dart';
+import '../../pages/system_settings/maintain_settings.dart';
+import '../../pages/system_settings/account_security.dart';
 import '../../pages/toolbar.dart';
-import '../../pages/setting/wan_settings.dart';
-import '../../pages/setting/dns_settings.dart';
-import '../../pages/setting/radio_settings.dart';
-import '../../pages/setting/lan_settings.dart';
-import '../../pages/setting/maintain_settings.dart';
 
 /// 路由
 class GlobalRouter {

@@ -74,7 +74,7 @@ class _NetStatusState extends State<NetStatus> {
     }
   }
 
-  var timer = null;
+  Timer? timer;
   @override
   void initState() {
     super.initState();
@@ -193,5 +193,13 @@ class _NetStatusState extends State<NetStatus> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    debugPrint('销毁');
+    timer?.cancel();
+    timer = null;
   }
 }

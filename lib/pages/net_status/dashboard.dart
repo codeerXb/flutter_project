@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/pages/net_status/model/flow_statistics.dart';
 import 'package:flutter_template/pages/net_status/model/net_connect_status.dart';
+import 'package:flutter_template/pages/net_status/model/online_device.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'arc_progress_bar.dart';
@@ -31,24 +32,26 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   double _totalFlowData = 0;
-  var timer;
-  @override
-  void initState() {
-    super.initState();
-
-    /// 初始化状态
-    _totalFlowData = widget.totalFlowData;
-    getUsedFlow();
-    timer = Timer.periodic(const Duration(milliseconds: 2000), (t) async {
-      getUsedFlow();
-    });
-  }
+  Timer? timer;
 
   // 剩余流量百分比
   double _progress = 0;
 
   // 已经使用的流量
   double _usedFlow = 0;
+
+  // 展示的百分比值
+  double get _progressLabel {
+    // 接口未请求，也没有设置套餐总量
+    if (_totalFlowData == 0 && _usedFlow == 0) return 0;
+    // 接口为请求，但设置了套餐总量
+    if (_totalFlowData != 0 && _usedFlow == 0) return 100;
+    // 其他情况按照接口请求的数据来更新
+    return _progress;
+  }
+
+  // 实时在线设备数量
+  int _onlineCount = 0;
 
   /// 舍弃当前变量的小数部分，结果为 33。返回值为 int 类型。
   int get usedFlowInt {
@@ -83,15 +86,47 @@ class _DashboardState extends State<Dashboard> {
                   100;
         });
       }
-      debugPrint('请求用过的');
       return _usedFlow;
     } catch (e) {
-      debugPrint(e.toString());
+      debugPrint('获取流量信息错误：${e.toString()}');
     }
     return _usedFlow;
   }
 
-  /// 获取实时在线数量
+  /// 获取设备列表并更新在线数量
+  void updateOnlineCount() async {
+    try {
+      Map<String, dynamic> queryOnlineDevice = {
+        'method': 'tab_dump',
+        'param': '["OnlineDeviceTable"]'
+      };
+      var res = await XHttp.get('/data.html', queryOnlineDevice);
+      var onlineDevice =
+          OnlineDevice.fromJson(jsonDecode(res)).onlineDeviceTable;
+      if (onlineDevice != null) {
+        setState(() {
+          _onlineCount = onlineDevice.length;
+        });
+      }
+      debugPrint('在线设备数量：${onlineDevice?.length}');
+    } catch (e) {
+      debugPrint("获取设备列表错误：${e.toString()}");
+    }
+  }
+
+  /// 初始化状态
+  @override
+  void initState() {
+    super.initState();
+    debugPrint('初始化信息');
+    _totalFlowData = widget.totalFlowData;
+    getUsedFlow();
+    updateOnlineCount();
+    timer = Timer.periodic(const Duration(milliseconds: 2000), (t) async {
+      getUsedFlow();
+      updateOnlineCount();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +145,7 @@ class _DashboardState extends State<Dashboard> {
                 width: 526.w,
                 height: 526.w,
                 child: ArcProgresssBar(
-                    width: 1.sw, height: 1.sw, progress: _progress),
+                    width: 1.sw, height: 1.sw, progress: _progressLabel),
               ),
               Column(
                 children: [
@@ -179,7 +214,9 @@ class _DashboardState extends State<Dashboard> {
                     DownloadSpeed(
                       rate: widget.downRate,
                     ),
-                    const OnlineCount(),
+                    OnlineCount(
+                      count: _onlineCount,
+                    ),
                   ],
                 )),
           )
@@ -187,14 +224,23 @@ class _DashboardState extends State<Dashboard> {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    super.dispose();
+    debugPrint('销毁');
+    timer?.cancel();
+    timer = null;
+  }
 }
 
 // 展示实时在线数量
 class OnlineCount extends StatelessWidget {
   const OnlineCount({
     Key? key,
+    this.count = 0,
   }) : super(key: key);
-
+  final int count;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -204,18 +250,22 @@ class OnlineCount extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
-              '0',
+              '$count',
               style: TextStyle(
                 fontWeight: FontWeight.w500,
                 fontSize: 50.sp,
+                height: 1,
               ),
             ),
-            const Text(
-              '台',
-              style: TextStyle(
-                  height: 2.2,
-                  color: Color(0xFF87868E),
-                  fontWeight: FontWeight.w400),
+            Padding(
+              padding: EdgeInsets.only(left: 4.sp),
+              child: const Text(
+                '台',
+                style: TextStyle(
+                    height: 2.2,
+                    color: Color(0xFF87868E),
+                    fontWeight: FontWeight.w400),
+              ),
             ),
           ],
         ),
@@ -238,27 +288,27 @@ class DownloadSpeed extends StatelessWidget {
   final double rate;
 
   String get _downRate {
-    var kb = rate / 1024;
-    if (kb >= 1024 * 1000) {
+    var kb = (rate * 8) / 1000;
+    if (kb >= 1000 * 1000) {
       // gb/s
-      return (kb / 1024 / 1024).toStringAsFixed(2);
+      return (kb / 1000 / 1000).toStringAsFixed(2);
     } else if (kb >= 1000) {
       // mb/s
-      return (kb / 1024).toStringAsFixed(2);
+      return (kb / 1000).toStringAsFixed(2);
     }
     return kb.toStringAsFixed(2);
   }
 
   String get _unit {
-    var kb = rate / 1024;
-    if (kb >= 1024 * 1000) {
+    var kb = rate / 1000;
+    if (kb >= 1000 * 1000) {
       // gb/s
-      return 'GB/s';
+      return 'Gbit/s';
     } else if (kb >= 1000) {
       // mb/s
-      return 'MB/s';
+      return 'Mbit/s';
     }
-    return 'KB/s';
+    return 'Kbit/s';
   }
 
   @override
@@ -309,27 +359,27 @@ class UploadSpeed extends StatelessWidget {
   }) : super(key: key);
   final double rate;
   String get _upRate {
-    var kb = rate / 1024;
-    if (kb >= 1024 * 1000) {
+    var kb = (rate * 8) / 1000;
+    if (kb >= 1000 * 1000) {
       // gb/s
-      return (kb / 1024 / 1024).toStringAsFixed(2);
+      return (kb / 1000 / 1000).toStringAsFixed(2);
     } else if (kb >= 1000) {
       // mb/s
-      return (kb / 1024).toStringAsFixed(2);
+      return (kb / 1000).toStringAsFixed(2);
     }
     return kb.toStringAsFixed(2);
   }
 
   String get _unit {
-    var kb = rate / 1024;
-    if (kb >= 1024 * 1000) {
+    var kb = (rate * 8) / 1000;
+    if (kb >= 1000 * 1000) {
       // gb/s
-      return 'GB/s';
+      return 'Gbit/s';
     } else if (kb >= 1000) {
       // mb/s
-      return 'MB/s';
+      return 'Mbit/s';
     }
-    return 'KB/s';
+    return 'Kbit/s';
   }
 
   @override

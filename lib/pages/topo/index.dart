@@ -33,7 +33,7 @@ class _TopoState extends State<Topo> {
     };
     XHttp.get('/data.html', data).then((res) {
       try {
-        print("\n==================  ==========================");
+        debugPrint("\n================== 获取在线设备 ==========================");
         var d = json.decode(res.toString());
         setState(() {
           topoData = EquipmentDatas.fromJson(d);
@@ -46,7 +46,7 @@ class _TopoState extends State<Topo> {
         print(e);
       }
     }).catchError((onError) {
-      debugPrint(onError.toString());
+      debugPrint('获取在线设备失败：${onError.toString()}');
     });
   }
 

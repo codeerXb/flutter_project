@@ -33,10 +33,10 @@ class _EquInfoState extends State<EquInfo> {
         var d = json.decode(res.toString());
         setState(() {
           equinfoData = EquinfoDatas.fromJson(d);
-          print(equinfoData.lteImei);
+          debugPrint(equinfoData.lteImei);
         });
       } on FormatException catch (e) {
-        print(e);
+        debugPrint('获取拓扑信息失败：$e.toString()');
       }
     });
   }

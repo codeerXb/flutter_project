@@ -43,7 +43,7 @@ class _SettingState extends State<Setting> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: customAppbar(
-          title: '我的',
+          title: '高级设置',
           backgroundColor: const Color.fromRGBO(91, 149, 255, 0.9),
           titleColor: Colors.white,
           borderBottom: false),

@@ -28,6 +28,8 @@ class _LoginState extends State<Login> {
   FocusNode blankNode = FocusNode();
   String _account = 'admin';
   String _password = 'admin';
+  dynamic sn = Get.arguments['sn'];
+  dynamic vn = Get.arguments['vn'];
   bool _isObscure = true;
   Color _eyeColor = Colors.grey;
   Color _accountBorderColor = Colors.white;
@@ -47,6 +49,7 @@ class _LoginState extends State<Login> {
         print(d['token']);
 
         loginController.setToken(d['token']);
+        sharedAddAndUpdate(sn.toString(), String, _password);
         sharedAddAndUpdate("token", String, d['token']);
         Get.offNamed("/home");
         // print(d);
@@ -93,11 +96,11 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                   Text(
-                    'CPE管理平台',
+                    '管理员登录',
                     style: TextStyle(fontSize: 48.sp),
                   ),
                   Text(
-                    '路由器数据管理平台',
+                    '当前设备 $vn',
                     style: TextStyle(
                         fontSize: 28.sp, color: const Color(0xFF828095)),
                   ),

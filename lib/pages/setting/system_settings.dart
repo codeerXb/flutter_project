@@ -54,7 +54,8 @@ class _SystemSettingsState extends State<SystemSettings> {
   /// 退出登录
   void loginout() {
     // 这里还需要调用后台接口的方法
+
     sharedDeleteData("loginInfo");
-    Get.offAllNamed("/loginPage");
+    Get.offAllNamed("/get_equipment");
   }
 }

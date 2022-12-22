@@ -41,7 +41,7 @@ class GlobalRouter {
     /// 过渡页面
     '/': (BuildContext context, {Object? args}) => const SplashPage(),
 
-    /// 主页面
+    /// 搜索设备
     '/get_equipment': (BuildContext context, {Object? args}) =>
         const Equipment(),
 

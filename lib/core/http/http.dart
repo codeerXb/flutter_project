@@ -14,7 +14,7 @@ class XHttp {
     baseUrl: BaseConfig.baseUrl,
     connectTimeout: 5000,
     receiveTimeout: 3000,
-    headers: BaseConfig.header,
+    // headers: BaseConfig.header,
   ));
 
   ///初始化dio
@@ -38,7 +38,7 @@ class XHttp {
       if (params != null) {
         response = await dio.get(url, queryParameters: {
           ...params,
-          '_csrf_token': BaseConfig.token,
+          // '_csrf_token': BaseConfig.token,
         });
       } else {
         response = await dio.get(url);
@@ -56,7 +56,8 @@ class XHttp {
       {Map<String, dynamic>? params, Map<String, dynamic>? data}) async {
     Response response = await dio.post(url,
         queryParameters: params != null
-            ? {...params, '_csrf_token': BaseConfig.token}
+            // ? {...params, '_csrf_token': BaseConfig.token}
+            ? {...params}
             : null,
         data: data);
     return response.data;

@@ -1,7 +1,7 @@
 /// 基础信息配置
 class BaseConfig {
   // 定义token
-  static const String token = '5ce9df67-bd6c-40b6-b7c7-94c718318a11';
+  // static const String token = '5ce9df67-bd6c-40b6-b7c7-94c718318a11';
 
   /// 服务器路径
   static const baseUrl = "https://172.16.20.68";
@@ -18,8 +18,8 @@ class BaseConfig {
   ///高德定位Android key和iOS key
   static const gdIosKey = "c59c6723ee079e25746cda7e37e11101";
 
-  static const Map<String, dynamic> header = {
-    "Cookie":
-        '-goahead-session-=::webs.session::a0943e6b42f6b4f7c89b125580fca6b3; token=$token'
-  };
+  // static const Map<String, dynamic> header = {
+  //   "Cookie":
+  //       '-goahead-session-=::webs.session::a0943e6b42f6b4f7c89b125580fca6b3; token=$token'
+  // };
 }

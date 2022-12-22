@@ -3,6 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/core/http/http.dart';
+import 'package:flutter_template/pages/login/login_controller.dart';
+import 'package:flutter_template/pages/login/model/equipment_data.dart';
 import 'package:get/get.dart';
 
 import '../../core/utils/shared_preferences_util.dart';
@@ -19,15 +22,44 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  final LoginController loginController = Get.put(LoginController());
   final GlobalKey _formKey = GlobalKey<FormState>();
   // 点击空白  关闭键盘 时传的一个对象
   FocusNode blankNode = FocusNode();
   String _account = 'admin';
-  String _password = 'admin123';
+  String _password = 'admin';
   bool _isObscure = true;
   Color _eyeColor = Colors.grey;
   Color _accountBorderColor = Colors.white;
   Color _passwordBorderColor = Colors.white;
+  EquipmentData equipmentData = EquipmentData();
+
+  void appLogin() {
+    Map<String, dynamic> data = {
+      'username': _account,
+      'password': _password,
+    };
+    XHttp.get('/action/appLogin', data).then((res) {
+      try {
+        print("+++++++++++++");
+
+        var d = json.decode(res.toString());
+        print(d['token']);
+
+        loginController.setToken(d['token']);
+        sharedAddAndUpdate("token", String, d['token']);
+        Get.offNamed("/home");
+        // print(d);
+      } on FormatException catch (e) {
+        print('----------');
+
+        print('The provided string is not valid JSON');
+        print(e);
+      }
+    }).catchError((onError) {
+      debugPrint(onError.toString());
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -219,7 +251,8 @@ class _LoginState extends State<Login> {
         ),
         onPressed: () {
           if ((_formKey.currentState as FormState).validate()) {
-            onSubmit(context);
+            // onSubmit(context);
+            appLogin();
           }
         },
         child: Text(

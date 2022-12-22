@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_template/pages/Ethernet/net_set.dart';
+import 'package:flutter_template/pages/get_equipment/index.dart';
 import 'package:flutter_template/pages/odu/index.dart';
 import 'package:flutter_template/pages/setting/about_us.dart';
 import 'package:flutter_template/pages/setting/clear_cache.dart';
@@ -39,6 +40,10 @@ class GlobalRouter {
   static final _routes = {
     /// 过渡页面
     '/': (BuildContext context, {Object? args}) => const SplashPage(),
+
+    /// 主页面
+    '/get_equipment': (BuildContext context, {Object? args}) =>
+        const Equipment(),
 
     /// 主页面
     '/home': (BuildContext context, {Object? args}) => const Toolbar(),

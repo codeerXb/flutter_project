@@ -25,7 +25,7 @@ class _AccessEquipmentState extends State<AccessEquipment> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppbar(context: context, title: 'AAA-data'),
+      appBar: customAppbar(context: context, title: data.hostName.toString()),
       body: Container(
         padding: const EdgeInsets.all(10.0),
         decoration:

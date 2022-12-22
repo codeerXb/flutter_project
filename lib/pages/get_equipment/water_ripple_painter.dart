@@ -1,8 +1,11 @@
 // ignore_for_file: library_private_types_in_public_api
+import 'dart:async';
 import 'dart:ui' as ui;
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_template/pages/login/login_controller.dart';
+import 'package:get/get.dart';
 
 GlobalKey<_WaterRippleState> childKey = GlobalKey();
 
@@ -27,7 +30,7 @@ class _WaterRippleState extends State<WaterRipple>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
-
+  final LoginController loginController = Get.put(LoginController());
   @override
   void initState() {
     _controller = AnimationController(
@@ -37,8 +40,16 @@ class _WaterRippleState extends State<WaterRipple>
     super.initState();
   }
 
-  void controllerForward() {
+  Future controllerForward() async {
+    loginController.setLoading(true);
+    Timer timer;
     _controller.repeat();
+    timer = Timer.periodic(Duration(milliseconds: 5000), (timer) {
+      _controller.stop();
+      loginController.setLoading(false);
+
+      timer.cancel(); //取消定时器
+    });
   }
 
   void controllerStop() {

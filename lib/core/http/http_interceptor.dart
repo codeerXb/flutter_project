@@ -9,9 +9,9 @@ class HttpInterceptors extends InterceptorsWrapper {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     String token = loginController.login.token.value;
+    String session = loginController.login.session.value;
     Map<String, dynamic> header = {
-      "Cookie":
-          '-goahead-session-=::webs.session::a0943e6b42f6b4f7c89b125580fca6b3; token=$token'
+      "Cookie": '-goahead-session-=$session; token=$token'
     };
     options.headers = header;
     debugPrint("\n================== 请求数据 ==========================");

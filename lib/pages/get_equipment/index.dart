@@ -37,6 +37,8 @@ class _MyWidgetState extends State<Equipment> {
 
         var d = json.decode(res.toString());
         print(d['token']);
+        loginController.setSession(d['sessionid']);
+        sharedAddAndUpdate("session", String, d['sessionid']);
 
         loginController.setToken(d['token']);
         sharedAddAndUpdate("token", String, d['token']);
@@ -49,7 +51,8 @@ class _MyWidgetState extends State<Equipment> {
         print(e);
       }
     }).catchError((onError) {
-      Get.defaultDialog(title: '连接失败', middleText: '');
+      Get.offNamed("/loginPage", arguments: {"sn": sn, "vn": vn});
+
       debugPrint(onError.toString());
     });
   }

@@ -8,6 +8,10 @@ class LoginController extends GetxController {
     login.token.value = value;
   }
 
+  void setSession(value) {
+    login.session.value = value;
+  }
+
   void setLoading(value) {
     loading.value = value;
   }
@@ -22,4 +26,5 @@ class LoginController extends GetxController {
 
 class Login {
   var token = ''.obs;
+  var session = ''.obs;
 }

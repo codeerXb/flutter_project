@@ -49,18 +49,33 @@ class _LoginState extends State<Login> {
         print(d['token']);
 
         loginController.setToken(d['token']);
+        loginController.setSession(d['sessionid']);
         sharedAddAndUpdate(
             sn.toString(), String, base64Encode(utf8.encode(_password)));
         sharedAddAndUpdate("token", String, d['token']);
+        sharedAddAndUpdate("session", String, d['sessionid']);
         Get.offNamed("/home");
         // print(d);
       } on FormatException catch (e) {
-        print('----------');
+        ToastUtils.toast('登录失败');
 
         print('The provided string is not valid JSON');
         print(e);
       }
     }).catchError((onError) {
+      // Get.snackbar("提示", "登录失败");
+      // Get.snackbar("", "",
+      //     titleText: Text(
+      //       '提示',
+      //       textAlign: TextAlign.center,
+      //       style: TextStyle(fontSize: 40.sp),
+      //     ),
+      //     messageText: Text(
+      //       '登录失败',
+      //       textAlign: TextAlign.center,
+      //       style: TextStyle(fontSize: 30.sp),
+      //     ));
+      ToastUtils.toast('登录失败');
       debugPrint(onError.toString());
     });
   }

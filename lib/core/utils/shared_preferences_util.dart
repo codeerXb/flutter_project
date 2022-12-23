@@ -1,9 +1,9 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 ///保存本地数据，获取本地数据
-sharedAddAndUpdate(String key, Object dataType, Object data) async{
+sharedAddAndUpdate(String key, Object dataType, Object data) async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-  switch(dataType){
+  switch (dataType) {
     case bool:
       sharedPreferences.setBool(key, data as bool);
       break;
@@ -25,9 +25,9 @@ sharedAddAndUpdate(String key, Object dataType, Object data) async{
   }
 }
 
-Future<Object?> sharedGetData(String key, Object dataType) async{
+Future<Object?> sharedGetData(String key, Object dataType) async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-  switch(dataType){
+  switch (dataType) {
     case bool:
       return sharedPreferences.getBool(key);
     case double:
@@ -43,7 +43,12 @@ Future<Object?> sharedGetData(String key, Object dataType) async{
   }
 }
 
-sharedDeleteData(String key) async{
+sharedDeleteData(String key) async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   sharedPreferences.remove(key);
+}
+
+sharedClearData() async {
+  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  sharedPreferences.clear();
 }

@@ -56,6 +56,7 @@ class _SystemSettingsState extends State<SystemSettings> {
     // 这里还需要调用后台接口的方法
 
     sharedDeleteData("loginInfo");
+    sharedClearData();
     Get.offAllNamed("/get_equipment");
   }
 }

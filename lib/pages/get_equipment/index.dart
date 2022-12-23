@@ -26,10 +26,10 @@ class _MyWidgetState extends State<Equipment> {
     getEquipmentData();
   }
 
-  void appLogin() {
+  void appLogin(pwd, sn, vn) {
     Map<String, dynamic> data = {
       'username': 'admin',
-      'password': 'admin',
+      'password': utf8.decode(base64Decode(pwd)),
     };
     XHttp.get('/action/appLogin', data).then((res) {
       try {
@@ -44,11 +44,12 @@ class _MyWidgetState extends State<Equipment> {
         // print(d);
       } on FormatException catch (e) {
         print('----------');
-
+        Get.offNamed("/loginPage", arguments: {"sn": sn, "vn": vn});
         print('The provided string is not valid JSON');
         print(e);
       }
     }).catchError((onError) {
+      Get.defaultDialog(title: '连接失败', middleText: '');
       debugPrint(onError.toString());
     });
   }
@@ -154,12 +155,16 @@ class _MyWidgetState extends State<Equipment> {
                           trailing: TextButton(
                             onPressed: () {
                               sharedGetData(
-                                      loginController.sn.toString(), String)
+                                      equipmentData.systemVersionSn.toString(),
+                                      String)
                                   .then((data) {
-                                print('datadatadatadatadatadata');
-                                print(data);
+                                print(equipmentData.systemVersionSn.toString());
+                                print(
+                                  data,
+                                );
                                 if (data != null) {
-                                  appLogin();
+                                  appLogin(data, equipmentData.systemVersionSn,
+                                      equipmentData.systemProductModel);
                                   loginController.setSn(
                                       equipmentData.systemVersionSn, data);
                                 } else {

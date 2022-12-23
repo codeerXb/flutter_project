@@ -38,8 +38,8 @@ class _LoginState extends State<Login> {
 
   void appLogin() {
     Map<String, dynamic> data = {
-      'username': _account,
-      'password': _password,
+      'username': _account.trim(),
+      'password': _password.trim(),
     };
     XHttp.get('/action/appLogin', data).then((res) {
       try {
@@ -49,7 +49,8 @@ class _LoginState extends State<Login> {
         print(d['token']);
 
         loginController.setToken(d['token']);
-        sharedAddAndUpdate(sn.toString(), String, _password);
+        sharedAddAndUpdate(
+            sn.toString(), String, base64Encode(utf8.encode(_password)));
         sharedAddAndUpdate("token", String, d['token']);
         Get.offNamed("/home");
         // print(d);
@@ -87,7 +88,7 @@ class _LoginState extends State<Login> {
                 children: <Widget>[
                   /// logo
                   Container(
-                    margin: EdgeInsets.only(bottom: 20.h),
+                    margin: EdgeInsets.only(bottom: 70.w),
                     // width: 136.w,
                     // height: 136.w,
                     child: Image.asset(
@@ -95,14 +96,16 @@ class _LoginState extends State<Login> {
                       // fit: BoxFit.fill,
                     ),
                   ),
+                  // Padding(padding: EdgeInsets.only(top: 70.w)),
                   Text(
                     '管理员登录',
                     style: TextStyle(fontSize: 48.sp),
                   ),
+                  Padding(padding: EdgeInsets.only(top: 10.w)),
                   Text(
                     '当前设备 $vn',
                     style: TextStyle(
-                        fontSize: 28.sp, color: const Color(0xFF828095)),
+                        fontSize: 28.sp, color: const Color(0xFF373543)),
                   ),
 
                   /// 账号

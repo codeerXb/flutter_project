@@ -46,10 +46,10 @@ class _ToolbarState extends State<Toolbar> {
   @override
   void initState() {
     ///登录是app更新检查
-    if (false) {
-      /// 这里先注释掉
-      AppUpdateUtils().updateApp();
-    }
+    // if (false) {
+    //   /// 这里先注释掉
+    //   AppUpdateUtils().updateApp();
+    // }
     super.initState();
   }
 

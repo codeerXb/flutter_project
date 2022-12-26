@@ -12,15 +12,17 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'arc_progress_bar.dart';
 
 class Dashboard extends StatefulWidget {
-  Dashboard(
+  const Dashboard(
       {Key? key,
-      this.totalFlowData = 0,
+      this.comboType = 0,
+      this.totalComboData = 0,
       required this.downRate,
       required this.upRate})
       : super(key: key);
-  // 定义套餐总量，单位GB
-  final double totalFlowData;
-
+  // 定义套餐类型
+  final int comboType;
+  // 定义套餐总量
+  final double totalComboData;
   // 上行速率
   final double upRate;
   // 下行速率
@@ -31,7 +33,6 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  double _totalFlowData = 0;
   Timer? timer;
 
   // 剩余流量百分比
@@ -40,12 +41,22 @@ class _DashboardState extends State<Dashboard> {
   // 已经使用的流量
   double _usedFlow = 0;
 
+  // 已经使用的时长
+  double _usedTime = 0;
+
   // 展示的百分比值
   double get _progressLabel {
-    // 接口未请求，也没有设置套餐总量
-    if (_totalFlowData == 0 && _usedFlow == 0) return 0;
-    // 接口为请求，但设置了套餐总量
-    if (_totalFlowData != 0 && _usedFlow == 0) return 100;
+    if (widget.comboType == 0) {
+      // 接口未请求，也没有设置套餐总量
+      if (widget.totalComboData == 0 && _usedFlow == 0) return 0;
+      // 接口未请求，但设置了套餐总量
+      if (widget.totalComboData != 0 && _usedFlow == 0) return 100;
+    } else {
+      // 接口未请求，也没有设置套餐总量
+      if (widget.totalComboData == 0 && _usedTime == 0) return 0;
+      // 接口未请求，但设置了套餐总量
+      if (widget.totalComboData != 0 && _usedTime == 0) return 100;
+    }
     // 其他情况按照接口请求的数据来更新
     return _progress;
   }
@@ -55,16 +66,26 @@ class _DashboardState extends State<Dashboard> {
 
   /// 舍弃当前变量的小数部分，结果为 33。返回值为 int 类型。
   int get usedFlowInt {
-    return (_usedFlow >= 1024)
-        ? (_usedFlow / 1024).truncate()
-        : _usedFlow.truncate();
+    if (widget.comboType == 0) {
+      return (_usedFlow >= 1024)
+          ? (_usedFlow / 1024).truncate()
+          : _usedFlow.truncate();
+    } else {
+      // 已使用时间
+      return _usedTime.truncate();
+    }
   }
 
   /// 获取小数部分，通过.分割，返回值为String类型
   String get usedFlowDecimals {
-    return (_usedFlow >= 1024)
-        ? '${(_usedFlow / 1024).toStringAsFixed(2).toString().split('.')[1].substring(0, 2)}GB'
-        : '${_usedFlow.toStringAsFixed(2).toString().split('.')[1].substring(0, 1)}MB';
+    if (widget.comboType == 0) {
+      return (_usedFlow >= 1024)
+          ? '${(_usedFlow / 1024).toStringAsFixed(2).toString().split('.')[1].substring(0, 2)}GB'
+          : '${_usedFlow.toStringAsFixed(2).toString().split('.')[1].substring(0, 1)}MB';
+    } else {
+      // 已使用时间小数
+      return '${_usedTime.toStringAsFixed(1).split('.')[1]}h';
+    }
   }
 
   /// 请求获取已用流量
@@ -75,15 +96,26 @@ class _DashboardState extends State<Dashboard> {
     };
     try {
       var obj = await XHttp.get('/data.html', flowStatistics);
+      // 以 { 或者 [ 开头的
+      RegExp exp = RegExp('^[{[]');
+      if (!exp.hasMatch(obj)) {
+        setState(() {
+          _usedFlow = 0;
+          _progress = 0;
+        });
+        debugPrint('flowStatistics得到数据不是json');
+      }
       var jsonObj = json.decode(obj);
       var flowTable = FlowStatistics.fromJson(jsonObj).flowTable?[4];
       if (flowTable != null) {
-        var usedFlowBytes = double.parse(flowTable.recvBytes!);
+        var usedFlowBytes = double.parse(flowTable.recvBytes!) +
+            double.parse(flowTable.sendBytes!);
         setState(() {
           _usedFlow = usedFlowBytes / 1048576;
-          _progress =
-              (1 - (usedFlowBytes / (_totalFlowData * 1024 * 1024 * 1024))) *
-                  100;
+          _progress = (1 -
+                  (usedFlowBytes /
+                      (widget.totalComboData * 1024 * 1024 * 1024))) *
+              100;
         });
       }
       return _usedFlow;
@@ -91,6 +123,25 @@ class _DashboardState extends State<Dashboard> {
       debugPrint('获取流量信息错误：${e.toString()}');
     }
     return _usedFlow;
+  }
+
+// 请求获取在线时长并更新_usedTime
+  void updateOnlineTime() async {
+    try {
+      Map<String, dynamic> queryOnlineTime = {
+        'method': 'obj_get',
+        'param': '["systemOnlineTime"]'
+      };
+      var res = await XHttp.get('/data.html', queryOnlineTime);
+      var time = json.decode(res)['systemOnlineTime'];
+      debugPrint('获取的时长${double.parse(time) / 3600}');
+      setState(() {
+        _usedTime = (double.parse(time) / 3600);
+        _progress = (1 - (_usedTime / widget.totalComboData)) * 100;
+      });
+    } catch (err) {
+      debugPrint('获取在线时长错误$err');
+    }
   }
 
   /// 获取设备列表并更新在线数量
@@ -101,6 +152,14 @@ class _DashboardState extends State<Dashboard> {
         'param': '["OnlineDeviceTable"]'
       };
       var res = await XHttp.get('/data.html', queryOnlineDevice);
+      // 以 { 或者 [ 开头的
+      RegExp exp = RegExp('^[{[]');
+      if (!exp.hasMatch(res)) {
+        setState(() {
+          _onlineCount = 0;
+        });
+        debugPrint('queryOnlineDevice得到数据不是json');
+      }
       var onlineDevice =
           OnlineDevice.fromJson(jsonDecode(res)).onlineDeviceTable;
       if (onlineDevice != null) {
@@ -118,12 +177,11 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     super.initState();
-    debugPrint('初始化信息');
-    _totalFlowData = widget.totalFlowData;
-    getUsedFlow();
+    debugPrint('初始化dashboard');
+    widget.comboType == 0 ? getUsedFlow() : updateOnlineTime();
     updateOnlineCount();
     timer = Timer.periodic(const Duration(milliseconds: 2000), (t) async {
-      getUsedFlow();
+      widget.comboType == 0 ? getUsedFlow() : updateOnlineTime();
       updateOnlineCount();
     });
   }
@@ -131,7 +189,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     debugPrint('flowValue=$_usedFlow');
-    debugPrint('total=$_totalFlowData');
+    debugPrint('total=${widget.totalComboData},progress=$_progressLabel');
     return Container(
       margin: EdgeInsets.zero,
       color: const Color(0xFFF8F8F8),
@@ -177,12 +235,13 @@ class _DashboardState extends State<Dashboard> {
                     children: [
                       Container(
                         margin: EdgeInsets.only(right: 6.sp),
-                        child: const Image(
-                            image: AssetImage(
-                                'assets/images/icon_homepage_flow.png')),
+                        child: Image(
+                            image: AssetImage(widget.comboType == 0
+                                ? 'assets/images/icon_homepage_flow.png'
+                                : 'assets/images/icon_homepage_time.png')),
                       ),
                       Text(
-                        '已用流量',
+                        widget.comboType == 0 ? '已用流量' : '已用时长',
                         style: TextStyle(
                             fontSize: 24.sp,
                             fontWeight: FontWeight.w400,

@@ -19,8 +19,8 @@ import 'homepage_state_btn.dart';
 
 /// 消息页面
 class NetStatus extends StatefulWidget {
-  const NetStatus({Key? key}) : super(key: key);
-
+  const NetStatus(this.service, {Key? key}) : super(key: key);
+  final String service;
   @override
   State<StatefulWidget> createState() => _NetStatusState();
 }
@@ -44,6 +44,8 @@ class _NetStatusState extends State<NetStatus> {
   double _upRate = 0;
   // 下行速率
   double _downRate = 0;
+
+  String get vn => widget.service;
 
   /// 获取网络连接状态和上下行速率并更新
   void updateStatus() async {
@@ -163,10 +165,7 @@ class _NetStatusState extends State<NetStatus> {
         appBar: AppBar(
           elevation: 0,
           title: Row(
-            children: const [
-              Text('TL-WDR5620'),
-              FaIcon(FontAwesomeIcons.chevronDown)
-            ],
+            children: [Text(vn), const FaIcon(FontAwesomeIcons.chevronDown)],
           ),
           backgroundColor: Colors.transparent,
         ),

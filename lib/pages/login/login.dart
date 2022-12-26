@@ -54,7 +54,7 @@ class _LoginState extends State<Login> {
             sn.toString(), String, base64Encode(utf8.encode(_password)));
         sharedAddAndUpdate("token", String, d['token']);
         sharedAddAndUpdate("session", String, d['sessionid']);
-        Get.offNamed("/home");
+        Get.offNamed("/home", arguments: {'vn': vn});
         // print(d);
       } on FormatException catch (e) {
         ToastUtils.toast('登录失败');
@@ -321,7 +321,7 @@ class _LoginState extends State<Login> {
           'http://c.hiphotos.baidu.com/image/pic/item/9c16fdfaaf51f3de1e296fa390eef01f3b29795a.jpg'
         ];
         sharedAddAndUpdate("loginInfo", List, loginInfo); //把登录信息保存到本地
-        Get.offNamed("/home");
+        Get.offNamed("/home", arguments: {'vn': vn});
       } else {
         ToastUtils.toast('用户名或密码错误');
       }

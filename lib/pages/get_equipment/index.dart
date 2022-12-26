@@ -63,7 +63,12 @@ class _MyWidgetState extends State<Equipment> {
       'param':
           '["systemProductModel","systemVersionHw","systemVersionRunning","systemVersionUboot","systemVersionSn","networkLanSettingsMac","networkLanSettingIp","networkLanSettingMask","systemRunningTime"]'
     };
-
+    setState(() {
+      equipmentData = EquipmentData(
+          systemProductModel: null,
+          systemVersionRunning: '',
+          systemVersionSn: '');
+    });
     XHttp.get('/pub/pub_data.html', data).then((res) {
       try {
         print("\n==================  ==========================");
@@ -74,12 +79,6 @@ class _MyWidgetState extends State<Equipment> {
 
         print(equipmentData);
       } on FormatException catch (e) {
-        setState(() {
-          equipmentData = EquipmentData(
-              systemProductModel: '',
-              systemVersionRunning: '',
-              systemVersionSn: '');
-        });
         print('The provided string is not valid JSON');
         print(e);
       }
@@ -93,8 +92,12 @@ class _MyWidgetState extends State<Equipment> {
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text('发现设备'),
+          title: const Text(
+            '发现设备',
+            style: TextStyle(color: Colors.black),
+          ),
           elevation: 0,
+          backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         ),
         body: Obx(
           () => ListView(

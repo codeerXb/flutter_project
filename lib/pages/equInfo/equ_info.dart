@@ -35,7 +35,7 @@ class _EquInfoState extends State<EquInfo> {
         equinfoData = EquinfoDatas.fromJson(d);
       });
     } catch (e) {
-      debugPrint('获取拓扑信息失败：$e.toString()');
+      debugPrint('获取设备信息失败：$e.toString()');
     }
   }
 

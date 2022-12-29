@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
+import 'package:flutter_template/pages/Ethernet/netType_datas.dart';
 import '../../core/widget/custom_app_bar.dart';
 
 /// 以太网状态
@@ -11,6 +15,30 @@ class NetType extends StatefulWidget {
 }
 
 class _NetTypeState extends State<NetType> {
+  NetTypeDatas NetTypeData = NetTypeDatas();
+  @override
+  void initState() {
+    super.initState();
+    getNetType();
+  }
+
+  void getNetType() async {
+    Map<String, dynamic> data = {
+      'method': 'obj_get',
+      'param':
+          '["ethernetConnectMode","ethernetLinkStatus","ethernetConnectionStatus","systemOnlineTime","ethernetConnectionIp","ethernetConnectionMask","ethernetConnectionGateway","ethernetConnectionDns1","ethernetConnectionDns2"]',
+    };
+    try {
+      var response = await XHttp.get('/data.html', data);
+      var d = json.decode(response.toString());
+      setState(() {
+        NetTypeData = NetTypeDatas.fromJson(d);
+      });
+    } catch (e) {
+      debugPrint('获取以太网状态失败：$e.toString()');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,21 +54,21 @@ class _NetTypeState extends State<NetType> {
             const TitleWidger(title: '状态'),
             InfoBox(
               boxCotainer: Column(
-                children: const [
+                children: [
                   BottomLine(
                       rowtem: RowContainer(
                     leftText: '连接模式',
-                    righText: '动态 IP',
+                    righText: NetTypeData.ethernetConnectMode.toString()=='dhcp'?'动态 IP':'非动态 IP',
                   )),
                   BottomLine(
                       rowtem: RowContainer(
                     leftText: '链接状态',
-                    righText: '已连接',
+                    righText: NetTypeData.ethernetConnectionStatus.toString()=='1'?'已连接':'未连接',
                   )),
                   BottomLine(
                       rowtem: RowContainer(
                     leftText: '连接状态',
-                    righText: '已连接',
+                    righText: NetTypeData.ethernetLinkStatus.toString()=='1'?'已连接':'未连接',
                   )),
                   BottomLine(
                       rowtem: RowContainer(
@@ -50,26 +78,26 @@ class _NetTypeState extends State<NetType> {
                   BottomLine(
                       rowtem: RowContainer(
                     leftText: 'IP地址',
-                    righText: '172.16.20.68',
+                    righText: NetTypeData.ethernetConnectionIp.toString(),
                   )),
                   BottomLine(
                       rowtem: RowContainer(
                     leftText: '子网掩码',
-                    righText: '255.255.255.0',
+                    righText: NetTypeData.ethernetConnectionMask.toString(),
                   )),
                   BottomLine(
                       rowtem: RowContainer(
                     leftText: '默认网关',
-                    righText: '172.16.20.253',
+                    righText: NetTypeData.ethernetConnectionGateway.toString(),
                   )),
                   BottomLine(
                       rowtem: RowContainer(
                     leftText: '主DNS',
-                    righText: '172.16.100.253',
+                    righText: NetTypeData.ethernetConnectionDns1.toString(),
                   )),
                   RowContainer(
                     leftText: '辅DNS',
-                    righText: '114.114.114.114',
+                    righText: NetTypeData.ethernetConnectionDns2.toString(),
                   )
                 ],
               ),
@@ -80,4 +108,3 @@ class _NetTypeState extends State<NetType> {
     );
   }
 }
-

@@ -164,10 +164,6 @@ class _MyWidgetState extends State<Equipment> {
                                       equipmentData.systemVersionSn.toString(),
                                       String)
                                   .then((data) {
-                                print(equipmentData.systemVersionSn.toString());
-                                print(
-                                  data,
-                                );
                                 if (data != null) {
                                   appLogin(data, equipmentData.systemVersionSn,
                                       equipmentData.systemProductModel);
@@ -182,9 +178,6 @@ class _MyWidgetState extends State<Equipment> {
                                   });
                                 }
                               });
-
-                              // print('----------------------');
-                              // print(loginController.sn.toString());
                             },
                             child: const Text('连接设备'),
                           ),

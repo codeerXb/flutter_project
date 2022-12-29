@@ -3,7 +3,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:kg_charts/kg_charts.dart';
+
+import 'radar_map_model.dart';
+import 'radar_widget.dart';
 
 class ODU extends StatefulWidget {
   const ODU({super.key});
@@ -24,6 +26,9 @@ class _ODUState extends State<ODU> {
   List<double> mapData = List.generate(36, (index) {
     return 0;
   });
+  List<double> pointer = List.generate(36, (index) {
+    return 0;
+  });
   final List<IndicatorModel> legend = List.generate(36, (index) {
     if (index % 3 == 0) {
       return IndicatorModel("${index * 10}", 30);
@@ -39,7 +44,12 @@ class _ODUState extends State<ODU> {
     // print(123123);
     isShow = false;
     _index = 0;
+    MaxNumber = 0;
+    CurrentAngle = 0;
     mapData = List.generate(36, (index) {
+      return 0;
+    });
+    pointer = List.generate(36, (index) {
       return 0;
     });
     _timer = Timer.periodic(const Duration(milliseconds: 300), (t) {
@@ -48,8 +58,13 @@ class _ODUState extends State<ODU> {
         if (_index < 36) {
           mapData[_index] = random(3, 28);
           if (mapData[_index] > MaxNumber) {
+            pointer = List.generate(36, (index) {
+              return 0;
+            });
+
             MaxNumber = mapData[_index];
             CurrentAngle = _index * 10;
+            pointer[_index] = MaxNumber;
           }
           _index++;
 
@@ -79,14 +94,15 @@ class _ODUState extends State<ODU> {
             radarMap: RadarMapModel(
               legend: [
                 LegendModel('信号强度', const Color(0XFF0EBD8D)),
-                // LegendModel('10/11', const Color(0XFFEAA035)),
+                LegendModel('最大值', Color.fromARGB(255, 234, 104, 53)),
               ],
               indicator: legend,
               data: [
                 //   MapDataModel([48,32.04,1.00,94.5,19,60,50,30,19,60,50]),
                 //   MapDataModel([42.59,34.04,1.10,68,99,30,19,60,50,19,30]),
-                // MapDataModel([100, 90, 90, 90, 10, 20, 10]),
+
                 MapDataModel(mapData),
+                MapDataModel(pointer),
               ],
               radius: 130,
               duration: 2000,
@@ -114,33 +130,48 @@ class _ODUState extends State<ODU> {
             },
           ),
           Text(
-              '当前旋转(角度/dB)${(_index) * 10}° / ${mapData[_index == 0 ? 0 : _index - 1]}'),
-          Text('信号最大值-旋转角度$MaxNumber-$CurrentAngle°'),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              ElevatedButton(
-                onPressed: isShow ? showTimer : null,
-                child: Row(
-                  children: const [
-                    Text('开始搜索'),
-                    // if (isShow) const CircularProgressIndicator(value: 0.5),
-                    // const Icon(Icons.local_dining)
-                  ],
-                ),
-              ),
-              // ElevatedButton(
-              //   onPressed: () {
-              //     setState(() {
-              //       isShow = true;
-              //     });
-
-              //     _timer?.cancel();
-              //   },
-              //   child: const Text('停止搜索'),
-              // ),
-            ],
+              '当前旋转(角度/dB)${(_index) * 10}° / ${mapData[_index == 0 ? 0 : _index - 1]}dB'),
+          Text('信号最大值-旋转角度$MaxNumber dB - $CurrentAngle°'),
+          Padding(
+            padding: EdgeInsets.only(top: 50.w),
           ),
+          SizedBox(
+            height: 70.sp,
+            width: 710.sp,
+            child: ElevatedButton(
+              style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(
+                      const Color.fromARGB(255, 48, 118, 250))),
+              onPressed: isShow ? showTimer : null,
+              child: const Text('开始搜索'),
+            ),
+          ),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+          //   children: [
+          //     ElevatedButton(
+          //       onPressed: isShow ? showTimer : null,
+          //       child: Row(
+          //         children: const [
+          //           Text('开始搜索'),
+          //           // if (isShow) const CircularProgressIndicator(value: 0.5),
+          //           // const Icon(Icons.local_dining)
+          //         ],
+          //       ),
+          //     ),
+
+          //     ElevatedButton(
+          //       onPressed: () {
+          //         setState(() {
+          //           isShow = true;
+          //         });
+
+          //         _timer?.cancel();
+          //       },
+          //       child: const Text('停止搜索'),
+          //     ),
+          //   ],
+          // ),
         ],
       ),
     );

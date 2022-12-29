@@ -63,7 +63,7 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                   BottomLine(
                     rowtem: RowContainer(
                       leftText: '租约时间',
-                      righText: DateFormat("HH小时mm分钟ss秒").format(
+                      righText: DateFormat("dd天HH小时mm分钟").format(
                           DateTime.fromMillisecondsSinceEpoch(
                               int.parse(data.leaseTime.toString() + '000'))),
                     ),

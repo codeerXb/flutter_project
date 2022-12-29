@@ -73,7 +73,7 @@ class _TopoState extends State<Topo> {
         ],
       ),
       body: ListView(
-        padding: const EdgeInsets.only(top: 20),
+        padding: const EdgeInsets.only(top: 20, left: 5, right: 5),
         children: [
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,7 +87,7 @@ class _TopoState extends State<Topo> {
                     // margin: const EdgeInsets.only(top: 20, bottom: 5),
                     child: ClipOval(
                         child: Image.network(
-                            "http://imgsrc.baidu.com/forum/w=580/sign=ae2a4e35ba19ebc4c0787691b226cf79/5e13af1c8701a18b50cd631f972f07082938fe80.jpg",
+                            "https://bpic.51yuansu.com/pic3/cover/03/10/19/5b46a61d01fc0_610.jpg",
                             fit: BoxFit.cover)),
                   ),
                   Text(

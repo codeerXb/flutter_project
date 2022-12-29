@@ -33,6 +33,8 @@ class _ODUState extends State<ODU> {
   var _timer;
   bool isShow = true;
   int _index = 0;
+  double MaxNumber = 0;
+  int CurrentAngle = 0;
   showTimer() {
     // print(123123);
     isShow = false;
@@ -45,6 +47,10 @@ class _ODUState extends State<ODU> {
       setState(() {
         if (_index < 36) {
           mapData[_index] = random(3, 28);
+          if (mapData[_index] > MaxNumber) {
+            MaxNumber = mapData[_index];
+            CurrentAngle = _index * 10;
+          }
           _index++;
 
           // mapData = mapData;
@@ -107,7 +113,9 @@ class _ODUState extends State<ODU> {
               return data > 0 ? "$data" : '';
             },
           ),
-          Text('当前旋转角度${(_index) * 10}°'),
+          Text(
+              '当前旋转(角度/dB)${(_index) * 10}° / ${mapData[_index == 0 ? 0 : _index - 1]}'),
+          Text('信号最大值-旋转角度$MaxNumber-$CurrentAngle°'),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -121,16 +129,16 @@ class _ODUState extends State<ODU> {
                   ],
                 ),
               ),
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    isShow = true;
-                  });
+              // ElevatedButton(
+              //   onPressed: () {
+              //     setState(() {
+              //       isShow = true;
+              //     });
 
-                  _timer?.cancel();
-                },
-                child: const Text('停止搜索'),
-              ),
+              //     _timer?.cancel();
+              //   },
+              //   child: const Text('停止搜索'),
+              // ),
             ],
           ),
         ],

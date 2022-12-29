@@ -4,6 +4,7 @@ class LoginController extends GetxController {
   var login = Login();
   var loading = false.obs;
   final Map sn = {}.obs;
+  var isSn = ''.obs;
   void setToken(value) {
     login.token.value = value;
   }
@@ -18,6 +19,7 @@ class LoginController extends GetxController {
 
   void setSn(key, password) {
     sn[key] = password;
+    isSn.value = key;
     // sn.update(key, (val) => password);
     print('----------------------');
     print(sn.toString());

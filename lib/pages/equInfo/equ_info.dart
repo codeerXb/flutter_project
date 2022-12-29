@@ -22,23 +22,21 @@ class _EquInfoState extends State<EquInfo> {
     getEquinfoDatas();
   }
 
-  void getEquinfoDatas() {
+  void getEquinfoDatas() async {
     Map<String, dynamic> data = {
       'method': 'obj_get',
       'param':
           '["systemProductModel","systemVersionHw","systemVersionRunning","systemVersionUboot","systemVersionSn","lteImei","lteImsi","networkLanSettingsMac","networkLanSettingIp","networkLanSettingMask","systemRunningTime"]',
     };
-    XHttp.get('/data.html', data).then((res) {
-      try {
-        var d = json.decode(res.toString());
-        setState(() {
-          equinfoData = EquinfoDatas.fromJson(d);
-          debugPrint(equinfoData.lteImei);
-        });
-      } on FormatException catch (e) {
-        debugPrint('获取拓扑信息失败：$e.toString()');
-      }
-    });
+    try {
+      var response = await XHttp.get('/data.html', data);
+      var d = json.decode(response.toString());
+      setState(() {
+        equinfoData = EquinfoDatas.fromJson(d);
+      });
+    } catch (e) {
+      debugPrint('获取拓扑信息失败：$e.toString()');
+    }
   }
 
   @override
@@ -62,68 +60,69 @@ class _EquInfoState extends State<EquInfo> {
                     righText: '05d 20h 01m',
                   ),
                 ),
-
                 //2版本信息
                 const TitleWidger(title: '版本信息'),
                 InfoBox(
                   boxCotainer: Column(
-                    children: const [
+                    children: [
                       BottomLine(
                           rowtem: RowContainer(
                         leftText: '产品型号',
-                        righText: 'SRS621-a',
+                        righText: equinfoData.systemProductModel.toString(),
                       )),
                       BottomLine(
                           rowtem: RowContainer(
                         leftText: '硬件版本',
-                        righText: 'V1.0',
+                        righText: equinfoData.systemVersionHw.toString(),
                       )),
                       BottomLine(
                           rowtem: RowContainer(
                         leftText: '软件版本',
-                        righText: 'SQXR60_V1.0.2',
+                        righText: equinfoData.systemVersionRunning.toString(),
                       )),
                       BottomLine(
                           rowtem: RowContainer(
                         leftText: 'UBOOT版本',
-                        righText: 'V1.1.0',
+                        righText: equinfoData.systemVersionUboot.toString(),
                       )),
                       BottomLine(
                           rowtem: RowContainer(
                         leftText: '产品序列号',
-                        righText: 'RS621A00211700113',
+                        righText: equinfoData.systemVersionSn.toString(),
                       )),
                       BottomLine(
                           rowtem: RowContainer(
                         leftText: 'IMEI',
-                        righText: '862165040976175',
+                        righText: equinfoData.lteImei.toString(),
                       )),
                       RowContainer(
                         leftText: 'IMSI',
-                        righText: '— —',
+                        righText: equinfoData.lteImsi == null
+                            ? equinfoData.lteImsi.toString()
+                            : '- -',
                       )
                     ],
                   ),
                 ),
 
                 //3.0LAN口状态
-                TitleWidger(title: 'LAN口状态'),
+                const TitleWidger(title: 'LAN口状态'),
                 InfoBox(
                   boxCotainer: Column(
-                    children: const [
+                    children: [
                       BottomLine(
                           rowtem: RowContainer(
                         leftText: 'MAC地址',
-                        righText: '88:12:3D:03:6F:66',
+                        righText: equinfoData.networkLanSettingsMac.toString(),
                       )),
                       BottomLine(
                           rowtem: RowContainer(
                         leftText: 'IP地址',
-                        righText: '192.168.1.1',
+                        righText: equinfoData.networkLanSettingIp.toString(),
                       )),
                       RowContainer(
                         leftText: '子网掩码',
-                        righText: '255.255.255.06',
+                        righText: equinfoData.networkLanSettingMask.toString(),
                       )
                     ],
                   ),

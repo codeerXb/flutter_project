@@ -5,6 +5,7 @@ import 'package:flutter_template/pages/net_status/index.dart';
 import 'package:flutter_template/pages/setting/index.dart';
 import 'package:flutter_template/pages/topo/index.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 
 import '../core/utils/sign_out_util.dart';
 
@@ -19,6 +20,7 @@ class _ToolbarState extends State<Toolbar> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int currentIndex = 0;
   final PageController _pageController = PageController();
+  String vn = Get.arguments['vn'];
 
   /// 底部导航
   static const List<BottomNavigationBarItem> menuList = [
@@ -37,30 +39,34 @@ class _ToolbarState extends State<Toolbar> {
   ];
 
   /// 对应页面
-  static const List<Widget> pages = [
-    NetStatus(),
-    Topo(),
-    Setting(),
-  ];
+  List<Widget> getPages() {
+    List<Widget> pages = [
+      NetStatus(vn),
+      const Topo(),
+      const Setting(),
+    ];
+    return pages;
+  }
 
   @override
   void initState() {
     ///登录是app更新检查
-    if (false) {
-      /// 这里先注释掉
-      AppUpdateUtils().updateApp();
-    }
+    // if (false) {
+    //   /// 这里先注释掉
+    //   AppUpdateUtils().updateApp();
+    // }
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('vn=$vn');
     return WillPopScope(
         child: Scaffold(
           body: PageView(
             controller: _pageController,
             physics: const NeverScrollableScrollPhysics(),
-            children: pages,
+            children: getPages(),
           ),
           bottomNavigationBar: BottomNavigationBar(
               backgroundColor: Colors.white,

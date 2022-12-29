@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:flutter_template/core/widget/custom_app_bar.dart';
@@ -17,17 +19,21 @@ import 'homepage_state_btn.dart';
 
 /// 消息页面
 class NetStatus extends StatefulWidget {
-  const NetStatus({Key? key}) : super(key: key);
-
+  const NetStatus(this.service, {Key? key}) : super(key: key);
+  final String service;
   @override
   State<StatefulWidget> createState() => _NetStatusState();
 }
 
 class _NetStatusState extends State<NetStatus> {
+  // 定义套餐类型
+  int _comboType = 0;
   // 定义套餐总量
-  final double _totalFlowData = 20;
-  // 获取套餐总量
-
+  double _totalComboData = 0;
+  // 定义显示套餐状况
+  String _comboLabel = '----';
+  // 套餐周期
+  List<String> comboCycleLabel = ['日', '月', '年'];
   // 有线连接状况：1:连通0：未连接
   String _wanStatus = '0';
   // wifi连接状况：1:连通0：未连接
@@ -39,15 +45,29 @@ class _NetStatusState extends State<NetStatus> {
   // 下行速率
   double _downRate = 0;
 
-  /// 获取网络连接状态并更新
+  String get vn => widget.service;
+
+  /// 获取网络连接状态和上下行速率并更新
   void updateStatus() async {
     Map<String, dynamic> netStatus = {
       'method': 'obj_get',
       'param':
-          '["systemRebootFlag","webGuiRestartFlag","webGuiRestartFlag","lteMainStatusGet","systemLedModeThree","lteSignalStrengthGet","lteRoam","systemDataRateDlCurrent","systemDataRateUlCurrent","wifiHaveOrNot","wifi5gHaveOrNot","wifiEnable","wifi5gEnable","ethernetConnectionStatus","systemVoiceServiceType","volteStatus","voipInfoRegistrationStatus","voipInfoLineStatus"]'
+          '["ethernetConnectionStatus","systemDataRateDlCurrent","systemDataRateUlCurrent","wifiHaveOrNot","wifi5gHaveOrNot","wifiEnable","wifi5gEnable","lteRoam"]'
     };
     try {
       var response = await XHttp.get('/data.html', netStatus);
+      // 以 { 或者 [ 开头的
+      RegExp exp = RegExp('^[{[]');
+      if (!exp.hasMatch(response)) {
+        setState(() {
+          _wanStatus = '0';
+          _wifiStatus = '0';
+          _simStatus = '0';
+          _upRate = 0;
+          _downRate = 0;
+        });
+        debugPrint('netStatus得到数据不是json');
+      }
       var resObj = NetConnecStatus.fromJson(json.decode(response));
       String wanStatus = resObj.ethernetConnectionStatus == '1' ? '1' : '0';
       String wifiStatus =
@@ -78,6 +98,31 @@ class _NetStatusState extends State<NetStatus> {
   @override
   void initState() {
     super.initState();
+    // 获取套餐总量
+    sharedGetData('c_type', int).then((value) {
+      if (value != null) {
+        setState(() => _comboType = int.parse(value.toString()));
+      }
+    });
+    sharedGetData('c_contain', double).then((value) {
+      if (value != null) {
+        setState(() => _totalComboData = double.parse(value.toString()));
+      }
+    });
+    Future.wait([
+      sharedGetData('c_type', int),
+      sharedGetData('c_contain', double),
+      sharedGetData('c_cycle', int),
+    ]).then((results) => {
+          if (results[0] != null && results[1] != null && results[2] != null)
+            {
+              setState(() {
+                _comboLabel = results[0] == 0
+                    ? '${results[1]}GB/${comboCycleLabel[results[2] as int]}'
+                    : '${results[1]}h/${comboCycleLabel[results[2] as int]}';
+              }),
+            }
+        });
     updateStatus();
 
     timer = Timer.periodic(const Duration(milliseconds: 2000), (t) async {
@@ -87,6 +132,29 @@ class _NetStatusState extends State<NetStatus> {
 
   @override
   Widget build(BuildContext context) {
+    // 更新套餐总量
+    Future.wait([
+      sharedGetData('c_type', int),
+      sharedGetData('c_contain', double),
+      sharedGetData('c_cycle', int),
+    ]).then((results) => {
+          if (results[0] != null &&
+              results[1] != null &&
+              results[2] != null &&
+              (results[0].toString() != _comboType.toString() ||
+                  results[1].toString() != _totalComboData.toString()))
+            {
+              setState(() {
+                _comboType = int.parse(results[0].toString());
+                _totalComboData = double.parse(results[1].toString());
+                _comboLabel = results[0] == 0
+                    ? '${results[1]}GB/${comboCycleLabel[results[2] as int]}'
+                    : '${results[1]}h/${comboCycleLabel[results[2] as int]}';
+              }),
+              debugPrint(
+                  'index得到的结果${results.toString()}${results[1].toString() == _totalComboData.toString()}')
+            }
+        });
     return Container(
       decoration: const BoxDecoration(
           image: DecorationImage(
@@ -97,10 +165,7 @@ class _NetStatusState extends State<NetStatus> {
         appBar: AppBar(
           elevation: 0,
           title: Row(
-            children: const [
-              Text('TL-WDR5620'),
-              FaIcon(FontAwesomeIcons.chevronDown)
-            ],
+            children: [Text(vn), const FaIcon(FontAwesomeIcons.chevronDown)],
           ),
           backgroundColor: Colors.transparent,
         ),
@@ -128,7 +193,7 @@ class _NetStatusState extends State<NetStatus> {
                                 BorderRadius.all(Radius.circular(8.sp)),
                             border: Border.all(width: 1, color: Colors.white)),
                         child: Text(
-                          '套餐总量：$_totalFlowData G',
+                          '套餐总量：$_comboLabel',
                           style: const TextStyle(color: Colors.white),
                         ),
                       ),
@@ -157,26 +222,35 @@ class _NetStatusState extends State<NetStatus> {
                               offImageUrl:
                                   'assets/images/icon_homepage_no_sim.png',
                               status: _simStatus,
+                              routeName: '/radio_settings',
                             ),
                           ],
                         ),
                         TextButton(
-                            onPressed: () => {},
-                            child: Row(children: [
-                              Text(
-                                '套餐设置',
-                                style: TextStyle(
-                                    fontSize: 28.sp, color: Colors.white),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(left: 8.sp),
-                                child: FaIcon(
-                                  FontAwesomeIcons.chevronRight,
-                                  size: 34.sp,
-                                  color: Colors.white,
-                                ),
-                              )
-                            ]))
+                            onPressed: () => {
+                                  Navigator.pushNamed(
+                                      context, '/net_server_settings')
+                                },
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    '套餐设置',
+                                    style: TextStyle(
+                                        height: 1,
+                                        fontSize: 28.sp,
+                                        color: Colors.white),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(left: 8.sp),
+                                    child: FaIcon(
+                                      FontAwesomeIcons.chevronRight,
+                                      size: 34.sp,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                ]))
                       ],
                     )
                   ]),
@@ -185,7 +259,8 @@ class _NetStatusState extends State<NetStatus> {
             Expanded(
                 flex: 1,
                 child: Dashboard(
-                  totalFlowData: _totalFlowData,
+                  comboType: _comboType,
+                  totalComboData: _totalComboData,
                   upRate: _upRate,
                   downRate: _downRate,
                 )),
@@ -198,7 +273,7 @@ class _NetStatusState extends State<NetStatus> {
   @override
   void dispose() {
     super.dispose();
-    debugPrint('销毁');
+    debugPrint('状态页面销毁');
     timer?.cancel();
     timer = null;
   }

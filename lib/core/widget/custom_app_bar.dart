@@ -6,8 +6,13 @@ import 'package:flutter_template/core/widget/common_widget.dart';
 /// @param {String} title - 标题
 /// @param {bool} borderBottom - 是否显示底部border
 /// @param {List<Widget>} actions - 右侧action功能
-AppBar customAppbar({ BuildContext? context, String title = '', bool borderBottom = true, List<Widget>? actions,
-  Color titleColor = const Color.fromRGBO(76, 76, 76, 1), Color backgroundColor = Colors.white}) {
+AppBar customAppbar(
+    {BuildContext? context,
+    String title = '',
+    bool borderBottom = true,
+    List<Widget>? actions,
+    Color titleColor = const Color.fromRGBO(76, 76, 76, 1),
+    Color backgroundColor = Colors.white}) {
   return AppBar(
     centerTitle: true,
     title: Text(
@@ -29,7 +34,8 @@ AppBar customAppbar({ BuildContext? context, String title = '', bool borderBotto
     bottom: PreferredSize(
       preferredSize: const Size.fromHeight(0),
       child: Container(
-        decoration: BoxDecoration(border: CommonWidget.borderBottom(show: borderBottom)),
+        decoration: BoxDecoration(
+            border: CommonWidget.borderBottom(show: borderBottom)),
       ),
     ),
     actions: actions,

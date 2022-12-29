@@ -397,11 +397,10 @@ class RadarMapPainter extends CustomPainter {
       Canvas canvas, List<double> value, List<double> maxList, Paint mapPaint) {
     Path radarMapPath = Path();
     double step = radarMap.radius / elementLength; //每小段的长度
-    radarMapPath.moveTo(
-        0, -value[0] / (maxList[0] / elementLength) * step); //起点
+    radarMapPath.moveTo(0, value[0] / (maxList[0] / elementLength) * step); //起点
     for (int i = 1; i < elementLength; i++) {
       double mark = value[i] / (maxList[i] / elementLength);
-      var deg = pi / 180 * (360 / elementLength * i - 90);
+      var deg = pi / 180 * (360 / elementLength * i + 90);
       radarMapPath.lineTo(mark * step * cos(deg), mark * step * sin(deg));
     }
     radarMapPath.close();
@@ -413,10 +412,10 @@ class RadarMapPainter extends CustomPainter {
       Paint linePaint) {
     Path mradarPath = Path();
     double step = radarMap.radius / value.length; //每小段的长度
-    mradarPath.moveTo(0, -value[0] / (maxList[0] / value.length) * step);
+    mradarPath.moveTo(0, value[0] / (maxList[0] / value.length) * step);
     for (int i = 1; i < value.length; i++) {
       double mark = value[i] / (maxList[i] / value.length);
-      var deg = pi / 180 * (360 / value.length * i - 90);
+      var deg = pi / 180 * (360 / value.length * i + 90);
       mradarPath.lineTo(mark * step * cos(deg), mark * step * sin(deg));
     }
     mradarPath.close();
@@ -433,7 +432,7 @@ class RadarMapPainter extends CustomPainter {
 
       for (int i = 0; i < value.length; i++) {
         double mark = value[i] / (maxList[i] / value.length);
-        var deg = pi / 180 * (360 / value.length * i - 90);
+        var deg = pi / 180 * (360 / value.length * i + 90);
 
         final paragraphBuilder = ui.ParagraphBuilder(ui.ParagraphStyle(
             textAlign: TextAlign.center,
@@ -485,7 +484,7 @@ class RadarMapPainter extends CustomPainter {
     var bottom = 0.0;
 
     ///角度
-    double angle = 0;
+    double angle = pi;
     node.clear();
     for (int i = 0; i < elementLength; i++) {
       // drawText(

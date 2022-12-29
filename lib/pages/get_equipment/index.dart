@@ -42,7 +42,7 @@ class _MyWidgetState extends State<Equipment> {
 
         loginController.setToken(d['token']);
         sharedAddAndUpdate("token", String, d['token']);
-        Get.offNamed("/home");
+        Get.offNamed("/home", arguments: {"sn": sn, "vn": vn});
         // print(d);
       } on FormatException catch (e) {
         print('----------');

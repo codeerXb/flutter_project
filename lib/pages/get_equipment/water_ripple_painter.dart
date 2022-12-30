@@ -44,11 +44,10 @@ class _WaterRippleState extends State<WaterRipple>
     loginController.setLoading(true);
     Timer timer;
     _controller.repeat();
-    timer = Timer.periodic(Duration(milliseconds: 5000), (timer) {
+    return Future.delayed(const Duration(milliseconds: 6000), () {
       _controller.stop();
       loginController.setLoading(false);
-
-      timer.cancel(); //取消定时器
+      return;
     });
   }
 

@@ -71,19 +71,15 @@ class _MyWidgetState extends State<Equipment> {
     });
     XHttp.get('/pub/pub_data.html', data).then((res) {
       try {
-        print("\n==================  ==========================");
         var d = json.decode(res.toString());
         setState(() {
           equipmentData = EquipmentData.fromJson(d);
         });
-
-        print(equipmentData);
       } on FormatException catch (e) {
-        print('The provided string is not valid JSON');
-        print(e);
+        debugPrint(e.toString());
       }
     }).catchError((onError) {
-      // debugPrint(onError.toString());
+      debugPrint(onError.toString());
     });
   }
 
@@ -114,27 +110,35 @@ class _MyWidgetState extends State<Equipment> {
                           key: childKey,
                         ))),
                 Padding(
-                  padding: EdgeInsets.only(top: 100.w),
+                  padding: EdgeInsets.only(top: 120.w),
                 ),
-                if (loginController.loading.value)
-                  Center(
-                    child: Text(
-                      '正在扫描',
-                      style: TextStyle(fontSize: 36.sp),
-                    ),
-                  ),
-
-                if (equipmentData == null)
-                  Center(
-                      child: Text('未发现设备', style: TextStyle(fontSize: 36.sp))),
-                if (!loginController.loading.value)
-                  TextButton(
-                    onPressed: () {
-                      getEquipmentData();
-                      childKey.currentState!.controllerForward();
-                    },
-                    child: const Text('重新扫描'),
-                  ),
+                Container(
+                  height: 100.w,
+                  child: ListView(children: [
+                    if (!loginController.loading.value)
+                      TextButton(
+                        onPressed: () {
+                          getEquipmentData();
+                          childKey.currentState!
+                              .controllerForward()
+                              .then((value) => getEquipmentData());
+                        },
+                        child: const Text('重新扫描'),
+                      ),
+                    if (loginController.loading.value)
+                      Center(
+                        child: Text(
+                          '正在扫描',
+                          style: TextStyle(fontSize: 36.sp),
+                        ),
+                      ),
+                    if (equipmentData.systemProductModel == null &&
+                        !loginController.loading.value)
+                      Center(
+                          child:
+                              Text('未发现设备', style: TextStyle(fontSize: 36.sp))),
+                  ]),
+                ),
                 if (equipmentData.systemProductModel != null)
                   Card(
                     elevation: 5, //设置卡片阴影的深度
@@ -185,13 +189,6 @@ class _MyWidgetState extends State<Equipment> {
                       ],
                     ),
                   )
-
-                // ElevatedButton(
-                //   onPressed: () {
-                //     childKey.currentState!.controllerStop();
-                //   },
-                //   child: const Text('停止搜索'),
-                // )
               ]),
         ));
   }

@@ -119,9 +119,7 @@ class _MyWidgetState extends State<Equipment> {
                       TextButton(
                         onPressed: () {
                           getEquipmentData();
-                          childKey.currentState!
-                              .controllerForward()
-                              .then((value) => getEquipmentData());
+                          childKey.currentState!.controllerForward();
                         },
                         child: const Text('重新扫描'),
                       ),

@@ -22,7 +22,7 @@ class _NetServerSettingsState extends State<NetServerSettings> {
   List<String> comboTypeLabel = ['按流量统计', '按时长统计'];
   int comboType = 0;
   // 套餐容量
-  double comboContain = 0;
+  double comboContain = -1;
   final TextEditingController _containController = TextEditingController();
   // 套餐周期
   List<String> comboCycleLabel = ['日', '月', '年'];
@@ -40,7 +40,7 @@ class _NetServerSettingsState extends State<NetServerSettings> {
             }
         });
     sharedGetData('c_contain', double).then((data) => {
-          _containController.text = data.toString(),
+          _containController.text = data != null ? data.toString() : '----',
           if (data != null)
             setState(
               () => comboContain = data as double,
@@ -58,9 +58,11 @@ class _NetServerSettingsState extends State<NetServerSettings> {
     _containController.addListener(() {
       debugPrint('监听输入的套餐容量：$_containController');
       try {
-        setState(() {
-          comboContain = double.parse(_containController.text);
-        });
+        if (_containController.text != '----') {
+          setState(() {
+            comboContain = double.parse(_containController.text);
+          });
+        }
       } catch (err) {
         debugPrint('输入值错误,$err');
       }
@@ -232,7 +234,9 @@ class _NetServerSettingsState extends State<NetServerSettings> {
     debugPrint('套餐设置页面销毁');
     _containController.dispose();
     sharedAddAndUpdate('c_type', int, comboType);
-    sharedAddAndUpdate('c_contain', double, comboContain);
+    if (comboContain >= 0) {
+      sharedAddAndUpdate('c_contain', double, comboContain);
+    }
     sharedAddAndUpdate('c_cycle', int, comboCycle);
   }
 }

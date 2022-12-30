@@ -31,7 +31,7 @@ class _NetStatusState extends State<NetStatus> {
   // 定义套餐总量
   double _totalComboData = 0;
   // 定义显示套餐状况
-  String _comboLabel = '----';
+  String _comboLabel = '未设置';
   // 套餐周期
   List<String> comboCycleLabel = ['日', '月', '年'];
   // 有线连接状况：1:连通0：未连接
@@ -228,8 +228,9 @@ class _NetStatusState extends State<NetStatus> {
                         ),
                         TextButton(
                             onPressed: () => {
-                                  Navigator.pushNamed(
-                                      context, '/net_server_settings')
+                                  // Navigator.pushNamed(
+                                  //     context, '/net_server_settings')
+                                  Get.toNamed('/net_server_settings')
                                 },
                             child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,

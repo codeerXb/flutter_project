@@ -88,7 +88,10 @@ class _ODUState extends State<ODU> {
       ),
       body: Column(
         children: [
-          Padding(padding: EdgeInsets.only(top: 100.w)),
+          Padding(
+              padding: EdgeInsets.only(
+            top: 100.w,
+          )),
           RadarWidget(
             skewing: 0,
             radarMap: RadarMapModel(
@@ -104,10 +107,10 @@ class _ODUState extends State<ODU> {
                 MapDataModel(mapData),
                 MapDataModel(pointer),
               ],
-              radius: 130,
-              duration: 2000,
+              radius: 200.w,
+              duration: 500,
               shape: Shape.circle,
-              maxWidth: 70,
+              maxWidth: 50,
               line: LineModel(3),
             ),
             textStyle: const TextStyle(color: Colors.black, fontSize: 14),

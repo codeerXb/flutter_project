@@ -30,7 +30,7 @@ class MESHItem extends StatelessWidget {
                 width: 110.w,
                 margin: const EdgeInsets.all(5),
                 child: Image.network(
-                    'https://img.redocn.com/sheying/20200324/shujiashangdeshuji_10870699.jpg',
+                    'https://pic.ntimg.cn/file/20170811/10673188_150225172000_2.jpg',
                     fit: BoxFit.cover),
               ),
             ),

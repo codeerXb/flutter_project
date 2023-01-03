@@ -36,6 +36,9 @@ class XHttp {
     Response response;
     try {
       if (params != null) {
+        debugPrint('-------get -------');
+        debugPrint(params.toString());
+
         response = await dio.get(url, queryParameters: {
           ...params,
           // '_csrf_token': BaseConfig.token,

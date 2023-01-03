@@ -42,6 +42,8 @@ class HttpInterceptors extends InterceptorsWrapper {
       "Cookie": '-goahead-session-=$session; token=$token'
     };
     options.headers = header;
+    options.path = '${options.uri.toString()}&_csrf_token=$token';
+    options.queryParameters = {};
     debugPrint("\n================== 请求数据 ==========================");
     debugPrint("url = ${options.uri.toString()}");
     debugPrint("headers = ${options.headers}");

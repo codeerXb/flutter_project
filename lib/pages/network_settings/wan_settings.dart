@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/core/http/http.dart';
 import '../../../core/widget/custom_app_bar.dart';
 import '../../core/widget/common_picker.dart';
 
@@ -14,6 +15,27 @@ class WanSettings extends StatefulWidget {
 class _WanSettingsState extends State<WanSettings> {
   String showVal = 'NAT';
   int val = 0;
+  @override
+  void initState() {
+    super.initState();
+    getTopoData();
+  }
+
+  void getTopoData() {
+    Map<String, dynamic> data = {
+      'method': 'tab_set',
+      'param': '{"networkWanSettingsMode":"nat"}',
+    };
+    XHttp.get('/data.html', data).then((res) {
+      try {
+        debugPrint("\n================== 获取在线设备 ==========================");
+      } on FormatException catch (e) {
+        print(e);
+      }
+    }).catchError((onError) {
+      debugPrint('获取在线设备失败：${onError.toString()}');
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

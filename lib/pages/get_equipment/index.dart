@@ -104,38 +104,45 @@ class _MyWidgetState extends State<Equipment> {
                 ),
                 Center(
                     child: SizedBox(
-                        height: 200,
-                        width: 200,
+                        height: 300.w,
+                        width: 300.w,
                         child: WaterRipple(
                           key: childKey,
                         ))),
                 Padding(
                   padding: EdgeInsets.only(top: 120.w),
                 ),
-                Container(
-                  height: 100.w,
-                  child: ListView(children: [
-                    if (!loginController.loading.value)
-                      TextButton(
-                        onPressed: () {
-                          getEquipmentData();
-                          childKey.currentState!.controllerForward();
-                        },
-                        child: const Text('重新扫描'),
-                      ),
-                    if (loginController.loading.value)
-                      Center(
-                        child: Text(
-                          '正在扫描',
-                          style: TextStyle(fontSize: 36.sp),
+                SizedBox(
+                  child: Column(
+                    children: [
+                      if (loginController.loading.value)
+                        Center(
+                          child: Text(
+                            '正在扫描',
+                            style: TextStyle(
+                              fontSize: 36.sp,
+                              height: 2.5,
+                            ),
+                          ),
                         ),
-                      ),
-                    if (equipmentData.systemProductModel == null &&
-                        !loginController.loading.value)
-                      Center(
-                          child:
-                              Text('未发现设备', style: TextStyle(fontSize: 36.sp))),
-                  ]),
+                      if (equipmentData.systemProductModel == null &&
+                          !loginController.loading.value)
+                        Center(
+                            child: Text('未发现设备',
+                                style: TextStyle(
+                                  fontSize: 36.sp,
+                                  height: 2.5,
+                                ))),
+                      if (!loginController.loading.value)
+                        TextButton(
+                          onPressed: () {
+                            getEquipmentData();
+                            childKey.currentState!.controllerForward();
+                          },
+                          child: const Text('重新扫描'),
+                        ),
+                    ],
+                  ),
                 ),
                 if (equipmentData.systemProductModel != null)
                   Card(

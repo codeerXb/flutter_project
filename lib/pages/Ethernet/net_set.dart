@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_picker.dart';
+import 'package:flutter_template/core/widget/common_widget.dart';
 import '../../core/widget/custom_app_bar.dart';
 
 /// 以太网设置
@@ -31,7 +32,9 @@ class _NetSetState extends State<NetSet> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const TitleWidger(title: '设置'),
-
+                ElevatedButton(onPressed: () {
+                  print('1');
+                }, child: const Text('保存')),
                 InfoBox(
                     boxCotainer: Column(
                   children: [

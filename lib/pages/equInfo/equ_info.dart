@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/pages/equInfo/equinfo_datas.dart';
+import 'package:intl/intl.dart';
 import '../../core/widget/custom_app_bar.dart';
 
 /// 设备信息
@@ -15,7 +16,19 @@ class EquInfo extends StatefulWidget {
 }
 
 class _EquInfoState extends State<EquInfo> {
-  EquinfoDatas equinfoData = EquinfoDatas();
+  EquinfoDatas equinfoData = EquinfoDatas(
+    systemProductModel: '',
+    systemVersionHw: '',
+    systemVersionRunning: '',
+    systemVersionUboot: '',
+    systemVersionSn: '',
+    lteImei: '',
+    lteImsi: '',
+    networkLanSettingsMac: '',
+    networkLanSettingIp: '',
+    networkLanSettingMask: '',
+    systemRunningTime: '',
+  );
   @override
   void initState() {
     super.initState();
@@ -54,10 +67,14 @@ class _EquInfoState extends State<EquInfo> {
               children: [
                 //1系统信息
                 const TitleWidger(title: '系统信息'),
-                const InfoBox(
+                InfoBox(
                   boxCotainer: RowContainer(
                     leftText: '运行时长',
-                    righText: '05d 20h 01m',
+                    righText: DateFormat("dd天HH小时mm分钟").format(
+                        DateTime.fromMillisecondsSinceEpoch(int.parse(
+                                equinfoData.systemRunningTime.toString() +
+                                    '000') -
+                            86400000)),
                   ),
                 ),
                 //2版本信息

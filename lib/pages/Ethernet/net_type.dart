@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/pages/Ethernet/netType_datas.dart';
+import 'package:intl/intl.dart';
 import '../../core/widget/custom_app_bar.dart';
 
 /// 以太网状态
@@ -15,7 +16,17 @@ class NetType extends StatefulWidget {
 }
 
 class _NetTypeState extends State<NetType> {
-  NetTypeDatas NetTypeData = NetTypeDatas();
+  NetTypeDatas NetTypeData = NetTypeDatas(
+    ethernetConnectMode: '',
+    ethernetLinkStatus: '',
+    ethernetConnectionStatus: '',
+    systemOnlineTime: '',
+    ethernetConnectionIp: '',
+    ethernetConnectionMask: '',
+    ethernetConnectionGateway: '',
+    ethernetConnectionDns1: '',
+    ethernetConnectionDns2: '',
+  );
   @override
   void initState() {
     super.initState();
@@ -58,22 +69,32 @@ class _NetTypeState extends State<NetType> {
                   BottomLine(
                       rowtem: RowContainer(
                     leftText: '连接模式',
-                    righText: NetTypeData.ethernetConnectMode.toString()=='dhcp'?'动态 IP':'非动态 IP',
+                    righText:
+                        NetTypeData.ethernetConnectMode.toString() == 'dhcp'
+                            ? '动态 IP'
+                            : '非动态 IP',
                   )),
                   BottomLine(
                       rowtem: RowContainer(
                     leftText: '链接状态',
-                    righText: NetTypeData.ethernetConnectionStatus.toString()=='1'?'已连接':'未连接',
+                    righText:
+                        NetTypeData.ethernetConnectionStatus.toString() == '1'
+                            ? '已连接'
+                            : '未连接',
                   )),
                   BottomLine(
                       rowtem: RowContainer(
                     leftText: '连接状态',
-                    righText: NetTypeData.ethernetLinkStatus.toString()=='1'?'已连接':'未连接',
+                    righText: NetTypeData.ethernetLinkStatus.toString() == '1'
+                        ? '已连接'
+                        : '未连接',
                   )),
                   BottomLine(
                       rowtem: RowContainer(
                     leftText: '在线时间',
-                    righText: '00d 00h 00m',
+                    righText: DateFormat("dd天HH小时mm分钟").format(
+                        DateTime.fromMillisecondsSinceEpoch(int.parse(
+                            NetTypeData.systemOnlineTime.toString() + '000')- 86400000)),
                   )),
                   BottomLine(
                       rowtem: RowContainer(

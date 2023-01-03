@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_picker.dart';
-import '../../core/widget/custom_app_bar.dart';
+import 'package:flutter_template/pages/wifi_set/major/major_datas.dart';
+import '../../../core/widget/custom_app_bar.dart';
 
 /// 专业设置
 class MajorSet extends StatefulWidget {
@@ -14,7 +18,43 @@ class MajorSet extends StatefulWidget {
 
 class _MajorSetState extends State<MajorSet> {
   String showVal = '中国';
+  majorDatas wifiRegionCountry = majorDatas(wifiWpsPbcState: 'CN');
   int val = 0;
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+
+  //保存
+  void handleSave() async {
+    Map<String, dynamic> data = {
+      'method': 'obj_get',
+      'param': '{"wifi5gRegionCountry":"CN"}',
+    };
+    try {
+      await XHttp.get('/data.html', data);
+    } catch (e) {
+      debugPrint('保存专业设置失败：$e.toString()');
+    }
+  }
+
+  //读取
+  void getData() async {
+    Map<String, dynamic> data = {
+      'method': 'obj_get',
+      'param': '["wifiRegionCountry","wifiWpsPbcState","wifi5gWpsPbcState"]',
+    };
+    try {
+      var response = await XHttp.get('/data.html', data);
+      var d = json.decode(response.toString());
+      setState(() {
+        wifiRegionCountry = majorDatas.fromJson(d);
+      });
+    } catch (e) {
+      debugPrint('获取专业设置失败：$e.toString()');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +70,11 @@ class _MajorSetState extends State<MajorSet> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const TitleWidger(title: '专业设置'),
+                ElevatedButton(
+                    onPressed: () {
+                      handleSave();
+                    },
+                    child: const Text('保存')),
                 InfoBox(
                     boxCotainer: Column(
                   children: [

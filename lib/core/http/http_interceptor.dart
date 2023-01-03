@@ -66,7 +66,8 @@ class HttpInterceptors extends InterceptorsWrapper {
     debugPrint("data = ${response.data}");
     // 以 { 或者 [ 开头的
     RegExp exp = RegExp('^[{[]');
-    if (!exp.hasMatch(response.data)) {
+    // ignore: unrelated_type_equality_checks
+    if (response.data == '' || !exp.hasMatch(response.data)) {
       appLogin(password);
     }
     return super.onResponse(response, handler);

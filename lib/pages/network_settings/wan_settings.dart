@@ -23,7 +23,7 @@ class _WanSettingsState extends State<WanSettings> {
 
   void getTopoData() {
     Map<String, dynamic> data = {
-      'method': 'tab_set',
+      'method': 'obj_set',
       'param': '{"networkWanSettingsMode":"nat"}',
     };
     XHttp.get('/data.html', data).then((res) {

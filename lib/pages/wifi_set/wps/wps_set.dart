@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_picker.dart';
-import '../../core/widget/custom_app_bar.dart';
+import 'package:flutter_template/pages/wifi_set/wps/wps_datas.dart';
+import '../../../core/widget/custom_app_bar.dart';
 
 /// WPS设置
 
@@ -14,9 +18,49 @@ class WpsSet extends StatefulWidget {
 }
 
 class _WpsSetState extends State<WpsSet> {
+  wpsDatas wpsData = wpsDatas(
+    wifi5gWpsClientPin: '',
+  );
   String showVal = '2.4GHz';
   int val = 0;
- bool isCheck = true;
+  bool isCheck = true;
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+
+  //保存
+  void handleSave() async {
+    Map<String, dynamic> data = {
+      'method': 'obj_get',
+      'param': '',
+    };
+    try {
+      await XHttp.get('/data.html', data);
+    } catch (e) {
+      debugPrint('wps设置失败：$e.toString()');
+    }
+  }
+
+  //读取
+  void getData() async {
+    Map<String, dynamic> data = {
+      'method': 'obj_get',
+      'param':
+          '["wifiBandGet","wifiWps","wifiWpsMode","wifiWpsClientPin","wifi5gWps","wifi5gWpsMode","wifi5gWpsClientPin"]',
+    };
+    try {
+      var response = await XHttp.get('/data.html', data);
+      var d = json.decode(response.toString());
+      setState(() {
+        wpsData = wpsDatas.fromJson(d);
+      });
+    } catch (e) {
+      debugPrint('获取wps设置失败：$e.toString()');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,6 +75,11 @@ class _WpsSetState extends State<WpsSet> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const TitleWidger(title: '设置'),
+                ElevatedButton(
+                    onPressed: () {
+                      handleSave();
+                    },
+                    child: const Text('保存')),
                 InfoBox(
                     boxCotainer: Column(
                   children: [

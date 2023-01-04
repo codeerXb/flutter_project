@@ -1,8 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/widget/custom_app_bar.dart';
+import '../../core/http/http.dart';
+import '../../core/utils/toast.dart';
 import '../../core/widget/common_box.dart';
 import '../../core/widget/common_picker.dart';
+import 'model/radio_data.dart';
 
 /// Radio设置
 class RadioSettings extends StatefulWidget {
@@ -13,8 +18,62 @@ class RadioSettings extends StatefulWidget {
 }
 
 class _RadioSettingsState extends State<RadioSettings> {
-  String showVal = '手动';
+  String showVal = '';
+  String radioShowVal = '';
   int val = 0;
+  String radioStateVal = '';
+
+  RadioGData radioGState = RadioGData();
+
+  @override
+  void initState() {
+    super.initState();
+    getRadioGData();
+  }
+
+  void getRadioSettingData() async {
+    Map<String, dynamic> data = {
+      'method': 'obj_set',
+      'param': '{"lteNetSelectMode":"$radioShowVal"}',
+    };
+    XHttp.get('/data.html', data).then((res) {
+      try {
+        debugPrint("\n================== 成功 ==========================");
+        ToastUtils.toast('修改成功');
+      } on FormatException catch (e) {
+        print(e);
+      }
+    }).catchError((e) {
+      debugPrint('获取Radio设置失败：$e.toString()');
+      ToastUtils.toast('获取Radio设置失败');
+    });
+  }
+
+  void getRadioGData() async {
+    Map<String, dynamic> data = {
+      'method': 'obj_get',
+      'param':
+          '["lteNetSelectMode","lteModeGet","lteOnOff","systemCurrentPlatform","lteMainStatusGet","lteDlmcs","lteUlmcs","lteDlEarfcnGet","lteDlFrequency","lteUlFrequency","lteBandGet","lteBandwidthGet","lteRsrp0","lteRsrp1","lteRssi","lteRsrq","lteSinr","lteCinr0","lteCinr1","lteTxpower","ltePci","lteCellidGet","lteMccGet","lteMncGet","lteDlEarfcnGet_5g","lteDlFrequency_5g","lteUlFrequency_5g","lteBandGet_5g","lteBandwidthGet_5g","lteRsrp0_5g","lteRsrp1_5g","lteRsrq_5g","lteSinr_5g","ltePci_5g","lteCellidGet_5g","lteMccGet_5g","lteMncGet_5g"]',
+    };
+    try {
+      var response = await XHttp.get('/data.html', data);
+      var d = json.decode(response.toString());
+      setState(() {
+        radioGState = RadioGData.fromJson(d);
+        radioStateVal = radioGState.lteMainStatusGet.toString();
+        if (radioGState.lteNetSelectMode.toString() == 'auto_select') {
+          showVal = '自动';
+          val = 0;
+        } else {
+          showVal = '手动';
+          val = 1;
+        }
+      });
+    } catch (e) {
+      debugPrint('获取Radio 4G状态失败：$e.toString()');
+      ToastUtils.toast('获取Radio 4G状态失败');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +94,7 @@ class _RadioSettingsState extends State<RadioSettings> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text('状态', style: TextStyle(fontSize: 30.sp)),
-                    Text('SIM卡未准备完成', style: TextStyle(fontSize: 30.sp)),
+                    Text(radioStateVal, style: TextStyle(fontSize: 30.sp)),
                   ],
                 ),
                 SizedBox(
@@ -52,7 +111,7 @@ class _RadioSettingsState extends State<RadioSettings> {
                         onTap: () {
                           var result = CommonPicker.showPicker(
                             context: context,
-                            options: ['手动', '自动'],
+                            options: ['自动', '手动'],
                             value: val,
                           );
                           result?.then((selectedValue) => {
@@ -61,7 +120,17 @@ class _RadioSettingsState extends State<RadioSettings> {
                                   {
                                     setState(() => {
                                           val = selectedValue,
-                                          showVal = ['手动', '自动'][val]
+                                          showVal = ['自动', '手动'][val],
+                                          if (val == 0)
+                                            {
+                                              radioShowVal = 'auto_select',
+                                              getRadioSettingData()
+                                            },
+                                          if (val == 1)
+                                            {
+                                              radioShowVal = 'manual_select',
+                                              getRadioSettingData()
+                                            },
                                         })
                                   }
                               });
@@ -91,71 +160,76 @@ class _RadioSettingsState extends State<RadioSettings> {
                 ]),
                 InfoBox(
                   boxCotainer: Column(
-                    children: const [
+                    children: [
+                      BottomLine(
+                          rowtem: RowContainer(
+                        leftText: '频点',
+                        righText: radioGState.lteDlEarfcnGet.toString(),
+                      )),
                       BottomLine(
                           rowtem: RowContainer(
                         leftText: '下行频率',
-                        righText: '- - MHZ',
+                        righText: '${radioGState.lteDlFrequency}MHz',
                       )),
                       BottomLine(
                           rowtem: RowContainer(
                         leftText: '上行频率',
-                        righText: '- - MHZ',
+                        righText: '${radioGState.lteUlFrequency}MHz',
                       )),
                       BottomLine(
                           rowtem: RowContainer(
-                        leftText: 'Band',
-                        righText: '- - ',
+                        leftText: '频段',
+                        righText: radioGState.lteBandGet.toString(),
                       )),
                       BottomLine(
                           rowtem: RowContainer(
-                        leftText: 'Bandwidth',
-                        righText: '- - MHZ',
+                        leftText: '宽带',
+                        righText: '${radioGState.lteBandwidthGet}MHz',
                       )),
                       BottomLine(
                           rowtem: RowContainer(
                         leftText: 'RSRP',
-                        righText: '- - dBm',
+                        righText: '${radioGState.lteRsrp0}dBm',
                       )),
                       BottomLine(
                           rowtem: RowContainer(
                         leftText: 'RSSI',
-                        righText: '- - dBm',
+                        righText: '${radioGState.lteRssi}dBm',
                       )),
                       BottomLine(
                           rowtem: RowContainer(
                         leftText: 'RSRQ',
-                        righText: '- - dB',
+                        righText: '${radioGState.lteRsrq}dB',
                       )),
                       BottomLine(
                           rowtem: RowContainer(
                         leftText: 'SINR',
-                        righText: '- - dB',
+                        righText: '${radioGState.lteSinr}dB',
                       )),
                       BottomLine(
                           rowtem: RowContainer(
                         leftText: '发射功率',
-                        righText: '- - dBm',
+                        righText: '${radioGState.lteTxpower}dBm',
                       )),
                       BottomLine(
                           rowtem: RowContainer(
                         leftText: 'PCI',
-                        righText: '- - ',
+                        righText: radioGState.ltePci.toString(),
                       )),
                       BottomLine(
                           rowtem: RowContainer(
                         leftText: 'Cell ID',
-                        righText: '- - ',
+                        righText: radioGState.lteCellidGet.toString(),
                       )),
                       BottomLine(
                           rowtem: RowContainer(
                         leftText: 'MCC',
-                        righText: '- - MHZ',
+                        righText: radioGState.lteMccGet.toString(),
                       )),
                       BottomLine(
                           rowtem: RowContainer(
                         leftText: 'MNC',
-                        righText: '- - MHZ',
+                        righText: radioGState.lteMncGet.toString(),
                       )),
                     ],
                   ),

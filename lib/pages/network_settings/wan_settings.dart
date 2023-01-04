@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
+import 'package:flutter_template/pages/network_settings/model/wan_data.dart';
 import '../../../core/widget/custom_app_bar.dart';
+import '../../core/utils/toast.dart';
 import '../../core/widget/common_picker.dart';
 
 /// WAN设置
@@ -13,28 +17,58 @@ class WanSettings extends StatefulWidget {
 }
 
 class _WanSettingsState extends State<WanSettings> {
-  String showVal = 'NAT';
+  WanSettingData wanSettingVal = WanSettingData(networkWanSettingsMode: '');
+  String showVal = '';
   int val = 0;
+  String wanVal = 'nat';
+
   @override
   void initState() {
     super.initState();
-    getTopoData();
+    getWanVal();
   }
 
-  void getTopoData() {
+  void getWanData() {
     Map<String, dynamic> data = {
       'method': 'obj_set',
-      'param': '{"networkWanSettingsMode":"nat"}',
+      'param': '{"networkWanSettingsMode":"$wanVal"}',
     };
     XHttp.get('/data.html', data).then((res) {
       try {
-        debugPrint("\n================== 获取在线设备 ==========================");
+        debugPrint("\n================== 成功 ==========================");
+        ToastUtils.toast('修改成功');
       } on FormatException catch (e) {
         print(e);
       }
     }).catchError((onError) {
-      debugPrint('获取在线设备失败：${onError.toString()}');
+      debugPrint('失败：${onError.toString()}');
+      ToastUtils.toast('修改失败');
     });
+  }
+
+  void getWanVal() async {
+    Map<String, dynamic> data = {
+      'method': 'obj_get',
+      'param': '["networkWanSettingsMode"]',
+    };
+    try {
+      var response = await XHttp.get('/data.html', data);
+      var d = json.decode(response.toString());
+      setState(() {
+        wanSettingVal = WanSettingData.fromJson(d);
+        if (wanSettingVal.networkWanSettingsMode.toString() == 'nat') {
+          showVal = 'NAT';
+        }
+        if (wanSettingVal.networkWanSettingsMode.toString() == 'bridge') {
+          showVal = '桥接';
+        }
+        if (wanSettingVal.networkWanSettingsMode.toString() == 'router') {
+          showVal = 'ROUTER';
+        }
+      });
+    } catch (e) {
+      debugPrint('失败：$e.toString()');
+    }
   }
 
   @override
@@ -63,7 +97,7 @@ class _WanSettingsState extends State<WanSettings> {
                         onTap: () {
                           var result = CommonPicker.showPicker(
                             context: context,
-                            options: ['NAT', 'BPIDGE'],
+                            options: ['NAT', '桥接', 'ROUTER'],
                             value: val,
                           );
                           result?.then((selectedValue) => {
@@ -72,7 +106,14 @@ class _WanSettingsState extends State<WanSettings> {
                                   {
                                     setState(() => {
                                           val = selectedValue,
-                                          showVal = ['NAT', 'BPIDGE'][val]
+                                          showVal =
+                                              ['NAT', '桥接', 'ROUTER'][val],
+                                          if (val == 0)
+                                            {wanVal = 'nat', getWanData()},
+                                          if (val == 1)
+                                            {wanVal = 'bridge', getWanData()},
+                                          if (val == 2)
+                                            {wanVal = 'router', getWanData()},
                                         })
                                   }
                               });

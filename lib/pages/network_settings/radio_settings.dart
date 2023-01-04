@@ -13,7 +13,7 @@ class RadioSettings extends StatefulWidget {
 }
 
 class _RadioSettingsState extends State<RadioSettings> {
-  String showVal = '手动';
+  String showVal = '自动';
   int val = 0;
 
   @override
@@ -52,7 +52,7 @@ class _RadioSettingsState extends State<RadioSettings> {
                         onTap: () {
                           var result = CommonPicker.showPicker(
                             context: context,
-                            options: ['手动', '自动'],
+                            options: ['自动', '手动'],
                             value: val,
                           );
                           result?.then((selectedValue) => {
@@ -61,7 +61,7 @@ class _RadioSettingsState extends State<RadioSettings> {
                                   {
                                     setState(() => {
                                           val = selectedValue,
-                                          showVal = ['手动', '自动'][val]
+                                          showVal = ['自动', '手动'][val]
                                         })
                                   }
                               });
@@ -94,23 +94,28 @@ class _RadioSettingsState extends State<RadioSettings> {
                     children: const [
                       BottomLine(
                           rowtem: RowContainer(
-                        leftText: '下行频率',
-                        righText: '- - MHZ',
-                      )),
-                      BottomLine(
-                          rowtem: RowContainer(
-                        leftText: '上行频率',
-                        righText: '- - MHZ',
-                      )),
-                      BottomLine(
-                          rowtem: RowContainer(
-                        leftText: 'Band',
+                        leftText: '频点',
                         righText: '- - ',
                       )),
                       BottomLine(
                           rowtem: RowContainer(
-                        leftText: 'Bandwidth',
-                        righText: '- - MHZ',
+                        leftText: '下行频率',
+                        righText: '- - MHz',
+                      )),
+                      BottomLine(
+                          rowtem: RowContainer(
+                        leftText: '上行频率',
+                        righText: '- - MHz',
+                      )),
+                      BottomLine(
+                          rowtem: RowContainer(
+                        leftText: '频段',
+                        righText: '- - ',
+                      )),
+                      BottomLine(
+                          rowtem: RowContainer(
+                        leftText: '宽带',
+                        righText: '- - MHz',
                       )),
                       BottomLine(
                           rowtem: RowContainer(
@@ -150,12 +155,12 @@ class _RadioSettingsState extends State<RadioSettings> {
                       BottomLine(
                           rowtem: RowContainer(
                         leftText: 'MCC',
-                        righText: '- - MHZ',
+                        righText: '- - ',
                       )),
                       BottomLine(
                           rowtem: RowContainer(
                         leftText: 'MNC',
-                        righText: '- - MHZ',
+                        righText: '- - ',
                       )),
                     ],
                   ),

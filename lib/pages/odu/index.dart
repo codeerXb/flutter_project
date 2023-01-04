@@ -92,12 +92,164 @@ class _ODUState extends State<ODU> {
               padding: EdgeInsets.only(
             top: 100.w,
           )),
+          // Stack(clipBehavior: Clip.hardEdge, children: [
+          //   Container(
+          //     height: 600.w,
+          //   ),
+          //   Positioned(
+          //     width: 600.w,
+          //     left: -20.w,
+          //     child: RadarWidget(
+          //       skewing: 0,
+          //       radarMap: RadarMapModel(
+          //         legend: [
+          //           LegendModel('信号强度', const Color(0XFF0EBD8D)),
+          //           LegendModel('最大值', const Color.fromARGB(255, 234, 104, 53)),
+          //         ],
+          //         indicator: legend,
+          //         data: [
+          //           //   MapDataModel([48,32.04,1.00,94.5,19,60,50,30,19,60,50]),
+          //           //   MapDataModel([42.59,34.04,1.10,68,99,30,19,60,50,19,30]),
+
+          //           MapDataModel(mapData),
+          //           MapDataModel(pointer),
+          //         ],
+          //         radius: 180.w,
+          //         duration: 500,
+          //         shape: Shape.circle,
+          //         maxWidth: 50.w,
+          //         line: LineModel(3),
+          //       ),
+          //       textStyle: const TextStyle(color: Colors.black, fontSize: 10),
+          //       isNeedDrawLegend: true,
+          //       lineText: (p, length) => "${(p * 30 ~/ length)}dB",
+          //       dilogText: (IndicatorModel indicatorModel,
+          //           List<LegendModel> legendModels,
+          //           List<double> mapDataModels) {
+          //         StringBuffer text = StringBuffer("");
+          //         for (int i = 0; i < mapDataModels.length; i++) {
+          //           text.write(
+          //               "${legendModels[i].name} : ${mapDataModels[i].toString()}");
+          //           if (i != mapDataModels.length - 1) {
+          //             text.write("\n");
+          //           }
+          //         }
+          //         return text.toString();
+          //       },
+          //       outLineText: (data, max) {
+          //         return data > 0 ? "$data" : '';
+          //       },
+          //     ),
+          //   ),
+          //   Positioned(
+          //     right: 20.w,
+          //     top: 50.w,
+          //     child:
+          //         Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
+          //       Row(
+          //         children: [
+          //           const Text(
+          //             'MaxS',
+          //             style:
+          //                 TextStyle(color: Color.fromARGB(255, 234, 104, 53)),
+          //           ),
+          //           Card(
+          //             child: Container(
+          //               width: 150.w,
+          //               alignment: Alignment.centerLeft,
+          //               padding: EdgeInsets.all(5.w),
+          //               child: Text(
+          //                 " ${isShow ? MaxNumber : 0.0} dB",
+          //                 style: const TextStyle(
+          //                     color: Color.fromARGB(255, 234, 104, 53)),
+          //               ),
+          //             ),
+          //           ),
+          //         ],
+          //       ),
+          //       Row(
+          //         children: [
+          //           const Text(
+          //             'MaxA',
+          //             style:
+          //                 TextStyle(color: Color.fromARGB(255, 234, 104, 53)),
+          //           ),
+          //           Card(
+          //             child: Container(
+          //               width: 150.w,
+          //               alignment: Alignment.centerLeft,
+          //               padding: EdgeInsets.all(5.w),
+          //               child: Text(" ${isShow ? CurrentAngle : 0}°",
+          //                   style: const TextStyle(
+          //                       color: Color.fromARGB(255, 234, 104, 53))),
+          //             ),
+          //           ),
+          //         ],
+          //       ),
+          //       Padding(
+          //           padding: EdgeInsets.only(
+          //         top: 110.w,
+          //       )),
+          //       Row(
+          //         children: [
+          //           const Text(
+          //             'CurS',
+          //             style: TextStyle(color: Color(0XFF0EBD8D)),
+          //           ),
+          //           Card(
+          //             child: Container(
+          //               width: 150.w,
+          //               alignment: Alignment.centerLeft,
+          //               padding: EdgeInsets.all(5.w),
+          //               child: Text(
+          //                 " ${mapData[_index == 0 ? 0 : _index - 1]} dB",
+          //                 style: const TextStyle(color: Color(0XFF0EBD8D)),
+          //               ),
+          //             ),
+          //           ),
+          //         ],
+          //       ),
+          //       Row(
+          //         children: [
+          //           const Text(
+          //             'CurA',
+          //             style: TextStyle(color: Color(0XFF0EBD8D)),
+          //           ),
+          //           Card(
+          //             child: Container(
+          //               width: 150.w,
+          //               alignment: Alignment.centerLeft,
+          //               padding: EdgeInsets.all(5.w),
+          //               child: Text(" ${(_index) * 10}°",
+          //                   style: const TextStyle(color: Color(0XFF0EBD8D))),
+          //             ),
+          //           ),
+          //         ],
+          //       ),
+          //       // Card(
+          //       //   child: Container(
+          //       //     alignment: Alignment.centerLeft,
+          //       //     padding: EdgeInsets.all(10.w),
+          //       //     child: Column(
+          //       //         crossAxisAlignment: CrossAxisAlignment.start,
+          //       //         children: [
+          //       //           Text(
+          //       //               "CurS ${mapData[_index == 0 ? 0 : _index - 1]} dB",
+          //       //               style: const TextStyle(color: Color(0XFF0EBD8D))),
+          //       //           Text("CurA ${(_index) * 10}°",
+          //       //               style: const TextStyle(color: Color(0XFF0EBD8D))),
+          //       //         ]),
+          //       //   ),
+          //       // ),
+          //     ]),
+          //   ),
+          // ]),
           RadarWidget(
             skewing: 0,
             radarMap: RadarMapModel(
               legend: [
                 LegendModel('信号强度', const Color(0XFF0EBD8D)),
-                LegendModel('最大值', Color.fromARGB(255, 234, 104, 53)),
+                LegendModel('最大值', const Color.fromARGB(255, 234, 104, 53)),
               ],
               indicator: legend,
               data: [
@@ -110,10 +262,10 @@ class _ODUState extends State<ODU> {
               radius: 200.w,
               duration: 500,
               shape: Shape.circle,
-              maxWidth: 50,
+              maxWidth: 50.w,
               line: LineModel(3),
             ),
-            textStyle: const TextStyle(color: Colors.black, fontSize: 14),
+            textStyle: const TextStyle(color: Colors.black, fontSize: 10),
             isNeedDrawLegend: true,
             lineText: (p, length) => "${(p * 30 ~/ length)}dB",
             dilogText: (IndicatorModel indicatorModel,
@@ -132,15 +284,129 @@ class _ODUState extends State<ODU> {
               return data > 0 ? "$data" : '';
             },
           ),
-          Text(
-              '当前旋转(角度/dB)${(_index) * 10}° / ${mapData[_index == 0 ? 0 : _index - 1]}dB'),
-          Text('信号最大值-旋转角度$MaxNumber dB - $CurrentAngle°'),
+          Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+            Column(
+              children: [
+                Row(
+                  children: [
+                    const Text(
+                      'CurS',
+                      style: TextStyle(color: Color(0XFF0EBD8D)),
+                    ),
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.w),
+                        side: const BorderSide(
+                          color: Color.fromARGB(255, 218, 218, 218),
+                          width: 1,
+                        ),
+                      ),
+                      child: Container(
+                        width: 150.w,
+                        alignment: Alignment.centerLeft,
+                        padding: EdgeInsets.all(5.w),
+                        child: Text(
+                          " ${mapData[_index == 0 ? 0 : _index - 1]} dB",
+                          style: const TextStyle(color: Color(0XFF0EBD8D)),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    const Text(
+                      'CurA',
+                      style: TextStyle(color: Color(0XFF0EBD8D)),
+                    ),
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.w),
+                        side: const BorderSide(
+                          color: Color.fromARGB(255, 218, 218, 218),
+                          width: 1,
+                        ),
+                      ),
+                      child: Container(
+                        width: 150.w,
+                        alignment: Alignment.centerLeft,
+                        padding: EdgeInsets.all(5.w),
+                        child: Text(" ${(_index) * 10}°",
+                            style: const TextStyle(color: Color(0XFF0EBD8D))),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            Column(
+              children: [
+                Row(
+                  children: [
+                    const Text(
+                      'MaxS',
+                      style:
+                          TextStyle(color: Color.fromARGB(255, 234, 104, 53)),
+                    ),
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.w),
+                        side: const BorderSide(
+                          color: Color.fromARGB(255, 218, 218, 218),
+                          width: 1,
+                        ),
+                      ),
+                      child: Container(
+                        width: 150.w,
+                        alignment: Alignment.centerLeft,
+                        padding: EdgeInsets.all(5.w),
+                        child: Text(
+                          " ${isShow ? MaxNumber : 0.0} dB",
+                          style: const TextStyle(
+                              color: Color.fromARGB(255, 234, 104, 53)),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    const Text(
+                      'MaxA',
+                      style:
+                          TextStyle(color: Color.fromARGB(255, 234, 104, 53)),
+                    ),
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.w),
+                        side: const BorderSide(
+                          color: Color.fromARGB(255, 218, 218, 218),
+                          width: 1,
+                        ),
+                      ),
+                      child: Container(
+                        width: 150.w,
+                        alignment: Alignment.centerLeft,
+                        padding: EdgeInsets.all(5.w),
+                        child: Text(" ${isShow ? CurrentAngle : 0}°",
+                            style: const TextStyle(
+                                color: Color.fromARGB(255, 234, 104, 53))),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ]),
+          // Text(
+          //     '当前旋转(角度/dB)${(_index) * 10}° / ${mapData[_index == 0 ? 0 : _index - 1]}dB'),
+          // Text('信号最大值-旋转角度$MaxNumber dB - $CurrentAngle°'),
           Padding(
-            padding: EdgeInsets.only(top: 50.w),
+            padding: EdgeInsets.only(top: 80.w),
           ),
           SizedBox(
             height: 70.sp,
-            width: 710.sp,
+            width: 410.sp,
             child: ElevatedButton(
               style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
+import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/pages/topo/model/equipment_datas.dart';
 import 'package:flutter_template/pages/topo/mesh_item.dart';
 import 'package:get/get.dart';
@@ -23,15 +24,18 @@ class _TopoState extends State<Topo> {
   @override
   void initState() {
     super.initState();
-    getTopoData();
+    getTopoData(false);
   }
 
-  void getTopoData() {
+  void getTopoData(sx) {
     Map<String, dynamic> data = {
       'method': 'tab_dump',
       'param': '["OnlineDeviceTable"]',
     };
     XHttp.get('/data.html', data).then((res) {
+      if (sx) {
+        ToastUtils.toast('刷新成功');
+      }
       try {
         debugPrint("\n================== 获取在线设备 ==========================");
         var d = json.decode(res.toString());
@@ -46,6 +50,7 @@ class _TopoState extends State<Topo> {
         print(e);
       }
     }).catchError((onError) {
+      ToastUtils.toast('获取在线设备失败');
       debugPrint('获取在线设备失败：${onError.toString()}');
     });
   }
@@ -61,172 +66,157 @@ class _TopoState extends State<Topo> {
         leading: IconButton(
             onPressed: () {
               //刷新
-              getTopoData();
+              getTopoData(true);
             },
             icon: const Icon(Icons.refresh)),
-        actions: [
-          IconButton(
-              onPressed: () {
-                // 占位
-              },
-              icon: const Icon(Icons.settings))
-        ],
+        // actions: [
+        //   IconButton(
+        //       onPressed: () {
+        //         // 占位
+        //       },
+        //       icon: const Icon(Icons.settings))
+        // ],
       ),
       body: ListView(
         padding: const EdgeInsets.only(top: 20, left: 5, right: 5),
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
+          Column(
             children: [
-              Column(
-                children: [
-                  SizedBox(
-                    height: 96.w,
-                    width: 96.w,
-                    // margin: const EdgeInsets.only(top: 20, bottom: 5),
-                    child: ClipOval(
-                        child: Image.network(
-                            "https://bpic.51yuansu.com/pic3/cover/03/10/19/5b46a61d01fc0_610.jpg",
-                            fit: BoxFit.cover)),
-                  ),
-                  Text(
-                    'Internet',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24.sp,
-                    ),
-                  ),
-                  Container(
-                    height: 92.w,
-                    width: 24.w,
-                    margin: const EdgeInsets.all(5),
+              SizedBox(
+                height: 96.w,
+                width: 96.w,
+                // margin: const EdgeInsets.only(top: 20, bottom: 5),
+                child: ClipOval(
                     child: Image.network(
-                        'https://z4a.net/images/2022/12/06/shu.jpg',
-                        fit: BoxFit.fill),
-                  ),
-                ],
+                        "https://bpic.51yuansu.com/pic3/cover/03/10/19/5b46a61d01fc0_610.jpg",
+                        fit: BoxFit.cover)),
+              ),
+              Text(
+                'Internet',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24.sp,
+                ),
               ),
               Container(
-                height: 56.w,
-                width: 200.w,
+                height: 92.w,
+                width: 24.w,
                 margin: const EdgeInsets.all(5),
                 child: Image.network(
-                    'https://z4a.net/images/2022/12/12/odu.jpg',
+                    'https://z4a.net/images/2022/12/06/shu.jpg',
                     fit: BoxFit.fill),
-              ),
-              Column(
-                children: [
-                  GestureDetector(
-                    onTap: (() {
-                      Get.toNamed("/odu");
-                    }),
-                    child: Stack(
-                      children: [
-                        Container(
-                          decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
-                          clipBehavior: Clip.hardEdge,
-                          height: 96.w,
-                          width: 96.w,
-                          margin: const EdgeInsets.all(5),
-                          child: Image.network(
-                              'https://img.redocn.com/sheying/20200324/shujiashangdeshuji_10870699.jpg',
-                              fit: BoxFit.cover),
-                        ),
-                        Positioned(
-                          right: 0,
-                          top: 0,
-                          child: Container(
-                            decoration: const BoxDecoration(
-                              color: Color.fromARGB(255, 94, 164, 245),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8)),
-                            ),
-                            height: 32.w,
-                            width: 32.w,
-                            child: Text(
-                              meshData.length.toString(),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 24.sp,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Text(
-                    'ODU',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 24.sp,
-                    ),
-                  ),
-                  Center(
-                    child: Container(
-                      height: 76.w,
-                      width: 24.w,
-                      margin: const EdgeInsets.all(5),
-                      child: Image.network(
-                          'https://z4a.net/images/2022/12/06/shu.jpg',
-                          fit: BoxFit.fill),
-                    ),
-                  ),
-                ],
               ),
             ],
           ),
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              border: Border.all(
-                  color: const Color.fromARGB(255, 0, 0, 0), width: 0.5),
-              borderRadius: BorderRadius.circular((5.0)),
-            ),
-            margin: const EdgeInsets.all(15),
-            child: Column(
-              children: [
-                Center(
-                  child: Container(
-                    height: 130.w,
-                    width: 130.w,
-                    margin: const EdgeInsets.all(5),
-                    child: Image.network(
-                        'https://z4a.net/images/2022/12/12/wifi.jpg',
-                        fit: BoxFit.fill),
-                  ),
+          Column(
+            children: [
+              GestureDetector(
+                onTap: (() {
+                  Get.toNamed("/odu");
+                }),
+                child: Stack(
+                  children: [
+                    Container(
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      clipBehavior: Clip.hardEdge,
+                      height: 196.w,
+                      width: 196.w,
+                      margin: const EdgeInsets.all(5),
+                      child: Image.asset('assets/images/odu.png',
+                          fit: BoxFit.cover),
+                    ),
+                    // Positioned(
+                    //   right: 0,
+                    //   top: 0,
+                    //   child: Container(
+                    //     decoration: const BoxDecoration(
+                    //       color: Color.fromARGB(255, 94, 164, 245),
+                    //       borderRadius: BorderRadius.all(Radius.circular(8)),
+                    //     ),
+                    //     height: 32.w,
+                    //     width: 32.w,
+                    //     child: Text(
+                    //       meshData.length.toString(),
+                    //       textAlign: TextAlign.center,
+                    //       style: TextStyle(
+                    //         fontSize: 24.sp,
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                  ],
                 ),
-                GridView.count(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  crossAxisCount: 4,
-                  mainAxisSpacing: 22,
-                  childAspectRatio: 1.0,
-                  children: meshData
-                      .map(
-                        (e) => MESHItem(
-                          title: e.title,
-                          isNative: e.isNative,
-                          isShow: e.isShow,
-                        ),
-                      )
-                      .toList(),
+              ),
+              Text(
+                'ODU',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24.sp,
                 ),
-              ],
-            ),
+              ),
+              Center(
+                child: Container(
+                  height: 76.w,
+                  width: 24.w,
+                  margin: const EdgeInsets.all(5),
+                  child: Image.network(
+                      'https://z4a.net/images/2022/12/06/shu.jpg',
+                      fit: BoxFit.fill),
+                ),
+              ),
+            ],
           ),
           Center(
-            child: Text(
-              'MESH组网',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 24.sp,
-              ),
+            child: Container(
+              height: 130.w,
+              width: 130.w,
+              margin: const EdgeInsets.all(5),
+              child: Image.network(
+                  'https://pic.ntimg.cn/file/20170811/10673188_150225172000_2.jpg',
+                  fit: BoxFit.fill),
             ),
           ),
+          // Container(
+          //   padding: const EdgeInsets.all(10),
+          //   decoration: BoxDecoration(
+          //     border: Border.all(
+          //         color: const Color.fromARGB(255, 0, 0, 0), width: 0.5),
+          //     borderRadius: BorderRadius.circular((5.0)),
+          //   ),
+          //   margin: const EdgeInsets.all(15),
+          //   child: Column(
+          //     children: [
+          //       Center(
+          //         child: Container(
+          //           height: 130.w,
+          //           width: 130.w,
+          //           margin: const EdgeInsets.all(5),
+          //           child: Image.network(
+          //               'https://z4a.net/images/2022/12/12/wifi.jpg',
+          //               fit: BoxFit.fill),
+          //         ),
+          //       ),
+          //       GridView.count(
+          //         physics: const NeverScrollableScrollPhysics(),
+          //         shrinkWrap: true,
+          //         crossAxisCount: 4,
+          //         mainAxisSpacing: 22,
+          //         childAspectRatio: 1.0,
+          //         children: meshData
+          //             .map(
+          //               (e) => MESHItem(
+          //                 title: e.title,
+          //                 isNative: e.isNative,
+          //                 isShow: e.isShow,
+          //               ),
+          //             )
+          //             .toList(),
+          //       ),
+          //     ],
+          //   ),
+          // ),
           Center(
             child: Container(
               height: 96.w,

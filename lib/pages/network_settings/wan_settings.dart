@@ -68,6 +68,7 @@ class _WanSettingsState extends State<WanSettings> {
       });
     } catch (e) {
       debugPrint('失败：$e.toString()');
+      ToastUtils.toast('修改失败');
     }
   }
 

@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import '../../../core/widget/custom_app_bar.dart';
+import '../../core/http/http.dart';
+import '../../core/utils/shared_preferences_util.dart';
+import '../../core/utils/toast.dart';
 
 /// 维护设置
 class MaintainSettings extends StatefulWidget {
@@ -12,6 +17,36 @@ class MaintainSettings extends StatefulWidget {
 
 class _MaintainSettingsState extends State<MaintainSettings> {
   bool isCheck = true;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  void getmaintaData() {
+    Map<String, dynamic> data = {
+      'method': 'obj_set',
+      'param': '{"systemReboot":"1"}',
+    };
+    XHttp.get('/data.html', data).then((res) {
+      try {
+        ToastUtils.toast('重启成功');
+      } on FormatException catch (e) {
+        print(e);
+      }
+    }).catchError((onError) {
+      debugPrint('失败：${onError.toString()}');
+      ToastUtils.toast('重启失败');
+    });
+  }
+
+  void loginout() {
+    // 这里还需要调用后台接口的方法
+
+    sharedDeleteData("loginInfo");
+    sharedClearData();
+    Get.offAllNamed("/get_equipment");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +114,10 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                         style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all(
                                 const Color.fromARGB(255, 48, 118, 250))),
-                        onPressed: () {},
+                        onPressed: () {
+                          getmaintaData();
+                          loginout();
+                        },
                         child: const Text('重启'),
                       ),
                     ],

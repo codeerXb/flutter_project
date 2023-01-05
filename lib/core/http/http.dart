@@ -33,7 +33,7 @@ class XHttp {
 
   ///get请求
   static Future get(String url, [Map<String, dynamic>? params]) async {
-    Response response;
+    late Response response;
     try {
       if (params != null) {
         debugPrint('-------get -------');
@@ -43,15 +43,18 @@ class XHttp {
           ...params,
           // '_csrf_token': BaseConfig.token,
         });
+        debugPrint('------get响应------');
+        debugPrint(response.toString());
       } else {
         response = await dio.get(url);
       }
-      return response.data;
-    } catch (e) {
-      debugPrint('-------get err-------');
-
+    } on DioError catch (e) {
+      debugPrint('++++++++++++');
+      debugPrint(params.toString());
       debugPrint(e.toString());
+      debugPrint('++++++++++++');
     }
+    return response.data;
   }
 
   ///post请求

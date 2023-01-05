@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:flutter_template/pages/login/model/equipment_data.dart';
+import 'package:flutter_template/pages/login/model/exception_login.dart';
 import 'package:get/get.dart';
 
 import '../../core/utils/shared_preferences_util.dart';
@@ -42,12 +43,12 @@ class _LoginState extends State<Login> {
       'password': _password.trim(),
     };
     XHttp.get('/action/appLogin', data).then((res) {
-      try {
-        print("+++++++++++++");
-
+      debugPrint('------登录------');
+      debugPrint(res);
+      // 以 { 或者 [ 开头的
+      RegExp exp = RegExp(r'^[{[]');
+      if (res != null && exp.hasMatch(res)) {
         var d = json.decode(res.toString());
-        print(d['token']);
-
         loginController.setToken(d['token']);
         loginController.setSession(d['sessionid']);
         sharedAddAndUpdate(
@@ -55,28 +56,37 @@ class _LoginState extends State<Login> {
         sharedAddAndUpdate("token", String, d['token']);
         sharedAddAndUpdate("session", String, d['sessionid']);
         Get.offNamed("/home", arguments: {'vn': vn});
-        // print(d);
-      } on FormatException catch (e) {
-        ToastUtils.toast('登录失败');
-
-        print('The provided string is not valid JSON');
-        print(e);
       }
-    }).catchError((onError) {
-      // Get.snackbar("提示", "登录失败");
-      // Get.snackbar("", "",
-      //     titleText: Text(
-      //       '提示',
-      //       textAlign: TextAlign.center,
-      //       style: TextStyle(fontSize: 40.sp),
-      //     ),
-      //     messageText: Text(
-      //       '登录失败',
-      //       textAlign: TextAlign.center,
-      //       style: TextStyle(fontSize: 30.sp),
-      //     ));
-      ToastUtils.toast('登录失败');
-      debugPrint(onError.toString());
+    }).catchError((err) {
+      if (err.response != null) {
+        var resjson = json.decode(err.response.toString());
+        var errRes = ExceptionLogin.fromJson(resjson);
+
+        /// 顶部弹出
+        // Get.snackbar("", "",
+        //     titleText: Text(
+        //       '提示',
+        //       textAlign: TextAlign.left,
+        //       style: TextStyle(fontSize: 40.sp),
+        //     ),
+        //     messageText: Text(
+        //       errRes.code == 201
+        //           ? '密码错误'
+        //           : '已锁定，${errRes.webLoginRetryTimeout}s后解锁',
+        //       textAlign: TextAlign.left,
+        //       style: TextStyle(fontSize: 30.sp),
+        //     ),
+        //     backgroundColor: const Color(0xfffff000));
+        if (errRes.success == false) {
+          Get.offNamed('/loginPage');
+          if (errRes.code == 201) {
+            ToastUtils.toast('密码错误');
+          } else if (errRes.code == 202) {
+            ToastUtils.error('已锁定，${errRes.webLoginRetryTimeout}s后解锁');
+          }
+        }
+        debugPrint('登录失败：${errRes.code}');
+      }
     });
   }
 

@@ -29,6 +29,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
       'param': '{"systemReboot":"1"}',
     };
     XHttp.get('/data.html', data).then((res) {
+      loginout();
       try {
         ToastUtils.toast('重启成功');
       } on FormatException catch (e) {
@@ -116,7 +117,6 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                                 const Color.fromARGB(255, 48, 118, 250))),
                         onPressed: () {
                           getmaintaData();
-                          loginout();
                         },
                         child: const Text('重启'),
                       ),

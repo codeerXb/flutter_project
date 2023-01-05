@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -6,6 +8,7 @@ import '../../../core/widget/custom_app_bar.dart';
 import '../../core/http/http.dart';
 import '../../core/utils/shared_preferences_util.dart';
 import '../../core/utils/toast.dart';
+import 'model/maintain_data.dart';
 
 /// 维护设置
 class MaintainSettings extends StatefulWidget {
@@ -17,6 +20,7 @@ class MaintainSettings extends StatefulWidget {
 
 class _MaintainSettingsState extends State<MaintainSettings> {
   bool isCheck = true;
+  MaintainData MaintainVal = MaintainData();
 
   @override
   void initState() {
@@ -30,9 +34,18 @@ class _MaintainSettingsState extends State<MaintainSettings> {
     };
     XHttp.get('/data.html', data).then((res) {
       try {
-        ToastUtils.toast('重启成功');
+        var d = json.decode(res.toString());
+        setState(() {
+          MaintainVal = MaintainData.fromJson(d);
+          if (MaintainVal.success == true) {
+            ToastUtils.toast('重启成功');
+          } else {
+            ToastUtils.toast('重启失败');
+          }
+        });
       } on FormatException catch (e) {
         print(e);
+        ToastUtils.toast('重启失败');
       }
     }).catchError((onError) {
       debugPrint('失败：${onError.toString()}');

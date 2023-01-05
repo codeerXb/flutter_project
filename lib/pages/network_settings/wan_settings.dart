@@ -17,10 +17,12 @@ class WanSettings extends StatefulWidget {
 }
 
 class _WanSettingsState extends State<WanSettings> {
-  WanSettingData wanSettingVal = WanSettingData(networkWanSettingsMode: '');
+  WanSettingData wanSettingVal = WanSettingData();
   String showVal = '';
   int val = 0;
   String wanVal = 'nat';
+
+  WanNetworkModel wanNetwork = WanNetworkModel();
 
   @override
   void initState() {
@@ -35,9 +37,18 @@ class _WanSettingsState extends State<WanSettings> {
     };
     XHttp.get('/data.html', data).then((res) {
       try {
-        ToastUtils.toast('修改成功');
+        var d = json.decode(res.toString());
+        setState(() {
+          wanNetwork = WanNetworkModel.fromJson(d);
+          if (wanNetwork.success == true) {
+            ToastUtils.toast('修改成功');
+          } else {
+            ToastUtils.toast('修改失败');
+          }
+        });
       } on FormatException catch (e) {
         print(e);
+        ToastUtils.toast('修改失败');
       }
     }).catchError((onError) {
       debugPrint('失败：${onError.toString()}');
@@ -57,12 +68,15 @@ class _WanSettingsState extends State<WanSettings> {
         wanSettingVal = WanSettingData.fromJson(d);
         if (wanSettingVal.networkWanSettingsMode.toString() == 'nat') {
           showVal = 'NAT';
+          val = 0;
         }
         if (wanSettingVal.networkWanSettingsMode.toString() == 'bridge') {
           showVal = '桥接';
+          val = 1;
         }
         if (wanSettingVal.networkWanSettingsMode.toString() == 'router') {
           showVal = 'ROUTER';
+          val = 2;
         }
       });
     } catch (e) {

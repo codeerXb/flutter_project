@@ -24,6 +24,8 @@ class _RadioSettingsState extends State<RadioSettings> {
   String radioStateVal = '';
   String radioGTitle = '';
 
+  RadioConcatenateData radioConcatenate = RadioConcatenateData();
+
   RadioGData radioGState = RadioGData();
 
   @override
@@ -39,9 +41,18 @@ class _RadioSettingsState extends State<RadioSettings> {
     };
     XHttp.get('/data.html', data).then((res) {
       try {
-        ToastUtils.toast('修改成功');
+        var d = json.decode(res.toString());
+        setState(() {
+          radioConcatenate = RadioConcatenateData.fromJson(d);
+          if (radioConcatenate.success == true) {
+            ToastUtils.toast('修改成功');
+          } else {
+            ToastUtils.toast('修改失败');
+          }
+        });
       } on FormatException catch (e) {
         print(e);
+        ToastUtils.toast('修改失败');
       }
     }).catchError((e) {
       debugPrint('获取Radio设置失败：$e.toString()');

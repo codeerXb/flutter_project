@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/core/widget/steps_widget.dart';
 
 import 'radar_map_model.dart';
 import 'radar_widget.dart';
@@ -40,8 +41,12 @@ class _ODUState extends State<ODU> {
   int _index = 0;
   double MaxNumber = 0;
   int CurrentAngle = 0;
+  int currentIndex = -1;
   showTimer() {
     // print(123123);
+    setState(() {
+      currentIndex = -1;
+    });
     isShow = false;
     _index = 0;
     MaxNumber = 0;
@@ -52,9 +57,13 @@ class _ODUState extends State<ODU> {
     pointer = List.generate(36, (index) {
       return 0;
     });
+    setState(() {
+      currentIndex = 0;
+    });
     _timer = Timer.periodic(const Duration(milliseconds: 300), (t) {
       //需要执行的内容
       setState(() {
+        currentIndex = 1;
         if (_index < 36) {
           mapData[_index] = random(3, 28);
           if (mapData[_index] > MaxNumber) {
@@ -71,6 +80,8 @@ class _ODUState extends State<ODU> {
           // mapData = mapData;
         } else {
           isShow = true;
+
+          currentIndex = 2;
           _timer?.cancel();
         }
       });
@@ -87,163 +98,17 @@ class _ODUState extends State<ODU> {
         elevation: 0,
       ),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Padding(
               padding: EdgeInsets.only(
-            top: 100.w,
+            top: 40.w,
           )),
-          // Stack(clipBehavior: Clip.hardEdge, children: [
-          //   Container(
-          //     height: 600.w,
-          //   ),
-          //   Positioned(
-          //     width: 600.w,
-          //     left: -20.w,
-          //     child: RadarWidget(
-          //       skewing: 0,
-          //       radarMap: RadarMapModel(
-          //         legend: [
-          //           LegendModel('信号强度', const Color(0XFF0EBD8D)),
-          //           LegendModel('最大值', const Color.fromARGB(255, 234, 104, 53)),
-          //         ],
-          //         indicator: legend,
-          //         data: [
-          //           //   MapDataModel([48,32.04,1.00,94.5,19,60,50,30,19,60,50]),
-          //           //   MapDataModel([42.59,34.04,1.10,68,99,30,19,60,50,19,30]),
+          StepsWidget(currentIndex: currentIndex),
+          // Row(
+          //   children: const [StepsWidget(currentIndex: 1)],
+          // ),
 
-          //           MapDataModel(mapData),
-          //           MapDataModel(pointer),
-          //         ],
-          //         radius: 180.w,
-          //         duration: 500,
-          //         shape: Shape.circle,
-          //         maxWidth: 50.w,
-          //         line: LineModel(3),
-          //       ),
-          //       textStyle: const TextStyle(color: Colors.black, fontSize: 10),
-          //       isNeedDrawLegend: true,
-          //       lineText: (p, length) => "${(p * 30 ~/ length)}dB",
-          //       dilogText: (IndicatorModel indicatorModel,
-          //           List<LegendModel> legendModels,
-          //           List<double> mapDataModels) {
-          //         StringBuffer text = StringBuffer("");
-          //         for (int i = 0; i < mapDataModels.length; i++) {
-          //           text.write(
-          //               "${legendModels[i].name} : ${mapDataModels[i].toString()}");
-          //           if (i != mapDataModels.length - 1) {
-          //             text.write("\n");
-          //           }
-          //         }
-          //         return text.toString();
-          //       },
-          //       outLineText: (data, max) {
-          //         return data > 0 ? "$data" : '';
-          //       },
-          //     ),
-          //   ),
-          //   Positioned(
-          //     right: 20.w,
-          //     top: 50.w,
-          //     child:
-          //         Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
-          //       Row(
-          //         children: [
-          //           const Text(
-          //             'MaxS',
-          //             style:
-          //                 TextStyle(color: Color.fromARGB(255, 234, 104, 53)),
-          //           ),
-          //           Card(
-          //             child: Container(
-          //               width: 150.w,
-          //               alignment: Alignment.centerLeft,
-          //               padding: EdgeInsets.all(5.w),
-          //               child: Text(
-          //                 " ${isShow ? MaxNumber : 0.0} dB",
-          //                 style: const TextStyle(
-          //                     color: Color.fromARGB(255, 234, 104, 53)),
-          //               ),
-          //             ),
-          //           ),
-          //         ],
-          //       ),
-          //       Row(
-          //         children: [
-          //           const Text(
-          //             'MaxA',
-          //             style:
-          //                 TextStyle(color: Color.fromARGB(255, 234, 104, 53)),
-          //           ),
-          //           Card(
-          //             child: Container(
-          //               width: 150.w,
-          //               alignment: Alignment.centerLeft,
-          //               padding: EdgeInsets.all(5.w),
-          //               child: Text(" ${isShow ? CurrentAngle : 0}°",
-          //                   style: const TextStyle(
-          //                       color: Color.fromARGB(255, 234, 104, 53))),
-          //             ),
-          //           ),
-          //         ],
-          //       ),
-          //       Padding(
-          //           padding: EdgeInsets.only(
-          //         top: 110.w,
-          //       )),
-          //       Row(
-          //         children: [
-          //           const Text(
-          //             'CurS',
-          //             style: TextStyle(color: Color(0XFF0EBD8D)),
-          //           ),
-          //           Card(
-          //             child: Container(
-          //               width: 150.w,
-          //               alignment: Alignment.centerLeft,
-          //               padding: EdgeInsets.all(5.w),
-          //               child: Text(
-          //                 " ${mapData[_index == 0 ? 0 : _index - 1]} dB",
-          //                 style: const TextStyle(color: Color(0XFF0EBD8D)),
-          //               ),
-          //             ),
-          //           ),
-          //         ],
-          //       ),
-          //       Row(
-          //         children: [
-          //           const Text(
-          //             'CurA',
-          //             style: TextStyle(color: Color(0XFF0EBD8D)),
-          //           ),
-          //           Card(
-          //             child: Container(
-          //               width: 150.w,
-          //               alignment: Alignment.centerLeft,
-          //               padding: EdgeInsets.all(5.w),
-          //               child: Text(" ${(_index) * 10}°",
-          //                   style: const TextStyle(color: Color(0XFF0EBD8D))),
-          //             ),
-          //           ),
-          //         ],
-          //       ),
-          //       // Card(
-          //       //   child: Container(
-          //       //     alignment: Alignment.centerLeft,
-          //       //     padding: EdgeInsets.all(10.w),
-          //       //     child: Column(
-          //       //         crossAxisAlignment: CrossAxisAlignment.start,
-          //       //         children: [
-          //       //           Text(
-          //       //               "CurS ${mapData[_index == 0 ? 0 : _index - 1]} dB",
-          //       //               style: const TextStyle(color: Color(0XFF0EBD8D))),
-          //       //           Text("CurA ${(_index) * 10}°",
-          //       //               style: const TextStyle(color: Color(0XFF0EBD8D))),
-          //       //         ]),
-          //       //   ),
-          //       // ),
-          //     ]),
-          //   ),
-          // ]),
           RadarWidget(
             skewing: 0,
             radarMap: RadarMapModel(
@@ -284,6 +149,10 @@ class _ODUState extends State<ODU> {
               return data > 0 ? "$data" : '';
             },
           ),
+          Padding(
+              padding: EdgeInsets.only(
+            top: 20.w,
+          )),
           Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
             Column(
               children: [
@@ -402,7 +271,7 @@ class _ODUState extends State<ODU> {
           //     '当前旋转(角度/dB)${(_index) * 10}° / ${mapData[_index == 0 ? 0 : _index - 1]}dB'),
           // Text('信号最大值-旋转角度$MaxNumber dB - $CurrentAngle°'),
           Padding(
-            padding: EdgeInsets.only(top: 80.w),
+            padding: EdgeInsets.only(top: 120.w),
           ),
           SizedBox(
             height: 70.sp,
@@ -414,6 +283,9 @@ class _ODUState extends State<ODU> {
               onPressed: isShow ? showTimer : null,
               child: const Text('开始搜索'),
             ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 70.w),
           ),
           // Row(
           //   mainAxisAlignment: MainAxisAlignment.spaceAround,

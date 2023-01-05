@@ -38,7 +38,6 @@ class _RadioSettingsState extends State<RadioSettings> {
     };
     XHttp.get('/data.html', data).then((res) {
       try {
-        debugPrint("\n================== 成功 ==========================");
         ToastUtils.toast('修改成功');
       } on FormatException catch (e) {
         print(e);

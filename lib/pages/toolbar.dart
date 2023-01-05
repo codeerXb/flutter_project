@@ -25,15 +25,23 @@ class _ToolbarState extends State<Toolbar> {
   /// 底部导航
   static const List<BottomNavigationBarItem> menuList = [
     BottomNavigationBarItem(
-      icon: FaIcon(FontAwesomeIcons.house),
+      icon:
+          Image(image: AssetImage('assets/images/icon_homepage_no_state.png')),
+      activeIcon:
+          Image(image: AssetImage('assets/images/icon_homepage_state.png')),
       label: '状态',
     ),
     BottomNavigationBarItem(
-      icon: FaIcon(FontAwesomeIcons.sitemap),
+      icon: Image(image: AssetImage('assets/images/icon_homepage_no_topo.png')),
+      activeIcon:
+          Image(image: AssetImage('assets/images/icon_homepage_topo.png')),
       label: '网络拓扑',
     ),
     BottomNavigationBarItem(
-      icon: FaIcon(Icons.settings),
+      icon:
+          Image(image: AssetImage('assets/images/icon_homepage_no_route.png')),
+      activeIcon:
+          Image(image: AssetImage('assets/images/icon_homepage_route.png')),
       label: '高级设置',
     ),
   ];

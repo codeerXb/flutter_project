@@ -20,10 +20,13 @@ class WpsSet extends StatefulWidget {
 class _WpsSetState extends State<WpsSet> {
   wpsDatas wpsData = wpsDatas(
     wifi5gWpsClientPin: '',
+    wifiWps: '',
   );
   String showVal = '2.4GHz';
   int val = 0;
   bool isCheck = true;
+  String modeShowVal = 'PBC';
+  int modeVal = 0;
   @override
   void initState() {
     super.initState();
@@ -55,6 +58,7 @@ class _WpsSetState extends State<WpsSet> {
       var d = json.decode(response.toString());
       setState(() {
         wpsData = wpsDatas.fromJson(d);
+        isCheck = wpsData.wifi5gWps.toString() == '1' ? true : false;
       });
     } catch (e) {
       debugPrint('获取wps设置失败：$e.toString()');
@@ -149,6 +153,79 @@ class _WpsSetState extends State<WpsSet> {
                               ),
                             ],
                           )
+                        ],
+                      ),
+                    ),
+                    //模式
+                    BottomLine(
+                      rowtem: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('模式',
+                              style: TextStyle(
+                                  color: const Color.fromARGB(255, 5, 0, 0),
+                                  fontSize: 28.sp)),
+                          GestureDetector(
+                            onTap: () {
+                              var result = CommonPicker.showPicker(
+                                context: context,
+                                options: ['PBC', 'Client PIN'],
+                                value: modeVal,
+                              );
+                              result?.then((selectedValue) => {
+                                    if (modeVal != selectedValue &&
+                                        selectedValue != null)
+                                      {
+                                        setState(() => {
+                                              modeVal = selectedValue,
+                                              modeShowVal =
+                                                  ['PBC', 'Client PIN'][modeVal]
+                                            })
+                                      }
+                                  });
+                            },
+                            child: Row(
+                              children: [
+                                Text(modeShowVal,
+                                    style: TextStyle(
+                                        color:
+                                            const Color.fromARGB(255, 5, 0, 0),
+                                        fontSize: 28.sp)),
+                                Icon(
+                                  Icons.arrow_forward_ios_outlined,
+                                  color: const Color.fromRGBO(144, 147, 153, 1),
+                                  size: 30.w,
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    //客户 PIN
+                    BottomLine(
+                      rowtem: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('客户 PIN',
+                              style: TextStyle(
+                                  color: const Color.fromARGB(255, 5, 0, 0),
+                                  fontSize: 28.sp)),
+                          SizedBox(
+                            width: 300.w,
+                            child: TextFormField(
+                              style: TextStyle(
+                                  fontSize: 26.sp,
+                                  color: const Color(0xff051220)),
+                              decoration: InputDecoration(
+                                hintText: "请输入客户 PIN",
+                                hintStyle: TextStyle(
+                                    fontSize: 26.sp,
+                                    color: const Color(0xff737A83)),
+                                border: InputBorder.none,
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
+import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_picker.dart';
 import 'package:flutter_template/pages/wifi_set/major/major_datas.dart';
@@ -17,9 +18,10 @@ class MajorSet extends StatefulWidget {
 }
 
 class _MajorSetState extends State<MajorSet> {
-  String showVal = '中国';
-  majorDatas wifiRegionCountry = majorDatas(wifiWpsPbcState: 'CN');
-  int val = 0;
+  String showVal = '';
+  majorDatas majorData = majorDatas(wifiRegionCountry: 'CN');
+  int index = 0;
+  dynamic val = 0;
   @override
   void initState() {
     super.initState();
@@ -29,14 +31,19 @@ class _MajorSetState extends State<MajorSet> {
   //保存
   void handleSave() async {
     Map<String, dynamic> data = {
-      'method': 'obj_get',
-      'param': '{"wifi5gRegionCountry":"CN"}',
+      'method': 'obj_set',
+      'param': '{"wifi5gRegionCountry":$val}',
     };
-    try {
-      await XHttp.get('/data.html', data);
-    } catch (e) {
-      debugPrint('保存专业设置失败：$e.toString()');
-    }
+    XHttp.get('/data.html', data).then((res) {
+      try {
+        ToastUtils.toast('修改成功');
+      } on FormatException catch (e) {
+        print(e);
+      }
+    }).catchError((onError) {
+      debugPrint('失败：${onError.toString()}');
+      ToastUtils.toast('修改失败');
+    });
   }
 
   //读取
@@ -49,7 +56,34 @@ class _MajorSetState extends State<MajorSet> {
       var response = await XHttp.get('/data.html', data);
       var d = json.decode(response.toString());
       setState(() {
-        wifiRegionCountry = majorDatas.fromJson(d);
+        majorData = majorDatas.fromJson(d);
+        //读取地区
+        switch (majorData.wifiRegionCountry.toString()) {
+          case 'CN':
+            showVal = '中国';
+            break;
+          case 'FR':
+            showVal = '法国';
+            break;
+          case 'RU':
+            showVal = '俄罗斯';
+            break;
+          case 'US':
+            showVal = '美国';
+            break;
+          case 'SG':
+            showVal = '新加坡';
+            break;
+          case 'AU':
+            showVal = '澳大利亚';
+            break;
+          case 'CL':
+            showVal = '智利';
+            break;
+          case 'PL':
+            showVal = '波兰';
+            break;
+        }
       });
     } catch (e) {
       debugPrint('获取专业设置失败：$e.toString()');
@@ -70,11 +104,6 @@ class _MajorSetState extends State<MajorSet> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const TitleWidger(title: '专业设置'),
-                ElevatedButton(
-                    onPressed: () {
-                      handleSave();
-                    },
-                    child: const Text('保存')),
                 InfoBox(
                     boxCotainer: Column(
                   children: [
@@ -101,14 +130,14 @@ class _MajorSetState extends State<MajorSet> {
                                   '智利',
                                   '波兰'
                                 ],
-                                value: val,
+                                value: index,
                               );
                               result?.then((selectedValue) => {
-                                    if (val != selectedValue &&
+                                    if (index != selectedValue &&
                                         selectedValue != null)
                                       {
                                         setState(() => {
-                                              val = selectedValue,
+                                              index = selectedValue,
                                               showVal = [
                                                 '中国',
                                                 '法国',
@@ -118,7 +147,18 @@ class _MajorSetState extends State<MajorSet> {
                                                 '澳大利亚',
                                                 '智利',
                                                 '波兰'
-                                              ][val]
+                                              ][index],
+                                              val = [
+                                                'CN',
+                                                'FR',
+                                                'RU',
+                                                'US',
+                                                'SG',
+                                                'AU',
+                                                'CL',
+                                                'PL'
+                                              ][index],
+                                              handleSave()
                                             })
                                       }
                                   });

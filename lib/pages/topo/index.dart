@@ -26,12 +26,15 @@ class _TopoState extends State<Topo> {
   void initState() {
     super.initState();
     getTopoData(false);
+    updateStatus();
   }
 
   // 有线连接状况：1:连通0：未连接
   String _wanStatus = '0';
   // wifi连接状况：1:连通0：未连接
   String _wifiStatus = '0';
+  // sim卡连接状况：1:连通0：未连接
+  String _simStatus = '0';
 
   /// 获取网络连接状态和上下行速率并更新
   void updateStatus() async {
@@ -48,6 +51,7 @@ class _TopoState extends State<Topo> {
         setState(() {
           _wanStatus = '0';
           _wifiStatus = '0';
+          _simStatus = '0';
         });
         debugPrint('netStatus得到数据不是json');
       }
@@ -57,9 +61,11 @@ class _TopoState extends State<Topo> {
           (resObj.wifiHaveOrNot == '1' || resObj.wifi5gHaveOrNot == '1')
               ? '1'
               : '0';
+      String simStatus = resObj.lteRoam == '1' ? '1' : '0';
       setState(() {
         _wanStatus = wanStatus;
         _wifiStatus = wifiStatus;
+        _simStatus = simStatus;
       });
     } catch (err) {
       debugPrint(err.toString());
@@ -137,14 +143,22 @@ class _TopoState extends State<Topo> {
                   fontSize: 24.sp,
                 ),
               ),
-              Container(
-                height: 92.w,
-                width: 24.w,
-                margin: const EdgeInsets.all(5),
-                child: Image.network(
-                    'https://z4a.net/images/2022/12/06/shu.jpg',
-                    fit: BoxFit.fill),
-              ),
+              Stack(children: [
+                Container(
+                  height: 92.w,
+                  width: 24.w,
+                  margin: const EdgeInsets.all(5),
+                  child: Image.network(
+                      'https://z4a.net/images/2022/12/06/shu.jpg',
+                      fit: BoxFit.fill),
+                ),
+                if (_wanStatus == '0' && _simStatus == '0')
+                  Positioned(
+                    top: 40.w,
+                    left: 14.w,
+                    child: const Text("x"),
+                  )
+              ])
             ],
           ),
           Column(
@@ -195,16 +209,21 @@ class _TopoState extends State<Topo> {
                   fontSize: 24.sp,
                 ),
               ),
-              Center(
-                child: Container(
-                  height: 76.w,
+              Stack(children: [
+                Container(
+                  height: 92.w,
                   width: 24.w,
                   margin: const EdgeInsets.all(5),
                   child: Image.network(
                       'https://z4a.net/images/2022/12/06/shu.jpg',
                       fit: BoxFit.fill),
                 ),
-              ),
+                // Positioned(
+                //   top: 40.w,
+                //   left: 14.w,
+                //   child: const Text("x"),
+                // )
+              ])
             ],
           ),
           Center(

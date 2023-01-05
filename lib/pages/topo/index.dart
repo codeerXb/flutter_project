@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/utils/toast.dart';
+import 'package:flutter_template/pages/net_status/model/net_connect_status.dart';
 import 'package:flutter_template/pages/topo/model/equipment_datas.dart';
 import 'package:flutter_template/pages/topo/mesh_item.dart';
 import 'package:get/get.dart';
@@ -25,6 +26,44 @@ class _TopoState extends State<Topo> {
   void initState() {
     super.initState();
     getTopoData(false);
+  }
+
+  // 有线连接状况：1:连通0：未连接
+  String _wanStatus = '0';
+  // wifi连接状况：1:连通0：未连接
+  String _wifiStatus = '0';
+
+  /// 获取网络连接状态和上下行速率并更新
+  void updateStatus() async {
+    Map<String, dynamic> netStatus = {
+      'method': 'obj_get',
+      'param':
+          '["ethernetConnectionStatus","systemDataRateDlCurrent","systemDataRateUlCurrent","wifiHaveOrNot","wifi5gHaveOrNot","wifiEnable","wifi5gEnable","lteRoam"]'
+    };
+    try {
+      var response = await XHttp.get('/data.html', netStatus);
+      // 以 { 或者 [ 开头的
+      RegExp exp = RegExp('^[{[]');
+      if (!exp.hasMatch(response)) {
+        setState(() {
+          _wanStatus = '0';
+          _wifiStatus = '0';
+        });
+        debugPrint('netStatus得到数据不是json');
+      }
+      var resObj = NetConnecStatus.fromJson(json.decode(response));
+      String wanStatus = resObj.ethernetConnectionStatus == '1' ? '1' : '0';
+      String wifiStatus =
+          (resObj.wifiHaveOrNot == '1' || resObj.wifi5gHaveOrNot == '1')
+              ? '1'
+              : '0';
+      setState(() {
+        _wanStatus = wanStatus;
+        _wifiStatus = wifiStatus;
+      });
+    } catch (err) {
+      debugPrint(err.toString());
+    }
   }
 
   void getTopoData(sx) {

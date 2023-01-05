@@ -248,8 +248,8 @@ class _ODUState extends State<ODU> {
             skewing: 0,
             radarMap: RadarMapModel(
               legend: [
-                LegendModel('信号强度', const Color(0XFF0EBD8D)),
-                LegendModel('最大值', const Color.fromARGB(255, 234, 104, 53)),
+                LegendModel('实时数值', const Color(0XFF0EBD8D)),
+                LegendModel('最大数值', const Color.fromARGB(255, 234, 104, 53)),
               ],
               indicator: legend,
               data: [
@@ -290,6 +290,30 @@ class _ODUState extends State<ODU> {
                 Row(
                   children: [
                     const Text(
+                      'CurA',
+                      style: TextStyle(color: Color(0XFF0EBD8D)),
+                    ),
+                    Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.w),
+                        side: const BorderSide(
+                          color: Color.fromARGB(255, 218, 218, 218),
+                          width: 1,
+                        ),
+                      ),
+                      child: Container(
+                        width: 150.w,
+                        alignment: Alignment.centerLeft,
+                        padding: EdgeInsets.all(5.w),
+                        child: Text(" ${(_index) * 10}°",
+                            style: const TextStyle(color: Color(0XFF0EBD8D))),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    const Text(
                       'CurS',
                       style: TextStyle(color: Color(0XFF0EBD8D)),
                     ),
@@ -313,11 +337,16 @@ class _ODUState extends State<ODU> {
                     ),
                   ],
                 ),
+              ],
+            ),
+            Column(
+              children: [
                 Row(
                   children: [
                     const Text(
-                      'CurA',
-                      style: TextStyle(color: Color(0XFF0EBD8D)),
+                      'MaxA',
+                      style:
+                          TextStyle(color: Color.fromARGB(255, 234, 104, 53)),
                     ),
                     Card(
                       shape: RoundedRectangleBorder(
@@ -331,16 +360,13 @@ class _ODUState extends State<ODU> {
                         width: 150.w,
                         alignment: Alignment.centerLeft,
                         padding: EdgeInsets.all(5.w),
-                        child: Text(" ${(_index) * 10}°",
-                            style: const TextStyle(color: Color(0XFF0EBD8D))),
+                        child: Text(" ${isShow ? CurrentAngle : 0}°",
+                            style: const TextStyle(
+                                color: Color.fromARGB(255, 234, 104, 53))),
                       ),
                     ),
                   ],
                 ),
-              ],
-            ),
-            Column(
-              children: [
                 Row(
                   children: [
                     const Text(
@@ -365,32 +391,6 @@ class _ODUState extends State<ODU> {
                           style: const TextStyle(
                               color: Color.fromARGB(255, 234, 104, 53)),
                         ),
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    const Text(
-                      'MaxA',
-                      style:
-                          TextStyle(color: Color.fromARGB(255, 234, 104, 53)),
-                    ),
-                    Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.w),
-                        side: const BorderSide(
-                          color: Color.fromARGB(255, 218, 218, 218),
-                          width: 1,
-                        ),
-                      ),
-                      child: Container(
-                        width: 150.w,
-                        alignment: Alignment.centerLeft,
-                        padding: EdgeInsets.all(5.w),
-                        child: Text(" ${isShow ? CurrentAngle : 0}°",
-                            style: const TextStyle(
-                                color: Color.fromARGB(255, 234, 104, 53))),
                       ),
                     ),
                   ],

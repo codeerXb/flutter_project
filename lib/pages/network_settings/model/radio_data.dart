@@ -36,6 +36,7 @@ class RadioGData {
   String? lteCellidGet5g;
   String? lteMccGet5g;
   String? lteMncGet5g;
+  String? lteRssi5g;
 
   RadioGData(
       {this.lteNetSelectMode,
@@ -69,6 +70,7 @@ class RadioGData {
       this.lteBandwidthGet5g,
       this.lteRsrp05g,
       this.lteRsrp15g,
+      this.lteRssi5g,
       this.lteRsrq5g,
       this.lteSinr5g,
       this.ltePci5g,
@@ -107,6 +109,7 @@ class RadioGData {
     lteBandGet5g = json['lteBandGet_5g'];
     lteBandwidthGet5g = json['lteBandwidthGet_5g'];
     lteRsrp05g = json['lteRsrp0_5g'];
+    lteRssi5g = json['lteRssi_5g'];
     lteRsrp15g = json['lteRsrp1_5g'];
     lteRsrq5g = json['lteRsrq_5g'];
     lteSinr5g = json['lteSinr_5g'];
@@ -149,6 +152,7 @@ class RadioGData {
     data['lteBandwidthGet_5g'] = lteBandwidthGet5g;
     data['lteRsrp0_5g'] = lteRsrp05g;
     data['lteRsrp1_5g'] = lteRsrp15g;
+    data['lteRssi_5g'] = lteRssi5g;
     data['lteRsrq_5g'] = lteRsrq5g;
     data['lteSinr_5g'] = lteSinr5g;
     data['ltePci_5g'] = ltePci5g;

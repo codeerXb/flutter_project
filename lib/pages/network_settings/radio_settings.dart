@@ -22,6 +22,7 @@ class _RadioSettingsState extends State<RadioSettings> {
   String radioShowVal = '';
   int val = 0;
   String radioStateVal = '';
+  String radioGTitle = '';
 
   RadioGData radioGState = RadioGData();
 
@@ -52,7 +53,7 @@ class _RadioSettingsState extends State<RadioSettings> {
     Map<String, dynamic> data = {
       'method': 'obj_get',
       'param':
-          '["lteNetSelectMode","lteModeGet","lteOnOff","systemCurrentPlatform","lteMainStatusGet","lteDlmcs","lteUlmcs","lteDlEarfcnGet","lteDlFrequency","lteUlFrequency","lteBandGet","lteBandwidthGet","lteRsrp0","lteRsrp1","lteRssi","lteRsrq","lteSinr","lteCinr0","lteCinr1","lteTxpower","ltePci","lteCellidGet","lteMccGet","lteMncGet","lteDlEarfcnGet_5g","lteDlFrequency_5g","lteUlFrequency_5g","lteBandGet_5g","lteBandwidthGet_5g","lteRsrp0_5g","lteRsrp1_5g","lteRsrq_5g","lteSinr_5g","ltePci_5g","lteCellidGet_5g","lteMccGet_5g","lteMncGet_5g"]',
+          '["lteNetSelectMode","lteModeGet","lteOnOff","systemCurrentPlatform","lteMainStatusGet","lteDlmcs","lteUlmcs","lteDlEarfcnGet","lteDlFrequency","lteUlFrequency","lteBandGet","lteBandwidthGet","lteRsrp0","lteRsrp1","lteRssi","lteRsrq","lteSinr","lteCinr0","lteCinr1","lteTxpower","ltePci","lteCellidGet","lteMccGet","lteMncGet","lteDlEarfcnGet_5g","lteDlFrequency_5g","lteUlFrequency_5g","lteBandGet_5g","lteBandwidthGet_5g","lteRsrp0_5g","lteRsrp1_5g","lteRsrq_5g","lteSinr_5g","ltePci_5g","lteCellidGet_5g","lteMccGet_5g","lteMncGet_5g","lteRssi_5g"]',
     };
     try {
       var response = await XHttp.get('/data.html', data);
@@ -67,10 +68,15 @@ class _RadioSettingsState extends State<RadioSettings> {
           showVal = '手动';
           val = 1;
         }
+        if (radioGState.lteDlEarfcnGet5g.toString() == '') {
+          radioGTitle = '4G状态';
+        } else {
+          radioGTitle = '5G状态';
+        }
       });
     } catch (e) {
-      debugPrint('获取Radio 4G状态失败：$e.toString()');
-      ToastUtils.toast('获取Radio 4G状态失败');
+      debugPrint('获取Radio 状态失败：$e.toString()');
+      ToastUtils.toast('获取Radio 状态失败');
     }
   }
 
@@ -154,8 +160,8 @@ class _RadioSettingsState extends State<RadioSettings> {
                 SizedBox(
                   height: 40.sp,
                 ),
-                Row(children: const [
-                  TitleWidger(title: '4G状态'),
+                Row(children: [
+                  TitleWidger(title: radioGTitle),
                 ]),
                 InfoBox(
                   boxCotainer: Column(
@@ -163,47 +169,58 @@ class _RadioSettingsState extends State<RadioSettings> {
                       BottomLine(
                           rowtem: RowContainer(
                         leftText: '频点',
-                        righText: radioGState.lteDlEarfcnGet.toString(),
+                        righText: radioGState.lteDlEarfcnGet5g.toString() == ''
+                            ? radioGState.lteDlEarfcnGet.toString()
+                            : radioGState.lteDlEarfcnGet5g.toString(),
                       )),
                       BottomLine(
                           rowtem: RowContainer(
                         leftText: '下行频率',
-                        righText: '${radioGState.lteDlFrequency}MHz',
+                        righText:
+                            '${radioGState.lteDlFrequency5g.toString() == '' ? radioGState.lteDlFrequency.toString() : radioGState.lteDlFrequency5g.toString()}MHz',
                       )),
                       BottomLine(
                           rowtem: RowContainer(
                         leftText: '上行频率',
-                        righText: '${radioGState.lteUlFrequency}MHz',
+                        righText:
+                            '${radioGState.lteUlFrequency5g.toString() == '' ? radioGState.lteUlFrequency.toString() : radioGState.lteUlFrequency5g.toString()}MHz',
                       )),
                       BottomLine(
                           rowtem: RowContainer(
                         leftText: '频段',
-                        righText: radioGState.lteBandGet.toString(),
+                        righText: radioGState.lteBandGet5g.toString() == ''
+                            ? radioGState.lteBandGet.toString()
+                            : radioGState.lteBandGet5g.toString(),
                       )),
                       BottomLine(
                           rowtem: RowContainer(
                         leftText: '宽带',
-                        righText: '${radioGState.lteBandwidthGet}MHz',
+                        righText:
+                            '${radioGState.lteBandwidthGet5g.toString() == '' ? radioGState.lteBandwidthGet.toString() : radioGState.lteBandwidthGet5g.toString()}MHz',
                       )),
                       BottomLine(
                           rowtem: RowContainer(
                         leftText: 'RSRP',
-                        righText: '${radioGState.lteRsrp0}dBm',
+                        righText:
+                            '${radioGState.lteRsrp05g.toString() == '' ? radioGState.lteRsrp0.toString() : radioGState.lteRsrp05g.toString()}dBm',
                       )),
                       BottomLine(
                           rowtem: RowContainer(
                         leftText: 'RSSI',
-                        righText: '${radioGState.lteRssi}dBm',
+                        righText:
+                            '${radioGState.lteRssi5g.toString() == '' ? radioGState.lteRssi.toString() : radioGState.lteRssi5g.toString()}dBm',
                       )),
                       BottomLine(
                           rowtem: RowContainer(
                         leftText: 'RSRQ',
-                        righText: '${radioGState.lteRsrq}dB',
+                        righText:
+                            '${radioGState.lteRsrq5g.toString() == '' ? radioGState.lteRsrq.toString() : radioGState.lteRsrq5g.toString()}dB',
                       )),
                       BottomLine(
                           rowtem: RowContainer(
                         leftText: 'SINR',
-                        righText: '${radioGState.lteSinr}dB',
+                        righText:
+                            '${radioGState.lteSinr5g.toString() == '' ? radioGState.lteSinr.toString() : radioGState.lteSinr5g.toString()}dB',
                       )),
                       BottomLine(
                           rowtem: RowContainer(
@@ -213,22 +230,30 @@ class _RadioSettingsState extends State<RadioSettings> {
                       BottomLine(
                           rowtem: RowContainer(
                         leftText: 'PCI',
-                        righText: radioGState.ltePci.toString(),
+                        righText: radioGState.ltePci5g.toString() == ''
+                            ? radioGState.ltePci.toString()
+                            : radioGState.ltePci5g.toString(),
                       )),
                       BottomLine(
                           rowtem: RowContainer(
                         leftText: 'Cell ID',
-                        righText: radioGState.lteCellidGet.toString(),
+                        righText: radioGState.lteCellidGet5g.toString() == ''
+                            ? radioGState.lteCellidGet.toString()
+                            : radioGState.lteCellidGet5g.toString(),
                       )),
                       BottomLine(
                           rowtem: RowContainer(
                         leftText: 'MCC',
-                        righText: radioGState.lteMccGet.toString(),
+                        righText: radioGState.lteMccGet5g.toString() == ''
+                            ? radioGState.lteMccGet.toString()
+                            : radioGState.lteMccGet5g.toString(),
                       )),
                       BottomLine(
                           rowtem: RowContainer(
                         leftText: 'MNC',
-                        righText: radioGState.lteMncGet.toString(),
+                        righText: radioGState.lteMncGet5g.toString() == ''
+                            ? radioGState.lteMncGet.toString()
+                            : radioGState.lteMncGet5g.toString(),
                       )),
                     ],
                   ),

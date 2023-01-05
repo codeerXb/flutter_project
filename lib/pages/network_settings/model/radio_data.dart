@@ -162,3 +162,20 @@ class RadioGData {
     return data;
   }
 }
+
+// 连接方式
+class RadioConcatenateData {
+  bool? success;
+
+  RadioConcatenateData({this.success});
+
+  RadioConcatenateData.fromJson(Map<String, dynamic> json) {
+    success = json['success'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['success'] = success;
+    return data;
+  }
+}

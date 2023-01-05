@@ -152,12 +152,17 @@ class _TopoState extends State<Topo> {
                       'https://z4a.net/images/2022/12/06/shu.jpg',
                       fit: BoxFit.fill),
                 ),
-                if (_wanStatus == '0' && _simStatus == '0')
-                  Positioned(
-                    top: 40.w,
-                    left: 14.w,
-                    child: const Text("x"),
-                  )
+                // if (_wanStatus == '0' && _simStatus == '0')
+
+                Positioned(
+                  top: 40.w,
+                  left: 4.w,
+                  child: Icon(
+                    Icons.close,
+                    color: const Color.fromARGB(255, 206, 47, 47),
+                    size: 32.w,
+                  ),
+                )
               ])
             ],
           ),

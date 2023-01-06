@@ -37,29 +37,65 @@ class _ODUState extends State<ODU> {
     return IndicatorModel("", 30);
   });
   var _timer;
+  var selfInspectionTimer;
   bool isShow = true;
+  bool selfInspection = true;
   int _index = 0;
   double MaxNumber = 0;
   int CurrentAngle = 0;
   int currentIndex = -1;
-  showTimer() {
-    // print(123123);
+  @override
+  void dispose() {
+    super.dispose();
+    // 组件销毁时判断Timer是否仍然处于激活状态，是则取消
+    if (_timer != null) {
+      _timer.cancel();
+    }
+    if (selfInspectionTimer != null) {
+      selfInspectionTimer.cancel();
+    }
+  }
+
+  selfInspectionFn() {
     setState(() {
       currentIndex = -1;
+      isShow = false;
+      _index = 18;
+      selfInspection = true;
+      MaxNumber = 0;
+      CurrentAngle = 0;
+      pointer = List.generate(36, (index) {
+        return 0;
+      });
     });
-    isShow = false;
-    _index = 0;
-    MaxNumber = 0;
-    CurrentAngle = 0;
+    selfInspectionTimer =
+        Timer.periodic(const Duration(milliseconds: 300), (t) {
+      setState(() {
+        currentIndex = 0;
+        mapData = List.generate(36, (index) {
+          return 0;
+        });
+        if (_index != 0) {
+          _index -= 1;
+          mapData[_index] = 30;
+          selfInspection = false;
+        } else {
+          selfInspection = true;
+
+          selfInspectionTimer?.cancel();
+          showTimer();
+        }
+      });
+    });
+  }
+
+  showTimer() {
+    // print(123123);
+
     mapData = List.generate(36, (index) {
       return 0;
     });
-    pointer = List.generate(36, (index) {
-      return 0;
-    });
-    setState(() {
-      currentIndex = 0;
-    });
+
     _timer = Timer.periodic(const Duration(milliseconds: 300), (t) {
       //需要执行的内容
       setState(() {
@@ -146,7 +182,7 @@ class _ODUState extends State<ODU> {
               return text.toString();
             },
             outLineText: (data, max) {
-              return data > 0 ? "$data" : '';
+              return data > 0 && selfInspection ? "$data" : '';
             },
           ),
           Padding(
@@ -280,7 +316,7 @@ class _ODUState extends State<ODU> {
               style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(
                       const Color.fromARGB(255, 48, 118, 250))),
-              onPressed: isShow ? showTimer : null,
+              onPressed: isShow ? selfInspectionFn : null,
               child: const Text('开始搜索'),
             ),
           ),

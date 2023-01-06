@@ -89,16 +89,16 @@ class _MyWidgetState extends State<Equipment> {
     });
   }
 
+  var timer;
   @override
   void dispose() {
+    super.dispose();
     // 组件销毁时判断Timer是否仍然处于激活状态，是则取消
-    if (timer.isActive) {
+    if (timer != null) {
       timer.cancel();
     }
-    super.dispose();
   }
 
-  late Timer timer;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -181,11 +181,13 @@ class _MyWidgetState extends State<Equipment> {
                       children: [
                         ListTile(
                           leading: Image.asset("assets/images/router.png",
-                              fit: BoxFit.fitWidth, height: 60, width: 60),
+                              fit: BoxFit.fitWidth, height: 60, width: 40),
                           title: Text(
-                              '产品型号 ${equipmentData.systemProductModel.toString()}'),
+                              '${equipmentData.systemProductModel.toString()}'),
                           subtitle: Text(
-                              'SN ${equipmentData.systemVersionSn.toString()}'),
+                            'SN ${equipmentData.systemVersionSn.toString()}',
+                            style: TextStyle(fontSize: 18.sp),
+                          ),
                           trailing: TextButton(
                             onPressed: () {
                               childKey.currentState!.controllerStop();

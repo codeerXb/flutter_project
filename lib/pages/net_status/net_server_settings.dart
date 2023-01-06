@@ -69,6 +69,14 @@ class _NetServerSettingsState extends State<NetServerSettings> {
     });
   }
 
+  // 点击空白  关闭键盘 时传的一个对象
+  FocusNode blankNode = FocusNode();
+
+  /// 点击空白  关闭输入键盘
+  void closeKeyboard(BuildContext context) {
+    FocusScope.of(context).requestFocus(blankNode);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,135 +86,144 @@ class _NetServerSettingsState extends State<NetServerSettings> {
           titleColor: Colors.white,
           backgroundColor: const Color(0xFF2F5AF5)),
       backgroundColor: Colors.grey.shade100,
-      body: Column(
-        children: [
-          Container(
-            margin: EdgeInsets.only(left: 26.w, right: 26.w, top: 16.w),
-            padding: EdgeInsets.all(24.w),
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(16.w))),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('套餐类型',
-                      style: TextStyle(
-                          height: 1.1,
-                          color: const Color.fromARGB(255, 5, 0, 0),
-                          fontSize: 32.sp)),
-                  GestureDetector(
-                    onTap: () {
-                      var result = CommonPicker.showPicker(
-                        context: context,
-                        options: comboTypeLabel,
-                        value: comboType,
-                      );
-                      if (result != null) {
-                        result.then((selectedValue) => {
-                              if (selectedValue != null)
-                                {
-                                  setState(
-                                    () => comboType = selectedValue,
-                                  )
-                                }
-                            });
-                      }
-                    },
-                    child: Row(
+      body: GestureDetector(
+        onTap: () => closeKeyboard(context),
+        behavior: HitTestBehavior.opaque,
+        child: Column(
+          children: [
+            GestureDetector(
+              onTap: () {
+                closeKeyboard(context);
+                var result = CommonPicker.showPicker(
+                  context: context,
+                  options: comboTypeLabel,
+                  value: comboType,
+                );
+                if (result != null) {
+                  result.then((selectedValue) => {
+                        if (selectedValue != null)
+                          {
+                            setState(
+                              () => comboType = selectedValue,
+                            )
+                          }
+                      });
+                }
+              },
+              child: Container(
+                margin: EdgeInsets.only(left: 26.w, right: 26.w, top: 32.w),
+                padding: EdgeInsets.all(24.w),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(16.w))),
+                child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('套餐类型',
+                          style: TextStyle(
+                              height: 1.1,
+                              color: const Color.fromARGB(255, 5, 0, 0),
+                              fontSize: 32.sp)),
+                      Row(
+                        children: [
+                          Text(comboTypeLabel[comboType],
+                              style: TextStyle(
+                                  height: 1.1,
+                                  color:
+                                      const Color.fromARGB(255, 108, 108, 109),
+                                  fontSize: 32.sp)),
+                          Icon(
+                            Icons.arrow_forward_ios_outlined,
+                            color: const Color.fromARGB(255, 5, 0, 0),
+                            size: 30.w,
+                          )
+                        ],
+                      ),
+                    ]),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(left: 26.w, right: 26.w, top: 16.w),
+              padding: EdgeInsets.all(24.w),
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(16.w))),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(comboType == 0 ? '套餐容量' : '套餐时长',
+                        style: TextStyle(
+                            color: const Color.fromARGB(255, 5, 0, 0),
+                            fontSize: 32.sp)),
+                    Row(
                       children: [
-                        Text(comboTypeLabel[comboType],
+                        SizedBox(
+                          width: 100.w,
+                          child: TextField(
+                            controller: _containController,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                                color: Color.fromARGB(255, 108, 108, 109)),
+                            decoration: InputDecoration(
+                                contentPadding: EdgeInsets.only(
+                                    top: 42.0.w, bottom: 6.0.w)),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                  RegExp("[0-9.]")),
+                            ],
+                            keyboardType: TextInputType.number,
+                            maxLength: 10,
+                            onTap: () => _containController.selection =
+                                TextSelection(
+                                    baseOffset: 0,
+                                    extentOffset:
+                                        _containController.text.length),
+                          ),
+                        ),
+                        Text(comboType == 0 ? 'GB' : 'h',
                             style: TextStyle(
-                                height: 1.1,
-                                color: const Color.fromARGB(255, 108, 108, 109),
-                                fontSize: 32.sp)),
-                        Icon(
-                          Icons.arrow_forward_ios_outlined,
-                          color: const Color.fromARGB(255, 5, 0, 0),
-                          size: 30.w,
-                        )
+                                color: const Color.fromARGB(255, 5, 0, 0),
+                                fontSize: 32.sp))
                       ],
                     ),
-                  ),
-                ]),
-          ),
-          Container(
-            margin: EdgeInsets.only(left: 26.w, right: 26.w, top: 16.w),
-            padding: EdgeInsets.all(24.w),
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(16.w))),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(comboType == 0 ? '套餐容量' : '套餐时长',
-                      style: TextStyle(
-                          color: const Color.fromARGB(255, 5, 0, 0),
-                          fontSize: 32.sp)),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 100.w,
-                        child: TextField(
-                          controller: _containController,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                              color: Color.fromARGB(255, 108, 108, 109)),
-                          decoration: InputDecoration(
-                              contentPadding:
-                                  EdgeInsets.only(top: 42.0.w, bottom: 6.0.w)),
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(RegExp("[0-9.]")),
-                          ],
-                          keyboardType: TextInputType.number,
-                          maxLength: 10,
-                          onTap: () => _containController.selection =
-                              TextSelection(
-                                  baseOffset: 0,
-                                  extentOffset: _containController.text.length),
-                        ),
-                      ),
-                      Text(comboType == 0 ? 'GB' : 'h',
-                          style: TextStyle(
-                              color: const Color.fromARGB(255, 5, 0, 0),
-                              fontSize: 32.sp))
-                    ],
-                  ),
-                ]),
-          ),
-          Container(
-            margin: EdgeInsets.only(left: 26.w, right: 26.w, top: 16.w),
-            padding: EdgeInsets.all(24.w),
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(16.w))),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('套餐周期',
-                      style: TextStyle(
-                          height: 1.1,
-                          color: const Color.fromARGB(255, 5, 0, 0),
-                          fontSize: 32.sp)),
-                  GestureDetector(
-                    onTap: () {
-                      var result = CommonPicker.showPicker(
-                        context: context,
-                        options: comboCycleLabel,
-                        value: comboCycle,
-                      );
-                      if (result != null) {
-                        result.then((selectedValue) => {
-                              if (selectedValue != null)
-                                {
-                                  setState(
-                                    () => comboCycle = selectedValue,
-                                  )
-                                }
-                            });
-                      }
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                  ]),
+            ),
+            GestureDetector(
+              onTap: () {
+                closeKeyboard(context);
+                var result = CommonPicker.showPicker(
+                  context: context,
+                  options: comboCycleLabel,
+                  value: comboCycle,
+                );
+                if (result != null) {
+                  result.then((selectedValue) => {
+                        if (selectedValue != null)
+                          {
+                            setState(
+                              () => comboCycle = selectedValue,
+                            )
+                          }
+                      });
+                }
+              },
+              child: Container(
+                margin: EdgeInsets.only(left: 26.w, right: 26.w, top: 16.w),
+                padding: EdgeInsets.all(24.w),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(16.w))),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('套餐周期',
+                        style: TextStyle(
+                            height: 1.1,
+                            color: const Color.fromARGB(255, 5, 0, 0),
+                            fontSize: 32.sp)),
+                    Row(
                       children: [
                         Text(comboCycleLabel[comboCycle],
                             style: TextStyle(
@@ -219,11 +236,13 @@ class _NetServerSettingsState extends State<NetServerSettings> {
                           size: 30.w,
                         )
                       ],
-                    ),
-                  ),
-                ]),
-          ),
-        ],
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

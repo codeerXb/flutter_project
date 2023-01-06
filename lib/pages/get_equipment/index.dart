@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -23,7 +24,7 @@ class _MyWidgetState extends State<Equipment> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(milliseconds: 3000), () {
+    Future.delayed(const Duration(milliseconds: 2000), () {
       getEquipmentData();
       return;
     });
@@ -89,6 +90,16 @@ class _MyWidgetState extends State<Equipment> {
   }
 
   @override
+  void dispose() {
+    // 组件销毁时判断Timer是否仍然处于激活状态，是则取消
+    if (timer.isActive) {
+      timer.cancel();
+    }
+    super.dispose();
+  }
+
+  late Timer timer;
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
@@ -141,10 +152,17 @@ class _MyWidgetState extends State<Equipment> {
                       if (!loginController.loading.value)
                         TextButton(
                           onPressed: () {
-                            getEquipmentData();
-                            childKey.currentState!
-                                .controllerForward()
-                                .then((value) => getEquipmentData());
+                            childKey.currentState!.controllerForward();
+                            int num = 0;
+                            timer = Timer.periodic(
+                                const Duration(milliseconds: 1000), (time) {
+                              if (num > 5) {
+                                timer.cancel();
+                              }
+                              num += 2;
+                              print('wwwwww$time');
+                              getEquipmentData();
+                            });
                           },
                           child: const Text('重新扫描'),
                         ),
@@ -162,20 +180,15 @@ class _MyWidgetState extends State<Equipment> {
                     child: Column(
                       children: [
                         ListTile(
-                          leading: ClipOval(
-                            //设置圆形头像
-                            child: Image.network(
-                                "https://www.itying.com/images/flutter/3.png",
-                                fit: BoxFit.cover,
-                                height: 60,
-                                width: 60),
-                          ),
+                          leading: Image.asset("assets/images/router.png",
+                              fit: BoxFit.fitWidth, height: 60, width: 60),
                           title: Text(
                               '产品型号 ${equipmentData.systemProductModel.toString()}'),
                           subtitle: Text(
-                              '软件版本 ${equipmentData.systemVersionRunning.toString()}'),
+                              'SN ${equipmentData.systemVersionSn.toString()}'),
                           trailing: TextButton(
                             onPressed: () {
+                              childKey.currentState!.controllerStop();
                               sharedGetData(
                                       equipmentData.systemVersionSn.toString(),
                                       String)

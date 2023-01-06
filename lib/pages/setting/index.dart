@@ -65,7 +65,7 @@ class _SettingState extends State<Setting> {
                   // scanCode(),
 
                   /// 关于我们
-                  // aboutUs(),
+                  aboutUs(),
 
                   /// 联系客服
                   // contactCustomer(),

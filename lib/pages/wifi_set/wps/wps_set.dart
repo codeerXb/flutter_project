@@ -5,9 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_picker.dart';
-import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:flutter_template/pages/wifi_set/wps/wps_datas.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../../core/widget/custom_app_bar.dart';
 
 /// WPS设置

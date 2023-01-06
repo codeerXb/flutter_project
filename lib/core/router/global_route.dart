@@ -11,7 +11,7 @@ import 'package:flutter_template/pages/Ethernet/net_type.dart';
 import 'package:flutter_template/pages/setting/user_detail.dart';
 import 'package:flutter_template/pages/wifi_set/major/major_set.dart';
 import 'package:flutter_template/pages/wifi_set/visitor_net.dart';
-import 'package:flutter_template/pages/wifi_set/wlan_set.dart';
+import 'package:flutter_template/pages/wifi_set/wlan/wlan_set.dart';
 import 'package:flutter_template/pages/wifi_set/wps/wps_set.dart';
 import 'package:flutter_template/pages/topo/access_equipment.dart';
 import 'package:flutter_template/splash.dart';

@@ -18,17 +18,16 @@ class WlanSet extends StatefulWidget {
 
 class _WlanSetState extends State<WlanSet> {
   wlanDatas wlanData = wlanDatas(
-  wifiEnable: "1",
-  wifiMode: "11axg",
-  wifiHtmode: "--",
-  wifiChannel: "auto",
-  wifiTxpower: "20",
-  wifi5gEnable: "1",
-  wifi5gMode: "11axa",
-  wifi5gHtmode: "80MHz",
-  wifi5gChannel: "auto",
-  wifi5gTxpower: "24"
-  );
+      wifiEnable: "1",
+      wifiMode: "11axg",
+      wifiHtmode: "--",
+      wifiChannel: "auto",
+      wifiTxpower: "20",
+      wifi5gEnable: "1",
+      wifi5gMode: "11axa",
+      wifi5gHtmode: "80MHz",
+      wifi5gChannel: "auto",
+      wifi5gTxpower: "24");
   //频段
   String pdShowVal = '2.4GHz';
   int pdVal = 0;
@@ -54,25 +53,51 @@ class _WlanSetState extends State<WlanSet> {
   bool isCheck = true;
   bool apisCheck = true;
   bool ssidisCheck = true;
-
+  final TextEditingController ssid = TextEditingController();
+  final TextEditingController max = TextEditingController();
+  final TextEditingController password = TextEditingController();
   @override
   void initState() {
     super.initState();
     getData();
-    
   }
+
   //读取
   void getData() async {
     Map<String, dynamic> data = {
       'method': 'obj_get',
       'param':
-          '["wifiBandGet","wifiWps","wifiWpsMode","wifiWpsClientPin","wifi5gWps","wifi5gWpsMode","wifi5gWpsClientPin"]',
+          '["wifiBandGet","wifiEnable","wifiMode","wifiHtmode","wifiChannel","wifiTxpower","Ssid","MaxClient","SsidHide","ApIsolate","wlanencryption","wlanauthentication","Key","wifi5gEnable","wifi5gMode","wifi5gHtmode","wifi5gHtmode1","wifi5gChannel","wifi5gTxpower","Ssid5g","MaxClient5g","SsidHide5g","ApIsolate5g","wlanencryption5g","wlanauthentication5g","Key5g"]',
     };
     try {
       var response = await XHttp.get('/data.html', data);
       var d = json.decode(response.toString());
       setState(() {
         wlanData = wlanDatas.fromJson(d);
+        //SSID
+        ssid.text = wlanData.wifiChannel.toString();
+        max.text = wlanData.wifiTxpower.toString();
+        password.text = wlanData.wifi5gMode.toString();
+      });
+    } catch (e) {
+      debugPrint('获取wps设置失败:$e.toString()');
+    }
+  }
+
+  void get() async {
+    Map<String, dynamic> data = {
+      'method': 'tab_dump',
+      'param': '["WiFiSsidTable"]',
+    };
+    try {
+      var response = await XHttp.get('/data.html', data);
+      var d = json.decode(response.toString());
+      setState(() {
+        wlanData = wlanDatas.fromJson(d);
+        //SSID
+        ssid.text = wlanData.wifiChannel.toString();
+        max.text = wlanData.wifiTxpower.toString();
+        password.text = wlanData.wifi5gMode.toString();
       });
     } catch (e) {
       debugPrint('获取wps设置失败:$e.toString()');
@@ -115,17 +140,17 @@ class _WlanSetState extends State<WlanSet> {
                           var result = CommonPicker.showPicker(
                             context: context,
                             options: ['2.4GHz', '5GHz'],
-                            // value: val,
+                            value: pdVal,
                           );
                           result?.then((selectedValue) => {
-                                // if (val != selectedValue &&
-                                //     selectedValue != null)
-                                //   {
-                                //     setState(() => {
-                                //           val = selectedValue,
-                                //           showVal = ['2.4GHz', '5GHz'][val]
-                                //         })
-                                //   }
+                                if (pdVal != selectedValue &&
+                                    selectedValue != null)
+                                  {
+                                    setState(() => {
+                                          pdVal = selectedValue,
+                                          pdShowVal = ['2.4GHz', '5GHz'][pdVal]
+                                        })
+                                  }
                               });
                         },
                         child: BottomLine(
@@ -136,40 +161,20 @@ class _WlanSetState extends State<WlanSet> {
                                   style: TextStyle(
                                       color: const Color.fromARGB(255, 5, 0, 0),
                                       fontSize: 28.sp)),
-                              GestureDetector(
-                                onTap: () {
-                                  var result = CommonPicker.showPicker(
-                                    context: context,
-                                    options: ['2.4GHz', '5GHz'],
-                                    value: pdVal,
-                                  );
-                                  result?.then((selectedValue) => {
-                                        if (pdVal != selectedValue &&
-                                            selectedValue != null)
-                                          {
-                                            setState(() => {
-                                                  pdVal = selectedValue,
-                                                  pdShowVal =
-                                                      ['2.4GHz', '5GHz'][pdVal]
-                                                })
-                                          }
-                                      });
-                                },
-                                child: Row(
-                                  children: [
-                                    Text(pdShowVal,
-                                        style: TextStyle(
-                                            color: const Color.fromARGB(
-                                                255, 5, 0, 0),
-                                            fontSize: 28.sp)),
-                                    Icon(
-                                      Icons.arrow_forward_ios_outlined,
-                                      color: const Color.fromRGBO(
-                                          144, 147, 153, 1),
-                                      size: 30.w,
-                                    )
-                                  ],
-                                ),
+                              Row(
+                                children: [
+                                  Text(pdShowVal,
+                                      style: TextStyle(
+                                          color: const Color.fromARGB(
+                                              255, 5, 0, 0),
+                                          fontSize: 28.sp)),
+                                  Icon(
+                                    Icons.arrow_forward_ios_outlined,
+                                    color:
+                                        const Color.fromRGBO(144, 147, 153, 1),
+                                    size: 30.w,
+                                  )
+                                ],
                               ),
                             ],
                           ),
@@ -200,43 +205,44 @@ class _WlanSetState extends State<WlanSet> {
                         ),
                       ),
                       //模式
-                      BottomLine(
-                        rowtem: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('模式',
-                                style: TextStyle(
-                                    color: const Color.fromARGB(255, 5, 0, 0),
-                                    fontSize: 28.sp)),
-                            GestureDetector(
-                              onTap: () {
-                                var result = CommonPicker.showPicker(
-                                  context: context,
-                                  options: [
-                                    '802.11n/g',
-                                    '802.11axg',
-                                    '802.11g Only',
-                                    '802.11b Only'
-                                  ],
-                                  value: msVal,
-                                );
-                                result?.then((selectedValue) => {
-                                      if (msVal != selectedValue &&
-                                          selectedValue != null)
-                                        {
-                                          setState(() => {
-                                                msVal = selectedValue,
-                                                msShowVal = [
-                                                  '802.11n/g',
-                                                  '802.11axg',
-                                                  '802.11g Only',
-                                                  '802.11b Only'
-                                                ][msVal]
-                                              })
-                                        }
-                                    });
-                              },
-                              child: Row(
+                      GestureDetector(
+                        onTap: () {
+                          closeKeyboard(context);
+                          var result = CommonPicker.showPicker(
+                            context: context,
+                            options: [
+                              '802.11n/g',
+                              '802.11axg',
+                              '802.11g Only',
+                              '802.11b Only'
+                            ],
+                            value: msVal,
+                          );
+                          result?.then((selectedValue) => {
+                                if (msVal != selectedValue &&
+                                    selectedValue != null)
+                                  {
+                                    setState(() => {
+                                          msVal = selectedValue,
+                                          msShowVal = [
+                                            '802.11n/g',
+                                            '802.11axg',
+                                            '802.11g Only',
+                                            '802.11b Only'
+                                          ][msVal]
+                                        })
+                                  }
+                              });
+                        },
+                        child: BottomLine(
+                          rowtem: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('模式',
+                                  style: TextStyle(
+                                      color: const Color.fromARGB(255, 5, 0, 0),
+                                      fontSize: 28.sp)),
+                              Row(
                                 children: [
                                   Text(msShowVal,
                                       style: TextStyle(
@@ -251,44 +257,45 @@ class _WlanSetState extends State<WlanSet> {
                                   )
                                 ],
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                       //带宽
-                      BottomLine(
-                        rowtem: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('带宽',
-                                style: TextStyle(
-                                    color: const Color.fromARGB(255, 5, 0, 0),
-                                    fontSize: 28.sp)),
-                            GestureDetector(
-                              onTap: () {
-                                var result = CommonPicker.showPicker(
-                                  context: context,
-                                  options: [
-                                    '20 MHz',
-                                    '20/40 MHz',
-                                  ],
-                                  value: kdVal,
-                                );
-                                result?.then((selectedValue) => {
-                                      if (kdVal != selectedValue &&
-                                          selectedValue != null)
-                                        {
-                                          setState(() => {
-                                                kdVal = selectedValue,
-                                                kdShowVal = [
-                                                  '20 MHz',
-                                                  '20/40 MHz',
-                                                ][kdVal]
-                                              })
-                                        }
-                                    });
-                              },
-                              child: Row(
+                      GestureDetector(
+                        onTap: () {
+                          closeKeyboard(context);
+                          var result = CommonPicker.showPicker(
+                            context: context,
+                            options: [
+                              '20 MHz',
+                              '20/40 MHz',
+                            ],
+                            value: kdVal,
+                          );
+                          result?.then((selectedValue) => {
+                                if (kdVal != selectedValue &&
+                                    selectedValue != null)
+                                  {
+                                    setState(() => {
+                                          kdVal = selectedValue,
+                                          kdShowVal = [
+                                            '20 MHz',
+                                            '20/40 MHz',
+                                          ][kdVal]
+                                        })
+                                  }
+                              });
+                        },
+                        child: BottomLine(
+                          rowtem: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('带宽',
+                                  style: TextStyle(
+                                      color: const Color.fromARGB(255, 5, 0, 0),
+                                      fontSize: 28.sp)),
+                              Row(
                                 children: [
                                   Text(kdShowVal,
                                       style: TextStyle(
@@ -303,68 +310,69 @@ class _WlanSetState extends State<WlanSet> {
                                   )
                                 ],
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                       //信道
-                      BottomLine(
-                        rowtem: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('信道',
-                                style: TextStyle(
-                                    color: const Color.fromARGB(255, 5, 0, 0),
-                                    fontSize: 28.sp)),
-                            GestureDetector(
-                              onTap: () {
-                                var result = CommonPicker.showPicker(
-                                  context: context,
-                                  options: [
-                                    'Auto',
-                                    '1',
-                                    '2',
-                                    '3',
-                                    '4',
-                                    '5',
-                                    '6',
-                                    '7',
-                                    '8',
-                                    '9',
-                                    '10',
-                                    '11',
-                                    '12',
-                                    '13'
-                                  ],
-                                  value: xtVal,
-                                );
-                                result?.then((selectedValue) => {
-                                      if (xtVal != selectedValue &&
-                                          selectedValue != null)
-                                        {
-                                          setState(() => {
-                                                xtVal = selectedValue,
-                                                xtShowVal = [
-                                                  'Auto',
-                                                  '1',
-                                                  '2',
-                                                  '3',
-                                                  '4',
-                                                  '5',
-                                                  '6',
-                                                  '7',
-                                                  '8',
-                                                  '9',
-                                                  '10',
-                                                  '11',
-                                                  '12',
-                                                  '13'
-                                                ][xtVal]
-                                              })
-                                        }
-                                    });
-                              },
-                              child: Row(
+                      GestureDetector(
+                        onTap: () {
+                          closeKeyboard(context);
+                          var result = CommonPicker.showPicker(
+                            context: context,
+                            options: [
+                              'Auto',
+                              '1',
+                              '2',
+                              '3',
+                              '4',
+                              '5',
+                              '6',
+                              '7',
+                              '8',
+                              '9',
+                              '10',
+                              '11',
+                              '12',
+                              '13'
+                            ],
+                            value: xtVal,
+                          );
+                          result?.then((selectedValue) => {
+                                if (xtVal != selectedValue &&
+                                    selectedValue != null)
+                                  {
+                                    setState(() => {
+                                          xtVal = selectedValue,
+                                          xtShowVal = [
+                                            'Auto',
+                                            '1',
+                                            '2',
+                                            '3',
+                                            '4',
+                                            '5',
+                                            '6',
+                                            '7',
+                                            '8',
+                                            '9',
+                                            '10',
+                                            '11',
+                                            '12',
+                                            '13'
+                                          ][xtVal]
+                                        })
+                                  }
+                              });
+                        },
+                        child: BottomLine(
+                          rowtem: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('信道',
+                                  style: TextStyle(
+                                      color: const Color.fromARGB(255, 5, 0, 0),
+                                      fontSize: 28.sp)),
+                              Row(
                                 children: [
                                   Text(xtShowVal,
                                       style: TextStyle(
@@ -379,46 +387,47 @@ class _WlanSetState extends State<WlanSet> {
                                   )
                                 ],
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                       //发射功率
-                      BottomLine(
-                        rowtem: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('发射功率',
-                                style: TextStyle(
-                                    color: const Color.fromARGB(255, 5, 0, 0),
-                                    fontSize: 28.sp)),
-                            GestureDetector(
-                              onTap: () {
-                                var result = CommonPicker.showPicker(
-                                  context: context,
-                                  options: [
-                                    '100%',
-                                    '50%',
-                                    '20%',
-                                  ],
-                                  value: fsVal,
-                                );
-                                result?.then((selectedValue) => {
-                                      if (fsVal != selectedValue &&
-                                          selectedValue != null)
-                                        {
-                                          setState(() => {
-                                                fsVal = selectedValue,
-                                                fsShowVal = [
-                                                  '100%',
-                                                  '50%',
-                                                  '20%',
-                                                ][fsVal]
-                                              })
-                                        }
-                                    });
-                              },
-                              child: Row(
+                      GestureDetector(
+                        onTap: () {
+                          closeKeyboard(context);
+                          var result = CommonPicker.showPicker(
+                            context: context,
+                            options: [
+                              '100%',
+                              '50%',
+                              '20%',
+                            ],
+                            value: fsVal,
+                          );
+                          result?.then((selectedValue) => {
+                                if (fsVal != selectedValue &&
+                                    selectedValue != null)
+                                  {
+                                    setState(() => {
+                                          fsVal = selectedValue,
+                                          fsShowVal = [
+                                            '100%',
+                                            '50%',
+                                            '20%',
+                                          ][fsVal]
+                                        })
+                                  }
+                              });
+                        },
+                        child: BottomLine(
+                          rowtem: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('发射功率',
+                                  style: TextStyle(
+                                      color: const Color.fromARGB(255, 5, 0, 0),
+                                      fontSize: 28.sp)),
+                              Row(
                                 children: [
                                   Text(fsShowVal,
                                       style: TextStyle(
@@ -433,8 +442,8 @@ class _WlanSetState extends State<WlanSet> {
                                   )
                                 ],
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ],
@@ -460,6 +469,7 @@ class _WlanSetState extends State<WlanSet> {
                                   SizedBox(
                                     width: 250.w,
                                     child: TextFormField(
+                                      controller: ssid,
                                       style: TextStyle(
                                           fontSize: 26.sp,
                                           color: const Color(0xff051220)),
@@ -495,6 +505,7 @@ class _WlanSetState extends State<WlanSet> {
                                   SizedBox(
                                     width: 250.w,
                                     child: TextFormField(
+                                      controller: max,
                                       style: TextStyle(
                                           fontSize: 26.sp,
                                           color: const Color(0xff051220)),
@@ -563,41 +574,38 @@ class _WlanSetState extends State<WlanSet> {
                         ),
                       ),
                       //安全
-                      BottomLine(
-                        rowtem: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('安全',
-                                style: TextStyle(
-                                    color: const Color.fromARGB(255, 5, 0, 0),
-                                    fontSize: 28.sp)),
-                            GestureDetector(
-                              onTap: () {
-                                var result = CommonPicker.showPicker(
-                                  context: context,
-                                  options: [
-                                    'WPA2-PSK',
-                                    'WPA-PSK&WPA2-PSK',
-                                    '空(不推荐)'
-                                  ],
-                                  value: aqVal,
-                                );
-                                result?.then((selectedValue) => {
-                                      if (aqVal != selectedValue &&
-                                          selectedValue != null)
-                                        {
-                                          setState(() => {
-                                                aqVal = selectedValue,
-                                                aqShowVal = [
-                                                  'WPA2-PSK',
-                                                  'WPA-PSK&WPA2-PSK',
-                                                  '空(不推荐)'
-                                                ][aqVal]
-                                              })
-                                        }
-                                    });
-                              },
-                              child: Row(
+                      GestureDetector(
+                        onTap: () {
+                          closeKeyboard(context);
+                          var result = CommonPicker.showPicker(
+                            context: context,
+                            options: ['WPA2-PSK', 'WPA-PSK&WPA2-PSK', '空(不推荐)'],
+                            value: aqVal,
+                          );
+                          result?.then((selectedValue) => {
+                                if (aqVal != selectedValue &&
+                                    selectedValue != null)
+                                  {
+                                    setState(() => {
+                                          aqVal = selectedValue,
+                                          aqShowVal = [
+                                            'WPA2-PSK',
+                                            'WPA-PSK&WPA2-PSK',
+                                            '空(不推荐)'
+                                          ][aqVal]
+                                        })
+                                  }
+                              });
+                        },
+                        child: BottomLine(
+                          rowtem: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('安全',
+                                  style: TextStyle(
+                                      color: const Color.fromARGB(255, 5, 0, 0),
+                                      fontSize: 28.sp)),
+                              Row(
                                 children: [
                                   Text(aqShowVal,
                                       style: TextStyle(
@@ -612,46 +620,47 @@ class _WlanSetState extends State<WlanSet> {
                                   )
                                 ],
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                       //WPA加密
-                      BottomLine(
-                        rowtem: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('WPA加密',
-                                style: TextStyle(
-                                    color: const Color.fromARGB(255, 5, 0, 0),
-                                    fontSize: 28.sp)),
-                            GestureDetector(
-                              onTap: () {
-                                var result = CommonPicker.showPicker(
-                                  context: context,
-                                  options: [
-                                    'AES(推荐)'
-                                        'TKIP',
-                                    'TKIP&AES',
-                                  ],
-                                  value: wpaVal,
-                                );
-                                result?.then((selectedValue) => {
-                                      if (wpaVal != selectedValue &&
-                                          selectedValue != null)
-                                        {
-                                          setState(() => {
-                                                wpaVal = selectedValue,
-                                                wpaShowVal = [
-                                                  'AES(推荐)'
-                                                      'TKIP',
-                                                  'TKIP&AES',
-                                                ][wpaVal]
-                                              })
-                                        }
-                                    });
-                              },
-                              child: Row(
+                      GestureDetector(
+                        onTap: () {
+                          closeKeyboard(context);
+                          var result = CommonPicker.showPicker(
+                            context: context,
+                            options: [
+                              'AES(推荐)'
+                                  'TKIP',
+                              'TKIP&AES',
+                            ],
+                            value: wpaVal,
+                          );
+                          result?.then((selectedValue) => {
+                                if (wpaVal != selectedValue &&
+                                    selectedValue != null)
+                                  {
+                                    setState(() => {
+                                          wpaVal = selectedValue,
+                                          wpaShowVal = [
+                                            'AES(推荐)'
+                                                'TKIP',
+                                            'TKIP&AES',
+                                          ][wpaVal]
+                                        })
+                                  }
+                              });
+                        },
+                        child: BottomLine(
+                          rowtem: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('WPA加密',
+                                  style: TextStyle(
+                                      color: const Color.fromARGB(255, 5, 0, 0),
+                                      fontSize: 28.sp)),
+                              Row(
                                 children: [
                                   Text(wpaShowVal,
                                       style: TextStyle(
@@ -666,8 +675,8 @@ class _WlanSetState extends State<WlanSet> {
                                   )
                                 ],
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                       //密码
@@ -688,6 +697,7 @@ class _WlanSetState extends State<WlanSet> {
                                   SizedBox(
                                     width: 250.w,
                                     child: TextFormField(
+                                      controller: password,
                                       style: TextStyle(
                                           fontSize: 26.sp,
                                           color: const Color(0xff051220)),

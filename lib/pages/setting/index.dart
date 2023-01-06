@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_template/core/utils/toast.dart';
+import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:flutter_template/model/user_model.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -65,7 +67,7 @@ class _SettingState extends State<Setting> {
                   // scanCode(),
 
                   /// 关于我们
-                  aboutUs(),
+                  // aboutUs(),
 
                   /// 联系客服
                   // contactCustomer(),
@@ -75,8 +77,13 @@ class _SettingState extends State<Setting> {
 
                   /// 文件上传与下载
                   // fileUplodAndDownload(),
-
                   const Divider(),
+
+                  /// Wi-Fi设置
+                  const Padding(
+                    padding: EdgeInsets.only(left: 10.0),
+                    child: TitleWidger(title: 'Wi-Fl设置'),
+                  ),
 
                   /// WLAN设置
                   wlanSet(),
@@ -90,11 +97,20 @@ class _SettingState extends State<Setting> {
                   /// WPS设置
                   wpsSet(),
                   const Divider(),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 10.0),
+                    child: TitleWidger(title: '设备信息'),
+                  ),
 
                   /// 设备信息
                   commonProblem(),
 
                   const Divider(),
+
+                  const Padding(
+                    padding: EdgeInsets.only(left: 10.0),
+                    child: TitleWidger(title: '系统设置'),
+                  ),
 
                   /// 维护设置
                   maintainSettings(),
@@ -102,6 +118,10 @@ class _SettingState extends State<Setting> {
                   /// 登录管理
                   accountSecurity(),
                   const Divider(),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 10.0),
+                    child: TitleWidger(title: '以太网'),
+                  ),
 
                   /// 以太网状态
                   feedback(),
@@ -109,6 +129,11 @@ class _SettingState extends State<Setting> {
                   ///以太网设置
                   netSet(),
                   const Divider(),
+                  
+                  const Padding(
+                    padding: EdgeInsets.only(left: 10.0),
+                    child: TitleWidger(title: '网络设置'),
+                  ),
 
                   /// WAN设置
                   wanSettings(),

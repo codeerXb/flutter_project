@@ -58,7 +58,7 @@ class TitleWidger extends StatelessWidget {
       padding:  EdgeInsets.only(bottom: 10.0.w),
       child: Text(
         title,
-        style:  TextStyle(color: Colors.black, fontSize: 30.sp),
+        style: TextStyle(color: Colors.blueAccent, fontSize: 32.sp),
       ),
     );
   }

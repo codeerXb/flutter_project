@@ -108,62 +108,62 @@ class _MajorSetState extends State<MajorSet> {
                     boxCotainer: Column(
                   children: [
                     //地区
-                    BottomLine(
-                      rowtem: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('地区',
-                              style: TextStyle(
-                                  color: const Color.fromARGB(255, 5, 0, 0),
-                                  fontSize: 28.sp)),
-                          GestureDetector(
-                            onTap: () {
-                              var result = CommonPicker.showPicker(
-                                context: context,
-                                options: [
-                                  '中国',
-                                  '法国',
-                                  '俄罗斯',
-                                  '美国',
-                                  '新加坡',
-                                  '澳大利亚',
-                                  '智利',
-                                  '波兰'
-                                ],
-                                value: index,
-                              );
-                              result?.then((selectedValue) => {
-                                    if (index != selectedValue &&
-                                        selectedValue != null)
-                                      {
-                                        setState(() => {
-                                              index = selectedValue,
-                                              showVal = [
-                                                '中国',
-                                                '法国',
-                                                '俄罗斯',
-                                                '美国',
-                                                '新加坡',
-                                                '澳大利亚',
-                                                '智利',
-                                                '波兰'
-                                              ][index],
-                                              val = [
-                                                'CN',
-                                                'FR',
-                                                'RU',
-                                                'US',
-                                                'SG',
-                                                'AU',
-                                                'CL',
-                                                'PL'
-                                              ][index],
-                                              handleSave()
-                                            })
-                                      }
-                                  });
-                            },
-                            child: Row(
+                    GestureDetector(
+                      onTap: () {
+                        var result = CommonPicker.showPicker(
+                          context: context,
+                          options: [
+                            '中国',
+                            '法国',
+                            '俄罗斯',
+                            '美国',
+                            '新加坡',
+                            '澳大利亚',
+                            '智利',
+                            '波兰'
+                          ],
+                          value: index,
+                        );
+                        result?.then((selectedValue) => {
+                              if (index != selectedValue &&
+                                  selectedValue != null)
+                                {
+                                  setState(() => {
+                                        index = selectedValue,
+                                        showVal = [
+                                          '中国',
+                                          '法国',
+                                          '俄罗斯',
+                                          '美国',
+                                          '新加坡',
+                                          '澳大利亚',
+                                          '智利',
+                                          '波兰'
+                                        ][index],
+                                        val = [
+                                          'CN',
+                                          'FR',
+                                          'RU',
+                                          'US',
+                                          'SG',
+                                          'AU',
+                                          'CL',
+                                          'PL'
+                                        ][index],
+                                        handleSave()
+                                      })
+                                }
+                            });
+                      },
+                      child: BottomLine(
+                        rowtem: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('地区',
+                                style: TextStyle(
+                                    color: const Color.fromARGB(255, 5, 0, 0),
+                                    fontSize: 28.sp)),
+                            Row(
                               children: [
                                 Text(showVal,
                                     style: TextStyle(
@@ -177,8 +177,8 @@ class _MajorSetState extends State<MajorSet> {
                                 )
                               ],
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ],

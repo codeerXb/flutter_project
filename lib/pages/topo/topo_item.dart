@@ -47,15 +47,19 @@ class _TopoItemState extends State<TopoItem> {
                 value: CSSFilterMatrix().opacity(!widget.isShow ? 0.3 : 1),
                 child: Container(
                   decoration: const BoxDecoration(
+                    color: Color.fromARGB(25, 47, 90, 245),
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
                   clipBehavior: Clip.hardEdge,
                   height: 120.w,
                   width: 120.w,
                   margin: const EdgeInsets.all(5),
-                  child: Image.network(
-                      'https://z4a.net/images/2022/12/13/20221213-175814.jpg',
-                      fit: BoxFit.cover),
+                  child: Image.asset(
+                    'assets/images/slices.png',
+                    // fit: BoxFit.cover,
+                    width: 70.w,
+                    height: 80.w,
+                  ),
                 ),
               ),
               if (widget.isNative)

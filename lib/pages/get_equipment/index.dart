@@ -23,7 +23,12 @@ class _MyWidgetState extends State<Equipment> {
   @override
   void initState() {
     super.initState();
-    getEquipmentData();
+    Future.delayed(const Duration(milliseconds: 3000), () {
+      getEquipmentData();
+      return;
+    });
+
+    loginController.setLoading(true);
   }
 
   void appLogin(pwd, sn, vn) {
@@ -137,7 +142,9 @@ class _MyWidgetState extends State<Equipment> {
                         TextButton(
                           onPressed: () {
                             getEquipmentData();
-                            childKey.currentState!.controllerForward();
+                            childKey.currentState!
+                                .controllerForward()
+                                .then((value) => getEquipmentData());
                           },
                           child: const Text('重新扫描'),
                         ),

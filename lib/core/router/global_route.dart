@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_template/pages/Ethernet/net_set.dart';
+import 'package:flutter_template/pages/Ethernet/net/input_mtu.dart';
+import 'package:flutter_template/pages/Ethernet/net/input_server.dart';
+import 'package:flutter_template/pages/Ethernet/net/net_set.dart';
 import 'package:flutter_template/pages/get_equipment/index.dart';
 import 'package:flutter_template/pages/odu/index.dart';
 import 'package:flutter_template/pages/setting/about_us.dart';
@@ -145,6 +147,9 @@ class GlobalRouter {
     // 套餐设置
     '/net_server_settings': (BuildContext context, {Object? args}) =>
         const NetServerSettings(),
+    //以太网设置ipt
+    '/input_mtu': (BuildContext context, {Object? args}) => const InputMtu(),
+    '/input_server': (BuildContext context, {Object? args}) => const InputServer(),
   };
 
   static GlobalRouter? _singleton;

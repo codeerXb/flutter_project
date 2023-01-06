@@ -5,7 +5,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_picker.dart';
+import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:flutter_template/pages/wifi_set/wps/wps_datas.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/widget/custom_app_bar.dart';
 
 /// WPS设置
@@ -19,14 +21,17 @@ class WpsSet extends StatefulWidget {
 
 class _WpsSetState extends State<WpsSet> {
   wpsDatas wpsData = wpsDatas(
-    wifi5gWpsClientPin: '',
-    wifiWps: '',
-  );
+      wifiWpsClientPin: '',
+      //WPS 1启动
+      wifiWps: '',
+      //模式
+      wifiWpsMode: '');
   String showVal = '2.4GHz';
   int val = 0;
   bool isCheck = true;
   String modeShowVal = 'PBC';
   int modeVal = 0;
+  dynamic parmas = '';
   @override
   void initState() {
     super.initState();
@@ -37,12 +42,12 @@ class _WpsSetState extends State<WpsSet> {
   void handleSave() async {
     Map<String, dynamic> data = {
       'method': 'obj_get',
-      'param': '',
+      'param': parmas,
     };
     try {
       await XHttp.get('/data.html', data);
     } catch (e) {
-      debugPrint('wps设置失败：$e.toString()');
+      debugPrint('wps设置失败:$e.toString()');
     }
   }
 
@@ -61,7 +66,7 @@ class _WpsSetState extends State<WpsSet> {
         isCheck = wpsData.wifi5gWps.toString() == '1' ? true : false;
       });
     } catch (e) {
-      debugPrint('获取wps设置失败：$e.toString()');
+      debugPrint('获取wps设置失败:$e.toString()');
     }
   }
 
@@ -204,30 +209,35 @@ class _WpsSetState extends State<WpsSet> {
                     ),
                     //客户 PIN
                     BottomLine(
-                      rowtem: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('客户 PIN',
-                              style: TextStyle(
-                                  color: const Color.fromARGB(255, 5, 0, 0),
-                                  fontSize: 28.sp)),
-                          SizedBox(
-                            width: 300.w,
-                            child: TextFormField(
-                              style: TextStyle(
-                                  fontSize: 26.sp,
-                                  color: const Color(0xff051220)),
-                              decoration: InputDecoration(
-                                hintText: "请输入客户 PIN",
-                                hintStyle: TextStyle(
-                                    fontSize: 26.sp,
-                                    color: const Color(0xff737A83)),
-                                border: InputBorder.none,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                      rowtem: CommonWidget.simpleWidgetWithUserDetail("客户 PIN",
+                          value: '13563254789', callBack: () {
+                        print('1');
+                      }),
+                      // rowtem: Row(
+
+                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      // children: [
+                      //   Text('客户 PIN',
+                      //       style: TextStyle(
+                      //           color: const Color.fromARGB(255, 5, 0, 0),
+                      //           fontSize: 28.sp)),
+                      //   SizedBox(
+                      //     width: 300.w,
+                      //     child: TextFormField(
+                      //       style: TextStyle(
+                      //           fontSize: 26.sp,
+                      //           color: const Color(0xff051220)),
+                      //       decoration: InputDecoration(
+                      //         hintText: "请输入客户 PIN",
+                      //         hintStyle: TextStyle(
+                      //             fontSize: 26.sp,
+                      //             color: const Color(0xff737A83)),
+                      //         border: InputBorder.none,
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ],
+                      // ),
                     ),
                   ],
                 ))

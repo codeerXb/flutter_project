@@ -36,7 +36,7 @@ class _WaterRippleState extends State<WaterRipple>
     _controller = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 6000));
     _animation = Tween(begin: .0, end: pi * 2).animate(_controller);
-
+    controllerForward();
     super.initState();
   }
 

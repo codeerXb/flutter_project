@@ -95,19 +95,39 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(0),
-          child: customAppbar(
-            borderBottom: false,
-            // backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          centerTitle: true,
+          systemOverlayStyle: const SystemUiOverlayStyle(
+            //设置状态栏的背景颜色
+            statusBarColor: Colors.transparent,
+            //状态栏的文字的颜色
+            statusBarIconBrightness: Brightness.dark,
           ),
+          elevation: 0,
+          leading: IconButton(
+              onPressed: () {
+                Get.offNamed("/get_equipment");
+              },
+              icon: const Icon(
+                Icons.arrow_back_ios,
+                color: Colors.black,
+              )),
         ),
+        // appBar: PreferredSize(
+
+        //   preferredSize: const Size.fromHeight(0),
+        //   child: customAppbar(
+        //     borderBottom: false,
+        //     // backgroundColor: Colors.transparent,
+        //   ),
+        // ),
         body: InkWell(
           onTap: () => closeKeyboard(context),
           child: Container(
             height: 1.sh,
             color: Colors.white,
-            padding: EdgeInsets.only(left: 52.w, top: 186.w, right: 52.w),
+            padding: EdgeInsets.only(left: 52.w, top: 100.w, right: 52.w),
             child: Form(
               key: _formKey,
               child: Column(

@@ -40,14 +40,14 @@ class _WaterRippleState extends State<WaterRipple>
     super.initState();
   }
 
+  late Timer timer;
   Future controllerForward() async {
     loginController.setLoading(true);
-    Timer timer;
+
     _controller.repeat();
-    return Future.delayed(const Duration(milliseconds: 6000), () {
+    timer = Timer(const Duration(milliseconds: 6000), () {
       _controller.stop();
       loginController.setLoading(false);
-      return;
     });
   }
 
@@ -57,6 +57,9 @@ class _WaterRippleState extends State<WaterRipple>
 
   @override
   void dispose() {
+    if (timer.isActive) {
+      timer.cancel();
+    }
     _controller.dispose();
     super.dispose();
   }

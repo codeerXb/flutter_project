@@ -99,45 +99,36 @@ class _WanSettingsState extends State<WanSettings> {
                 height: 40.sp,
               ),
               Padding(padding: EdgeInsets.only(top: 30.sp)),
-              InfoBox(
-                boxCotainer: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('网络模式',
-                          style: TextStyle(
-                              color: const Color.fromARGB(255, 5, 0, 0),
-                              fontSize: 32.sp)),
-                      GestureDetector(
-                        onTap: () {
-                          var result = CommonPicker.showPicker(
-                            context: context,
-                            options: ['NAT', '桥接', 'ROUTER'],
-                            value: val,
-                          );
-                          result?.then((selectedValue) => {
-                                if (val != selectedValue &&
-                                    selectedValue != null)
-                                  {
-                                    setState(() => {
-                                          val = selectedValue,
-                                          showVal =
-                                              ['NAT', '桥接', 'ROUTER'][val],
-                                          if (val == 0)
-                                            {wanVal = 'nat', getWanData()},
-                                          if (val == 1)
-                                            {wanVal = 'bridge', getWanData()},
-                                          if (val == 2)
-                                            {wanVal = 'router', getWanData()},
-                                        })
-                                  }
-                              });
-                        },
-                        child: Row(
+              GestureDetector(
+                onTap: () {
+                  var result = CommonPicker.showPicker(
+                    context: context,
+                    options: ['NAT', '桥接', 'ROUTER'],
+                    value: val,
+                  );
+                  result?.then((selectedValue) => {
+                        if (val != selectedValue && selectedValue != null)
+                          {
+                            setState(() => {
+                                  val = selectedValue,
+                                  showVal = ['NAT', '桥接', 'ROUTER'][val],
+                                  if (val == 0) {wanVal = 'nat', getWanData()},
+                                  if (val == 1)
+                                    {wanVal = 'bridge', getWanData()},
+                                  if (val == 2)
+                                    {wanVal = 'router', getWanData()},
+                                })
+                          }
+                      });
+                },
+                child: InfoBox(
+                  boxCotainer: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('网络模式', style: TextStyle(fontSize: 30.sp)),
+                        Row(
                           children: [
-                            Text(showVal,
-                                style: TextStyle(
-                                    color: const Color.fromARGB(255, 5, 0, 0),
-                                    fontSize: 32.sp)),
+                            Text(showVal, style: TextStyle(fontSize: 30.sp)),
                             Icon(
                               Icons.arrow_forward_ios_outlined,
                               color: const Color.fromRGBO(144, 147, 153, 1),
@@ -145,8 +136,8 @@ class _WanSettingsState extends State<WanSettings> {
                             )
                           ],
                         ),
-                      ),
-                    ]),
+                      ]),
+                ),
               ),
               SizedBox(
                 height: 60.sp,

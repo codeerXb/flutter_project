@@ -69,22 +69,34 @@ class _MyWidgetState extends State<Equipment> {
       'param':
           '["systemProductModel","systemVersionHw","systemVersionRunning","systemVersionUboot","systemVersionSn","networkLanSettingsMac","networkLanSettingIp","networkLanSettingMask","systemRunningTime"]'
     };
-    setState(() {
-      equipmentData = EquipmentData(
-          systemProductModel: null,
-          systemVersionRunning: '',
-          systemVersionSn: '');
-    });
+
     XHttp.get('/pub/pub_data.html', data).then((res) {
       try {
         var d = json.decode(res.toString());
-        setState(() {
-          equipmentData = EquipmentData.fromJson(d);
-        });
+        print('wwwwww${equipmentData.systemVersionSn}');
+        if (equipmentData.systemVersionSn == null ||
+            equipmentData.systemVersionSn !=
+                EquipmentData.fromJson(d).systemVersionSn) {
+          setState(() {
+            equipmentData = EquipmentData.fromJson(d);
+          });
+        }
       } on FormatException catch (e) {
+        setState(() {
+          equipmentData = EquipmentData(
+              systemProductModel: null,
+              systemVersionRunning: '',
+              systemVersionSn: '');
+        });
         debugPrint(e.toString());
       }
     }).catchError((onError) {
+      setState(() {
+        equipmentData = EquipmentData(
+            systemProductModel: null,
+            systemVersionRunning: '',
+            systemVersionSn: '');
+      });
       debugPrint(onError.toString());
     });
   }

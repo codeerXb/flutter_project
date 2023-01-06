@@ -52,7 +52,7 @@ class HttpInterceptors extends InterceptorsWrapper {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     String token = loginController.login.token.value;
-    String session = loginController.login.session.value;
+    String session = "loginController.login.session.value";
 
     Map<String, dynamic> header = {
       "Cookie": '-goahead-session-=$session; token=$token'

@@ -116,47 +116,41 @@ class _RadioSettingsState extends State<RadioSettings> {
                 SizedBox(
                   height: 20.sp,
                 ),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('连接方式',
-                          style: TextStyle(
-                              color: const Color.fromARGB(255, 5, 0, 0),
-                              fontSize: 32.sp)),
-                      GestureDetector(
-                        onTap: () {
-                          var result = CommonPicker.showPicker(
-                            context: context,
-                            options: ['自动', '手动'],
-                            value: val,
-                          );
-                          result?.then((selectedValue) => {
-                                if (val != selectedValue &&
-                                    selectedValue != null)
-                                  {
-                                    setState(() => {
-                                          val = selectedValue,
-                                          showVal = ['自动', '手动'][val],
-                                          if (val == 0)
-                                            {
-                                              radioShowVal = 'auto_select',
-                                              getRadioSettingData()
-                                            },
-                                          if (val == 1)
-                                            {
-                                              radioShowVal = 'manual_select',
-                                              getRadioSettingData()
-                                            },
-                                        })
-                                  }
-                              });
-                        },
-                        child: Row(
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    var result = CommonPicker.showPicker(
+                      context: context,
+                      options: ['自动', '手动'],
+                      value: val,
+                    );
+                    result?.then((selectedValue) => {
+                          if (val != selectedValue && selectedValue != null)
+                            {
+                              setState(() => {
+                                    val = selectedValue,
+                                    showVal = ['自动', '手动'][val],
+                                    if (val == 0)
+                                      {
+                                        radioShowVal = 'auto_select',
+                                        getRadioSettingData()
+                                      },
+                                    if (val == 1)
+                                      {
+                                        radioShowVal = 'manual_select',
+                                        getRadioSettingData()
+                                      },
+                                  })
+                            }
+                        });
+                  },
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('连接方式', style: TextStyle(fontSize: 30.sp)),
+                        Row(
                           children: [
-                            Text(showVal,
-                                style: TextStyle(
-                                    color: const Color.fromARGB(255, 5, 0, 0),
-                                    fontSize: 32.sp)),
+                            Text(showVal, style: TextStyle(fontSize: 30.sp)),
                             Icon(
                               Icons.arrow_forward_ios_outlined,
                               color: const Color.fromRGBO(144, 147, 153, 1),
@@ -164,8 +158,8 @@ class _RadioSettingsState extends State<RadioSettings> {
                             )
                           ],
                         ),
-                      ),
-                    ]),
+                      ]),
+                ),
               ])),
               Column(children: [
                 SizedBox(

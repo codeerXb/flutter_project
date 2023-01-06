@@ -20,7 +20,7 @@ class MaintainSettings extends StatefulWidget {
 
 class _MaintainSettingsState extends State<MaintainSettings> {
   bool isCheck = true;
-  MaintainData MaintainVal = MaintainData();
+  MaintainData maintainVal = MaintainData();
 
   @override
   void initState() {
@@ -37,8 +37,8 @@ class _MaintainSettingsState extends State<MaintainSettings> {
       try {
         var d = json.decode(res.toString());
         setState(() {
-          MaintainVal = MaintainData.fromJson(d);
-          if (MaintainVal.success == true) {
+          maintainVal = MaintainData.fromJson(d);
+          if (maintainVal.success == true) {
             ToastUtils.toast('重启成功');
           } else {
             ToastUtils.toast('重启失败');

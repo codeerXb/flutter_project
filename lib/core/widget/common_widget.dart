@@ -485,7 +485,7 @@ class CommonWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Container(
-                // padding: EdgeInsets.only(left: 40.w),
+                padding: EdgeInsets.only(left: 40.w),
                 alignment: Alignment.centerLeft,
                 child: Text(
                   title,
@@ -494,7 +494,7 @@ class CommonWidget {
               ),
               const Expanded(child: Text("")),
               Container(
-                  // padding: EdgeInsets.only(right: 40.w),
+                  padding: EdgeInsets.only(right: 40.w),
                   alignment: Alignment.centerLeft,
                   child: child),
             ],

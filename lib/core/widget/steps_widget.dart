@@ -17,7 +17,7 @@ class StepsWidget extends StatefulWidget {
 }
 
 class _StepsWidgetState extends State<StepsWidget> {
-  var _items = ["复位", "搜索", "完成"];
+  var _items = ["自检", "搜索", "完成"];
 
   @override
   Widget build(BuildContext context) {

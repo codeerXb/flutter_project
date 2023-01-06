@@ -80,7 +80,8 @@ class _LoginState extends State<Login> {
         if (errRes.success == false) {
           Get.offNamed('/loginPage');
           if (errRes.code == 201) {
-            ToastUtils.toast('密码错误');
+            ToastUtils.toast(
+                '密码错误,剩余尝试次数：${5 - int.parse(errRes.webLoginFailedTimes.toString())}');
           } else if (errRes.code == 202) {
             ToastUtils.error('已锁定，${errRes.webLoginRetryTimeout}s后解锁');
           }

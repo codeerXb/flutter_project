@@ -33,7 +33,7 @@ class XHttp {
 
   ///get请求
   static Future get(String url, [Map<String, dynamic>? params]) async {
-    late Response response;
+    Response response;
     try {
       if (params != null) {
         debugPrint('-------get -------');
@@ -48,13 +48,14 @@ class XHttp {
       } else {
         response = await dio.get(url);
       }
+      return response.data;
     } on DioError catch (e) {
       debugPrint('++++++++++++');
       debugPrint(params.toString());
       debugPrint(e.toString());
       debugPrint('++++++++++++');
+      rethrow;
     }
-    return response.data;
   }
 
   ///post请求

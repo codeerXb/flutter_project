@@ -21,7 +21,7 @@ class _MajorSetState extends State<MajorSet> {
   String showVal = '';
   majorDatas majorData = majorDatas(wifiRegionCountry: 'CN');
   int index = 0;
-  dynamic val = 0;
+  dynamic val = 'CN';
   @override
   void initState() {
     super.initState();
@@ -32,7 +32,7 @@ class _MajorSetState extends State<MajorSet> {
   void handleSave() async {
     Map<String, dynamic> data = {
       'method': 'obj_set',
-      'param': '{"wifi5gRegionCountry":$val}',
+      'param': '{"wifiRegionCountry":"$val"}',
     };
     XHttp.get('/data.html', data).then((res) {
       try {
@@ -150,7 +150,6 @@ class _MajorSetState extends State<MajorSet> {
                                           'CL',
                                           'PL'
                                         ][index],
-                                        handleSave()
                                       })
                                 }
                             });
@@ -181,6 +180,30 @@ class _MajorSetState extends State<MajorSet> {
                         ),
                       ),
                     ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 50.0),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            height: 70.sp,
+                            width: 650.sp,
+                            child: ElevatedButton(
+                              style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(
+                                      const Color.fromARGB(255, 48, 118, 250))),
+                              onPressed: () {
+                                handleSave();
+                                print(val);
+                              },
+                              child: Text(
+                                '提交',
+                                style: TextStyle(fontSize: 36.sp),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    )
                   ],
                 ))
               ],

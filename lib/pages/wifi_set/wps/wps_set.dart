@@ -39,22 +39,14 @@ class _WpsSetState extends State<WpsSet> {
   //保存
   void handleSave() async {
     Map<String, dynamic> data = {
-      'method': 'obj_get',
-      'param': parmas,
+      'method': 'obj_set',
+      'param': {"wifiWps": "0"},
     };
     try {
       await XHttp.get('/data.html', data);
     } catch (e) {
       debugPrint('wps设置失败:$e.toString()');
     }
-  }
-
-  // 点击空白  关闭键盘 时传的一个对象
-  FocusNode blankNode = FocusNode();
-
-  /// 点击空白  关闭输入键盘
-  void closeKeyboard(BuildContext context) {
-    FocusScope.of(context).requestFocus(blankNode);
   }
 
   //读取
@@ -74,6 +66,14 @@ class _WpsSetState extends State<WpsSet> {
     } catch (e) {
       debugPrint('获取wps设置失败:$e.toString()');
     }
+  }
+
+  // 点击空白  关闭键盘 时传的一个对象
+  FocusNode blankNode = FocusNode();
+
+  /// 点击空白  关闭输入键盘
+  void closeKeyboard(BuildContext context) {
+    FocusScope.of(context).requestFocus(blankNode);
   }
 
   @override
@@ -255,7 +255,9 @@ class _WpsSetState extends State<WpsSet> {
                                     backgroundColor: MaterialStateProperty.all(
                                         const Color.fromARGB(
                                             255, 48, 118, 250))),
-                                onPressed: () {},
+                                onPressed: () {
+                                  handleSave();
+                                },
                                 child: Text(
                                   '提交',
                                   style: TextStyle(fontSize: 36.sp),

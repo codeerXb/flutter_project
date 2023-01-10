@@ -27,6 +27,7 @@ class _NetSetState extends State<NetSet> {
       ethernetMtu: '',
       //检测服务器
       ethernetDetectServer: '');
+  //连接模式
   String showVal = '动态ip';
   int val = 0;
   bool isCheck = true;
@@ -47,10 +48,11 @@ class _NetSetState extends State<NetSet> {
   }
 
   //保存
-  void handleSave() async {
+  void handleSave(params) async {
     Map<String, dynamic> data = {
       'method': 'obj_set',
-      'param': '{"wifi5gRegionCountry":$val}',
+      // 'param':'{"ethernetConnectMode":"lanonly","ethernetConnectOnly":"1"}'
+      'param': params,
     };
     XHttp.get('/data.html', data).then((res) {
       try {
@@ -79,11 +81,11 @@ class _NetSetState extends State<NetSet> {
         //mtu
         mtu.text = netdata.ethernetMtu.toString();
         //检测服务器
-        server.text=netdata.ethernetDetectServer.toString();
+        server.text = netdata.ethernetDetectServer.toString();
         //连接模式
         switch (netdata.ethernetConnectMode.toString()) {
           case 'dhcp':
-            showVal = '动态IP';
+            showVal = '动态ip';
             break;
           // case 'FR':
           //   showVal = '静态IP';
@@ -137,7 +139,7 @@ class _NetSetState extends State<NetSet> {
                                     setState(() => {
                                           val = selectedValue,
                                           showVal =
-                                              ['动态ip', '静态ip', 'LAN Only'][val]
+                                              ['动态ip', '静态ip', 'LAN Only'][val],
                                         })
                                   }
                               });
@@ -253,7 +255,7 @@ class _NetSetState extends State<NetSet> {
                       ),
                       //提交
                       Padding(
-                        padding: const EdgeInsets.only(top:50.0),
+                        padding: const EdgeInsets.only(top: 50.0),
                         child: Row(
                           children: [
                             SizedBox(
@@ -262,8 +264,16 @@ class _NetSetState extends State<NetSet> {
                               child: ElevatedButton(
                                 style: ButtonStyle(
                                     backgroundColor: MaterialStateProperty.all(
-                                        const Color.fromARGB(255, 48, 118, 250))),
-                                onPressed: () {},
+                                        const Color.fromARGB(
+                                            255, 48, 118, 250))),
+                                onPressed: () {
+                                  if (showVal == '动态ip') {
+                                    // handleSave(params:'1');
+// '{"ethernetConnectMode":"${showVal == '动态ip' ? 'dchp' : '3' == '静态ip' ? '3' : '3'}","ethernetMtu":"${mtu.text}","ethernetConnectOnly":"${isCheck ? 1 : 0}","ethernetDetectServer":"${server.text}"}'
+                                  }
+                                  print(
+                                      '{"ethernetConnectMode":"${showVal == '动态ip' ? 'dchp' : '3' == '静态ip' ? '3' : '3'}","ethernetMtu":"${mtu.text}","ethernetConnectOnly":"${isCheck ? 1 : 0}","ethernetDetectServer":"${server.text}"}');
+                                },
                                 child: Text(
                                   '提交',
                                   style: TextStyle(fontSize: 36.sp),

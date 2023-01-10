@@ -34,3 +34,20 @@ class LanSettingData {
     return data;
   }
 }
+
+// 修改
+class LanSetRec {
+  bool? success;
+
+  LanSetRec({this.success});
+
+  LanSetRec.fromJson(Map<String, dynamic> json) {
+    success = json['success'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['success'] = success;
+    return data;
+  }
+}

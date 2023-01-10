@@ -2,8 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import '../../../core/widget/custom_app_bar.dart';
 import '../../core/http/http.dart';
+import '../../core/utils/shared_preferences_util.dart';
 import '../../core/utils/toast.dart';
 import '../../core/widget/otp_input.dart';
 import 'model/lan_data.dart';
@@ -16,43 +18,108 @@ class LanSettings extends StatefulWidget {
   State<StatefulWidget> createState() => _LanSettingsState();
 }
 
+LanSettingData lanSetData = LanSettingData();
+
+LanSetRec lanSet = LanSetRec();
+
 class _LanSettingsState extends State<LanSettings> {
   // 地址
   final TextEditingController address = TextEditingController();
   final TextEditingController address1 = TextEditingController();
   final TextEditingController address2 = TextEditingController();
   final TextEditingController address3 = TextEditingController();
+  dynamic addressVal = '';
 
-// 子网掩码
+  // 子网掩码
   final TextEditingController subnetMask = TextEditingController();
   final TextEditingController subnetMask1 = TextEditingController();
   final TextEditingController subnetMask2 = TextEditingController();
   final TextEditingController subnetMask3 = TextEditingController();
-  dynamic addressVal = '';
+  dynamic subnetMaskVal = '';
 
-// 开始网址最后一位
+  // DHCP
+  bool isCheck = true;
+  String isCheckVal = '1';
+
+  // 开始网址最后一位
   final TextEditingController start = TextEditingController();
   dynamic startVal = '';
 
-// 结束网址最后一位
+  // 结束网址最后一位
   final TextEditingController end = TextEditingController();
   dynamic endVal = '';
 
-// 租约时间
+  // 租约时间
   final TextEditingController lanTimeController = TextEditingController();
-  dynamic subnetMaskVal = '';
-
-// DHCP
-  bool isCheck = true;
+  String lanTimeText = "";
 
   // 点击空白  关闭键盘 时传的一个对象
   FocusNode blankNode = FocusNode();
 
-  LanSettingData lanSetData = LanSettingData();
+  /// 点击空白  关闭输入键盘
+  void closeKeyboard(BuildContext context) {
+    FocusScope.of(context).requestFocus(blankNode);
+  }
+
+  double comboContain = -1;
+
   @override
   void initState() {
     super.initState();
     getLanSettingData();
+
+    lanTimeController.addListener(() {
+      debugPrint('监听租约时间：${lanTimeController.text}');
+      debugPrint('6测试${lanTimeController.text}');
+    });
+
+    end.addListener(() {
+      debugPrint('监听结束网址最后一位：${end.text}');
+      debugPrint(
+          '5测试${address.text}.${address1.text}.${address2.text}.${end.text}');
+    });
+
+    start.addListener(() {
+      debugPrint('监听开始网址最后一位：${start.text}');
+      debugPrint(
+          '4测试${address.text}.${address1.text}.${address2.text}.${start.text}');
+    });
+
+    subnetMask.addListener(() {
+      debugPrint('监听子网掩码：${subnetMask3.text}');
+    });
+
+    subnetMask1.addListener(() {
+      debugPrint('监听子网掩码1：${subnetMask1.text}');
+    });
+
+    subnetMask2.addListener(() {
+      debugPrint('监听子网掩码2：${subnetMask2.text}');
+    });
+
+    subnetMask3.addListener(() {
+      debugPrint('监听子网掩码3：${subnetMask3.text}');
+      debugPrint(
+          '2测试${subnetMask.text}.${subnetMask1.text}.${subnetMask2.text}.${subnetMask3.text}');
+    });
+
+    address.addListener(() {
+      debugPrint('监听IP地址：${address.text}');
+    });
+
+    address1.addListener(() {
+      debugPrint('监听IP地址：${address1.text}');
+    });
+
+    address2.addListener(() {
+      debugPrint('监听IP地址：${address2.text}');
+    });
+
+    address3.addListener(() {
+      debugPrint('监听IP地址：${address3.text}');
+      debugPrint(
+          '1测试${address.text}.${address1.text}.${address2.text}.${address3.text}');
+    });
   }
 
   void getLanSettingData() async {
@@ -67,6 +134,7 @@ class _LanSettingsState extends State<LanSettings> {
       setState(() {
         lanSetData = LanSettingData.fromJson(d);
 
+        // IP地址
         addressVal = lanSetData.networkLanSettingIp.toString();
         address.text = addressVal.split('.')[0];
         address1.text = addressVal.split('.')[1];
@@ -103,9 +171,54 @@ class _LanSettingsState extends State<LanSettings> {
       });
     } catch (e) {
       debugPrint('获取LAN设置 失败：$e.toString()');
-
       ToastUtils.toast('获取LAN设置 失败');
     }
+  }
+
+  // 提交
+  void getLanSettingSubmit() async {
+    Map<String, dynamic> data = {
+      'method': 'obj_set',
+      'param':
+          '["networkLanSettingIp":"${address.text}.${address1.text}.${address2.text}.${address3.text}","networkLanSettingMask":"${subnetMask.text}.${subnetMask1.text}.${subnetMask2.text}.${subnetMask3.text}","networkLanSettingDhcp":"$isCheckVal","networkLanSettingStart":"${address.text}.${address1.text}.${address2.text}.${start.text}","networkLanSettingEnd":"${address.text}.${address1.text}.${address2.text}.${end.text}","networkLanSettingLeasetime":"${lanTimeController.text}"]',
+    };
+    print(data);
+    print(11111111);
+
+    // {"networkLanSettingIp":"192.168.1.1","networkLanSettingMask":"255.255.255.0","networkLanSettingDhcp":"1","networkLanSettingStart":"192.168.1.100","networkLanSettingEnd":"192.168.1.250","networkLanSettingLeasetime":"720"}
+    // loginout();
+
+    XHttp.get('/data.html', data).then((res) {
+      print(res);
+      print(21212121);
+
+      // loginout();
+      try {
+        var d = json.decode(res.toString());
+        setState(() {
+          lanSet = LanSetRec.fromJson(d);
+          if (lanSet.success == true) {
+            ToastUtils.toast('修改LAN设置 成功');
+          } else {
+            ToastUtils.toast('修改LAN设置 失败111');
+          }
+        });
+      } on FormatException catch (e) {
+        print(e);
+        ToastUtils.toast('修改LAN设置 失败222');
+      }
+    }).catchError((onError) {
+      debugPrint('失败：${onError.toString()}');
+      ToastUtils.toast('修改LAN设置 失败333');
+    });
+  }
+
+  void loginout() {
+    // 这里还需要调用后台接口的方法
+
+    sharedDeleteData("loginInfo");
+    sharedClearData();
+    Get.offAllNamed("/get_equipment");
   }
 
   @override
@@ -150,11 +263,11 @@ class _LanSettingsState extends State<LanSettings> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         const Text('子网掩码'),
-                        OtpInput(subnetMask, false),
+                        DisInput(subnetMask, false),
                         const Text('.'),
-                        OtpInput(subnetMask1, false),
+                        DisInput(subnetMask1, false),
                         const Text('.'),
-                        OtpInput(subnetMask2, false),
+                        DisInput(subnetMask2, false),
                         const Text('.'),
                         OtpInput(subnetMask3, false),
                         const Text(
@@ -182,6 +295,11 @@ class _LanSettingsState extends State<LanSettings> {
                             onChanged: (newVal) {
                               setState(() {
                                 isCheck = newVal;
+                                if (isCheck == true) {
+                                  isCheckVal = '1';
+                                } else {
+                                  isCheckVal = '0';
+                                }
                               });
                             },
                           ),
@@ -191,11 +309,11 @@ class _LanSettingsState extends State<LanSettings> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         const Text('起始地址'),
-                        OtpInput(address, false),
+                        DisInput(address, false),
                         const Text('.'),
-                        OtpInput(address1, false),
+                        DisInput(address1, false),
                         const Text('.'),
-                        OtpInput(address2, false),
+                        DisInput(address2, false),
                         const Text('.'),
                         OtpInput(start, false),
                         const Text(
@@ -209,11 +327,11 @@ class _LanSettingsState extends State<LanSettings> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         const Text('结束地址'),
-                        OtpInput(address, false),
+                        DisInput(address, false),
                         const Text('.'),
-                        OtpInput(address1, false),
+                        DisInput(address1, false),
                         const Text('.'),
-                        OtpInput(address2, false),
+                        DisInput(address2, false),
                         const Text('.'),
                         OtpInput(end, false),
                         const Text(
@@ -232,9 +350,15 @@ class _LanSettingsState extends State<LanSettings> {
                           child: TextFormField(
                             controller: lanTimeController,
                             keyboardType: TextInputType.number,
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               labelText: "请输入租约时间（2/m~1440/m）",
-                              border: OutlineInputBorder(),
+                              border: const OutlineInputBorder(),
+                              enabled: isCheckVal == '1' ? true : false,
+                              filled: isCheckVal == '1'
+                                  ? false
+                                  : true, //一定加入个属性不然不生效
+                              fillColor:
+                                  const Color.fromARGB(255, 243, 240, 240),
                             ),
                           ),
                         ),
@@ -257,7 +381,9 @@ class _LanSettingsState extends State<LanSettings> {
                         style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all(
                                 const Color.fromARGB(255, 48, 118, 250))),
-                        onPressed: () {},
+                        onPressed: () {
+                          getLanSettingSubmit();
+                        },
                         child: Text(
                           '提交',
                           style: TextStyle(fontSize: 36.sp),
@@ -272,11 +398,6 @@ class _LanSettingsState extends State<LanSettings> {
         ),
       ),
     );
-  }
-
-  /// 点击空白  关闭输入键盘
-  void closeKeyboard(BuildContext context) {
-    FocusScope.of(context).requestFocus(blankNode);
   }
 }
 

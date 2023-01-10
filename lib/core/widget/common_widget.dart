@@ -397,18 +397,32 @@ class CommonWidget {
         decoration: const BoxDecoration(color: Colors.white),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Container(
-              padding: EdgeInsets.only(left: 20.w),
-              alignment: Alignment.centerLeft,
-              child: icon ?? const Text(""),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  padding: EdgeInsets.only(left: 45.w),
+                  alignment: Alignment.centerLeft,
+                  child: icon ?? const Text(""),
+                ),
+                Container(
+                  padding: EdgeInsets.only(left: 20.w),
+                  alignment: Alignment.centerLeft,
+                  child: Text(title),
+                ),
+              ],
             ),
-            Container(
-              padding: EdgeInsets.only(left: 10.w),
-              alignment: Alignment.centerLeft,
-              child: Text(title),
-            ),
+            Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.only(right: 40.w),
+                  child: const Icon(Icons.chevron_right, color: Colors.grey),
+                )
+              ],
+            )
           ],
         ),
       ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_widget.dart';
@@ -129,7 +128,7 @@ class _SettingState extends State<Setting> {
                   ///以太网设置
                   netSet(),
                   const Divider(),
-                  
+
                   const Padding(
                     padding: EdgeInsets.only(left: 10.0),
                     child: TitleWidger(title: '网络设置'),
@@ -273,8 +272,7 @@ class _SettingState extends State<Setting> {
   Widget commonProblem() {
     return CommonWidget.simpleWidgetWithMine(
         title: '设备信息',
-        icon: const Icon(Icons.report_gmailerrorred_outlined,
-            color: Color.fromRGBO(255, 148, 6, 1)),
+        icon: const Image(image: AssetImage('assets/images/equ_info.png')),
         callBack: () {
           Get.toNamed("/common_problem");
         });
@@ -284,8 +282,7 @@ class _SettingState extends State<Setting> {
   Widget feedback() {
     return CommonWidget.simpleWidgetWithMine(
         title: '以太网状态',
-        icon: const Icon(Icons.share_location,
-            color: Color.fromRGBO(95, 154, 255, 1)),
+        icon:const Image(image: AssetImage('assets/images/net_type.png')),
         callBack: () {
           Get.toNamed("/feed_back");
         });
@@ -295,8 +292,7 @@ class _SettingState extends State<Setting> {
   Widget maintainSettings() {
     return CommonWidget.simpleWidgetWithMine(
         title: '维护设置',
-        icon: const Icon(Icons.security_outlined,
-            color: Color.fromRGBO(95, 154, 255, 1)),
+        icon: const Image(image: AssetImage('assets/images/maintain_set.png')),
         callBack: () {
           Get.toNamed("/maintain_settings");
         });
@@ -306,8 +302,7 @@ class _SettingState extends State<Setting> {
   Widget accountSecurity() {
     return CommonWidget.simpleWidgetWithMine(
         title: '登录管理',
-        icon: const Icon(Icons.security_outlined,
-            color: Color.fromRGBO(49, 110, 222, 1)),
+        icon: const Image(image: AssetImage('assets/images/login_admin.png')),
         callBack: () {
           /// 子页面带返回值的
           Get.toNamed("/account_security")
@@ -319,8 +314,7 @@ class _SettingState extends State<Setting> {
   Widget clearCache() {
     return CommonWidget.simpleWidgetWithMine(
         title: '清除缓存',
-        icon: const Icon(Icons.cached_outlined,
-            color: Color.fromRGBO(89, 189, 249, 1)),
+        icon: const Image(image: AssetImage('assets/images/clear_cache.png')),
         callBack: () {
           Get.toNamed("/clear_cache");
         });
@@ -354,8 +348,7 @@ class _SettingState extends State<Setting> {
       padding: EdgeInsets.only(top: 20.w),
       child: CommonWidget.simpleWidgetWithMine(
           title: '系统设置',
-          icon: const Icon(Icons.settings,
-              color: Color.fromRGBO(39, 103, 220, 1)),
+          icon: const Image(image: AssetImage('assets/images/sys_set.png')),
           callBack: () {
             Get.toNamed("/system_settings");
           }),
@@ -394,8 +387,7 @@ class _SettingState extends State<Setting> {
   Widget wanSettings() {
     return CommonWidget.simpleWidgetWithMine(
         title: 'WAN设置',
-        icon: const Icon(Icons.headset_mic_outlined,
-            color: Color.fromRGBO(95, 154, 255, 1)),
+        icon: const Image(image: AssetImage('assets/images/wan.png')),
         callBack: () {
           Get.toNamed("/wan_settings");
         });
@@ -405,8 +397,7 @@ class _SettingState extends State<Setting> {
   Widget dnsSettings() {
     return CommonWidget.simpleWidgetWithMine(
         title: 'DNS设置',
-        icon: const Icon(Icons.headset_mic_outlined,
-            color: Color.fromRGBO(95, 154, 255, 1)),
+        icon: const Image(image: AssetImage('assets/images/DNS.png')),
         callBack: () {
           Get.toNamed("/dns_settings");
         });
@@ -416,8 +407,7 @@ class _SettingState extends State<Setting> {
   Widget radioSettings() {
     return CommonWidget.simpleWidgetWithMine(
         title: 'Radio设置',
-        icon: const Icon(Icons.headset_mic_outlined,
-            color: Color.fromRGBO(95, 154, 255, 1)),
+        icon: const Image(image: AssetImage('assets/images/radio.png')),
         callBack: () {
           Get.toNamed("/radio_settings");
         });
@@ -427,8 +417,7 @@ class _SettingState extends State<Setting> {
   Widget lanSettings() {
     return CommonWidget.simpleWidgetWithMine(
         title: 'LAN设置',
-        icon: const Icon(Icons.headset_mic_outlined,
-            color: Color.fromRGBO(95, 154, 255, 1)),
+        icon: const Image(image: AssetImage('assets/images/lan.png')),
         callBack: () {
           Get.toNamed("/lan_settings");
         });
@@ -438,8 +427,7 @@ class _SettingState extends State<Setting> {
   Widget netSet() {
     return CommonWidget.simpleWidgetWithMine(
         title: '以太网设置',
-        icon: const Icon(Icons.share_location,
-            color: Color.fromRGBO(95, 154, 255, 1)),
+        icon: const Image(image: AssetImage('assets/images/net_set.png')),
         callBack: () {
           Get.toNamed("/net_set");
         });
@@ -449,7 +437,7 @@ class _SettingState extends State<Setting> {
   Widget wlanSet() {
     return CommonWidget.simpleWidgetWithMine(
         title: 'WLAN设置',
-        icon: const Icon(Icons.wifi, color: Color.fromRGBO(95, 154, 255, 1)),
+        icon: const Image(image: AssetImage('assets/images/wlan.png')),
         callBack: () {
           Get.toNamed("/wlan_set");
         });
@@ -459,7 +447,8 @@ class _SettingState extends State<Setting> {
   Widget visitorNet() {
     return CommonWidget.simpleWidgetWithMine(
         title: '访客网络',
-        icon: const Icon(Icons.wifi, color: Color.fromRGBO(95, 154, 255, 1)),
+        icon: const Image(
+            image: AssetImage('assets/images/visitor_net.png')),
         callBack: () {
           Get.toNamed("/visitor_net");
         });
@@ -469,7 +458,7 @@ class _SettingState extends State<Setting> {
   Widget majorSet() {
     return CommonWidget.simpleWidgetWithMine(
         title: '专业设置',
-        icon: const Icon(Icons.wifi, color: Color.fromRGBO(95, 154, 255, 1)),
+        icon: const Image(image: AssetImage('assets/images/major_set.png')),
         callBack: () {
           Get.toNamed("/major_set");
         });
@@ -479,7 +468,7 @@ class _SettingState extends State<Setting> {
   Widget wpsSet() {
     return CommonWidget.simpleWidgetWithMine(
         title: 'WPS设置',
-        icon: const Icon(Icons.wifi, color: Color.fromRGBO(95, 154, 255, 1)),
+        icon: const Image(image: AssetImage('assets/images/WPS.png')),
         callBack: () {
           Get.toNamed("/wps_set");
         });

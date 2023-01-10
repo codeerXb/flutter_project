@@ -22,6 +22,8 @@ LanSettingData lanSetData = LanSettingData();
 
 LanSetRec lanSet = LanSetRec();
 
+LanSetRecDis lanSetDis = LanSetRecDis();
+
 class _LanSettingsState extends State<LanSettings> {
   // 地址
   final TextEditingController address = TextEditingController();
@@ -38,7 +40,8 @@ class _LanSettingsState extends State<LanSettings> {
   dynamic subnetMaskVal = '';
 
   // DHCP
-  bool isCheck = true;
+  bool isCheck =
+      lanSetData.networkLanSettingDhcp.toString() == '1' ? true : false;
   String isCheckVal = '1';
 
   // 开始网址最后一位
@@ -163,36 +166,28 @@ class _LanSettingsState extends State<LanSettings> {
         // DHCP
         if (lanSetData.networkLanSettingDhcp.toString() == '1') {
           isCheck = true;
-          print('走这儿');
+          isCheckVal = '1';
         } else {
           isCheck = false;
-          print('是这里');
+          isCheckVal = '0';
         }
       });
     } catch (e) {
-      debugPrint('获取LAN设置 失败：$e.toString()');
-      ToastUtils.toast('获取LAN设置 失败');
+      debugPrint('获取LAN 失败：$e.toString()');
+      ToastUtils.toast('获取LAN 失败');
     }
   }
 
-  // 提交
+  // 提交 DHCP启用时
   void getLanSettingSubmit() async {
     Map<String, dynamic> data = {
       'method': 'obj_set',
       'param':
-          '["networkLanSettingIp":"${address.text}.${address1.text}.${address2.text}.${address3.text}","networkLanSettingMask":"${subnetMask.text}.${subnetMask1.text}.${subnetMask2.text}.${subnetMask3.text}","networkLanSettingDhcp":"$isCheckVal","networkLanSettingStart":"${address.text}.${address1.text}.${address2.text}.${start.text}","networkLanSettingEnd":"${address.text}.${address1.text}.${address2.text}.${end.text}","networkLanSettingLeasetime":"${lanTimeController.text}"]',
+          '{"networkLanSettingIp":"${address.text}.${address1.text}.${address2.text}.${address3.text}","networkLanSettingMask":"${subnetMask.text}.${subnetMask1.text}.${subnetMask2.text}.${subnetMask3.text}","networkLanSettingDhcp":"$isCheckVal","networkLanSettingStart":"${address.text}.${address1.text}.${address2.text}.${start.text}","networkLanSettingEnd":"${address.text}.${address1.text}.${address2.text}.${end.text}","networkLanSettingLeasetime":"${lanTimeController.text}"}',
     };
-    print(data);
-    print(11111111);
 
-    // {"networkLanSettingIp":"192.168.1.1","networkLanSettingMask":"255.255.255.0","networkLanSettingDhcp":"1","networkLanSettingStart":"192.168.1.100","networkLanSettingEnd":"192.168.1.250","networkLanSettingLeasetime":"720"}
-    // loginout();
-
-    XHttp.get('/data.html', data).then((res) {
-      print(res);
-      print(21212121);
-
-      // loginout();
+    await XHttp.get('/data.html', data).then((res) {
+      loginout();
       try {
         var d = json.decode(res.toString());
         setState(() {
@@ -200,16 +195,46 @@ class _LanSettingsState extends State<LanSettings> {
           if (lanSet.success == true) {
             ToastUtils.toast('修改LAN设置 成功');
           } else {
-            ToastUtils.toast('修改LAN设置 失败111');
+            ToastUtils.toast('修改LAN设置 失败');
           }
         });
       } on FormatException catch (e) {
         print(e);
-        ToastUtils.toast('修改LAN设置 失败222');
+        ToastUtils.toast('修改LAN设置 失败');
       }
     }).catchError((onError) {
       debugPrint('失败：${onError.toString()}');
-      ToastUtils.toast('修改LAN设置 失败333');
+      ToastUtils.toast('修改LAN设置 失败');
+    });
+  }
+
+  // 提交 DHCP禁用时
+  void getLanSetting() async {
+    Map<String, dynamic> data = {
+      'method': 'obj_set',
+      'param':
+          '{"networkLanSettingIp":"${address.text}.${address1.text}.${address2.text}.${address3.text}","networkLanSettingMask":"${subnetMask.text}.${subnetMask1.text}.${subnetMask2.text}.${subnetMask3.text}","networkLanSettingDhcp":"$isCheckVal"}',
+    };
+
+    await XHttp.get('/data.html', data).then((res) {
+      loginout();
+      try {
+        var d = json.decode(res.toString());
+        setState(() {
+          lanSetDis = LanSetRecDis.fromJson(d);
+          if (lanSetDis.success == true) {
+            ToastUtils.toast('修改LAN设置 成功');
+          } else {
+            ToastUtils.toast('修改LAN设置 失败');
+          }
+        });
+      } on FormatException catch (e) {
+        print(e);
+        ToastUtils.toast('修改LAN设置 失败');
+      }
+    }).catchError((onError) {
+      debugPrint('失败：${onError.toString()}');
+      ToastUtils.toast('修改LAN设置 失败');
     });
   }
 
@@ -382,7 +407,11 @@ class _LanSettingsState extends State<LanSettings> {
                             backgroundColor: MaterialStateProperty.all(
                                 const Color.fromARGB(255, 48, 118, 250))),
                         onPressed: () {
-                          getLanSettingSubmit();
+                          if (isCheckVal == '1') {
+                            getLanSettingSubmit();
+                          } else {
+                            getLanSetting();
+                          }
                         },
                         child: Text(
                           '提交',

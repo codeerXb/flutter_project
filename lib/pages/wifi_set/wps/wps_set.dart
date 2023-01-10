@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
+import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_picker.dart';
 import 'package:flutter_template/pages/wifi_set/wps/wps_datas.dart';
@@ -26,7 +27,11 @@ class _WpsSetState extends State<WpsSet> {
       wifiWpsMode: '');
   String showVal = '2.4GHz';
   int val = 0;
-  bool isCheck = true;
+  bool isCheck = false;
+  //wps选中
+  String wpsVal = '0';
+  //key  wifiWps/wifi5gWps
+  dynamic paramKey = 'wifiWps';
   String modeShowVal = 'PBC';
   int modeVal = 0;
   dynamic parmas = '';
@@ -39,22 +44,31 @@ class _WpsSetState extends State<WpsSet> {
   //保存
   void handleSave() async {
     Map<String, dynamic> data = {
-      'method': 'obj_get',
-      'param': parmas,
+      'method': 'obj_set',
+      'param': '{"$paramKey": "$wpsVal"}',
     };
     try {
       await XHttp.get('/data.html', data);
+      ToastUtils.toast('修改成功');
     } catch (e) {
       debugPrint('wps设置失败:$e.toString()');
+      ToastUtils.toast('修改失败');
     }
   }
 
-  // 点击空白  关闭键盘 时传的一个对象
-  FocusNode blankNode = FocusNode();
-
-  /// 点击空白  关闭输入键盘
-  void closeKeyboard(BuildContext context) {
-    FocusScope.of(context).requestFocus(blankNode);
+  //保存模式
+  void savePbc() async {
+    Map<String, dynamic> data = {
+      'method': 'obj_set',
+      'param': '{"$paramKey": "$modeShowVal"}',
+    };
+    try {
+      await XHttp.get('/data.html', data);
+      ToastUtils.toast('修改成功');
+    } catch (e) {
+      debugPrint('wps设置失败:$e.toString()');
+      ToastUtils.toast('修改失败');
+    }
   }
 
   //读取
@@ -69,11 +83,28 @@ class _WpsSetState extends State<WpsSet> {
       var d = json.decode(response.toString());
       setState(() {
         wpsData = wpsDatas.fromJson(d);
-        isCheck = wpsData.wifi5gWps.toString() == '1' ? true : false;
+        //频段的值
+        showVal = wpsData.wifiWps.toString() == '1' ? '2.4GHz' : '5GHz';
+        val = wpsData.wifiWps.toString() == '1' ? 0 : 1;
+        //频段是2G/5G 提交时提交
+        paramKey = wpsData.wifiWps.toString() == '1' ? 'wifiWps' : 'wifi5gWps';
+        //wps选中
+        isCheck = wpsData.wifi5gWps.toString() == '1' || wpsData.wifiWps.toString() == '1'? true: false;
+        wpsVal = wpsData.wifi5gWps.toString();
+        //模式
+        modeShowVal = wpsData.wifiWpsMode.toString();
       });
     } catch (e) {
       debugPrint('获取wps设置失败:$e.toString()');
     }
+  }
+
+  // 点击空白  关闭键盘 时传的一个对象
+  FocusNode blankNode = FocusNode();
+
+  /// 点击空白  关闭输入键盘
+  void closeKeyboard(BuildContext context) {
+    FocusScope.of(context).requestFocus(blankNode);
   }
 
   @override
@@ -111,7 +142,11 @@ class _WpsSetState extends State<WpsSet> {
                                   {
                                     setState(() => {
                                           val = selectedValue,
-                                          showVal = ['2.4GHz', '5GHz'][val]
+                                          showVal = ['2.4GHz', '5GHz'][val],
+                                          //提交时改变key
+                                          paramKey = val == 0
+                                              ? 'wifiWps'
+                                              : 'wifi5gWps',
                                         })
                                   }
                               });
@@ -159,6 +194,7 @@ class _WpsSetState extends State<WpsSet> {
                                   onChanged: (newVal) {
                                     setState(() {
                                       isCheck = newVal;
+                                      wpsVal = newVal == false ? '0' : '1';
                                     });
                                   },
                                 ),
@@ -168,78 +204,85 @@ class _WpsSetState extends State<WpsSet> {
                         ),
                       ),
                       //模式
-                      GestureDetector(
-                        onTap: () {
-                          closeKeyboard(context);
-                          var result = CommonPicker.showPicker(
-                            context: context,
-                            options: ['PBC', 'Client PIN'],
-                            value: modeVal,
-                          );
-                          result?.then((selectedValue) => {
-                                if (modeVal != selectedValue &&
-                                    selectedValue != null)
-                                  {
-                                    setState(() => {
-                                          modeVal = selectedValue,
-                                          modeShowVal =
-                                              ['PBC', 'Client PIN'][modeVal]
-                                        })
-                                  }
-                              });
-                        },
-                        child: BottomLine(
-                          rowtem: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('模式',
-                                  style: TextStyle(
-                                      color: const Color.fromARGB(255, 5, 0, 0),
-                                      fontSize: 28.sp)),
-                              Row(
-                                children: [
-                                  Text(modeShowVal,
-                                      style: TextStyle(
-                                          color: const Color.fromARGB(
-                                              255, 5, 0, 0),
-                                          fontSize: 28.sp)),
-                                  Icon(
-                                    Icons.arrow_forward_ios_outlined,
-                                    color:
-                                        const Color.fromRGBO(144, 147, 153, 1),
-                                    size: 30.w,
-                                  )
-                                ],
-                              ),
-                            ],
+                      Offstage(
+                        offstage: !isCheck,
+                        child: GestureDetector(
+                          onTap: () {
+                            closeKeyboard(context);
+                            var result = CommonPicker.showPicker(
+                              context: context,
+                              options: ['PBC', 'Client PIN'],
+                              value: modeVal,
+                            );
+                            result?.then((selectedValue) => {
+                                  if (modeVal != selectedValue &&
+                                      selectedValue != null)
+                                    {
+                                      setState(() => {
+                                            modeVal = selectedValue,
+                                            modeShowVal =
+                                                ['PBC', 'Client PIN'][modeVal]
+                                          })
+                                    }
+                                });
+                          },
+                          child: BottomLine(
+                            rowtem: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('模式',
+                                    style: TextStyle(
+                                        color:
+                                            const Color.fromARGB(255, 5, 0, 0),
+                                        fontSize: 28.sp)),
+                                Row(
+                                  children: [
+                                    Text(modeShowVal,
+                                        style: TextStyle(
+                                            color: const Color.fromARGB(
+                                                255, 5, 0, 0),
+                                            fontSize: 28.sp)),
+                                    Icon(
+                                      Icons.arrow_forward_ios_outlined,
+                                      color: const Color.fromRGBO(
+                                          144, 147, 153, 1),
+                                      size: 30.w,
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
                       //客户 PIN
-                      BottomLine(
-                        rowtem: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('客户 PIN',
-                                style: TextStyle(
-                                    color: const Color.fromARGB(255, 5, 0, 0),
-                                    fontSize: 28.sp)),
-                            SizedBox(
-                              width: 300.w,
-                              child: TextFormField(
-                                style: TextStyle(
-                                    fontSize: 26.sp,
-                                    color: const Color(0xff051220)),
-                                decoration: InputDecoration(
-                                  hintText: "请输入客户 PIN",
-                                  hintStyle: TextStyle(
+                      Offstage(
+                        offstage: true,
+                        child: BottomLine(
+                          rowtem: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('客户 PIN',
+                                  style: TextStyle(
+                                      color: const Color.fromARGB(255, 5, 0, 0),
+                                      fontSize: 28.sp)),
+                              SizedBox(
+                                width: 300.w,
+                                child: TextFormField(
+                                  style: TextStyle(
                                       fontSize: 26.sp,
-                                      color: const Color(0xff737A83)),
-                                  border: InputBorder.none,
+                                      color: const Color(0xff051220)),
+                                  decoration: InputDecoration(
+                                    hintText: "请输入客户 PIN",
+                                    hintStyle: TextStyle(
+                                        fontSize: 26.sp,
+                                        color: const Color(0xff737A83)),
+                                    border: InputBorder.none,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                       //提交
@@ -255,7 +298,12 @@ class _WpsSetState extends State<WpsSet> {
                                     backgroundColor: MaterialStateProperty.all(
                                         const Color.fromARGB(
                                             255, 48, 118, 250))),
-                                onPressed: () {},
+                                onPressed: () {
+                                  handleSave();
+                                  if (isCheck) {
+                                    savePbc();
+                                  }
+                                },
                                 child: Text(
                                   '提交',
                                   style: TextStyle(fontSize: 36.sp),

@@ -30,6 +30,9 @@ class _NetSetState extends State<NetSet> {
   //连接模式
   String showVal = '动态ip';
   int val = 0;
+  //优先级
+  String priorityVal = '以太网';
+  int priorityIndex = 0;
   bool isCheck = true;
   final TextEditingController mtu = TextEditingController();
   final TextEditingController server = TextEditingController();
@@ -51,7 +54,6 @@ class _NetSetState extends State<NetSet> {
   void handleSave(params) async {
     Map<String, dynamic> data = {
       'method': 'obj_set',
-      // 'param':'{"ethernetConnectMode":"lanonly","ethernetConnectOnly":"1"}'
       'param': params,
     };
     XHttp.get('/data.html', data).then((res) {
@@ -78,10 +80,6 @@ class _NetSetState extends State<NetSet> {
       var d = json.decode(response.toString());
       setState(() {
         netdata = netDatas.fromJson(d);
-        //mtu
-        mtu.text = netdata.ethernetMtu.toString();
-        //检测服务器
-        server.text = netdata.ethernetDetectServer.toString();
         //连接模式
         switch (netdata.ethernetConnectMode.toString()) {
           case 'dhcp':
@@ -90,13 +88,21 @@ class _NetSetState extends State<NetSet> {
           // case 'FR':
           //   showVal = '静态IP';
           //   break;
-          // case 'RU':
-          //   showVal = '仅LAN';
-          //   break;
-
+          case 'lanonly':
+            showVal = '仅LAN';
+            break;
         }
+
         //仅以太网
         isCheck = netdata.ethernetConnectOnly.toString() == '1' ? true : false;
+        //优先级
+        priorityVal =
+            netdata.ethernetConnectPriority.toString() == '1' ? '以太网' : '4G/5G';
+        priorityIndex = ['以太网', '4G/5G'].indexOf(priorityVal);
+        //mtu
+        mtu.text = netdata.ethernetMtu.toString();
+        //检测服务器
+        server.text = netdata.ethernetDetectServer.toString();
       });
     } catch (e) {
       debugPrint('获取以太网设置失败：$e.toString()');
@@ -195,7 +201,57 @@ class _NetSetState extends State<NetSet> {
                           ],
                         ),
                       ),
-
+                      //优先级
+                      Offstage(
+                        offstage: isCheck,
+                        child: GestureDetector(
+                          onTap: () {
+                            closeKeyboard(context);
+                            var result = CommonPicker.showPicker(
+                              context: context,
+                              options: ['以太网', '4G/5G'],
+                              value: priorityIndex,
+                            );
+                            result?.then((selectedValue) => {
+                                  if (priorityIndex != selectedValue &&
+                                      selectedValue != null)
+                                    {
+                                      setState(() => {
+                                            priorityIndex = selectedValue,
+                                            priorityVal =
+                                                ['以太网', '4G/5G'][priorityIndex],
+                                          })
+                                    }
+                                });
+                          },
+                          child: BottomLine(
+                            rowtem: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('优先级',
+                                    style: TextStyle(
+                                        color:
+                                            const Color.fromARGB(255, 5, 0, 0),
+                                        fontSize: 28.sp)),
+                                Row(
+                                  children: [
+                                    Text(priorityVal,
+                                        style: const TextStyle(
+                                            color: Color.fromARGB(255, 5, 0, 0),
+                                            fontSize: 14)),
+                                    Icon(
+                                      Icons.arrow_forward_ios_outlined,
+                                      color: const Color.fromRGBO(
+                                          144, 147, 153, 1),
+                                      size: 30.w,
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                       //MTU
                       BottomLine(
                         rowtem: Row(
@@ -267,12 +323,34 @@ class _NetSetState extends State<NetSet> {
                                         const Color.fromARGB(
                                             255, 48, 118, 250))),
                                 onPressed: () {
-                                  if (showVal == '动态ip') {
-                                    // handleSave(params:'1');
-// '{"ethernetConnectMode":"${showVal == '动态ip' ? 'dchp' : '3' == '静态ip' ? '3' : '3'}","ethernetMtu":"${mtu.text}","ethernetConnectOnly":"${isCheck ? 1 : 0}","ethernetDetectServer":"${server.text}"}'
+                                  //携带优先级
+                                  if (isCheck) {
+                                    if (showVal == '动态ip') {
+                                      handleSave(
+                                          '{"ethernetConnectMode":"dhcp","ethernetMtu":"${mtu.text}","ethernetConnectOnly":"${isCheck ? 1 : 0}","ethernetDetectServer":"${server.text}"},"ethernetConnectPriority":"1"');
+                                    } else if (showVal == '动态ip') {
+                                      print(1);
+                                    } else {
+                                      handleSave({
+                                        "ethernetConnectMode": "lanonly",
+                                        "ethernetConnectOnly": "1"
+                                      });
+                                    }
+                                  } 
+                                  //无优先级
+                                  else {
+                                    if (showVal == '动态ip') {
+                                      handleSave(
+                                          '{"ethernetConnectMode":"dhcp","ethernetMtu":"${mtu.text}","ethernetConnectOnly":"${isCheck ? 1 : 0}","ethernetDetectServer":"${server.text}"},"ethernetConnectPriority":"1"');
+                                    } else if (showVal == '动态ip') {
+                                      print(2);
+                                    } else {
+                                      handleSave({
+                                        "ethernetConnectMode": "lanonly",
+                                        "ethernetConnectOnly": "1"
+                                      });
+                                    }
                                   }
-                                  print(
-                                      '{"ethernetConnectMode":"${showVal == '动态ip' ? 'dchp' : '3' == '静态ip' ? '3' : '3'}","ethernetMtu":"${mtu.text}","ethernetConnectOnly":"${isCheck ? 1 : 0}","ethernetDetectServer":"${server.text}"}');
                                 },
                                 child: Text(
                                   '提交',

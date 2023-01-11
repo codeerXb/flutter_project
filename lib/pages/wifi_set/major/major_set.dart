@@ -57,6 +57,7 @@ class _MajorSetState extends State<MajorSet> {
       var d = json.decode(response.toString());
       setState(() {
         majorData = majorDatas.fromJson(d);
+        index = ['CN', 'FR', 'RU', 'US', 'SG', 'AU', 'CL', 'PL'].indexOf(majorData.wifiRegionCountry.toString());
         //读取地区
         switch (majorData.wifiRegionCountry.toString()) {
           case 'CN':
@@ -193,7 +194,6 @@ class _MajorSetState extends State<MajorSet> {
                                       const Color.fromARGB(255, 48, 118, 250))),
                               onPressed: () {
                                 handleSave();
-                                print(val);
                               },
                               child: Text(
                                 '提交',

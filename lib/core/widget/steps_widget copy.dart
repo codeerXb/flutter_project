@@ -41,21 +41,21 @@ class _StepsWidgetState extends State<StepsWidget> {
                       // borderRadius: BorderRadius.circular(10.w),
                       color: Color.fromARGB(255, 137, 195, 250),
                       border: Border(
-                        // top: BorderSide(color: Colors.black, width: 1.w),
-                        // left: BorderSide(color: Colors.black, width: 1.w),
-                        right: BorderSide(
-                            color: Color.fromARGB(255, 137, 195, 250)),
-                        // bottom: BorderSide(
-                        //     color: 1 <= widget.currentIndex
-                        //         ? const Color.fromARGB(255, 81, 185, 67)
-                        //         : Colors.black,
-                        //     width: 1.w)
-                      )),
+                          // top: BorderSide(color: Colors.black, width: 1.w),
+                          // left: BorderSide(color: Colors.black, width: 1.w),
+                          // right: BorderSide(
+                          //     color: Color.fromARGB(255, 137, 195, 250)),
+                          // bottom: BorderSide(
+                          //     color: 1 <= widget.currentIndex
+                          //         ? const Color.fromARGB(255, 81, 185, 67)
+                          //         : Colors.black,
+                          //     width: 1.w)
+                          )),
                   child: Text(
                     "自检",
                     style: TextStyle(
                         fontSize: 20.sp,
-                        color: 1 <= widget.currentIndex
+                        color: 0 <= widget.currentIndex
                             ? const Color.fromARGB(255, 81, 185, 67)
                             : Color.fromARGB(255, 255, 255, 255)),
                   )),
@@ -109,7 +109,7 @@ class _StepsWidgetState extends State<StepsWidget> {
                       "   搜索",
                       style: TextStyle(
                           fontSize: 20.sp,
-                          color: 2 <= widget.currentIndex
+                          color: 1 <= widget.currentIndex
                               ? const Color.fromARGB(255, 81, 185, 67)
                               : Color.fromARGB(255, 255, 255, 255)),
                     )),
@@ -162,7 +162,7 @@ class _StepsWidgetState extends State<StepsWidget> {
                   "   完成",
                   style: TextStyle(
                       fontSize: 20.sp,
-                      color: 3 <= widget.currentIndex
+                      color: 2 <= widget.currentIndex
                           ? const Color.fromARGB(255, 81, 185, 67)
                           : Color.fromARGB(255, 255, 255, 255)),
                 )),

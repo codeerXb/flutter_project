@@ -35,7 +35,7 @@ class _ODUState extends State<ODU> {
   });
   final List<IndicatorModel> legend = List.generate(360, (index) {
     if (index % 30 == 0) {
-      return IndicatorModel("${index * 10}", 30);
+      return IndicatorModel("$index°", 30);
     }
     return IndicatorModel("", 30);
   });
@@ -161,7 +161,7 @@ class _ODUState extends State<ODU> {
 
                 MaxNumber = mapData[_index];
                 CurrentAngle = _index * 1;
-                pointer[_index] = MaxNumber / 100;
+                pointer[_index] = MaxNumber;
               }
               _index++;
 
@@ -293,7 +293,7 @@ class _ODUState extends State<ODU> {
                           width: 150.w,
                           alignment: Alignment.centerLeft,
                           padding: EdgeInsets.all(5.w),
-                          child: Text(" ${(_index) * 10}°",
+                          child: Text(" $_index°",
                               style: const TextStyle(color: Color(0XFF0EBD8D))),
                         ),
                       ),

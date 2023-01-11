@@ -280,12 +280,12 @@ class RadarMapPainter extends CustomPainter {
     canvas.translate(w / 2 - skewing, radarMap.radius + top); // 移动坐标系
     drawInnerCircle(canvas, size);
     for (int i = 0; i < radarMap.legend.length; i++) {
-      drawRadarMap(
-          canvas,
-          radarMap.data[i].data,
-          radarMap.indicator.map((item) => item.maxValues).toList(),
-          mAreaPaint
-            ..color = radarMap.legend[i].color.withAlpha(radarMap.alpha));
+      // drawRadarMap(
+      //     canvas,
+      //     radarMap.data[i].data,
+      //     radarMap.indicator.map((item) => item.maxValues).toList(),
+      //     mAreaPaint
+      //       ..color = radarMap.legend[i].color.withAlpha(radarMap.alpha));
       drawRadarPath(
           canvas,
           radarMap.data[i].data,
@@ -376,9 +376,22 @@ class RadarMapPainter extends CustomPainter {
     }
 
     // 遍历画线
-    for (var i = 0; i < elementLength; i++) {
+    // for (var i = 0; i < elementLength; i++) {
+    //   canvas.save();
+    //   canvas.rotate(360 / elementLength * i.toDouble() / 180 * pi);
+    //   mLinePath.moveTo(0, -innerRadius);
+    //   mLinePath.relativeLineTo(0, innerRadius); //线的路径
+    //   canvas.drawPath(
+    //       mLinePath,
+    //       mLinePaint
+    //         ..color = ringColor
+    //         ..style = PaintingStyle.stroke); //绘制线
+    //   canvas.restore();
+    // }
+    // 遍历画线
+    for (var i = 0; i < 4; i++) {
       canvas.save();
-      canvas.rotate(360 / elementLength * i.toDouble() / 180 * pi);
+      canvas.rotate(360 / 4 * i.toDouble() / 180 * pi);
       mLinePath.moveTo(0, -innerRadius);
       mLinePath.relativeLineTo(0, innerRadius); //线的路径
       canvas.drawPath(
@@ -388,7 +401,6 @@ class RadarMapPainter extends CustomPainter {
             ..style = PaintingStyle.stroke); //绘制线
       canvas.restore();
     }
-
     canvas.save();
     canvas.restore();
   }

@@ -1,4 +1,11 @@
+import 'dart:async';
+
+import 'package:dio/adapter.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_template/config/base_config.dart';
+import 'package:flutter_template/core/http/http.dart';
+import 'package:flutter_template/core/utils/toast.dart';
 import 'package:get/get.dart';
 
 import '../../core/utils/app_update_util.dart';
@@ -52,11 +59,27 @@ class _SystemSettingsState extends State<SystemSettings> {
   }
 
   /// 退出登录
-  void loginout() {
+  void loginout() async {
     // 这里还需要调用后台接口的方法
-
-    sharedDeleteData("loginInfo");
-    sharedClearData();
-    Get.offAllNamed("/get_equipment");
+    Dio dio = Dio();
+    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+        (client) {
+      client.badCertificateCallback = (cert, host, port) {
+        return true; // 返回true强制通过
+      };
+      return null;
+    };
+    try {
+      await dio.post('${BaseConfig.baseUrl}/action/logout');
+    } on DioError catch (err) {
+      if (err.message.toString().contains('302')) {
+        sharedDeleteData("loginInfo");
+        sharedClearData();
+        Get.offAllNamed("/get_equipment");
+      } else {
+        ToastUtils.error('退出登录失败，请检查网络！');
+      }
+      printError(info: err.toString());
+    }
   }
 }

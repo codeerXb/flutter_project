@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/widget/custom_app_bar.dart';
+import '../../core/http/http.dart';
+import '../../core/utils/toast.dart';
 import '../../core/widget/otp_input.dart';
+import 'model/dns_data.dart';
 
 /// DNS设置
 class DnsSettings extends StatefulWidget {
@@ -12,81 +17,279 @@ class DnsSettings extends StatefulWidget {
 }
 
 class _DnsSettingsState extends State<DnsSettings> {
-  final TextEditingController _fieldOne = TextEditingController();
-  final TextEditingController _fieldOne1 = TextEditingController();
-  final TextEditingController _fieldOne2 = TextEditingController();
-  final TextEditingController _fieldOne3 = TextEditingController();
+  // 主
+  final TextEditingController dsnMain = TextEditingController();
+  final TextEditingController dsnMain1 = TextEditingController();
+  final TextEditingController dsnMain2 = TextEditingController();
+  final TextEditingController dsnMain3 = TextEditingController();
+  dynamic dsnMainVal = '';
+
+  // 辅
+  final TextEditingController dsnAssist = TextEditingController();
+  final TextEditingController dsnAssist1 = TextEditingController();
+  final TextEditingController dsnAssist2 = TextEditingController();
+  final TextEditingController dsnAssist3 = TextEditingController();
+  dynamic dsnAssistVal = '';
+
+  DnsSettingData dnsSetData = DnsSettingData();
+
+  DnsData dnsDataVal = DnsData();
+
+  String aa = '';
+  String bb = '';
+
+  @override
+  void initState() {
+    super.initState();
+    getDnsData();
+
+    dsnMain.addListener(() {
+      debugPrint('监听主：${dsnMain.text}');
+    });
+
+    dsnMain1.addListener(() {
+      debugPrint('监听主1：${dsnMain1.text}');
+    });
+
+    dsnMain2.addListener(() {
+      debugPrint('监听主2：${dsnMain2.text}');
+    });
+
+    dsnMain3.addListener(() {
+      debugPrint('监听主3：${dsnMain3.text}');
+      debugPrint(
+          '2测试${dsnMain.text}.${dsnMain1.text}.${dsnMain2.text}.${dsnMain3.text}');
+    });
+
+    dsnAssist.addListener(() {
+      debugPrint('监听辅：${dsnAssist.text}');
+    });
+
+    dsnAssist1.addListener(() {
+      debugPrint('监听辅：${dsnAssist1.text}');
+    });
+
+    dsnAssist2.addListener(() {
+      debugPrint('监听辅：${dsnAssist2.text}');
+    });
+
+    dsnAssist3.addListener(() {
+      debugPrint('监听辅：${dsnAssist3.text}');
+      debugPrint(
+          '1测试${dsnAssist.text}.${dsnAssist1.text}.${dsnAssist2.text}.${dsnAssist3.text}');
+    });
+    // if (dsnMain.text == '' &&
+    //     dsnMain1.text == '' &&
+    //     dsnMain2.text == '' &&
+    //     dsnMain3.text == '') {
+    //   aa = '{"lteManualDns1":"","lteManualDns2":""}';
+    //   debugPrint('----11---$aa');
+    // } else {
+    //   aa =
+    // '{"lteManualDns1":"${dsnMain.text}.${dsnMain1.text}.${dsnMain2.text}.${dsnMain3.text}","lteManualDns2":"${dsnAssist.text}.${dsnAssist1.text}.${dsnAssist2.text}.${dsnAssist3.text}"}';
+    //   debugPrint('----22---$aa');
+    // }
+  }
+
+  // 点击空白  关闭键盘 时传的一个对象
+  FocusNode blankNode = FocusNode();
+
+  /// 点击空白  关闭输入键盘
+  void closeKeyboard(BuildContext context) {
+    FocusScope.of(context).requestFocus(blankNode);
+  }
+
+  void getDnsData() async {
+    Map<String, dynamic> data = {
+      'method': 'obj_get',
+      'param': '["lteManualDns1","lteManualDns2"]',
+    };
+    try {
+      var response = await XHttp.get('/data.html', data);
+      var d = json.decode(response.toString());
+      dnsSetData = DnsSettingData.fromJson(d);
+      if (dnsSetData.lteManualDns1 != '' && dnsSetData.lteManualDns2 != '') {
+        setState(() {
+          // 主
+          dsnMainVal = dnsSetData.lteManualDns1.toString();
+          dsnMain.text =
+              dsnMainVal.split('.')[0] == "" ? "" : dsnMainVal.split('.')[0];
+          dsnMain1.text =
+              dsnMainVal.split('.')[1] == "" ? "" : dsnMainVal.split('.')[1];
+          dsnMain2.text =
+              dsnMainVal.split('.')[2] == "" ? "" : dsnMainVal.split('.')[2];
+          dsnMain3.text =
+              dsnMainVal.split('.')[3] == "" ? "" : dsnMainVal.split('.')[3];
+
+          // 辅
+          dsnAssistVal = dnsSetData.lteManualDns2.toString();
+          dsnAssist.text = dsnAssistVal.split('.')[0] == ""
+              ? ""
+              : dsnAssistVal.split('.')[0];
+          dsnAssist1.text = dsnAssistVal.split('.')[1] == ""
+              ? ""
+              : dsnAssistVal.split('.')[1];
+          dsnAssist2.text = dsnAssistVal.split('.')[2] == ""
+              ? ""
+              : dsnAssistVal.split('.')[2];
+          dsnAssist3.text = dsnAssistVal.split('.')[3] == ""
+              ? ""
+              : dsnAssistVal.split('.')[3];
+        });
+      }
+    } catch (e) {
+      debugPrint('获取DSN 失败：$e.toString()');
+      ToastUtils.toast('获取DSN 失败');
+    }
+  }
+
+// 修改 有值时
+  void getRadioSettingData() async {
+    Map<String, dynamic> data = {
+      'method': 'obj_set',
+      'param':
+          '{"lteManualDns1":"${dsnMain.text}.${dsnMain1.text}.${dsnMain2.text}.${dsnMain3.text}","lteManualDns2":"${dsnAssist.text}.${dsnAssist1.text}.${dsnAssist2.text}.${dsnAssist3.text}"}',
+    };
+    XHttp.get('/data.html', data).then((res) {
+      try {
+        var d = json.decode(res.toString());
+        setState(() {
+          dnsDataVal = DnsData.fromJson(d);
+          if (dnsDataVal.success == true) {
+            ToastUtils.toast('修改DSN 成功');
+          } else {
+            ToastUtils.toast('修改DSN 失败11');
+          }
+        });
+      } on FormatException catch (e) {
+        print(e);
+        ToastUtils.toast('修改DNS 失败22');
+      }
+    }).catchError((e) {
+      debugPrint('修改DSN 失败：$e.toString()');
+      ToastUtils.toast('修改DSN 失败33');
+    });
+  }
+
+// 修改 无值
+  void getRadioData() async {
+    Map<String, dynamic> data = {
+      'method': 'obj_set',
+      'param': '{"lteManualDns1":"","lteManualDns2":""}',
+    };
+    XHttp.get('/data.html', data).then((res) {
+      try {
+        var d = json.decode(res.toString());
+        setState(() {
+          dnsDataVal = DnsData.fromJson(d);
+          if (dnsDataVal.success == true) {
+            ToastUtils.toast('修改DSN 成功');
+          } else {
+            ToastUtils.toast('修改DSN 失败11');
+          }
+        });
+      } on FormatException catch (e) {
+        print(e);
+        ToastUtils.toast('修改DNS 失败22');
+      }
+    }).catchError((e) {
+      debugPrint('修改DSN 失败：$e.toString()');
+      ToastUtils.toast('修改DSN 失败33');
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppbar(context: context, title: 'DNS设置'),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.all(20.sp),
-          decoration:
-              const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
-          child: Column(
-            children: [
-              Row(children: [
-                const Icon(Icons.priority_high, color: Colors.red),
-                Flexible(
-                  child: Text(
-                    '静态DNS，VPN DNS具有最高优先级，LTE DNS具有最低优先级. 如果要恢复VPN / LTE DNS，请清除两个DNS配置并提交',
-                    style: TextStyle(fontSize: 24.sp, color: Colors.red),
-                  ),
-                ),
-              ]),
-              Padding(padding: EdgeInsets.only(top: 120.sp)),
-              InfoBox(
-                boxCotainer: Column(children: [
-                  Padding(padding: EdgeInsets.only(top: 30.sp)),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      const Text('主DNS'),
-                      OtpInput(_fieldOne, false),
-                      OtpInput(_fieldOne1, false),
-                      OtpInput(_fieldOne2, false),
-                      OtpInput(_fieldOne3, false),
-                    ],
-                  ),
-                  Padding(padding: EdgeInsets.only(top: 70.sp)),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      const Text('辅DNS'),
-                      OtpInput(_fieldOne, false),
-                      OtpInput(_fieldOne1, false),
-                      OtpInput(_fieldOne2, false),
-                      OtpInput(_fieldOne3, false),
-                    ],
-                  ),
-                  Padding(padding: EdgeInsets.only(bottom: 30.sp)),
-                ]),
-              ),
-              Row(
+        appBar: customAppbar(context: context, title: 'DNS设置'),
+        body: SingleChildScrollView(
+          child: InkWell(
+            onTap: () => closeKeyboard(context),
+            child: Container(
+              padding: EdgeInsets.all(20.sp),
+              decoration:
+                  const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
+              child: Column(
                 children: [
-                  SizedBox(
-                    height: 70.sp,
-                    width: 710.sp,
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(
-                              const Color.fromARGB(255, 48, 118, 250))),
-                      onPressed: () {},
+                  Row(children: [
+                    const Icon(Icons.priority_high, color: Colors.red),
+                    Flexible(
                       child: Text(
-                        '提交',
-                        style: TextStyle(fontSize: 36.sp),
+                        '静态DNS，VPN DNS具有最高优先级，LTE DNS具有最低优先级. 如果要恢复VPN / LTE DNS，请清除两个DNS配置并提交',
+                        style: TextStyle(fontSize: 24.sp, color: Colors.red),
                       ),
                     ),
+                  ]),
+                  Padding(padding: EdgeInsets.only(top: 120.sp)),
+                  InfoBox(
+                    boxCotainer: Column(children: [
+                      Padding(padding: EdgeInsets.only(top: 30.sp)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          const Text('主DNS'),
+                          OtpInput(dsnMain, false),
+                          const Text('.'),
+                          OtpInput(dsnMain1, false),
+                          const Text('.'),
+                          OtpInput(dsnMain2, false),
+                          const Text('.'),
+                          OtpInput(dsnMain3, false),
+                        ],
+                      ),
+                      Padding(padding: EdgeInsets.only(top: 70.sp)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          const Text('辅DNS'),
+                          OtpInput(dsnAssist, false),
+                          const Text('.'),
+                          OtpInput(dsnAssist1, false),
+                          const Text('.'),
+                          OtpInput(dsnAssist2, false),
+                          const Text('.'),
+                          OtpInput(dsnAssist3, false),
+                        ],
+                      ),
+                      Padding(padding: EdgeInsets.only(bottom: 30.sp)),
+                    ]),
+                  ),
+                  Row(
+                    children: [
+                      SizedBox(
+                        height: 70.sp,
+                        width: 710.sp,
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(
+                                  const Color.fromARGB(255, 48, 118, 250))),
+                          onPressed: () {
+                            if (dsnMain.text == '' &&
+                                dsnMain1.text == '' &&
+                                dsnMain2.text == '' &&
+                                dsnMain3.text == '' &&
+                                dsnAssist.text == '' &&
+                                dsnAssist1.text == '' &&
+                                dsnAssist2.text == '' &&
+                                dsnAssist3.text == '') {
+                              getRadioData();
+                            } else {
+                              getRadioSettingData();
+                            }
+                          },
+                          child: Text(
+                            '提交',
+                            style: TextStyle(fontSize: 36.sp),
+                          ),
+                        ),
+                      )
+                    ],
                   )
                 ],
-              )
-            ],
+              ),
+            ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 }
 

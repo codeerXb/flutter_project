@@ -10,7 +10,13 @@ import 'package:flutter_template/pages/setting/file_upload_download.dart';
 import 'package:flutter_template/pages/Ethernet/net_type.dart';
 import 'package:flutter_template/pages/setting/user_detail.dart';
 import 'package:flutter_template/pages/wifi_set/major/major_set.dart';
-import 'package:flutter_template/pages/wifi_set/visitor_net.dart';
+import 'package:flutter_template/pages/wifi_set/visitor/2.4GHZ_visitor/2.4GHZ_visitor1.dart';
+import 'package:flutter_template/pages/wifi_set/visitor/2.4GHZ_visitor/2.4GHZ_visitor2.dart';
+import 'package:flutter_template/pages/wifi_set/visitor/2.4GHZ_visitor/2.4GHZ_visitor3.dart';
+import 'package:flutter_template/pages/wifi_set/visitor/5G_visitor/5g_visitor1.dart';
+import 'package:flutter_template/pages/wifi_set/visitor/5G_visitor/5g_visitor2.dart';
+import 'package:flutter_template/pages/wifi_set/visitor/5G_visitor/5g_visitor3.dart';
+import 'package:flutter_template/pages/wifi_set/visitor/visitor_net.dart';
 import 'package:flutter_template/pages/wifi_set/wlan/wlan_set.dart';
 import 'package:flutter_template/pages/wifi_set/wps/wps_set.dart';
 import 'package:flutter_template/pages/topo/access_equipment.dart';
@@ -124,6 +130,13 @@ class GlobalRouter {
     /// 访客网络
     '/visitor_net': (BuildContext context, {Object? args}) =>
         const VisitorNet(),
+    '/visitor_one': (BuildContext context, {Object? args}) => const Visitor1(),
+    '/visitor_two': (BuildContext context, {Object? args}) => const Visitor2(),
+    '/visitor_three': (BuildContext context, {Object? args}) =>
+        const Visitor3(),
+    '/visitor_four': (BuildContext context, {Object? args}) => const Visitor4(),
+    '/visitor_five': (BuildContext context, {Object? args}) => const Visitor5(),
+    '/visitor_six': (BuildContext context, {Object? args}) => const Visitor6(),
 
     /// 专业设置
     '/major_set': (BuildContext context, {Object? args}) => const MajorSet(),

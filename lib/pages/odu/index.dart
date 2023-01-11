@@ -367,7 +367,7 @@ class _ODUState extends State<ODU> {
                                   width: 150.w,
                                   alignment: Alignment.centerLeft,
                                   padding: EdgeInsets.all(5.w),
-                                  child: Text(" ${isShow ? CurrentAngle : 0}°",
+                                  child: Text(" ${isShow ? currentAngle : 0}°",
                                       style: const TextStyle(
                                           color: Color.fromARGB(
                                               255, 234, 104, 53))),
@@ -395,7 +395,7 @@ class _ODUState extends State<ODU> {
                                   alignment: Alignment.centerLeft,
                                   padding: EdgeInsets.all(5.w),
                                   child: Text(
-                                    " ${isShow ? MaxNumber : 0.0} dB",
+                                    " ${isShow ? maxNumber : 0.0} dB",
                                     style: const TextStyle(
                                         color:
                                             Color.fromARGB(255, 234, 104, 53)),

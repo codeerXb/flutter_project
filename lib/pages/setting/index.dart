@@ -76,12 +76,13 @@ class _SettingState extends State<Setting> {
 
                   /// 文件上传与下载
                   // fileUplodAndDownload(),
-                  const Divider(),
+                  // const Divider(),
 
                   /// Wi-Fi设置
-                  const Padding(
-                    padding: EdgeInsets.only(left: 10.0),
-                    child: TitleWidger(title: 'Wi-Fl设置'),
+                  Padding(
+                    padding:
+                        EdgeInsets.only(left: 40.w, top: 20.w, bottom: 10.w),
+                    child: const TitleWidger(title: 'Wi-Fl设置'),
                   ),
 
                   /// WLAN设置
@@ -95,20 +96,22 @@ class _SettingState extends State<Setting> {
 
                   /// WPS设置
                   wpsSet(),
-                  const Divider(),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 10.0),
-                    child: TitleWidger(title: '设备信息'),
+                  // const Divider(),
+                  Padding(
+                    padding:
+                        EdgeInsets.only(left: 40.w, top: 20.w, bottom: 10.w),
+                    child: const TitleWidger(title: '设备信息'),
                   ),
 
                   /// 设备信息
                   commonProblem(),
 
-                  const Divider(),
+                  // const Divider(),
 
-                  const Padding(
-                    padding: EdgeInsets.only(left: 10.0),
-                    child: TitleWidger(title: '系统设置'),
+                  Padding(
+                    padding:
+                        EdgeInsets.only(left: 40.w, top: 20.w, bottom: 10.w),
+                    child: const TitleWidger(title: '系统设置'),
                   ),
 
                   /// 维护设置
@@ -116,10 +119,11 @@ class _SettingState extends State<Setting> {
 
                   /// 登录管理
                   accountSecurity(),
-                  const Divider(),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 10.0),
-                    child: TitleWidger(title: '以太网'),
+                  // const Divider(),
+                  Padding(
+                    padding:
+                        EdgeInsets.only(left: 40.w, top: 20.w, bottom: 10.w),
+                    child: const TitleWidger(title: '以太网'),
                   ),
 
                   /// 以太网状态
@@ -127,11 +131,12 @@ class _SettingState extends State<Setting> {
 
                   ///以太网设置
                   netSet(),
-                  const Divider(),
+                  // const Divider(),
 
-                  const Padding(
-                    padding: EdgeInsets.only(left: 10.0),
-                    child: TitleWidger(title: '网络设置'),
+                  Padding(
+                    padding:
+                        EdgeInsets.only(left: 40.w, top: 20.w, bottom: 10.w),
+                    child: const TitleWidger(title: '网络设置'),
                   ),
 
                   /// WAN设置
@@ -152,7 +157,7 @@ class _SettingState extends State<Setting> {
 
                   /// 清除缓存
                   clearCache(),
-                  const Divider(),
+                  // const Divider(),
                 ],
               ),
             ))
@@ -184,7 +189,7 @@ class _SettingState extends State<Setting> {
                     imageUrl: userModel.avatar, hasDefault: true),
                 title: Text(
                   userModel.nickName ?? "",
-                  style: TextStyle(color: Colors.white, fontSize: 30.sp),
+                  style: TextStyle(color: Colors.white, fontSize: 30.w),
                 ),
               ),
             ),
@@ -201,12 +206,12 @@ class _SettingState extends State<Setting> {
                         text: TextSpan(
                             text: '9,999',
                             style:
-                                TextStyle(color: Colors.white, fontSize: 35.sp),
+                                TextStyle(color: Colors.white, fontSize: 35.w),
                             children: [
                               TextSpan(
                                 text: ' 元',
                                 style: TextStyle(
-                                    color: Colors.white, fontSize: 22.sp),
+                                    color: Colors.white, fontSize: 22.w),
                               ),
                             ]),
                       ),
@@ -282,7 +287,7 @@ class _SettingState extends State<Setting> {
   Widget feedback() {
     return CommonWidget.simpleWidgetWithMine(
         title: '以太网状态',
-        icon:const Image(image: AssetImage('assets/images/net_type.png')),
+        icon: const Image(image: AssetImage('assets/images/net_type.png')),
         callBack: () {
           Get.toNamed("/feed_back");
         });
@@ -447,8 +452,7 @@ class _SettingState extends State<Setting> {
   Widget visitorNet() {
     return CommonWidget.simpleWidgetWithMine(
         title: '访客网络',
-        icon: const Image(
-            image: AssetImage('assets/images/visitor_net.png')),
+        icon: const Image(image: AssetImage('assets/images/visitor_net.png')),
         callBack: () {
           Get.toNamed("/visitor_net");
         });

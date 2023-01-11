@@ -45,6 +45,29 @@ class _StepsWidgetState extends State<StepsWidget> {
         children: [
           Row(
             children: [
+              // Container(
+              //     clipBehavior: Clip.hardEdge,
+              //     padding: EdgeInsets.all(10.w),
+              //     decoration: BoxDecoration(
+              //         // borderRadius: BorderRadius.circular(10.w),
+              //         color: const Color(0xffEEEFF2),
+              //         border: Border(
+              //             top: BorderSide(color: Colors.black, width: 1.w),
+              //             left: BorderSide(color: Colors.black, width: 1.w),
+              //             right: BorderSide(color: Colors.black, width: 1.w),
+              //             bottom: BorderSide(
+              //                 color: index <= widget.currentIndex
+              //                     ? const Color.fromARGB(255, 81, 185, 67)
+              //                     : Colors.black,
+              //                 width: 1.w))),
+              //     child: Text(
+              //       _items[index],
+              //       style: TextStyle(
+              //           fontSize: 20.sp,
+              //           color: index <= widget.currentIndex
+              //               ? const Color.fromARGB(255, 81, 185, 67)
+              //               : const Color.fromARGB(255, 85, 85, 85)),
+              //     )),
               Opacity(
                 opacity: index == 0 ? 0 : 1,
                 child: Container(
@@ -84,7 +107,7 @@ class _StepsWidgetState extends State<StepsWidget> {
             ],
           ),
           Padding(
-            padding: EdgeInsets.only(top: 5.h),
+            padding: EdgeInsets.only(top: 5.w),
             child: Text(
               _items[index],
               style: TextStyle(

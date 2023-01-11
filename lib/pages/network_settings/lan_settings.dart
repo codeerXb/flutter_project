@@ -22,7 +22,7 @@ LanSettingData lanSetData = LanSettingData();
 
 LanSetRec lanSet = LanSetRec();
 
-LanSetRecDis lanSetDis = LanSetRecDis();
+LanSetRec lanSetDis = LanSetRec();
 
 class _LanSettingsState extends State<LanSettings> {
   // 地址
@@ -173,8 +173,8 @@ class _LanSettingsState extends State<LanSettings> {
         }
       });
     } catch (e) {
-      debugPrint('获取LAN 失败：$e.toString()');
-      ToastUtils.toast('获取LAN 失败');
+      debugPrint('获取LAN设置 失败：$e.toString()');
+      ToastUtils.toast('获取LAN设置 失败');
     }
   }
 
@@ -187,13 +187,13 @@ class _LanSettingsState extends State<LanSettings> {
     };
 
     await XHttp.get('/data.html', data).then((res) {
-      loginout();
       try {
         var d = json.decode(res.toString());
         setState(() {
           lanSet = LanSetRec.fromJson(d);
           if (lanSet.success == true) {
             ToastUtils.toast('修改LAN设置 成功');
+            loginout();
           } else {
             ToastUtils.toast('修改LAN设置 失败');
           }
@@ -221,7 +221,7 @@ class _LanSettingsState extends State<LanSettings> {
       try {
         var d = json.decode(res.toString());
         setState(() {
-          lanSetDis = LanSetRecDis.fromJson(d);
+          lanSetDis = LanSetRec.fromJson(d);
           if (lanSetDis.success == true) {
             ToastUtils.toast('修改LAN设置 成功');
           } else {

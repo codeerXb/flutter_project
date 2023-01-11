@@ -87,6 +87,7 @@ class _TopoState extends State<Topo> {
       try {
         debugPrint("\n================== 获取在线设备 ==========================");
         var d = json.decode(res.toString());
+        print(d);
         setState(() {
           topoData = EquipmentDatas.fromJson(d);
         });
@@ -98,7 +99,7 @@ class _TopoState extends State<Topo> {
         print(e);
       }
     }).catchError((onError) {
-      ToastUtils.toast('获取在线设备失败');
+      // ToastUtils.toast('获取在线设备失败');
       debugPrint('获取在线设备失败：${onError.toString()}');
     });
   }
@@ -325,7 +326,7 @@ class _TopoState extends State<Topo> {
 
                                         color: const Color.fromARGB(
                                             0, 255, 255, 255),
-                                        width: 580.w,
+                                        width: 576.w,
 
                                         // color: Colors.black26,
                                       ),

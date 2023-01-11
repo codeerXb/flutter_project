@@ -33,13 +33,13 @@ class _MaintainSettingsState extends State<MaintainSettings> {
       'param': '{"systemReboot":"1"}',
     };
     XHttp.get('/data.html', data).then((res) {
-      loginout();
       try {
         var d = json.decode(res.toString());
         setState(() {
           maintainVal = MaintainData.fromJson(d);
           if (maintainVal.success == true) {
             ToastUtils.toast('重启成功');
+            loginout();
           } else {
             ToastUtils.toast('重启失败');
           }

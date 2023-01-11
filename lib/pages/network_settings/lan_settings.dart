@@ -187,13 +187,13 @@ class _LanSettingsState extends State<LanSettings> {
     };
 
     await XHttp.get('/data.html', data).then((res) {
-      loginout();
       try {
         var d = json.decode(res.toString());
         setState(() {
           lanSet = LanSetRec.fromJson(d);
           if (lanSet.success == true) {
             ToastUtils.toast('修改LAN设置 成功');
+            loginout();
           } else {
             ToastUtils.toast('修改LAN设置 失败');
           }

@@ -79,7 +79,7 @@ class _ODUState extends State<ODU> {
     selfInspectionTimer =
         Timer.periodic(const Duration(milliseconds: 1000), (t) {
       getODUData(1).then((value) => {
-            print('vvvvvvv$value'),
+            debugPrint('vvvvvvv$value'),
             if (value != 4)
               {
                 selfInspectionTimer?.cancel(),
@@ -119,7 +119,7 @@ class _ODUState extends State<ODU> {
   }
 
   //获取数据
-  Future getODUData(num) async {
+  Future getODUData(int num) async {
     Map<String, dynamic> data = {
       'method': 'obj_get',
       'param': '["ODUTransmission"]',
@@ -131,9 +131,9 @@ class _ODUState extends State<ODU> {
         String jsonData = res.replaceAll('\\u0002', '');
         Transmission['ODUTransmission'] =
             json.decode(json.decode(jsonData)['ODUTransmission']);
-        print("json数据${Transmission}");
+        debugPrint("json数据${Transmission}");
         oduData = ODUData.fromJson(Transmission);
-        print("oduoduodu${oduData.oDUTransmission!.dataTable![0].degree}");
+        debugPrint("oduoduodu${oduData.oDUTransmission!.dataTable![0].degree}");
         // 自检
         if (num == 1) {
           setState(() {
@@ -188,15 +188,17 @@ class _ODUState extends State<ODU> {
         selfInspectionTimer?.cancel();
         _timer?.cancel();
         ToastUtils.toast('执行失败');
-        print(e);
+        debugPrint(e.toString());
       }
     }).catchError((onError) {
       // init();
-      ToastUtils.toast('执行失败');
-      setState(() {
-        isShow = true;
-      });
-      debugPrint('失败：${onError.toString()}');
+      if (mounted) {
+        ToastUtils.toast('执行失败');
+        setState(() {
+          isShow = true;
+        });
+        debugPrint('失败：${onError.toString()}');
+      }
     });
   }
 

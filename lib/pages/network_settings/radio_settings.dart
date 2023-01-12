@@ -79,7 +79,7 @@ class _RadioSettingsState extends State<RadioSettings> {
           showVal = '手动';
           val = 1;
         }
-        if (radioGState.lteDlEarfcnGet5g.toString() == '') {
+        if (radioGState.lteBandGet5g.toString() == '') {
           radioGTitle = '4G状态';
         } else {
           radioGTitle = '5G状态';

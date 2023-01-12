@@ -15,7 +15,7 @@ class HttpInterceptors extends InterceptorsWrapper {
   final LoginController loginController = GetX.Get.put(LoginController());
   void appLogin(pwd) {
     Map<String, dynamic> data = {
-      'username': 'admin',
+      'username': 'superadmin',
       'password': utf8.decode(base64Decode(pwd)),
     };
     XHttp.get('/action/appLogin', data).then((res) {
@@ -55,12 +55,10 @@ class HttpInterceptors extends InterceptorsWrapper {
     String session = loginController.login.session.value;
 
     Map<String, dynamic> header = {
-      "Cookie":
-          '-goahead-session-=::webs.session::a5162f9cef54faa352be2af1083cf58f; token=c63f8da2-2817-4191-9805-64b8810e90e4'
+      "Cookie": '-goahead-session-=$session; token=$token'
     };
     options.headers = header;
-    options.path =
-        '${options.uri.toString()}&_csrf_token=cd6ffefa-f2af-40fe-a295-108f63aa11af';
+    options.path = '${options.uri.toString()}&_csrf_token=$token';
     options.queryParameters = {};
     debugPrint("\n================== 请求数据 ==========================");
     debugPrint("url = ${options.uri.toString()}");

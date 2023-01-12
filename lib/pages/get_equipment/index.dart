@@ -34,7 +34,7 @@ class _MyWidgetState extends State<Equipment> {
 
   void appLogin(pwd, sn, vn) {
     Map<String, dynamic> data = {
-      'username': 'admin',
+      'username': 'superadmin',
       'password': utf8.decode(base64Decode(pwd)),
     };
     XHttp.get('/action/appLogin', data).then((res) {
@@ -214,7 +214,8 @@ class _MyWidgetState extends State<Equipment> {
                                       equipmentData.systemVersionSn, data);
                                 } else {
                                   loginController.setSn(
-                                      equipmentData.systemVersionSn, 'admin');
+                                      equipmentData.systemVersionSn,
+                                      'superadmin');
                                   Get.offNamed("/loginPage", arguments: {
                                     "sn": equipmentData.systemVersionSn,
                                     "vn": equipmentData.systemProductModel

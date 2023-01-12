@@ -58,7 +58,8 @@ class _StepsWidgetState extends State<StepsWidget> {
                                 : widget.currentIndex == 2
                                     ? "完成"
                                     : "未开始",
-                        style: const TextStyle(fontWeight: FontWeight.w600),
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600, fontSize: 28.sp),
                       ),
                       Padding(padding: EdgeInsets.only(left: 10.w)),
                       if (widget.currentIndex == 0 || widget.currentIndex == 1)

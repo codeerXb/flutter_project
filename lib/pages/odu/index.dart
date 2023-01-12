@@ -317,8 +317,9 @@ class _ODUState extends State<ODU> {
                                   alignment: Alignment.centerLeft,
                                   padding: EdgeInsets.all(5.w),
                                   child: Text(" $_index°",
-                                      style: const TextStyle(
-                                          color: Color(0XFF0EBD8D))),
+                                      style: TextStyle(
+                                          fontSize: 30.sp,
+                                          color: const Color(0XFF0EBD8D))),
                                 ),
                               ),
                             ],
@@ -343,8 +344,9 @@ class _ODUState extends State<ODU> {
                                   padding: EdgeInsets.all(5.w),
                                   child: Text(
                                     " ${mapData[_index == 0 ? 0 : _index - 1]} dB",
-                                    style: const TextStyle(
-                                        color: Color(0XFF0EBD8D)),
+                                    style: TextStyle(
+                                        fontSize: 30.sp,
+                                        color: const Color(0XFF0EBD8D)),
                                   ),
                                 ),
                               ),
@@ -373,10 +375,13 @@ class _ODUState extends State<ODU> {
                                   width: 150.w,
                                   alignment: Alignment.centerLeft,
                                   padding: EdgeInsets.all(5.w),
-                                  child: Text(" ${isShow ? currentAngle : 0}°",
-                                      style: const TextStyle(
-                                          color: Color.fromARGB(
-                                              255, 234, 104, 53))),
+                                  child: Text(
+                                    " ${isShow ? currentAngle : 0}°",
+                                    style: TextStyle(
+                                        fontSize: 30.sp,
+                                        color: const Color.fromARGB(
+                                            255, 234, 104, 53)),
+                                  ),
                                 ),
                               ),
                             ],
@@ -402,9 +407,10 @@ class _ODUState extends State<ODU> {
                                   padding: EdgeInsets.all(5.w),
                                   child: Text(
                                     " ${isShow ? maxNumber : 0.0} dB",
-                                    style: const TextStyle(
-                                        color:
-                                            Color.fromARGB(255, 234, 104, 53)),
+                                    style: TextStyle(
+                                        fontSize: 30.sp,
+                                        color: const Color.fromARGB(
+                                            255, 234, 104, 53)),
                                   ),
                                 ),
                               ),
@@ -417,7 +423,7 @@ class _ODUState extends State<ODU> {
                 //     '当前旋转(角度/dB)${(_index) * 10}° / ${mapData[_index == 0 ? 0 : _index - 1]}dB'),
                 // Text('信号最大值-旋转角度$MaxNumber dB - $CurrentAngle°'),
                 Padding(
-                  padding: EdgeInsets.only(top: 120.w),
+                  padding: EdgeInsets.only(top: 110.w),
                 ),
                 SizedBox(
                   height: 70.sp,

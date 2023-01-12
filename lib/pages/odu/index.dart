@@ -161,19 +161,23 @@ class _ODUState extends State<ODU> {
               mapData[_index] =
                   oduData.oDUTransmission!.dataTable![0].sinr!.toDouble() / 100;
               // mapData[_index] = random(3, 28);
+              pointer = List.generate(360, (index) {
+                return 0;
+              });
               if (mapData[_index] > maxNumber) {
-                pointer = List.generate(360, (index) {
-                  return 0;
-                });
-
                 maxNumber = mapData[_index];
-                currentAngle = _index * 1;
-                pointer[_index] = maxNumber;
+                currentAngle = _index;
               }
+              pointer[_index] = 30;
               _index++;
 
               // mapData = mapData;
             } else {
+              pointer = List.generate(360, (index) {
+                return 0;
+              });
+              pointer[currentAngle] = maxNumber;
+
               isShow = true;
               currentIndex = 2;
               _timer?.cancel();

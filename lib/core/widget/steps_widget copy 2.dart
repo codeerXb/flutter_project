@@ -29,11 +29,12 @@ class _StepsWidgetState extends State<StepsWidget> {
       width: 320.w,
       alignment: Alignment.center,
       child: Card(
+          // color: Colors.orange.shade200,
           clipBehavior: Clip.hardEdge,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.w),
             side: const BorderSide(
-              color: Color.fromARGB(255, 218, 218, 218),
+              color: Color.fromARGB(255, 233, 233, 233),
               width: 1,
             ),
           ),
@@ -60,7 +61,7 @@ class _StepsWidgetState extends State<StepsWidget> {
                         style: const TextStyle(fontWeight: FontWeight.w600),
                       ),
                       Padding(padding: EdgeInsets.only(left: 10.w)),
-                      if (widget.currentIndex > 0)
+                      if (widget.currentIndex == 0 || widget.currentIndex == 1)
                         SpinKitSpinningLines(
                           color: const Color(0XFF0EBD8D),
                           size: 40.0.w,

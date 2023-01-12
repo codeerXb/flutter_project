@@ -55,10 +55,10 @@ class HttpInterceptors extends InterceptorsWrapper {
     String session = loginController.login.session.value;
 
     Map<String, dynamic> header = {
-      "Cookie":'-goahead-session-=$session; token=$token'
+      "Cookie": '-goahead-session-=$session; token=$token'
     };
     options.headers = header;
-    options.path =  '${options.uri.toString()}&_csrf_token=$token';
+    options.path = '${options.uri.toString()}&_csrf_token=$token';
     options.queryParameters = {};
     debugPrint("\n================== 请求数据 ==========================");
     debugPrint("url = ${options.uri.toString()}");

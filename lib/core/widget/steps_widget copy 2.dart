@@ -29,19 +29,22 @@ class _StepsWidgetState extends State<StepsWidget> {
       width: 320.w,
       alignment: Alignment.center,
       child: Card(
+          elevation: 10,
+          shadowColor: Colors.black54,
+          color: const Color.fromARGB(188, 249, 250, 250),
           clipBehavior: Clip.hardEdge,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.w),
-            side: const BorderSide(
-              color: Color.fromARGB(255, 218, 218, 218),
-              width: 1,
-            ),
+            // side: const BorderSide(
+            //   color: Color.fromARGB(255, 160, 160, 160),
+            //   width: 1,
+            // ),
           ),
           child: Column(
             children: [
               Container(
                   alignment: Alignment.center,
-                  height: 60.w,
+                  height: 75.w,
                   // width: 300.w,
                   // decoration: const BoxDecoration(
                   //   color: Color.fromARGB(255, 137, 195, 250),
@@ -57,10 +60,11 @@ class _StepsWidgetState extends State<StepsWidget> {
                                 : widget.currentIndex == 2
                                     ? "完成"
                                     : "未开始",
-                        style: const TextStyle(fontWeight: FontWeight.w600),
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600, fontSize: 28.sp),
                       ),
                       Padding(padding: EdgeInsets.only(left: 10.w)),
-                      if (widget.currentIndex > 0)
+                      if (widget.currentIndex == 0 || widget.currentIndex == 1)
                         SpinKitSpinningLines(
                           color: const Color(0XFF0EBD8D),
                           size: 40.0.w,
@@ -71,13 +75,13 @@ class _StepsWidgetState extends State<StepsWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
-                    height: 10.w,
+                    height: 16.w,
                     width: 95.w,
                     decoration: BoxDecoration(
-                        // borderRadius: BorderRadius.circular(10.w),
+                        borderRadius: BorderRadius.circular(8.w),
                         color: widget.currentIndex < 0
-                            ? Color.fromARGB(255, 231, 231, 231)
-                            : Color.fromARGB(255, 111, 194, 78),
+                            ? const Color.fromARGB(255, 231, 231, 231)
+                            : const Color.fromARGB(122, 80, 248, 103),
                         border: const Border(
                             top: BorderSide(color: Colors.black12),
                             left: BorderSide(color: Colors.black12),
@@ -87,13 +91,13 @@ class _StepsWidgetState extends State<StepsWidget> {
                             ))),
                   ),
                   Container(
-                    height: 10.w,
+                    height: 16.w,
                     width: 95.w,
                     decoration: BoxDecoration(
-                        // borderRadius: BorderRadius.circular(10.w),
+                        borderRadius: BorderRadius.circular(8.w),
                         color: widget.currentIndex < 1
-                            ? Color.fromARGB(255, 231, 231, 231)
-                            : Color.fromARGB(255, 111, 194, 78),
+                            ? const Color.fromARGB(255, 231, 231, 231)
+                            : const Color.fromARGB(122, 80, 248, 103),
                         border: const Border(
                             top: BorderSide(color: Colors.black12),
                             left: BorderSide(color: Colors.black12),
@@ -103,13 +107,13 @@ class _StepsWidgetState extends State<StepsWidget> {
                             ))),
                   ),
                   Container(
-                    height: 10.w,
+                    height: 16.w,
                     width: 95.w,
                     decoration: BoxDecoration(
-                        // borderRadius: BorderRadius.circular(10.w),
+                        borderRadius: BorderRadius.circular(8.w),
                         color: widget.currentIndex < 2
-                            ? Color.fromARGB(255, 231, 231, 231)
-                            : Color.fromARGB(255, 111, 194, 78),
+                            ? const Color.fromARGB(255, 231, 231, 231)
+                            : const Color.fromARGB(122, 80, 248, 103),
                         border: const Border(
                             top: BorderSide(color: Colors.black12),
                             left: BorderSide(color: Colors.black12),

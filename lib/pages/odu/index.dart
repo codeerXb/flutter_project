@@ -79,7 +79,7 @@ class _ODUState extends State<ODU> {
     selfInspectionTimer =
         Timer.periodic(const Duration(milliseconds: 1000), (t) {
       getODUData(1).then((value) => {
-            print('vvvvvvv$value'),
+            debugPrint('vvvvvvv$value'),
             if (value != 4)
               {
                 selfInspectionTimer?.cancel(),
@@ -119,7 +119,7 @@ class _ODUState extends State<ODU> {
   }
 
   //获取数据
-  Future getODUData(num) async {
+  Future getODUData(int num) async {
     Map<String, dynamic> data = {
       'method': 'obj_get',
       'param': '["ODUTransmission"]',
@@ -131,9 +131,9 @@ class _ODUState extends State<ODU> {
         String jsonData = res.replaceAll('\\u0002', '');
         Transmission['ODUTransmission'] =
             json.decode(json.decode(jsonData)['ODUTransmission']);
-        print("json数据${Transmission}");
+        debugPrint("json数据${Transmission}");
         oduData = ODUData.fromJson(Transmission);
-        print("oduoduodu${oduData.oDUTransmission!.dataTable![0].degree}");
+        debugPrint("oduoduodu${oduData.oDUTransmission!.dataTable![0].degree}");
         // 自检
         if (num == 1) {
           setState(() {
@@ -161,19 +161,23 @@ class _ODUState extends State<ODU> {
               mapData[_index] =
                   oduData.oDUTransmission!.dataTable![0].sinr!.toDouble() / 100;
               // mapData[_index] = random(3, 28);
+              pointer = List.generate(360, (index) {
+                return 0;
+              });
               if (mapData[_index] > maxNumber) {
-                pointer = List.generate(360, (index) {
-                  return 0;
-                });
-
                 maxNumber = mapData[_index];
-                currentAngle = _index * 1;
-                pointer[_index] = maxNumber;
+                currentAngle = _index;
               }
+              pointer[_index] = 30;
               _index++;
 
               // mapData = mapData;
             } else {
+              pointer = List.generate(360, (index) {
+                return 0;
+              });
+              pointer[currentAngle] = maxNumber;
+
               isShow = true;
               currentIndex = 2;
               _timer?.cancel();
@@ -188,15 +192,17 @@ class _ODUState extends State<ODU> {
         selfInspectionTimer?.cancel();
         _timer?.cancel();
         ToastUtils.toast('执行失败');
-        print(e);
+        debugPrint(e.toString());
       }
     }).catchError((onError) {
       // init();
-      ToastUtils.toast('执行失败');
-      setState(() {
-        isShow = true;
-      });
-      debugPrint('失败：${onError.toString()}');
+      if (mounted) {
+        ToastUtils.toast('执行失败');
+        setState(() {
+          isShow = true;
+        });
+        debugPrint('失败：${onError.toString()}');
+      }
     });
   }
 
@@ -233,8 +239,8 @@ class _ODUState extends State<ODU> {
               children: [
                 Padding(
                     padding: EdgeInsets.only(
-                      bottom: 10.w,
-                      top: 40.w,
+                      bottom: 20.w,
+                      top: 10.w,
                     ),
                     child: StepsWidget(currentIndex: currentIndex)),
 
@@ -262,7 +268,8 @@ class _ODUState extends State<ODU> {
                     duration: 500,
                     shape: Shape.circle,
                     maxWidth: 50.w,
-                    line: LineModel(3),
+                    line: LineModel(3,
+                        color: const Color.fromARGB(255, 59, 59, 59)),
                   ),
                   textStyle: const TextStyle(color: Colors.black, fontSize: 10),
                   isNeedDrawLegend: true,
@@ -311,8 +318,9 @@ class _ODUState extends State<ODU> {
                                   alignment: Alignment.centerLeft,
                                   padding: EdgeInsets.all(5.w),
                                   child: Text(" $_index°",
-                                      style: const TextStyle(
-                                          color: Color(0XFF0EBD8D))),
+                                      style: TextStyle(
+                                          fontSize: 30.sp,
+                                          color: const Color(0XFF0EBD8D))),
                                 ),
                               ),
                             ],
@@ -337,8 +345,9 @@ class _ODUState extends State<ODU> {
                                   padding: EdgeInsets.all(5.w),
                                   child: Text(
                                     " ${mapData[_index == 0 ? 0 : _index - 1]} dB",
-                                    style: const TextStyle(
-                                        color: Color(0XFF0EBD8D)),
+                                    style: TextStyle(
+                                        fontSize: 30.sp,
+                                        color: const Color(0XFF0EBD8D)),
                                   ),
                                 ),
                               ),
@@ -367,10 +376,13 @@ class _ODUState extends State<ODU> {
                                   width: 150.w,
                                   alignment: Alignment.centerLeft,
                                   padding: EdgeInsets.all(5.w),
-                                  child: Text(" ${isShow ? currentAngle : 0}°",
-                                      style: const TextStyle(
-                                          color: Color.fromARGB(
-                                              255, 234, 104, 53))),
+                                  child: Text(
+                                    " ${isShow ? currentAngle : 0}°",
+                                    style: TextStyle(
+                                        fontSize: 30.sp,
+                                        color: const Color.fromARGB(
+                                            255, 234, 104, 53)),
+                                  ),
                                 ),
                               ),
                             ],
@@ -396,9 +408,10 @@ class _ODUState extends State<ODU> {
                                   padding: EdgeInsets.all(5.w),
                                   child: Text(
                                     " ${isShow ? maxNumber : 0.0} dB",
-                                    style: const TextStyle(
-                                        color:
-                                            Color.fromARGB(255, 234, 104, 53)),
+                                    style: TextStyle(
+                                        fontSize: 30.sp,
+                                        color: const Color.fromARGB(
+                                            255, 234, 104, 53)),
                                   ),
                                 ),
                               ),
@@ -411,7 +424,7 @@ class _ODUState extends State<ODU> {
                 //     '当前旋转(角度/dB)${(_index) * 10}° / ${mapData[_index == 0 ? 0 : _index - 1]}dB'),
                 // Text('信号最大值-旋转角度$MaxNumber dB - $CurrentAngle°'),
                 Padding(
-                  padding: EdgeInsets.only(top: 120.w),
+                  padding: EdgeInsets.only(top: 110.w),
                 ),
                 SizedBox(
                   height: 70.sp,

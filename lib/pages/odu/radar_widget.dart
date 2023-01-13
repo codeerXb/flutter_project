@@ -152,40 +152,38 @@ class _RadarMapWidgetState extends State<RadarWidget>
     //   ),
     // );
 
-    return Container(
-      child: Column(
-        children: [
-          GestureDetector(
-              child: paint,
-              onTapUp: (TapUpDetails details) {
-                painter.tapUp(details);
-              },
-              onTapDown: (TapDownDetails details) {
-                painter.tapDown(details);
-                _counter.value++;
-              }),
-          Offstage(
-              offstage: !widget.isNeedDrawLegend!,
-              child: Padding(
-                padding: EdgeInsets.only(right: sk),
-                child: Container(
-                  width: double.infinity,
-                  margin: const EdgeInsets.only(
-                      top: 20, bottom: 20, left: 30, right: 30),
-                  child: Wrap(
-                    spacing: 8.0,
-                    runSpacing: 4.0,
-                    alignment: WrapAlignment.spaceAround,
-                    children: widget.radarMap.legend
-                        .map((item) => buildLegend(item.name, item.color,
-                            textColor: item.textColor,
-                            textFontSize: item.textFontSize))
-                        .toList(),
-                  ),
+    return Column(
+      children: [
+        GestureDetector(
+            child: paint,
+            onTapUp: (TapUpDetails details) {
+              painter.tapUp(details);
+            },
+            onTapDown: (TapDownDetails details) {
+              painter.tapDown(details);
+              _counter.value++;
+            }),
+        Offstage(
+            offstage: !widget.isNeedDrawLegend!,
+            child: Padding(
+              padding: EdgeInsets.only(right: sk),
+              child: Container(
+                width: double.infinity,
+                margin: const EdgeInsets.only(
+                    top: 20, bottom: 20, left: 30, right: 30),
+                child: Wrap(
+                  spacing: 8.0,
+                  runSpacing: 4.0,
+                  alignment: WrapAlignment.spaceAround,
+                  children: widget.radarMap.legend
+                      .map((item) => buildLegend(item.name, item.color,
+                          textColor: item.textColor,
+                          textFontSize: item.textFontSize))
+                      .toList(),
                 ),
-              )),
-        ],
-      ),
+              ),
+            )),
+      ],
     );
   }
   // MainAxisAlignment.spaceAround
@@ -213,7 +211,7 @@ class RadarMapPainter extends CustomPainter {
   LineText? lineText;
   DialogText? dilogText;
   OutLineText? outLineText;
-  WidthHeight _widthHeight;
+  final WidthHeight _widthHeight;
   double w;
   double top;
   List<Rect> node;
@@ -321,7 +319,8 @@ class RadarMapPainter extends CustomPainter {
           innerRadius / ring * s,
           mLinePaint
             ..color = ringColor
-            ..style = PaintingStyle.stroke,
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = s == ring ? 2 : 1,
         );
       }
     } else {
@@ -560,7 +559,7 @@ class RadarMapPainter extends CustomPainter {
     //   print("${element.left} . ${element.top} 11");
     // });
 
-    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _widthHeight.call(top, bottom);
     });
 

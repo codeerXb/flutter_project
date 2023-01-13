@@ -278,7 +278,7 @@ class _ODUState extends State<ODU> {
                     shape: Shape.circle,
                     maxWidth: 50.w,
                     line: LineModel(3,
-                        color: const Color.fromARGB(255, 59, 59, 59)),
+                        color: const Color.fromARGB(255, 98, 98, 98)),
                   ),
                   textStyle: const TextStyle(color: Colors.black, fontSize: 10),
                   isNeedDrawLegend: true,

@@ -273,11 +273,6 @@ class _ODUState extends State<ODU> {
                       MapDataModel(pointer),
                       MapDataModel(mapDataPoint)
                     ],
-                    // data[0]会画一条起点为0，长度为半径的长度
-                    isShowLine: {
-                      'isShow': true,
-                      'active': [0]
-                    },
                     radius: 200.w,
                     duration: 500,
                     shape: Shape.circle,

@@ -257,7 +257,7 @@ class _WpsSetState extends State<WpsSet> {
                       ),
                       //客户 PIN
                       Offstage(
-                        offstage: true,
+                        offstage: modeShowVal=='PBC',
                         child: BottomLine(
                           rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,

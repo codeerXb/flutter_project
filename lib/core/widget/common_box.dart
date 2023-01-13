@@ -10,7 +10,7 @@ class BottomLine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 70.w,
+      height: 90.w,
       padding:  EdgeInsets.only(bottom: 6.w),
       margin:  EdgeInsets.only(bottom: 6.w),
       decoration: const BoxDecoration(

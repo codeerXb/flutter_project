@@ -27,7 +27,7 @@ class _LoginState extends State<Login> {
   final GlobalKey _formKey = GlobalKey<FormState>();
   // 点击空白  关闭键盘 时传的一个对象
   FocusNode blankNode = FocusNode();
-  String _account = 'admin';
+  String _account = 'superadmin';
   String _password = 'admin';
   dynamic sn = Get.arguments['sn'];
   dynamic vn = Get.arguments['vn'];
@@ -343,7 +343,7 @@ class _LoginState extends State<Login> {
         'ismoble': 'ismoble'
       };
       List<String> loginInfo;
-      if (data['username'] == 'admin' &&
+      if (data['username'] == 'superadmin' &&
           data['password'] == base64Encode(utf8.encode('admin123'))) {
         loginInfo = [
           data['username'],

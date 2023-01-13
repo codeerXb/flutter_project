@@ -1,10 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import '../../core/http/http.dart';
+import '../../core/utils/shared_preferences_util.dart';
 import '../../core/widget/common_widget.dart';
 import '../../core/widget/custom_app_bar.dart';
+import 'model/account_data.dart';
 
 /// 修改密码
 class AccountSecurity extends StatefulWidget {
@@ -16,29 +21,116 @@ class AccountSecurity extends StatefulWidget {
 
 class _AccountSecurityState extends State<AccountSecurity> {
   final GlobalKey _formKey = GlobalKey<FormState>();
-  // 点击空白  关闭键盘 时传的一个对象
-  FocusNode blankNode = FocusNode();
 
+  final TextEditingController oldPasswordController = TextEditingController();
   bool oldPasswordObscure = true;
   String oldPassword = '';
   Color oldPasswordEyeColor = Colors.grey;
 
+  final TextEditingController newPasswordController = TextEditingController();
   bool newPasswordObscure = true;
   String newPassword = '';
   Color newPasswordEyeColor = Colors.grey;
 
+  final TextEditingController renewPasswordController = TextEditingController();
   bool renewPasswordObscure = true;
   String renewPassword = '';
   Color renewPasswordEyeColor = Colors.grey;
 
+  AccountSettingData accountSetData = AccountSettingData();
+  AccountSettingData accountData = AccountSettingData();
+
+// 点击空白  关闭键盘 时传的一个对象
+  FocusNode blankNode = FocusNode();
+
+  /// 点击空白  关闭输入键盘
+  void closeKeyboard(BuildContext context) {
+    FocusScope.of(context).requestFocus(blankNode);
+  }
+
   @override
   void initState() {
     super.initState();
+
+    oldPasswordController.addListener(() {
+      debugPrint('监听旧密码：${oldPasswordController.text}');
+      debugPrint('1测试${oldPasswordController.text}');
+    });
+
+    newPasswordController.addListener(() {
+      debugPrint('监听新密码：${newPasswordController.text}');
+      debugPrint('2测试${newPasswordController.text}');
+    });
+
+    renewPasswordController.addListener(() {
+      debugPrint('监听确认密码：${renewPasswordController.text}');
+      debugPrint('3测试${renewPasswordController.text}');
+    });
   }
 
   @override
   void dispose() {
     super.dispose();
+  }
+
+  void getAccountSetting() async {
+    Map<String, dynamic> data = {
+      'method': 'user_pwd',
+      'param':
+          '{"username":"superadmin","password":"${oldPasswordController.text}","newpassword":"${renewPasswordController.text}"}',
+    };
+
+    await XHttp.get('/data.html', data).then((res) {
+      try {
+        var d = json.decode(res.toString());
+        setState(() {
+          accountSetData = AccountSettingData.fromJson(d);
+          if (accountSetData.success == true) {
+            getAccountSec();
+          } else {
+            ToastUtils.toast(accountSetData.msg.toString());
+          }
+        });
+      } on FormatException catch (e) {
+        print(e);
+        ToastUtils.toast('密码修改失败');
+      }
+    }).catchError((onError) {
+      debugPrint('失败：${onError.toString()}');
+      ToastUtils.toast('密码修改失败');
+    });
+  }
+
+  void getAccountSec() async {
+    Map<String, dynamic> data = {
+      'method': 'obj_set',
+      'param': '{"webGuiRestart":"1"}',
+    };
+    await XHttp.get('/data.html', data).then((res) {
+      try {
+        var d = json.decode(res.toString());
+        accountSetData = AccountSettingData.fromJson(d);
+        if (accountSetData.success == true) {
+          loginout();
+          ToastUtils.toast('密码修改 成功');
+        } else {
+          ToastUtils.toast(accountSetData.msg.toString());
+        }
+      } on FormatException catch (e) {
+        print(e);
+      }
+    }).catchError((onError) {
+      debugPrint('失败333：${onError.toString()}');
+      ToastUtils.toast('失败333');
+    });
+  }
+
+  void loginout() {
+    // 这里还需要调用后台接口的方法
+
+    sharedDeleteData("loginInfo");
+    sharedClearData();
+    Get.offAllNamed("/get_equipment");
   }
 
   @override
@@ -125,6 +217,7 @@ class _AccountSecurityState extends State<AccountSecurity> {
                 SizedBox(
                   width: 400.w,
                   child: TextFormField(
+                    controller: oldPasswordController,
                     style: TextStyle(
                         fontSize: 26.sp, color: const Color(0xff051220)),
                     decoration: InputDecoration(
@@ -187,6 +280,7 @@ class _AccountSecurityState extends State<AccountSecurity> {
                 SizedBox(
                   width: 400.w,
                   child: TextFormField(
+                    controller: newPasswordController,
                     style: TextStyle(
                         fontSize: 26.sp, color: const Color(0xff051220)),
                     decoration: InputDecoration(
@@ -249,6 +343,7 @@ class _AccountSecurityState extends State<AccountSecurity> {
                 SizedBox(
                   width: 400.w,
                   child: TextFormField(
+                    controller: renewPasswordController,
                     style: TextStyle(
                         fontSize: 26.sp, color: const Color(0xff051220)),
                     decoration: InputDecoration(
@@ -314,13 +409,8 @@ class _AccountSecurityState extends State<AccountSecurity> {
       ToastUtils.toast("新密码和确认密码不一致");
     } else {
       // 这里还可能旧密码输入错误
-      ToastUtils.success("密码修改成功");
+      getAccountSetting();
       Get.back(result: {"newPassword": newPassword});
     }
-  }
-
-  /// 点击空白  关闭输入键盘
-  void closeKeyboard(BuildContext context) {
-    FocusScope.of(context).requestFocus(blankNode);
   }
 }

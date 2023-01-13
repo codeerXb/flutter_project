@@ -89,7 +89,10 @@ class _WpsSetState extends State<WpsSet> {
         //频段是2G/5G 提交时提交
         paramKey = wpsData.wifiWps.toString() == '1' ? 'wifiWps' : 'wifi5gWps';
         //wps选中
-        isCheck = wpsData.wifi5gWps.toString() == '1' || wpsData.wifiWps.toString() == '1'? true: false;
+        isCheck = wpsData.wifi5gWps.toString() == '1' ||
+                wpsData.wifiWps.toString() == '1'
+            ? true
+            : false;
         wpsVal = wpsData.wifi5gWps.toString();
         //模式
         modeShowVal = wpsData.wifiWpsMode.toString();
@@ -257,7 +260,7 @@ class _WpsSetState extends State<WpsSet> {
                       ),
                       //客户 PIN
                       Offstage(
-                        offstage: true,
+                        offstage: modeShowVal == 'PBC',
                         child: BottomLine(
                           rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -267,13 +270,15 @@ class _WpsSetState extends State<WpsSet> {
                                       color: const Color.fromARGB(255, 5, 0, 0),
                                       fontSize: 28.sp)),
                               SizedBox(
-                                width: 300.w,
+                                width: 100.w,
                                 child: TextFormField(
+                                  keyboardType: TextInputType.number,
+                                  maxLength: 8,
                                   style: TextStyle(
                                       fontSize: 26.sp,
                                       color: const Color(0xff051220)),
                                   decoration: InputDecoration(
-                                    hintText: "请输入客户 PIN",
+                                    hintText: "4或8位",
                                     hintStyle: TextStyle(
                                         fontSize: 26.sp,
                                         color: const Color(0xff737A83)),

@@ -30,6 +30,9 @@ class _ODUState extends State<ODU> {
   List<double> mapData = List.generate(360, (index) {
     return 0;
   });
+  List<double> mapDataPoint = List.generate(360, (index) {
+    return 0;
+  });
   List<double> pointer = List.generate(360, (index) {
     return 0;
   });
@@ -164,11 +167,14 @@ class _ODUState extends State<ODU> {
               pointer = List.generate(360, (index) {
                 return 0;
               });
+              mapDataPoint = List.generate(360, (index) {
+                return 0;
+              });
               if (mapData[_index] > maxNumber) {
                 maxNumber = mapData[_index];
                 currentAngle = _index;
               }
-              pointer[_index] = 30;
+              mapDataPoint[_index] = 30;
               _index++;
 
               // mapData = mapData;
@@ -255,6 +261,8 @@ class _ODUState extends State<ODU> {
                       LegendModel('实时数值', const Color(0XFF0EBD8D)),
                       LegendModel(
                           '最大数值', const Color.fromARGB(255, 234, 104, 53)),
+                      LegendModel(
+                          '当前指向', const Color.fromARGB(255, 14, 14, 189)),
                     ],
                     indicator: legend,
                     data: [
@@ -263,7 +271,13 @@ class _ODUState extends State<ODU> {
 
                       MapDataModel(mapData),
                       MapDataModel(pointer),
+                      MapDataModel(mapDataPoint)
                     ],
+                    // data[0]会画一条起点为0，长度为半径的长度
+                    isShowLine: {
+                      'isShow': true,
+                      'active': [0]
+                    },
                     radius: 200.w,
                     duration: 500,
                     shape: Shape.circle,

@@ -245,8 +245,8 @@ class _ODUState extends State<ODU> {
               children: [
                 Padding(
                     padding: EdgeInsets.only(
-                      bottom: 10.w,
-                      top: 40.w,
+                      bottom: 20.w,
+                      top: 10.w,
                     ),
                     child: StepsWidget(currentIndex: currentIndex)),
 
@@ -282,7 +282,8 @@ class _ODUState extends State<ODU> {
                     duration: 500,
                     shape: Shape.circle,
                     maxWidth: 50.w,
-                    line: LineModel(3),
+                    line: LineModel(3,
+                        color: const Color.fromARGB(255, 59, 59, 59)),
                   ),
                   textStyle: const TextStyle(color: Colors.black, fontSize: 10),
                   isNeedDrawLegend: true,

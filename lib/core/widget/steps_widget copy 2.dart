@@ -29,20 +29,22 @@ class _StepsWidgetState extends State<StepsWidget> {
       width: 320.w,
       alignment: Alignment.center,
       child: Card(
-          // color: Colors.orange.shade200,
+          elevation: 10,
+          shadowColor: Colors.black54,
+          color: const Color.fromARGB(188, 249, 250, 250),
           clipBehavior: Clip.hardEdge,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.w),
-            side: const BorderSide(
-              color: Color.fromARGB(255, 233, 233, 233),
-              width: 1,
-            ),
+            // side: const BorderSide(
+            //   color: Color.fromARGB(255, 160, 160, 160),
+            //   width: 1,
+            // ),
           ),
           child: Column(
             children: [
               Container(
                   alignment: Alignment.center,
-                  height: 60.w,
+                  height: 75.w,
                   // width: 300.w,
                   // decoration: const BoxDecoration(
                   //   color: Color.fromARGB(255, 137, 195, 250),
@@ -73,13 +75,13 @@ class _StepsWidgetState extends State<StepsWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
-                    height: 10.w,
+                    height: 16.w,
                     width: 95.w,
                     decoration: BoxDecoration(
-                        // borderRadius: BorderRadius.circular(10.w),
+                        borderRadius: BorderRadius.circular(8.w),
                         color: widget.currentIndex < 0
-                            ? Color.fromARGB(255, 231, 231, 231)
-                            : Color.fromARGB(255, 111, 194, 78),
+                            ? const Color.fromARGB(255, 231, 231, 231)
+                            : const Color.fromARGB(122, 80, 248, 103),
                         border: const Border(
                             top: BorderSide(color: Colors.black12),
                             left: BorderSide(color: Colors.black12),
@@ -89,13 +91,13 @@ class _StepsWidgetState extends State<StepsWidget> {
                             ))),
                   ),
                   Container(
-                    height: 10.w,
+                    height: 16.w,
                     width: 95.w,
                     decoration: BoxDecoration(
-                        // borderRadius: BorderRadius.circular(10.w),
+                        borderRadius: BorderRadius.circular(8.w),
                         color: widget.currentIndex < 1
-                            ? Color.fromARGB(255, 231, 231, 231)
-                            : Color.fromARGB(255, 111, 194, 78),
+                            ? const Color.fromARGB(255, 231, 231, 231)
+                            : const Color.fromARGB(122, 80, 248, 103),
                         border: const Border(
                             top: BorderSide(color: Colors.black12),
                             left: BorderSide(color: Colors.black12),
@@ -105,13 +107,13 @@ class _StepsWidgetState extends State<StepsWidget> {
                             ))),
                   ),
                   Container(
-                    height: 10.w,
+                    height: 16.w,
                     width: 95.w,
                     decoration: BoxDecoration(
-                        // borderRadius: BorderRadius.circular(10.w),
+                        borderRadius: BorderRadius.circular(8.w),
                         color: widget.currentIndex < 2
-                            ? Color.fromARGB(255, 231, 231, 231)
-                            : Color.fromARGB(255, 111, 194, 78),
+                            ? const Color.fromARGB(255, 231, 231, 231)
+                            : const Color.fromARGB(122, 80, 248, 103),
                         border: const Border(
                             top: BorderSide(color: Colors.black12),
                             left: BorderSide(color: Colors.black12),

@@ -1,8 +1,14 @@
+import 'dart:convert';
+
 import 'package:amap_location_fluttify/amap_location_fluttify.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/core/http/http.dart';
+import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_widget.dart';
+import 'package:flutter_template/pages/wifi_set/visitor/2.4GHZ_visitor/2.4GHZ_datas.dart';
+import 'package:flutter_template/pages/wifi_set/visitor/5G_visitor/5GHZ_datas.dart';
 import 'package:get/get.dart';
 import '../../../core/widget/custom_app_bar.dart';
 
@@ -15,11 +21,95 @@ class VisitorNet extends StatefulWidget {
 }
 
 class _VisitorNetState extends State<VisitorNet> {
-  bool show1 = false;
-  List<dynamic> arr_2 = [1, 2, 3];
-  dynamic i = 1;
-  List<dynamic> arr_5 = [4,5,6];
-  dynamic j = 1;
+  //2.4GHZ
+  vis2gDatas data_2g = vis2gDatas(wiFiSsidTable: [
+    WiFiSsidTable(
+      enable: "1",
+    ),
+    WiFiSsidTable(
+      enable: "1",
+    ),
+    WiFiSsidTable(
+      enable: "1",
+    ),
+    WiFiSsidTable(
+      enable: "1",
+    )
+  ]);
+  //5GHZ
+  vis5gDatas data_5g = vis5gDatas(wiFi5GSsidTable: [
+    WiFiSsidTable(
+      enable: "1",
+    ),
+    WiFiSsidTable(
+      enable: "1",
+    ),
+    WiFiSsidTable(
+      enable: "1",
+    ),
+    WiFiSsidTable(
+      enable: "1",
+    )
+  ]);
+  @override
+  void initState() {
+    super.initState();
+    get2GData();
+    get5GData();
+  }
+
+  //读取2.4GHZ
+  void get2GData() async {
+    Map<String, dynamic> data = {
+      'method': 'tab_dump',
+      'param': '["WiFiSsidTable"]',
+    };
+    try {
+      var response = await XHttp.get('/data.html', data);
+      var d = json.decode(response.toString());
+      setState(() {
+        data_2g = vis2gDatas.fromJson(d);
+      });
+    } catch (e) {
+      debugPrint('获取2.4GHZ失败:$e.toString()');
+    }
+  }
+
+  //读取5GHZ
+  void get5GData() async {
+    Map<String, dynamic> data = {
+      'method': 'tab_dump',
+      'param': '["WiFi5GSsidTable"]',
+    };
+    try {
+      var response = await XHttp.get('/data.html', data);
+      var d = json.decode(response.toString());
+      setState(() {
+        data_5g = vis5gDatas.fromJson(d);
+      });
+    } catch (e) {
+      debugPrint('获取5GHZ失败:$e.toString()');
+    }
+  }
+
+  //保存
+  void handleSave(params) async {
+    Map<String, dynamic> data = {
+      'method': 'tab_set',
+      'param': params,
+    };
+    XHttp.get('/data.html', data).then((res) {
+      try {
+        ToastUtils.toast('修改成功');
+      } on FormatException catch (e) {
+        print(e);
+      }
+    }).catchError((onError) {
+      debugPrint('失败：${onError.toString()}');
+      ToastUtils.toast('修改失败');
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,176 +123,220 @@ class _VisitorNetState extends State<VisitorNet> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                TitleWidger(title: '2.4GHZ' + arr_2.toString()),
-                //添加按钮
-                Offstage(
-                  offstage: arr_2.length == 3,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(
-                              const Color.fromARGB(255, 48, 118, 250))),
+                const TitleWidger(title: '2.4GHZ'),
+                //访客 enable == '1'启用
+                CommonWidget.simpleWidgetWithMine(
+                    title: 'guest1',
+                    icon: IconButton(
                       onPressed: () {
                         setState(() {
-                          arr_2.add(i);
-                          i++;
-                          // if ([1, 2, 3].contains(i)) {
-                          // }
+                          if (data_2g.wiFiSsidTable![1].enable == '1') {
+                            data_2g.wiFiSsidTable![1].enable = '0';
+                            //移除
+                            handleSave(
+                                '{"table":"WiFiSsidTable","value":[{"id":1,"Enable":"0"}]}');
+                          } else {
+                            data_2g.wiFiSsidTable![1].enable = '1';
+                            //启用
+                            handleSave(
+                                '{"table":"WiFiSsidTable","value":[{"id":1,"Enable":"1"}]}');
+                          }
                         });
                       },
-                      child: Text(
-                        '添加',
-                        style: TextStyle(fontSize: 36.sp),
+                      icon: Icon(
+                        data_2g.wiFiSsidTable![1].enable == '1'
+                            ? Icons.highlight_off
+                            : Icons.check_circle,
+                        color: data_2g.wiFiSsidTable![1].enable == '1'
+                            ? Colors.red
+                            : Colors.blue,
+                        size: 50.w,
                       ),
                     ),
-                  ),
-                ),
-                //访客
-                Offstage(
-                  offstage: !arr_2.contains(1),
-                  child: CommonWidget.simpleWidgetWithMine(
-                      title: 'guest1',
-                      icon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            arr_2.remove(1);
-                          });
-                        },
-                        icon: Icon(
-                          Icons.remove_circle,
-                          color: Colors.red,
-                          size: 50.w,
-                        ),
-                      ),
-                      callBack: () {
+                    callBack: () {
+                      if (data_2g.wiFiSsidTable![1].enable == '1') {
                         Get.toNamed("/visitor_one");
-                      }),
-                ),
-                Offstage(
-                  offstage: !arr_2.contains(2),
-                  child: CommonWidget.simpleWidgetWithMine(
-                      title: 'guest2',
-                      icon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            arr_2.remove(2);
-                          });
-                        },
-                        icon: Icon(
-                          Icons.remove_circle,
-                          color: Colors.red,
-                          size: 50.w,
-                        ),
-                      ),
-                      callBack: () {
-                        Get.toNamed("/visitor_two");
-                      }),
-                ),
-                Offstage(
-                  offstage: !arr_2.contains(3),
-                  child: CommonWidget.simpleWidgetWithMine(
-                      title: 'guest3',
-                      icon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            arr_2.remove(3);
-                          });
-                        },
-                        icon: Icon(
-                          Icons.remove_circle,
-                          color: Colors.red,
-                          size: 50.w,
-                        ),
-                      ),
-                      callBack: () {
-                        Get.toNamed("/visitor_three");
-                      }),
-                ),
-                TitleWidger(title: '5GHZ' + arr_5.toString()),
-                //添加按钮
-                Offstage(
-                  offstage: arr_5.length == 3,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(
-                              const Color.fromARGB(255, 48, 118, 250))),
+                      } else {
+                        ToastUtils.toast('未启用');
+                      }
+                    }),
+                CommonWidget.simpleWidgetWithMine(
+                    title: 'guest2',
+                    icon: IconButton(
                       onPressed: () {
                         setState(() {
-                          arr_5.add(i);
-                          i++;
+                          if (data_2g.wiFiSsidTable![2].enable == '1') {
+                            //移除
+                            handleSave(
+                                '{"table":"WiFiSsidTable","value":[{"id":2,"Enable":"0"}]}');
+                            data_2g.wiFiSsidTable![2].enable = '0';
+                          } else {
+                            //启用
+                            handleSave(
+                                '{"table":"WiFiSsidTable","value":[{"id":2,"Enable":"1"}]}');
+                            data_2g.wiFiSsidTable![2].enable = '1';
+                          }
                         });
                       },
-                      child: Text(
-                        '添加',
-                        style: TextStyle(fontSize: 36.sp),
+                      icon: Icon(
+                        data_2g.wiFiSsidTable![2].enable == '1'
+                            ? Icons.highlight_off
+                            : Icons.check_circle,
+                        color: data_2g.wiFiSsidTable![2].enable == '1'
+                            ? Colors.red
+                            : Colors.blue,
+                        size: 50.w,
                       ),
                     ),
-                  ),
-                ),
+                    callBack: () {
+                      if (data_2g.wiFiSsidTable![2].enable == '1') {
+                        Get.toNamed("/visitor_two");
+                      } else {
+                        ToastUtils.toast('未启用');
+                      }
+                    }),
+                CommonWidget.simpleWidgetWithMine(
+                    title: 'guest3',
+                    icon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          if (data_2g.wiFiSsidTable![3].enable == '1') {
+                            //移除
+                            handleSave(
+                                '{"table":"WiFiSsidTable","value":[{"id":3,"Enable":"0"}]}');
+                            data_2g.wiFiSsidTable![3].enable = '0';
+                          } else {
+                            //启用
+                            handleSave(
+                                '{"table":"WiFiSsidTable","value":[{"id":3,"Enable":"1"}]}');
+                            data_2g.wiFiSsidTable![3].enable = '1';
+                          }
+                        });
+                      },
+                      icon: Icon(
+                        data_2g.wiFiSsidTable![3].enable == '1'
+                            ? Icons.highlight_off
+                            : Icons.check_circle,
+                        color: data_2g.wiFiSsidTable![3].enable == '1'
+                            ? Colors.red
+                            : Colors.blue,
+                        size: 50.w,
+                      ),
+                    ),
+                    callBack: () {
+                      if (data_2g.wiFiSsidTable![3].enable == '1') {
+                        Get.toNamed("/visitor_three");
+                      } else {
+                        ToastUtils.toast('未启用');
+                      }
+                    }),
+                const TitleWidger(title: '5GHZ'),
                 //访客
-                Offstage(
-                  offstage: !arr_5.contains(4),
-                  child: CommonWidget.simpleWidgetWithMine(
-                      title: 'guest4',
-                      icon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            arr_5.remove(4);
-                          });
-                        },
-                        icon: Icon(
-                          Icons.remove_circle,
-                          color: Colors.red,
-                          size: 50.w,
-                        ),
+                CommonWidget.simpleWidgetWithMine(
+                    title: 'guest4',
+                    icon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          if (data_5g.wiFi5GSsidTable![1].enable == '1') {
+                            //移除
+                            handleSave(
+                                '{"table":"WiFi5GSsidTable","value":[{"id":1,"Enable":"0"}]}');
+                            data_5g.wiFi5GSsidTable![1].enable = '0';
+                          } else {
+                            //启用
+                            handleSave(
+                                '{"table":"WiFi5GSsidTable","value":[{"id":1,"Enable":"1"}]}');
+                            data_5g.wiFi5GSsidTable![1].enable = '1';
+                          }
+                        });
+                      },
+                      icon: Icon(
+                        data_5g.wiFi5GSsidTable![1].enable == '1'
+                            ? Icons.highlight_off
+                            : Icons.check_circle,
+                        color: data_5g.wiFi5GSsidTable![1].enable == '1'
+                            ? Colors.red
+                            : Colors.blue,
+                        size: 50.w,
                       ),
-                      callBack: () {
+                    ),
+                    callBack: () {
+                      if (data_5g.wiFi5GSsidTable![1].enable == '1') {
                         Get.toNamed("/visitor_four");
-                      }),
-                ),
-                Offstage(
-                  offstage: !arr_5.contains(5),
-                  child: CommonWidget.simpleWidgetWithMine(
-                      title: 'guest5',
-                      icon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            arr_5.remove(5);
-                          });
-                        },
-                        icon: Icon(
-                          Icons.remove_circle,
-                          color: Colors.red,
-                          size: 50.w,
-                        ),
+                      } else {
+                        ToastUtils.toast('未启用');
+                      }
+                    }),
+                CommonWidget.simpleWidgetWithMine(
+                    title: 'guest5',
+                    icon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          if (data_5g.wiFi5GSsidTable![2].enable == '1') {
+                            //移除
+                            handleSave(
+                                '{"table":"WiFi5GSsidTable","value":[{"id":2,"Enable":"0"}]}');
+                            data_5g.wiFi5GSsidTable![2].enable = '0';
+                          } else {
+                            //启用
+                            handleSave(
+                                '{"table":"WiFi5GSsidTable","value":[{"id":2,"Enable":"1"}]}');
+                            data_5g.wiFi5GSsidTable![1].enable = '1';
+                          }
+                        });
+                      },
+                      icon: Icon(
+                        data_5g.wiFi5GSsidTable![2].enable == '1'
+                            ? Icons.highlight_off
+                            : Icons.check_circle,
+                        color: data_5g.wiFi5GSsidTable![2].enable == '1'
+                            ? Colors.red
+                            : Colors.blue,
+                        size: 50.w,
                       ),
-                      callBack: () {
+                    ),
+                    callBack: () {
+                      if (data_5g.wiFi5GSsidTable![2].enable == '1') {
                         Get.toNamed("/visitor_five");
-                      }),
-                ),
-                Offstage(
-                  offstage: !arr_5.contains(6),
-                  child: CommonWidget.simpleWidgetWithMine(
-                      title: 'guest6',
-                      icon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            arr_5.remove(6);
-                          });
-                        },
-                        icon: Icon(
-                          Icons.remove_circle,
-                          color: Colors.red,
-                          size: 50.w,
-                        ),
+                      } else {
+                        ToastUtils.toast('未启用');
+                      }
+                    }),
+                CommonWidget.simpleWidgetWithMine(
+                    title: 'guest6',
+                    icon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          if (data_5g.wiFi5GSsidTable![3].enable == '1') {
+                            //移除
+                            handleSave(
+                                '{"table":"WiFi5GSsidTable","value":[{"id":3,"Enable":"0"}]}');
+                            data_5g.wiFi5GSsidTable![3].enable = '0';
+                          } else {
+                            //启用
+                            handleSave(
+                                '{"table":"WiFi5GSsidTable","value":[{"id":3,"Enable":"1"}]}');
+                            data_5g.wiFi5GSsidTable![3].enable = '1';
+                          }
+                        });
+                      },
+                      icon: Icon(
+                        data_5g.wiFi5GSsidTable![3].enable == '1'
+                            ? Icons.highlight_off
+                            : Icons.check_circle,
+                        color: data_5g.wiFi5GSsidTable![3].enable == '1'
+                            ? Colors.red
+                            : Colors.blue,
+                        size: 50.w,
                       ),
-                      callBack: () {
+                    ),
+                    callBack: () {
+                      if (data_5g.wiFi5GSsidTable![3].enable == '1') {
                         Get.toNamed("/visitor_six");
-                      }),
-                ),
+                      } else {
+                        ToastUtils.toast('未启用');
+                      }
+                    }),
               ],
             ),
           ),

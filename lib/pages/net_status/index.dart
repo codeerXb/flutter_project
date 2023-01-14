@@ -113,16 +113,17 @@ class _NetStatusState extends State<NetStatus> {
       sharedGetData('c_type', int),
       sharedGetData('c_contain', double),
       sharedGetData('c_cycle', int),
-    ]).then((results) => {
-          if (results[0] != null && results[1] != null && results[2] != null)
-            {
-              setState(() {
-                _comboLabel = results[0] == 0
-                    ? '${results[1]}GB/${comboCycleLabel[results[2] as int]}'
-                    : '${results[1]}h/${comboCycleLabel[results[2] as int]}';
-              }),
-            }
+    ]).then((results) {
+      if (results[0] != null && results[1] != null && results[2] != null) {
+        setState(() {
+          _comboLabel = results[0] == 0
+              ? '${results[1]}GB/${comboCycleLabel[results[2] as int]}'
+              : '${results[1]}h/${comboCycleLabel[results[2] as int]}';
         });
+      }
+    }).catchError((e) {
+      printError(info: 'error:$e');
+    });
     updateStatus();
 
     timer = Timer.periodic(const Duration(milliseconds: 2000), (t) async {
@@ -132,29 +133,6 @@ class _NetStatusState extends State<NetStatus> {
 
   @override
   Widget build(BuildContext context) {
-    // 更新套餐总量
-    Future.wait([
-      sharedGetData('c_type', int),
-      sharedGetData('c_contain', double),
-      sharedGetData('c_cycle', int),
-    ]).then((results) => {
-          if (results[0] != null &&
-              results[1] != null &&
-              results[2] != null &&
-              (results[0].toString() != _comboType.toString() ||
-                  results[1].toString() != _totalComboData.toString()))
-            {
-              setState(() {
-                _comboType = int.parse(results[0].toString());
-                _totalComboData = double.parse(results[1].toString());
-                _comboLabel = results[0] == 0
-                    ? '${results[1]}GB/${comboCycleLabel[results[2] as int]}'
-                    : '${results[1]}h/${comboCycleLabel[results[2] as int]}';
-              }),
-              debugPrint(
-                  'index得到的结果${results.toString()}${results[1].toString() == _totalComboData.toString()}')
-            }
-        });
     return Container(
       decoration: const BoxDecoration(
           image: DecorationImage(
@@ -228,9 +206,14 @@ class _NetStatusState extends State<NetStatus> {
                         ),
                         TextButton(
                             onPressed: () => {
-                                  // Navigator.pushNamed(
-                                  //     context, '/net_server_settings')
                                   Get.toNamed('/net_server_settings')
+                                      ?.then((value) {
+                                    setState(() {
+                                      _comboLabel = value['type'] == 0
+                                          ? '${value['contain']}GB/${comboCycleLabel[value['cycle']]}'
+                                          : '${value['contain']}h/${comboCycleLabel[value['cycle']]}';
+                                    });
+                                  })
                                 },
                             child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,

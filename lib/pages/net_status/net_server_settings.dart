@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
-import 'package:flutter_template/core/utils/toast.dart';
 
 import '../../core/utils/string_util.dart';
 import '../../core/widget/common_picker.dart';
@@ -84,7 +81,12 @@ class _NetServerSettingsState extends State<NetServerSettings> {
           context: context,
           title: '套餐设置',
           titleColor: Colors.white,
-          backgroundColor: const Color(0xFF2F5AF5)),
+          backgroundColor: const Color(0xFF2F5AF5),
+          result: {
+            'type': comboType,
+            'contain': comboContain,
+            'cycle': comboCycle
+          }),
       backgroundColor: Colors.grey.shade100,
       body: GestureDetector(
         onTap: () => closeKeyboard(context),

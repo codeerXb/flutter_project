@@ -9,6 +9,8 @@ import 'package:flutter_template/pages/setting/contact_customer.dart';
 import 'package:flutter_template/pages/setting/file_upload_download.dart';
 import 'package:flutter_template/pages/Ethernet/net_type.dart';
 import 'package:flutter_template/pages/setting/user_detail.dart';
+import 'package:flutter_template/pages/uest_login/login.dart';
+import 'package:flutter_template/pages/uest_login/register.dart';
 import 'package:flutter_template/pages/wifi_set/major/major_set.dart';
 import 'package:flutter_template/pages/wifi_set/visitor/2.4GHZ_visitor/2.4GHZ_visitor1.dart';
 import 'package:flutter_template/pages/wifi_set/visitor/2.4GHZ_visitor/2.4GHZ_visitor2.dart';
@@ -158,6 +160,14 @@ class GlobalRouter {
     // 套餐设置
     '/net_server_settings': (BuildContext context, {Object? args}) =>
         const NetServerSettings(),
+
+    // 用户登录
+    '/use_login': (BuildContext context, {Object? args}) =>
+        const UserLogin(),
+
+    // 用户注册
+    '/use_register': (BuildContext context, {Object? args}) =>
+        const UserRegister(),
   };
 
   static GlobalRouter? _singleton;

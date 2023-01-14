@@ -5,7 +5,8 @@ class BaseConfig {
 
   /// 服务器路径
   // static const baseUrl = "https://www.smawavelogin.com";
-  static const baseUrl = "https://172.16.20.144";
+
+  static const baseUrl = "https://172.16.20.128";
 
   /// 版本更新路径
   static const updateUrl = "$baseUrl/";

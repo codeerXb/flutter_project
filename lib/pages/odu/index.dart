@@ -182,8 +182,10 @@ class _ODUState extends State<ODU> {
               pointer = List.generate(360, (index) {
                 return 0;
               });
+              mapDataPoint = List.generate(360, (index) {
+                return 0;
+              });
               pointer[currentAngle] = maxNumber;
-
               isShow = true;
               currentIndex = 2;
               _timer?.cancel();

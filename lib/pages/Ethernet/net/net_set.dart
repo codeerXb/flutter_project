@@ -1,11 +1,15 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_picker.dart';
+import 'package:flutter_template/core/widget/common_widget.dart';
+import 'package:flutter_template/core/widget/otp_input.dart';
 import 'package:flutter_template/pages/Ethernet/net/net_datas.dart';
 import '../../../core/widget/custom_app_bar.dart';
 
@@ -18,6 +22,7 @@ class NetSet extends StatefulWidget {
 }
 
 class _NetSetState extends State<NetSet> {
+  Timer? timer;
   netDatas netdata = netDatas(
       //连接模式
       ethernetConnectMode: '',
@@ -36,10 +41,43 @@ class _NetSetState extends State<NetSet> {
   bool isCheck = true;
   final TextEditingController mtu = TextEditingController();
   final TextEditingController server = TextEditingController();
+  dynamic ipVal = '';
+  final TextEditingController ipVal1 = TextEditingController();
+  final TextEditingController ipVal2 = TextEditingController();
+  final TextEditingController ipVal3 = TextEditingController();
+  final TextEditingController ipVal4 = TextEditingController();
+  dynamic zwVal = '';
+  final TextEditingController zwVal1 = TextEditingController();
+  final TextEditingController zwVal2 = TextEditingController();
+  final TextEditingController zwVal3 = TextEditingController();
+  final TextEditingController zwVal4 = TextEditingController();
+  dynamic mrwgVal = '';
+  final TextEditingController mrwgVal1 = TextEditingController();
+  final TextEditingController mrwgVal2 = TextEditingController();
+  final TextEditingController mrwgVal3 = TextEditingController();
+  final TextEditingController mrwgVal4 = TextEditingController();
+  dynamic zdnsVal = '';
+  final TextEditingController zdnsVal1 = TextEditingController();
+  final TextEditingController zdnsVal2 = TextEditingController();
+  final TextEditingController zdnsVal3 = TextEditingController();
+  final TextEditingController zdnsVal4 = TextEditingController();
+  dynamic fDNSVal = '';
+  final TextEditingController fDNSVal1 = TextEditingController();
+  final TextEditingController fDNSVal2 = TextEditingController();
+  final TextEditingController fDNSVal3 = TextEditingController();
+  final TextEditingController fDNSVal4 = TextEditingController();
   @override
   void initState() {
     super.initState();
     getData();
+    // timer = Timer.periodic(const Duration(milliseconds: 2000), (t) async {});
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    timer?.cancel();
+    timer = null;
   }
 
   // 点击空白  关闭键盘 时传的一个对象
@@ -85,24 +123,61 @@ class _NetSetState extends State<NetSet> {
           case 'dhcp':
             showVal = '动态ip';
             break;
-          // case 'FR':
-          //   showVal = '静态IP';
-          //   break;
+          case 'static':
+            showVal = '静态ip';
+            break;
           case 'lanonly':
             showVal = '仅LAN';
             break;
         }
-
+        val = ['dhcp', 'static', 'lanonly']
+            .indexOf(netdata.ethernetConnectMode.toString());
         //仅以太网
         isCheck = netdata.ethernetConnectOnly.toString() == '1' ? true : false;
-        //优先级
+        //优先级 == '1' 4g
         priorityVal =
-            netdata.ethernetConnectPriority.toString() == '1' ? '以太网' : '4G/5G';
+            netdata.ethernetConnectPriority.toString() == '1' ? '4G/5G' : '以太网';
         priorityIndex = ['以太网', '4G/5G'].indexOf(priorityVal);
         //mtu
         mtu.text = netdata.ethernetMtu.toString();
         //检测服务器
         server.text = netdata.ethernetDetectServer.toString();
+        // IP地址
+        ipVal = netdata.ethernetIp.toString();
+        ipVal1.text = ipVal.split('.')[0];
+        ipVal2.text = ipVal.split('.')[1];
+        ipVal3.text = ipVal.split('.')[2];
+        ipVal4.text = ipVal.split('.')[3];
+        // 子网掩码
+        zwVal = netdata.ethernetMask.toString();
+        zwVal1.text = zwVal.split('.')[0];
+        zwVal2.text = zwVal.split('.')[1];
+        zwVal3.text = zwVal.split('.')[2];
+        zwVal4.text = zwVal.split('.')[3];
+        // 默认网关
+        ipVal = netdata.ethernetDefaultGateway.toString();
+        ipVal1.text = ipVal.split('.')[0];
+        ipVal2.text = ipVal.split('.')[1];
+        ipVal3.text = ipVal.split('.')[2];
+        ipVal4.text = ipVal.split('.')[3];
+        // 主DNS
+        mrwgVal = netdata.ethernetPrimaryDns.toString();
+        mrwgVal1.text = mrwgVal.split('.')[0];
+        mrwgVal2.text = mrwgVal.split('.')[1];
+        mrwgVal3.text = mrwgVal.split('.')[2];
+        mrwgVal4.text = mrwgVal.split('.')[3];
+        // 辅DNS
+        zdnsVal = netdata.ethernetSecondaryDns.toString();
+        zdnsVal1.text = zdnsVal.split('.')[0];
+        zdnsVal2.text = zdnsVal.split('.')[1];
+        zdnsVal3.text = zdnsVal.split('.')[2];
+        zdnsVal4.text = zdnsVal.split('.')[3];
+
+        fDNSVal = netdata.ethernetIp.toString();
+        fDNSVal1.text = fDNSVal.split('.')[0];
+        fDNSVal2.text = fDNSVal.split('.')[1];
+        fDNSVal3.text = fDNSVal.split('.')[2];
+        fDNSVal4.text = fDNSVal.split('.')[3];
       });
     } catch (e) {
       debugPrint('获取以太网设置失败：$e.toString()');
@@ -135,7 +210,7 @@ class _NetSetState extends State<NetSet> {
                           closeKeyboard(context);
                           var result = CommonPicker.showPicker(
                             context: context,
-                            options: ['动态ip', '静态ip', 'LAN Only'],
+                            options: ['动态ip', '静态ip', '仅LAN'],
                             value: val,
                           );
                           result?.then((selectedValue) => {
@@ -145,7 +220,7 @@ class _NetSetState extends State<NetSet> {
                                     setState(() => {
                                           val = selectedValue,
                                           showVal =
-                                              ['动态ip', '静态ip', 'LAN Only'][val],
+                                              ['动态ip', '静态ip', '仅LAN'][val],
                                         })
                                   }
                               });
@@ -176,34 +251,36 @@ class _NetSetState extends State<NetSet> {
                           ),
                         ),
                       ),
-
                       //仅以太网
-                      BottomLine(
-                        rowtem: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('仅以太网',
-                                style: TextStyle(
-                                    color: const Color.fromARGB(255, 5, 0, 0),
-                                    fontSize: 28.sp)),
-                            Row(
-                              children: [
-                                Switch(
-                                  value: isCheck,
-                                  onChanged: (newVal) {
-                                    setState(() {
-                                      isCheck = newVal;
-                                    });
-                                  },
-                                ),
-                              ],
-                            )
-                          ],
+                      Offstage(
+                        offstage: showVal == '仅LAN',
+                        child: BottomLine(
+                          rowtem: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('仅以太网',
+                                  style: TextStyle(
+                                      color: const Color.fromARGB(255, 5, 0, 0),
+                                      fontSize: 28.sp)),
+                              Row(
+                                children: [
+                                  Switch(
+                                    value: isCheck,
+                                    onChanged: (newVal) {
+                                      setState(() {
+                                        isCheck = newVal;
+                                      });
+                                    },
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
                         ),
                       ),
                       //优先级
                       Offstage(
-                        offstage: isCheck,
+                        offstage: isCheck || showVal == '仅LAN',
                         child: GestureDetector(
                           onTap: () {
                             closeKeyboard(context);
@@ -252,61 +329,188 @@ class _NetSetState extends State<NetSet> {
                           ),
                         ),
                       ),
+                      //------------------------------------------
+                      //IP地址 ethernetIp
+                      Offstage(
+                        offstage: showVal != '静态ip',
+                        child: BottomLine(
+                          rowtem: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              const Text(
+                                'IP地址',
+                              ),
+                              OtpInput(ipVal1, false),
+                              const Text('.'),
+                              OtpInput(ipVal2, false),
+                              const Text('.'),
+                              OtpInput(ipVal3, false),
+                              const Text('.'),
+                              OtpInput(ipVal4, false),
+                              const Text(
+                                '*',
+                                style: TextStyle(color: Colors.red),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      //子网掩码 ethernetMask
+                      Offstage(
+                        offstage: showVal != '静态ip',
+                        child: BottomLine(
+                          rowtem: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              const Text('子网掩码'),
+                              OtpInput(zwVal1, false),
+                              const Text('.'),
+                              OtpInput(zwVal2, false),
+                              const Text('.'),
+                              OtpInput(zwVal3, false),
+                              const Text('.'),
+                              OtpInput(zwVal4, false),
+                              const Text(
+                                '*',
+                                style: TextStyle(color: Colors.red),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      //默认网关 ethernetDefaultGateway
+                      Offstage(
+                        offstage: showVal != '静态ip',
+                        child: BottomLine(
+                          rowtem: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              const Text('默认网关'),
+                              OtpInput(mrwgVal1, false),
+                              const Text('.'),
+                              OtpInput(mrwgVal2, false),
+                              const Text('.'),
+                              OtpInput(mrwgVal3, false),
+                              const Text('.'),
+                              OtpInput(mrwgVal4, false),
+                              const Text(
+                                '*',
+                                style: TextStyle(color: Colors.red),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      //主DNS ethernetPrimaryDns
+                      Offstage(
+                        offstage: showVal != '静态ip',
+                        child: BottomLine(
+                          rowtem: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              const Text('主DNS'),
+                              OtpInput(zdnsVal1, false),
+                              const Text('.'),
+                              OtpInput(zdnsVal2, false),
+                              const Text('.'),
+                              OtpInput(zdnsVal3, false),
+                              const Text('.'),
+                              OtpInput(zdnsVal4, false),
+                              const Text(
+                                '*',
+                                style: TextStyle(color: Colors.red),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      //辅DNS ethernetSecondaryDns
+                      Offstage(
+                        offstage: showVal != '静态ip',
+                        child: BottomLine(
+                          rowtem: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              const Text('辅DNS'),
+                              OtpInput(fDNSVal1, false),
+                              const Text('.'),
+                              OtpInput(fDNSVal2, false),
+                              const Text('.'),
+                              OtpInput(fDNSVal3, false),
+                              const Text('.'),
+                              OtpInput(fDNSVal4, false),
+                              const Text(
+                                '*',
+                                style: TextStyle(color: Colors.red),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      //------------------------------------------
                       //MTU
-                      BottomLine(
-                        rowtem: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('MTU',
-                                style: TextStyle(
-                                    color: const Color.fromARGB(255, 5, 0, 0),
-                                    fontSize: 28.sp)),
-                            SizedBox(
-                              width: 300.w,
-                              child: TextFormField(
-                                keyboardType: TextInputType.number,
-                                controller: mtu,
-                                style: TextStyle(
-                                    fontSize: 26.sp,
-                                    color: const Color(0xff051220)),
-                                decoration: InputDecoration(
-                                  hintText: "输入MTU",
-                                  hintStyle: TextStyle(
+                      Offstage(
+                        offstage: showVal == '仅LAN',
+                        child: BottomLine(
+                          rowtem: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('MTU',
+                                  style: TextStyle(
+                                      color: const Color.fromARGB(255, 5, 0, 0),
+                                      fontSize: 28.sp)),
+                              SizedBox(
+                                width: 100.w,
+                                child: TextFormField(
+                                  keyboardType: TextInputType.number,
+                                  maxLength: 4,
+                                  controller: mtu,
+                                  style: TextStyle(
                                       fontSize: 26.sp,
-                                      color: const Color(0xff737A83)),
-                                  border: InputBorder.none,
+                                      color: const Color(0xff051220)),
+                                  decoration: InputDecoration(
+                                    hintText: "576~1500",
+                                    hintStyle: TextStyle(
+                                        fontSize: 26.sp,
+                                        color: const Color(0xff737A83)),
+                                    border: InputBorder.none,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                       //检测服务器
-                      BottomLine(
-                        rowtem: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('检测服务器',
-                                style: TextStyle(
-                                    color: const Color.fromARGB(255, 5, 0, 0),
-                                    fontSize: 28.sp)),
-                            SizedBox(
-                              width: 300.w,
-                              child: TextFormField(
-                                controller: server,
-                                style: TextStyle(
-                                    fontSize: 26.sp,
-                                    color: const Color(0xff051220)),
-                                decoration: InputDecoration(
-                                  hintText: "输入检测服务器",
-                                  hintStyle: TextStyle(
+                      Offstage(
+                        offstage: showVal == '仅LAN',
+                        child: BottomLine(
+                          rowtem: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('检测服务器',
+                                  style: TextStyle(
+                                      color: const Color.fromARGB(255, 5, 0, 0),
+                                      fontSize: 28.sp)),
+                              SizedBox(
+                                width: 100.w,
+                                child: TextFormField(
+                                  controller: server,
+                                  maxLength: 6,
+                                  style: TextStyle(
                                       fontSize: 26.sp,
-                                      color: const Color(0xff737A83)),
-                                  border: InputBorder.none,
+                                      color: const Color(0xff051220)),
+                                  decoration: InputDecoration(
+                                    hintText: "输入检测服务器",
+                                    hintStyle: TextStyle(
+                                        fontSize: 26.sp,
+                                        color: const Color(0xff737A83)),
+                                    border: InputBorder.none,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                       //提交
@@ -323,34 +527,69 @@ class _NetSetState extends State<NetSet> {
                                         const Color.fromARGB(
                                             255, 48, 118, 250))),
                                 onPressed: () {
-                                  //携带优先级
-                                  if (isCheck) {
-                                    if (showVal == '动态ip') {
-                                      handleSave(
-                                          '{"ethernetConnectMode":"dhcp","ethernetMtu":"${mtu.text}","ethernetConnectOnly":"${isCheck ? 1 : 0}","ethernetDetectServer":"${server.text}"},"ethernetConnectPriority":"1"');
-                                    } else if (showVal == '动态ip') {
-                                      print(1);
-                                    } else {
-                                      handleSave({
-                                        "ethernetConnectMode": "lanonly",
-                                        "ethernetConnectOnly": "1"
+                                  //对话框
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                            title: const Text("提示"),
+                                            content:
+                                                const Text("提交后设备将会重启，是否继续?"),
+                                            actions: <Widget>[
+                                              TextButton(
+                                                child: const Text("取消"),
+                                                onPressed: () {
+                                                  //取消
+                                                  Navigator.pop(
+                                                      context, 'Cancle');
+                                                },
+                                              ),
+                                              TextButton(
+                                                  child: const Text("确定"),
+                                                  onPressed: () {
+                                                    //确定
+                                                    Navigator.pop(
+                                                        context, "Ok");
+                                                    Navigator.push(context, DialogRouter(LoadingDialog()));
+                                                    //动态ip
+                                                    if (showVal == '动态ip') {
+                                                      //isCheck选中不携带 优先级
+                                                      //不携带 优先级 {"ethernetConnectMode":"dhcp","ethernetMtu":"1500","ethernetConnectOnly":"1","ethernetDetectServer":"0"}
+                                                      // 携带 优先级 {"ethernetConnectMode":"dhcp","ethernetMtu":"1500","ethernetConnectOnly":"0","ethernetConnectPriority":"0","ethernetDetectServer":"1"}
+                                                      isCheck
+                                                          ? handleSave(
+                                                              '{"ethernetConnectMode":"dhcp","ethernetMtu":"${mtu.text}","ethernetConnectOnly":"1","ethernetDetectServer":"${server.text}"}')
+                                                          : handleSave(
+                                                              '{"ethernetConnectMode":"dhcp","ethernetMtu":"${mtu.text}","ethernetConnectOnly":"0","ethernetConnectPriority":"${priorityVal == '以太网' ? '0' : '1'}","ethernetDetectServer":"${server.text}"}');
+                                                    }
+                                                    //静态ip
+                                                    else if (showVal ==
+                                                        '静态ip') {
+                                                      //isCheck选中不携带 优先级
+                                                      //不携带 优先级 {"ethernetConnectMode":"static","ethernetIp":"172.16.20.224","ethernetMask":"255.255.255.0","ethernetDefaultGateway":"172.16.20.253","ethernetPrimaryDns":"114.114.114.114","ethernetSecondaryDns":"8.8.8.8","ethernetMtu":"1500","ethernetConnectOnly":"1","ethernetDetectServer":"0"}
+                                                      // 携带 优先级{"ethernetConnectMode":"static","ethernetIp":"172.16.20.224","ethernetMask":"255.255.255.0","ethernetDefaultGateway":"172.16.20.253","ethernetPrimaryDns":"114.114.114.114","ethernetSecondaryDns":"8.8.8.8","ethernetMtu":"1500","ethernetConnectOnly":"0","ethernetConnectPriority":"1","ethernetDetectServer":"0"}
+                                                      isCheck
+                                                          ? handleSave(
+                                                              '{"ethernetConnectMode":"static","ethernetIp":"${fDNSVal1.text}.${fDNSVal2.text}.${fDNSVal3.text}.${fDNSVal4.text}","ethernetMask":"${zwVal1.text}.${zwVal2.text}.${zwVal3.text}.${zwVal4.text}","ethernetDefaultGateway":"${ipVal1.text}.${ipVal2.text}.${ipVal3.text}.${ipVal4.text}","ethernetPrimaryDns":"${mrwgVal1.text}.${mrwgVal2.text}.${mrwgVal3.text}.${mrwgVal4.text}","ethernetSecondaryDns":"${zdnsVal1.text}.${zdnsVal2.text}.${zdnsVal3.text}.${zdnsVal4.text}","ethernetMtu":"${mtu.text}","ethernetConnectOnly":"1","ethernetDetectServer":"${server.text}"}')
+                                                          : handleSave(
+                                                              '{"ethernetConnectMode":"static","ethernetIp":"${fDNSVal1.text}.${fDNSVal2.text}.${fDNSVal3.text}.${fDNSVal4.text}","ethernetMask":"${zwVal1.text}.${zwVal2.text}.${zwVal3.text}.${zwVal4.text}","ethernetDefaultGateway":"${ipVal1.text}.${ipVal2.text}.${ipVal3.text}.${ipVal4.text}","ethernetPrimaryDns":"${mrwgVal1.text}.${mrwgVal2.text}.${mrwgVal3.text}.${mrwgVal4.text}","ethernetSecondaryDns":"${zdnsVal1.text}.${zdnsVal2.text}.${zdnsVal3.text}.${zdnsVal4.text}","ethernetMtu":"${mtu.text}","ethernetConnectOnly":"0","ethernetConnectPriority":"${priorityVal == '以太网' ? '0' : '1'}","ethernetDetectServer":"${server.text}"}');
+                                                    }
+                                                    // 仅LAN
+                                                    else {
+                                                      debugPrint('仅LAN');
+                                                      //{"ethernetConnectMode":"lanonly","ethernetConnectOnly":"0","ethernetConnectPriority":"1"}
+                                                      handleSave({
+                                                        "ethernetConnectMode":
+                                                            "lanonly",
+                                                        "ethernetConnectOnly":
+                                                            priorityVal == '以太网'
+                                                                ? '0'
+                                                                : '1'
+                                                      });
+                                                    }
+                                                  })
+                                            ]);
                                       });
-                                    }
-                                  } 
-                                  //无优先级
-                                  else {
-                                    if (showVal == '动态ip') {
-                                      handleSave(
-                                          '{"ethernetConnectMode":"dhcp","ethernetMtu":"${mtu.text}","ethernetConnectOnly":"${isCheck ? 1 : 0}","ethernetDetectServer":"${server.text}"},"ethernetConnectPriority":"1"');
-                                    } else if (showVal == '动态ip') {
-                                      print(2);
-                                    } else {
-                                      handleSave({
-                                        "ethernetConnectMode": "lanonly",
-                                        "ethernetConnectOnly": "1"
-                                      });
-                                    }
-                                  }
                                 },
                                 child: Text(
                                   '提交',
@@ -360,7 +599,7 @@ class _NetSetState extends State<NetSet> {
                             )
                           ],
                         ),
-                      )
+                      ),
                     ],
                   )),
                 ],

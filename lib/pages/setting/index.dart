@@ -209,7 +209,6 @@ class _SettingState extends State<Setting> {
                       ),
                     ),
                   ),
-                  CommonWidget.dividerWidget(),
                   InkWell(
                     child: Container(
                       height: 60.w,
@@ -251,7 +250,7 @@ class _SettingState extends State<Setting> {
                       ),
                       InkWell(
                         onTap: () {
-                          Navigator.of(context).pop(true);
+                          Get.offAllNamed("/get_equipment");
                         },
                         child: Container(
                           height: 60.w,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 class UserCard extends StatefulWidget {
   final name;
@@ -40,7 +41,9 @@ class _UserCardState extends State<UserCard> {
               style: TextStyle(fontSize: 22.sp, color: Colors.black),
             ),
             trailing: TextButton(
-              onPressed: () {},
+              onPressed: () {
+                Get.toNamed("/use_login");
+              },
               child: const Text(
                 '退出登录',
                 style: TextStyle(color: Colors.red),

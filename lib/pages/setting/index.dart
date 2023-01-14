@@ -157,6 +157,8 @@ class _SettingState extends State<Setting> {
 
                   /// 清除缓存
                   clearCache(),
+                  useRegister(),
+                  useLogin()
                   // const Divider(),
                 ],
               ),
@@ -475,6 +477,26 @@ class _SettingState extends State<Setting> {
         icon: const Image(image: AssetImage('assets/images/WPS.png')),
         callBack: () {
           Get.toNamed("/wps_set");
+        });
+  }
+
+  /// 用户登录
+  Widget useLogin() {
+    return CommonWidget.simpleWidgetWithMine(
+        title: '用户登录',
+        icon: const Image(image: AssetImage('assets/images/WPS.png')),
+        callBack: () {
+          Get.toNamed("/use_login");
+        });
+  }
+
+  /// 用户注册
+  Widget useRegister() {
+    return CommonWidget.simpleWidgetWithMine(
+        title: '用户注册',
+        icon: const Image(image: AssetImage('assets/images/WPS.png')),
+        callBack: () {
+          Get.toNamed("/use_register");
         });
   }
 }

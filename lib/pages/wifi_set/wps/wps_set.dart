@@ -260,7 +260,7 @@ class _WpsSetState extends State<WpsSet> {
                       ),
                       //客户 PIN
                       Offstage(
-                        offstage: modeShowVal == 'PBC',
+                        offstage: modeShowVal == 'PBC'||!isCheck,
                         child: BottomLine(
                           rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -273,12 +273,10 @@ class _WpsSetState extends State<WpsSet> {
                                 width: 100.w,
                                 child: TextFormField(
                                   keyboardType: TextInputType.number,
-                                  maxLength: 8,
                                   style: TextStyle(
                                       fontSize: 26.sp,
                                       color: const Color(0xff051220)),
                                   decoration: InputDecoration(
-                                    hintText: "4或8位",
                                     hintStyle: TextStyle(
                                         fontSize: 26.sp,
                                         color: const Color(0xff737A83)),

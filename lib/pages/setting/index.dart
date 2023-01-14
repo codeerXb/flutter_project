@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:flutter_template/model/user_model.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:flutter_template/pages/setting/user_card.dart';
 import 'package:get/get.dart';
 import '../../core/utils/shared_preferences_util.dart';
@@ -21,6 +23,7 @@ class Setting extends StatefulWidget {
 class _SettingState extends State<Setting> {
   /// 用户信息
   UserModel userModel = UserModel();
+  final LoginController loginController = Get.put(LoginController());
 
   @override
   void initState() {
@@ -56,7 +59,9 @@ class _SettingState extends State<Setting> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             /// 头部
-            UserCard(),
+            UserCard(
+              name: loginController.equipment['systemVersionSn'],
+            ),
 
             Expanded(
                 // flex: 1,
@@ -169,6 +174,110 @@ class _SettingState extends State<Setting> {
         ),
       ),
     );
+  }
+
+  //解绑
+  _openAvatarBottomSheet() {
+    showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.transparent,
+        builder: (BuildContext context) {
+          return Container(
+            height: 260.w,
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(30.w),
+                    topRight: Radius.circular(30.w))),
+            child: Padding(
+              padding: EdgeInsets.only(left: 30.w, right: 30.w, top: 10.w),
+              child: Column(
+                children: <Widget>[
+                  InkWell(
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(30.w),
+                              topRight: Radius.circular(30.w))),
+                      height: 80.w,
+                      alignment: Alignment.center,
+                      child: const Text(
+                        "提示",
+                        style: TextStyle(fontWeight: FontWeight.w700),
+                      ),
+                    ),
+                  ),
+                  CommonWidget.dividerWidget(),
+                  InkWell(
+                    child: Container(
+                      height: 60.w,
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        "确定解除对当前设备 ${loginController.equipment['systemVersionSn']} 的绑定?",
+                        style:
+                            TextStyle(color: Colors.black45, fontSize: 22.sp),
+                      ),
+                    ),
+                  ),
+                  Padding(padding: EdgeInsets.only(top: 15.w)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context).pop(true);
+                        },
+                        child: Container(
+                          width: 0.5.sw - 30.w,
+                          height: 60.w,
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.black12,
+                                width: 1,
+                              ),
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(30.w),
+                                  bottomLeft: Radius.circular(30.w))),
+                          // height: 80.w,
+                          alignment: Alignment.center,
+                          child: Text(
+                            "取消",
+                            style: TextStyle(
+                                fontSize: 22.sp, fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context).pop(true);
+                        },
+                        child: Container(
+                          height: 60.w,
+                          width: 0.5.sw - 30.w,
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.black12,
+                                width: 1,
+                              ),
+                              borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(30.w),
+                                  bottomRight: Radius.circular(30.w))),
+                          // height: 80.w,
+                          alignment: Alignment.center,
+                          child: Text(
+                            "确认",
+                            style: TextStyle(
+                                fontSize: 22.sp, fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
   }
 
   /// 头部
@@ -291,9 +400,13 @@ class _SettingState extends State<Setting> {
   Widget unbindingDevice() {
     return CommonWidget.simpleWidgetWithMine(
         title: '解绑设备',
-        icon: const Image(image: AssetImage('assets/images/equ_info.png')),
+        icon: const Image(
+          image: AssetImage('assets/images/line.png'),
+          width: 28,
+          height: 28,
+        ),
         callBack: () {
-          Get.toNamed("/common_problem");
+          _openAvatarBottomSheet();
         });
   }
 

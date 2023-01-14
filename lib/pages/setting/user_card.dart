@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class UserCard extends StatefulWidget {
-  const UserCard({super.key});
+  final name;
+  const UserCard({super.key, this.name});
 
   @override
   State<UserCard> createState() => _UserCardState();
@@ -35,7 +36,7 @@ class _UserCardState extends State<UserCard> {
               style: TextStyle(color: Color.fromARGB(255, 54, 152, 244)),
             ),
             subtitle: Text(
-              '当前设备 TRO-RSS',
+              '当前设备 ${widget.name}',
               style: TextStyle(fontSize: 22.sp, color: Colors.black),
             ),
             trailing: TextButton(

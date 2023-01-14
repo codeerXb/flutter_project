@@ -73,7 +73,7 @@ class _MyWidgetState extends State<Equipment> {
     XHttp.get('/pub/pub_data.html', data).then((res) {
       try {
         var d = json.decode(res.toString());
-        print('wwwwww${equipmentData.systemVersionSn}');
+        print('wwwwww${equipmentData.toString()}');
         if (equipmentData.systemVersionSn == null ||
             equipmentData.systemVersionSn !=
                 EquipmentData.fromJson(d).systemVersionSn) {
@@ -202,6 +202,8 @@ class _MyWidgetState extends State<Equipment> {
                           ),
                           trailing: TextButton(
                             onPressed: () {
+                              loginController.setEquipment('systemVersionSn',
+                                  equipmentData.systemVersionSn);
                               childKey.currentState!.controllerStop();
                               sharedGetData(
                                       equipmentData.systemVersionSn.toString(),

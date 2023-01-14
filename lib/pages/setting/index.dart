@@ -4,6 +4,7 @@ import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:flutter_template/model/user_model.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/pages/setting/user_card.dart';
 import 'package:get/get.dart';
 import '../../core/utils/shared_preferences_util.dart';
 import '../../core/utils/string_util.dart';
@@ -55,7 +56,8 @@ class _SettingState extends State<Setting> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             /// 头部
-            // topWidget(),
+            UserCard(),
+
             Expanded(
                 // flex: 1,
                 child: SingleChildScrollView(
@@ -77,6 +79,8 @@ class _SettingState extends State<Setting> {
                   /// 文件上传与下载
                   // fileUplodAndDownload(),
                   // const Divider(),
+                  //解绑
+                  unbindingDevice(),
 
                   /// Wi-Fi设置
                   Padding(
@@ -277,6 +281,16 @@ class _SettingState extends State<Setting> {
   Widget commonProblem() {
     return CommonWidget.simpleWidgetWithMine(
         title: '设备信息',
+        icon: const Image(image: AssetImage('assets/images/equ_info.png')),
+        callBack: () {
+          Get.toNamed("/common_problem");
+        });
+  }
+
+  /// 设备信息
+  Widget unbindingDevice() {
+    return CommonWidget.simpleWidgetWithMine(
+        title: '解绑设备',
         icon: const Image(image: AssetImage('assets/images/equ_info.png')),
         callBack: () {
           Get.toNamed("/common_problem");

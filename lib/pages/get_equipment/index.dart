@@ -209,6 +209,7 @@ class _MyWidgetState extends State<Equipment> {
                                       equipmentData.systemVersionSn.toString(),
                                       String)
                                   .then((data) {
+                                print('objectobjectobjectobject$data');
                                 if (data != null) {
                                   appLogin(data, equipmentData.systemVersionSn,
                                       equipmentData.systemProductModel);

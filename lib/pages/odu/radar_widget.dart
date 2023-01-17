@@ -278,12 +278,13 @@ class RadarMapPainter extends CustomPainter {
     canvas.translate(w / 2 - skewing, radarMap.radius + top); // 移动坐标系
     drawInnerCircle(canvas, size);
     for (int i = 0; i < radarMap.legend.length; i++) {
-      // drawRadarMap(
-      //     canvas,
-      //     radarMap.data[i].data,
-      //     radarMap.indicator.map((item) => item.maxValues).toList(),
-      //     mAreaPaint
-      //       ..color = radarMap.legend[i].color.withAlpha(radarMap.alpha));
+      drawRadarMap(
+          canvas,
+          radarMap.data[i].data,
+          radarMap.indicator.map((item) => item.maxValues).toList(),
+          mAreaPaint
+            ..color = radarMap.legend[i].color.withAlpha(radarMap.alpha));
+      // 绘制边框
       drawRadarPath(
           canvas,
           radarMap.data[i].data,

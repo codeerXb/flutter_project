@@ -80,7 +80,7 @@ class _WlanSetState extends State<WlanSet> {
         password.text = wlanData.wifi5gMode.toString();
       });
     } catch (e) {
-      debugPrint('获取wps设置失败:$e.toString()');
+      debugPrint('设置失败:$e.toString()');
     }
   }
 
@@ -100,7 +100,7 @@ class _WlanSetState extends State<WlanSet> {
         password.text = wlanData.wifi5gMode.toString();
       });
     } catch (e) {
-      debugPrint('获取wps设置失败:$e.toString()');
+      debugPrint('设置失败:$e.toString()');
     }
   }
 

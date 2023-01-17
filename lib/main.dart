@@ -89,9 +89,12 @@ class _MyAppState extends State<MyApp> {
             debugShowCheckedModeBanner: false,
             initialRoute: '/',
             onGenerateRoute: ((settings) {
+              _timer.cancel();
               printInfo(info: "+++++++++${settings.name}");
               if (settings.name != '/get_equipment' &&
                   settings.name != '/loginPage') {
+                printInfo(info: "----------${settings.name}");
+
                 sharedGetData(loginController.isSn.value.toString(), String)
                     .then((value) {
                   if (value != null) {

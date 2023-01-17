@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/utils/toast.dart';
+import 'package:flutter_template/core/widget/custom_app_bar.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
 
@@ -27,26 +28,7 @@ class _UserRegisterState extends State<UserRegister> {
     }
 
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          centerTitle: true,
-          systemOverlayStyle: const SystemUiOverlayStyle(
-            //设置状态栏的背景颜色
-            statusBarColor: Colors.transparent,
-            //状态栏的文字的颜色
-            statusBarIconBrightness: Brightness.dark,
-          ),
-          elevation: 0,
-          leading: IconButton(
-              onPressed: () {
-                  Get.toNamed("/use_login");
-              },
-              icon: const Icon(
-                Icons.arrow_back_ios,
-                color: Colors.black,
-              )),
-        ),
-        //  appBar: customAppbar(context: context,borderBottom:false),
+        appBar: customAppbar(borderBottom: false),
         body: SingleChildScrollView(
           child: GestureDetector(
             onTap: () => closeKeyboard(context),
@@ -57,7 +39,7 @@ class _UserRegisterState extends State<UserRegister> {
               child: Form(
                 child: Column(
                   children: [
-                    Padding(padding: EdgeInsets.only(top: 100.w)),
+                    Padding(padding: EdgeInsets.only(top: 50.w)),
 
                     //logo&文字
                     logo(),
@@ -99,11 +81,11 @@ Center logo() {
           ),
         ),
         Text(
-          'CPE管理平台',
-          style: TextStyle(fontSize: 50.sp),
+          '注册',
+          style: TextStyle(fontSize: 60.sp),
         ),
         Text(
-          '路由器数据管理平台',
+          'CPE管理平台',
           style: TextStyle(fontSize: 30.sp, color: Colors.black38),
         ),
       ],

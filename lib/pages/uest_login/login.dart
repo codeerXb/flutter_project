@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/core/widget/custom_app_bar.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
 
@@ -26,24 +26,18 @@ class _UserLoginState extends State<UserLogin> {
     }
 
     return Scaffold(
-         appBar: AppBar(
-          backgroundColor: Colors.white,
-          centerTitle: true,
-          systemOverlayStyle: const SystemUiOverlayStyle(
-            //设置状态栏的背景颜色
-            statusBarColor: Colors.transparent,
-            //状态栏的文字的颜色
-            statusBarIconBrightness: Brightness.dark,
-          ),
-          elevation: 0,
-          leading: IconButton(
-              onPressed: () {
-                Get.offNamed("/get_equipment");
-              },
-              icon: const Icon(
-                Icons.arrow_back_ios,
-                color: Colors.black,
-              )),
+        appBar: customAppbar(
+          borderBottom: false,
+          actions: [
+            TextButton(
+                onPressed: () {
+                  Get.offAllNamed("/get_equipment");
+                },
+                child: Text(
+                  '跳过',
+                  style: TextStyle(fontSize: 32.w,fontWeight:FontWeight.w600 ),
+                )),
+          ],
         ),
         body: SingleChildScrollView(
           child: GestureDetector(
@@ -55,8 +49,6 @@ class _UserLoginState extends State<UserLogin> {
               child: Form(
                 child: Column(
                   children: [
-                    //跳过
-                    upDowm(),
                     Padding(padding: EdgeInsets.only(top: 100.w)),
 
                     //logo&文字
@@ -86,19 +78,6 @@ class _UserLoginState extends State<UserLogin> {
   }
 }
 
-//跳过
-Row upDowm() {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.end,
-    children: [
-      TextButton(
-          onPressed: () {
-            Get.offAllNamed("/get_equipment");
-          },
-          child: const Text('跳过')),
-    ],
-  );
-}
 
 //logo&文字
 Center logo() {
@@ -112,11 +91,11 @@ Center logo() {
           ),
         ),
         Text(
-          'CPE管理平台',
-          style: TextStyle(fontSize: 50.sp),
+          '登录',
+          style: TextStyle(fontSize: 60.sp),
         ),
         Text(
-          '路由器数据管理平台',
+          'CPE管理平台',
           style: TextStyle(fontSize: 30.sp, color: Colors.black38),
         ),
       ],
@@ -229,12 +208,12 @@ Row registerAndForget() {
           }),
           child: const Text(
             '注册',
-            style: TextStyle(color: Colors.black38),
+            style: TextStyle(color: Colors.black45),
           )),
       // 忘记密码
       TextButton(
           onPressed: (() {}),
-          child: const Text('忘记密码', style: TextStyle(color: Colors.black38)))
+          child: const Text('忘记密码', style: TextStyle(color: Colors.black45)))
     ],
   );
 }

@@ -166,8 +166,8 @@ class _SettingState extends State<Setting> {
 
                   /// 清除缓存
                   clearCache(),
-                  useRegister(),
-                  useLogin()
+                  // useRegister(),
+                  // useLogin()
                   // const Divider(),
                 ],
               ),

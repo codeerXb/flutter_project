@@ -66,8 +66,11 @@ dependencies:
   permission_handler: ^10.0.0
   # 文件选择器
   file_picker: ^4.6.1
-    # 文件选择器
-  # file_ljk: ^4.6.1
+    # 视频流
+  fijkplayer_skin: ^2.2.8
+ # 视频解码器 软解码
+  fijkplayer: ^0.10.1
+  wakelock: ^0.5.2
   # 定位
   amap_location_fluttify: ^0.22.0-rc.0
   css_filter: ^1.0.2

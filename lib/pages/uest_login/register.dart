@@ -332,7 +332,7 @@ SizedBox buildLoginButton() {
         //表单校验
         if ((_formKey.currentState as FormState).validate()) {
           ToastUtils.toast('注册成功');
-          // Get.toNamed("/use_login");
+          Get.toNamed("/use_login");
         }
       },
       child: Text(

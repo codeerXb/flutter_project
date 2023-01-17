@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/custom_app_bar.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
@@ -13,6 +14,13 @@ class UserLogin extends StatefulWidget {
 }
 
 class _UserLoginState extends State<UserLogin> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    phone.text='123456';
+    password.text='admin';
+  }
   final LoginController loginController = Get.put(LoginController());
   bool passwordValShow = true;
   @override
@@ -75,6 +83,7 @@ class _UserLoginState extends State<UserLogin> {
                                 width: 1.sw - 104.w,
                                 child: TextFormField(
                                   obscureText: passwordValShow,
+                                  controller: password,
                                   style: TextStyle(
                                       fontSize: 32.sp,
                                       color: const Color(0xff051220)),
@@ -121,6 +130,10 @@ class _UserLoginState extends State<UserLogin> {
   }
 }
 
+final TextEditingController phone = TextEditingController();
+final TextEditingController password = TextEditingController();
+
+
 //logo&文字
 Center logo() {
   return Center(
@@ -160,6 +173,7 @@ Column buildPhoneField() {
             child: SizedBox(
               width: 1.sw - 104.w,
               child: TextFormField(
+                controller: phone,
                 keyboardType: TextInputType.number,
                 // initialValue: _password,
                 style:
@@ -173,16 +187,7 @@ Column buildPhoneField() {
                   // 取消自带的下边框
                   border: InputBorder.none,
                 ),
-                // obscureText: _isObscure,
-                // onSaved: (String? value) => _password = value!,
-                // onChanged: (String value) => _password = value,
-                onTap: () {
-                  // setState(() {
-                  //   _accountBorderColor = Colors.white;
-                  //   _passwordBorderColor = const Color(0xff2692F0);
-                  // });
-                },
-                // inputFormatters: [  LengthLimitingTextInputFormatter(50), ]
+               
               ),
             ),
           ),
@@ -229,6 +234,7 @@ SizedBox buildLoginButton() {
       ),
       onPressed: () {
         if (true) {
+          ToastUtils.toast('登录成功');
           Get.offAllNamed("/get_equipment");
         }
       },

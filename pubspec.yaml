@@ -66,6 +66,8 @@ dependencies:
   permission_handler: ^10.0.0
   # 文件选择器
   file_picker: ^4.6.1
+    # 文件选择器
+  # file_ljk: ^4.6.1
   # 定位
   amap_location_fluttify: ^0.22.0-rc.0
   css_filter: ^1.0.2

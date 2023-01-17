@@ -92,7 +92,7 @@ class _MyAppState extends State<MyApp> {
               _timer.cancel();
               printInfo(info: "+++++++++${settings.name}");
               if (settings.name != '/get_equipment' &&
-                  settings.name != '/loginPage') {
+                  settings.name != '/loginPage'&&settings.name != '/use_login') {
                 printInfo(info: "----------${settings.name}");
 
                 sharedGetData(loginController.isSn.value.toString(), String)

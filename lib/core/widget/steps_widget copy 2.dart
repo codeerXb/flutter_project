@@ -59,7 +59,9 @@ class _StepsWidgetState extends State<StepsWidget> {
                                 ? "搜索中"
                                 : widget.currentIndex == 2
                                     ? "完成"
-                                    : "未开始",
+                                    : widget.currentIndex == -2
+                                        ? '复位中'
+                                        : "未开始",
                         style: TextStyle(
                             fontWeight: FontWeight.w600, fontSize: 28.sp),
                       ),

@@ -48,7 +48,7 @@ class _SplashPageState extends State<SplashPage> {
     sharedGetData("token", String).then((data) {
       print('datadatadatadatadatadata');
       print(data);
-      Future.delayed(duration, () => Get.offNamed("/get_equipment"));
+      Future.delayed(duration, () => Get.offNamed("/use_login"));
     });
   }
 

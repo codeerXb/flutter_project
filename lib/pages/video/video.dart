@@ -18,28 +18,11 @@ class SimpleVideoPage extends StatefulWidget {
 String videoUrl = '';
 
 class _SimpleVideoPageState extends State<SimpleVideoPage> {
-  getVideo() async {
-    Dio dio = Dio();
-    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-        (client) {
-      client.badCertificateCallback = (cert, host, port) {
-        return true; // 返回true强制通过
-      };
-      return null;
-    };
-    var res = await dio.get(
-        'http://ccapi.smawave.com:18080/api/play/start/31011300001188000006/31011300001328000501');
-    setState(() {
-      videoUrl = json.decode(res.toString())['data']['rtsp'];
-      print(333);
-      print(videoUrl);
-    });
-  }
+
 
   @override
   void initState() {
     super.initState();
-    getVideo();
   }
 
   @override

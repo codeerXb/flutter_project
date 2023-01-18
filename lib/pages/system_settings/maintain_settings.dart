@@ -7,6 +7,9 @@ import '../../../core/widget/custom_app_bar.dart';
 import '../../core/http/http.dart';
 import '../../core/utils/shared_preferences_util.dart';
 import '../../core/utils/toast.dart';
+import '../../core/widget/common_box.dart';
+import '../topo/access_time.dart';
+import '../topo/access_workday.dart';
 import 'model/maintain_data.dart';
 
 /// 维护设置
@@ -100,15 +103,31 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                   ),
                   Offstage(
                     offstage: !isCheck,
-                    child: const SizedBox(
-                      child: Text("重启日期"),
-                    ),
+                    child: BottomLine(
+                        rowtem: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: const [
+                        Text('工作日',
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 5, 0, 0),
+                            )),
+                        SizedBox(width: 50, child: Workday())
+                      ],
+                    )),
                   ),
                   Offstage(
                     offstage: !isCheck,
-                    child: const SizedBox(
-                      child: Text("重启时间"),
-                    ),
+                    child: BottomLine(
+                        rowtem: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('时间',
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 5, 0, 0),
+                            )),
+                        SizedBox(width: 140, child: DatePickerPage())
+                      ],
+                    )),
                   ),
                 ],
               )),

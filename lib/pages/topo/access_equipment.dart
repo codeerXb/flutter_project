@@ -5,6 +5,9 @@ import 'package:flutter_template/pages/topo/model/equipment_datas.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+import 'access_time.dart';
+import 'access_workday.dart';
+
 class AccessEquipment extends StatefulWidget {
   const AccessEquipment({super.key});
 
@@ -100,22 +103,30 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                   BottomLine(
                       rowtem: RowContainer(
                     leftText: '设备',
-                    righText: data.iP.toString(),
+                    righText: data.mAC.toString(),
                   )),
                   BottomLine(
-                    rowtem: RowContainer(
-                      leftText: '工作日',
-                      righText: DateFormat("dd天HH小时mm分钟").format(
-                          DateTime.fromMillisecondsSinceEpoch(
-                              int.parse('${data.leaseTime}000'))),
-                    ),
-                  ),
+                      rowtem: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: const [
+                      Text('工作日',
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 5, 0, 0),
+                          )),
+                      SizedBox(width: 50, child: Workday())
+                    ],
+                  )),
                   BottomLine(
-                    rowtem: RowContainer(
-                      leftText: '时间',
-                      righText: data.type.toString(),
-                    ),
-                  ),
+                      rowtem: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('时间',
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 5, 0, 0),
+                          )),
+                      SizedBox(width: 140, child: DatePickerPage())
+                    ],
+                  )),
                 ],
               ),
             ),

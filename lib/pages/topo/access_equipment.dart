@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_template/core/utils/date_format_util.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/custom_app_bar.dart';
 import 'package:flutter_template/pages/topo/model/equipment_datas.dart';
@@ -15,6 +14,10 @@ class AccessEquipment extends StatefulWidget {
 
 class _AccessEquipmentState extends State<AccessEquipment> {
   OnlineDeviceTable data = OnlineDeviceTable(mAC: '');
+  String uNKTitle = '设备信息';
+
+  String accTitle = '家长控制';
+
   @override
   void initState() {
     super.initState();
@@ -47,6 +50,9 @@ class _AccessEquipmentState extends State<AccessEquipment> {
             const Padding(
               padding: EdgeInsets.only(top: 10),
             ),
+            Row(children: [
+              TitleWidger(title: uNKTitle),
+            ]),
             InfoBox(
               boxCotainer: Column(
                 children: [
@@ -65,12 +71,48 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                       leftText: '租约时间',
                       righText: DateFormat("dd天HH小时mm分钟").format(
                           DateTime.fromMillisecondsSinceEpoch(
-                              int.parse(data.leaseTime.toString() + '000'))),
+                              int.parse('${data.leaseTime}000'))),
                     ),
                   ),
                   BottomLine(
                     rowtem: RowContainer(
                       leftText: '类型',
+                      righText: data.type.toString(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.only(top: 10),
+            ),
+            Row(children: [
+              TitleWidger(title: accTitle),
+            ]),
+            InfoBox(
+              boxCotainer: Column(
+                children: [
+                  BottomLine(
+                      rowtem: RowContainer(
+                    leftText: '名称',
+                    righText: data.hostName.toString(),
+                  )),
+                  BottomLine(
+                      rowtem: RowContainer(
+                    leftText: '设备',
+                    righText: data.iP.toString(),
+                  )),
+                  BottomLine(
+                    rowtem: RowContainer(
+                      leftText: '工作日',
+                      righText: DateFormat("dd天HH小时mm分钟").format(
+                          DateTime.fromMillisecondsSinceEpoch(
+                              int.parse('${data.leaseTime}000'))),
+                    ),
+                  ),
+                  BottomLine(
+                    rowtem: RowContainer(
+                      leftText: '时间',
                       righText: data.type.toString(),
                     ),
                   ),

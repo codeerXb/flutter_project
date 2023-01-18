@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_template/pages/uest_login/ab.dart';
+import 'package:flutter_template/pages/uest_login/video.dart';
 
 // import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
 //视频测试
@@ -13,6 +13,8 @@ class VideoTest extends StatefulWidget {
 class _VideoTestState extends State<VideoTest> {
   @override
   Widget build(BuildContext context) {
-    return const ComplexVideoPage();
+    return const SimpleVideoPage();
   }
 }
+
+

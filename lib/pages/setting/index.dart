@@ -94,6 +94,9 @@ class _SettingState extends State<Setting> {
                     child: const TitleWidger(title: 'Wi-Fl设置'),
                   ),
 
+                  //测试
+                  VideoTest(),
+
                   /// WLAN设置
                   wlanSet(),
 
@@ -166,8 +169,6 @@ class _SettingState extends State<Setting> {
 
                   /// 清除缓存
                   clearCache(),
-                  useRegister(),
-                  useLogin()
                   // const Divider(),
                 ],
               ),
@@ -625,4 +626,14 @@ class _SettingState extends State<Setting> {
           Get.toNamed("/use_register");
         });
   }
+}
+
+/// 视频测试
+Widget VideoTest() {
+  return CommonWidget.simpleWidgetWithMine(
+      title: '视频测试',
+      icon: const Image(image: AssetImage('assets/images/WPS.png')),
+      callBack: () {
+        Get.toNamed("/test");
+      });
 }

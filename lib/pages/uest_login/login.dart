@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/core/utils/toast.dart';
+import 'package:flutter_template/core/widget/custom_app_bar.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
 
-/// 登录页面
+/// 用户登录
 class UserLogin extends StatefulWidget {
   const UserLogin({Key? key}) : super(key: key);
 
@@ -13,8 +14,15 @@ class UserLogin extends StatefulWidget {
 }
 
 class _UserLoginState extends State<UserLogin> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    phone.text='123456';
+    password.text='admin';
+  }
   final LoginController loginController = Get.put(LoginController());
-
+  bool passwordValShow = true;
   @override
   Widget build(BuildContext context) {
     // 点击空白  关闭键盘 时传的一个对象
@@ -26,24 +34,18 @@ class _UserLoginState extends State<UserLogin> {
     }
 
     return Scaffold(
-         appBar: AppBar(
-          backgroundColor: Colors.white,
-          centerTitle: true,
-          systemOverlayStyle: const SystemUiOverlayStyle(
-            //设置状态栏的背景颜色
-            statusBarColor: Colors.transparent,
-            //状态栏的文字的颜色
-            statusBarIconBrightness: Brightness.dark,
-          ),
-          elevation: 0,
-          leading: IconButton(
-              onPressed: () {
-                Get.offNamed("/get_equipment");
-              },
-              icon: const Icon(
-                Icons.arrow_back_ios,
-                color: Colors.black,
-              )),
+        appBar: customAppbar(
+          borderBottom: false,
+          actions: [
+            TextButton(
+                onPressed: () {
+                  Get.offAllNamed("/get_equipment");
+                },
+                child: Text(
+                  '跳过',
+                  style: TextStyle(fontSize: 32.w, fontWeight: FontWeight.w600),
+                )),
+          ],
         ),
         body: SingleChildScrollView(
           child: GestureDetector(
@@ -55,8 +57,6 @@ class _UserLoginState extends State<UserLogin> {
               child: Form(
                 child: Column(
                   children: [
-                    //跳过
-                    upDowm(),
                     Padding(padding: EdgeInsets.only(top: 100.w)),
 
                     //logo&文字
@@ -68,7 +68,51 @@ class _UserLoginState extends State<UserLogin> {
                     Padding(padding: EdgeInsets.only(top: 20.w)),
 
                     /// 密码
-                    buildPasswordTextField(),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              decoration: const BoxDecoration(
+                                border: Border(
+                                    bottom: BorderSide(
+                                        color: Color(0XFF302F4F), width: 0.0)),
+                              ),
+                              child: SizedBox(
+                                width: 1.sw - 104.w,
+                                child: TextFormField(
+                                  obscureText: passwordValShow,
+                                  controller: password,
+                                  style: TextStyle(
+                                      fontSize: 32.sp,
+                                      color: const Color(0xff051220)),
+                                  decoration: InputDecoration(
+                                    icon: const Icon(Icons.lock),
+                                    suffixIcon: IconButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            passwordValShow = !passwordValShow;
+                                          });
+                                        },
+                                        icon: Icon(!passwordValShow
+                                            ? Icons.visibility
+                                            : Icons.visibility_off)),
+                                    // 表单提示信息
+                                    hintText: "请输入登录密码",
+                                    hintStyle: TextStyle(
+                                        fontSize: 32.sp,
+                                        color: const Color(0xff737A83)),
+                                    // 取消自带的下边框
+                                    border: InputBorder.none,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                     Padding(padding: EdgeInsets.only(top: 20.w)),
 
                     /// 注册&忘记密码
@@ -86,19 +130,9 @@ class _UserLoginState extends State<UserLogin> {
   }
 }
 
-//跳过
-Row upDowm() {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.end,
-    children: [
-      TextButton(
-          onPressed: () {
-            Get.offAllNamed("/get_equipment");
-          },
-          child: const Text('跳过')),
-    ],
-  );
-}
+final TextEditingController phone = TextEditingController();
+final TextEditingController password = TextEditingController();
+
 
 //logo&文字
 Center logo() {
@@ -112,11 +146,11 @@ Center logo() {
           ),
         ),
         Text(
-          'CPE管理平台',
-          style: TextStyle(fontSize: 50.sp),
+          '登录',
+          style: TextStyle(fontSize: 60.sp),
         ),
         Text(
-          '路由器数据管理平台',
+          'CPE管理平台',
           style: TextStyle(fontSize: 30.sp, color: Colors.black38),
         ),
       ],
@@ -139,6 +173,7 @@ Column buildPhoneField() {
             child: SizedBox(
               width: 1.sw - 104.w,
               child: TextFormField(
+                controller: phone,
                 keyboardType: TextInputType.number,
                 // initialValue: _password,
                 style:
@@ -152,62 +187,7 @@ Column buildPhoneField() {
                   // 取消自带的下边框
                   border: InputBorder.none,
                 ),
-                // obscureText: _isObscure,
-                // onSaved: (String? value) => _password = value!,
-                // onChanged: (String value) => _password = value,
-                onTap: () {
-                  // setState(() {
-                  //   _accountBorderColor = Colors.white;
-                  //   _passwordBorderColor = const Color(0xff2692F0);
-                  // });
-                },
-                // inputFormatters: [  LengthLimitingTextInputFormatter(50), ]
-              ),
-            ),
-          ),
-        ],
-      ),
-    ],
-  );
-}
-
-// 密码
-Column buildPasswordTextField() {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Row(
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-              border: Border(
-                  bottom: BorderSide(color: Color(0XFF302F4F), width: 0.0)),
-            ),
-            child: SizedBox(
-              width: 1.sw - 104.w,
-              child: TextFormField(
-                // initialValue: _password,
-                style:
-                    TextStyle(fontSize: 32.sp, color: const Color(0xff051220)),
-                decoration: InputDecoration(
-                  icon: const Icon(Icons.lock),
-                  // 表单提示信息
-                  hintText: "请输入登录密码",
-                  hintStyle: TextStyle(
-                      fontSize: 32.sp, color: const Color(0xff737A83)),
-                  // 取消自带的下边框
-                  border: InputBorder.none,
-                ),
-                // obscureText: _isObscure,
-                // onSaved: (String? value) => _password = value!,
-                // onChanged: (String value) => _password = value,
-                onTap: () {
-                  // setState(() {
-                  //   _accountBorderColor = Colors.white;
-                  //   _passwordBorderColor = const Color(0xff2692F0);
-                  // });
-                },
-                // inputFormatters: [  LengthLimitingTextInputFormatter(50), ]
+               
               ),
             ),
           ),
@@ -229,12 +209,12 @@ Row registerAndForget() {
           }),
           child: const Text(
             '注册',
-            style: TextStyle(color: Colors.black38),
+            style: TextStyle(color: Colors.black45),
           )),
       // 忘记密码
       TextButton(
           onPressed: (() {}),
-          child: const Text('忘记密码', style: TextStyle(color: Colors.black38)))
+          child: const Text('忘记密码', style: TextStyle(color: Colors.black45)))
     ],
   );
 }
@@ -254,6 +234,7 @@ SizedBox buildLoginButton() {
       ),
       onPressed: () {
         if (true) {
+          ToastUtils.toast('登录成功');
           Get.offAllNamed("/get_equipment");
         }
       },

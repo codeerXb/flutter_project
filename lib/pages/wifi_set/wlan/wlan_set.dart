@@ -169,7 +169,7 @@ class _WlanSetState extends State<WlanSet> {
         print(wlanData.toString());
       });
     } catch (e) {
-      debugPrint('获取wps设置失败:$e.toString()');
+      debugPrint('设置失败:$e.toString()');
     }
   }
 
@@ -248,7 +248,7 @@ class _WlanSetState extends State<WlanSet> {
             wifi5GSsidTableLists.wiFi5GSsidTable![0].key.toString();
       });
     } catch (e) {
-      debugPrint('获取wps设置失败:$e.toString()');
+      debugPrint('设置失败:$e.toString()');
     }
   }
 

@@ -35,13 +35,14 @@ class _WpsSetState extends State<WpsSet> {
   String modeShowVal = 'PBC';
   int modeVal = 0;
   dynamic parmas = '';
+  final TextEditingController pinVal = TextEditingController();
   @override
   void initState() {
     super.initState();
     getData();
   }
 
-  //保存
+  //1 保存
   void handleSave() async {
     Map<String, dynamic> data = {
       'method': 'obj_set',
@@ -56,11 +57,11 @@ class _WpsSetState extends State<WpsSet> {
     }
   }
 
-  //保存模式
-  void savePbc() async {
+  //2.保存模式
+  void savePbc(params) async {
     Map<String, dynamic> data = {
       'method': 'obj_set',
-      'param': '{"$paramKey": "$modeShowVal"}',
+      'param': params,
     };
     try {
       await XHttp.get('/data.html', data);
@@ -87,15 +88,35 @@ class _WpsSetState extends State<WpsSet> {
         showVal = wpsData.wifiWps.toString() == '1' ? '2.4GHz' : '5GHz';
         val = wpsData.wifiWps.toString() == '1' ? 0 : 1;
         //频段是2G/5G 提交时提交
-        paramKey = wpsData.wifiWps.toString() == '1' ? 'wifiWps' : 'wifi5gWps';
-        //wps选中
-        isCheck = wpsData.wifi5gWps.toString() == '1' ||
-                wpsData.wifiWps.toString() == '1'
-            ? true
-            : false;
+        paramKey = wpsData.wifiWps.toString() == '0' ? 'wifiWps' : 'wifi5gWps';
+
         wpsVal = wpsData.wifi5gWps.toString();
-        //模式
-        modeShowVal = wpsData.wifiWpsMode.toString();
+
+        // 2G
+        if (wpsData.wifiWps.toString() == '1') {
+          //模式
+          modeShowVal =
+              wpsData.wifiWpsMode.toString() == 'client' ? 'Client PIN' : 'PBC';
+          // 客户模式
+          modeVal = ['PBC', 'client'].indexOf(wpsData.wifiWpsMode.toString());
+          //pin值
+          pinVal.text = wpsData.wifiWpsClientPin.toString();
+          //wps选中
+          isCheck = wpsData.wifiWps.toString() == '1' ? true : false;
+        }
+        //5g
+        else {
+          //模式
+          modeShowVal = wpsData.wifi5gWpsMode.toString() == 'client'
+              ? 'Client PIN'
+              : 'PBC';
+          // 客户模式
+          modeVal = ['PBC', 'client'].indexOf(wpsData.wifi5gWpsMode.toString());
+          //pin值
+          pinVal.text = wpsData.wifi5gWpsClientPin.toString();
+          //wps选中
+          isCheck = wpsData.wifi5gWps.toString() == '1' ? true : false;
+        }
       });
     } catch (e) {
       debugPrint('获取wps设置失败:$e.toString()');
@@ -260,7 +281,7 @@ class _WpsSetState extends State<WpsSet> {
                       ),
                       //客户 PIN
                       Offstage(
-                        offstage: modeShowVal == 'PBC'||!isCheck,
+                        offstage: modeShowVal == 'PBC' || !isCheck,
                         child: BottomLine(
                           rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -273,6 +294,7 @@ class _WpsSetState extends State<WpsSet> {
                                 width: 100.w,
                                 child: TextFormField(
                                   keyboardType: TextInputType.number,
+                                  controller: pinVal,
                                   style: TextStyle(
                                       fontSize: 26.sp,
                                       color: const Color(0xff051220)),
@@ -303,8 +325,18 @@ class _WpsSetState extends State<WpsSet> {
                                             255, 48, 118, 250))),
                                 onPressed: () {
                                   handleSave();
-                                  if (isCheck) {
-                                    savePbc();
+                                  //选择PBC
+                                  if (isCheck && modeShowVal == 'PBC') {
+                                    savePbc(
+                                        '{"${paramKey}Mode": "$modeShowVal"}');
+                                  }
+                                  //选择Client PIN
+                                  if (isCheck && modeShowVal == 'Client PIN') {
+                                    showVal == '2.4GHz'
+                                        ? savePbc(
+                                            '{ "${paramKey}Mode": "client",  "wifiWpsClientPin": "${pinVal.text}"}')
+                                        : savePbc(
+                                            '{ "${paramKey}Mode": "client",  "wifi5gWpsClientPin": "${pinVal.text}"}');
                                   }
                                 },
                                 child: Text(

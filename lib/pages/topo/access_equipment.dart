@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_template/core/utils/date_format_util.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/custom_app_bar.dart';
 import 'package:flutter_template/pages/topo/model/equipment_datas.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+
+import 'access_time.dart';
+import 'access_workday.dart';
 
 class AccessEquipment extends StatefulWidget {
   const AccessEquipment({super.key});
@@ -15,6 +17,10 @@ class AccessEquipment extends StatefulWidget {
 
 class _AccessEquipmentState extends State<AccessEquipment> {
   OnlineDeviceTable data = OnlineDeviceTable(mAC: '');
+  String uNKTitle = '设备信息';
+
+  String accTitle = '家长控制';
+
   @override
   void initState() {
     super.initState();
@@ -47,6 +53,9 @@ class _AccessEquipmentState extends State<AccessEquipment> {
             const Padding(
               padding: EdgeInsets.only(top: 10),
             ),
+            Row(children: [
+              TitleWidger(title: uNKTitle),
+            ]),
             InfoBox(
               boxCotainer: Column(
                 children: [
@@ -65,7 +74,7 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                       leftText: '租约时间',
                       righText: DateFormat("dd天HH小时mm分钟").format(
                           DateTime.fromMillisecondsSinceEpoch(
-                              int.parse(data.leaseTime.toString() + '000'))),
+                              int.parse('${data.leaseTime}000'))),
                     ),
                   ),
                   BottomLine(
@@ -74,6 +83,50 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                       righText: data.type.toString(),
                     ),
                   ),
+                ],
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.only(top: 10),
+            ),
+            Row(children: [
+              TitleWidger(title: accTitle),
+            ]),
+            InfoBox(
+              boxCotainer: Column(
+                children: [
+                  BottomLine(
+                      rowtem: RowContainer(
+                    leftText: '名称',
+                    righText: data.hostName.toString(),
+                  )),
+                  BottomLine(
+                      rowtem: RowContainer(
+                    leftText: '设备',
+                    righText: data.mAC.toString(),
+                  )),
+                  BottomLine(
+                      rowtem: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: const [
+                      Text('工作日',
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 5, 0, 0),
+                          )),
+                      SizedBox(width: 50, child: Workday())
+                    ],
+                  )),
+                  BottomLine(
+                      rowtem: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('时间',
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 5, 0, 0),
+                          )),
+                      SizedBox(width: 140, child: DatePickerPage())
+                    ],
+                  )),
                 ],
               ),
             ),

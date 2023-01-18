@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'dart:ui' as ui;
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -36,7 +37,7 @@ class RadarWidget extends StatefulWidget {
   }
 
   @override
-  _RadarMapWidgetState createState() => _RadarMapWidgetState();
+  State<RadarWidget> createState() => _RadarMapWidgetState();
 }
 
 class _RadarMapWidgetState extends State<RadarWidget>
@@ -89,7 +90,7 @@ class _RadarMapWidgetState extends State<RadarWidget>
           margin: const EdgeInsets.only(right: 4),
           decoration: BoxDecoration(
               color: legendColor,
-              borderRadius: BorderRadius.all(Radius.circular(6))),
+              borderRadius: const BorderRadius.all(Radius.circular(6))),
         ),
         Text(
           legendTitle,
@@ -201,7 +202,9 @@ class RadarMapPainter extends CustomPainter {
   RadarMapModel radarMap;
   late Paint mLinePaint; // 线画笔
   late Paint mLineInnerPaint; // 线画笔
-  late Paint mAreaPaint; // 区域画笔
+  late Paint mPointPaint; // 点画笔
+  late Paint mAreaPaint; //
+  Paint? mCirclePaint;
   Paint? mFillPaint; // 填充画笔
   TextStyle? textStyle;
   late Path mLinePath; // 短直线路径
@@ -243,6 +246,11 @@ class RadarMapPainter extends CustomPainter {
       ..strokeWidth = 1.5
       ..style = PaintingStyle.stroke
       ..strokeJoin = StrokeJoin.round;
+    mPointPaint = Paint()
+      ..strokeWidth = 4
+      ..style = PaintingStyle.stroke
+      ..strokeCap = StrokeCap.round;
+    mCirclePaint = Paint();
     mAreaPaint = Paint()..isAntiAlias = true;
     elementLength = radarMap.indicator.length;
   }
@@ -278,23 +286,34 @@ class RadarMapPainter extends CustomPainter {
     canvas.translate(w / 2 - skewing, radarMap.radius + top); // 移动坐标系
     drawInnerCircle(canvas, size);
     for (int i = 0; i < radarMap.legend.length; i++) {
-      drawRadarMap(
-          canvas,
-          radarMap.data[i].data,
-          radarMap.indicator.map((item) => item.maxValues).toList(),
-          mAreaPaint
-            ..color = radarMap.legend[i].color.withAlpha(radarMap.alpha));
+      debugPrint('paintStatus${radarMap.paintStatus.toString()}');
       // 绘制边框
-      drawRadarPath(
+      if (i == 0) {
+        drawPointPath(
           canvas,
-          radarMap.data[i].data,
+          radarMap.data[i],
           radarMap.indicator.map((item) => item.maxValues).toList(),
-          mLineInnerPaint..color = radarMap.legend[i].color);
-      drawRadarText(
-          canvas,
-          radarMap.data[i].data,
-          radarMap.indicator.map((item) => item.maxValues).toList(),
-          radarMap.legend[i].color);
+          mPointPaint..color = radarMap.legend[i].color,
+          radarMap.paintStatus,
+        );
+      } else {
+        drawRadarMap(
+            canvas,
+            radarMap.data[i].data,
+            radarMap.indicator.map((item) => item.maxValues).toList(),
+            mAreaPaint
+              ..color = radarMap.legend[i].color.withAlpha(radarMap.alpha));
+        drawRadarPath(
+            canvas,
+            radarMap.data[i].data,
+            radarMap.indicator.map((item) => item.maxValues).toList(),
+            mLineInnerPaint..color = radarMap.legend[i].color);
+        drawRadarText(
+            canvas,
+            radarMap.data[i].data,
+            radarMap.indicator.map((item) => item.maxValues).toList(),
+            radarMap.legend[i].color);
+      }
     }
 
     drawInfoText(canvas);
@@ -321,8 +340,19 @@ class RadarMapPainter extends CustomPainter {
           mLinePaint
             ..color = ringColor
             ..style = PaintingStyle.stroke
-            ..strokeWidth = s == ring ? 2 : 1,
+            ..strokeWidth = 1,
         );
+        canvas.drawArc(
+            Rect.fromCircle(
+                center: const Offset(0, 0), radius: innerRadius / ring * s),
+            0,
+            pi * 2,
+            false,
+            mCirclePaint!
+              // ..color = Colors.grey[500 - s * 100]!
+              ..color = Color(0xff000000 + s * 100000000000000)
+              // ..color = Color(0xff000000 - s * 5555550)
+              ..strokeWidth = 20);
       }
     } else {
       /// 绘制五个方环
@@ -389,9 +419,9 @@ class RadarMapPainter extends CustomPainter {
     //   canvas.restore();
     // }
     // 遍历画线
-    for (var i = 0; i < 4; i++) {
+    for (var i = 0; i < 12; i++) {
       canvas.save();
-      canvas.rotate(360 / 4 * i.toDouble() / 180 * pi);
+      canvas.rotate(360 / 12 * i.toDouble() / 180 * pi);
       mLinePath.moveTo(0, -innerRadius);
       mLinePath.relativeLineTo(0, innerRadius); //线的路径
       canvas.drawPath(
@@ -418,6 +448,43 @@ class RadarMapPainter extends CustomPainter {
     }
     radarMapPath.close();
     canvas.drawPath(radarMapPath, mapPaint);
+  }
+
+  /// 绘制点，在结束的时候曲线连线
+  drawPointPath(Canvas canvas, List<Map<String, dynamic>> value,
+      List<double> maxList, Paint linePaint, int end) {
+    Path path = Path();
+    List<Offset> points = [];
+    double step = radarMap.radius / value.length; //每小段的长度
+    // for (int i = 1; i < value.length; i++) {
+    //   double mark = value[i]['val'] / (maxList[i] / value.length);
+    //   var deg = pi / 180 * (value[i]['deg'] + 90);
+    //   points.add(Offset(mark * step * cos(deg), mark * step * sin(deg)));
+    // }
+
+    // if (end == 6) {
+    if (value.isNotEmpty) {
+      linePaint.strokeWidth = 1.5;
+      path.moveTo(0, value[0]['val'] / (maxList[0] / value.length) * step);
+      for (int i = 1; i < value.length; i = i + 1) {
+        double mark1 = value[i]['val'] / (maxList[i] / value.length);
+        // double mark2 = value[i + 1]['val'] / (maxList[i + 1] / value.length);
+        // double mark3 = value[0]['val'] / (maxList[0] / value.length);
+        var deg1 = pi / 180 * (value[i]['deg'] + 90);
+        // var deg2 = pi / 180 * (value[i + 1]['deg'] + 90);
+        // var deg3 = pi / 180 * (value[0]['deg'] + 90);
+        path.lineTo(
+          mark1 * step * cos(deg1),
+          mark1 * step * sin(deg1),
+          // mark3 * step * cos(deg3),
+          // mark3 * step * sin(deg3),
+        );
+      }
+      canvas.drawPath(path, linePaint);
+    }
+    // } else {
+    //   canvas.drawPoints(PointMode.points, points, linePaint);
+    // }
   }
 
   /// 绘制边框
@@ -621,8 +688,13 @@ class RadarMapPainter extends CustomPainter {
         dilogText != null) {
       List<LegendModel> legendModels =
           radarMap.legend.map((item) => item).toList();
-      List<double> mapDataModels =
-          radarMap.data.map((item) => item.data[tab.index!]).toList();
+      List<double> mapDataModels = radarMap.data.map((item) {
+        if (item?.val != null) {
+          return item.val;
+        } else {
+          return item.data[tab.index!];
+        }
+      }).toList() as List<double>;
       // for(int i=0;i<radarMap.data.length;i++){
       //   legendModels.add(radarMap.legend[i]);
       //   mapDataModels.add(radarMap.data[i].data[tab.index!]);

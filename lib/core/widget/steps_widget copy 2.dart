@@ -9,20 +9,18 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 ///
 /// @Description: 自定义步骤条
 ///
-const Colora = Color(0xff68739f);
-const Colorb = Color(0xff8c95db);
+const colora = Color(0xff68739f);
+const colorb = Color(0xff8c95db);
 
 class StepsWidget extends StatefulWidget {
   const StepsWidget({Key? key, required this.currentIndex}) : super(key: key);
   final int currentIndex;
 
   @override
-  _StepsWidgetState createState() => _StepsWidgetState();
+  State<StepsWidget> createState() => _StepsWidgetState();
 }
 
 class _StepsWidgetState extends State<StepsWidget> {
-  final _items = ["自检", "搜索", "完成"];
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -66,7 +64,9 @@ class _StepsWidgetState extends State<StepsWidget> {
                             fontWeight: FontWeight.w600, fontSize: 28.sp),
                       ),
                       Padding(padding: EdgeInsets.only(left: 10.w)),
-                      if (widget.currentIndex == 0 || widget.currentIndex == 1)
+                      if (widget.currentIndex == 0 ||
+                          widget.currentIndex == 1 ||
+                          widget.currentIndex == -2)
                         SpinKitSpinningLines(
                           color: const Color(0XFF0EBD8D),
                           size: 40.0.w,

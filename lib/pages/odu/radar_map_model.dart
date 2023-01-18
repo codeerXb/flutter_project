@@ -5,7 +5,7 @@ enum Shape { circle, square }
 
 class RadarMapModel {
   List<LegendModel> legend;
-  List<MapDataModel> data;
+  List<dynamic> data;
   List<IndicatorModel> indicator;
   Shape shape;
   //动画时间
@@ -25,6 +25,10 @@ class RadarMapModel {
   //文字大小
   double? maxWidth;
 
+  // 当前绘制状态
+  // 6的时候终止，默认为0
+  int paintStatus;
+
   RadarMapModel(
       {required this.legend,
       required this.data,
@@ -37,7 +41,8 @@ class RadarMapModel {
       this.dilog = true,
       this.dialogModel,
       this.outTextSize,
-      this.maxWidth});
+      this.maxWidth,
+      this.paintStatus = 0});
 }
 
 class TapModel {

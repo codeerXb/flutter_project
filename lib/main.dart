@@ -48,7 +48,7 @@ class _MyAppState extends State<MyApp> {
 
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey();
 
-  Timer _timer = Timer.periodic(const Duration(minutes: 0), (timer) {});
+  Timer? _timer = Timer.periodic(const Duration(minutes: 0), (timer) {});
 
   void appLogin(pwd) {
     Map<String, dynamic> data = {
@@ -89,10 +89,8 @@ class _MyAppState extends State<MyApp> {
             debugShowCheckedModeBanner: false,
             initialRoute: '/',
             onGenerateRoute: ((settings) {
-              _timer.cancel();
               printInfo(info: "+++++++++${settings.name}");
-              if (settings.name != '/get_equipment' &&
-                  settings.name != '/loginPage'&&settings.name != '/use_login') {
+              if (settings.name == '/home') {
                 printInfo(info: "----------${settings.name}");
 
                 sharedGetData(loginController.isSn.value.toString(), String)
@@ -101,14 +99,14 @@ class _MyAppState extends State<MyApp> {
                     password = value.toString();
                     _timer =
                         Timer.periodic(const Duration(minutes: 5), (timer) {
+                      debugPrint('当前时间${DateTime.now()}');
                       appLogin(password);
                     });
                   } else {
-                    _timer.cancel();
+                    _timer?.cancel();
+                    _timer = null;
                   }
                 });
-              } else {
-                _timer.cancel();
               }
               return router.getRoutes(settings);
             }),

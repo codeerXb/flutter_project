@@ -11,6 +11,7 @@ import 'package:flutter_template/pages/Ethernet/net_type.dart';
 import 'package:flutter_template/pages/setting/user_detail.dart';
 import 'package:flutter_template/pages/uest_login/login.dart';
 import 'package:flutter_template/pages/uest_login/register.dart';
+import 'package:flutter_template/pages/video/index.dart';
 import 'package:flutter_template/pages/wifi_set/major/major_set.dart';
 import 'package:flutter_template/pages/wifi_set/visitor/2.4GHZ_visitor/2.4GHZ_visitor1.dart';
 import 'package:flutter_template/pages/wifi_set/visitor/2.4GHZ_visitor/2.4GHZ_visitor2.dart';
@@ -167,6 +168,8 @@ class GlobalRouter {
     // 用户注册
     '/use_register': (BuildContext context, {Object? args}) =>
         const UserRegister(),
+    // 用户注册
+    '/video_play': (BuildContext context, {Object? args}) => const VideoPlay(),
   };
 
   static GlobalRouter? _singleton;

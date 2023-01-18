@@ -28,11 +28,13 @@ class _TopoItemState extends State<TopoItem> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        if (widget.topoData!.mAC == 'B4:4C:3B:9E:46:3D') {
-          Get.toNamed("/test");
-        } else {
           Get.toNamed("/access_equipment", arguments: widget.topoData);
-        }
+
+        // if (widget.topoData!.mAC == 'B4:4C:3B:9E:46:3D') {
+          // Get.toNamed("/video_play");
+        // } else {
+        //   Get.toNamed("/access_equipment", arguments: widget.topoData);
+        // }
         // var result = CommonPicker.showPicker(
         //   context: context,
         //   options: ['高楼层', '中楼层', '低楼层'],

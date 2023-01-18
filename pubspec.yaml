@@ -6,9 +6,12 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.17.3 <3.0.0"
+  sdk: ">=2.17.3 <3.3.0"
 
 dependencies:
+  #贝壳
+  bruno: ^3.2.0
+
   flutter:
     sdk: flutter
   # 图标库
@@ -65,7 +68,8 @@ dependencies:
   # 权限
   permission_handler: ^10.0.0
   # 文件选择器
-  file_picker: ^4.6.1
+  file_picker:
+    ^4.6.1
     # 文件选择器
   # file_ljk: ^4.6.1
   # 定位

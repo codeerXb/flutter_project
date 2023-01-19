@@ -87,19 +87,21 @@ class _MaintainSettingsState extends State<MaintainSettings> {
               InfoBox(
                   boxCotainer: Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('开启重启定时'),
-                      Switch(
-                        value: isCheck,
-                        onChanged: (newVal) {
-                          setState(() {
-                            isCheck = newVal;
-                          });
-                        },
-                      ),
-                    ],
+                  BottomLine(
+                    rowtem: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('开启重启定时'),
+                        Switch(
+                          value: isCheck,
+                          onChanged: (newVal) {
+                            setState(() {
+                              isCheck = newVal;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                   Offstage(
                     offstage: !isCheck,
@@ -154,22 +156,24 @@ class _MaintainSettingsState extends State<MaintainSettings> {
               Column(children: [
                 Padding(padding: EdgeInsets.only(top: 10.sp)),
                 InfoBox(
-                  boxCotainer: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        '点击 重启 按钮重启设备',
-                      ),
-                      ElevatedButton(
-                        style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
-                                const Color.fromARGB(255, 48, 118, 250))),
-                        onPressed: () {
-                          getmaintaData();
-                        },
-                        child: const Text('重启'),
-                      ),
-                    ],
+                  boxCotainer: BottomLine(
+                    rowtem: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          '点击 重启 按钮重启设备',
+                        ),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(
+                                  const Color.fromARGB(255, 48, 118, 250))),
+                          onPressed: () {
+                            getmaintaData();
+                          },
+                          child: const Text('重启'),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ]),
@@ -180,20 +184,22 @@ class _MaintainSettingsState extends State<MaintainSettings> {
               Column(children: [
                 Padding(padding: EdgeInsets.only(top: 10.sp)),
                 InfoBox(
-                  boxCotainer: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        '点击 恢复出厂 按钮进行恢复出厂操作',
-                      ),
-                      ElevatedButton(
-                        style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
-                                const Color.fromARGB(255, 48, 118, 250))),
-                        onPressed: () {},
-                        child: const Text('恢复出厂'),
-                      ),
-                    ],
+                  boxCotainer: BottomLine(
+                    rowtem: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          '点击 恢复出厂 按钮进行恢复出厂操作',
+                        ),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(
+                                  const Color.fromARGB(255, 48, 118, 250))),
+                          onPressed: () {},
+                          child: const Text('恢复出厂'),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ]),

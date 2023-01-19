@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/adapter.dart';
@@ -6,6 +7,9 @@ import 'package:fijkplayer/fijkplayer.dart';
 import 'package:fijkplayer_skin/fijkplayer_skin.dart';
 import 'package:fijkplayer_skin/schema.dart' show VideoSourceFormat;
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/core/widget/custom_app_bar.dart';
+import 'package:get/get.dart';
 
 // show 表示只导出 VideoSourceFormat 类
 class SimpleVideoPage extends StatefulWidget {
@@ -18,19 +22,112 @@ class SimpleVideoPage extends StatefulWidget {
 String videoUrl = '';
 
 class _SimpleVideoPageState extends State<SimpleVideoPage> {
+  late Timer? _timer;
   @override
   void initState() {
     super.initState();
+    getImg();
+    _timer = Timer.periodic(const Duration(milliseconds: 3000), (timer) {
+      getImg();
+    });
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    // 组件销毁时判断Timer是否仍然处于激活状态，是则取消
+    _timer?.cancel();
+    _timer = null;
+  }
+
+  List imgList = [];
+  getImg() async {
+    Dio dio = Dio();
+    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+        (client) {
+      client.badCertificateCallback = (cert, host, port) {
+        return true; // 返回true强制通过
+      };
+      return null;
+    };
+    var res = await dio.get(
+        'http://10.0.40.118:8080/scps_plat/smawave/ai_history/query?channelid=34020000001320000211');
+    setState(() {
+      if (imgList.toString() !=
+          json.decode(res.toString())['data']['list'].toString()) {
+        imgList = json.decode(res.toString())['data']['list'];
+      }
+    });
+
+    printInfo(info: '99999 ${json.decode(res.toString())}');
+  }
+
+  List imgs = List.generate(15, ((index) {
+    return index;
+  }));
+  @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: VideoDetailPage(),
-      ),
-    );
+    return Scaffold(
+        appBar: PreferredSize(
+          preferredSize:
+              Size.fromHeight(MediaQuery.of(context).size.height * 0.07),
+          child: const SafeArea(
+            top: true,
+            child: Offstage(),
+          ),
+        ),
+        body: Column(children: [
+          const SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: VideoDetailPage(),
+          ),
+          Padding(padding: EdgeInsets.only(bottom: 30.w)),
+          Expanded(
+            //解决column里面放其它布局和listview。listview不显示的问题。expanded flex=1.自适应高度
+            flex: 1,
+            child: imgList.isNotEmpty
+                ? ListView(children: [
+                    ...imgList.map((e) {
+                      return Card(
+                        elevation: 5, //设置卡片阴影的深度
+
+                        margin: EdgeInsets.only(
+                            left: 20.w, right: 20.w, bottom: 10.w), //设置卡片外边距
+                        child: Column(
+                          children: [
+                            ListTile(
+                              leading: Image.network(
+                                  'http://172.16.110.1:8080/scps_plat/profile/ai/2023/1/14/5c731284d38e43dc98bd58676002d552.jpg',
+                                  fit: BoxFit.fitWidth,
+                                  height: 80,
+                                  width: 80),
+                              title: Text(e['warnStatusName'].toString()),
+                              subtitle: Text(
+                                e['createTime'].toString(),
+                                style: TextStyle(fontSize: 20.sp),
+                              ),
+                              trailing: TextButton(
+                                onPressed: () {
+                                  Get.toNamed('/img', arguments: [
+                                    {
+                                      "url":
+                                          'http://172.16.110.1:8080/scps_plat/profile/ai/2023/1/14/5c731284d38e43dc98bd58676002d552.jpg'
+                                    }
+                                  ]);
+                                },
+                                child: const Text('查看'),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  ])
+                : const Center(
+                    child: Text('暂无数据'),
+                  ),
+          ),
+        ]));
   }
 }
 
@@ -87,31 +184,29 @@ class _VideoDetailPageState extends State<VideoDetailPage>
       return null;
     };
     var res = await dio.get(
-        'http://ccapi.smawave.com:18080/api/play/start/31011300001188000006/31011300001328000501');
-    setState(() {
-      videoUrl = json.decode(res.toString())['data']['rtsp'];
-      videoList = {
-        "video": [
-          {
-            "name": "线路资源一",
-            "list": [
-              {"url": videoUrl, "name": "视频名称"},
-            ]
-          }
-        ]
-      };
-      _videoSourceTabs = VideoSourceFormat.fromJson(videoList);
-    });
+        'http://ccapi.smawave.com:18080/api/play/start/34020000001110000001/34020000001320000211');
+    try {
+      setState(() {
+        videoUrl = json.decode(res.toString())['data']['rtsp'];
+        videoList = {
+          "video": [
+            {
+              "name": "线路资源一",
+              "list": [
+                {"url": videoUrl, "name": "视频名称"},
+              ]
+            }
+          ]
+        };
+        _videoSourceTabs = VideoSourceFormat.fromJson(videoList);
+        printInfo(info: videoList.toString());
+      });
+    } catch (e) {}
   }
 
   Map<String, List<Map<String, dynamic>>> videoList = {
     "video": [
-      {
-        "name": "线路资源一",
-        "list": [
-          {"url": videoUrl, "name": "视频名称"},
-        ]
-      }
+      {"name": "线路资源一", "list": []}
     ]
   };
 

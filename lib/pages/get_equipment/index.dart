@@ -115,6 +115,14 @@ class _MyWidgetState extends State<Equipment> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+              onPressed: () {
+                Get.toNamed("/use_login");
+              },
+              icon: const Icon(
+                Icons.arrow_back_ios,
+                color: Colors.black,
+              )),
           centerTitle: true,
           title: const Text(
             '发现设备',

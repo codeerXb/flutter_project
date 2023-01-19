@@ -7,6 +7,7 @@ import '../../../core/widget/custom_app_bar.dart';
 import '../../core/http/http.dart';
 import '../../core/utils/shared_preferences_util.dart';
 import '../../core/utils/toast.dart';
+import '../../core/widget/common_box.dart';
 import '../../core/widget/otp_input.dart';
 import 'model/lan_data.dart';
 
@@ -265,41 +266,45 @@ class _LanSettingsState extends State<LanSettings> {
                 ]),
                 InfoBox(
                   boxCotainer: Column(children: [
-                    Padding(padding: EdgeInsets.only(top: 40.sp)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        const Text('IP地址'),
-                        OtpInput(address, false),
-                        const Text('.'),
-                        OtpInput(address1, false),
-                        const Text('.'),
-                        OtpInput(address2, false),
-                        const Text('.'),
-                        OtpInput(address3, false),
-                        const Text(
-                          '*',
-                          style: TextStyle(color: Colors.red),
-                        )
-                      ],
+                    Padding(padding: EdgeInsets.only(top: 20.sp)),
+                    BottomLine(
+                      rowtem: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          const Text('IP地址'),
+                          OtpInput(address, false),
+                          const Text('.'),
+                          OtpInput(address1, false),
+                          const Text('.'),
+                          OtpInput(address2, false),
+                          const Text('.'),
+                          OtpInput(address3, false),
+                          const Text(
+                            '*',
+                            style: TextStyle(color: Colors.red),
+                          )
+                        ],
+                      ),
                     ),
-                    Padding(padding: EdgeInsets.only(top: 40.sp)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        const Text('子网掩码'),
-                        DisInput(subnetMask, false),
-                        const Text('.'),
-                        DisInput(subnetMask1, false),
-                        const Text('.'),
-                        DisInput(subnetMask2, false),
-                        const Text('.'),
-                        OtpInput(subnetMask3, false),
-                        const Text(
-                          '*',
-                          style: TextStyle(color: Colors.red),
-                        )
-                      ],
+                    Padding(padding: EdgeInsets.only(top: 20.sp)),
+                    BottomLine(
+                      rowtem: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          const Text('子网掩码'),
+                          DisInput(subnetMask, false),
+                          const Text('.'),
+                          DisInput(subnetMask1, false),
+                          const Text('.'),
+                          DisInput(subnetMask2, false),
+                          const Text('.'),
+                          OtpInput(subnetMask3, false),
+                          const Text(
+                            '*',
+                            style: TextStyle(color: Colors.red),
+                          )
+                        ],
+                      ),
                     ),
                     Padding(padding: EdgeInsets.only(bottom: 20.sp)),
                   ]),
@@ -311,59 +316,79 @@ class _LanSettingsState extends State<LanSettings> {
                 InfoBox(
                   boxCotainer: Column(children: [
                     Padding(padding: EdgeInsets.only(top: 20.sp)),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('DHCP 服务器'),
-                          Switch(
-                            value: isCheck,
-                            onChanged: (newVal) {
-                              setState(() {
-                                isCheck = newVal;
-                                if (isCheck == true) {
-                                  isCheckVal = '1';
-                                } else {
-                                  isCheckVal = '0';
-                                }
-                              });
-                            },
-                          ),
-                        ]),
-                    Padding(padding: EdgeInsets.only(top: 40.sp)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        const Text('起始地址'),
-                        DisInput(address, false),
-                        const Text('.'),
-                        DisInput(address1, false),
-                        const Text('.'),
-                        DisInput(address2, false),
-                        const Text('.'),
-                        OtpInput(start, false),
-                        const Text(
-                          '*',
-                          style: TextStyle(color: Colors.red),
-                        )
-                      ],
+                    BottomLine(
+                      rowtem: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text('DHCP 服务器'),
+                            Switch(
+                              value: isCheck,
+                              onChanged: (newVal) {
+                                setState(() {
+                                  isCheck = newVal;
+                                  if (isCheck == true) {
+                                    isCheckVal = '1';
+                                  } else {
+                                    isCheckVal = '0';
+                                  }
+                                });
+                              },
+                            ),
+                          ]),
                     ),
-                    Padding(padding: EdgeInsets.only(top: 40.sp)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        const Text('结束地址'),
-                        DisInput(address, false),
-                        const Text('.'),
-                        DisInput(address1, false),
-                        const Text('.'),
-                        DisInput(address2, false),
-                        const Text('.'),
-                        OtpInput(end, false),
-                        const Text(
-                          '*',
-                          style: TextStyle(color: Colors.red),
-                        )
-                      ],
+                    Padding(padding: EdgeInsets.only(top: 20.sp)),
+                    BottomLine(
+                      rowtem: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          const Text('起始地址'),
+                          DisInput(address, false),
+                          const Text('.'),
+                          DisInput(address1, false),
+                          const Text('.'),
+                          DisInput(address2, false),
+                          const Text('.'),
+                          Offstage(
+                            offstage: isCheck == false,
+                            child: OtpInput(start, false),
+                          ),
+                          Offstage(
+                            offstage: isCheck == true,
+                            child: DisInput(start, false),
+                          ),
+                          const Text(
+                            '*',
+                            style: TextStyle(color: Colors.red),
+                          )
+                        ],
+                      ),
+                    ),
+                    Padding(padding: EdgeInsets.only(top: 20.sp)),
+                    BottomLine(
+                      rowtem: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          const Text('结束地址'),
+                          DisInput(address, false),
+                          const Text('.'),
+                          DisInput(address1, false),
+                          const Text('.'),
+                          DisInput(address2, false),
+                          const Text('.'),
+                          Offstage(
+                            offstage: isCheck == false,
+                            child: OtpInput(end, false),
+                          ),
+                          Offstage(
+                            offstage: isCheck == true,
+                            child: DisInput(end, false),
+                          ),
+                          const Text(
+                            '*',
+                            style: TextStyle(color: Colors.red),
+                          )
+                        ],
+                      ),
                     ),
                     Padding(padding: EdgeInsets.only(top: 40.sp)),
                     Row(

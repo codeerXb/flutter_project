@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/pages/network_settings/model/wan_data.dart';
+import 'package:get/get.dart';
 import '../../../core/widget/custom_app_bar.dart';
+import '../../core/utils/shared_preferences_util.dart';
 import '../../core/utils/toast.dart';
+import '../../core/widget/common_box.dart';
 import '../../core/widget/common_picker.dart';
 
 /// WAN设置
@@ -42,6 +45,7 @@ class _WanSettingsState extends State<WanSettings> {
           wanNetwork = WanNetworkModel.fromJson(d);
           if (wanNetwork.success == true) {
             ToastUtils.toast('修改成功');
+            loginout();
           } else {
             ToastUtils.toast('修改失败');
           }
@@ -54,6 +58,13 @@ class _WanSettingsState extends State<WanSettings> {
       debugPrint('失败：${onError.toString()}');
       ToastUtils.toast('修改失败');
     });
+  }
+
+  void loginout() {
+    // 这里还需要调用后台接口的方法
+    sharedDeleteData("loginInfo");
+    sharedClearData();
+    Get.offAllNamed("/get_equipment");
   }
 
   void getWanVal() async {
@@ -81,7 +92,7 @@ class _WanSettingsState extends State<WanSettings> {
       });
     } catch (e) {
       debugPrint('失败：$e.toString()');
-      ToastUtils.toast('修改失败');
+      ToastUtils.toast('获取失败');
     }
   }
 
@@ -100,45 +111,49 @@ class _WanSettingsState extends State<WanSettings> {
               ),
               Padding(padding: EdgeInsets.only(top: 30.sp)),
               GestureDetector(
-                onTap: () {
-                  var result = CommonPicker.showPicker(
-                    context: context,
-                    options: ['NAT', '桥接', 'ROUTER'],
-                    value: val,
-                  );
-                  result?.then((selectedValue) => {
-                        if (val != selectedValue && selectedValue != null)
-                          {
-                            setState(() => {
-                                  val = selectedValue,
-                                  showVal = ['NAT', '桥接', 'ROUTER'][val],
-                                  if (val == 0) {wanVal = 'nat', getWanData()},
-                                  if (val == 1)
-                                    {wanVal = 'bridge', getWanData()},
-                                  if (val == 2)
-                                    {wanVal = 'router', getWanData()},
-                                })
-                          }
-                      });
-                },
-                child: InfoBox(
-                  boxCotainer: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('网络模式', style: TextStyle(fontSize: 30.sp)),
-                        Row(
+                  onTap: () {
+                    var result = CommonPicker.showPicker(
+                      context: context,
+                      options: ['NAT', '桥接', 'ROUTER'],
+                      value: val,
+                    );
+                    result?.then((selectedValue) => {
+                          if (val != selectedValue && selectedValue != null)
+                            {
+                              setState(() => {
+                                    val = selectedValue,
+                                    showVal = ['NAT', '桥接', 'ROUTER'][val],
+                                    if (val == 0)
+                                      {wanVal = 'nat', getWanData()},
+                                    if (val == 1)
+                                      {wanVal = 'bridge', getWanData()},
+                                    if (val == 2)
+                                      {wanVal = 'router', getWanData()},
+                                  })
+                            }
+                        });
+                  },
+                  child: InfoBox(
+                      boxCotainer: Column(children: [
+                    BottomLine(
+                      rowtem: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(showVal, style: TextStyle(fontSize: 30.sp)),
-                            Icon(
-                              Icons.arrow_forward_ios_outlined,
-                              color: const Color.fromRGBO(144, 147, 153, 1),
-                              size: 30.w,
-                            )
-                          ],
-                        ),
-                      ]),
-                ),
-              ),
+                            Text('网络模式', style: TextStyle(fontSize: 30.sp)),
+                            Row(
+                              children: [
+                                Text(showVal,
+                                    style: TextStyle(fontSize: 30.sp)),
+                                Icon(
+                                  Icons.arrow_forward_ios_outlined,
+                                  color: const Color.fromRGBO(144, 147, 153, 1),
+                                  size: 30.w,
+                                )
+                              ],
+                            ),
+                          ]),
+                    ),
+                  ]))),
               SizedBox(
                 height: 60.sp,
               ),

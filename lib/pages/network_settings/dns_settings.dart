@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/widget/custom_app_bar.dart';
 import '../../core/http/http.dart';
 import '../../core/utils/toast.dart';
+import '../../core/widget/common_box.dart';
 import '../../core/widget/otp_input.dart';
 import 'model/dns_data.dart';
 
@@ -224,32 +225,36 @@ class _DnsSettingsState extends State<DnsSettings> {
                   InfoBox(
                     boxCotainer: Column(children: [
                       Padding(padding: EdgeInsets.only(top: 30.sp)),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          const Text('主DNS'),
-                          OtpInput(dsnMain, false),
-                          const Text('.'),
-                          OtpInput(dsnMain1, false),
-                          const Text('.'),
-                          OtpInput(dsnMain2, false),
-                          const Text('.'),
-                          OtpInput(dsnMain3, false),
-                        ],
+                      BottomLine(
+                        rowtem: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            const Text('主DNS'),
+                            OtpInput(dsnMain, false),
+                            const Text('.'),
+                            OtpInput(dsnMain1, false),
+                            const Text('.'),
+                            OtpInput(dsnMain2, false),
+                            const Text('.'),
+                            OtpInput(dsnMain3, false),
+                          ],
+                        ),
                       ),
-                      Padding(padding: EdgeInsets.only(top: 70.sp)),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          const Text('辅DNS'),
-                          OtpInput(dsnAssist, false),
-                          const Text('.'),
-                          OtpInput(dsnAssist1, false),
-                          const Text('.'),
-                          OtpInput(dsnAssist2, false),
-                          const Text('.'),
-                          OtpInput(dsnAssist3, false),
-                        ],
+                      Padding(padding: EdgeInsets.only(top: 30.sp)),
+                      BottomLine(
+                        rowtem: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            const Text('辅DNS'),
+                            OtpInput(dsnAssist, false),
+                            const Text('.'),
+                            OtpInput(dsnAssist1, false),
+                            const Text('.'),
+                            OtpInput(dsnAssist2, false),
+                            const Text('.'),
+                            OtpInput(dsnAssist3, false),
+                          ],
+                        ),
                       ),
                       Padding(padding: EdgeInsets.only(bottom: 30.sp)),
                     ]),

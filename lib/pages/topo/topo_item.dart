@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:css_filter/css_filter.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_template/core/widget/common_picker.dart';
 import 'package:flutter_template/pages/topo/model/equipment_datas.dart';
 import 'package:get/get.dart';
 
@@ -28,7 +27,7 @@ class _TopoItemState extends State<TopoItem> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-          Get.toNamed("/video_play");
+        Get.toNamed("/video_play");
         // if (widget.topoData!.mAC == 'B4:4C:3B:9E:46:3D') {
         // } else {
         //   Get.toNamed("/access_equipment", arguments: widget.topoData);

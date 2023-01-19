@@ -42,97 +42,98 @@ class _AccessEquipmentState extends State<AccessEquipment> {
     }
 
     return Scaffold(
-      appBar: customAppbar(context: context, title: data.hostName.toString()),
-      body: Container(
-        padding: const EdgeInsets.all(10.0),
-        decoration:
-            const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(top: 10),
-            ),
-            Row(children: [
-              TitleWidger(title: uNKTitle),
-            ]),
-            InfoBox(
-              boxCotainer: Column(
-                children: [
-                  BottomLine(
-                      rowtem: RowContainer(
-                    leftText: 'MAC地址',
-                    righText: data.mAC.toString(),
-                  )),
-                  BottomLine(
-                      rowtem: RowContainer(
-                    leftText: 'IP地址',
-                    righText: data.iP.toString(),
-                  )),
-                  BottomLine(
-                    rowtem: RowContainer(
-                      leftText: '租约时间',
-                      righText: DateFormat("dd天HH小时mm分钟").format(
-                          DateTime.fromMillisecondsSinceEpoch(
-                              int.parse('${data.leaseTime}000'))),
-                    ),
-                  ),
-                  BottomLine(
-                    rowtem: RowContainer(
-                      leftText: '类型',
-                      righText: data.type.toString(),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.only(top: 10),
-            ),
-            Row(children: [
-              TitleWidger(title: accTitle),
-            ]),
-            InfoBox(
-              boxCotainer: Column(
-                children: [
-                  BottomLine(
-                      rowtem: RowContainer(
-                    leftText: '名称',
-                    righText: data.hostName.toString(),
-                  )),
-                  BottomLine(
-                      rowtem: RowContainer(
-                    leftText: '设备',
-                    righText: data.mAC.toString(),
-                  )),
-                  BottomLine(
-                      rowtem: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      Text('工作日',
-                          style: TextStyle(
-                            color: Color.fromARGB(255, 5, 0, 0),
-                          )),
-                      SizedBox(width: 50, child: Workday())
-                    ],
-                  )),
-                  BottomLine(
-                      rowtem: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        appBar: customAppbar(context: context, title: data.hostName.toString()),
+        body: SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.all(10.0),
+            decoration:
+                const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(top: 10),
+                ),
+                Row(children: [
+                  TitleWidger(title: uNKTitle),
+                ]),
+                InfoBox(
+                  boxCotainer: Column(
                     children: [
-                      const Text('时间',
-                          style: TextStyle(
-                            color: Color.fromARGB(255, 5, 0, 0),
-                          )),
-                      SizedBox(width: 160, child: DatePickerPage())
+                      BottomLine(
+                          rowtem: RowContainer(
+                        leftText: 'MAC地址',
+                        righText: data.mAC.toString(),
+                      )),
+                      BottomLine(
+                          rowtem: RowContainer(
+                        leftText: 'IP地址',
+                        righText: data.iP.toString(),
+                      )),
+                      BottomLine(
+                        rowtem: RowContainer(
+                          leftText: '租约时间',
+                          righText: DateFormat("dd天HH小时mm分钟").format(
+                              DateTime.fromMillisecondsSinceEpoch(
+                                  int.parse('${data.leaseTime}000'))),
+                        ),
+                      ),
+                      BottomLine(
+                        rowtem: RowContainer(
+                          leftText: '类型',
+                          righText: data.type.toString(),
+                        ),
+                      ),
                     ],
-                  )),
-                ],
-              ),
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(top: 10),
+                ),
+                Row(children: [
+                  TitleWidger(title: accTitle),
+                ]),
+                InfoBox(
+                  boxCotainer: Column(
+                    children: [
+                      BottomLine(
+                          rowtem: RowContainer(
+                        leftText: '名称',
+                        righText: data.hostName.toString(),
+                      )),
+                      BottomLine(
+                          rowtem: RowContainer(
+                        leftText: '设备',
+                        righText: data.mAC.toString(),
+                      )),
+                      BottomLine(
+                          rowtem: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: const [
+                          Text('工作日',
+                              style: TextStyle(
+                                color: Color.fromARGB(255, 5, 0, 0),
+                              )),
+                          SizedBox(width: 50, child: Workday())
+                        ],
+                      )),
+                      BottomLine(
+                          rowtem: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('时间',
+                              style: TextStyle(
+                                color: Color.fromARGB(255, 5, 0, 0),
+                              )),
+                          SizedBox(width: 160, child: DatePickerPage())
+                        ],
+                      )),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-    );
+          ),
+        ));
   }
 }

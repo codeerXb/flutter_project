@@ -124,7 +124,7 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                           style: TextStyle(
                             color: Color.fromARGB(255, 5, 0, 0),
                           )),
-                      SizedBox(width: 140, child: DatePickerPage())
+                      SizedBox(width: 160, child: DatePickerPage())
                     ],
                   )),
                 ],

@@ -63,7 +63,7 @@ class PlayerShowConfig implements ShowConfigAbs {
   bool stateAuto = true;
   //顶部标题栏
   @override
-  bool topBar = true;
+  bool topBar = false;
 }
 
 class VideoDetailPage extends StatefulWidget {
@@ -100,6 +100,7 @@ class _VideoDetailPageState extends State<VideoDetailPage>
           }
         ]
       };
+      _videoSourceTabs = VideoSourceFormat.fromJson(videoList);
     });
   }
 

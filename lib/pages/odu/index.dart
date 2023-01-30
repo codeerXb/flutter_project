@@ -97,12 +97,12 @@ class _ODUState extends State<ODU> {
         if (mounted) {
           try {
             dynamic res2;
-            if (getStat) {
+            if (getStat && mounted) {
               setState(() {
                 quest = 0;
               });
               res2 = await XHttp.get('/data.html', data2);
-              if (res2 != null) {
+              if (res2 != null && mounted) {
                 setState(() {
                   getStat = false;
                 });
@@ -168,9 +168,11 @@ class _ODUState extends State<ODU> {
     };
     return XHttp.get('/data.html', data).then((res) {
       try {
-        setState(() {
-          getStat = true;
-        });
+        if (mounted) {
+          setState(() {
+            getStat = true;
+          });
+        }
         debugPrint("\n================== oduoduodu ==========================");
         Map<String, dynamic> transmission = {"ODUTransmission": ''};
         String jsonData = res.replaceAll('\\u0002', '');
@@ -183,7 +185,8 @@ class _ODUState extends State<ODU> {
         // 自检
         if (oduData.oDUTransmission!.param2 == 4) {
           if (oduData.oDUTransmission?.dataTable != null &&
-              oduData.oDUTransmission!.dataTable![0].degree != null) {
+              oduData.oDUTransmission!.dataTable![0].degree != null &&
+              mounted) {
             setState(() {
               endStatus = 0;
               currentIndex = 0;
@@ -224,7 +227,8 @@ class _ODUState extends State<ODU> {
             oduData.oDUTransmission!.param2 == 2) {
           //搜索
           if (oduData.oDUTransmission?.dataTable != null &&
-              oduData.oDUTransmission!.dataTable![0].degree != null) {
+              oduData.oDUTransmission!.dataTable![0].degree != null &&
+              mounted) {
             setState(() {
               endStatus = 0;
               currentIndex = 1;
@@ -275,53 +279,62 @@ class _ODUState extends State<ODU> {
             // });
           }
         } else if (oduData.oDUTransmission!.param2 == 6) {
-          setState(() {
-            isShow = true;
-            endStatus = 6;
-            pointer = List.generate(360, (index) {
-              return 0;
-            });
-            mapDataPoint = List.generate(360, (index) {
-              return 0;
-            });
-            pointer[currentAngle] = maxNumber;
-            currentIndex = 2;
-            _timer?.cancel();
-            selfInspectionTimer?.cancel();
-            selfInspectionTimer = null;
-          });
-          ToastUtils.toast('终止搜索');
-        } else if (oduData.oDUTransmission!.param2 == 3) {
-          setState(() {
-            currentIndex = -2;
-            endStatus = 0;
-          });
-        } else if (oduData.oDUTransmission!.param2 == 5) {
-          if (oduData.oDUTransmission!.dataTable![0].degree != null) {
+          if (mounted) {
             setState(() {
+              isShow = true;
+              endStatus = 6;
+              pointer = List.generate(360, (index) {
+                return 0;
+              });
               mapDataPoint = List.generate(360, (index) {
                 return 0;
               });
-              // 每次只画最后一个数
-              int endIndex = oduData.oDUTransmission!.dataTable!.length - 1;
-              int degIndex =
-                  ((oduData.oDUTransmission!.dataTable![endIndex].degree! / 100)
-                          .truncate() %
-                      360);
-              mapDataPoint[degIndex] = 30;
-              _index = endIndex;
-              mapData.map((e) {
-                if (e['deg'] == endIndex) {
-                  curS = e['val'];
-                }
-              });
+              pointer[currentAngle] = maxNumber;
+              currentIndex = 2;
+              _timer?.cancel();
+              selfInspectionTimer?.cancel();
+              selfInspectionTimer = null;
+            });
+            ToastUtils.toast('终止搜索');
+          }
+        } else if (oduData.oDUTransmission!.param2 == 3) {
+          if (mounted) {
+            setState(() {
+              currentIndex = -2;
+              endStatus = 0;
             });
           }
+        } else if (oduData.oDUTransmission!.param2 == 5) {
+          if (oduData.oDUTransmission!.dataTable![0].degree != null) {
+            if (mounted) {
+              setState(() {
+                mapDataPoint = List.generate(360, (index) {
+                  return 0;
+                });
+                // 每次只画最后一个数
+                int endIndex = oduData.oDUTransmission!.dataTable!.length - 1;
+                int degIndex =
+                    ((oduData.oDUTransmission!.dataTable![endIndex].degree! /
+                                100)
+                            .truncate() %
+                        360);
+                mapDataPoint[degIndex] = 30;
+                _index = endIndex;
+                mapData.map((e) {
+                  if (e['deg'] == endIndex) {
+                    curS = e['val'];
+                  }
+                });
+              });
+            }
+          }
         } else {
-          printInfo(info: 'param2:${oduData.oDUTransmission!.param2}');
-          setState(() {
-            endStatus = 0;
-          });
+          if (mounted) {
+            printInfo(info: 'param2:${oduData.oDUTransmission!.param2}');
+            setState(() {
+              endStatus = 0;
+            });
+          }
         }
       } on FormatException catch (e) {
         // setState(() {
@@ -343,7 +356,8 @@ class _ODUState extends State<ODU> {
       }
       if (e is DioError &&
           (e.type == DioErrorType.receiveTimeout ||
-              e.type == DioErrorType.connectTimeout)) {
+              e.type == DioErrorType.connectTimeout) &&
+          mounted) {
         setState(() {
           quest++;
         });

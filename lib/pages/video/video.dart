@@ -16,7 +16,7 @@ class SimpleVideoPage extends StatefulWidget {
   const SimpleVideoPage({Key? key}) : super(key: key);
 
   @override
-  _SimpleVideoPageState createState() => _SimpleVideoPageState();
+  State<SimpleVideoPage> createState() => _SimpleVideoPageState();
 }
 
 String videoUrl = '';
@@ -50,16 +50,21 @@ class _SimpleVideoPageState extends State<SimpleVideoPage> {
       };
       return null;
     };
-    var res = await dio.get(
-        'http://10.0.40.118:8080/scps_plat/smawave/ai_history/query?channelid=34020000001320000211');
-    setState(() {
-      if (imgList.toString() !=
-          json.decode(res.toString())['data']['list'].toString()) {
-        imgList = json.decode(res.toString())['data']['list'];
+    try {
+      var res = await dio.get(
+          'http://10.0.40.118:8080/scps_plat/smawave/ai_history/query?channelid=34020000001320000211');
+      if (mounted) {
+        setState(() {
+          if (imgList.toString() !=
+              json.decode(res.toString())['data']['list'].toString()) {
+            imgList = json.decode(res.toString())['data']['list'];
+          }
+        });
       }
-    });
-
-    printInfo(info: '99999 ${json.decode(res.toString())}');
+      printInfo(info: '视频截图数据 ${json.decode(res.toString())}');
+    } on DioError catch (err) {
+      printError(info: err.toString());
+    }
   }
 
   List imgs = List.generate(15, ((index) {
@@ -167,7 +172,7 @@ class VideoDetailPage extends StatefulWidget {
   const VideoDetailPage({Key? key}) : super(key: key);
 
   @override
-  _VideoDetailPageState createState() => _VideoDetailPageState();
+  State<VideoDetailPage> createState() => _VideoDetailPageState();
 }
 
 class _VideoDetailPageState extends State<VideoDetailPage>
@@ -183,9 +188,9 @@ class _VideoDetailPageState extends State<VideoDetailPage>
       };
       return null;
     };
-    var res = await dio.get(
-        'http://ccapi.smawave.com:18080/api/play/start/34020000001110000001/34020000001320000211');
     try {
+      var res = await dio.get(
+          'http://ccapi.smawave.com:18080/api/play/start/34020000001110000001/34020000001320000211');
       setState(() {
         videoUrl = json.decode(res.toString())['data']['rtsp'];
         videoList = {
@@ -199,9 +204,11 @@ class _VideoDetailPageState extends State<VideoDetailPage>
           ]
         };
         _videoSourceTabs = VideoSourceFormat.fromJson(videoList);
-        printInfo(info: videoList.toString());
+        printInfo(info: '视频队列信息${videoList.toString()}');
       });
-    } catch (e) {}
+    } on DioError catch (e) {
+      printError(info: '播放视频错误${e.toString()}');
+    }
   }
 
   Map<String, List<Map<String, dynamic>>> videoList = {
@@ -217,7 +224,7 @@ class _VideoDetailPageState extends State<VideoDetailPage>
 
   @override
   void dispose() {
-    player.dispose();
+    player.release();
     super.dispose();
   }
 
@@ -225,7 +232,9 @@ class _VideoDetailPageState extends State<VideoDetailPage>
   void initState() {
     super.initState();
     getVideo();
-    _videoSourceTabs = VideoSourceFormat.fromJson(videoList);
+    setState(() {
+      _videoSourceTabs = VideoSourceFormat.fromJson(videoList);
+    });
     //这句不能省，必须有
     speed = 1.0;
   }

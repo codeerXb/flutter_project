@@ -98,7 +98,7 @@ class _DashboardState extends State<Dashboard> {
       var obj = await XHttp.get('/data.html', flowStatistics);
       // 以 { 或者 [ 开头的
       RegExp exp = RegExp('^[{[]');
-      if (!exp.hasMatch(obj)) {
+      if (!exp.hasMatch(obj) && mounted) {
         setState(() {
           _usedFlow = 0;
           _progress = 0;
@@ -107,7 +107,7 @@ class _DashboardState extends State<Dashboard> {
       }
       var jsonObj = json.decode(obj);
       var flowTable = FlowStatistics.fromJson(jsonObj).flowTable?[4];
-      if (flowTable != null) {
+      if (flowTable != null && mounted) {
         var usedFlowBytes = double.parse(flowTable.recvBytes!) +
             double.parse(flowTable.sendBytes!);
         setState(() {
@@ -135,10 +135,12 @@ class _DashboardState extends State<Dashboard> {
       var res = await XHttp.get('/data.html', queryOnlineTime);
       var time = json.decode(res)['systemOnlineTime'];
       debugPrint('获取的时长${double.parse(time) / 3600}');
-      setState(() {
-        _usedTime = (double.parse(time) / 3600);
-        _progress = (1 - (_usedTime / widget.totalComboData)) * 100;
-      });
+      if (mounted) {
+        setState(() {
+          _usedTime = (double.parse(time) / 3600);
+          _progress = (1 - (_usedTime / widget.totalComboData)) * 100;
+        });
+      }
     } catch (err) {
       debugPrint('获取在线时长错误$err');
     }
@@ -154,7 +156,7 @@ class _DashboardState extends State<Dashboard> {
       var res = await XHttp.get('/data.html', queryOnlineDevice);
       // 以 { 或者 [ 开头的
       RegExp exp = RegExp('^[{[]');
-      if (!exp.hasMatch(res)) {
+      if (!exp.hasMatch(res) && mounted) {
         setState(() {
           _onlineCount = 0;
         });
@@ -162,7 +164,7 @@ class _DashboardState extends State<Dashboard> {
       }
       var onlineDevice =
           OnlineDevice.fromJson(jsonDecode(res)).onlineDeviceTable;
-      if (onlineDevice != null) {
+      if (onlineDevice != null && mounted) {
         setState(() {
           _onlineCount = onlineDevice.length;
         });

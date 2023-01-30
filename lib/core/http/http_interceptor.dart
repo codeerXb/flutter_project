@@ -13,7 +13,8 @@ class HttpInterceptors extends InterceptorsWrapper {
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     String token = loginController.login.token.value;
     String session = loginController.login.session.value;
-
+    // String token = 'd302214d-b02c-4abe-933d-c530b604c9d1';
+    // String session = '::webs.session::a9296e73e3daf429d402074990f1363d';
     Map<String, dynamic> header = {
       "Cookie": '-goahead-session-=$session; token=$token'
     };

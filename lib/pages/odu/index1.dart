@@ -33,7 +33,6 @@ class _SocketState extends State<SocketPage> {
   }
 
   onData(message) {
-    print(message);
     debugPrint("res -----> $message");
   }
 
@@ -62,10 +61,11 @@ class _SocketState extends State<SocketPage> {
   }
 
   void _sendMessage() {
+    print(1);
     channel.sink.add(convert.jsonEncode(mapData1)); // 发送数据.
-    Timer.periodic(const Duration(milliseconds: 200), (timer) {
-      print(1);
-    });
+    // Timer.periodic(const Duration(milliseconds: 200), (timer) {
+    //   channel.sink.add(convert.jsonEncode(mapData2)); // 发送数据.
+    // });
   }
 
   @override

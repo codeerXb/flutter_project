@@ -145,11 +145,8 @@ class _VisitorNetState extends State<VisitorNet> {
                       },
                       icon: Icon(
                         data_2g.wiFiSsidTable![1].enable == '1'
-                            ? Icons.highlight_off
-                            : Icons.check_circle,
-                        color: data_2g.wiFiSsidTable![1].enable == '1'
-                            ? Colors.red
-                            : Colors.blue,
+                            ? Icons.check_box
+                            : Icons.check_box_outline_blank,
                         size: 50.w,
                       ),
                     ),
@@ -180,11 +177,8 @@ class _VisitorNetState extends State<VisitorNet> {
                       },
                       icon: Icon(
                         data_2g.wiFiSsidTable![2].enable == '1'
-                            ? Icons.highlight_off
-                            : Icons.check_circle,
-                        color: data_2g.wiFiSsidTable![2].enable == '1'
-                            ? Colors.red
-                            : Colors.blue,
+                            ? Icons.check_box
+                            : Icons.check_box_outline_blank,
                         size: 50.w,
                       ),
                     ),
@@ -215,11 +209,8 @@ class _VisitorNetState extends State<VisitorNet> {
                       },
                       icon: Icon(
                         data_2g.wiFiSsidTable![3].enable == '1'
-                            ? Icons.highlight_off
-                            : Icons.check_circle,
-                        color: data_2g.wiFiSsidTable![3].enable == '1'
-                            ? Colors.red
-                            : Colors.blue,
+                            ? Icons.check_box
+                            : Icons.check_box_outline_blank,
                         size: 50.w,
                       ),
                     ),
@@ -252,11 +243,8 @@ class _VisitorNetState extends State<VisitorNet> {
                       },
                       icon: Icon(
                         data_5g.wiFi5GSsidTable![1].enable == '1'
-                            ? Icons.highlight_off
-                            : Icons.check_circle,
-                        color: data_5g.wiFi5GSsidTable![1].enable == '1'
-                            ? Colors.red
-                            : Colors.blue,
+                            ? Icons.check_box
+                            : Icons.check_box_outline_blank,
                         size: 50.w,
                       ),
                     ),
@@ -287,11 +275,8 @@ class _VisitorNetState extends State<VisitorNet> {
                       },
                       icon: Icon(
                         data_5g.wiFi5GSsidTable![2].enable == '1'
-                            ? Icons.highlight_off
-                            : Icons.check_circle,
-                        color: data_5g.wiFi5GSsidTable![2].enable == '1'
-                            ? Colors.red
-                            : Colors.blue,
+                            ? Icons.check_box
+                            : Icons.check_box_outline_blank,
                         size: 50.w,
                       ),
                     ),
@@ -322,11 +307,8 @@ class _VisitorNetState extends State<VisitorNet> {
                       },
                       icon: Icon(
                         data_5g.wiFi5GSsidTable![3].enable == '1'
-                            ? Icons.highlight_off
-                            : Icons.check_circle,
-                        color: data_5g.wiFi5GSsidTable![3].enable == '1'
-                            ? Colors.red
-                            : Colors.blue,
+                            ? Icons.check_box
+                            : Icons.check_box_outline_blank,
                         size: 50.w,
                       ),
                     ),

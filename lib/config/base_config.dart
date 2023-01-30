@@ -1,9 +1,10 @@
 /// 基础信息配置
 class BaseConfig {
-  // 定义token
+  // 定义
   // static const String token = 'd302214d-b02c-4abe-933d-c530b604c9d1';
 
   /// 服务器路径
+   // static const baseUrl = "https://www.smawavelogin.com";
   // static const baseUrl = "http://192.168.225.10";
   static const baseUrl = "https://172.16.20.144";
 

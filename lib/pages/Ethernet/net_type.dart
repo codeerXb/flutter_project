@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/pages/Ethernet/netType_datas.dart';
@@ -94,7 +95,9 @@ class _NetTypeState extends State<NetType> {
                     leftText: '在线时间',
                     righText: DateFormat("dd天HH小时mm分钟").format(
                         DateTime.fromMillisecondsSinceEpoch(int.parse(
-                            NetTypeData.systemOnlineTime.toString() + '000')- 86400000)),
+                                NetTypeData.systemOnlineTime.toString() +
+                                    '000') -
+                            86400000)),
                   )),
                   BottomLine(
                       rowtem: RowContainer(
@@ -116,9 +119,11 @@ class _NetTypeState extends State<NetType> {
                     leftText: '主DNS',
                     righText: NetTypeData.ethernetConnectionDns1.toString(),
                   )),
-                  RowContainer(
-                    leftText: '辅DNS',
-                    righText: NetTypeData.ethernetConnectionDns2.toString(),
+                  BottomLine(
+                    rowtem: RowContainer(
+                      leftText: '辅DNS',
+                      righText: NetTypeData.ethernetConnectionDns2.toString(),
+                    ),
                   )
                 ],
               ),

@@ -91,12 +91,14 @@ class _MyWidgetState extends State<Equipment> {
         debugPrint(e.toString());
       }
     }).catchError((onError) {
-      setState(() {
-        equipmentData = EquipmentData(
-            systemProductModel: null,
-            systemVersionRunning: '',
-            systemVersionSn: '');
-      });
+      if (mounted) {
+        setState(() {
+          equipmentData = EquipmentData(
+              systemProductModel: null,
+              systemVersionRunning: '',
+              systemVersionSn: '');
+        });
+      }
       debugPrint(onError.toString());
     });
   }

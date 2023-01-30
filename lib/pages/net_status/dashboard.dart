@@ -98,7 +98,7 @@ class _DashboardState extends State<Dashboard> {
       var obj = await XHttp.get('/data.html', flowStatistics);
       // 以 { 或者 [ 开头的
       RegExp exp = RegExp('^[{[]');
-      if (!exp.hasMatch(obj)) {
+      if (!exp.hasMatch(obj) && mounted) {
         setState(() {
           _usedFlow = 0;
           _progress = 0;
@@ -106,10 +106,17 @@ class _DashboardState extends State<Dashboard> {
         debugPrint('flowStatistics得到数据不是json');
       }
       var jsonObj = json.decode(obj);
-      var flowTable = FlowStatistics.fromJson(jsonObj).flowTable?[4];
-      if (flowTable != null) {
-        var usedFlowBytes = double.parse(flowTable.recvBytes!) +
-            double.parse(flowTable.sendBytes!);
+      var flowTable = FlowStatistics.fromJson(jsonObj).flowTable;
+      if (flowTable != null && mounted) {
+        // 得到流量卡的总通过流量
+        double usedFlowBytes = double.parse(flowTable[0].recvBytes!) +
+            double.parse(flowTable[0].sendBytes!) +
+            double.parse(flowTable[1].recvBytes!) +
+            double.parse(flowTable[1].sendBytes!) +
+            double.parse(flowTable[2].recvBytes!) +
+            double.parse(flowTable[2].sendBytes!) +
+            double.parse(flowTable[3].recvBytes!) +
+            double.parse(flowTable[3].sendBytes!);
         setState(() {
           _usedFlow = usedFlowBytes / 1048576;
           _progress = (1 -
@@ -135,10 +142,12 @@ class _DashboardState extends State<Dashboard> {
       var res = await XHttp.get('/data.html', queryOnlineTime);
       var time = json.decode(res)['systemOnlineTime'];
       debugPrint('获取的时长${double.parse(time) / 3600}');
-      setState(() {
-        _usedTime = (double.parse(time) / 3600);
-        _progress = (1 - (_usedTime / widget.totalComboData)) * 100;
-      });
+      if (mounted) {
+        setState(() {
+          _usedTime = (double.parse(time) / 3600);
+          _progress = (1 - (_usedTime / widget.totalComboData)) * 100;
+        });
+      }
     } catch (err) {
       debugPrint('获取在线时长错误$err');
     }
@@ -154,7 +163,7 @@ class _DashboardState extends State<Dashboard> {
       var res = await XHttp.get('/data.html', queryOnlineDevice);
       // 以 { 或者 [ 开头的
       RegExp exp = RegExp('^[{[]');
-      if (!exp.hasMatch(res)) {
+      if (!exp.hasMatch(res) && mounted) {
         setState(() {
           _onlineCount = 0;
         });
@@ -162,7 +171,7 @@ class _DashboardState extends State<Dashboard> {
       }
       var onlineDevice =
           OnlineDevice.fromJson(jsonDecode(res)).onlineDeviceTable;
-      if (onlineDevice != null) {
+      if (onlineDevice != null && mounted) {
         setState(() {
           _onlineCount = onlineDevice.length;
         });

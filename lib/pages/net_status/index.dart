@@ -71,7 +71,7 @@ class _NetStatusState extends State<NetStatus> {
       var response = await XHttp.get('/data.html', netStatus);
       // 以 { 或者 [ 开头的
       RegExp exp = RegExp('^[{[]');
-      if (!exp.hasMatch(response)) {
+      if (!exp.hasMatch(response) && mounted) {
         setState(() {
           _wanStatus = '0';
           _wifiStatus = '0';
@@ -94,13 +94,15 @@ class _NetStatusState extends State<NetStatus> {
       double downRate = resObj.systemDataRateDlCurrent != null
           ? double.parse(resObj.systemDataRateDlCurrent!)
           : 0;
-      setState(() {
-        _wanStatus = wanStatus;
-        _wifiStatus = wifiStatus;
-        _simStatus = simStatus;
-        _upRate = upRate;
-        _downRate = downRate;
-      });
+      if (mounted) {
+        setState(() {
+          _wanStatus = wanStatus;
+          _wifiStatus = wifiStatus;
+          _simStatus = simStatus;
+          _upRate = upRate;
+          _downRate = downRate;
+        });
+      }
       debugPrint('wanStatus=$wanStatus,wifi=$wifiStatus,sim=$simStatus');
     } catch (err) {
       debugPrint(err.toString());

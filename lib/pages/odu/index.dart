@@ -94,29 +94,31 @@ class _ODUState extends State<ODU> {
     if (res1 != null) {
       selfInspectionTimer =
           Timer.periodic(const Duration(milliseconds: 100), (t) async {
-        try {
-          dynamic res2;
-          if (getStat) {
-            setState(() {
-              quest = 0;
-            });
-            res2 = await XHttp.get('/data.html', data2);
-            if (res2 != null) {
+        if (mounted) {
+          try {
+            dynamic res2;
+            if (getStat) {
               setState(() {
-                getStat = false;
+                quest = 0;
               });
-              getODUData();
+              res2 = await XHttp.get('/data.html', data2);
+              if (res2 != null) {
+                setState(() {
+                  getStat = false;
+                });
+                getODUData();
+              }
             }
-          }
-        } on DioError catch (e) {
-          if (e.type == DioErrorType.receiveTimeout ||
-              e.type == DioErrorType.connectTimeout) {
-            debugPrint('接收错误');
-          } else {
-            if (mounted) {
-              setState(() {
-                currentIndex = -1;
-              });
+          } on DioError catch (e) {
+            if (e.type == DioErrorType.receiveTimeout ||
+                e.type == DioErrorType.connectTimeout) {
+              debugPrint('接收错误');
+            } else {
+              if (mounted) {
+                setState(() {
+                  currentIndex = -1;
+                });
+              }
             }
           }
         }

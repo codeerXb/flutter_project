@@ -181,7 +181,8 @@ class _MyWidgetState extends State<Equipment> {
                               }
                               num += 2;
                               print('wwwwww$time');
-                              getEquipmentData();
+                              // 确保页面存在时，调用异步方法
+                              if (mounted) getEquipmentData();
                             });
                           },
                           child: const Text('重新扫描'),

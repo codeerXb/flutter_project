@@ -28,7 +28,7 @@ class _SimpleVideoPageState extends State<SimpleVideoPage> {
     super.initState();
     getImg();
     _timer = Timer.periodic(const Duration(milliseconds: 3000), (timer) {
-      getImg();
+      if (mounted) getImg();
     });
   }
 

@@ -140,7 +140,7 @@ class _NetStatusState extends State<NetStatus> {
     updateStatus();
 
     timer = Timer.periodic(const Duration(milliseconds: 2000), (t) async {
-      updateStatus();
+      if (mounted) updateStatus();
     });
   }
 
@@ -292,6 +292,8 @@ class _NetStatusState extends State<NetStatus> {
                                         _comboLabel = value['type'] == 0
                                             ? '${value['contain']}GB/${comboCycleLabel[value['cycle']]}'
                                             : '${value['contain']}h/${comboCycleLabel[value['cycle']]}';
+                                        _comboType = value['type'];
+                                        _totalComboData = value['contain'];
                                       });
                                     })
                                   },

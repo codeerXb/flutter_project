@@ -181,8 +181,10 @@ class _DashboardState extends State<Dashboard> {
     widget.comboType == 0 ? getUsedFlow() : updateOnlineTime();
     updateOnlineCount();
     timer = Timer.periodic(const Duration(milliseconds: 2000), (t) async {
-      widget.comboType == 0 ? getUsedFlow() : updateOnlineTime();
-      updateOnlineCount();
+      if (mounted) {
+        widget.comboType == 0 ? getUsedFlow() : updateOnlineTime();
+        updateOnlineCount();
+      }
     });
   }
 

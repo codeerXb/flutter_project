@@ -106,10 +106,17 @@ class _DashboardState extends State<Dashboard> {
         debugPrint('flowStatistics得到数据不是json');
       }
       var jsonObj = json.decode(obj);
-      var flowTable = FlowStatistics.fromJson(jsonObj).flowTable?[4];
+      var flowTable = FlowStatistics.fromJson(jsonObj).flowTable;
       if (flowTable != null && mounted) {
-        var usedFlowBytes = double.parse(flowTable.recvBytes!) +
-            double.parse(flowTable.sendBytes!);
+        // 得到流量卡的总通过流量
+        double usedFlowBytes = double.parse(flowTable[0].recvBytes!) +
+            double.parse(flowTable[0].sendBytes!) +
+            double.parse(flowTable[1].recvBytes!) +
+            double.parse(flowTable[1].sendBytes!) +
+            double.parse(flowTable[2].recvBytes!) +
+            double.parse(flowTable[2].sendBytes!) +
+            double.parse(flowTable[3].recvBytes!) +
+            double.parse(flowTable[3].sendBytes!);
         setState(() {
           _usedFlow = usedFlowBytes / 1048576;
           _progress = (1 -

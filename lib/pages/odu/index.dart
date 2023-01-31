@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer' as logPrint;
 import 'dart:io';
 import 'dart:math';
 import 'package:dio/dio.dart';
@@ -141,10 +142,6 @@ class _ODUState extends State<ODU> {
             curS = message.dataTable![i].sinr! / 100;
           }
 
-          if (mapData[mapData.length - 1]['val'] > maxNumber) {
-            maxNumber = mapData[mapData.length - 1]['val'];
-            currentAngle = degIndex;
-          }
           mapDataPoint[degIndex] = 30;
           curA = degIndex;
           debugPrint('degIndex:$degIndex');
@@ -163,12 +160,24 @@ class _ODUState extends State<ODU> {
           mapDataPoint = List.generate(360, (index) {
             return 0;
           });
-          pointer[currentAngle] = maxNumber;
           currentIndex = 2;
-          // if (message.dataTable != null) {
-          //   curA = message.dataTable![0].degree!;
-          //   curS = mapData[curA]['val'];
-          // }
+          if (message.dataTable != null &&
+              message.dataTable![0].degree != null) {
+            int lastAngle =
+                ((message.dataTable![message.dataTable!.length - 1].degree! /
+                            100)
+                        .truncate() %
+                    360);
+            curA = lastAngle;
+            logPrint.log(mapData.toString());
+            for (var e in mapData) {
+              if (e['deg'] == lastAngle) {
+                curS = e['val'];
+                currentAngle = e['deg'];
+                maxNumber = mapDataPoint[e['deg']] = e['val'];
+              }
+            }
+          }
         });
         //  关闭ws
         channel.sink.close();
@@ -195,11 +204,11 @@ class _ODUState extends State<ODU> {
                 ((message.dataTable![endIndex].degree! / 100).truncate() % 360);
             mapDataPoint[degIndex] = 30;
             curA = degIndex;
-            mapData.map((e) {
-              if (e['deg'] == endIndex) {
+            for (var e in mapData) {
+              if (e['deg'] == degIndex) {
                 curS = e['val'];
               }
-            });
+            }
           });
         }
       }
@@ -221,6 +230,11 @@ class _ODUState extends State<ODU> {
       debugPrint("onDone");
     }), onError: (error) {
       debugPrint("连接ws 错误");
+      if (mounted) {
+        setState(() {
+          isShow = true;
+        });
+      }
     });
   }
 
@@ -239,6 +253,7 @@ class _ODUState extends State<ODU> {
       mapDataPoint = List.generate(360, (index) {
         return 0;
       });
+      curA = 0;
       curS = 0;
     });
   }
@@ -301,9 +316,10 @@ class _ODUState extends State<ODU> {
                   skewing: 0,
                   radarMap: RadarMapModel(
                     legend: [
-                      LegendModel('实时数值', const Color(0XFF0EBD8D)),
                       LegendModel(
-                          '最大数值', const Color.fromARGB(255, 234, 104, 53)),
+                          '实时数值', const Color.fromARGB(255, 255, 166, 1)),
+                      LegendModel(
+                          '最大数值', const Color.fromARGB(255, 234, 65, 53)),
                       LegendModel(
                           '当前指向', const Color.fromARGB(255, 14, 14, 189)),
                     ],
@@ -356,7 +372,8 @@ class _ODUState extends State<ODU> {
                             children: [
                               const Text(
                                 'CurA',
-                                style: TextStyle(color: Color(0XFF0EBD8D)),
+                                style: TextStyle(
+                                    color: Color.fromARGB(255, 197, 139, 32)),
                               ),
                               Card(
                                 shape: RoundedRectangleBorder(
@@ -370,10 +387,11 @@ class _ODUState extends State<ODU> {
                                   width: 150.w,
                                   alignment: Alignment.centerLeft,
                                   padding: EdgeInsets.all(5.w),
-                                  child: Text(" $curA",
+                                  child: Text(" $curA°",
                                       style: TextStyle(
                                           fontSize: 30.sp,
-                                          color: const Color(0XFF0EBD8D))),
+                                          color: const Color.fromARGB(
+                                              255, 255, 166, 1))),
                                 ),
                               ),
                             ],
@@ -382,7 +400,8 @@ class _ODUState extends State<ODU> {
                             children: [
                               const Text(
                                 'CurS',
-                                style: TextStyle(color: Color(0XFF0EBD8D)),
+                                style: TextStyle(
+                                    color: Color.fromARGB(255, 197, 139, 32)),
                               ),
                               Card(
                                 shape: RoundedRectangleBorder(
@@ -400,7 +419,8 @@ class _ODUState extends State<ODU> {
                                     " $curS dB",
                                     style: TextStyle(
                                         fontSize: 30.sp,
-                                        color: const Color(0XFF0EBD8D)),
+                                        color: const Color.fromARGB(
+                                            255, 255, 166, 1)),
                                   ),
                                 ),
                               ),
@@ -415,7 +435,7 @@ class _ODUState extends State<ODU> {
                               const Text(
                                 'MaxA',
                                 style: TextStyle(
-                                    color: Color.fromARGB(255, 234, 104, 53)),
+                                    color: Color.fromARGB(255, 189, 56, 46)),
                               ),
                               Card(
                                 shape: RoundedRectangleBorder(
@@ -434,7 +454,7 @@ class _ODUState extends State<ODU> {
                                     style: TextStyle(
                                         fontSize: 30.sp,
                                         color: const Color.fromARGB(
-                                            255, 234, 104, 53)),
+                                            255, 234, 65, 53)),
                                   ),
                                 ),
                               ),
@@ -445,7 +465,7 @@ class _ODUState extends State<ODU> {
                               const Text(
                                 'MaxS',
                                 style: TextStyle(
-                                    color: Color.fromARGB(255, 234, 104, 53)),
+                                    color: Color.fromARGB(255, 189, 56, 46)),
                               ),
                               Card(
                                 shape: RoundedRectangleBorder(

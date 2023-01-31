@@ -293,7 +293,8 @@ class RadarMapPainter extends CustomPainter {
           canvas,
           radarMap.data[i],
           radarMap.indicator.map((item) => item.maxValues).toList(),
-          mPointPaint..color = radarMap.legend[i].color,
+          mPointPaint..color = radarMap.legend[i].color
+          ..strokeWidth = 8,
           radarMap.paintStatus,
         );
       } else {
@@ -349,8 +350,8 @@ class RadarMapPainter extends CustomPainter {
             pi * 2,
             false,
             mCirclePaint!
-              // ..color = Colors.grey[500 - s * 100]!
-              ..color = Color(0xff000000 + s * 100000000000000)
+              // ..color = Colors.grey[700 - s * 100]!
+              ..color = Color(0xffaaaaaa + (s-1) * 0xcf111111)
               // ..color = Color(0xff000000 - s * 5555550)
               ..strokeWidth = 20);
       }

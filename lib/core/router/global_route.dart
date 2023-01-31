@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_template/pages/Ethernet/net/net_set.dart';
 import 'package:flutter_template/pages/get_equipment/index.dart';
 import 'package:flutter_template/pages/odu/index.dart';
-import 'package:flutter_template/pages/odu/index1.dart';
 import 'package:flutter_template/pages/setting/about_us.dart';
 import 'package:flutter_template/pages/setting/clear_cache.dart';
 import 'package:flutter_template/pages/equInfo/equ_info.dart';

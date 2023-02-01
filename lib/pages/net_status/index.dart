@@ -151,24 +151,36 @@ class _NetStatusState extends State<NetStatus> {
     List<Widget> tiles = []; //先建一个数组用于存放循环生成的widget
     Widget content; //单独一个widget组件，用于返回需要生成的内容widget
     for (var item in serviceList) {
-      if (item['label'] == vn) {
-        tiles.add(Row(children: <Widget>[
-          FaIcon(
-            FontAwesomeIcons.chevronRight,
-            size: 30.w,
-          ),
-          Text(item['label']),
-        ]));
-      } else {
-        tiles.add(Row(children: <Widget>[
-          Text(item['label']),
-        ]));
-      }
+      tiles.add(Container(
+        padding: EdgeInsets.only(left: 20.w, top: 20.w, bottom: 20.w),
+        child: InkWell(
+          onTap: () {},
+          child: Row(children: <Widget>[
+            if (item['label'] == vn)
+              Padding(
+                padding: EdgeInsets.only(right: 16.sp),
+                child: FaIcon(
+                  FontAwesomeIcons.chevronRight,
+                  size: 30.w,
+                  color: Colors.white,
+                ),
+              ),
+            Text(
+              item['label'],
+              style: TextStyle(color: Colors.white, fontSize: 30.sp),
+            ),
+          ]),
+        ),
+      ));
     }
-    content =
-        Column(children: tiles //重点在这里，因为用编辑器写Column生成的children后面会跟一个<Widget>[]，
-            //此时如果我们直接把生成的tiles放在<Widget>[]中是会报一个类型不匹配的错误，把<Widget>[]删了就可以了
-            );
+    content = Container(
+      color: const Color.fromARGB(153, 31, 31, 31),
+      width: 1.sw,
+      child: Column(
+          children: tiles //重点在这里，因为用编辑器写Column生成的children后面会跟一个<Widget>[]，
+          //此时如果我们直接把生成的tiles放在<Widget>[]中是会报一个类型不匹配的错误，把<Widget>[]删了就可以了
+          ),
+    );
     return content;
   }
 
@@ -183,157 +195,147 @@ class _NetStatusState extends State<NetStatus> {
       child: Scaffold(
         appBar: AppBar(
           elevation: 0,
-          title: GestureDetector(
+          title: InkWell(
+            overlayColor: const MaterialStatePropertyAll(Colors.transparent),
             onTap: () {
               setState(() {
                 isShowList = !isShowList;
               });
             },
-            child: Column(
-              children: [
-                isShowList
-                    ? Column(
-                        children: [
-                          Row(
-                            children: [
-                              Text(vn),
-                              FaIcon(
-                                FontAwesomeIcons.chevronDown,
-                                size: 30.w,
-                              )
-                            ],
-                          ),
-                          buildGrid()
-                        ],
-                      )
-                    : Row(
-                        children: [
-                          Text(vn),
-                          FaIcon(
-                            FontAwesomeIcons.chevronDown,
-                            size: 30.w,
-                          )
-                        ],
-                      )
-              ],
+            child: SizedBox(
+              width: 1.sw,
+              child: Row(
+                children: [
+                  Text(vn),
+                  FaIcon(
+                    FontAwesomeIcons.chevronDown,
+                    size: 30.w,
+                  )
+                ],
+              ),
             ),
           ),
           backgroundColor: Colors.transparent,
         ),
         backgroundColor: Colors.transparent,
-        body: DecoratedBox(
-          decoration: isShowList
-              ? const BoxDecoration(color: Color.fromARGB(128, 0, 0, 0))
-              : const BoxDecoration(color: Colors.transparent),
-          position: DecorationPosition.foreground,
-          child: Column(
-            children: <Widget>[
-              // 头部widget
-              Container(
-                alignment: Alignment.topCenter,
-                padding: EdgeInsets.only(
-                    left: 30.sp, right: 26.sp, top: 0, bottom: 30.sp),
-                width: 1.sw,
-                height: 240.h,
-                color: Colors.transparent,
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Container(
-                              height: 40.h,
-                              padding: EdgeInsets.only(
-                                  left: 16.sp, right: 16.sp, top: 0, bottom: 0),
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(8.sp)),
-                                  border: Border.all(
-                                      width: 1, color: Colors.white)),
-                              child: Text(
-                                '套餐总量：$_comboLabel',
-                                style: const TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ]),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
+        body: Stack(
+          children: [
+            Column(
+              children: <Widget>[
+                // 头部widget
+                Container(
+                  alignment: Alignment.topCenter,
+                  padding: EdgeInsets.only(
+                      left: 30.sp, right: 26.sp, top: 0, bottom: 30.sp),
+                  width: 1.sw,
+                  height: 240.h,
+                  color: Colors.transparent,
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              HomePageStateBtn(
-                                imageUrl: 'assets/images/icon_homepage_wan.png',
-                                offImageUrl:
-                                    'assets/images/icon_homepage_no_wan.png',
-                                routeName: '/wan_settings',
-                                status: _wanStatus,
+                              Container(
+                                height: 40.h,
+                                padding: EdgeInsets.only(
+                                    left: 16.sp,
+                                    right: 16.sp,
+                                    top: 0,
+                                    bottom: 0),
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8.sp)),
+                                    border: Border.all(
+                                        width: 1, color: Colors.white)),
+                                child: Text(
+                                  '套餐总量：$_comboLabel',
+                                  style: const TextStyle(color: Colors.white),
+                                ),
                               ),
-                              HomePageStateBtn(
-                                imageUrl:
-                                    'assets/images/icon_homepage_wifi.png',
-                                offImageUrl:
-                                    'assets/images/icon_homepage_no_wifi.png',
-                                routeName: '/wlan_set',
-                                status: _wifiStatus,
-                              ),
-                              HomePageStateBtn(
-                                imageUrl: 'assets/images/icon_homepage_sim.png',
-                                offImageUrl:
-                                    'assets/images/icon_homepage_no_sim.png',
-                                status: _simStatus,
-                                routeName: '/radio_settings',
-                              ),
-                            ],
-                          ),
-                          TextButton(
-                              onPressed: () => {
-                                    Get.toNamed('/net_server_settings')
-                                        ?.then((value) {
-                                      setState(() {
-                                        _comboLabel = value['type'] == 0
-                                            ? '${value['contain']}GB/${comboCycleLabel[value['cycle']]}'
-                                            : '${value['contain']}h/${comboCycleLabel[value['cycle']]}';
-                                        _comboType = value['type'];
-                                        _totalComboData = value['contain'];
-                                      });
-                                    })
-                                  },
-                              child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      '套餐设置',
-                                      style: TextStyle(
-                                          height: 1,
-                                          fontSize: 28.sp,
-                                          color: Colors.white),
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.only(left: 8.sp),
-                                      child: FaIcon(
-                                        FontAwesomeIcons.chevronRight,
-                                        size: 34.sp,
-                                        color: Colors.white,
+                            ]),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                HomePageStateBtn(
+                                  imageUrl:
+                                      'assets/images/icon_homepage_wan.png',
+                                  offImageUrl:
+                                      'assets/images/icon_homepage_no_wan.png',
+                                  routeName: '/wan_settings',
+                                  status: _wanStatus,
+                                ),
+                                HomePageStateBtn(
+                                  imageUrl:
+                                      'assets/images/icon_homepage_wifi.png',
+                                  offImageUrl:
+                                      'assets/images/icon_homepage_no_wifi.png',
+                                  routeName: '/wlan_set',
+                                  status: _wifiStatus,
+                                ),
+                                HomePageStateBtn(
+                                  imageUrl:
+                                      'assets/images/icon_homepage_sim.png',
+                                  offImageUrl:
+                                      'assets/images/icon_homepage_no_sim.png',
+                                  status: _simStatus,
+                                  routeName: '/radio_settings',
+                                ),
+                              ],
+                            ),
+                            TextButton(
+                                onPressed: () => {
+                                      Get.toNamed('/net_server_settings')
+                                          ?.then((value) {
+                                        setState(() {
+                                          _comboLabel = value['type'] == 0
+                                              ? '${value['contain']}GB/${comboCycleLabel[value['cycle']]}'
+                                              : '${value['contain']}h/${comboCycleLabel[value['cycle']]}';
+                                          _comboType = value['type'];
+                                          _totalComboData = value['contain'];
+                                        });
+                                      })
+                                    },
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        '套餐设置',
+                                        style: TextStyle(
+                                            height: 1,
+                                            fontSize: 28.sp,
+                                            color: Colors.white),
                                       ),
-                                    )
-                                  ]))
-                        ],
-                      )
-                    ]),
-              ),
-              // 仪表盘和数值显示
-              Expanded(
-                  flex: 1,
-                  child: Dashboard(
-                    comboType: _comboType,
-                    totalComboData: _totalComboData,
-                    upRate: _upRate,
-                    downRate: _downRate,
-                  )),
-            ],
-          ),
+                                      Container(
+                                        margin: EdgeInsets.only(left: 8.sp),
+                                        child: FaIcon(
+                                          FontAwesomeIcons.chevronRight,
+                                          size: 34.sp,
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                    ]))
+                          ],
+                        )
+                      ]),
+                ),
+                // 仪表盘和数值显示
+                Expanded(
+                    flex: 1,
+                    child: Dashboard(
+                      comboType: _comboType,
+                      totalComboData: _totalComboData,
+                      upRate: _upRate,
+                      downRate: _downRate,
+                    )),
+              ],
+            ),
+            if (isShowList) Positioned(top: 0.w, child: buildGrid()),
+          ],
         ),
       ),
     );

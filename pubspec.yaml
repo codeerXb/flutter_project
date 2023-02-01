@@ -68,9 +68,8 @@ dependencies:
   # 权限
   permission_handler: ^10.0.0
   # 文件选择器
-  file_picker:
-    ^4.6.1
-    # 视频流
+  file_picker: ^4.6.1
+  # 视频流
   fijkplayer_skin: ^2.2.8
   # 视频解码器 软解码
   fijkplayer: ^0.10.1
@@ -95,7 +94,6 @@ flutter:
 
   assets:
     - assets/images/
-
   # fonts:
   #   - family: Schyler
   #     fonts:
@@ -108,3 +106,5 @@ flutter:
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
   #
+flutter_intl:
+  enabled: true

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_template/pages/video/video.dart';
 
 // import 'package:flutter_ijkplayer/flutter_ijkplayer.dart';
-//视频测试
+//视频
 class VideoPlay extends StatefulWidget {
   const VideoPlay({super.key});
 

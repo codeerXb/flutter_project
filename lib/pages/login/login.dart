@@ -303,9 +303,8 @@ class _LoginState extends State<Login> {
         ),
         onPressed: () {
           if ((_formKey.currentState as FormState).validate()) {
-            // onSubmit(context);
-            // appLogin();
-            Get.offNamed("/home", arguments: {'vn': vn});
+            onSubmit(context);
+            appLogin();
           }
         },
         child: Text(

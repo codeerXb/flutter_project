@@ -1,9 +1,13 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/custom_app_bar.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
+import 'package:flutter_template/config/base_config.dart';
 
 /// 用户登录
 class UserLogin extends StatefulWidget {
@@ -14,13 +18,14 @@ class UserLogin extends StatefulWidget {
 }
 
 class _UserLoginState extends State<UserLogin> {
+  var dio = Dio();
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    phone.text='123456';
-    password.text='admin';
+    phone.text = '19121757940';
+    password.text = 'W2SMdjlijASIVGYd4sDRwA==';
   }
+
   final LoginController loginController = Get.put(LoginController());
   bool passwordValShow = true;
   @override
@@ -39,7 +44,7 @@ class _UserLoginState extends State<UserLogin> {
           actions: [
             TextButton(
                 onPressed: () {
-                  Get.offAllNamed("/get_equipment");
+                  Get.toNamed("/get_equipment");
                 },
                 child: Text(
                   '跳过',
@@ -120,7 +125,42 @@ class _UserLoginState extends State<UserLogin> {
                     Padding(padding: EdgeInsets.only(top: 200.w)),
 
                     /// 登录
-                    buildLoginButton(),
+                    SizedBox(
+                      width: 1.sw - 104.w,
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          padding: MaterialStateProperty.all(
+                            EdgeInsets.only(top: 28.w, bottom: 28.w),
+                          ),
+                          shape:
+                              MaterialStateProperty.all(const StadiumBorder()),
+                          backgroundColor: MaterialStateProperty.all(
+                              const Color.fromARGB(255, 30, 104, 233)),
+                        ),
+                        onPressed: () async {
+                          Map<String, dynamic> data = {
+                            "account": phone.text,
+                            "password": password.text,
+                          };
+                          var res = await dio.post(
+                              '${BaseConfig.cloudBaseUrl}/fota/fota/appCustomer/login',
+                              data: data);
+                          var d = json.decode(res.toString());
+                          debugPrint('响应------>$d');
+                          if (d['code'] != 200) {
+                            return;
+                          } else {
+                            ToastUtils.toast('登录成功');
+                            Get.toNamed("/get_equipment");
+                          }
+                        },
+                        child: Text(
+                          '登录',
+                          style: TextStyle(
+                              fontSize: 32.sp, color: const Color(0xffffffff)),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -132,7 +172,6 @@ class _UserLoginState extends State<UserLogin> {
 
 final TextEditingController phone = TextEditingController();
 final TextEditingController password = TextEditingController();
-
 
 //logo&文字
 Center logo() {
@@ -187,7 +226,6 @@ Column buildPhoneField() {
                   // 取消自带的下边框
                   border: InputBorder.none,
                 ),
-               
               ),
             ),
           ),
@@ -216,32 +254,5 @@ Row registerAndForget() {
           onPressed: (() {}),
           child: const Text('忘记密码', style: TextStyle(color: Colors.black45)))
     ],
-  );
-}
-
-//登录按钮
-SizedBox buildLoginButton() {
-  return SizedBox(
-    width: 1.sw - 104.w,
-    child: ElevatedButton(
-      style: ButtonStyle(
-        padding: MaterialStateProperty.all(
-          EdgeInsets.only(top: 28.w, bottom: 28.w),
-        ),
-        shape: MaterialStateProperty.all(const StadiumBorder()),
-        backgroundColor:
-            MaterialStateProperty.all(const Color.fromARGB(255, 30, 104, 233)),
-      ),
-      onPressed: () {
-        if (true) {
-          ToastUtils.toast('登录成功');
-          Get.offAllNamed("/get_equipment");
-        }
-      },
-      child: Text(
-        '登录',
-        style: TextStyle(fontSize: 32.sp, color: const Color(0xffffffff)),
-      ),
-    ),
   );
 }

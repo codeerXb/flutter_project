@@ -116,8 +116,10 @@ class _VisitorNetState extends State<VisitorNet> {
         appBar: customAppbar(context: context, title: '访客网络'),
         body: Container(
           padding: EdgeInsets.all(20.0.w),
-          decoration:
-              const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
+          margin: EdgeInsets.only(bottom: 20.w, left: 10.w, right: 10.w),
+          decoration: const BoxDecoration(
+            color: Color.fromRGBO(240, 240, 240, 1),
+          ),
           height: 1000,
           child: SingleChildScrollView(
             child: Column(

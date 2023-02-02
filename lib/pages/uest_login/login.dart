@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/custom_app_bar.dart';
+import 'package:flutter_template/generated/l10n.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
 import 'package:flutter_template/config/base_config.dart';
@@ -152,6 +154,8 @@ class _UserLoginState extends State<UserLogin> {
                           } else {
                             ToastUtils.toast('登录成功');
                             Get.toNamed("/get_equipment");
+                            sharedAddAndUpdate(
+                                "user_token", String, (d['data']['token']));
                           }
                         },
                         child: Text(
@@ -245,14 +249,16 @@ Row registerAndForget() {
           onPressed: (() {
             Get.toNamed("/use_register");
           }),
-          child: const Text(
+          child: Text(
             '注册',
-            style: TextStyle(color: Colors.black45),
+            style: const TextStyle(color: Colors.black45),
           )),
       // 忘记密码
       TextButton(
-          onPressed: (() {}),
-          child: const Text('忘记密码', style: TextStyle(color: Colors.black45)))
+          onPressed: (() {
+            // Get.toNamed("/forget_password");
+          }),
+          child: const Text('', style: TextStyle(color: Colors.black45)))
     ],
   );
 }

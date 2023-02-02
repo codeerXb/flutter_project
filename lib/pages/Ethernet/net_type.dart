@@ -119,8 +119,9 @@ class _NetTypeState extends State<NetType> {
                     leftText: '主DNS',
                     righText: NetTypeData.ethernetConnectionDns1.toString(),
                   )),
-                  BottomLine(
-                    rowtem: RowContainer(
+                  Container(
+                    padding: EdgeInsets.only(top: 20.w),
+                    child: RowContainer(
                       leftText: '辅DNS',
                       righText: NetTypeData.ethernetConnectionDns2.toString(),
                     ),

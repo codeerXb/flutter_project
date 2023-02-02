@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/pages/equInfo/equinfo_datas.dart';
@@ -112,11 +113,14 @@ class _EquInfoState extends State<EquInfo> {
                         leftText: 'IMEI',
                         righText: equinfoData.lteImei.toString(),
                       )),
-                      RowContainer(
-                        leftText: 'IMSI',
-                        righText: equinfoData.lteImsi == null
-                            ? equinfoData.lteImsi.toString()
-                            : '- -',
+                      Container(
+                        padding: EdgeInsets.only(top: 20.w),
+                        child: RowContainer(
+                          leftText: 'IMSI',
+                          righText: equinfoData.lteImsi == null
+                              ? equinfoData.lteImsi.toString()
+                              : '- -',
+                        ),
                       )
                     ],
                   ),
@@ -137,9 +141,13 @@ class _EquInfoState extends State<EquInfo> {
                         leftText: 'IP地址',
                         righText: equinfoData.networkLanSettingIp.toString(),
                       )),
-                      RowContainer(
-                        leftText: '子网掩码',
-                        righText: equinfoData.networkLanSettingMask.toString(),
+                      Container(
+                        padding: EdgeInsets.only(top: 20.w),
+                        child: RowContainer(
+                          leftText: '子网掩码',
+                          righText:
+                              equinfoData.networkLanSettingMask.toString(),
+                        ),
                       )
                     ],
                   ),

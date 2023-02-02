@@ -155,8 +155,7 @@ class _MajorSetState extends State<MajorSet> {
                                 }
                             });
                       },
-                      child: BottomLine(
-                        rowtem: Row(
+                      child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text('地区',
@@ -179,7 +178,6 @@ class _MajorSetState extends State<MajorSet> {
                             ),
                           ],
                         ),
-                      ),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 50.0),
@@ -187,7 +185,7 @@ class _MajorSetState extends State<MajorSet> {
                         children: [
                           SizedBox(
                             height: 70.sp,
-                            width: 650.sp,
+                            width: 630.sp,
                             child: ElevatedButton(
                               style: ButtonStyle(
                                   backgroundColor: MaterialStateProperty.all(
@@ -197,7 +195,7 @@ class _MajorSetState extends State<MajorSet> {
                               },
                               child: Text(
                                 '提交',
-                                style: TextStyle(fontSize: 36.sp),
+                                style: TextStyle(fontSize: 30.sp),
                               ),
                             ),
                           )

@@ -147,6 +147,7 @@ class _VisitorNetState extends State<VisitorNet> {
                         data_2g.wiFiSsidTable![1].enable == '1'
                             ? Icons.check_box
                             : Icons.check_box_outline_blank,
+                        color: Colors.blue,
                         size: 50.w,
                       ),
                     ),
@@ -179,6 +180,7 @@ class _VisitorNetState extends State<VisitorNet> {
                         data_2g.wiFiSsidTable![2].enable == '1'
                             ? Icons.check_box
                             : Icons.check_box_outline_blank,
+                        color: Colors.blue,
                         size: 50.w,
                       ),
                     ),
@@ -211,6 +213,7 @@ class _VisitorNetState extends State<VisitorNet> {
                         data_2g.wiFiSsidTable![3].enable == '1'
                             ? Icons.check_box
                             : Icons.check_box_outline_blank,
+                        color: Colors.blue,
                         size: 50.w,
                       ),
                     ),
@@ -245,6 +248,7 @@ class _VisitorNetState extends State<VisitorNet> {
                         data_5g.wiFi5GSsidTable![1].enable == '1'
                             ? Icons.check_box
                             : Icons.check_box_outline_blank,
+                        color: Colors.blue,
                         size: 50.w,
                       ),
                     ),
@@ -277,6 +281,7 @@ class _VisitorNetState extends State<VisitorNet> {
                         data_5g.wiFi5GSsidTable![2].enable == '1'
                             ? Icons.check_box
                             : Icons.check_box_outline_blank,
+                        color: Colors.blue,
                         size: 50.w,
                       ),
                     ),
@@ -309,6 +314,7 @@ class _VisitorNetState extends State<VisitorNet> {
                         data_5g.wiFi5GSsidTable![3].enable == '1'
                             ? Icons.check_box
                             : Icons.check_box_outline_blank,
+                        color: Colors.blue,
                         size: 50.w,
                       ),
                     ),

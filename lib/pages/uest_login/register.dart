@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -5,6 +8,7 @@ import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
+import 'package:flutter_template/config/base_config.dart';
 
 /// 用户注册
 class UserRegister extends StatefulWidget {
@@ -20,11 +24,30 @@ final GlobalKey _formKey = GlobalKey<FormState>();
 class _UserRegisterState extends State<UserRegister> {
   final LoginController loginController = Get.put(LoginController());
   //密码
-  dynamic _passwordVal = '';
+  String _passwordVal = '';
   bool passwordValShow = true;
   //再次输入密码
-  dynamic _againPassVal = '';
+  String _againPassVal = '';
   bool againPassShow = true;
+  //验证码
+  String _codeValue = '';
+  bool iscode = false; //获取验证码状态
+  int codeNum = 60; //倒计时 60秒
+  var dio = Dio();
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  var timer;
+  @override
+  void dispose() {
+    super.dispose();
+    if (timer != null) {
+      timer.cancel();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // 点击空白  关闭键盘 时传的一个对象
@@ -36,7 +59,6 @@ class _UserRegisterState extends State<UserRegister> {
     }
 
     return Scaffold(
-        // appBar: customAppbar(borderBottom: false),
         appBar: AppBar(
           backgroundColor: Colors.white,
           centerTitle: true,
@@ -180,12 +202,133 @@ class _UserRegisterState extends State<UserRegister> {
                       Padding(padding: EdgeInsets.only(top: 20.w)),
 
                       // 验证码
-                      code(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            width: 400.w,
+                            decoration: const BoxDecoration(
+                              border: Border(
+                                  bottom: BorderSide(
+                                      color: Color(0XFF302F4F), width: 0.0)),
+                            ),
+                            child: SizedBox(
+                              child: TextFormField(
+                                style: TextStyle(
+                                    fontSize: 32.sp,
+                                    color: const Color(0xff051220)),
+                                decoration: InputDecoration(
+                                  // 表单提示信息
+                                  hintText: "请输入验证码",
+                                  hintStyle: TextStyle(
+                                      fontSize: 32.sp,
+                                      color: const Color(0xff737A83)),
+                                ),
+                                validator: (value) {
+                                  if (value.toString().length != 4) {
+                                    return '输入正确验证码';
+                                  }
+                                  return null;
+                                },
+                                onChanged: (String value) => _codeValue = value,
+                                inputFormatters: [
+                                  LengthLimitingTextInputFormatter(4),
+                                ],
+                              ),
+                            ),
+                          ),
+                          // 获取验证码
+                          TextButton(
+                              onPressed: (() async {
+                                RegExp reg = RegExp(
+                                    r'^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$');
+                                if (!reg.hasMatch(_phoneVal!)) {
+                                  ToastUtils.toast('手机号格式有误');
+                                } else {
+                                  //发请求
+                                  var res = await dio.post(
+                                      '${BaseConfig.cloudBaseUrl}/fota/fota/appCustomer/sendSmsOrEmailCode?account=$_phoneVal');
+                                  var d = json.decode(res.toString());
+                                  debugPrint('响应------>$d');
+                                  d['code'] == 200
+                                      ? ToastUtils.toast('短信发送成功')
+                                      : ToastUtils.toast(d['message']);
+                                  if (codeNum == 60) {
+                                    //倒计时60s
+                                    setState(() {
+                                      iscode = true;
+                                    });
+
+                                    timer = Timer.periodic(
+                                        const Duration(seconds: 1), (time) {
+                                      setState(() {
+                                        codeNum--;
+                                      });
+                                      if (codeNum <= 1) {
+                                        timer.cancel();
+                                        setState(() {
+                                          codeNum = 60;
+                                          iscode = false;
+                                        });
+                                      }
+                                    });
+                                  }
+                                }
+                              }),
+                              child: Text(
+                                iscode ? '$codeNum秒' : '获取验证码',
+                                style: TextStyle(
+                                    color: Colors.blue, fontSize: 30.w),
+                              )),
+                        ],
+                      ),
 
                       Padding(padding: EdgeInsets.only(top: 200.w)),
 
                       /// 注册按钮
-                      buildLoginButton(),
+                      SizedBox(
+                        width: 1.sw - 104.w,
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                            padding: MaterialStateProperty.all(
+                              EdgeInsets.only(top: 28.w, bottom: 28.w),
+                            ),
+                            shape: MaterialStateProperty.all(
+                                const StadiumBorder()),
+                            backgroundColor: MaterialStateProperty.all(
+                                const Color.fromARGB(255, 30, 104, 233)),
+                          ),
+                          onPressed: () async {
+                            Map<String, dynamic> data = {
+                              "id": 0,
+                              "account": _phoneVal,
+                              "password": _passwordVal,
+                              "code": _codeValue
+                            };
+                            //表单校验
+                            if ((_formKey.currentState as FormState)
+                                .validate()) {
+                              var res = await dio.post(
+                                  '${BaseConfig.cloudBaseUrl}/fota/fota/appCustomer/register',
+                                  data: data);
+                              var d = json.decode(res.toString());
+                              debugPrint('响应------>$d');
+                              ToastUtils.toast(d['message']);
+                              if (d['code'] != 200) {
+                                return;
+                              } else {
+                                Get.toNamed("/use_login");
+                              }
+                            }
+                          },
+                          child: Text(
+                            '注册',
+                            style: TextStyle(
+                                fontSize: 32.sp,
+                                color: const Color(0xffffffff)),
+                          ),
+                        ),
+                      )
                     ],
                   ),
                 ),
@@ -221,6 +364,7 @@ Center logo() {
 }
 
 //手机号
+var dio = Dio();
 dynamic _phoneVal = '';
 Row buildPhoneField() {
   return Row(
@@ -245,7 +389,8 @@ Row buildPhoneField() {
                 border: InputBorder.none,
               ),
               validator: (value) {
-                RegExp reg = RegExp(r'^\d{11}$');
+                RegExp reg = RegExp(
+                    r'^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$');
                 if (!reg.hasMatch(value!)) {
                   return '手机号有误';
                 } else {
@@ -259,86 +404,5 @@ Row buildPhoneField() {
         ),
       ),
     ],
-  );
-}
-
-//验证码
-Row code() {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      Container(
-        width: 400.w,
-        decoration: const BoxDecoration(
-          border:
-              Border(bottom: BorderSide(color: Color(0XFF302F4F), width: 0.0)),
-        ),
-        child: SizedBox(
-          child: TextFormField(
-            style: TextStyle(fontSize: 32.sp, color: const Color(0xff051220)),
-            decoration: InputDecoration(
-              // 表单提示信息
-              hintText: "请输入验证码",
-              hintStyle:
-                  TextStyle(fontSize: 32.sp, color: const Color(0xff737A83)),
-            ),
-            validator: (value) {
-              if (value!.isEmpty) {
-                return '请输入验证码';
-              }
-              return null;
-            },
-            inputFormatters: [
-              LengthLimitingTextInputFormatter(4),
-            ],
-          ),
-        ),
-      ),
-      TextButton(
-          onPressed: (() {
-            // 获取验证码
-            getCode();
-          }),
-          child: Text(
-            '获取验证码',
-            style: TextStyle(color: Colors.blue, fontSize: 30.w),
-          )),
-    ],
-  );
-}
-
-// 获取验证码
-getCode() async {
-  var res = await XHttp.post(
-      'http://172.16.20.231:8079/fota/fota/appCustomer/sendSmsOrEmailCode?account=$_phoneVal');
-
-  ToastUtils.toast(res.message);
-}
-
-//注册按钮
-SizedBox buildLoginButton() {
-  return SizedBox(
-    width: 1.sw - 104.w,
-    child: ElevatedButton(
-      style: ButtonStyle(
-        padding: MaterialStateProperty.all(
-          EdgeInsets.only(top: 28.w, bottom: 28.w),
-        ),
-        shape: MaterialStateProperty.all(const StadiumBorder()),
-        backgroundColor:
-            MaterialStateProperty.all(const Color.fromARGB(255, 30, 104, 233)),
-      ),
-      onPressed: () {
-        //表单校验
-        if ((_formKey.currentState as FormState).validate()) {
-          ToastUtils.toast('注册成功');
-          Get.toNamed("/use_login");
-        }
-      },
-      child: Text(
-        '注册',
-        style: TextStyle(fontSize: 32.sp, color: const Color(0xffffffff)),
-      ),
-    ),
   );
 }

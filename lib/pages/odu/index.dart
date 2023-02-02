@@ -73,7 +73,7 @@ class _ODUState extends State<ODU> {
   @override
   void dispose() {
     super.dispose();
-    // 组件销毁时判断Timer是否仍然处于激活状态，是则取消
+    // 组件销毁时关闭ws
     channel.sink.close();
   }
 

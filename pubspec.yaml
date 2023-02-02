@@ -80,7 +80,8 @@ dependencies:
   flutter_swiper_null_safety: ^1.0.2 # 轮播图空异常版
   # 语言化
   intl: 0.17.0
-
+  # AES加密
+  encrypt: ^5.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

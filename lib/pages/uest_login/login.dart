@@ -1,15 +1,14 @@
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_template/core/utils/shared_preferences_util.dart';
-import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/custom_app_bar.dart';
-import 'package:flutter_template/generated/l10n.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
-import 'package:flutter_template/config/base_config.dart';
+import '../../config/base_config.dart';
+import '../../core/utils/Aes.dart';
+import '../../core/utils/shared_preferences_util.dart';
+import '../../core/utils/toast.dart';
 
 /// 用户登录
 class UserLogin extends StatefulWidget {
@@ -20,33 +19,39 @@ class UserLogin extends StatefulWidget {
 }
 
 class _UserLoginState extends State<UserLogin> {
+  final LoginController loginController = Get.put(LoginController());
+  bool passwordValShow = true;
   var dio = Dio();
+
   @override
   void initState() {
     super.initState();
     phone.text = '19121757940';
-    password.text = 'W2SMdjlijASIVGYd4sDRwA==';
+    password.text = '123';
   }
 
-  final LoginController loginController = Get.put(LoginController());
-  bool passwordValShow = true;
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  // 点击空白  关闭键盘 时传的一个对象
+  FocusNode blankNode = FocusNode();
+
+  /// 点击空白  关闭输入键盘
+  void closeKeyboard(BuildContext context) {
+    FocusScope.of(context).requestFocus(blankNode);
+  }
+
   @override
   Widget build(BuildContext context) {
-    // 点击空白  关闭键盘 时传的一个对象
-    FocusNode blankNode = FocusNode();
-
-    /// 点击空白  关闭输入键盘
-    void closeKeyboard(BuildContext context) {
-      FocusScope.of(context).requestFocus(blankNode);
-    }
-
     return Scaffold(
         appBar: customAppbar(
           borderBottom: false,
           actions: [
             TextButton(
                 onPressed: () {
-                  Get.toNamed("/get_equipment");
+                  Get.offAllNamed("/get_equipment");
                 },
                 child: Text(
                   '跳过',
@@ -142,7 +147,7 @@ class _UserLoginState extends State<UserLogin> {
                         onPressed: () async {
                           Map<String, dynamic> data = {
                             "account": phone.text,
-                            "password": password.text,
+                            "password": AESUtil.generateAES(password.text),
                           };
                           var res = await dio.post(
                               '${BaseConfig.cloudBaseUrl}/fota/fota/appCustomer/login',
@@ -150,6 +155,7 @@ class _UserLoginState extends State<UserLogin> {
                           var d = json.decode(res.toString());
                           debugPrint('响应------>$d');
                           if (d['code'] != 200) {
+                            ToastUtils.toast(d['message']);
                             return;
                           } else {
                             ToastUtils.toast('登录成功');

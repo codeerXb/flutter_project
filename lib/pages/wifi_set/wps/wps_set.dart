@@ -317,7 +317,7 @@ class _WpsSetState extends State<WpsSet> {
                           children: [
                             SizedBox(
                               height: 70.sp,
-                              width: 650.sp,
+                               width: 632.sp,
                               child: ElevatedButton(
                                 style: ButtonStyle(
                                     backgroundColor: MaterialStateProperty.all(

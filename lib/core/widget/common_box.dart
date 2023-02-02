@@ -74,10 +74,10 @@ class InfoBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         padding:  EdgeInsets.all(28.0.w),
-        margin:  EdgeInsets.only(bottom: 20.w),
+        margin:  EdgeInsets.only(bottom: 20.w,left: 10.w,right: 10.w),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(8.w),
+          borderRadius: BorderRadius.circular(18.w),
         ),
         child: boxCotainer);
   }

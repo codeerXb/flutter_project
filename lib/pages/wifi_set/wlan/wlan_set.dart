@@ -660,8 +660,9 @@ class _WlanSetState extends State<WlanSet> {
                                     }
                                 });
                           },
-                          child: BottomLine(
-                            rowtem: Row(
+                          child: Container(
+                            padding: EdgeInsets.only(top: 20.w),
+                            child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text('发射功率',
@@ -942,37 +943,34 @@ class _WlanSetState extends State<WlanSet> {
                         if (aqVal != 2)
 
                           //密码
-                          BottomLine(
-                            rowtem: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "密码 ",
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "密码 ",
+                                style: TextStyle(
+                                    color: const Color.fromARGB(255, 5, 0, 0),
+                                    fontSize: 28.sp),
+                              ),
+                              SizedBox(
+                                width: 250.w,
+                                child: TextFormField(
+                                  autovalidateMode: AutovalidateMode.always,
+                                  textAlign: TextAlign.right,
+                                  controller: pdVal == 0 ? password : password5,
                                   style: TextStyle(
-                                      color: const Color.fromARGB(255, 5, 0, 0),
-                                      fontSize: 28.sp),
-                                ),
-                                SizedBox(
-                                  width: 250.w,
-                                  child: TextFormField(
-                                    autovalidateMode: AutovalidateMode.always,
-                                    textAlign: TextAlign.right,
-                                    controller:
-                                        pdVal == 0 ? password : password5,
-                                    style: TextStyle(
+                                      fontSize: 26.sp,
+                                      color: const Color(0xff051220)),
+                                  decoration: InputDecoration(
+                                    hintText: "输入新密码",
+                                    hintStyle: TextStyle(
                                         fontSize: 26.sp,
-                                        color: const Color(0xff051220)),
-                                    decoration: InputDecoration(
-                                      hintText: "输入新密码",
-                                      hintStyle: TextStyle(
-                                          fontSize: 26.sp,
-                                          color: const Color(0xff737A83)),
-                                      border: InputBorder.none,
-                                    ),
+                                        color: const Color(0xff737A83)),
+                                    border: InputBorder.none,
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                       ],
                     )),
@@ -981,7 +979,7 @@ class _WlanSetState extends State<WlanSet> {
                       child: Center(
                           child: SizedBox(
                         height: 70.sp,
-                        width: 650.sp,
+                        width: 632.sp,
                         child: ElevatedButton(
                           style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(

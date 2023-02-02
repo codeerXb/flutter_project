@@ -74,10 +74,10 @@ class _ODUState extends State<ODU> {
   void dispose() {
     super.dispose();
     // 组件销毁时关闭ws
-    channel.sink.close();
+    channel?.sink.close();
   }
 
-  late WebSocketChannel channel;
+   WebSocketChannel? channel;
   Map mapData1 = {
     "cmd": 2,
     "param1": 0,
@@ -88,6 +88,13 @@ class _ODUState extends State<ODU> {
   };
   onData(msg) {
     Map<String, dynamic> transmission = jsonDecode(msg);
+    if (transmission['code'] != null && transmission['code'] == 500) {
+      ToastUtils.error('设备连接超时!');
+      setState(() {
+        isShow = true;
+      });
+      return;
+    }
     var message = ODUData.fromJson(transmission);
     printInfo(info: "res -----> $msg");
 
@@ -180,7 +187,7 @@ class _ODUState extends State<ODU> {
           }
         });
         //  关闭ws
-        channel.sink.close();
+        channel?.sink.close();
         ToastUtils.toast('终止搜索');
       }
     } else if (message.param2 == 3) {
@@ -226,7 +233,7 @@ class _ODUState extends State<ODU> {
     final wsUrl = Uri.parse('ws://192.168.225.10:4321');
     channel = WebSocketChannel.connect(wsUrl);
     // channel.sink.add(convert.jsonEncode(mapData));
-    channel.stream.listen(onData, onDone: (() {
+    channel?.stream.listen(onData, onDone: (() {
       debugPrint("onDone");
     }), onError: (error) {
       debugPrint("连接ws 错误");
@@ -263,7 +270,7 @@ class _ODUState extends State<ODU> {
     if (isShow) {
       init();
       wsConnect();
-      channel.sink.add(convert.jsonEncode(mapData1));
+      channel?.sink.add(convert.jsonEncode(mapData1));
       setState(() {
         isShow = false;
       });

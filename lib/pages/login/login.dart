@@ -91,85 +91,32 @@ class _LoginState extends State<Login> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          centerTitle: true,
-          systemOverlayStyle: const SystemUiOverlayStyle(
-            //设置状态栏的背景颜色
-            statusBarColor: Colors.transparent,
-            //状态栏的文字的颜色
-            statusBarIconBrightness: Brightness.dark,
-          ),
-          elevation: 0,
-          leading: IconButton(
-              onPressed: () {
-                Get.offNamed("/get_equipment");
-              },
-              icon: const Icon(
-                Icons.arrow_back_ios,
-                color: Colors.black,
-              )),
-        ),
-        // appBar: PreferredSize(
-
-        //   preferredSize: const Size.fromHeight(0),
-        //   child: customAppbar(
-        //     borderBottom: false,
-        //     // backgroundColor: Colors.transparent,
-        //   ),
-        // ),
-        body: InkWell(
-          onTap: () => closeKeyboard(context),
-          child: Container(
-            height: 1.sh,
-            color: Colors.white,
-            padding: EdgeInsets.only(left: 52.w, top: 100.w, right: 52.w),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: <Widget>[
-                  /// logo
-                  Container(
-                    margin: EdgeInsets.only(bottom: 70.w),
-                    // width: 136.w,
-                    // height: 136.w,
-                    child: Image.asset(
-                      'assets/images/logo.png',
-                      // fit: BoxFit.fill,
-                    ),
-                  ),
-                  // Padding(padding: EdgeInsets.only(top: 70.w)),
-                  Text(
-                    '管理员登录',
-                    style: TextStyle(fontSize: 48.sp),
-                  ),
-                  Padding(padding: EdgeInsets.only(top: 10.w)),
-                  Text(
-                    '当前设备 $vn',
-                    style: TextStyle(
-                        fontSize: 28.sp, color: const Color(0xFF373543)),
-                  ),
-
-                  /// 账号
-                  // buildAccountTextField(),
-                  Padding(padding: EdgeInsets.only(top: 112.w)),
-
-                  /// 密码
-                  buildPasswordTextField(),
-                  Padding(padding: EdgeInsets.only(top: 192.w)),
-
-                  /// 登录
-                  buildLoginButton(),
-                  Padding(padding: EdgeInsets.only(top: 20.w)),
-                ],
-              ),
-            ),
-          ),
-        ));
+  ///执行提交方法
+  void onSubmit(BuildContext context) {
+    closeKeyboard(context);
+    if (_account.trim().isEmpty) {
+      ToastUtils.toast("账号不能为空");
+    } else if (_password.trim().isEmpty) {
+      ToastUtils.toast("密码不能为空");
+    } else {
+      Map<String, dynamic> data = {
+        'username': _account.trim(),
+        'password': base64Encode(utf8.encode(_password.trim().trim())),
+        'rememberMe': 'true',
+        'ismoble': 'ismoble'
+      };
+      List<String> loginInfo;
+      if (data['username'] == 'superadmin' &&
+          data['password'] == base64Encode(utf8.encode('admin123'))) {
+        loginInfo = [
+          data['username'],
+          data['password'],
+          '管理员',
+          'http://c.hiphotos.baidu.com/image/pic/item/9c16fdfaaf51f3de1e296fa390eef01f3b29795a.jpg'
+        ];
+        sharedAddAndUpdate("loginInfo", List, loginInfo); //把登录信息保存到本地
+      }
+    }
   }
 
   ///账号
@@ -328,34 +275,84 @@ class _LoginState extends State<Login> {
     FocusScope.of(context).requestFocus(blankNode);
   }
 
-  ///执行提交方法
-  void onSubmit(BuildContext context) {
-    closeKeyboard(context);
-    if (_account.trim().isEmpty) {
-      ToastUtils.toast("账号不能为空");
-    } else if (_password.trim().isEmpty) {
-      ToastUtils.toast("密码不能为空");
-    } else {
-      Map<String, dynamic> data = {
-        'username': _account.trim(),
-        'password': base64Encode(utf8.encode(_password.trim().trim())),
-        'rememberMe': 'true',
-        'ismoble': 'ismoble'
-      };
-      List<String> loginInfo;
-      if (data['username'] == 'superadmin' &&
-          data['password'] == base64Encode(utf8.encode('admin123'))) {
-        loginInfo = [
-          data['username'],
-          data['password'],
-          '管理员',
-          'http://c.hiphotos.baidu.com/image/pic/item/9c16fdfaaf51f3de1e296fa390eef01f3b29795a.jpg'
-        ];
-        sharedAddAndUpdate("loginInfo", List, loginInfo); //把登录信息保存到本地
-        Get.offNamed("/home", arguments: {'vn': vn});
-      } else {
-        ToastUtils.toast('用户名或密码错误');
-      }
-    }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          centerTitle: true,
+          systemOverlayStyle: const SystemUiOverlayStyle(
+            //设置状态栏的背景颜色
+            statusBarColor: Colors.transparent,
+            //状态栏的文字的颜色
+            statusBarIconBrightness: Brightness.dark,
+          ),
+          elevation: 0,
+          leading: IconButton(
+              onPressed: () {
+                Get.offNamed("/get_equipment");
+              },
+              icon: const Icon(
+                Icons.arrow_back_ios,
+                color: Colors.black,
+              )),
+        ),
+        // appBar: PreferredSize(
+
+        //   preferredSize: const Size.fromHeight(0),
+        //   child: customAppbar(
+        //     borderBottom: false,
+        //     // backgroundColor: Colors.transparent,
+        //   ),
+        // ),
+        body: InkWell(
+          onTap: () => closeKeyboard(context),
+          child: Container(
+            height: 1.sh,
+            color: Colors.white,
+            padding: EdgeInsets.only(left: 52.w, top: 100.w, right: 52.w),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: <Widget>[
+                  /// logo
+                  Container(
+                    margin: EdgeInsets.only(bottom: 70.w),
+                    // width: 136.w,
+                    // height: 136.w,
+                    child: Image.asset(
+                      'assets/images/logo.png',
+                      // fit: BoxFit.fill,
+                    ),
+                  ),
+                  // Padding(padding: EdgeInsets.only(top: 70.w)),
+                  Text(
+                    '管理员登录',
+                    style: TextStyle(fontSize: 48.sp),
+                  ),
+                  Padding(padding: EdgeInsets.only(top: 10.w)),
+                  Text(
+                    '当前设备 $vn',
+                    style: TextStyle(
+                        fontSize: 28.sp, color: const Color(0xFF373543)),
+                  ),
+
+                  /// 账号
+                  // buildAccountTextField(),
+                  Padding(padding: EdgeInsets.only(top: 112.w)),
+
+                  /// 密码
+                  buildPasswordTextField(),
+                  Padding(padding: EdgeInsets.only(top: 192.w)),
+
+                  /// 登录
+                  buildLoginButton(),
+                  Padding(padding: EdgeInsets.only(top: 20.w)),
+                ],
+              ),
+            ),
+          ),
+        ));
   }
 }

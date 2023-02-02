@@ -131,6 +131,14 @@ class _WlanSetState extends State<WlanSet> {
 
 //提交
   void setData() async {
+    if ((pdVal == 0 && isCheck)) {
+      ssid.text == '';
+      ToastUtils.waring('SSID 不能为空！');
+    }
+    if (pdVal == 1 && isCheck5) {
+      ssid5.text == '';
+      ToastUtils.waring('SSID 不能为空！');
+    }
     var param;
     if (pdVal == 1) {
       if (isCheck5) {

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
+import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_picker.dart';
 import 'package:flutter_template/pages/wifi_set/wlan/wlan_datas.dart';
@@ -76,10 +77,10 @@ class _WlanSetState extends State<WlanSet> {
     '80MHz',
   ];
   List<String> wpaOptions = ['WPA2-PSK', 'WPA-PSK&WPA2-PSK', '空(不推荐)'];
-  List<String> wpaOptionsV = ['psk2+aes', 'psk-mixed+aes', 'null'];
+  List<String> wpaOptionsV = ['psk2', 'psk-mixed', 'none'];
   List<String> wpajmOptions = [
-    'AES(推荐)'
-        'TKIP',
+    'AES(推荐)',
+    'TKIP',
     'TKIP&AES',
   ];
   List<String> wpajmOptionsV = [
@@ -122,10 +123,77 @@ class _WlanSetState extends State<WlanSet> {
   @override
   void initState() {
     super.initState();
-    getData();
+
     getList();
     getWiFiSsidTable();
     getWiFi5GSsidTable();
+  }
+
+//提交
+  void setData() async {
+    var param;
+    if (pdVal == 1) {
+      if (isCheck5) {
+        if (msVal5 < 3) {
+          param =
+              '{"wifi5gEnable":"1","wifi5gMode":"${wifi5gModeV[msVal5]}","wifi5gHtmode":"${wifiChannelBandwidth5V[kdVal5]}","wifi5gChannel":"${wifi5gCountryChannelList[xtVal5]}","wifi5gTxpower":"${wifi5gTxpower[fsVal5]}"}';
+        } else {
+          param =
+              '{"wifi5gEnable":"1","wifi5gMode":"${wifi5gModeV[msVal5]}","wifi5gChannel":"${wifi5gCountryChannelList[xtVal5]}","wifi5gTxpower":"${wifi5gTxpower[fsVal5]}"}';
+        }
+      } else {
+        param = '{"wifi5gEnable": "0"}';
+      }
+    } else {
+      if (isCheck) {
+        if (msVal < 2) {
+          param =
+              '{"wifiEnable":"1","wifiMode":"${wifiModeV[msVal]}","wifiHtmode":"${wifiChannelBandwidth[kdVal]}","wifiChannel":"${kdVal == 0 ? wifiCountryChannelList_HT20[xtVal] : kdVal == 1 ? wifiCountryChannelList_HT40j[xtVal] : wifiCountryChannelList_HT40}","wifiTxpower":"${wifiTxpower[fsVal]}"}';
+        } else {
+          param =
+              '{"wifiEnable":"1","wifiMode":"${wifiModeV[msVal]}",,"wifiChannel":"${kdVal == 0 ? wifiCountryChannelList_HT20[xtVal] : kdVal == 1 ? wifiCountryChannelList_HT40j[xtVal] : wifiCountryChannelList_HT40}","wifiTxpower":"${wifiTxpower[fsVal]}"}';
+        }
+      } else {
+        param = '{"wifiEnable": "0"}';
+      }
+    }
+    Map<String, dynamic> data = {'method': 'obj_set', 'param': param};
+    try {
+      var response = await XHttp.get('/data.html', data);
+      var d = json.decode(response.toString());
+      if (d['success'] == true) {
+        if ((pdVal == 0 && isCheck) || (pdVal == 1 && isCheck5)) {
+          setTab();
+        }
+      } else {
+        ToastUtils.error('提交失败！');
+      }
+    } catch (e) {
+      ToastUtils.error('提交失败！');
+    }
+  }
+
+  void setTab() async {
+    var param;
+    if (pdVal == 0) {
+      param =
+          '{"table":"WiFiSsidTable","value":[{"id":0,"Enable":"1","Ssid":"${ssid.text}","MaxClient":"${max.text}","SsidHide":"${ssidisCheck ? 1 : 0}","ApIsolate":"${apisCheck ? 1 : 0}","Encryption":"${wpaOptionsV[aqVal]}+${wpajmOptionsV[wpaVal]}","Key":"${password.text}"}]}';
+    } else {
+      param =
+          '{"table":"WiFi5GSsidTable","value":[{"id":0,"Enable":"1","Ssid":"${ssid5.text}","MaxClient":"${max5.text}","SsidHide":"${ssidisCheck5 ? 1 : 0}","ApIsolate":"${apisCheck5 ? 1 : 0}","Encryption":"${wpaOptionsV[aqVal5]}+${wpajmOptionsV[wpaVal5]}","Key":"${password5.text}"}]}';
+    }
+    Map<String, dynamic> data = {'method': 'tab_set', 'param': param};
+    try {
+      var response = await XHttp.get('/data.html', data);
+      var d = json.decode(response.toString());
+      if (d['success'] == true) {
+        ToastUtils.success('提交成功！');
+      } else {
+        ToastUtils.error('提交失败！');
+      }
+    } catch (e) {
+      ToastUtils.error('提交失败！');
+    }
   }
 
   //读取
@@ -161,6 +229,7 @@ class _WlanSetState extends State<WlanSet> {
           xtVal = wifiCountryChannelList_HT40
               .indexOf(wlanData.wifiChannel.toString());
         }
+
         xtVal5 =
             wifi5gCountryChannelList.indexOf(wlanData.wifi5gChannel.toString());
         isCheck = wlanData.wifiEnable == '1';
@@ -185,6 +254,8 @@ class _WlanSetState extends State<WlanSet> {
       var d = json.decode(response.toString());
       setState(() {
         channelLists = channelList.fromJson(d);
+        print("+++++++++++++++$channelLists");
+
         wifi5gCountryChannelList
             .addAll(channelLists.wifi5gCountryChannelList!.split(';'));
         wifiCountryChannelList_HT20
@@ -194,6 +265,7 @@ class _WlanSetState extends State<WlanSet> {
         wifiCountryChannelList_HT40
             .addAll(channelLists.wifiCountryChannelListHT40!.split(';'));
       });
+      getData();
     } catch (e) {
       debugPrint('获取wps设置失败:$e.toString()');
     }
@@ -213,6 +285,14 @@ class _WlanSetState extends State<WlanSet> {
         ssid.text = wifiSsidTableLists.wiFiSsidTable![0].ssid.toString();
         max.text = wifiSsidTableLists.wiFiSsidTable![0].maxClient.toString();
         password.text = wifiSsidTableLists.wiFiSsidTable![0].key.toString();
+        var encryption =
+            wifiSsidTableLists.wiFiSsidTable![0].encryption.toString();
+        print(encryption.toString());
+        if (encryption != 'none') {
+          encryption.split('+');
+          wpaVal = wpajmOptionsV.indexOf(encryption.split('+')[1].toString());
+          aqVal = wpaOptionsV.indexOf(encryption.split('+')[0].toString());
+        }
         ssidisCheck =
             wifiSsidTableLists.wiFiSsidTable![0].ssidHide.toString() == '1';
         apisCheck =
@@ -235,6 +315,13 @@ class _WlanSetState extends State<WlanSet> {
       var d = json.decode(response.toString());
       setState(() {
         wifi5GSsidTableLists = wifi5GSsidTable.fromJson(d);
+        var encryption =
+            wifi5GSsidTableLists.wiFi5GSsidTable![0].encryption.toString();
+        if (encryption != 'none') {
+          encryption.split('+');
+          wpaVal5 = wpajmOptionsV.indexOf(encryption.split('+')[1].toString());
+          aqVal5 = wpaOptionsV.indexOf(encryption.split('+')[0].toString());
+        }
         ssid5.text = wifi5GSsidTableLists.wiFi5GSsidTable![0].ssid.toString();
         ssidisCheck5 =
             wifi5GSsidTableLists.wiFi5GSsidTable![0].ssidHide.toString() == '1';
@@ -372,12 +459,11 @@ class _WlanSetState extends State<WlanSet> {
                                     {
                                       setState(() => {
                                             if (pdVal == 0)
-                                              {
-                                                msVal = selectedValue,
-                                              }
+                                              {msVal = selectedValue, kdVal = 0}
                                             else
                                               {
                                                 msVal5 = selectedValue,
+                                                kdVal5 = 0
                                               }
                                           })
                                     }
@@ -415,7 +501,9 @@ class _WlanSetState extends State<WlanSet> {
                           ),
                         ),
                       //带宽
-                      if (pdVal == 0 ? isCheck : isCheck5)
+                      if (pdVal == 0
+                          ? isCheck && (msVal < 2)
+                          : isCheck5 && msVal5 != 3)
                         GestureDetector(
                           onTap: () {
                             closeKeyboard(context);
@@ -588,7 +676,7 @@ class _WlanSetState extends State<WlanSet> {
                                           '100%',
                                           '50%',
                                           '20%',
-                                        ][fsVal],
+                                        ][pdVal == 0 ? fsVal : fsVal5],
                                         style: TextStyle(
                                             color: const Color.fromARGB(
                                                 255, 5, 0, 0),
@@ -774,8 +862,8 @@ class _WlanSetState extends State<WlanSet> {
                                   children: [
                                     Text(
                                         pdVal == 0
-                                            ? wpaOptions[wpaVal]
-                                            : wpaOptions[wpaVal5],
+                                            ? wpaOptions[aqVal]
+                                            : wpaOptions[aqVal5],
                                         style: TextStyle(
                                             color: const Color.fromARGB(
                                                 255, 5, 0, 0),
@@ -898,7 +986,7 @@ class _WlanSetState extends State<WlanSet> {
                           style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(
                                   const Color.fromARGB(255, 48, 118, 250))),
-                          onPressed: () {},
+                          onPressed: setData,
                           child: Text(
                             '提交',
                             style: TextStyle(fontSize: 36.sp),

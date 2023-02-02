@@ -88,6 +88,13 @@ class _ODUState extends State<ODU> {
   };
   onData(msg) {
     Map<String, dynamic> transmission = jsonDecode(msg);
+    if (transmission['code'] != null && transmission['code'] == 500) {
+      ToastUtils.error('设备连接超时!');
+      setState(() {
+        isShow = true;
+      });
+      return;
+    }
     var message = ODUData.fromJson(transmission);
     printInfo(info: "res -----> $msg");
 

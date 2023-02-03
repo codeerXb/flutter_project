@@ -28,7 +28,7 @@ class _StepsWidgetState extends State<StepsWidget> {
       alignment: Alignment.center,
       child: Card(
           elevation: 10,
-          shadowColor: Colors.black54,
+          shadowColor: const Color.fromARGB(104, 181, 190, 242),
           color: const Color.fromARGB(188, 249, 250, 250),
           clipBehavior: Clip.hardEdge,
           shape: RoundedRectangleBorder(

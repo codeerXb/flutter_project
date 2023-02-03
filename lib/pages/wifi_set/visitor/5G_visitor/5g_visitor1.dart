@@ -16,9 +16,9 @@ class Visitor4 extends StatefulWidget {
 }
 
 class _Visitor4State extends State<Visitor4> {
-  vis5gDatas  data_5g  = vis5gDatas();
+  vis5gDatas data_5g = vis5gDatas();
   WiFi5GSsidTable currentData = WiFi5GSsidTable(
-    ssid:'',
+    ssid: '',
   );
   @override
   void initState() {
@@ -26,9 +26,8 @@ class _Visitor4State extends State<Visitor4> {
     get5GData();
   }
 
-
   //读取
- void get5GData() async {
+  void get5GData() async {
     Map<String, dynamic> data = {
       'method': 'tab_dump',
       'param': '["WiFi5GSsidTable"]',
@@ -39,18 +38,17 @@ class _Visitor4State extends State<Visitor4> {
       setState(() {
         data_5g = vis5gDatas.fromJson(d);
         currentData = data_5g.wiFi5GSsidTable![1];
-
       });
     } catch (e) {
       debugPrint('获取5GHZ失败:$e.toString()');
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: customAppbar(context: context, title: 'guest4'),
         body: Container(
-          padding: EdgeInsets.all(20.0.w),
           decoration:
               const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
           height: 1000,
@@ -67,11 +65,14 @@ class _Visitor4State extends State<Visitor4> {
                       leftText: '访客网络索引',
                       righText: currentData.ssid.toString(),
                     )),
-                   //是否允许访问内网 allowAccessIntranet=='0'不启用
+                    //是否允许访问内网 allowAccessIntranet=='0'不启用
                     BottomLine(
                         rowtem: RowContainer(
                       leftText: '是否允许访问内网',
-                      righText: currentData.allowAccessIntranet.toString()=='0'?'不启用':'启用',
+                      righText:
+                          currentData.allowAccessIntranet.toString() == '0'
+                              ? '不启用'
+                              : '启用',
                     )),
                     //SSID
                     BottomLine(
@@ -91,11 +92,13 @@ class _Visitor4State extends State<Visitor4> {
                       leftText: '隐藏SSID网络',
                       righText: '不启用',
                     )),
-                     //AP隔离 ApIsolate=='0' 不启用
+                    //AP隔离 ApIsolate=='0' 不启用
                     BottomLine(
                         rowtem: RowContainer(
                       leftText: 'AP隔离',
-                      righText: currentData.apIsolate.toString()=='0'?'不启用':'启用',
+                      righText: currentData.apIsolate.toString() == '0'
+                          ? '不启用'
+                          : '启用',
                     )),
                     //安全
                     BottomLine(
@@ -110,11 +113,12 @@ class _Visitor4State extends State<Visitor4> {
                       righText: 'AES(推荐使用)',
                     )),
                     //密码
-                    BottomLine(
-                        rowtem: RowContainer(
-                      leftText: '密码',
-                      righText: currentData.key.toString(),
-                    )),
+                    Container(
+                        padding: EdgeInsets.only(top: 20.w),
+                        child: RowContainer(
+                          leftText: '密码',
+                          righText: currentData.key.toString(),
+                        )),
                   ],
                 )),
               ],

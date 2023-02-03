@@ -88,12 +88,7 @@ class _SettingState extends State<Setting> {
                   unbindingDevice(),
 
                   /// Wi-Fi设置
-                  Padding(
-                    padding:
-                        EdgeInsets.only(left: 40.w, top: 20.w, bottom: 10.w),
-                    child: const TitleWidger(title: 'Wi-Fl设置'),
-                  ),
-
+                  const TitleWidger(title: 'Wi-Fl设置'),
 
                   /// WLAN设置
                   wlanSet(),
@@ -107,22 +102,14 @@ class _SettingState extends State<Setting> {
                   /// WPS设置
                   wpsSet(),
                   // const Divider(),
-                  Padding(
-                    padding:
-                        EdgeInsets.only(left: 40.w, top: 20.w, bottom: 10.w),
-                    child: const TitleWidger(title: '设备信息'),
-                  ),
+                  const TitleWidger(title: '设备信息'),
 
                   /// 设备信息
                   commonProblem(),
 
                   // const Divider(),
 
-                  Padding(
-                    padding:
-                        EdgeInsets.only(left: 40.w, top: 20.w, bottom: 10.w),
-                    child: const TitleWidger(title: '系统设置'),
-                  ),
+                  const TitleWidger(title: '系统设置'),
 
                   /// 维护设置
                   maintainSettings(),
@@ -130,11 +117,7 @@ class _SettingState extends State<Setting> {
                   /// 登录管理
                   accountSecurity(),
                   // const Divider(),
-                  Padding(
-                    padding:
-                        EdgeInsets.only(left: 40.w, top: 20.w, bottom: 10.w),
-                    child: const TitleWidger(title: '以太网'),
-                  ),
+                  const TitleWidger(title: '以太网'),
 
                   /// 以太网状态
                   feedback(),
@@ -143,11 +126,7 @@ class _SettingState extends State<Setting> {
                   netSet(),
                   // const Divider(),
 
-                  Padding(
-                    padding:
-                        EdgeInsets.only(left: 40.w, top: 20.w, bottom: 10.w),
-                    child: const TitleWidger(title: '网络设置'),
-                  ),
+                  const TitleWidger(title: '网络设置'),
 
                   /// WAN设置
                   wanSettings(),
@@ -625,5 +604,3 @@ class _SettingState extends State<Setting> {
         });
   }
 }
-
-

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/config/base_config.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/utils/toast.dart';
@@ -30,6 +31,7 @@ class _SystemSettingsState extends State<SystemSettings> {
         child: Container(
           decoration:
               const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
+          height: 2000.w,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -46,11 +48,28 @@ class _SystemSettingsState extends State<SystemSettings> {
               CommonWidget.simpleWidgetWithUserDetail("用户协议", callBack: () {
                 print("用户协议");
               }),
-              CommonWidget.buttonWidget(
-                  title: '退出登录',
-                  background: Colors.white,
-                  fontColor: Colors.red,
-                  callBack: loginout),
+              Padding(
+                  padding: EdgeInsets.only(top: 15.w),
+                  child: Center(
+                      child: SizedBox(
+                    height: 70.sp,
+                    width: 680.sp,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(
+                              const Color.fromARGB(255, 48, 118, 250))),
+                      onPressed: loginout,
+                      child: Text(
+                        '退出登录',
+                        style: TextStyle(fontSize: 36.sp),
+                      ),
+                    ),
+                  )))
+              // CommonWidget.buttonWidget(
+              //     title: '退出登录',
+              //     background: Colors.white,
+              //     fontColor: Colors.red,
+              //     callBack: loginout),
             ],
           ),
         ),

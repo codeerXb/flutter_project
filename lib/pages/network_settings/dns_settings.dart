@@ -207,9 +207,9 @@ class _DnsSettingsState extends State<DnsSettings> {
           child: InkWell(
             onTap: () => closeKeyboard(context),
             child: Container(
-              padding: EdgeInsets.all(20.sp),
               decoration:
                   const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
+              height: 2000.w,
               child: Column(
                 children: [
                   Row(children: [
@@ -221,10 +221,9 @@ class _DnsSettingsState extends State<DnsSettings> {
                       ),
                     ),
                   ]),
-                  Padding(padding: EdgeInsets.only(top: 120.sp)),
+                  Padding(padding: EdgeInsets.only(top: 20.sp)),
                   InfoBox(
                     boxCotainer: Column(children: [
-                      Padding(padding: EdgeInsets.only(top: 30.sp)),
                       BottomLine(
                         rowtem: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -256,62 +255,43 @@ class _DnsSettingsState extends State<DnsSettings> {
                           ],
                         ),
                       ),
-                      Padding(padding: EdgeInsets.only(bottom: 30.sp)),
                     ]),
                   ),
-                  Row(
-                    children: [
-                      SizedBox(
-                        height: 70.sp,
-                        width: 710.sp,
-                        child: ElevatedButton(
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(
-                                  const Color.fromARGB(255, 48, 118, 250))),
-                          onPressed: () {
-                            if (dsnMain.text == '' &&
-                                dsnMain1.text == '' &&
-                                dsnMain2.text == '' &&
-                                dsnMain3.text == '' &&
-                                dsnAssist.text == '' &&
-                                dsnAssist1.text == '' &&
-                                dsnAssist2.text == '' &&
-                                dsnAssist3.text == '') {
-                              getRadioData();
-                            } else {
-                              getRadioSettingData();
-                            }
-                          },
-                          child: Text(
-                            '提交',
-                            style: TextStyle(fontSize: 36.sp),
+                  Padding(
+                      padding: EdgeInsets.only(top: 10.w),
+                      child: Center(
+                        child: SizedBox(
+                          height: 70.sp,
+                          width: 680.sp,
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all(
+                                    const Color.fromARGB(255, 48, 118, 250))),
+                            onPressed: () {
+                              if (dsnMain.text == '' &&
+                                  dsnMain1.text == '' &&
+                                  dsnMain2.text == '' &&
+                                  dsnMain3.text == '' &&
+                                  dsnAssist.text == '' &&
+                                  dsnAssist1.text == '' &&
+                                  dsnAssist2.text == '' &&
+                                  dsnAssist3.text == '') {
+                                getRadioData();
+                              } else {
+                                getRadioSettingData();
+                              }
+                            },
+                            child: Text(
+                              '提交',
+                              style: TextStyle(fontSize: 36.sp),
+                            ),
                           ),
                         ),
-                      )
-                    ],
-                  )
+                      ))
                 ],
               ),
             ),
           ),
         ));
-  }
-}
-
-class InfoBox extends StatelessWidget {
-  final Widget boxCotainer;
-
-  const InfoBox({super.key, required this.boxCotainer});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        padding: EdgeInsets.all(2.0.sp),
-        margin: EdgeInsets.only(bottom: 200.sp),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: boxCotainer);
   }
 }

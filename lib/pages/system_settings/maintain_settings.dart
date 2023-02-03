@@ -206,9 +206,10 @@ class _MaintainSettingsState extends State<MaintainSettings> {
       appBar: customAppbar(context: context, title: '维护设置'),
       body: SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.all(20.sp),
+          padding: EdgeInsets.only(bottom: 20.w, left: 30.w, right: 30.w),
           decoration:
               const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
+          height: 2000.w,
           child: Column(
             children: [
               Padding(padding: EdgeInsets.only(top: 20.sp)),
@@ -437,24 +438,21 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                   ),
                 )
               ])),
-              Padding(padding: EdgeInsets.only(top: 40.sp)),
-              Row(
-                children: [
-                  SizedBox(
-                    height: 70.sp,
-                    width: 710.sp,
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(
-                              const Color.fromARGB(255, 48, 118, 250))),
-                      onPressed: () {
-                        getTrestsetData();
-                      },
-                      child: const Text('提交'),
-                    ),
-                  )
-                ],
-              ),
+              Padding(padding: EdgeInsets.only(top: 10.w)),
+              Center(
+                  child: SizedBox(
+                height: 70.sp,
+                width: 680.sp,
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(
+                          const Color.fromARGB(255, 48, 118, 250))),
+                  onPressed: () {
+                    getTrestsetData();
+                  },
+                  child: const Text('提交'),
+                ),
+              )),
               Padding(padding: EdgeInsets.only(top: 60.sp)),
               Row(children: const [
                 TitleWidger(title: '重启'),

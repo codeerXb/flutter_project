@@ -34,7 +34,7 @@ class _UserCardState extends State<UserCard> {
         //设置卡片圆角
         borderRadius: BorderRadius.all(Radius.circular(10)),
       ),
-      margin: const EdgeInsets.all(15), //设置卡片外边距
+      margin:  EdgeInsets.all(26.w), //设置卡片外边距
       child: Column(
         children: [
           ListTile(

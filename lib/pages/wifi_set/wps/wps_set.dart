@@ -139,7 +139,6 @@ class _WpsSetState extends State<WpsSet> {
           onTap: () => closeKeyboard(context),
           behavior: HitTestBehavior.opaque,
           child: Container(
-            padding: EdgeInsets.all(20.0.w),
             decoration:
                 const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
             height: 1000,
@@ -310,46 +309,41 @@ class _WpsSetState extends State<WpsSet> {
                           ),
                         ),
                       ),
-                      //提交
-                      Padding(
-                        padding: const EdgeInsets.only(top: 50.0),
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              height: 70.sp,
-                               width: 632.sp,
-                              child: ElevatedButton(
-                                style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all(
-                                        const Color.fromARGB(
-                                            255, 48, 118, 250))),
-                                onPressed: () {
-                                  handleSave();
-                                  //选择PBC
-                                  if (isCheck && modeShowVal == 'PBC') {
-                                    savePbc(
-                                        '{"${paramKey}Mode": "$modeShowVal"}');
-                                  }
-                                  //选择Client PIN
-                                  if (isCheck && modeShowVal == 'Client PIN') {
-                                    showVal == '2.4GHz'
-                                        ? savePbc(
-                                            '{ "${paramKey}Mode": "client",  "wifiWpsClientPin": "${pinVal.text}"}')
-                                        : savePbc(
-                                            '{ "${paramKey}Mode": "client",  "wifi5gWpsClientPin": "${pinVal.text}"}');
-                                  }
-                                },
-                                child: Text(
-                                  '提交',
-                                  style: TextStyle(fontSize: 36.sp),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      )
                     ],
                   )),
+                  //提交
+                  Padding(
+                    padding: EdgeInsets.only(top: 10.w),
+                    child: Center(
+                        child: SizedBox(
+                      height: 70.sp,
+                      width: 680.sp,
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(
+                                const Color.fromARGB(255, 48, 118, 250))),
+                        onPressed: () {
+                          handleSave();
+                          //选择PBC
+                          if (isCheck && modeShowVal == 'PBC') {
+                            savePbc('{"${paramKey}Mode": "$modeShowVal"}');
+                          }
+                          //选择Client PIN
+                          if (isCheck && modeShowVal == 'Client PIN') {
+                            showVal == '2.4GHz'
+                                ? savePbc(
+                                    '{ "${paramKey}Mode": "client",  "wifiWpsClientPin": "${pinVal.text}"}')
+                                : savePbc(
+                                    '{ "${paramKey}Mode": "client",  "wifi5gWpsClientPin": "${pinVal.text}"}');
+                          }
+                        },
+                        child: Text(
+                          '提交',
+                          style: TextStyle(fontSize: 36.sp),
+                        ),
+                      ),
+                    )),
+                  )
                 ],
               ),
             ),

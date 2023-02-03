@@ -18,7 +18,7 @@ class Visitor2 extends StatefulWidget {
 class _Visitor2State extends State<Visitor2> {
   vis2gDatas data_2g = vis2gDatas();
   WiFiSsidTable currentData = WiFiSsidTable(
-    ssid:'',
+    ssid: '',
   );
   @override
   void initState() {
@@ -49,7 +49,6 @@ class _Visitor2State extends State<Visitor2> {
     return Scaffold(
         appBar: customAppbar(context: context, title: 'guest2'),
         body: Container(
-          padding: EdgeInsets.all(20.0.w),
           decoration:
               const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
           height: 1000,
@@ -66,11 +65,14 @@ class _Visitor2State extends State<Visitor2> {
                       leftText: '访客网络索引',
                       righText: currentData.ssid.toString(),
                     )),
-                   //是否允许访问内网 allowAccessIntranet=='0'不启用
+                    //是否允许访问内网 allowAccessIntranet=='0'不启用
                     BottomLine(
                         rowtem: RowContainer(
                       leftText: '是否允许访问内网',
-                      righText: currentData.allowAccessIntranet.toString()=='0'?'不启用':'启用',
+                      righText:
+                          currentData.allowAccessIntranet.toString() == '0'
+                              ? '不启用'
+                              : '启用',
                     )),
                     //SSID
                     BottomLine(
@@ -90,11 +92,13 @@ class _Visitor2State extends State<Visitor2> {
                       leftText: '隐藏SSID网络',
                       righText: '不启用',
                     )),
-                     //AP隔离 ApIsolate=='0' 不启用
+                    //AP隔离 ApIsolate=='0' 不启用
                     BottomLine(
                         rowtem: RowContainer(
                       leftText: 'AP隔离',
-                      righText: currentData.apIsolate.toString()=='0'?'不启用':'启用',
+                      righText: currentData.apIsolate.toString() == '0'
+                          ? '不启用'
+                          : '启用',
                     )),
                     //安全
                     BottomLine(
@@ -109,11 +113,12 @@ class _Visitor2State extends State<Visitor2> {
                       righText: 'AES(推荐使用)',
                     )),
                     //密码
-                    BottomLine(
-                        rowtem: RowContainer(
-                      leftText: '密码',
-                      righText: currentData.key.toString(),
-                    )),
+                    Container(
+                        padding: EdgeInsets.only(top: 20.w),
+                        child: RowContainer(
+                          leftText: '密码',
+                          righText: currentData.key.toString(),
+                        )),
                   ],
                 )),
               ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/utils/cache_util.dart';
 import 'package:flutter_template/core/utils/common_util.dart';
 import 'package:flutter_template/core/utils/toast.dart';
@@ -40,6 +41,7 @@ class _ClearCacheState extends State<ClearCache> {
         child: Container(
           decoration:
               const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
+          height: 2000.w,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -48,13 +50,34 @@ class _ClearCacheState extends State<ClearCache> {
                   value: cacheSizeStr),
 
               /// 清除缓存按钮
-              CommonWidget.buttonWidget(
-                  title: '清除缓存',
-                  callBack: () {
-                    CacheUtils.clearApplicationCache();
-                    ToastUtils.success("缓存已清空");
-                    Get.back();
-                  }),
+              Padding(
+                  padding: EdgeInsets.only(top: 15.w),
+                  child: Center(
+                      child: SizedBox(
+                    height: 70.sp,
+                    width: 680.sp,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(
+                              const Color.fromARGB(255, 48, 118, 250))),
+                      onPressed: () {
+                        CacheUtils.clearApplicationCache();
+                        ToastUtils.success("缓存已清空");
+                        Get.back();
+                      },
+                      child: Text(
+                        '清除缓存',
+                        style: TextStyle(fontSize: 36.sp),
+                      ),
+                    ),
+                  )))
+              // CommonWidget.buttonWidget(
+              //     title: '清除缓存',
+              //     callBack: () {
+              //       CacheUtils.clearApplicationCache();
+              //       ToastUtils.success("缓存已清空");
+              //       Get.back();
+              //     }),
             ],
           ),
         ),

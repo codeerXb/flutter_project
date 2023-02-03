@@ -367,7 +367,6 @@ class _WlanSetState extends State<WlanSet> {
           onTap: () => closeKeyboard(context),
           behavior: HitTestBehavior.opaque,
           child: Container(
-            padding: EdgeInsets.all(20.0.w),
             decoration:
                 const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
             height: 2000.w,
@@ -959,7 +958,7 @@ class _WlanSetState extends State<WlanSet> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "密码 ",
+                                "密码",
                                 style: TextStyle(
                                     color: const Color.fromARGB(255, 5, 0, 0),
                                     fontSize: 28.sp),
@@ -987,11 +986,11 @@ class _WlanSetState extends State<WlanSet> {
                       ],
                     )),
                   Padding(
-                      padding: EdgeInsets.only(bottom: 40.w),
+                      padding: EdgeInsets.only(top: 10.w),
                       child: Center(
                           child: SizedBox(
                         height: 70.sp,
-                        width: 632.sp,
+                        width: 680.sp,
                         child: ElevatedButton(
                           style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(

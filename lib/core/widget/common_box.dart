@@ -55,7 +55,7 @@ class TitleWidger extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding:  EdgeInsets.only(bottom: 10.0.w),
+        margin:  EdgeInsets.only(top:10.w,bottom: 20.w,left: 30.w,right: 30.w),
       child: Text(
         title,
         style: TextStyle(color: Colors.blueAccent, fontSize: 32.sp),
@@ -74,7 +74,7 @@ class InfoBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         padding:  EdgeInsets.all(28.0.w),
-        margin:  EdgeInsets.only(bottom: 20.w,left: 10.w,right: 10.w),
+        margin:  EdgeInsets.only(bottom: 20.w,left: 30.w,right: 30.w),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(18.w),

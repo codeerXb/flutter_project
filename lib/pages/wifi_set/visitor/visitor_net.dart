@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:amap_location_fluttify/amap_location_fluttify.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
@@ -115,16 +113,16 @@ class _VisitorNetState extends State<VisitorNet> {
     return Scaffold(
         appBar: customAppbar(context: context, title: '访客网络'),
         body: Container(
-          padding: EdgeInsets.all(20.0.w),
-          margin: EdgeInsets.only(bottom: 20.w, left: 10.w, right: 10.w),
+          padding: EdgeInsets.only(bottom: 20.w, left: 30.w, right: 30.w),
           decoration: const BoxDecoration(
             color: Color.fromRGBO(240, 240, 240, 1),
           ),
-          height: 1000,
+          height: 2000.w,
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                Padding(padding: EdgeInsets.only(top: 10.w)),
                 const TitleWidger(title: '2.4GHZ'),
                 //访客 enable == '1'启用
                 CommonWidget.simpleWidgetWithMine(
@@ -226,6 +224,7 @@ class _VisitorNetState extends State<VisitorNet> {
                         ToastUtils.toast('未启用');
                       }
                     }),
+                Padding(padding: EdgeInsets.only(top: 10.w)),
                 const TitleWidger(title: '5GHZ'),
                 //访客
                 CommonWidget.simpleWidgetWithMine(

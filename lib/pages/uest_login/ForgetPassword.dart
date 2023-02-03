@@ -255,7 +255,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                               // if (d['code'] != 200) {
                               //   return;
                               // } else {
-                              //   Get.toNamed("/use_login");
+                              //   Get.offAllNamed("/use_login");
                               // }
                             }
                           },

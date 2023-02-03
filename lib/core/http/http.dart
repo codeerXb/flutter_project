@@ -2,6 +2,7 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_template/core/utils/toast.dart';
 import '../../config/base_config.dart';
 import 'http_interceptor.dart';
 import 'package:dio/adapter.dart';
@@ -53,6 +54,7 @@ class XHttp {
       debugPrint('++++++++++++');
       debugPrint(params.toString());
       debugPrint(e.toString());
+      handleError(e);
       debugPrint('++++++++++++-');
       rethrow;
     }
@@ -96,20 +98,29 @@ class XHttp {
     switch (e.type) {
       case DioErrorType.connectTimeout:
         debugPrint("连接超时");
+        ToastUtils.error('连接超时');
         break;
       case DioErrorType.sendTimeout:
         debugPrint("请求超时");
+        ToastUtils.error('请求超时');
+
         break;
       case DioErrorType.receiveTimeout:
         debugPrint("响应超时");
+        ToastUtils.error('响应超时');
+
         break;
       case DioErrorType.response:
         debugPrint("出现异常");
+        ToastUtils.error('出现异常');
+
         break;
       case DioErrorType.cancel:
         debugPrint("请求取消");
         break;
       default:
+        ToastUtils.error('网络异常');
+
         debugPrint("未知错误");
         break;
     }

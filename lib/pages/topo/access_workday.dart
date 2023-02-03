@@ -33,7 +33,7 @@ class _WorkdayState extends State<Workday> {
         onPressed: () {
           showBottomSheet();
         },
-        icon: const Icon(Icons.arrow_drop_down),
+        icon: const Icon(Icons.arrow_forward_ios_outlined),
       ),
     );
   }
@@ -51,43 +51,36 @@ class _WorkdayState extends State<Workday> {
 
   Widget buildBottomSheetWidget(BuildContext context) {
     //弹框中内容  310 的调试
-    return SizedBox(
-      child: Column(
-        children: [
-          buildItem(result, onTap: () {
-            setState(() {
-              // resultMessage = result;
-            });
-          }),
+    return Column(
+      children: [
+        buildItem(result, onTap: () {}),
 
-          Padding(padding: EdgeInsets.only(top: 60.sp)),
-          //   //取消按钮
-          //   //添加个点击事件
-          Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-            InkWell(
-              onTap: () {
-                Navigator.of(context).pop();
-              },
-              child: Container(
-                height: 44.sp,
-                alignment: Alignment.center,
-                child: const Text("取消"),
-              ),
+        Padding(padding: EdgeInsets.only(top: 60.sp)),
+        //   //取消按钮
+        //   //添加个点击事件
+        Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+          InkWell(
+            onTap: () {
+              Navigator.of(context).pop();
+            },
+            child: Container(
+              height: 44.sp,
+              alignment: Alignment.center,
+              child: const Text("取消"),
             ),
-            InkWell(
-              onTap: () {
-                Navigator.of(context).pop();
-                print('---qqqq-----$context');
-              },
-              child: Container(
-                height: 44.sp,
-                alignment: Alignment.center,
-                child: const Text("确定"),
-              ),
-            )
-          ])
-        ],
-      ),
+          ),
+          InkWell(
+            onTap: () {
+              Navigator.of(context).pop(checkboxList);
+              print('---qqqq-----$checkboxList');
+            },
+            child: Container(
+              alignment: Alignment.center,
+              child: const Text("确定"),
+            ),
+          )
+        ])
+      ],
     );
   }
 
@@ -123,15 +116,6 @@ class _WorkdayState extends State<Workday> {
                                 checkboxList[item['index']]['value'] = data;
                                 print(
                                     '-----测试8----${checkboxList[item['index']]}');
-
-                                void test() async {
-                                  result = item['text'].toString();
-                                  print('----hhh---$result');
-                                  print(
-                                      '-----测试9----${item['text'].toString()}');
-                                }
-
-                                test();
                               });
                             },
                           ),

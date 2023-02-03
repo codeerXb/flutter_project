@@ -4,7 +4,7 @@ class BaseConfig {
   // static const String token = 'd302214d-b02c-4abe-933d-c530b604c9d1';
 
   /// 服务器路径
-   // static const baseUrl = "https://www.smawavelogin.com";
+  // static const baseUrl = "https://www.smawavelogin.com";
   // static const baseUrl = "http://192.168.225.10";
   static const baseUrl = "https://172.16.20.144";
   static const cloudBaseUrl = "http://172.16.20.231:8079";

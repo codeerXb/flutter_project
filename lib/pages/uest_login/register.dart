@@ -321,7 +321,7 @@ class _UserRegisterState extends State<UserRegister> {
                                 if (d['code'] != 200) {
                                   return;
                                 } else {
-                                  Get.toNamed("/use_login");
+                                  Get.offAllNamed("/use_login");
                                 }
                               }
                             },

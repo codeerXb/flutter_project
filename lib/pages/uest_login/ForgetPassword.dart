@@ -29,6 +29,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
   String _codeValue = '';
   bool iscode = false; //获取验证码状态
   int codeNum = 60; //倒计时 60秒
+
   var timer;
   @override
   void dispose() {
@@ -36,18 +37,17 @@ class _ForgetPasswordState extends State<ForgetPassword> {
     if (timer != null) {
       timer.cancel();
     }
+  } // 点击空白  关闭键盘 时传的一个对象
+
+  FocusNode blankNode = FocusNode();
+
+  /// 点击空白  关闭输入键盘
+  void closeKeyboard(BuildContext context) {
+    FocusScope.of(context).requestFocus(blankNode);
   }
 
   @override
   Widget build(BuildContext context) {
-    // 点击空白  关闭键盘 时传的一个对象
-    FocusNode blankNode = FocusNode();
-
-    /// 点击空白  关闭输入键盘
-    void closeKeyboard(BuildContext context) {
-      FocusScope.of(context).requestFocus(blankNode);
-    }
-
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
@@ -61,7 +61,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
           elevation: 0,
           leading: IconButton(
               onPressed: () {
-                Get.toNamed("/use_login");
+                Get.offAllNamed("/use_login");
               },
               icon: const Icon(
                 Icons.arrow_back_ios,

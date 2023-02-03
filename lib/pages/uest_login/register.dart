@@ -48,16 +48,16 @@ class _UserRegisterState extends State<UserRegister> {
     }
   }
 
+  // 点击空白  关闭键盘 时传的一个对象
+  FocusNode blankNode = FocusNode();
+
+  /// 点击空白  关闭输入键盘
+  void closeKeyboard(BuildContext context) {
+    FocusScope.of(context).requestFocus(blankNode);
+  }
+
   @override
   Widget build(BuildContext context) {
-    // 点击空白  关闭键盘 时传的一个对象
-    FocusNode blankNode = FocusNode();
-
-    /// 点击空白  关闭输入键盘
-    void closeKeyboard(BuildContext context) {
-      FocusScope.of(context).requestFocus(blankNode);
-    }
-
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
@@ -71,268 +71,273 @@ class _UserRegisterState extends State<UserRegister> {
           elevation: 0,
           leading: IconButton(
               onPressed: () {
-                Get.toNamed("/use_login");
+                Get.offAllNamed("/use_login");
               },
               icon: const Icon(
                 Icons.arrow_back_ios,
                 color: Colors.black,
               )),
         ),
-        body: SingleChildScrollView(
-          child: GestureDetector(
-            onTap: () => closeKeyboard(context),
-            behavior: HitTestBehavior.opaque,
-            child: Form(
-              key: _formKey,
-              child: Column(children: <Widget>[
-                Container(
-                  color: Colors.white,
-                  padding: EdgeInsets.only(left: 52.w, right: 52.w),
-                  child: Column(
-                    children: [
-                      Padding(padding: EdgeInsets.only(top: 50.w)),
+        body: Container(
+            decoration:
+              const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
+          height: 1000,
+          child: SingleChildScrollView(
+            child: GestureDetector(
+              onTap: () => closeKeyboard(context),
+              behavior: HitTestBehavior.opaque,
+              child: Form(
+                key: _formKey,
+                child: Column(children: <Widget>[
+                  Container(
+                    color: Colors.white,
+                    padding: EdgeInsets.only(left: 52.w, right: 52.w),
+                    child: Column(
+                      children: [
+                        Padding(padding: EdgeInsets.only(top: 50.w)),
 
-                      //logo&文字
-                      logo(),
-                      Padding(padding: EdgeInsets.only(top: 50.w)),
+                        //logo&文字
+                        logo(),
+                        Padding(padding: EdgeInsets.only(top: 50.w)),
 
-                      //手机号
-                      buildPhoneField(),
-                      Padding(padding: EdgeInsets.only(top: 20.w)),
+                        //手机号
+                        buildPhoneField(),
+                        Padding(padding: EdgeInsets.only(top: 20.w)),
 
-                      /// 密码
-                      Row(
-                        children: [
-                          Container(
-                            decoration: const BoxDecoration(
-                              border: Border(
-                                  bottom: BorderSide(
-                                      color: Color(0XFF302F4F), width: 0.0)),
-                            ),
-                            child: SizedBox(
-                              width: 1.sw - 104.w,
-                              child: TextFormField(
-                                obscureText: passwordValShow,
-                                style: TextStyle(
-                                    fontSize: 32.sp,
-                                    color: const Color(0xff051220)),
-                                decoration: InputDecoration(
-                                  icon: const Icon(Icons.lock),
-                                  suffixIcon: IconButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          passwordValShow = !passwordValShow;
-                                        });
-                                      },
-                                      icon: Icon(!passwordValShow
-                                          ? Icons.visibility
-                                          : Icons.visibility_off)),
-                                  // 表单提示信息
-                                  hintText: "请输入登录密码",
-                                  hintStyle: TextStyle(
+                        /// 密码
+                        Row(
+                          children: [
+                            Container(
+                              decoration: const BoxDecoration(
+                                border: Border(
+                                    bottom: BorderSide(
+                                        color: Color(0XFF302F4F), width: 0.0)),
+                              ),
+                              child: SizedBox(
+                                width: 1.sw - 104.w,
+                                child: TextFormField(
+                                  obscureText: passwordValShow,
+                                  style: TextStyle(
                                       fontSize: 32.sp,
-                                      color: const Color(0xff737A83)),
-                                  // 取消自带的下边框
-                                  border: InputBorder.none,
+                                      color: const Color(0xff051220)),
+                                  decoration: InputDecoration(
+                                    icon: const Icon(Icons.lock),
+                                    suffixIcon: IconButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            passwordValShow = !passwordValShow;
+                                          });
+                                        },
+                                        icon: Icon(!passwordValShow
+                                            ? Icons.visibility
+                                            : Icons.visibility_off)),
+                                    // 表单提示信息
+                                    hintText: "请输入登录密码",
+                                    hintStyle: TextStyle(
+                                        fontSize: 32.sp,
+                                        color: const Color(0xff737A83)),
+                                    // 取消自带的下边框
+                                    border: InputBorder.none,
+                                  ),
+                                  onChanged: (String value) =>
+                                      _passwordVal = value,
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return '请输入密码';
+                                    }
+                                    return null;
+                                  },
                                 ),
-                                onChanged: (String value) =>
-                                    _passwordVal = value,
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return '请输入密码';
-                                  }
-                                  return null;
-                                },
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      Padding(padding: EdgeInsets.only(top: 20.w)),
-
-                      //再次输入密码
-                      Row(
-                        children: [
-                          Container(
-                            decoration: const BoxDecoration(
-                              border: Border(
-                                  bottom: BorderSide(
-                                      color: Color(0XFF302F4F), width: 0.0)),
-                            ),
-                            child: SizedBox(
-                              width: 1.sw - 104.w,
-                              child: TextFormField(
-                                //隐藏文本
-                                obscureText: againPassShow,
-                                style: TextStyle(
-                                    fontSize: 32.sp,
-                                    color: const Color(0xff051220)),
-                                decoration: InputDecoration(
-                                  icon: const Icon(Icons.lock),
-                                  suffixIcon: IconButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          againPassShow = !againPassShow;
-                                        });
-                                      },
-                                      icon: Icon(!againPassShow
-                                          ? Icons.visibility
-                                          : Icons.visibility_off)),
-                                  // 表单提示信息
-                                  hintText: "请再次输入登录密码",
-                                  hintStyle: TextStyle(
-                                      fontSize: 32.sp,
-                                      color: const Color(0xff737A83)),
-                                  // 取消自带的下边框
-                                  border: InputBorder.none,
-                                ),
-                                onChanged: (String value) =>
-                                    _againPassVal = value,
-                                validator: (value) {
-                                  if (_passwordVal != _againPassVal) {
-                                    return '二次密码不一致';
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Padding(padding: EdgeInsets.only(top: 20.w)),
-
-                      // 验证码
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            width: 400.w,
-                            decoration: const BoxDecoration(
-                              border: Border(
-                                  bottom: BorderSide(
-                                      color: Color(0XFF302F4F), width: 0.0)),
-                            ),
-                            child: SizedBox(
-                              child: TextFormField(
-                                style: TextStyle(
-                                    fontSize: 32.sp,
-                                    color: const Color(0xff051220)),
-                                decoration: InputDecoration(
-                                  // 表单提示信息
-                                  hintText: "请输入验证码",
-                                  hintStyle: TextStyle(
-                                      fontSize: 32.sp,
-                                      color: const Color(0xff737A83)),
-                                ),
-                                validator: (value) {
-                                  if (value.toString().length != 4) {
-                                    return '输入正确验证码';
-                                  }
-                                  return null;
-                                },
-                                onChanged: (String value) => _codeValue = value,
-                                inputFormatters: [
-                                  LengthLimitingTextInputFormatter(4),
-                                ],
-                              ),
-                            ),
-                          ),
-                          // 获取验证码
-                          TextButton(
-                              onPressed: (() async {
-                                RegExp reg = RegExp(
-                                    r'^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$');
-                                if (!reg.hasMatch(_phoneVal!)) {
-                                  ToastUtils.toast('手机号格式有误');
-                                } else {
-                                  //发请求
-                                  var res = await dio.post(
-                                      '${BaseConfig.cloudBaseUrl}/fota/fota/appCustomer/sendSmsOrEmailCode?account=$_phoneVal');
-                                  var d = json.decode(res.toString());
-                                  debugPrint('响应------>$d');
-                                  d['code'] == 200
-                                      ? ToastUtils.toast('短信发送成功')
-                                      : ToastUtils.toast(d['message']);
-                                  if (codeNum == 60) {
-                                    //倒计时60s
-                                    setState(() {
-                                      iscode = true;
-                                    });
-
-                                    timer = Timer.periodic(
-                                        const Duration(seconds: 1), (time) {
-                                      setState(() {
-                                        codeNum--;
-                                      });
-                                      if (codeNum <= 1) {
-                                        timer.cancel();
-                                        setState(() {
-                                          codeNum = 60;
-                                          iscode = false;
-                                        });
-                                      }
-                                    });
-                                  }
-                                }
-                              }),
-                              child: Text(
-                                iscode ? '$codeNum秒' : '获取验证码',
-                                style: TextStyle(
-                                    color: Colors.blue, fontSize: 30.w),
-                              )),
-                        ],
-                      ),
-
-                      Padding(padding: EdgeInsets.only(top: 200.w)),
-
-                      /// 注册按钮
-                      SizedBox(
-                        width: 1.sw - 104.w,
-                        child: ElevatedButton(
-                          style: ButtonStyle(
-                            padding: MaterialStateProperty.all(
-                              EdgeInsets.only(top: 28.w, bottom: 28.w),
-                            ),
-                            shape: MaterialStateProperty.all(
-                                const StadiumBorder()),
-                            backgroundColor: MaterialStateProperty.all(
-                                const Color.fromARGB(255, 30, 104, 233)),
-                          ),
-                          onPressed: () async {
-                            Map<String, dynamic> data = {
-                              "id": 0,
-                              "account": _phoneVal,
-                              "password": _passwordVal,
-                              "code": _codeValue
-                            };
-                            //表单校验
-                            if ((_formKey.currentState as FormState)
-                                .validate()) {
-                              var res = await dio.post(
-                                  '${BaseConfig.cloudBaseUrl}/fota/fota/appCustomer/register',
-                                  data: data);
-                              var d = json.decode(res.toString());
-                              debugPrint('响应------>$d');
-                              ToastUtils.toast(d['message']);
-                              if (d['code'] != 200) {
-                                return;
-                              } else {
-                                Get.toNamed("/use_login");
-                              }
-                            }
-                          },
-                          child: Text(
-                            '注册',
-                            style: TextStyle(
-                                fontSize: 32.sp,
-                                color: const Color(0xffffffff)),
-                          ),
+                          ],
                         ),
-                      )
-                    ],
+                        Padding(padding: EdgeInsets.only(top: 20.w)),
+
+                        //再次输入密码
+                        Row(
+                          children: [
+                            Container(
+                              decoration: const BoxDecoration(
+                                border: Border(
+                                    bottom: BorderSide(
+                                        color: Color(0XFF302F4F), width: 0.0)),
+                              ),
+                              child: SizedBox(
+                                width: 1.sw - 104.w,
+                                child: TextFormField(
+                                  //隐藏文本
+                                  obscureText: againPassShow,
+                                  style: TextStyle(
+                                      fontSize: 32.sp,
+                                      color: const Color(0xff051220)),
+                                  decoration: InputDecoration(
+                                    icon: const Icon(Icons.lock),
+                                    suffixIcon: IconButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            againPassShow = !againPassShow;
+                                          });
+                                        },
+                                        icon: Icon(!againPassShow
+                                            ? Icons.visibility
+                                            : Icons.visibility_off)),
+                                    // 表单提示信息
+                                    hintText: "请再次输入登录密码",
+                                    hintStyle: TextStyle(
+                                        fontSize: 32.sp,
+                                        color: const Color(0xff737A83)),
+                                    // 取消自带的下边框
+                                    border: InputBorder.none,
+                                  ),
+                                  onChanged: (String value) =>
+                                      _againPassVal = value,
+                                  validator: (value) {
+                                    if (_passwordVal != _againPassVal) {
+                                      return '二次密码不一致';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Padding(padding: EdgeInsets.only(top: 20.w)),
+
+                        // 验证码
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              width: 400.w,
+                              decoration: const BoxDecoration(
+                                border: Border(
+                                    bottom: BorderSide(
+                                        color: Color(0XFF302F4F), width: 0.0)),
+                              ),
+                              child: SizedBox(
+                                child: TextFormField(
+                                  style: TextStyle(
+                                      fontSize: 32.sp,
+                                      color: const Color(0xff051220)),
+                                  decoration: InputDecoration(
+                                    // 表单提示信息
+                                    hintText: "请输入验证码",
+                                    hintStyle: TextStyle(
+                                        fontSize: 32.sp,
+                                        color: const Color(0xff737A83)),
+                                  ),
+                                  validator: (value) {
+                                    if (value.toString().length != 4) {
+                                      return '输入正确验证码';
+                                    }
+                                    return null;
+                                  },
+                                  onChanged: (String value) => _codeValue = value,
+                                  inputFormatters: [
+                                    LengthLimitingTextInputFormatter(4),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            // 获取验证码
+                            TextButton(
+                                onPressed: (() async {
+                                  RegExp reg = RegExp(
+                                      r'^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$');
+                                  if (!reg.hasMatch(_phoneVal!)) {
+                                    ToastUtils.toast('手机号格式有误');
+                                  } else {
+                                    //发请求
+                                    var res = await dio.post(
+                                        '${BaseConfig.cloudBaseUrl}/fota/fota/appCustomer/sendSmsOrEmailCode?account=$_phoneVal');
+                                    var d = json.decode(res.toString());
+                                    debugPrint('响应------>$d');
+                                    d['code'] == 200
+                                        ? ToastUtils.toast('短信发送成功')
+                                        : ToastUtils.toast(d['message']);
+                                    if (codeNum == 60) {
+                                      //倒计时60s
+                                      setState(() {
+                                        iscode = true;
+                                      });
+
+                                      timer = Timer.periodic(
+                                          const Duration(seconds: 1), (time) {
+                                        setState(() {
+                                          codeNum--;
+                                        });
+                                        if (codeNum <= 1) {
+                                          timer.cancel();
+                                          setState(() {
+                                            codeNum = 60;
+                                            iscode = false;
+                                          });
+                                        }
+                                      });
+                                    }
+                                  }
+                                }),
+                                child: Text(
+                                  iscode ? '$codeNum秒' : '获取验证码',
+                                  style: TextStyle(
+                                      color: Colors.blue, fontSize: 30.w),
+                                )),
+                          ],
+                        ),
+
+                        Padding(padding: EdgeInsets.only(top: 200.w)),
+
+                        /// 注册按钮
+                        SizedBox(
+                          width: 1.sw - 104.w,
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              padding: MaterialStateProperty.all(
+                                EdgeInsets.only(top: 28.w, bottom: 28.w),
+                              ),
+                              shape: MaterialStateProperty.all(
+                                  const StadiumBorder()),
+                              backgroundColor: MaterialStateProperty.all(
+                                  const Color.fromARGB(255, 30, 104, 233)),
+                            ),
+                            onPressed: () async {
+                              Map<String, dynamic> data = {
+                                "id": 0,
+                                "account": _phoneVal,
+                                "password": _passwordVal,
+                                "code": _codeValue
+                              };
+                              //表单校验
+                              if ((_formKey.currentState as FormState)
+                                  .validate()) {
+                                var res = await dio.post(
+                                    '${BaseConfig.cloudBaseUrl}/fota/fota/appCustomer/register',
+                                    data: data);
+                                var d = json.decode(res.toString());
+                                debugPrint('响应------>$d');
+                                ToastUtils.toast(d['message']);
+                                if (d['code'] != 200) {
+                                  return;
+                                } else {
+                                  Get.toNamed("/use_login");
+                                }
+                              }
+                            },
+                            child: Text(
+                              '注册',
+                              style: TextStyle(
+                                  fontSize: 32.sp,
+                                  color: const Color(0xffffffff)),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
-                ),
-              ]),
+                ]),
+              ),
             ),
           ),
         ));
@@ -406,3 +411,4 @@ Row buildPhoneField() {
     ],
   );
 }
+

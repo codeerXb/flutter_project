@@ -1,12 +1,12 @@
 name: flutter_template
 description: A new Flutter application.
 
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 version: 1.0.0+1
 
 environment:
-  sdk: '>=2.17.3 <3.3.0'
+  sdk: ">=2.17.3 <3.3.0"
 
 dependencies:
   #贝壳
@@ -80,7 +80,8 @@ dependencies:
   flutter_swiper_null_safety: ^1.0.2 # 轮播图空异常版
   # 语言化
   intl: 0.17.0
-
+  # AES加密
+  encrypt: ^5.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

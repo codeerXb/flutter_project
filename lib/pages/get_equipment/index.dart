@@ -119,7 +119,7 @@ class _MyWidgetState extends State<Equipment> {
         appBar: AppBar(
           leading: IconButton(
               onPressed: () {
-                Get.toNamed("/use_login");
+                Get.offAllNamed("/use_login");
               },
               icon: const Icon(
                 Icons.arrow_back_ios,

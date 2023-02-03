@@ -25,6 +25,7 @@ sharedAddAndUpdate(String key, Object dataType, Object data) async {
   }
 }
 
+//读取数据
 Future<Object?> sharedGetData(String key, Object dataType) async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   switch (dataType) {

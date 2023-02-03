@@ -11,7 +11,7 @@ import '../../core/widget/common_widget.dart';
 import '../../core/widget/custom_app_bar.dart';
 import 'model/account_data.dart';
 
-/// 修改密码
+/// 修改密码修改密码
 class AccountSecurity extends StatefulWidget {
   const AccountSecurity({Key? key}) : super(key: key);
 
@@ -143,6 +143,7 @@ class _AccountSecurityState extends State<AccountSecurity> {
           child: Container(
               decoration:
                   const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
+              height: 2000.w,
               child: Form(
                 key: _formKey,
                 child: Column(
@@ -164,11 +165,33 @@ class _AccountSecurityState extends State<AccountSecurity> {
                     bottomTipsWidget(),
 
                     /// 提交
-                    CommonWidget.buttonWidget(callBack: () {
-                      if ((_formKey.currentState as FormState).validate()) {
-                        onSubmit(context);
-                      }
-                    }),
+                    Padding(
+                        padding: EdgeInsets.only(top: 15.w),
+                        child: Center(
+                            child: SizedBox(
+                          height: 70.sp,
+                          width: 680.sp,
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all(
+                                    const Color.fromARGB(255, 48, 118, 250))),
+                            onPressed: () {
+                              if ((_formKey.currentState as FormState)
+                                  .validate()) {
+                                onSubmit(context);
+                              }
+                            },
+                            child: Text(
+                              '提交',
+                              style: TextStyle(fontSize: 36.sp),
+                            ),
+                          ),
+                        )))
+                    // CommonWidget.buttonWidget(callBack: () {
+                    //   if ((_formKey.currentState as FormState).validate()) {
+                    //     onSubmit(context);
+                    //   }
+                    // }),
                   ],
                 ),
               )),

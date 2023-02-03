@@ -57,7 +57,8 @@ class _MajorSetState extends State<MajorSet> {
       var d = json.decode(response.toString());
       setState(() {
         majorData = majorDatas.fromJson(d);
-        index = ['CN', 'FR', 'RU', 'US', 'SG', 'AU', 'CL', 'PL'].indexOf(majorData.wifiRegionCountry.toString());
+        index = ['CN', 'FR', 'RU', 'US', 'SG', 'AU', 'CL', 'PL']
+            .indexOf(majorData.wifiRegionCountry.toString());
         //读取地区
         switch (majorData.wifiRegionCountry.toString()) {
           case 'CN':
@@ -96,7 +97,6 @@ class _MajorSetState extends State<MajorSet> {
     return Scaffold(
         appBar: customAppbar(context: context, title: '专业设置'),
         body: Container(
-          padding: EdgeInsets.all(20.0.w),
           decoration:
               const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
           height: 1000,
@@ -156,54 +156,51 @@ class _MajorSetState extends State<MajorSet> {
                             });
                       },
                       child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('地区',
-                                style: TextStyle(
-                                    color: const Color.fromARGB(255, 5, 0, 0),
-                                    fontSize: 28.sp)),
-                            Row(
-                              children: [
-                                Text(showVal,
-                                    style: TextStyle(
-                                        color:
-                                            const Color.fromARGB(255, 5, 0, 0),
-                                        fontSize: 28.sp)),
-                                Icon(
-                                  Icons.arrow_forward_ios_outlined,
-                                  color: const Color.fromRGBO(144, 147, 153, 1),
-                                  size: 30.w,
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 50.0),
-                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          SizedBox(
-                            height: 70.sp,
-                            width: 630.sp,
-                            child: ElevatedButton(
-                              style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                      const Color.fromARGB(255, 48, 118, 250))),
-                              onPressed: () {
-                                handleSave();
-                              },
-                              child: Text(
-                                '提交',
-                                style: TextStyle(fontSize: 30.sp),
-                              ),
-                            ),
-                          )
+                          Text('地区',
+                              style: TextStyle(
+                                  color: const Color.fromARGB(255, 5, 0, 0),
+                                  fontSize: 28.sp)),
+                          Row(
+                            children: [
+                              Text(showVal,
+                                  style: TextStyle(
+                                      color: const Color.fromARGB(255, 5, 0, 0),
+                                      fontSize: 28.sp)),
+                              Icon(
+                                Icons.arrow_forward_ios_outlined,
+                                color: const Color.fromRGBO(144, 147, 153, 1),
+                                size: 30.w,
+                              )
+                            ],
+                          ),
                         ],
                       ),
-                    )
+                    ),
                   ],
-                ))
+                )),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10.w),
+                      child: Center(
+                        child: SizedBox(
+                          height: 70.sp,
+                          width: 680.sp,
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all(
+                                    const Color.fromARGB(255, 48, 118, 250))),
+                            onPressed: () {
+                              handleSave();
+                            },
+                            child: Text(
+                              '提交',
+                              style: TextStyle(fontSize: 30.sp),
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
               ],
             ),
           ),

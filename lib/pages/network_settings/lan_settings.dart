@@ -11,7 +11,7 @@ import '../../core/widget/common_box.dart';
 import '../../core/widget/otp_input.dart';
 import 'model/lan_data.dart';
 
-/// LAN设置
+/// LAN设置LAN设置
 class LanSettings extends StatefulWidget {
   const LanSettings({Key? key}) : super(key: key);
 
@@ -255,18 +255,16 @@ class _LanSettingsState extends State<LanSettings> {
         child: InkWell(
           onTap: () => closeKeyboard(context),
           child: Container(
-            padding: EdgeInsets.all(10.sp),
             decoration:
                 const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
+            height: 2000.w,
             child: Column(
               children: [
-                Padding(padding: EdgeInsets.only(top: 20.sp)),
                 Row(children: const [
                   TitleWidger(title: 'LAN主机设置'),
                 ]),
                 InfoBox(
                   boxCotainer: Column(children: [
-                    Padding(padding: EdgeInsets.only(top: 20.sp)),
                     BottomLine(
                       rowtem: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -286,7 +284,6 @@ class _LanSettingsState extends State<LanSettings> {
                         ],
                       ),
                     ),
-                    Padding(padding: EdgeInsets.only(top: 20.sp)),
                     BottomLine(
                       rowtem: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -306,16 +303,13 @@ class _LanSettingsState extends State<LanSettings> {
                         ],
                       ),
                     ),
-                    Padding(padding: EdgeInsets.only(bottom: 20.sp)),
                   ]),
                 ),
-                Padding(padding: EdgeInsets.only(top: 80.sp)),
                 Row(children: const [
                   TitleWidger(title: 'DHCP 配置'),
                 ]),
                 InfoBox(
                   boxCotainer: Column(children: [
-                    Padding(padding: EdgeInsets.only(top: 20.sp)),
                     BottomLine(
                       rowtem: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -336,7 +330,6 @@ class _LanSettingsState extends State<LanSettings> {
                             ),
                           ]),
                     ),
-                    Padding(padding: EdgeInsets.only(top: 20.sp)),
                     BottomLine(
                       rowtem: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -363,7 +356,6 @@ class _LanSettingsState extends State<LanSettings> {
                         ],
                       ),
                     ),
-                    Padding(padding: EdgeInsets.only(top: 20.sp)),
                     BottomLine(
                       rowtem: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -418,33 +410,31 @@ class _LanSettingsState extends State<LanSettings> {
                         )
                       ],
                     ),
-                    Padding(padding: EdgeInsets.only(bottom: 20.sp)),
                   ]),
                 ),
-                Padding(padding: EdgeInsets.only(top: 150.sp)),
-                Row(
-                  children: [
-                    SizedBox(
-                      height: 70.sp,
-                      width: 710.sp,
-                      child: ElevatedButton(
-                        style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
-                                const Color.fromARGB(255, 48, 118, 250))),
-                        onPressed: () {
-                          if (isCheckVal == '1') {
-                            getLanSettingSubmit();
-                          } else {
-                            getLanSetting();
-                          }
-                        },
-                        child: Text(
-                          '提交',
-                          style: TextStyle(fontSize: 36.sp),
-                        ),
+                Padding(
+                  padding: EdgeInsets.only(top: 10.w),
+                  child: Center(
+                      child: SizedBox(
+                    height: 70.sp,
+                    width: 710.sp,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(
+                              const Color.fromARGB(255, 48, 118, 250))),
+                      onPressed: () {
+                        if (isCheckVal == '1') {
+                          getLanSettingSubmit();
+                        } else {
+                          getLanSetting();
+                        }
+                      },
+                      child: Text(
+                        '提交',
+                        style: TextStyle(fontSize: 36.sp),
                       ),
-                    )
-                  ],
+                    ),
+                  )),
                 )
               ],
             ),
@@ -452,40 +442,5 @@ class _LanSettingsState extends State<LanSettings> {
         ),
       ),
     );
-  }
-}
-
-class TitleWidger extends StatelessWidget {
-  final String title;
-
-  const TitleWidger({super.key, required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(bottom: 10.0),
-      child: Text(
-        title,
-        style: TextStyle(color: Colors.blueAccent, fontSize: 30.sp),
-      ),
-    );
-  }
-}
-
-class InfoBox extends StatelessWidget {
-  final Widget boxCotainer;
-
-  const InfoBox({super.key, required this.boxCotainer});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        padding: EdgeInsets.all(10.0.w),
-        margin: EdgeInsets.only(bottom: 3.h),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8.w),
-        ),
-        child: boxCotainer);
   }
 }

@@ -49,7 +49,6 @@ class _Visitor3State extends State<Visitor3> {
     return Scaffold(
         appBar: customAppbar(context: context, title: 'guest3'),
         body: Container(
-          padding: EdgeInsets.all(20.0.w),
           decoration:
               const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
           height: 1000,
@@ -109,8 +108,9 @@ class _Visitor3State extends State<Visitor3> {
                       righText: 'AES(推荐使用)',
                     )),
                     //密码
-                    BottomLine(
-                        rowtem: RowContainer(
+                    Container(
+                           padding: EdgeInsets.only(top: 20.w),
+                        child: RowContainer(
                       leftText: '密码',
                       righText: currentData.key.toString(),
                     )),

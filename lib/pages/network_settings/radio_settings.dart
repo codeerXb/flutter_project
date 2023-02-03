@@ -98,223 +98,196 @@ class _RadioSettingsState extends State<RadioSettings> {
       appBar: customAppbar(context: context, title: 'Radio设置'),
       body: SingleChildScrollView(
         child: Container(
-            padding: EdgeInsets.all(20.sp),
             decoration:
                 const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
-            child: Column(children: [
-              SizedBox(
-                height: 10.sp,
-              ),
-              InfoBox(
-                  boxCotainer: Column(children: [
-                BottomLine(
-                  rowtem: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('状态', style: TextStyle(fontSize: 30.sp)),
-                      Text(radioStateVal, style: TextStyle(fontSize: 30.sp)),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 20.sp,
-                ),
-                GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () {
-                    var result = CommonPicker.showPicker(
-                      context: context,
-                      options: ['自动', '手动'],
-                      value: val,
-                    );
-                    result?.then((selectedValue) => {
-                          if (val != selectedValue && selectedValue != null)
-                            {
-                              setState(() => {
-                                    val = selectedValue,
-                                    showVal = ['自动', '手动'][val],
-                                    if (val == 0)
-                                      {
-                                        radioShowVal = 'auto_select',
-                                        getRadioSettingData()
-                                      },
-                                    if (val == 1)
-                                      {
-                                        radioShowVal = 'manual_select',
-                                        getRadioSettingData()
-                                      },
-                                  })
-                            }
-                        });
-                  },
-                  child: BottomLine(
-                    rowtem: Row(
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const TitleWidger(title: '状态'),
+                  InfoBox(
+                      boxCotainer: Column(children: [
+                    BottomLine(
+                      rowtem: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('连接方式', style: TextStyle(fontSize: 30.sp)),
-                          Row(
+                          Text('状态', style: TextStyle(fontSize: 30.sp)),
+                          Text(radioStateVal,
+                              style: TextStyle(fontSize: 30.sp)),
+                        ],
+                      ),
+                    ),
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {
+                        var result = CommonPicker.showPicker(
+                          context: context,
+                          options: ['自动', '手动'],
+                          value: val,
+                        );
+                        result?.then((selectedValue) => {
+                              if (val != selectedValue && selectedValue != null)
+                                {
+                                  setState(() => {
+                                        val = selectedValue,
+                                        showVal = ['自动', '手动'][val],
+                                        if (val == 0)
+                                          {
+                                            radioShowVal = 'auto_select',
+                                            getRadioSettingData()
+                                          },
+                                        if (val == 1)
+                                          {
+                                            radioShowVal = 'manual_select',
+                                            getRadioSettingData()
+                                          },
+                                      })
+                                }
+                            });
+                      },
+                      child: BottomLine(
+                        rowtem: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(showVal, style: TextStyle(fontSize: 30.sp)),
-                              Icon(
-                                Icons.arrow_forward_ios_outlined,
-                                color: const Color.fromRGBO(144, 147, 153, 1),
-                                size: 30.w,
-                              )
+                              Text('连接方式', style: TextStyle(fontSize: 30.sp)),
+                              Row(
+                                children: [
+                                  Text(showVal,
+                                      style: TextStyle(fontSize: 30.sp)),
+                                  Icon(
+                                    Icons.arrow_forward_ios_outlined,
+                                    color:
+                                        const Color.fromRGBO(144, 147, 153, 1),
+                                    size: 30.w,
+                                  )
+                                ],
+                              ),
+                            ]),
+                      ),
+                    ),
+                  ])),
+                  Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        TitleWidger(title: radioGTitle),
+                        InfoBox(
+                          boxCotainer: Column(
+                            children: [
+                              BottomLine(
+                                  rowtem: RowContainer(
+                                leftText: '频点',
+                                righText: (radioGState.lteDlEarfcnGet5g
+                                                .toString() ==
+                                            '--' ||
+                                        radioGState.lteDlEarfcnGet5g
+                                                .toString() ==
+                                            '')
+                                    ? radioGState.lteDlEarfcnGet.toString()
+                                    : radioGState.lteDlEarfcnGet5g.toString(),
+                              )),
+                              BottomLine(
+                                  rowtem: RowContainer(
+                                leftText: '下行频率',
+                                righText:
+                                    '${(radioGState.lteDlFrequency5g.toString() == '--' || radioGState.lteDlFrequency5g.toString() == '') ? radioGState.lteDlFrequency.toString() : radioGState.lteDlFrequency5g.toString()}MHz',
+                              )),
+                              BottomLine(
+                                  rowtem: RowContainer(
+                                leftText: '上行频率',
+                                righText:
+                                    '${(radioGState.lteUlFrequency5g.toString() == '--' || radioGState.lteUlFrequency5g.toString() == '') ? radioGState.lteUlFrequency.toString() : radioGState.lteUlFrequency5g.toString()}MHz',
+                              )),
+                              BottomLine(
+                                  rowtem: RowContainer(
+                                leftText: '频段',
+                                righText: (radioGState.lteBandGet5g
+                                                .toString() ==
+                                            '--' ||
+                                        radioGState.lteBandGet5g.toString() ==
+                                            '')
+                                    ? radioGState.lteBandGet.toString()
+                                    : radioGState.lteBandGet5g.toString(),
+                              )),
+                              BottomLine(
+                                  rowtem: RowContainer(
+                                leftText: '宽带',
+                                righText:
+                                    '${(radioGState.lteBandwidthGet5g.toString() == '--' || radioGState.lteBandwidthGet5g.toString() == '') ? radioGState.lteBandwidthGet.toString() : radioGState.lteBandwidthGet5g.toString()}MHz',
+                              )),
+                              BottomLine(
+                                  rowtem: RowContainer(
+                                leftText: 'RSRP',
+                                righText:
+                                    '${(radioGState.lteRsrp05g.toString() == '--' || radioGState.lteRsrp05g.toString() == '') ? radioGState.lteRsrp0.toString() : radioGState.lteRsrp05g.toString()}dBm',
+                              )),
+                              BottomLine(
+                                  rowtem: RowContainer(
+                                leftText: 'RSSI',
+                                righText:
+                                    '${(radioGState.lteRssi5g.toString() == '--' || radioGState.lteRssi5g.toString() == '') ? radioGState.lteRssi.toString() : radioGState.lteRssi5g.toString()}dBm',
+                              )),
+                              BottomLine(
+                                  rowtem: RowContainer(
+                                leftText: 'RSRQ',
+                                righText:
+                                    '${(radioGState.lteRsrq5g.toString() == '--' || radioGState.lteRsrq5g.toString() == '') ? radioGState.lteRsrq.toString() : radioGState.lteRsrq5g.toString()}dB',
+                              )),
+                              BottomLine(
+                                  rowtem: RowContainer(
+                                leftText: 'SINR',
+                                righText:
+                                    '${(radioGState.lteSinr5g.toString() == '--' || radioGState.lteSinr5g.toString() == '') ? radioGState.lteSinr.toString() : radioGState.lteSinr5g.toString()}dB',
+                              )),
+                              BottomLine(
+                                  rowtem: RowContainer(
+                                leftText: '发射功率',
+                                righText: '${radioGState.lteTxpower}dBm',
+                              )),
+                              BottomLine(
+                                  rowtem: RowContainer(
+                                leftText: 'PCI',
+                                righText: (radioGState.ltePci5g.toString() ==
+                                            '--' ||
+                                        radioGState.ltePci5g.toString() == '')
+                                    ? radioGState.ltePci.toString()
+                                    : radioGState.ltePci5g.toString(),
+                              )),
+                              BottomLine(
+                                  rowtem: RowContainer(
+                                leftText: 'Cell ID',
+                                righText: (radioGState.lteCellidGet5g
+                                                .toString() ==
+                                            '--' ||
+                                        radioGState.lteCellidGet5g.toString() ==
+                                            '')
+                                    ? radioGState.lteCellidGet.toString()
+                                    : radioGState.lteCellidGet5g.toString(),
+                              )),
+                              BottomLine(
+                                  rowtem: RowContainer(
+                                leftText: 'MCC',
+                                righText: (radioGState.lteMccGet5g.toString() ==
+                                            '--' ||
+                                        radioGState.lteMccGet5g.toString() ==
+                                            '')
+                                    ? radioGState.lteMccGet.toString()
+                                    : radioGState.lteMccGet5g.toString(),
+                              )),
+                              BottomLine(
+                                  rowtem: RowContainer(
+                                leftText: 'MNC',
+                                righText: (radioGState.lteMncGet5g.toString() ==
+                                            '--' ||
+                                        radioGState.lteMncGet5g.toString() ==
+                                            '')
+                                    ? radioGState.lteMncGet.toString()
+                                    : radioGState.lteMncGet5g.toString(),
+                              )),
                             ],
                           ),
-                        ]),
-                  ),
-                ),
-              ])),
-              Column(children: [
-                SizedBox(
-                  height: 40.sp,
-                ),
-                Row(children: [
-                  TitleWidger(title: radioGTitle),
-                ]),
-                InfoBox(
-                  boxCotainer: Column(
-                    children: [
-                      BottomLine(
-                          rowtem: RowContainer(
-                        leftText: '频点',
-                        righText: (radioGState.lteDlEarfcnGet5g.toString() ==
-                                    '--' ||
-                                radioGState.lteDlEarfcnGet5g.toString() == '')
-                            ? radioGState.lteDlEarfcnGet.toString()
-                            : radioGState.lteDlEarfcnGet5g.toString(),
-                      )),
-                      BottomLine(
-                          rowtem: RowContainer(
-                        leftText: '下行频率',
-                        righText:
-                            '${(radioGState.lteDlFrequency5g.toString() == '--' || radioGState.lteDlFrequency5g.toString() == '') ? radioGState.lteDlFrequency.toString() : radioGState.lteDlFrequency5g.toString()}MHz',
-                      )),
-                      BottomLine(
-                          rowtem: RowContainer(
-                        leftText: '上行频率',
-                        righText:
-                            '${(radioGState.lteUlFrequency5g.toString() == '--' || radioGState.lteUlFrequency5g.toString() == '') ? radioGState.lteUlFrequency.toString() : radioGState.lteUlFrequency5g.toString()}MHz',
-                      )),
-                      BottomLine(
-                          rowtem: RowContainer(
-                        leftText: '频段',
-                        righText:
-                            (radioGState.lteBandGet5g.toString() == '--' ||
-                                    radioGState.lteBandGet5g.toString() == '')
-                                ? radioGState.lteBandGet.toString()
-                                : radioGState.lteBandGet5g.toString(),
-                      )),
-                      BottomLine(
-                          rowtem: RowContainer(
-                        leftText: '宽带',
-                        righText:
-                            '${(radioGState.lteBandwidthGet5g.toString() == '--' || radioGState.lteBandwidthGet5g.toString() == '') ? radioGState.lteBandwidthGet.toString() : radioGState.lteBandwidthGet5g.toString()}MHz',
-                      )),
-                      BottomLine(
-                          rowtem: RowContainer(
-                        leftText: 'RSRP',
-                        righText:
-                            '${(radioGState.lteRsrp05g.toString() == '--' || radioGState.lteRsrp05g.toString() == '') ? radioGState.lteRsrp0.toString() : radioGState.lteRsrp05g.toString()}dBm',
-                      )),
-                      BottomLine(
-                          rowtem: RowContainer(
-                        leftText: 'RSSI',
-                        righText:
-                            '${(radioGState.lteRssi5g.toString() == '--' || radioGState.lteRssi5g.toString() == '') ? radioGState.lteRssi.toString() : radioGState.lteRssi5g.toString()}dBm',
-                      )),
-                      BottomLine(
-                          rowtem: RowContainer(
-                        leftText: 'RSRQ',
-                        righText:
-                            '${(radioGState.lteRsrq5g.toString() == '--' || radioGState.lteRsrq5g.toString() == '') ? radioGState.lteRsrq.toString() : radioGState.lteRsrq5g.toString()}dB',
-                      )),
-                      BottomLine(
-                          rowtem: RowContainer(
-                        leftText: 'SINR',
-                        righText:
-                            '${(radioGState.lteSinr5g.toString() == '--' || radioGState.lteSinr5g.toString() == '') ? radioGState.lteSinr.toString() : radioGState.lteSinr5g.toString()}dB',
-                      )),
-                      BottomLine(
-                          rowtem: RowContainer(
-                        leftText: '发射功率',
-                        righText: '${radioGState.lteTxpower}dBm',
-                      )),
-                      BottomLine(
-                          rowtem: RowContainer(
-                        leftText: 'PCI',
-                        righText: (radioGState.ltePci5g.toString() == '--' ||
-                                radioGState.ltePci5g.toString() == '')
-                            ? radioGState.ltePci.toString()
-                            : radioGState.ltePci5g.toString(),
-                      )),
-                      BottomLine(
-                          rowtem: RowContainer(
-                        leftText: 'Cell ID',
-                        righText:
-                            (radioGState.lteCellidGet5g.toString() == '--' ||
-                                    radioGState.lteCellidGet5g.toString() == '')
-                                ? radioGState.lteCellidGet.toString()
-                                : radioGState.lteCellidGet5g.toString(),
-                      )),
-                      BottomLine(
-                          rowtem: RowContainer(
-                        leftText: 'MCC',
-                        righText: (radioGState.lteMccGet5g.toString() == '--' ||
-                                radioGState.lteMccGet5g.toString() == '')
-                            ? radioGState.lteMccGet.toString()
-                            : radioGState.lteMccGet5g.toString(),
-                      )),
-                      BottomLine(
-                          rowtem: RowContainer(
-                        leftText: 'MNC',
-                        righText: (radioGState.lteMncGet5g.toString() == '--' ||
-                                radioGState.lteMncGet5g.toString() == '')
-                            ? radioGState.lteMncGet.toString()
-                            : radioGState.lteMncGet5g.toString(),
-                      )),
-                    ],
-                  ),
-                ),
-              ])
-            ])),
+                        ),
+                      ])
+                ])),
       ),
     );
-  }
-}
-
-class TitleWidger extends StatelessWidget {
-  final String title;
-
-  const TitleWidger({super.key, required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(bottom: 10.0),
-      child: Text(
-        title,
-        style: TextStyle(color: Colors.blueAccent, fontSize: 32.sp),
-      ),
-    );
-  }
-}
-
-class InfoBox extends StatelessWidget {
-  final Widget boxCotainer;
-
-  const InfoBox({super.key, required this.boxCotainer});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        padding: EdgeInsets.all(20.0.w),
-        margin: EdgeInsets.only(bottom: 3.h),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8.w),
-        ),
-        child: boxCotainer);
   }
 }

@@ -159,9 +159,12 @@ class _UserLoginState extends State<UserLogin> {
                             return;
                           } else {
                             ToastUtils.toast('登录成功');
-                            Get.toNamed("/get_equipment");
+                            Get.offAllNamed("/get_equipment");
+                            //存储用户信息
                             sharedAddAndUpdate(
                                 "user_token", String, (d['data']['token']));
+                            sharedAddAndUpdate(
+                                "user_phone", String, (d['data']['account']));
                           }
                         },
                         child: Text(
@@ -253,7 +256,7 @@ Row registerAndForget() {
       //注册
       TextButton(
           onPressed: (() {
-            Get.toNamed("/use_register");
+            Get.offAllNamed("/use_register");
           }),
           child: Text(
             '注册',
@@ -262,7 +265,7 @@ Row registerAndForget() {
       // 忘记密码
       TextButton(
           onPressed: (() {
-            // Get.toNamed("/forget_password");
+            // Get.offAllNamed("/forget_password");
           }),
           child: const Text('', style: TextStyle(color: Colors.black45)))
     ],

@@ -77,7 +77,7 @@ class _ODUState extends State<ODU> {
     channel?.sink.close();
   }
 
-   WebSocketChannel? channel;
+  WebSocketChannel? channel;
   Map mapData1 = {
     "cmd": 2,
     "param1": 0,
@@ -324,11 +324,11 @@ class _ODUState extends State<ODU> {
                   radarMap: RadarMapModel(
                     legend: [
                       LegendModel(
-                          '实时数值', const Color.fromARGB(255, 255, 166, 1)),
+                          '实时数值', const Color.fromARGB(255, 34, 177, 16)),
                       LegendModel(
                           '最大数值', const Color.fromARGB(255, 234, 65, 53)),
                       LegendModel(
-                          '当前指向', const Color.fromARGB(255, 14, 14, 189)),
+                          '当前指向', const Color.fromARGB(255, 255, 166, 1)),
                     ],
                     indicator: legend,
                     data: [
@@ -345,7 +345,7 @@ class _ODUState extends State<ODU> {
                     maxWidth: 50.w,
                     paintStatus: endStatus,
                     line: LineModel(3,
-                        color: const Color.fromARGB(255, 98, 98, 98)),
+                        color: const Color.fromARGB(255, 255, 255, 255)),
                   ),
                   textStyle: const TextStyle(color: Colors.black, fontSize: 10),
                   isNeedDrawLegend: true,
@@ -380,7 +380,7 @@ class _ODUState extends State<ODU> {
                               const Text(
                                 'CurA',
                                 style: TextStyle(
-                                    color: Color.fromARGB(255, 197, 139, 32)),
+                                    color: Color.fromARGB(178, 35, 177, 16)),
                               ),
                               Card(
                                 shape: RoundedRectangleBorder(
@@ -398,7 +398,7 @@ class _ODUState extends State<ODU> {
                                       style: TextStyle(
                                           fontSize: 30.sp,
                                           color: const Color.fromARGB(
-                                              255, 255, 166, 1))),
+                                              255, 34, 177, 16))),
                                 ),
                               ),
                             ],
@@ -408,7 +408,7 @@ class _ODUState extends State<ODU> {
                               const Text(
                                 'CurS',
                                 style: TextStyle(
-                                    color: Color.fromARGB(255, 197, 139, 32)),
+                                    color: Color.fromARGB(178, 34, 177, 16)),
                               ),
                               Card(
                                 shape: RoundedRectangleBorder(
@@ -427,7 +427,7 @@ class _ODUState extends State<ODU> {
                                     style: TextStyle(
                                         fontSize: 30.sp,
                                         color: const Color.fromARGB(
-                                            255, 255, 166, 1)),
+                                            255, 34, 177, 16)),
                                   ),
                                 ),
                               ),

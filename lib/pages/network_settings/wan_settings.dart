@@ -102,81 +102,64 @@ class _WanSettingsState extends State<WanSettings> {
       appBar: customAppbar(context: context, title: 'WAN设置'),
       body: SingleChildScrollView(
         child: Container(
-            padding: EdgeInsets.all(20.sp),
             decoration:
                 const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
-            child: Column(children: [
-              SizedBox(
-                height: 40.sp,
-              ),
-              Padding(padding: EdgeInsets.only(top: 30.sp)),
-              GestureDetector(
-                  onTap: () {
-                    var result = CommonPicker.showPicker(
-                      context: context,
-                      options: ['NAT', '桥接', 'ROUTER'],
-                      value: val,
-                    );
-                    result?.then((selectedValue) => {
-                          if (val != selectedValue && selectedValue != null)
-                            {
-                              setState(() => {
-                                    val = selectedValue,
-                                    showVal = ['NAT', '桥接', 'ROUTER'][val],
-                                    if (val == 0)
-                                      {wanVal = 'nat', getWanData()},
-                                    if (val == 1)
-                                      {wanVal = 'bridge', getWanData()},
-                                    if (val == 2)
-                                      {wanVal = 'router', getWanData()},
-                                  })
-                            }
-                        });
-                  },
-                  child: InfoBox(
-                      boxCotainer: Column(children: [
-                    BottomLine(
-                      rowtem: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('网络模式', style: TextStyle(fontSize: 30.sp)),
-                            Row(
+            height: 2000.w,
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  //WAN设置
+                  const TitleWidger(title: 'WAN设置'),
+                  GestureDetector(
+                      onTap: () {
+                        var result = CommonPicker.showPicker(
+                          context: context,
+                          options: ['NAT', '桥接', 'ROUTER'],
+                          value: val,
+                        );
+                        result?.then((selectedValue) => {
+                              if (val != selectedValue && selectedValue != null)
+                                {
+                                  setState(() => {
+                                        val = selectedValue,
+                                        showVal = ['NAT', '桥接', 'ROUTER'][val],
+                                        if (val == 0)
+                                          {wanVal = 'nat', getWanData()},
+                                        if (val == 1)
+                                          {wanVal = 'bridge', getWanData()},
+                                        if (val == 2)
+                                          {wanVal = 'router', getWanData()},
+                                      })
+                                }
+                            });
+                      },
+                      child: InfoBox(
+                          boxCotainer: Column(children: [
+                        BottomLine(
+                          rowtem: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(showVal,
-                                    style: TextStyle(fontSize: 30.sp)),
-                                Icon(
-                                  Icons.arrow_forward_ios_outlined,
-                                  color: const Color.fromRGBO(144, 147, 153, 1),
-                                  size: 30.w,
-                                )
-                              ],
-                            ),
-                          ]),
-                    ),
-                  ]))),
-              SizedBox(
-                height: 60.sp,
-              ),
-            ])),
+                                Text('网络模式', style: TextStyle(fontSize: 30.sp)),
+                                Row(
+                                  children: [
+                                    Text(showVal,
+                                        style: TextStyle(fontSize: 30.sp)),
+                                    Icon(
+                                      Icons.arrow_forward_ios_outlined,
+                                      color: const Color.fromRGBO(
+                                          144, 147, 153, 1),
+                                      size: 30.w,
+                                    )
+                                  ],
+                                ),
+                              ]),
+                        ),
+                      ]))),
+                  SizedBox(
+                    height: 60.sp,
+                  ),
+                ])),
       ),
     );
-  }
-}
-
-class InfoBox extends StatelessWidget {
-  final Widget boxCotainer;
-
-  const InfoBox({super.key, required this.boxCotainer});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        padding: EdgeInsets.all(20.0.sp),
-        margin: EdgeInsets.only(bottom: 5.sp),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: boxCotainer);
   }
 }

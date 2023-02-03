@@ -56,7 +56,6 @@ class _NetTypeState extends State<NetType> {
     return Scaffold(
       appBar: customAppbar(context: context, title: '以太网状态'),
       body: Container(
-        padding: const EdgeInsets.all(10.0),
         decoration:
             const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
         child: Column(

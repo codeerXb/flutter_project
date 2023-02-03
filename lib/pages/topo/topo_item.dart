@@ -27,10 +27,10 @@ class _TopoItemState extends State<TopoItem> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Get.toNamed("/video_play");
+        // Get.toNamed("/video_play");
         // if (widget.topoData!.mAC == 'B4:4C:3B:9E:46:3D') {
         // } else {
-        //   Get.toNamed("/access_equipment", arguments: widget.topoData);
+        Get.toNamed("/access_equipment", arguments: widget.topoData);
         // }
         // var result = CommonPicker.showPicker(
         //   context: context,

@@ -1,12 +1,17 @@
+import 'dart:convert';
+
+import 'package:day_night_time_picker/lib/constants.dart';
+import 'package:day_night_time_picker/lib/daynight_timepicker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/custom_app_bar.dart';
 import 'package:flutter_template/pages/topo/model/equipment_datas.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-import 'access_time.dart';
-import 'access_workday.dart';
+import '../../core/http/http.dart';
+import '../../core/utils/toast.dart';
 
 class AccessEquipment extends StatefulWidget {
   const AccessEquipment({super.key});
@@ -21,6 +26,18 @@ class _AccessEquipmentState extends State<AccessEquipment> {
 
   String accTitle = '家长控制';
 
+  String tim = '';
+  String timeStart = '';
+  String timeStop = '';
+
+  TimeOfDay _time = TimeOfDay.now().replacing(hour: 11, minute: 30);
+  void onTimeChanged(TimeOfDay newTime) {
+    setState(() {
+      _time = newTime;
+    });
+  }
+
+  String endShowVal = '';
   @override
   void initState() {
     super.initState();
@@ -28,6 +45,34 @@ class _AccessEquipmentState extends State<AccessEquipment> {
       data = Get.arguments;
     });
     print(Get.arguments);
+  }
+
+// 重启定时提交
+  void getTrestsetData() {
+    Map<String, dynamic> data = {
+      'method': 'tab_add',
+      'param':
+          '{"table":"FwParentControlTable","value":{"Name":"UNKNOWN","Weekdays":"Tue","TimeStart":"$timeStart:00","TimeStop":"$timeStop:00","Host":"B4:4C:3B:9E:46:3D","Target":"DROP"}}',
+    };
+    XHttp.get('/data.html', data).then((res) {
+      try {
+        var d = json.decode(res.toString());
+        setState(() {
+          // restart = MaintainData.fromJson(d);
+          // if (restart.success == true) {
+          //   ToastUtils.toast('提交成功');
+          // } else {
+          //   ToastUtils.toast('提交失败');
+          // }
+        });
+      } on FormatException catch (e) {
+        print(e);
+        ToastUtils.toast('提交失败');
+      }
+    }).catchError((onError) {
+      debugPrint('失败：${onError.toString()}');
+      ToastUtils.toast('提交失败');
+    });
   }
 
   @override
@@ -114,20 +159,51 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                               style: TextStyle(
                                 color: Color.fromARGB(255, 5, 0, 0),
                               )),
-                          SizedBox(width: 50, child: Workday())
+                          // SizedBox(width: 50, child: Workday())
                         ],
                       )),
-                      BottomLine(
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            showPicker(
+                              context: context,
+                              value: _time,
+                              onChange: onTimeChanged,
+                              minuteInterval: MinuteInterval.FIVE,
+                              // Optional onChange to receive value as DateTime
+                              onChangeDateTime: (DateTime dateTime) {
+                                // print(dateTime);
+                                debugPrint("[debug datetime]:  $dateTime");
+                                tim = dateTime.toString();
+                                timeStop = tim.split(':')[1].split('-')[0];
+                                timeStart = tim
+                                    .split(':')[0]
+                                    .split('-')[2]
+                                    .split(' ')[1];
+                              },
+                            ),
+                          );
+                        },
+                        child: BottomLine(
                           rowtem: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('时间',
-                              style: TextStyle(
-                                color: Color.fromARGB(255, 5, 0, 0),
-                              )),
-                          SizedBox(width: 160, child: DatePickerPage())
-                        ],
-                      )),
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('时间', style: TextStyle(fontSize: 30.sp)),
+                                Row(
+                                  children: [
+                                    Text(endShowVal,
+                                        style: TextStyle(fontSize: 30.sp)),
+                                    Icon(
+                                      Icons.arrow_forward_ios_outlined,
+                                      color: const Color.fromRGBO(
+                                          144, 147, 153, 1),
+                                      size: 30.w,
+                                    )
+                                  ],
+                                ),
+                              ]),
+                        ),
+                      ),
                     ],
                   ),
                 ),

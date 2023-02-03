@@ -293,8 +293,9 @@ class RadarMapPainter extends CustomPainter {
           canvas,
           radarMap.data[i],
           radarMap.indicator.map((item) => item.maxValues).toList(),
-          mPointPaint..color = radarMap.legend[i].color
-          ..strokeWidth = 8,
+          mPointPaint
+            ..color = radarMap.legend[i].color
+            ..strokeWidth = 8,
           radarMap.paintStatus,
         );
       } else {
@@ -343,6 +344,23 @@ class RadarMapPainter extends CustomPainter {
             ..style = PaintingStyle.stroke
             ..strokeWidth = 1,
         );
+        // 绘制浅色小圆圈
+        canvas.drawCircle(
+          const Offset(0, 0),
+          innerRadius / (ring * 3) * (s * 3 - 1),
+          mLinePaint
+            ..color = const ui.Color.fromARGB(235, 255, 234, 219)
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 1,
+        );
+        canvas.drawCircle(
+          const Offset(0, 0),
+          innerRadius / (ring * 3) * (s * 3 - 2),
+          mLinePaint
+            ..color = const ui.Color.fromARGB(235, 255, 234, 219)
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 1,
+        );
         canvas.drawArc(
             Rect.fromCircle(
                 center: const Offset(0, 0), radius: innerRadius / ring * s),
@@ -351,8 +369,9 @@ class RadarMapPainter extends CustomPainter {
             false,
             mCirclePaint!
               // ..color = Colors.grey[700 - s * 100]!
-              ..color = Color(0xffaaaaaa + (s-1) * 0xcf111111)
+              // ..color = Color(0xffc9c9c9 + (s - 1) * 0x00000000)
               // ..color = Color(0xff000000 - s * 5555550)
+              ..color = Color.fromARGB(80 - (s - 1) * 20, 48, 116, 250)
               ..strokeWidth = 20);
       }
     } else {
@@ -425,11 +444,20 @@ class RadarMapPainter extends CustomPainter {
       canvas.rotate(360 / 12 * i.toDouble() / 180 * pi);
       mLinePath.moveTo(0, -innerRadius);
       mLinePath.relativeLineTo(0, innerRadius); //线的路径
-      canvas.drawPath(
-          mLinePath,
-          mLinePaint
-            ..color = ringColor
-            ..style = PaintingStyle.stroke); //绘制线
+      if (i % 3 == 0) {
+        canvas.drawPath(
+            mLinePath,
+            mLinePaint
+              ..color = ringColor
+              ..style = PaintingStyle.stroke); //绘制线
+      } else {
+        // 绘制淡色线
+        canvas.drawPath(
+            mLinePath,
+            mLinePaint
+              ..color = const ui.Color.fromARGB(144, 255, 234, 219)
+              ..style = PaintingStyle.stroke); //绘制线
+      }
       canvas.restore();
     }
     canvas.save();

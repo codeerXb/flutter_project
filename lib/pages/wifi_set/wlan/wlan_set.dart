@@ -219,6 +219,9 @@ class _WlanSetState extends State<WlanSet> {
         //SSID
 
         // wifiModeV.indexOf(wlanData.wifiMode.toString());
+        if (!wifiModeV.contains(wlanData.wifiMode.toString())) {
+          return;
+        }
         msVal = wifiModeV.indexOf(wlanData.wifiMode.toString());
         msVal5 = wifi5gModeV.indexOf(wlanData.wifi5gMode.toString());
         kdVal = wifiChannelBandwidth.indexOf(wlanData.wifiHtmode.toString());
@@ -226,6 +229,7 @@ class _WlanSetState extends State<WlanSet> {
             wifiChannelBandwidth5V.indexOf(wlanData.wifi5gHtmode.toString());
         fsVal = wifiTxpower.indexOf(wlanData.wifiTxpower.toString());
         fsVal5 = wifi5gTxpower.indexOf(wlanData.wifi5gTxpower.toString());
+
         // wlanData.wifiMode.
         if (wlanData.wifiHtmode.toString() == '20MHz') {
           xtVal = wifiCountryChannelList_HT20

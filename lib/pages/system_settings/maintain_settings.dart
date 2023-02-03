@@ -8,7 +8,7 @@ import '../../core/http/http.dart';
 import '../../core/utils/shared_preferences_util.dart';
 import '../../core/utils/toast.dart';
 import '../../core/widget/common_box.dart';
-import '../topo/access_time.dart';
+import '../../core/widget/common_picker.dart';
 import '../topo/access_workday.dart';
 import 'model/maintain_data.dart';
 
@@ -22,15 +22,36 @@ class MaintainSettings extends StatefulWidget {
 
 class _MaintainSettingsState extends State<MaintainSettings> {
   bool isCheck = false;
+  int checkVal = 0;
   MaintainData maintainVal = MaintainData();
 
-  String showVal = '';
-  String radioShowVal = '';
-  int val = 0;
+  MaintainData restart = MaintainData();
+
+  String radioStateVal = '';
+
+  String startShowVal = '0';
+  int startVal = 0;
+
+  String endShowVal = '0';
+  int endVal = 0;
+
+  String num = '';
+  MaintainTrestsetData acquireData = MaintainTrestsetData();
+
+  List<Map<String, dynamic>> checkboxList = [
+    {'text': '周一', 'value': false, 'index': 0},
+    {'text': '周二', 'value': false, 'index': 1},
+    {'text': '周三', 'value': false, 'index': 2},
+    {'text': '周四', 'value': false, 'index': 3},
+    {'text': '周五', 'value': false, 'index': 4},
+    {'text': '周六', 'value': false, 'index': 5},
+    {'text': '周日', 'value': false, 'index': 6},
+  ];
 
   @override
   void initState() {
     super.initState();
+    getTrestsetAcquireData();
   }
 
   // 重启
@@ -63,10 +84,120 @@ class _MaintainSettingsState extends State<MaintainSettings> {
 
   void loginout() {
     // 这里还需要调用后台接口的方法
-
     sharedDeleteData("loginInfo");
     sharedClearData();
     Get.offAllNamed("/get_equipment");
+  }
+
+  // 重启定时提交
+  void getTrestsetData() {
+    Map<String, dynamic> data = {
+      'method': 'obj_set',
+      'param':
+          '{"systemScheduleRebootEnable":"$checkVal","systemScheduleRebootDays":"0;0;0;0;0;0;0","systemScheduleRebootTime":"$endShowVal:$startShowVal"}',
+    };
+    XHttp.get('/data.html', data).then((res) {
+      try {
+        var d = json.decode(res.toString());
+        setState(() {
+          restart = MaintainData.fromJson(d);
+          if (restart.success == true) {
+            ToastUtils.toast('提交成功');
+          } else {
+            ToastUtils.toast('提交失败');
+          }
+        });
+      } on FormatException catch (e) {
+        print(e);
+        ToastUtils.toast('提交失败');
+      }
+    }).catchError((onError) {
+      debugPrint('失败：${onError.toString()}');
+      ToastUtils.toast('提交失败');
+    });
+  }
+
+// 重启定时 获取
+  void getTrestsetAcquireData() async {
+    Map<String, dynamic> data = {
+      'method': 'obj_get',
+      'param':
+          '["systemScheduleRebootEnable","systemScheduleRebootDays","systemScheduleRebootTime"]'
+    };
+    try {
+      var response = await XHttp.get('/data.html', data);
+      var d = json.decode(response.toString());
+      setState(() {
+        acquireData = MaintainTrestsetData.fromJson(d);
+        radioStateVal = acquireData.toString();
+        if (acquireData.systemScheduleRebootEnable.toString() == '0') {
+          isCheck = false;
+          checkVal = 0;
+        } else {
+          isCheck = true;
+          checkVal = 1;
+        }
+
+        num = acquireData.systemScheduleRebootTime.toString();
+        startVal = [
+          '0',
+          '1',
+          '2',
+          '3',
+          '4',
+          '5',
+          '6',
+          '7',
+          '8',
+          '9',
+          '10',
+          '11',
+          '12',
+          '13',
+          '14',
+          '15',
+          '16',
+          '17',
+          '18',
+          '19',
+          '20',
+          '21',
+          '22',
+          '23',
+        ].indexOf(num.split(':')[0].toString());
+        startShowVal = num.split(':')[0];
+        endVal = [
+          '0',
+          '1',
+          '2',
+          '3',
+          '4',
+          '5',
+          '6',
+          '7',
+          '8',
+          '9',
+          '10',
+          '11',
+          '12',
+          '13',
+          '14',
+          '15',
+          '16',
+          '17',
+          '18',
+          '19',
+          '20',
+          '21',
+          '22',
+          '23',
+        ].indexOf(num.split(':')[1].toString());
+        endShowVal = num.split(':')[1];
+      });
+    } catch (e) {
+      debugPrint('获取Radio 状态失败：$e.toString()');
+      ToastUtils.toast('获取Radio 状态失败');
+    }
   }
 
   @override
@@ -85,54 +216,227 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                 TitleWidger(title: '重启定时'),
               ]),
               InfoBox(
-                  boxCotainer: Column(
-                children: [
-                  BottomLine(
-                    rowtem: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('开启重启定时'),
-                        Switch(
-                          value: isCheck,
-                          onChanged: (newVal) {
-                            setState(() {
-                              isCheck = newVal;
-                            });
-                          },
-                        ),
-                      ],
+                  boxCotainer: Column(children: [
+                // 开启冲重定时
+                BottomLine(
+                  rowtem: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('开启重启定时'),
+                      Switch(
+                        value: isCheck,
+                        onChanged: (newVal) {
+                          setState(() {
+                            isCheck = newVal;
+                            if (isCheck == true) {
+                              checkVal = 1;
+                            } else {
+                              checkVal = 0;
+                            }
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                // 工作日
+                Offstage(
+                  offstage: !isCheck,
+                  child: BottomLine(
+                      rowtem: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: const [
+                      Text('工作日',
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 5, 0, 0),
+                          )),
+                      SizedBox(width: 50, child: Workday())
+                    ],
+                  )),
+                ),
+                // 开始时间
+                Offstage(
+                  offstage: !isCheck,
+                  child: GestureDetector(
+                    onTap: () {
+                      var result = CommonPicker.showPicker(
+                        context: context,
+                        options: [
+                          '0',
+                          '1',
+                          '2',
+                          '3',
+                          '4',
+                          '5',
+                          '6',
+                          '7',
+                          '8',
+                          '9',
+                          '10',
+                          '11',
+                          '12',
+                          '13',
+                          '14',
+                          '15',
+                          '16',
+                          '17',
+                          '18',
+                          '19',
+                          '20',
+                          '21',
+                          '22',
+                          '23',
+                        ],
+                        value: startVal,
+                      );
+                      result?.then((selectedValue) => {
+                            if (startVal != selectedValue &&
+                                selectedValue != null)
+                              {
+                                setState(() => {
+                                      startVal = selectedValue,
+                                      startShowVal = [
+                                        '0',
+                                        '1',
+                                        '2',
+                                        '3',
+                                        '4',
+                                        '5',
+                                        '6',
+                                        '7',
+                                        '8',
+                                        '9',
+                                        '10',
+                                        '11',
+                                        '12',
+                                        '13',
+                                        '14',
+                                        '15',
+                                        '16',
+                                        '17',
+                                        '18',
+                                        '19',
+                                        '20',
+                                        '21',
+                                        '22',
+                                        '23',
+                                      ][startVal],
+                                    })
+                              }
+                          });
+                    },
+                    child: BottomLine(
+                      rowtem: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('开始时间', style: TextStyle(fontSize: 30.sp)),
+                            Row(
+                              children: [
+                                Text(startShowVal,
+                                    style: TextStyle(fontSize: 30.sp)),
+                                Icon(
+                                  Icons.arrow_forward_ios_outlined,
+                                  color: const Color.fromRGBO(144, 147, 153, 1),
+                                  size: 30.w,
+                                )
+                              ],
+                            ),
+                          ]),
                     ),
                   ),
-                  Offstage(
-                    offstage: !isCheck,
+                ),
+                // 结束时间
+                Offstage(
+                  offstage: !isCheck,
+                  child: GestureDetector(
+                    onTap: () {
+                      var result = CommonPicker.showPicker(
+                        context: context,
+                        options: [
+                          '0',
+                          '1',
+                          '2',
+                          '3',
+                          '4',
+                          '5',
+                          '6',
+                          '7',
+                          '8',
+                          '9',
+                          '10',
+                          '11',
+                          '12',
+                          '13',
+                          '14',
+                          '15',
+                          '16',
+                          '17',
+                          '18',
+                          '19',
+                          '20',
+                          '21',
+                          '22',
+                          '23',
+                        ],
+                        value: endVal,
+                      );
+                      result?.then((selectedValue) => {
+                            if (endVal != selectedValue &&
+                                selectedValue != null)
+                              {
+                                setState(() => {
+                                      endVal = selectedValue,
+                                      endShowVal = [
+                                        '0',
+                                        '1',
+                                        '2',
+                                        '3',
+                                        '4',
+                                        '5',
+                                        '6',
+                                        '7',
+                                        '8',
+                                        '9',
+                                        '10',
+                                        '11',
+                                        '12',
+                                        '13',
+                                        '14',
+                                        '15',
+                                        '16',
+                                        '17',
+                                        '18',
+                                        '19',
+                                        '20',
+                                        '21',
+                                        '22',
+                                        '23',
+                                      ][endVal],
+                                    })
+                              }
+                          });
+                    },
                     child: BottomLine(
-                        rowtem: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Text('工作日',
-                            style: TextStyle(
-                              color: Color.fromARGB(255, 5, 0, 0),
-                            )),
-                        SizedBox(width: 50, child: Workday())
-                      ],
-                    )),
+                      rowtem: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('结束时间', style: TextStyle(fontSize: 30.sp)),
+                            Row(
+                              children: [
+                                Text(endShowVal,
+                                    style: TextStyle(fontSize: 30.sp)),
+                                Icon(
+                                  Icons.arrow_forward_ios_outlined,
+                                  color: const Color.fromRGBO(144, 147, 153, 1),
+                                  size: 30.w,
+                                )
+                              ],
+                            ),
+                          ]),
+                    ),
                   ),
-                  Offstage(
-                    offstage: !isCheck,
-                    child: BottomLine(
-                        rowtem: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('时间',
-                            style: TextStyle(
-                              color: Color.fromARGB(255, 5, 0, 0),
-                            )),
-                        SizedBox(width: 160, child: DatePickerPage())
-                      ],
-                    )),
-                  ),
-                ],
-              )),
+                )
+              ])),
               Padding(padding: EdgeInsets.only(top: 40.sp)),
               Row(
                 children: [
@@ -143,7 +447,9 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                       style: ButtonStyle(
                           backgroundColor: MaterialStateProperty.all(
                               const Color.fromARGB(255, 48, 118, 250))),
-                      onPressed: () {},
+                      onPressed: () {
+                        getTrestsetData();
+                      },
                       child: const Text('提交'),
                     ),
                   )

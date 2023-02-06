@@ -1,3 +1,5 @@
+// ignore_for_file: unrelated_type_equality_checks
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -20,17 +22,17 @@ class MaintainSettings extends StatefulWidget {
 }
 
 class _MaintainSettingsState extends State<MaintainSettings> {
+  // 是否开启重定时
   bool isCheck = false;
   int checkVal = 0;
   MaintainData maintainVal = MaintainData();
 
   MaintainData restart = MaintainData();
 
-  String radioStateVal = '';
-
+// 开始时间
   String startShowVal = '0';
   int startVal = 0;
-
+// 结束时间
   String endShowVal = '0';
   int endVal = 0;
 
@@ -48,6 +50,17 @@ class _MaintainSettingsState extends State<MaintainSettings> {
     }
     return res;
   }
+
+//
+  List arr = [];
+  String b = '';
+  String c = '';
+  String d = '';
+  String e = '';
+  String f = '';
+  String g = '';
+  String h = '';
+  List arrList = [];
 
   @override
   void initState() {
@@ -130,7 +143,6 @@ class _MaintainSettingsState extends State<MaintainSettings> {
       var d = json.decode(response.toString());
       setState(() {
         acquireData = MaintainTrestsetData.fromJson(d);
-        radioStateVal = acquireData.toString();
         if (acquireData.systemScheduleRebootEnable.toString() == '0') {
           isCheck = false;
           checkVal = 0;
@@ -195,10 +207,33 @@ class _MaintainSettingsState extends State<MaintainSettings> {
         ].indexOf(num.split(':')[1].toString());
         endShowVal = num.split(':')[1];
         tranfer = acquireData.systemScheduleRebootDays.toString();
+        // 展示获取回来的重启日期
+        arr = tranfer.split(';').map((String text) => (text)).toList();
+        if (arr[0] == '1') {
+          arrList.add('周日');
+        }
+        if (arr[1] == '1') {
+          arrList.add('周一');
+        }
+        if (arr[2] == '1') {
+          arrList.add('周二');
+        }
+        if (arr[3] == '1') {
+          arrList.add('周三');
+        }
+        if (arr[4] == '1') {
+          arrList.add('周四');
+        }
+        if (arr[5] == '1') {
+          arrList.add('周五');
+        }
+        if (arr[6] == '1') {
+          arrList.add('周六');
+        }
       });
     } catch (e) {
-      debugPrint('获取Radio 状态失败：$e.toString()');
-      ToastUtils.toast('获取Radio 状态失败');
+      debugPrint('获取重启定时 失败：$e.toString()');
+      ToastUtils.toast('获取重启定时 失败');
     }
   }
 
@@ -260,6 +295,35 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                 Navigator.of(context).pop(checkboxList);
                 setState(() {
                   tranfer = dateFormat(checkboxList);
+                  // 选中后更新重启日期
+                  arrList = [];
+                  if (arrList != []) {
+                    arr = tranfer
+                        .split(';')
+                        .map((String text) => (text))
+                        .toList();
+                    if (arr[0] == '1') {
+                      arrList.add('周日');
+                    }
+                    if (arr[1] == '1') {
+                      arrList.add('周一');
+                    }
+                    if (arr[2] == '1') {
+                      arrList.add('周二');
+                    }
+                    if (arr[3] == '1') {
+                      arrList.add('周三');
+                    }
+                    if (arr[4] == '1') {
+                      arrList.add('周四');
+                    }
+                    if (arr[5] == '1') {
+                      arrList.add('周五');
+                    }
+                    if (arr[6] == '1') {
+                      arrList.add('周六');
+                    }
+                  }
                 });
               },
               child: Container(
@@ -368,6 +432,28 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                   offstage: !isCheck,
                   child: GestureDetector(
                     onTap: () {
+                      // 勾选框的状态
+                      if (arrList.contains('周日')) {
+                        checkboxList[0]['value'] = true;
+                      }
+                      if (arrList.contains('周一')) {
+                        checkboxList[1]['value'] = true;
+                      }
+                      if (arrList.contains('周二')) {
+                        checkboxList[2]['value'] = true;
+                      }
+                      if (arrList.contains('周三')) {
+                        checkboxList[3]['value'] = true;
+                      }
+                      if (arrList.contains('周四')) {
+                        checkboxList[4]['value'] = true;
+                      }
+                      if (arrList.contains('周五')) {
+                        checkboxList[5]['value'] = true;
+                      }
+                      if (arrList.contains('周六')) {
+                        checkboxList[6]['value'] = true;
+                      }
                       showBottomSheet();
                     },
                     child: BottomLine(
@@ -377,8 +463,8 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                             Text('重启日期', style: TextStyle(fontSize: 30.sp)),
                             Row(
                               children: [
-                                // Text(endShowVal,
-                                //     style: TextStyle(fontSize: 30.sp)),
+                                Text(arrList.toString(),
+                                    style: TextStyle(fontSize: 30.sp)),
                                 Icon(
                                   Icons.arrow_forward_ios_outlined,
                                   color: const Color.fromRGBO(144, 147, 153, 1),

@@ -240,6 +240,7 @@ class _AccountSecurityState extends State<AccountSecurity> {
                 SizedBox(
                   width: 400.w,
                   child: TextFormField(
+                      textAlign: TextAlign.right,
                     controller: oldPasswordController,
                     style: TextStyle(
                         fontSize: 26.sp, color: const Color(0xff051220)),
@@ -303,6 +304,7 @@ class _AccountSecurityState extends State<AccountSecurity> {
                 SizedBox(
                   width: 400.w,
                   child: TextFormField(
+                      textAlign: TextAlign.right,
                     controller: newPasswordController,
                     style: TextStyle(
                         fontSize: 26.sp, color: const Color(0xff051220)),

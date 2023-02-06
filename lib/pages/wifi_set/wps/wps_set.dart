@@ -292,6 +292,7 @@ class _WpsSetState extends State<WpsSet> {
                               SizedBox(
                                 width: 100.w,
                                 child: TextFormField(
+                                  textAlign: TextAlign.right,
                                   keyboardType: TextInputType.number,
                                   controller: pinVal,
                                   style: TextStyle(

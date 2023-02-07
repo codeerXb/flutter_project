@@ -25,20 +25,23 @@ class _MaintainSettingsState extends State<MaintainSettings> {
   // 是否开启重定时
   bool isCheck = false;
   int checkVal = 0;
+  // 重启
   MaintainData maintainVal = MaintainData();
-
+  // 定时
   MaintainData restart = MaintainData();
+  // 恢复
+  MaintainData factoryReset = MaintainData();
 
-// 开始时间
+  // 开始时间
   String startShowVal = '0';
   int startVal = 0;
-// 结束时间
+  // 结束时间
   String endShowVal = '0';
   int endVal = 0;
 
   String num = '';
   MaintainTrestsetData acquireData = MaintainTrestsetData();
-// 转换重启日期
+  // 转换重启日期
   String tranfer = '0;0;0;0;0;0;0';
   String dateFormat(List<Map<String, dynamic>> date) {
     String res = '';
@@ -51,7 +54,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
     return res;
   }
 
-//
+  //重启日期展示数组
   List arr = [];
   String b = '';
   String c = '';
@@ -152,83 +155,89 @@ class _MaintainSettingsState extends State<MaintainSettings> {
         }
 
         num = acquireData.systemScheduleRebootTime.toString();
-        startVal = [
-          '0',
-          '1',
-          '2',
-          '3',
-          '4',
-          '5',
-          '6',
-          '7',
-          '8',
-          '9',
-          '10',
-          '11',
-          '12',
-          '13',
-          '14',
-          '15',
-          '16',
-          '17',
-          '18',
-          '19',
-          '20',
-          '21',
-          '22',
-          '23',
-        ].indexOf(num.split(':')[0].toString());
-        startShowVal = num.split(':')[0];
-        endVal = [
-          '0',
-          '1',
-          '2',
-          '3',
-          '4',
-          '5',
-          '6',
-          '7',
-          '8',
-          '9',
-          '10',
-          '11',
-          '12',
-          '13',
-          '14',
-          '15',
-          '16',
-          '17',
-          '18',
-          '19',
-          '20',
-          '21',
-          '22',
-          '23',
-        ].indexOf(num.split(':')[1].toString());
-        endShowVal = num.split(':')[1];
+        if (num != '') {
+          startVal = [
+            '0',
+            '1',
+            '2',
+            '3',
+            '4',
+            '5',
+            '6',
+            '7',
+            '8',
+            '9',
+            '10',
+            '11',
+            '12',
+            '13',
+            '14',
+            '15',
+            '16',
+            '17',
+            '18',
+            '19',
+            '20',
+            '21',
+            '22',
+            '23',
+          ].indexOf(num.split(':')[0].toString());
+          startShowVal = num.split(':')[0];
+          endVal = [
+            '0',
+            '1',
+            '2',
+            '3',
+            '4',
+            '5',
+            '6',
+            '7',
+            '8',
+            '9',
+            '10',
+            '11',
+            '12',
+            '13',
+            '14',
+            '15',
+            '16',
+            '17',
+            '18',
+            '19',
+            '20',
+            '21',
+            '22',
+            '23',
+          ].indexOf(num.split(':')[1].toString());
+          endShowVal = num.split(':')[1];
+        }
+
         tranfer = acquireData.systemScheduleRebootDays.toString();
-        // 展示获取回来的重启日期
-        arr = tranfer.split(';').map((String text) => (text)).toList();
-        if (arr[0] == '1') {
-          arrList.add('周日');
-        }
-        if (arr[1] == '1') {
-          arrList.add('周一');
-        }
-        if (arr[2] == '1') {
-          arrList.add('周二');
-        }
-        if (arr[3] == '1') {
-          arrList.add('周三');
-        }
-        if (arr[4] == '1') {
-          arrList.add('周四');
-        }
-        if (arr[5] == '1') {
-          arrList.add('周五');
-        }
-        if (arr[6] == '1') {
-          arrList.add('周六');
+        printInfo(info: '--tranfer--$tranfer');
+        if (tranfer != '') {
+          // 展示获取回来的重启日期
+          arr = tranfer.split(';').map((String text) => (text)).toList();
+          if (arr[0] == '1') {
+            arrList.add('周日');
+          }
+          if (arr[1] == '1') {
+            arrList.add('周一');
+          }
+          if (arr[2] == '1') {
+            arrList.add('周二');
+          }
+          if (arr[3] == '1') {
+            arrList.add('周三');
+          }
+          if (arr[4] == '1') {
+            arrList.add('周四');
+          }
+          if (arr[5] == '1') {
+            arrList.add('周五');
+          }
+          if (arr[6] == '1') {
+            arrList.add('周六');
+          }
         }
       });
     } catch (e) {
@@ -237,6 +246,35 @@ class _MaintainSettingsState extends State<MaintainSettings> {
     }
   }
 
+// 恢复出厂设置
+  void getfactoryReset() {
+    Map<String, dynamic> data = {
+      'method': 'obj_set',
+      'param': '{"systemFactoryReset":"1","systemRebootFlag":"1"}',
+    };
+    XHttp.get('/data.html', data).then((res) {
+      try {
+        var d = json.decode(res.toString());
+        setState(() {
+          factoryReset = MaintainData.fromJson(d);
+          if (factoryReset.success == true) {
+            ToastUtils.toast('恢复出厂设置 成功');
+            loginout();
+          } else {
+            ToastUtils.toast('恢复出厂设置 失败');
+          }
+        });
+      } on FormatException catch (e) {
+        print(e);
+        ToastUtils.toast('恢复出厂设置 失败');
+      }
+    }).catchError((onError) {
+      debugPrint('失败：${onError.toString()}');
+      ToastUtils.toast('恢复出厂设置 失败');
+    });
+  }
+
+// 日期弹窗
   String result = '';
   List<Map<String, dynamic>> checkboxList = [
     {'text': '周日', 'value': false, 'index': 0},
@@ -669,7 +707,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                       backgroundColor: MaterialStateProperty.all(
                           const Color.fromARGB(255, 48, 118, 250))),
                   onPressed: () {
-                    if (tranfer == '0;0;0;0;0;0;0') {
+                    if (tranfer == '0;0;0;0;0;0;0' && isCheck == true) {
                       ToastUtils.toast('重启日期必须选一个');
                     } else {
                       getTrestsetData();

@@ -213,7 +213,6 @@ class _MaintainSettingsState extends State<MaintainSettings> {
         }
 
         tranfer = acquireData.systemScheduleRebootDays.toString();
-        printInfo(info: '--tranfer--$tranfer');
         if (tranfer != '') {
           // 展示获取回来的重启日期
           arr = tranfer.split(';').map((String text) => (text)).toList();
@@ -246,7 +245,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
     }
   }
 
-// 恢复出厂设置
+// 恢复出厂
   void getfactoryReset() {
     Map<String, dynamic> data = {
       'method': 'obj_set',
@@ -258,19 +257,19 @@ class _MaintainSettingsState extends State<MaintainSettings> {
         setState(() {
           factoryReset = MaintainData.fromJson(d);
           if (factoryReset.success == true) {
-            ToastUtils.toast('恢复出厂设置 成功');
+            ToastUtils.toast('恢复出厂 成功');
             loginout();
           } else {
-            ToastUtils.toast('恢复出厂设置 失败');
+            ToastUtils.toast('恢复出厂 失败');
           }
         });
       } on FormatException catch (e) {
         print(e);
-        ToastUtils.toast('恢复出厂设置 失败');
+        ToastUtils.toast('恢复出厂 失败');
       }
     }).catchError((onError) {
       debugPrint('失败：${onError.toString()}');
-      ToastUtils.toast('恢复出厂设置 失败');
+      ToastUtils.toast('恢复出厂 失败');
     });
   }
 
@@ -501,7 +500,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                             Text('重启日期', style: TextStyle(fontSize: 30.sp)),
                             Row(
                               children: [
-                                Text(arrList.toString(),
+                                Text(arrList.join(),
                                     style: TextStyle(fontSize: 30.sp)),
                                 Icon(
                                   Icons.arrow_forward_ios_outlined,
@@ -762,7 +761,9 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                           style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(
                                   const Color.fromARGB(255, 48, 118, 250))),
-                          onPressed: () {},
+                          onPressed: () {
+                            getfactoryReset();
+                          },
                           child: const Text('恢复出厂'),
                         ),
                       ],

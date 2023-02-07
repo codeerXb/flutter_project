@@ -390,6 +390,7 @@ class _LanSettingsState extends State<LanSettings> {
                         SizedBox(
                           width: 510.sp,
                           child: TextFormField(
+                              textAlign: TextAlign.right,
                             controller: lanTimeController,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(

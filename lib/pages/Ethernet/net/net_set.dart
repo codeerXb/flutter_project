@@ -451,29 +451,27 @@ class _NetSetState extends State<NetSet> {
                         offstage: showVal == '仅LAN',
                         child: BottomLine(
                           rowtem: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text('MTU',
                                   style: TextStyle(
                                       color: const Color.fromARGB(255, 5, 0, 0),
                                       fontSize: 28.sp)),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 60.0),
-                                child: SizedBox(
-                                  width: 400.w,
-                                  child: TextFormField(
-                                    keyboardType: TextInputType.number,
-                                    controller: mtu,
-                                    style: TextStyle(
+                              SizedBox(
+                                width: 400.w,
+                                child: TextFormField(
+                                  textAlign: TextAlign.right,
+                                  keyboardType: TextInputType.number,
+                                  controller: mtu,
+                                  style: TextStyle(
+                                      fontSize: 26.sp,
+                                      color: const Color(0xff051220)),
+                                  decoration: InputDecoration(
+                                    hintText: "576~1500",
+                                    hintStyle: TextStyle(
                                         fontSize: 26.sp,
-                                        color: const Color(0xff051220)),
-                                    decoration: InputDecoration(
-                                      hintText: "576~1500",
-                                      hintStyle: TextStyle(
-                                          fontSize: 26.sp,
-                                          color: const Color(0xff737A83)),
-                                      border: InputBorder.none,
-                                    ),
+                                        color: const Color(0xff737A83)),
+                                    border: InputBorder.none,
                                   ),
                                 ),
                               ),
@@ -486,28 +484,26 @@ class _NetSetState extends State<NetSet> {
                         offstage: showVal == '仅LAN',
                         child: BottomLine(
                           rowtem: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text('检测服务器',
                                   style: TextStyle(
                                       color: const Color.fromARGB(255, 5, 0, 0),
                                       fontSize: 28.sp)),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 20.0),
-                                child: SizedBox(
-                                  width: 420.w,
-                                  child: TextFormField(
-                                    controller: server,
-                                    style: TextStyle(
+                              SizedBox(
+                                width: 420.w,
+                                child: TextFormField(
+                                  textAlign: TextAlign.right,
+                                  controller: server,
+                                  style: TextStyle(
+                                      fontSize: 26.sp,
+                                      color: const Color(0xff051220)),
+                                  decoration: InputDecoration(
+                                    hintText: "输入检测服务器",
+                                    hintStyle: TextStyle(
                                         fontSize: 26.sp,
-                                        color: const Color(0xff051220)),
-                                    decoration: InputDecoration(
-                                      hintText: "输入检测服务器",
-                                      hintStyle: TextStyle(
-                                          fontSize: 26.sp,
-                                          color: const Color(0xff737A83)),
-                                      border: InputBorder.none,
-                                    ),
+                                        color: const Color(0xff737A83)),
+                                    border: InputBorder.none,
                                   ),
                                 ),
                               ),

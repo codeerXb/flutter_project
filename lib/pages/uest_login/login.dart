@@ -94,6 +94,7 @@ class _UserLoginState extends State<UserLogin> {
                               child: SizedBox(
                                 width: 1.sw - 104.w,
                                 child: TextFormField(
+                                    textAlign: TextAlign.right,
                                   obscureText: passwordValShow,
                                   controller: password,
                                   style: TextStyle(

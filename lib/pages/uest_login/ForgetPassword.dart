@@ -102,6 +102,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                             ),
                             child: SizedBox(
                               child: TextFormField(
+                                  textAlign: TextAlign.right,
                                 style: TextStyle(
                                     fontSize: 32.sp,
                                     color: const Color(0xff051220)),
@@ -184,6 +185,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                             child: SizedBox(
                               width: 1.sw - 104.w,
                               child: TextFormField(
+                                  textAlign: TextAlign.right,
                                 obscureText: passwordValShow,
                                 style: TextStyle(
                                     fontSize: 32.sp,
@@ -315,6 +317,7 @@ Row buildPhoneField() {
         child: SizedBox(
           width: 1.sw - 104.w,
           child: TextFormField(
+              textAlign: TextAlign.right,
               keyboardType: TextInputType.number,
               style: TextStyle(fontSize: 32.sp, color: const Color(0xff051220)),
               decoration: InputDecoration(

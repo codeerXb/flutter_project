@@ -528,8 +528,8 @@ class CommonWidget {
       Function? callBack,
       EdgeInsetsGeometry? margin,
       EdgeInsetsGeometry? padding}) {
-    margin ??= EdgeInsets.only(top: 50.w);
-    padding ??= EdgeInsets.only(left: 40.w, right: 40.w);
+    // margin ??= EdgeInsets.only(top: 50.w);
+    // padding ??= EdgeInsets.only(left: 40.w, right: 40.w);
     return Container(
       margin: margin,
       padding: padding,

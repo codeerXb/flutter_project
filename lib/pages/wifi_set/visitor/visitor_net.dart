@@ -274,7 +274,7 @@ class _VisitorNetState extends State<VisitorNet> {
                             //启用
                             handleSave(
                                 '{"table":"WiFi5GSsidTable","value":[{"id":2,"Enable":"1"}]}');
-                            data_5g.wiFi5GSsidTable![1].enable = '1';
+                            data_5g.wiFi5GSsidTable![2].enable = '1';
                           }
                         });
                       },

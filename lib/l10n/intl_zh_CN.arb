@@ -1,0 +1,18 @@
+{
+  "register": "注册",
+  "skip": "跳过",
+  "login": "登录",
+  "cpeManagementPlatform": "CPE管理平台",
+  "phoneLabel": "请输入手机号",
+  "phoneError": "手机号有误",
+  "passworLdLabel": "请输入密码",
+  "passWorLdAgain": "请再次输入登录密码",
+  "passworLdAgainError": "二次密码不一致",
+  "verficationCode": "请输入验证码",
+  "verficationCodeError": "请输入正确验证码",
+  "getVerficationCode": "获取验证码",
+  "loginSuccess": "登录成功",
+  "Discovery equipment": "发现设备",
+  "success": "成功",
+  "a ": "111"
+}

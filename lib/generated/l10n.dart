@@ -50,15 +50,149 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
-  /// `Register`
+  /// `register`
   String get register {
     return Intl.message(
-      'Register',
+      'register',
       name: 'register',
       desc: '',
       args: [],
     );
   }
+
+  /// `skip`
+  String get skip {
+    return Intl.message(
+      'skip',
+      name: 'skip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `login`
+  String get login {
+    return Intl.message(
+      'login',
+      name: 'login',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `cpeManagementPlatform`
+  String get cpeManagementPlatform {
+    return Intl.message(
+      'cpeManagementPlatform',
+      name: 'cpeManagementPlatform',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `enter your mobile phone nubmer`
+  String get phoneLabel {
+    return Intl.message(
+      'enter your mobile phone nubmer',
+      name: 'phoneLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `the phone number is wrong`
+  String get phoneError {
+    return Intl.message(
+      'the phone number is wrong',
+      name: 'phoneError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `enter your passworld`
+  String get passworLdLabel {
+    return Intl.message(
+      'enter your passworld',
+      name: 'passworLdLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ` enter your passworld again`
+  String get passWorLdAgain {
+    return Intl.message(
+      ' enter your passworld again',
+      name: 'passWorLdAgain',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The secondary code is inconsistent`
+  String get passworLdAgainError {
+    return Intl.message(
+      'The secondary code is inconsistent',
+      name: 'passworLdAgainError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ` enter verification code`
+  String get verficationCode {
+    return Intl.message(
+      ' enter verification code',
+      name: 'verficationCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Verification code error`
+  String get verficationCodeError {
+    return Intl.message(
+      'Verification code error',
+      name: 'verficationCodeError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Verify Code`
+  String get getVerficationCode {
+    return Intl.message(
+      'Verify Code',
+      name: 'getVerficationCode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `login successfully`
+  String get loginSuccess {
+    return Intl.message(
+      'login successfully',
+      name: 'loginSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'Discovery equipment' key
+
+  /// `success`
+  String get success {
+    return Intl.message(
+      'success',
+      name: 'success',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // skipped getter for the 'a ' key
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
@@ -67,8 +201,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
   List<Locale> get supportedLocales {
     return const <Locale>[
       Locale.fromSubtags(languageCode: 'en'),
-      Locale.fromSubtags(
-          languageCode: 'zh', scriptCode: 'Hans', countryCode: 'CN'),
+      Locale.fromSubtags(languageCode: 'zh', countryCode: 'CN'),
     ];
   }
 

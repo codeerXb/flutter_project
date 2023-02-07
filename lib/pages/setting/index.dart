@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 import '../../core/utils/shared_preferences_util.dart';
 import '../../core/utils/string_util.dart';
 import '../../core/widget/custom_app_bar.dart';
+import '../../generated/l10n.dart';
 
 /// 我的页面
 class Setting extends StatefulWidget {
@@ -84,6 +85,7 @@ class _SettingState extends State<Setting> {
                   /// 文件上传与下载
                   // fileUplodAndDownload(),
                   // const Divider(),
+                  testButton(),
                   //解绑
                   unbindingDevice(),
 
@@ -375,7 +377,36 @@ class _SettingState extends State<Setting> {
         });
   }
 
-  /// 设备信息
+  /// testButton
+  Widget testButton() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        TextButton(
+          child: const Text(
+            '变成中文',
+          ),
+          onPressed: () {
+            setState(() {
+              S.load(const Locale("zh", "CN"));
+            });
+          },
+        ),
+        TextButton(
+          child: const Text(
+            '变成英文',
+          ),
+          onPressed: () {
+            setState(() {
+              S.load(const Locale("CN", "zh"));
+            });
+          },
+        ),
+      ],
+    );
+  }
+
+  /// 解绑设备
   Widget unbindingDevice() {
     return CommonWidget.simpleWidgetWithMine(
         title: '解绑设备',

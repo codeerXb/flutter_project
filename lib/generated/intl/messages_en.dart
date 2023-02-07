@@ -22,6 +22,29 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "register": MessageLookupByLibrary.simpleMessage("Register")
+        "cpeManagementPlatform":
+            MessageLookupByLibrary.simpleMessage("cpeManagementPlatform"),
+        "getVerficationCode":
+            MessageLookupByLibrary.simpleMessage("Verify Code"),
+        "login": MessageLookupByLibrary.simpleMessage("login"),
+        "loginSuccess":
+            MessageLookupByLibrary.simpleMessage("login successfully"),
+        "passWorLdAgain":
+            MessageLookupByLibrary.simpleMessage(" enter your passworld again"),
+        "passworLdAgainError": MessageLookupByLibrary.simpleMessage(
+            "The secondary code is inconsistent"),
+        "passworLdLabel":
+            MessageLookupByLibrary.simpleMessage("enter your passworld"),
+        "phoneError":
+            MessageLookupByLibrary.simpleMessage("the phone number is wrong"),
+        "phoneLabel": MessageLookupByLibrary.simpleMessage(
+            "enter your mobile phone nubmer"),
+        "register": MessageLookupByLibrary.simpleMessage("register"),
+        "skip": MessageLookupByLibrary.simpleMessage("skip"),
+        "success": MessageLookupByLibrary.simpleMessage("success"),
+        "verficationCode":
+            MessageLookupByLibrary.simpleMessage(" enter verification code"),
+        "verficationCodeError":
+            MessageLookupByLibrary.simpleMessage("Verification code error")
       };
 }

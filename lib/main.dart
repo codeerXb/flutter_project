@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:amap_location_fluttify/amap_location_fluttify.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_template/config/base_config.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/utils/toast.dart';
@@ -14,6 +15,7 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 
 import 'core/http/http.dart';
 import 'core/router/global_route.dart';
+import 'generated/l10n.dart';
 import 'pages/login/login_controller.dart';
 
 final GlobalRouter router = GlobalRouter();
@@ -82,7 +84,18 @@ class _MyAppState extends State<MyApp> {
         minTextAdapt: true,
         splitScreenMode: true,
         builder: (context, child) {
+          //国际化
           return ToastUtils.init(GetMaterialApp(
+            localizationsDelegates: const [
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+              S.delegate,
+            ],
+            // //讲en设置为第一项 没有配置语言时，英语为首选
+            supportedLocales: [
+              ...S.delegate.supportedLocales
+            ],
             key: navigatorKey,
             title: 'APP模板',
             // 不显示debug标签

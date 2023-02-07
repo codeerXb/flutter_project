@@ -1,3 +1,18 @@
 {
-    "register": "Register"
+  "register": "register",
+  "skip": "skip",
+  "login": "login",
+  "cpeManagementPlatform": "cpeManagementPlatform",
+  "phoneLabel": "enter your mobile phone nubmer",
+  "phoneError": "the phone number is wrong",
+  "passworLdLabel": "enter your passworld",
+  "passWorLdAgain": " enter your passworld again",
+  "passworLdAgainError": "The secondary code is inconsistent",
+  "verficationCode": " enter verification code",
+  "verficationCodeError": "Verification code error",
+  "getVerficationCode": "Verify Code",
+  "loginSuccess": "login successfully",
+  "Discovery equipment": "Discovery equipment",
+  "success": "success",
+  "a ": "111"
 }

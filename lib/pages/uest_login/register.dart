@@ -10,6 +10,8 @@ import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
 import 'package:flutter_template/config/base_config.dart';
 
+import '../../generated/l10n.dart';
+
 /// 用户注册
 class UserRegister extends StatefulWidget {
   const UserRegister({Key? key}) : super(key: key);
@@ -23,6 +25,9 @@ final GlobalKey _formKey = GlobalKey<FormState>();
 
 class _UserRegisterState extends State<UserRegister> {
   final LoginController loginController = Get.put(LoginController());
+  //手机号
+  dynamic _phoneVal = '';
+
   //密码
   String _passwordVal = '';
   bool passwordValShow = true;
@@ -79,7 +84,7 @@ class _UserRegisterState extends State<UserRegister> {
               )),
         ),
         body: Container(
-            decoration:
+          decoration:
               const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
           height: 1000,
           child: SingleChildScrollView(
@@ -97,11 +102,73 @@ class _UserRegisterState extends State<UserRegister> {
                         Padding(padding: EdgeInsets.only(top: 50.w)),
 
                         //logo&文字
-                        logo(),
+                        Center(
+                          child: Column(
+                            children: [
+                              Container(
+                                margin: EdgeInsets.only(bottom: 70.w),
+                                child: Image.asset(
+                                  'assets/images/logo.png',
+                                ),
+                              ),
+                              Text(
+                                S.of(context).register,
+                                style: TextStyle(fontSize: 60.sp),
+                              ),
+                              Text(
+                                S.of(context).cpeManagementPlatform,
+                                style: TextStyle(
+                                    fontSize: 30.sp, color: Colors.black38),
+                              ),
+                            ],
+                          ),
+                        ),
                         Padding(padding: EdgeInsets.only(top: 50.w)),
 
                         //手机号
-                        buildPhoneField(),
+                        Row(
+                          children: [
+                            Container(
+                              decoration: const BoxDecoration(
+                                border: Border(
+                                    bottom: BorderSide(
+                                        color: Color(0XFF302F4F), width: 0.0)),
+                              ),
+                              child: SizedBox(
+                                width: 1.sw - 104.w,
+                                child: TextFormField(
+                                    keyboardType: TextInputType.number,
+                                    style: TextStyle(
+                                        fontSize: 32.sp,
+                                        color: const Color(0xff051220)),
+                                    decoration: InputDecoration(
+                                      icon: const Icon(Icons.perm_identity),
+                                      // 表单提示信息
+                                      hintText: S.of(context).phoneLabel,
+                                      hintStyle: TextStyle(
+                                          fontSize: 32.sp,
+                                          color: const Color(0xff737A83)),
+                                      // 取消自带的下边框
+                                      border: InputBorder.none,
+                                    ),
+                                    validator: (value) {
+                                      RegExp reg = RegExp(
+                                          r'^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$');
+                                      if (!reg.hasMatch(value!)) {
+                                        return S.of(context).phoneError;
+                                      } else {
+                                        return null;
+                                      }
+                                    },
+                                    onChanged: (String value) =>
+                                        _phoneVal = value,
+                                    inputFormatters: [
+                                      LengthLimitingTextInputFormatter(11),
+                                    ]),
+                              ),
+                            ),
+                          ],
+                        ),
                         Padding(padding: EdgeInsets.only(top: 20.w)),
 
                         /// 密码
@@ -132,7 +199,7 @@ class _UserRegisterState extends State<UserRegister> {
                                             ? Icons.visibility
                                             : Icons.visibility_off)),
                                     // 表单提示信息
-                                    hintText: "请输入登录密码",
+                                    hintText: S.of(context).passworLdLabel,
                                     hintStyle: TextStyle(
                                         fontSize: 32.sp,
                                         color: const Color(0xff737A83)),
@@ -143,7 +210,7 @@ class _UserRegisterState extends State<UserRegister> {
                                       _passwordVal = value,
                                   validator: (value) {
                                     if (value!.isEmpty) {
-                                      return '请输入密码';
+                                      return S.of(context).passworLdLabel;
                                     }
                                     return null;
                                   },
@@ -183,7 +250,7 @@ class _UserRegisterState extends State<UserRegister> {
                                             ? Icons.visibility
                                             : Icons.visibility_off)),
                                     // 表单提示信息
-                                    hintText: "请再次输入登录密码",
+                                    hintText: S.of(context).passWorLdAgain,
                                     hintStyle: TextStyle(
                                         fontSize: 32.sp,
                                         color: const Color(0xff737A83)),
@@ -194,7 +261,7 @@ class _UserRegisterState extends State<UserRegister> {
                                       _againPassVal = value,
                                   validator: (value) {
                                     if (_passwordVal != _againPassVal) {
-                                      return '二次密码不一致';
+                                      return S.of(context).passworLdAgainError;
                                     }
                                     return null;
                                   },
@@ -223,18 +290,19 @@ class _UserRegisterState extends State<UserRegister> {
                                       color: const Color(0xff051220)),
                                   decoration: InputDecoration(
                                     // 表单提示信息
-                                    hintText: "请输入验证码",
+                                    hintText: S.of(context).verficationCode,
                                     hintStyle: TextStyle(
                                         fontSize: 32.sp,
                                         color: const Color(0xff737A83)),
                                   ),
                                   validator: (value) {
                                     if (value.toString().length != 4) {
-                                      return '输入正确验证码';
+                                      return S.of(context).verficationCodeError;
                                     }
                                     return null;
                                   },
-                                  onChanged: (String value) => _codeValue = value,
+                                  onChanged: (String value) =>
+                                      _codeValue = value,
                                   inputFormatters: [
                                     LengthLimitingTextInputFormatter(4),
                                   ],
@@ -247,7 +315,7 @@ class _UserRegisterState extends State<UserRegister> {
                                   RegExp reg = RegExp(
                                       r'^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$');
                                   if (!reg.hasMatch(_phoneVal!)) {
-                                    ToastUtils.toast('手机号格式有误');
+                                    ToastUtils.toast(S.of(context).phoneError);
                                   } else {
                                     //发请求
                                     var res = await dio.post(
@@ -255,7 +323,7 @@ class _UserRegisterState extends State<UserRegister> {
                                     var d = json.decode(res.toString());
                                     debugPrint('响应------>$d');
                                     d['code'] == 200
-                                        ? ToastUtils.toast('短信发送成功')
+                                        ? ToastUtils.toast(S.of(context).success)
                                         : ToastUtils.toast(d['message']);
                                     if (codeNum == 60) {
                                       //倒计时60s
@@ -280,7 +348,7 @@ class _UserRegisterState extends State<UserRegister> {
                                   }
                                 }),
                                 child: Text(
-                                  iscode ? '$codeNum秒' : '获取验证码',
+                                  iscode ? '$codeNum秒' : S.of(context).getVerficationCode,
                                   style: TextStyle(
                                       color: Colors.blue, fontSize: 30.w),
                                 )),
@@ -326,7 +394,7 @@ class _UserRegisterState extends State<UserRegister> {
                               }
                             },
                             child: Text(
-                              '注册',
+                              S.of(context).register,
                               style: TextStyle(
                                   fontSize: 32.sp,
                                   color: const Color(0xffffffff)),
@@ -343,72 +411,3 @@ class _UserRegisterState extends State<UserRegister> {
         ));
   }
 }
-
-//logo&文字
-Center logo() {
-  return Center(
-    child: Column(
-      children: [
-        Container(
-          margin: EdgeInsets.only(bottom: 70.w),
-          child: Image.asset(
-            'assets/images/logo.png',
-          ),
-        ),
-        Text(
-          '注册',
-          style: TextStyle(fontSize: 60.sp),
-        ),
-        Text(
-          'CPE管理平台',
-          style: TextStyle(fontSize: 30.sp, color: Colors.black38),
-        ),
-      ],
-    ),
-  );
-}
-
-//手机号
-var dio = Dio();
-dynamic _phoneVal = '';
-Row buildPhoneField() {
-  return Row(
-    children: [
-      Container(
-        decoration: const BoxDecoration(
-          border:
-              Border(bottom: BorderSide(color: Color(0XFF302F4F), width: 0.0)),
-        ),
-        child: SizedBox(
-          width: 1.sw - 104.w,
-          child: TextFormField(
-              keyboardType: TextInputType.number,
-              style: TextStyle(fontSize: 32.sp, color: const Color(0xff051220)),
-              decoration: InputDecoration(
-                icon: const Icon(Icons.perm_identity),
-                // 表单提示信息
-                hintText: "请输入手机号",
-                hintStyle:
-                    TextStyle(fontSize: 32.sp, color: const Color(0xff737A83)),
-                // 取消自带的下边框
-                border: InputBorder.none,
-              ),
-              validator: (value) {
-                RegExp reg = RegExp(
-                    r'^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$');
-                if (!reg.hasMatch(value!)) {
-                  return '手机号有误';
-                } else {
-                  return null;
-                }
-              },
-              onChanged: (String value) => _phoneVal = value,
-              inputFormatters: [
-                LengthLimitingTextInputFormatter(11),
-              ]),
-        ),
-      ),
-    ],
-  );
-}
-

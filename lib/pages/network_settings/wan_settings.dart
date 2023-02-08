@@ -10,6 +10,7 @@ import '../../core/utils/shared_preferences_util.dart';
 import '../../core/utils/toast.dart';
 import '../../core/widget/common_box.dart';
 import '../../core/widget/common_picker.dart';
+import '../../generated/l10n.dart';
 
 /// WAN设置
 class WanSettings extends StatefulWidget {
@@ -99,7 +100,7 @@ class _WanSettingsState extends State<WanSettings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppbar(context: context, title: 'WAN设置'),
+      appBar: customAppbar(context: context, title: S.of(context).wanSettings),
       body: SingleChildScrollView(
         child: Container(
             decoration:
@@ -109,7 +110,7 @@ class _WanSettingsState extends State<WanSettings> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   //WAN设置
-                  const TitleWidger(title: 'WAN设置'),
+                   TitleWidger(title: S.of(context).wanSettings),
                   GestureDetector(
                       onTap: () {
                         var result = CommonPicker.showPicker(
@@ -139,7 +140,7 @@ class _WanSettingsState extends State<WanSettings> {
                           rowtem: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('网络模式', style: TextStyle(fontSize: 30.sp)),
+                                Text( S.of(context).NetworkMode, style: TextStyle(fontSize: 30.sp)),
                                 Row(
                                   children: [
                                     Text(showVal,

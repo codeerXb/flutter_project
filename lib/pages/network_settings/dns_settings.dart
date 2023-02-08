@@ -203,7 +203,7 @@ class _DnsSettingsState extends State<DnsSettings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: customAppbar(context: context, title: 'DNS设置'),
+        appBar: customAppbar(context: context, title: S.of(context).dnsSettings),
         body: SingleChildScrollView(
           child: InkWell(
             onTap: () => closeKeyboard(context),
@@ -229,7 +229,7 @@ class _DnsSettingsState extends State<DnsSettings> {
                         rowtem: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            const Text('主DNS'),
+                             Text( S.of(context).PrimaryDNS),
                             OtpInput(dsnMain, false),
                             const Text('.'),
                             OtpInput(dsnMain1, false),
@@ -245,7 +245,7 @@ class _DnsSettingsState extends State<DnsSettings> {
                         rowtem: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            const Text('辅DNS'),
+                             Text( S.of(context).SecondaryDNS),
                             OtpInput(dsnAssist, false),
                             const Text('.'),
                             OtpInput(dsnAssist1, false),

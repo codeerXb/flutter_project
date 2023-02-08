@@ -300,6 +300,36 @@ class S {
     );
   }
 
+  /// `system Information`
+  String get systemInfo {
+    return Intl.message(
+      'system Information',
+      name: 'systemInfo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `version Information`
+  String get versionInfo {
+    return Intl.message(
+      'version Information',
+      name: 'versionInfo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `LAN Status`
+  String get lanStatus {
+    return Intl.message(
+      'LAN Status',
+      name: 'lanStatus',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Ethernet`
   String get Ethernet {
     return Intl.message(
@@ -375,6 +405,16 @@ class S {
     return Intl.message(
       'LAN Settings',
       name: 'lanSettings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `LAN Host Settings`
+  String get lanHostSettings {
+    return Intl.message(
+      'LAN Host Settings',
+      name: 'lanHostSettings',
       desc: '',
       args: [],
     );
@@ -650,11 +690,311 @@ class S {
     );
   }
 
+  /// `Running Time`
+  String get RunningTime {
+    return Intl.message(
+      'Running Time',
+      name: 'RunningTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Product Model`
+  String get ProductModel {
+    return Intl.message(
+      'Product Model',
+      name: 'ProductModel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hardware Version`
+  String get HardwareVersion {
+    return Intl.message(
+      'Hardware Version',
+      name: 'HardwareVersion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Software Version`
+  String get SoftwareVersion {
+    return Intl.message(
+      'Software Version',
+      name: 'SoftwareVersion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `UBOOT Version`
+  String get UBOOTVersion {
+    return Intl.message(
+      'UBOOT Version',
+      name: 'UBOOTVersion',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Serial Number`
+  String get SerialNumber {
+    return Intl.message(
+      'Serial Number',
+      name: 'SerialNumber',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `MAC Address`
+  String get MACAddress {
+    return Intl.message(
+      'MAC Address',
+      name: 'MACAddress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `IP Address`
+  String get IPAddress {
+    return Intl.message(
+      'IP Address',
+      name: 'IPAddress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Subnet Mask`
+  String get SubnetMask {
+    return Intl.message(
+      'Subnet Mask',
+      name: 'SubnetMask',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Network Mode`
+  String get NetworkMode {
+    return Intl.message(
+      'Network Mode',
+      name: 'NetworkMode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Primary DNS`
+  String get PrimaryDNS {
+    return Intl.message(
+      'Primary DNS',
+      name: 'PrimaryDNS',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Secondary DNS`
+  String get SecondaryDNS {
+    return Intl.message(
+      'Secondary DNS',
+      name: 'SecondaryDNS',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `save`
   String get save {
     return Intl.message(
       'save',
       name: 'save',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `status`
+  String get status {
+    return Intl.message(
+      'status',
+      name: 'status',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `connectMethod`
+  String get connectMethod {
+    return Intl.message(
+      'connectMethod',
+      name: 'connectMethod',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `GSCNARFCN`
+  String get GSCNARFCN {
+    return Intl.message(
+      'GSCNARFCN',
+      name: 'GSCNARFCN',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `DL Frequency`
+  String get DLFrequency {
+    return Intl.message(
+      'DL Frequency',
+      name: 'DLFrequency',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `UL Frequency`
+  String get ULFrequency {
+    return Intl.message(
+      'UL Frequency',
+      name: 'ULFrequency',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `start IP Address`
+  String get startIPAddress {
+    return Intl.message(
+      'start IP Address',
+      name: 'startIPAddress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `end IP Address`
+  String get endIPAddress {
+    return Intl.message(
+      'end IP Address',
+      name: 'endIPAddress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Lease Time`
+  String get LeaseTime {
+    return Intl.message(
+      'Lease Time',
+      name: 'LeaseTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `minutes`
+  String get minutes {
+    return Intl.message(
+      'minutes',
+      name: 'minutes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Server`
+  String get server {
+    return Intl.message(
+      'Server',
+      name: 'server',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `connection Mode`
+  String get connectionMode {
+    return Intl.message(
+      'connection Mode',
+      name: 'connectionMode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `link Status`
+  String get linkStatus {
+    return Intl.message(
+      'link Status',
+      name: 'linkStatus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `connect Status`
+  String get connectStatus {
+    return Intl.message(
+      'connect Status',
+      name: 'connectStatus',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Online Time`
+  String get OnlineTime {
+    return Intl.message(
+      'Online Time',
+      name: 'OnlineTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Default Gateway`
+  String get DefaultGateway {
+    return Intl.message(
+      'Default Gateway',
+      name: 'DefaultGateway',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ethernet Only`
+  String get EthernetOnly {
+    return Intl.message(
+      'Ethernet Only',
+      name: 'EthernetOnly',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Detect Server`
+  String get Detect {
+    return Intl.message(
+      'Detect Server',
+      name: 'Detect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `priority`
+  String get priority {
+    return Intl.message(
+      'priority',
+      name: 'priority',
       desc: '',
       args: [],
     );

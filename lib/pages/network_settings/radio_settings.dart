@@ -82,9 +82,9 @@ class _RadioSettingsState extends State<RadioSettings> {
         }
         if (radioGState.lteBandGet5g.toString() == '--' ||
             radioGState.lteBandGet5g.toString() == '') {
-          radioGTitle = '4G状态';
+          radioGTitle = '4G ' + S.of(context).status;
         } else {
-          radioGTitle = '5G状态';
+          radioGTitle = '5G ' + S.of(context).status;
         }
       });
     } catch (e) {
@@ -96,7 +96,8 @@ class _RadioSettingsState extends State<RadioSettings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppbar(context: context, title: 'Radio设置'),
+      appBar:
+          customAppbar(context: context, title: S.of(context).radioSettings),
       body: SingleChildScrollView(
         child: Container(
             decoration:
@@ -104,14 +105,15 @@ class _RadioSettingsState extends State<RadioSettings> {
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const TitleWidger(title: '状态'),
+                  TitleWidger(title: S.of(context).status),
                   InfoBox(
                       boxCotainer: Column(children: [
                     BottomLine(
                       rowtem: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('状态', style: TextStyle(fontSize: 30.sp)),
+                          Text(S.of(context).status,
+                              style: TextStyle(fontSize: 30.sp)),
                           Text(radioStateVal,
                               style: TextStyle(fontSize: 30.sp)),
                         ],
@@ -149,7 +151,8 @@ class _RadioSettingsState extends State<RadioSettings> {
                         rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('连接方式', style: TextStyle(fontSize: 30.sp)),
+                              Text(S.of(context).connectMethod,
+                                  style: TextStyle(fontSize: 30.sp)),
                               Row(
                                 children: [
                                   Text(showVal,
@@ -175,7 +178,7 @@ class _RadioSettingsState extends State<RadioSettings> {
                             children: [
                               BottomLine(
                                   rowtem: RowContainer(
-                                leftText: '频点',
+                                leftText:  S.of(context).GSCNARFCN,
                                 righText: (radioGState.lteDlEarfcnGet5g
                                                 .toString() ==
                                             '--' ||
@@ -187,19 +190,19 @@ class _RadioSettingsState extends State<RadioSettings> {
                               )),
                               BottomLine(
                                   rowtem: RowContainer(
-                                leftText: '下行频率',
+                                leftText:  S.of(context).DLFrequency,
                                 righText:
                                     '${(radioGState.lteDlFrequency5g.toString() == '--' || radioGState.lteDlFrequency5g.toString() == '') ? radioGState.lteDlFrequency.toString() : radioGState.lteDlFrequency5g.toString()}MHz',
                               )),
                               BottomLine(
                                   rowtem: RowContainer(
-                                leftText: '上行频率',
+                                leftText: S.of(context).ULFrequency,
                                 righText:
                                     '${(radioGState.lteUlFrequency5g.toString() == '--' || radioGState.lteUlFrequency5g.toString() == '') ? radioGState.lteUlFrequency.toString() : radioGState.lteUlFrequency5g.toString()}MHz',
                               )),
                               BottomLine(
                                   rowtem: RowContainer(
-                                leftText:  S.of(context).Band,
+                                leftText: S.of(context).Band,
                                 righText: (radioGState.lteBandGet5g
                                                 .toString() ==
                                             '--' ||
@@ -210,7 +213,7 @@ class _RadioSettingsState extends State<RadioSettings> {
                               )),
                               BottomLine(
                                   rowtem: RowContainer(
-                                leftText: '宽带',
+                                leftText: S.of(context).Bandwidth,
                                 righText:
                                     '${(radioGState.lteBandwidthGet5g.toString() == '--' || radioGState.lteBandwidthGet5g.toString() == '') ? radioGState.lteBandwidthGet.toString() : radioGState.lteBandwidthGet5g.toString()}MHz',
                               )),
@@ -240,7 +243,7 @@ class _RadioSettingsState extends State<RadioSettings> {
                               )),
                               BottomLine(
                                   rowtem: RowContainer(
-                                leftText: '发射功率',
+                                leftText:  S.of(context).TxPower,
                                 righText: '${radioGState.lteTxpower}dBm',
                               )),
                               BottomLine(

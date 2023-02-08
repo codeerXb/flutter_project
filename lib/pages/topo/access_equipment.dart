@@ -12,6 +12,7 @@ import 'package:intl/intl.dart';
 
 import '../../core/http/http.dart';
 import '../../core/utils/toast.dart';
+import '../../generated/l10n.dart';
 
 class AccessEquipment extends StatefulWidget {
   const AccessEquipment({super.key});
@@ -114,7 +115,7 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                       )),
                       BottomLine(
                           rowtem: RowContainer(
-                        leftText: 'IP地址',
+                        leftText: S.of(context).IPAddress,
                         righText: data.iP.toString(),
                       )),
                       BottomLine(

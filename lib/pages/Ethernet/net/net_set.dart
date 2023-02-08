@@ -187,7 +187,8 @@ class _NetSetState extends State<NetSet> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: customAppbar(context: context, title: '以太网设置'),
+        appBar: customAppbar(
+            context: context, title: S.of(context).EthernetSettings),
         body: GestureDetector(
           onTap: () => closeKeyboard(context),
           behavior: HitTestBehavior.opaque,
@@ -199,7 +200,7 @@ class _NetSetState extends State<NetSet> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                   TitleWidger(title: S.of(context).Settings),
+                  TitleWidger(title: S.of(context).Settings),
                   InfoBox(
                       boxCotainer: Column(
                     children: [
@@ -228,7 +229,7 @@ class _NetSetState extends State<NetSet> {
                           rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('连接模式',
+                              Text(S.of(context).connectionMode,
                                   style: TextStyle(
                                       color: const Color.fromARGB(255, 5, 0, 0),
                                       fontSize: 28.sp)),
@@ -257,7 +258,7 @@ class _NetSetState extends State<NetSet> {
                           rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('仅以太网',
+                              Text(S.of(context).EthernetOnly,
                                   style: TextStyle(
                                       color: const Color.fromARGB(255, 5, 0, 0),
                                       fontSize: 28.sp)),
@@ -304,7 +305,7 @@ class _NetSetState extends State<NetSet> {
                             rowtem: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('优先级',
+                                Text(S.of(context).priority,
                                     style: TextStyle(
                                         color:
                                             const Color.fromARGB(255, 5, 0, 0),
@@ -336,8 +337,8 @@ class _NetSetState extends State<NetSet> {
                           rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              const Text(
-                                'IP地址',
+                              Text(
+                                S.of(context).IPAddress,
                               ),
                               OtpInput(ipVal1, false),
                               const Text('.'),
@@ -361,7 +362,7 @@ class _NetSetState extends State<NetSet> {
                           rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              const Text('子网掩码'),
+                              Text(S.of(context).SubnetMask),
                               OtpInput(zwVal1, false),
                               const Text('.'),
                               OtpInput(zwVal2, false),
@@ -384,7 +385,7 @@ class _NetSetState extends State<NetSet> {
                           rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              const Text('默认网关'),
+                              Text(S.of(context).DefaultGateway),
                               OtpInput(mrwgVal1, false),
                               const Text('.'),
                               OtpInput(mrwgVal2, false),
@@ -407,7 +408,7 @@ class _NetSetState extends State<NetSet> {
                           rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              const Text('主DNS'),
+                              Text(S.of(context).PrimaryDNS),
                               OtpInput(zdnsVal1, false),
                               const Text('.'),
                               OtpInput(zdnsVal2, false),
@@ -430,7 +431,7 @@ class _NetSetState extends State<NetSet> {
                           rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              const Text('辅DNS'),
+                              Text(S.of(context).SecondaryDNS),
                               OtpInput(fDNSVal1, false),
                               const Text('.'),
                               OtpInput(fDNSVal2, false),
@@ -487,7 +488,7 @@ class _NetSetState extends State<NetSet> {
                           rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('检测服务器',
+                              Text(S.of(context).Detect,
                                   style: TextStyle(
                                       color: const Color.fromARGB(255, 5, 0, 0),
                                       fontSize: 28.sp)),

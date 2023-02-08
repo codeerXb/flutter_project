@@ -7,6 +7,7 @@ import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/pages/equInfo/equinfo_datas.dart';
 import 'package:intl/intl.dart';
 import '../../core/widget/custom_app_bar.dart';
+import '../../generated/l10n.dart';
 
 /// 设备信息
 class EquInfo extends StatefulWidget {
@@ -56,7 +57,7 @@ class _EquInfoState extends State<EquInfo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: customAppbar(context: context, title: '设备信息'),
+        appBar: customAppbar(context: context, title: S.of(context).deviceInfo),
         body: Container(
           decoration:
               const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
@@ -66,10 +67,10 @@ class _EquInfoState extends State<EquInfo> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 //1系统信息
-                const TitleWidger(title: '系统信息'),
+                TitleWidger(title: S.of(context).systemInfo),
                 InfoBox(
                   boxCotainer: RowContainer(
-                    leftText: '运行时长',
+                    leftText:  S.of(context).RunningTime,
                     righText: DateFormat("dd天HH小时mm分钟").format(
                         DateTime.fromMillisecondsSinceEpoch(int.parse(
                                 equinfoData.systemRunningTime.toString() +
@@ -78,33 +79,33 @@ class _EquInfoState extends State<EquInfo> {
                   ),
                 ),
                 //2版本信息
-                const TitleWidger(title: '版本信息'),
+                TitleWidger(title: S.of(context).versionInfo),
                 InfoBox(
                   boxCotainer: Column(
                     children: [
                       BottomLine(
                           rowtem: RowContainer(
-                        leftText: '产品型号',
+                        leftText: S.of(context).ProductModel,
                         righText: equinfoData.systemProductModel.toString(),
                       )),
                       BottomLine(
                           rowtem: RowContainer(
-                        leftText: '硬件版本',
+                        leftText:  S.of(context).HardwareVersion,
                         righText: equinfoData.systemVersionHw.toString(),
                       )),
                       BottomLine(
                           rowtem: RowContainer(
-                        leftText: '软件版本',
+                        leftText: S.of(context).SoftwareVersion,
                         righText: equinfoData.systemVersionRunning.toString(),
                       )),
                       BottomLine(
                           rowtem: RowContainer(
-                        leftText: 'UBOOT版本',
+                        leftText:  S.of(context).UBOOTVersion,
                         righText: equinfoData.systemVersionUboot.toString(),
                       )),
                       BottomLine(
                           rowtem: RowContainer(
-                        leftText: '产品序列号',
+                        leftText:  S.of(context).SerialNumber,
                         righText: equinfoData.systemVersionSn.toString(),
                       )),
                       BottomLine(
@@ -126,24 +127,24 @@ class _EquInfoState extends State<EquInfo> {
                 ),
 
                 //3.0LAN口状态
-                const TitleWidger(title: 'LAN口状态'),
+                TitleWidger(title: S.of(context).lanStatus),
                 InfoBox(
                   boxCotainer: Column(
                     children: [
                       BottomLine(
                           rowtem: RowContainer(
-                        leftText: 'MAC地址',
+                        leftText:  S.of(context).MACAddress,
                         righText: equinfoData.networkLanSettingsMac.toString(),
                       )),
                       BottomLine(
                           rowtem: RowContainer(
-                        leftText: 'IP地址',
+                        leftText:  S.of(context).IPAddress,
                         righText: equinfoData.networkLanSettingIp.toString(),
                       )),
                       Container(
                         padding: EdgeInsets.only(top: 20.w),
                         child: RowContainer(
-                          leftText: '子网掩码',
+                          leftText:  S.of(context).SubnetMask ,
                           righText:
                               equinfoData.networkLanSettingMask.toString(),
                         ),

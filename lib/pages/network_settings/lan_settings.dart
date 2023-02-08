@@ -251,7 +251,7 @@ class _LanSettingsState extends State<LanSettings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppbar(context: context, title: 'LAN设置'),
+      appBar: customAppbar(context: context, title: S.of(context).lanSettings),
       body: SingleChildScrollView(
         child: InkWell(
           onTap: () => closeKeyboard(context),
@@ -261,8 +261,8 @@ class _LanSettingsState extends State<LanSettings> {
             height: 2000.w,
             child: Column(
               children: [
-                Row(children: const [
-                  TitleWidger(title: 'LAN主机设置'),
+                Row(children:  [
+                  TitleWidger(title:  S.of(context).lanHostSettings),
                 ]),
                 InfoBox(
                   boxCotainer: Column(children: [
@@ -270,7 +270,7 @@ class _LanSettingsState extends State<LanSettings> {
                       rowtem: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          const Text('IP地址'),
+                           Text( S.of(context).IPAddress),
                           OtpInput(address, false),
                           const Text('.'),
                           OtpInput(address1, false),
@@ -289,7 +289,7 @@ class _LanSettingsState extends State<LanSettings> {
                       rowtem: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          const Text('子网掩码'),
+                           Text( S.of(context).SubnetMask),
                           DisInput(subnetMask, false),
                           const Text('.'),
                           DisInput(subnetMask1, false),
@@ -306,8 +306,8 @@ class _LanSettingsState extends State<LanSettings> {
                     ),
                   ]),
                 ),
-                Row(children: const [
-                  TitleWidger(title: 'DHCP 配置'),
+                Row(children:  [
+                  TitleWidger(title: 'DHCP '+ S.of(context).Settings),
                 ]),
                 InfoBox(
                   boxCotainer: Column(children: [
@@ -315,7 +315,7 @@ class _LanSettingsState extends State<LanSettings> {
                       rowtem: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text('DHCP 服务器'),
+                             Text('DHCP '+S.of(context).server),
                             Switch(
                               value: isCheck,
                               onChanged: (newVal) {
@@ -335,7 +335,7 @@ class _LanSettingsState extends State<LanSettings> {
                       rowtem: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          const Text('起始地址'),
+                           Text( S.of(context).startIPAddress),
                           DisInput(address, false),
                           const Text('.'),
                           DisInput(address1, false),
@@ -361,7 +361,7 @@ class _LanSettingsState extends State<LanSettings> {
                       rowtem: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          const Text('结束地址'),
+                           Text(S.of(context).endIPAddress),
                           DisInput(address, false),
                           const Text('.'),
                           DisInput(address1, false),
@@ -387,15 +387,15 @@ class _LanSettingsState extends State<LanSettings> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        const Text('租约时间'),
+                         Text( S.of(context).LeaseTime),
                         SizedBox(
-                          width: 510.sp,
+                          width: 480.sp,
                           child: TextFormField(
                               textAlign: TextAlign.right,
                             controller: lanTimeController,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
-                              labelText: "请输入租约时间（2/m~1440/m）",
+                              labelText: S.of(context).minutes+"(2/m~1440/m)",
                               border: const OutlineInputBorder(),
                               enabled: isCheckVal == '1' ? true : false,
                               filled: isCheckVal == '1'

@@ -7,6 +7,7 @@ import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/pages/Ethernet/netType_datas.dart';
 import 'package:intl/intl.dart';
 import '../../core/widget/custom_app_bar.dart';
+import '../../generated/l10n.dart';
 
 /// 以太网状态
 class NetType extends StatefulWidget {
@@ -54,7 +55,7 @@ class _NetTypeState extends State<NetType> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppbar(context: context, title: '以太网状态'),
+      appBar: customAppbar(context: context, title:  S.of(context).EthernetSettings),
       body: Container(
         decoration:
             const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
@@ -62,13 +63,13 @@ class _NetTypeState extends State<NetType> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             //1系统信息
-            const TitleWidger(title: '状态'),
+             TitleWidger(title:  S.of(context).status),
             InfoBox(
               boxCotainer: Column(
                 children: [
                   BottomLine(
                       rowtem: RowContainer(
-                    leftText: '连接模式',
+                    leftText:  S.of(context).connectionMode,
                     righText:
                         NetTypeData.ethernetConnectMode.toString() == 'dhcp'
                             ? '动态 IP'
@@ -76,7 +77,7 @@ class _NetTypeState extends State<NetType> {
                   )),
                   BottomLine(
                       rowtem: RowContainer(
-                    leftText: '链接状态',
+                    leftText: S.of(context).linkStatus,
                     righText:
                         NetTypeData.ethernetConnectionStatus.toString() == '1'
                             ? '已连接'
@@ -84,14 +85,14 @@ class _NetTypeState extends State<NetType> {
                   )),
                   BottomLine(
                       rowtem: RowContainer(
-                    leftText: '连接状态',
+                    leftText:  S.of(context).connectStatus,
                     righText: NetTypeData.ethernetLinkStatus.toString() == '1'
                         ? '已连接'
                         : '未连接',
                   )),
                   BottomLine(
                       rowtem: RowContainer(
-                    leftText: '在线时间',
+                    leftText:  S.of(context).OnlineTime,
                     righText: DateFormat("dd天HH小时mm分钟").format(
                         DateTime.fromMillisecondsSinceEpoch(int.parse(
                                 NetTypeData.systemOnlineTime.toString() +
@@ -100,28 +101,28 @@ class _NetTypeState extends State<NetType> {
                   )),
                   BottomLine(
                       rowtem: RowContainer(
-                    leftText: 'IP地址',
+                    leftText:  S.of(context).IPAddress,
                     righText: NetTypeData.ethernetConnectionIp.toString(),
                   )),
                   BottomLine(
                       rowtem: RowContainer(
-                    leftText: '子网掩码',
+                    leftText:  S.of(context).SubnetMask,
                     righText: NetTypeData.ethernetConnectionMask.toString(),
                   )),
                   BottomLine(
                       rowtem: RowContainer(
-                    leftText: '默认网关',
+                    leftText: S.of(context).DefaultGateway,
                     righText: NetTypeData.ethernetConnectionGateway.toString(),
                   )),
                   BottomLine(
                       rowtem: RowContainer(
-                    leftText: '主DNS',
+                    leftText: S.of(context).PrimaryDNS,
                     righText: NetTypeData.ethernetConnectionDns1.toString(),
                   )),
                   Container(
                     padding: EdgeInsets.only(top: 20.w),
                     child: RowContainer(
-                      leftText: '辅DNS',
+                      leftText:  S.of(context).SecondaryDNS,
                       righText: NetTypeData.ethernetConnectionDns2.toString(),
                     ),
                   )

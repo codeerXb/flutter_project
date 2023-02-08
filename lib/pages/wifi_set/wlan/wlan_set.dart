@@ -10,6 +10,7 @@ import 'package:flutter_template/core/widget/common_picker.dart';
 import 'package:flutter_template/pages/wifi_set/wlan/wlan_datas.dart';
 import 'package:flutter_template/pages/wifi_set/wlan/channel_list.dart';
 import '../../../core/widget/custom_app_bar.dart';
+import '../../../generated/l10n.dart';
 import 'wifi5g_table.dart';
 import 'wifi_table.dart';
 
@@ -362,7 +363,7 @@ class _WlanSetState extends State<WlanSet> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: customAppbar(context: context, title: 'WLAN设置'),
+        appBar: customAppbar(context: context, title:  S.of(context).wlanSet),
         body: GestureDetector(
           onTap: () => closeKeyboard(context),
           behavior: HitTestBehavior.opaque,
@@ -375,7 +376,7 @@ class _WlanSetState extends State<WlanSet> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   //一般设置
-                  const TitleWidger(title: '一般设置'),
+                   TitleWidger(title: S.of(context).General),
                   InfoBox(
                       boxCotainer: Column(
                     children: [
@@ -402,7 +403,7 @@ class _WlanSetState extends State<WlanSet> {
                           rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('频段',
+                              Text(S.of(context).Band,
                                   style: TextStyle(
                                       color: const Color.fromARGB(255, 5, 0, 0),
                                       fontSize: 28.sp)),
@@ -484,7 +485,7 @@ class _WlanSetState extends State<WlanSet> {
                             rowtem: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('模式',
+                                Text(S.of(context).Mode,
                                     style: TextStyle(
                                         color:
                                             const Color.fromARGB(255, 5, 0, 0),
@@ -545,7 +546,7 @@ class _WlanSetState extends State<WlanSet> {
                             rowtem: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('带宽',
+                                Text(S.of(context).Bandwidth,
                                     style: TextStyle(
                                         color:
                                             const Color.fromARGB(255, 5, 0, 0),
@@ -606,7 +607,7 @@ class _WlanSetState extends State<WlanSet> {
                             rowtem: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('信道',
+                                Text(S.of(context).Channel,
                                     style: TextStyle(
                                         color:
                                             const Color.fromARGB(255, 5, 0, 0),
@@ -676,7 +677,7 @@ class _WlanSetState extends State<WlanSet> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('发射功率',
+                                Text(S.of(context).TxPower,
                                     style: TextStyle(
                                         color:
                                             const Color.fromARGB(255, 5, 0, 0),
@@ -709,7 +710,7 @@ class _WlanSetState extends State<WlanSet> {
                   )),
                   //配置
                   if (pdVal == 0 ? isCheck : isCheck5)
-                    const TitleWidger(title: '配置'),
+                     TitleWidger(title: S.of(context).Configuration),
                   if (pdVal == 0 ? isCheck : isCheck5)
                     InfoBox(
                         boxCotainer: Column(
@@ -748,7 +749,7 @@ class _WlanSetState extends State<WlanSet> {
                           rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('最大设备数',
+                              Text(S.of(context).Maximum,
                                   style: TextStyle(
                                       color: const Color.fromARGB(255, 5, 0, 0),
                                       fontSize: 28.sp)),
@@ -766,7 +767,7 @@ class _WlanSetState extends State<WlanSet> {
                                       fontSize: 26.sp,
                                       color: const Color(0xff051220)),
                                   decoration: InputDecoration(
-                                    hintText: "最大设备数",
+                                    hintText: S.of(context).Maximum,
                                     hintStyle: TextStyle(
                                         fontSize: 26.sp,
                                         color: const Color(0xff737A83)),
@@ -782,7 +783,7 @@ class _WlanSetState extends State<WlanSet> {
                           rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('隐藏SSID网络',
+                              Text(S.of(context).HideSSIDBroadcast,
                                   style: TextStyle(
                                       color: const Color.fromARGB(255, 5, 0, 0),
                                       fontSize: 28.sp)),
@@ -812,7 +813,7 @@ class _WlanSetState extends State<WlanSet> {
                           rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('AP隔离',
+                              Text(S.of(context).APIsolation,
                                   style: TextStyle(
                                       color: const Color.fromARGB(255, 5, 0, 0),
                                       fontSize: 28.sp)),
@@ -865,7 +866,7 @@ class _WlanSetState extends State<WlanSet> {
                             rowtem: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('安全',
+                                Text(S.of(context).Security,
                                     style: TextStyle(
                                         color:
                                             const Color.fromARGB(255, 5, 0, 0),
@@ -924,7 +925,7 @@ class _WlanSetState extends State<WlanSet> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text('WPA加密',
+                                  Text(S.of(context).WPAEncry,
                                       style: TextStyle(
                                           color: const Color.fromARGB(
                                               255, 5, 0, 0),
@@ -958,7 +959,7 @@ class _WlanSetState extends State<WlanSet> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "密码",
+                                S.of(context).Password,
                                 style: TextStyle(
                                     color: const Color.fromARGB(255, 5, 0, 0),
                                     fontSize: 28.sp),
@@ -997,7 +998,7 @@ class _WlanSetState extends State<WlanSet> {
                                   const Color.fromARGB(255, 48, 118, 250))),
                           onPressed: setData,
                           child: Text(
-                            '提交',
+                             S.of(context).save,
                             style: TextStyle(fontSize: 36.sp),
                           ),
                         ),

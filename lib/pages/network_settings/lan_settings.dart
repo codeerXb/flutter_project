@@ -9,6 +9,7 @@ import '../../core/utils/shared_preferences_util.dart';
 import '../../core/utils/toast.dart';
 import '../../core/widget/common_box.dart';
 import '../../core/widget/otp_input.dart';
+import '../../generated/l10n.dart';
 import 'model/lan_data.dart';
 
 /// LAN设置LAN设置
@@ -431,7 +432,7 @@ class _LanSettingsState extends State<LanSettings> {
                         }
                       },
                       child: Text(
-                        '提交',
+                        S.of(context).save,
                         style: TextStyle(fontSize: 36.sp),
                       ),
                     ),

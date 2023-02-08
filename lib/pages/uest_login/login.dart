@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/widget/custom_app_bar.dart';
+import 'package:flutter_template/generated/l10n.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
 import '../../config/base_config.dart';
@@ -54,7 +55,7 @@ class _UserLoginState extends State<UserLogin> {
                   Get.offAllNamed("/get_equipment");
                 },
                 child: Text(
-                  '跳过',
+                  S.of(context).skip,
                   style: TextStyle(fontSize: 32.w, fontWeight: FontWeight.w600),
                 )),
           ],
@@ -70,13 +71,68 @@ class _UserLoginState extends State<UserLogin> {
                 child: Column(
                   children: [
                     Padding(padding: EdgeInsets.only(top: 100.w)),
-
                     //logo&文字
-                    logo(),
+                    Center(
+                      child: Column(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(bottom: 70.w),
+                            child: Image.asset(
+                              'assets/images/logo.png',
+                            ),
+                          ),
+                          Text(
+                            S.of(context).login,
+                            style: TextStyle(fontSize: 60.sp),
+                          ),
+                          Text(
+                            S.of(context).cpeManagementPlatform,
+                            style: TextStyle(
+                                fontSize: 30.sp, color: Colors.black38),
+                          ),
+                        ],
+                      ),
+                    ),
                     Padding(padding: EdgeInsets.only(top: 50.w)),
 
                     //手机号
-                    buildPhoneField(),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              decoration: const BoxDecoration(
+                                border: Border(
+                                    bottom: BorderSide(
+                                        color: Color(0XFF302F4F), width: 0.0)),
+                              ),
+                              child: SizedBox(
+                                width: 1.sw - 104.w,
+                                child: TextFormField(
+                                  controller: phone,
+                                  keyboardType: TextInputType.number,
+                                  // initialValue: _password,
+                                  style: TextStyle(
+                                      fontSize: 32.sp,
+                                      color: const Color(0xff051220)),
+                                  decoration: InputDecoration(
+                                    icon: const Icon(Icons.perm_identity),
+                                    // 表单提示信息
+                                    hintText: S.of(context).phoneLabel,
+                                    hintStyle: TextStyle(
+                                        fontSize: 32.sp,
+                                        color: const Color(0xff737A83)),
+                                    // 取消自带的下边框
+                                    border: InputBorder.none,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                     Padding(padding: EdgeInsets.only(top: 20.w)),
 
                     /// 密码
@@ -94,7 +150,6 @@ class _UserLoginState extends State<UserLogin> {
                               child: SizedBox(
                                 width: 1.sw - 104.w,
                                 child: TextFormField(
-                                    textAlign: TextAlign.right,
                                   obscureText: passwordValShow,
                                   controller: password,
                                   style: TextStyle(
@@ -112,7 +167,7 @@ class _UserLoginState extends State<UserLogin> {
                                             ? Icons.visibility
                                             : Icons.visibility_off)),
                                     // 表单提示信息
-                                    hintText: "请输入登录密码",
+                                    hintText: S.of(context).passworLdLabel,
                                     hintStyle: TextStyle(
                                         fontSize: 32.sp,
                                         color: const Color(0xff737A83)),
@@ -129,7 +184,27 @@ class _UserLoginState extends State<UserLogin> {
                     Padding(padding: EdgeInsets.only(top: 20.w)),
 
                     /// 注册&忘记密码
-                    registerAndForget(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        //注册
+                        TextButton(
+                            onPressed: (() {
+                              Get.offAllNamed("/use_register");
+                            }),
+                            child: Text(
+                              S.of(context).register,
+                              style: const TextStyle(color: Colors.black45),
+                            )),
+                        // 忘记密码
+                        TextButton(
+                            onPressed: (() {
+                              // Get.offAllNamed("/forget_password");
+                            }),
+                            child: const Text('',
+                                style: TextStyle(color: Colors.black45)))
+                      ],
+                    ),
                     Padding(padding: EdgeInsets.only(top: 200.w)),
 
                     /// 登录
@@ -159,7 +234,7 @@ class _UserLoginState extends State<UserLogin> {
                             ToastUtils.toast(d['message']);
                             return;
                           } else {
-                            ToastUtils.toast('登录成功');
+                            ToastUtils.toast(S.of(context).loginSuccess);
                             Get.offAllNamed("/get_equipment");
                             //存储用户信息
                             sharedAddAndUpdate(
@@ -169,7 +244,7 @@ class _UserLoginState extends State<UserLogin> {
                           }
                         },
                         child: Text(
-                          '登录',
+                          S.of(context).login,
                           style: TextStyle(
                               fontSize: 32.sp, color: const Color(0xffffffff)),
                         ),
@@ -186,89 +261,3 @@ class _UserLoginState extends State<UserLogin> {
 
 final TextEditingController phone = TextEditingController();
 final TextEditingController password = TextEditingController();
-
-//logo&文字
-Center logo() {
-  return Center(
-    child: Column(
-      children: [
-        Container(
-          margin: EdgeInsets.only(bottom: 70.w),
-          child: Image.asset(
-            'assets/images/logo.png',
-          ),
-        ),
-        Text(
-          '登录',
-          style: TextStyle(fontSize: 60.sp),
-        ),
-        Text(
-          'CPE管理平台',
-          style: TextStyle(fontSize: 30.sp, color: Colors.black38),
-        ),
-      ],
-    ),
-  );
-}
-
-//手机号
-Column buildPhoneField() {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Row(
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-              border: Border(
-                  bottom: BorderSide(color: Color(0XFF302F4F), width: 0.0)),
-            ),
-            child: SizedBox(
-              width: 1.sw - 104.w,
-              child: TextFormField(
-                controller: phone,
-                keyboardType: TextInputType.number,
-                // initialValue: _password,
-                style:
-                    TextStyle(fontSize: 32.sp, color: const Color(0xff051220)),
-                decoration: InputDecoration(
-                  icon: const Icon(Icons.perm_identity),
-                  // 表单提示信息
-                  hintText: "请输入手机号",
-                  hintStyle: TextStyle(
-                      fontSize: 32.sp, color: const Color(0xff737A83)),
-                  // 取消自带的下边框
-                  border: InputBorder.none,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    ],
-  );
-}
-
-// 注册&忘记密码
-Row registerAndForget() {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-      //注册
-      TextButton(
-          onPressed: (() {
-            Get.offAllNamed("/use_register");
-          }),
-          child: Text(
-            '注册',
-            style: const TextStyle(color: Colors.black45),
-          )),
-      // 忘记密码
-      TextButton(
-          onPressed: (() {
-            // Get.offAllNamed("/forget_password");
-          }),
-          child: const Text('', style: TextStyle(color: Colors.black45)))
-    ],
-  );
-}

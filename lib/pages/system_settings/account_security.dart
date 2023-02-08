@@ -9,6 +9,7 @@ import '../../core/http/http.dart';
 import '../../core/utils/shared_preferences_util.dart';
 import '../../core/widget/common_widget.dart';
 import '../../core/widget/custom_app_bar.dart';
+import '../../generated/l10n.dart';
 import 'model/account_data.dart';
 
 /// 修改密码修改密码
@@ -182,7 +183,7 @@ class _AccountSecurityState extends State<AccountSecurity> {
                               }
                             },
                             child: Text(
-                              '提交',
+                              S.of(context).save,
                               style: TextStyle(fontSize: 36.sp),
                             ),
                           ),

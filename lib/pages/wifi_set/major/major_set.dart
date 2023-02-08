@@ -8,6 +8,7 @@ import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_picker.dart';
 import 'package:flutter_template/pages/wifi_set/major/major_datas.dart';
 import '../../../core/widget/custom_app_bar.dart';
+import '../../../generated/l10n.dart';
 
 /// 专业设置
 class MajorSet extends StatefulWidget {
@@ -95,7 +96,7 @@ class _MajorSetState extends State<MajorSet> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: customAppbar(context: context, title: '专业设置'),
+        appBar: customAppbar(context: context, title: S.of(context).majorSet),
         body: Container(
           decoration:
               const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
@@ -104,7 +105,7 @@ class _MajorSetState extends State<MajorSet> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const TitleWidger(title: '专业设置'),
+                TitleWidger(title: S.of(context).majorSet),
                 InfoBox(
                     boxCotainer: Column(
                   children: [
@@ -158,7 +159,7 @@ class _MajorSetState extends State<MajorSet> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('地区',
+                          Text( S.of(context).Region,
                               style: TextStyle(
                                   color: const Color.fromARGB(255, 5, 0, 0),
                                   fontSize: 28.sp)),
@@ -180,27 +181,27 @@ class _MajorSetState extends State<MajorSet> {
                     ),
                   ],
                 )),
-                    Padding(
-                      padding: EdgeInsets.only(top: 10.w),
-                      child: Center(
-                        child: SizedBox(
-                          height: 70.sp,
-                          width: 680.sp,
-                          child: ElevatedButton(
-                            style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all(
-                                    const Color.fromARGB(255, 48, 118, 250))),
-                            onPressed: () {
-                              handleSave();
-                            },
-                            child: Text(
-                              '提交',
-                              style: TextStyle(fontSize: 30.sp),
-                            ),
-                          ),
+                Padding(
+                  padding: EdgeInsets.only(top: 10.w),
+                  child: Center(
+                    child: SizedBox(
+                      height: 70.sp,
+                      width: 680.sp,
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(
+                                const Color.fromARGB(255, 48, 118, 250))),
+                        onPressed: () {
+                          handleSave();
+                        },
+                        child: Text(
+                          S.of(context).save,
+                          style: TextStyle(fontSize: 30.sp),
                         ),
                       ),
-                    )
+                    ),
+                  ),
+                )
               ],
             ),
           ),

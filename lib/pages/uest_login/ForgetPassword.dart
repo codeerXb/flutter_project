@@ -10,6 +10,8 @@ import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
 import 'package:flutter_template/config/base_config.dart';
 
+import '../../generated/l10n.dart';
+
 class ForgetPassword extends StatefulWidget {
   const ForgetPassword({super.key});
 
@@ -82,7 +84,27 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                     children: [
                       Padding(padding: EdgeInsets.only(top: 50.w)),
                       //logo&文字
-                      logo(),
+                      Center(
+                        child: Column(
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(bottom: 70.w),
+                              child: Image.asset(
+                                'assets/images/logo.png',
+                              ),
+                            ),
+                            Text(
+                              '忘记密码',
+                              style: TextStyle(fontSize: 60.sp),
+                            ),
+                            Text(
+                              S.of(context).cpeManagementPlatform,
+                              style: TextStyle(
+                                  fontSize: 30.sp, color: Colors.black38),
+                            ),
+                          ],
+                        ),
+                      ),
                       Padding(padding: EdgeInsets.only(top: 50.w)),
 
                       //手机号
@@ -102,7 +124,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                             ),
                             child: SizedBox(
                               child: TextFormField(
-                                  textAlign: TextAlign.right,
+                                textAlign: TextAlign.right,
                                 style: TextStyle(
                                     fontSize: 32.sp,
                                     color: const Color(0xff051220)),
@@ -185,7 +207,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                             child: SizedBox(
                               width: 1.sw - 104.w,
                               child: TextFormField(
-                                  textAlign: TextAlign.right,
+                                textAlign: TextAlign.right,
                                 obscureText: passwordValShow,
                                 style: TextStyle(
                                     fontSize: 32.sp,
@@ -277,30 +299,6 @@ class _ForgetPasswordState extends State<ForgetPassword> {
           ),
         ));
   }
-}
-
-//logo&文字
-Center logo() {
-  return Center(
-    child: Column(
-      children: [
-        Container(
-          margin: EdgeInsets.only(bottom: 70.w),
-          child: Image.asset(
-            'assets/images/logo.png',
-          ),
-        ),
-        Text(
-          '忘记密码',
-          style: TextStyle(fontSize: 60.sp),
-        ),
-        Text(
-          'CPE管理平台',
-          style: TextStyle(fontSize: 30.sp, color: Colors.black38),
-        ),
-      ],
-    ),
-  );
 }
 
 //手机号

@@ -7,6 +7,7 @@ import '../../core/http/http.dart';
 import '../../core/utils/toast.dart';
 import '../../core/widget/common_box.dart';
 import '../../core/widget/common_picker.dart';
+import '../../generated/l10n.dart';
 import 'model/radio_data.dart';
 
 /// Radio设置
@@ -198,7 +199,7 @@ class _RadioSettingsState extends State<RadioSettings> {
                               )),
                               BottomLine(
                                   rowtem: RowContainer(
-                                leftText: '频段',
+                                leftText:  S.of(context).Band,
                                 righText: (radioGState.lteBandGet5g
                                                 .toString() ==
                                             '--' ||

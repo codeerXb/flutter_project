@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
+import 'package:flutter_template/generated/l10n.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:flutter_template/pages/login/model/equipment_data.dart';
 import 'package:flutter_template/pages/login/model/exception_login.dart';
@@ -255,7 +256,7 @@ class _LoginState extends State<Login> {
           }
         },
         child: Text(
-          '登录',
+          S.of(context).login,
           style: TextStyle(fontSize: 32.sp, color: const Color(0xffffffff)),
         ),
       ),

@@ -25,6 +25,7 @@ class _AccessEquipmentState extends State<AccessEquipment> {
   String uNKTitle = '设备信息';
 
   String accTitle = '家长控制';
+  bool isCheck = false;
 
   String tim = '';
   String timeStart = '';
@@ -87,17 +88,18 @@ class _AccessEquipmentState extends State<AccessEquipment> {
     }
 
     return Scaffold(
-        appBar: customAppbar(context: context, title: data.hostName.toString()),
-        body: SingleChildScrollView(
-          child: Container(
+      appBar: customAppbar(context: context, title: data.hostName.toString()),
+      body: SingleChildScrollView(
+        child: Container(
+            height: 1400.w,
             padding: const EdgeInsets.all(10.0),
             decoration:
                 const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Padding(
-                  padding: EdgeInsets.only(top: 10),
+                Padding(
+                  padding: EdgeInsets.only(top: 10.sp),
                 ),
                 Row(children: [
                   TitleWidger(title: uNKTitle),
@@ -132,84 +134,231 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                     ],
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(top: 10),
+                Padding(
+                  padding: EdgeInsets.only(top: 10.sp),
                 ),
                 Row(children: [
                   TitleWidger(title: accTitle),
+                  Padding(
+                    padding: EdgeInsets.only(left: 400.sp),
+                  ),
+                  Switch(
+                    value: isCheck,
+                    onChanged: (newVal) {
+                      setState(() {
+                        isCheck = newVal;
+                        // if (isCheck == true) {
+                        //   checkVal = 1;
+                        // } else {
+                        //   checkVal = 0;
+                        // }
+                      });
+                    },
+                  ),
                 ]),
-                InfoBox(
-                  boxCotainer: Column(
+                // 弹窗
+                Offstage(
+                  offstage: (!isCheck),
+                  child: Column(
                     children: [
-                      BottomLine(
-                          rowtem: RowContainer(
-                        leftText: '名称',
-                        righText: data.hostName.toString(),
-                      )),
-                      BottomLine(
-                          rowtem: RowContainer(
-                        leftText: '设备',
-                        righText: data.mAC.toString(),
-                      )),
-                      BottomLine(
-                          rowtem: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: const [
-                          Text('工作日',
-                              style: TextStyle(
-                                color: Color.fromARGB(255, 5, 0, 0),
-                              )),
-                          // SizedBox(width: 50, child: Workday())
-                        ],
-                      )),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            showPicker(
-                              context: context,
-                              value: _time,
-                              onChange: onTimeChanged,
-                              minuteInterval: MinuteInterval.FIVE,
-                              // Optional onChange to receive value as DateTime
-                              onChangeDateTime: (DateTime dateTime) {
-                                // print(dateTime);
-                                debugPrint("[debug datetime]:  $dateTime");
-                                tim = dateTime.toString();
-                                timeStop = tim.split(':')[1].split('-')[0];
-                                timeStart = tim
-                                    .split(':')[0]
-                                    .split('-')[2]
-                                    .split(' ')[1];
-                              },
-                            ),
-                          );
-                        },
-                        child: BottomLine(
-                          rowtem: Row(
+                      Padding(padding: EdgeInsets.only(top: 20.sp)),
+                      InfoBox(
+                        boxCotainer: Column(
+                          children: [
+                            BottomLine(
+                                rowtem: RowContainer(
+                              leftText: '名称',
+                              righText: data.hostName.toString(),
+                            )),
+                            BottomLine(
+                                rowtem: RowContainer(
+                              leftText: '设备',
+                              righText: data.mAC.toString(),
+                            )),
+                            BottomLine(
+                                rowtem: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text('时间', style: TextStyle(fontSize: 30.sp)),
-                                Row(
-                                  children: [
-                                    Text(endShowVal,
-                                        style: TextStyle(fontSize: 30.sp)),
-                                    Icon(
-                                      Icons.arrow_forward_ios_outlined,
-                                      color: const Color.fromRGBO(
-                                          144, 147, 153, 1),
-                                      size: 30.w,
-                                    )
-                                  ],
-                                ),
-                              ]),
+                              children: const [
+                                Text('工作日',
+                                    style: TextStyle(
+                                      color: Color.fromARGB(255, 5, 0, 0),
+                                    )),
+                                // SizedBox(width: 50, child: Workday())
+                              ],
+                            )),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  showPicker(
+                                    context: context,
+                                    value: _time,
+                                    onChange: onTimeChanged,
+                                    minuteInterval: MinuteInterval.FIVE,
+                                    // Optional onChange to receive value as DateTime
+                                    onChangeDateTime: (DateTime dateTime) {
+                                      tim = dateTime.toString();
+                                      timeStop =
+                                          tim.split(':')[1].split('-')[0];
+                                      timeStart = tim
+                                          .split(':')[0]
+                                          .split('-')[2]
+                                          .split(' ')[1];
+                                    },
+                                  ),
+                                );
+                              },
+                              child: BottomLine(
+                                rowtem: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('开始时间',
+                                          style: TextStyle(fontSize: 30.sp)),
+                                      Row(
+                                        children: [
+                                          Text(endShowVal,
+                                              style:
+                                                  TextStyle(fontSize: 30.sp)),
+                                          Icon(
+                                            Icons.arrow_forward_ios_outlined,
+                                            color: const Color.fromRGBO(
+                                                144, 147, 153, 1),
+                                            size: 30.w,
+                                          )
+                                        ],
+                                      ),
+                                    ]),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  showPicker(
+                                    context: context,
+                                    value: _time,
+                                    onChange: onTimeChanged,
+                                    minuteInterval: MinuteInterval.FIVE,
+                                    // Optional onChange to receive value as DateTime
+                                    onChangeDateTime: (DateTime dateTime) {
+                                      tim = dateTime.toString();
+                                      timeStop =
+                                          tim.split(':')[1].split('-')[0];
+                                      timeStart = tim
+                                          .split(':')[0]
+                                          .split('-')[2]
+                                          .split(' ')[1];
+                                    },
+                                  ),
+                                );
+                              },
+                              child: BottomLine(
+                                rowtem: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('结束时间',
+                                          style: TextStyle(fontSize: 30.sp)),
+                                      Row(
+                                        children: [
+                                          Text(endShowVal,
+                                              style:
+                                                  TextStyle(fontSize: 30.sp)),
+                                          Icon(
+                                            Icons.arrow_forward_ios_outlined,
+                                            color: const Color.fromRGBO(
+                                                144, 147, 153, 1),
+                                            size: 30.w,
+                                          )
+                                        ],
+                                      ),
+                                    ]),
+                              ),
+                            ),
+                          ],
                         ),
+                      ),
+                      Padding(padding: EdgeInsets.only(top: 20.sp)),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              Navigator.of(context).pop(true);
+                            },
+                            child: Container(
+                              width: 0.5.sw - 30.w,
+                              height: 60.w,
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Colors.black12,
+                                    width: 1,
+                                  ),
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(30.w),
+                                      bottomLeft: Radius.circular(30.w))),
+                              alignment: Alignment.center,
+                              child: const Text(
+                                "取消",
+                                style: TextStyle(fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              // Get.offAllNamed("/get_equipment");
+                            },
+                            child: Container(
+                              height: 60.w,
+                              width: 0.5.sw - 30.w,
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Colors.black12,
+                                    width: 1,
+                                  ),
+                                  borderRadius: BorderRadius.only(
+                                      topRight: Radius.circular(30.w),
+                                      bottomRight: Radius.circular(30.w))),
+                              alignment: Alignment.center,
+                              child: const Text(
+                                "确认",
+                                style: TextStyle(fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
+                // ),
+                // 外层列表
+                Offstage(
+                  offstage: isCheck,
+                  child: InfoBox(
+                    boxCotainer: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          children: const [
+                            Text('02:00关闭Wi-Fi,06:00开启Wi-Fi',
+                                style: TextStyle(
+                                  color: Color.fromARGB(255, 5, 0, 0),
+                                )),
+                            Text('周一，周二，周三，周四，周五，周日',
+                                style: TextStyle(
+                                  color: Color.fromARGB(255, 95, 94, 94),
+                                )),
+                          ],
+                        ),
+                      ],
+                    ),
+                    // ],
+                  ),
+                ),
+                // )
               ],
-            ),
-          ),
-        ));
+            )),
+      ),
+    );
   }
 }

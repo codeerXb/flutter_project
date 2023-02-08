@@ -11,6 +11,7 @@ import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:flutter_template/core/widget/otp_input.dart';
 import 'package:flutter_template/pages/Ethernet/net/net_datas.dart';
 import '../../../core/widget/custom_app_bar.dart';
+import '../../../generated/l10n.dart';
 
 /// 以太网设置
 class NetSet extends StatefulWidget {
@@ -198,7 +199,7 @@ class _NetSetState extends State<NetSet> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const TitleWidger(title: '设置'),
+                   TitleWidger(title: S.of(context).Settings),
                   InfoBox(
                       boxCotainer: Column(
                     children: [
@@ -587,7 +588,7 @@ class _NetSetState extends State<NetSet> {
                               });
                         },
                         child: Text(
-                          '提交',
+                          S.of(context).save,
                           style: TextStyle(fontSize: 36.sp),
                         ),
                       ),

@@ -8,6 +8,7 @@ import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_picker.dart';
 import 'package:flutter_template/pages/wifi_set/wps/wps_datas.dart';
 import '../../../core/widget/custom_app_bar.dart';
+import '../../../generated/l10n.dart';
 
 /// WPS设置
 
@@ -134,7 +135,7 @@ class _WpsSetState extends State<WpsSet> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: customAppbar(context: context, title: 'WPS设置'),
+        appBar: customAppbar(context: context, title: 'WPS'),
         body: GestureDetector(
           onTap: () => closeKeyboard(context),
           behavior: HitTestBehavior.opaque,
@@ -146,7 +147,7 @@ class _WpsSetState extends State<WpsSet> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const TitleWidger(title: '设置'),
+                   TitleWidger(title: S.of(context).Settings),
                   InfoBox(
                       boxCotainer: Column(
                     children: [
@@ -178,7 +179,7 @@ class _WpsSetState extends State<WpsSet> {
                           rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('频段',
+                              Text( S.of(context).Band,
                                   style: TextStyle(
                                       color: const Color.fromARGB(255, 5, 0, 0),
                                       fontSize: 28.sp)),
@@ -253,7 +254,7 @@ class _WpsSetState extends State<WpsSet> {
                             rowtem: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('模式',
+                                Text( S.of(context).Mode,
                                     style: TextStyle(
                                         color:
                                             const Color.fromARGB(255, 5, 0, 0),
@@ -285,7 +286,7 @@ class _WpsSetState extends State<WpsSet> {
                           rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('客户 PIN',
+                              Text( S.of(context).ClientPIN,
                                   style: TextStyle(
                                       color: const Color.fromARGB(255, 5, 0, 0),
                                       fontSize: 28.sp)),
@@ -339,7 +340,7 @@ class _WpsSetState extends State<WpsSet> {
                           }
                         },
                         child: Text(
-                          '提交',
+                          S.of(context).save,
                           style: TextStyle(fontSize: 36.sp),
                         ),
                       ),

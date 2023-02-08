@@ -9,6 +9,7 @@ import 'package:flutter_template/pages/wifi_set/visitor/2.4GHZ_visitor/2.4GHZ_da
 import 'package:flutter_template/pages/wifi_set/visitor/5G_visitor/5GHZ_datas.dart';
 import 'package:get/get.dart';
 import '../../../core/widget/custom_app_bar.dart';
+import '../../../generated/l10n.dart';
 
 /// 访客网络
 class VisitorNet extends StatefulWidget {
@@ -111,7 +112,7 @@ class _VisitorNetState extends State<VisitorNet> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: customAppbar(context: context, title: '访客网络'),
+        appBar: customAppbar(context: context, title: S.of(context).visitorNet),
         body: Container(
           padding: EdgeInsets.only(bottom: 20.w, left: 30.w, right: 30.w),
           decoration: const BoxDecoration(
@@ -155,7 +156,7 @@ class _VisitorNetState extends State<VisitorNet> {
                       if (data_2g.wiFiSsidTable![1].enable == '1') {
                         Get.toNamed("/visitor_one");
                       } else {
-                        ToastUtils.toast('未启用');
+                        ToastUtils.toast(S.of(context).notEnable);
                       }
                     }),
                 CommonWidget.simpleWidgetWithMine(
@@ -188,7 +189,7 @@ class _VisitorNetState extends State<VisitorNet> {
                       if (data_2g.wiFiSsidTable![2].enable == '1') {
                         Get.toNamed("/visitor_two");
                       } else {
-                        ToastUtils.toast('未启用');
+                        ToastUtils.toast(S.of(context).notEnable);
                       }
                     }),
                 CommonWidget.simpleWidgetWithMine(
@@ -221,7 +222,7 @@ class _VisitorNetState extends State<VisitorNet> {
                       if (data_2g.wiFiSsidTable![3].enable == '1') {
                         Get.toNamed("/visitor_three");
                       } else {
-                        ToastUtils.toast('未启用');
+                        ToastUtils.toast(S.of(context).notEnable);
                       }
                     }),
                 Padding(padding: EdgeInsets.only(top: 10.w)),
@@ -257,7 +258,7 @@ class _VisitorNetState extends State<VisitorNet> {
                       if (data_5g.wiFi5GSsidTable![1].enable == '1') {
                         Get.toNamed("/visitor_four");
                       } else {
-                        ToastUtils.toast('未启用');
+                        ToastUtils.toast(S.of(context).notEnable);
                       }
                     }),
                 CommonWidget.simpleWidgetWithMine(
@@ -290,7 +291,7 @@ class _VisitorNetState extends State<VisitorNet> {
                       if (data_5g.wiFi5GSsidTable![2].enable == '1') {
                         Get.toNamed("/visitor_five");
                       } else {
-                        ToastUtils.toast('未启用');
+                        ToastUtils.toast(S.of(context).notEnable);
                       }
                     }),
                 CommonWidget.simpleWidgetWithMine(
@@ -323,7 +324,7 @@ class _VisitorNetState extends State<VisitorNet> {
                       if (data_5g.wiFi5GSsidTable![3].enable == '1') {
                         Get.toNamed("/visitor_six");
                       } else {
-                        ToastUtils.toast('未启用');
+                        ToastUtils.toast(S.of(context).notEnable);
                       }
                     }),
               ],

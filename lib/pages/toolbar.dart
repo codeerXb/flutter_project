@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_template/core/utils/app_update_util.dart';
+import 'package:flutter_template/generated/l10n.dart';
 import 'package:flutter_template/pages/address_book/index.dart';
 import 'package:flutter_template/pages/net_status/index.dart';
 import 'package:flutter_template/pages/setting/index.dart';
@@ -21,30 +22,6 @@ class _ToolbarState extends State<Toolbar> {
   int currentIndex = 0;
   final PageController _pageController = PageController();
   String vn = Get.arguments['vn'];
-
-  /// 底部导航
-  static const List<BottomNavigationBarItem> menuList = [
-    BottomNavigationBarItem(
-      icon:
-          Image(image: AssetImage('assets/images/icon_homepage_no_state.png')),
-      activeIcon:
-          Image(image: AssetImage('assets/images/icon_homepage_state.png')),
-      label: '状态',
-    ),
-    BottomNavigationBarItem(
-      icon: Image(image: AssetImage('assets/images/icon_homepage_no_topo.png')),
-      activeIcon:
-          Image(image: AssetImage('assets/images/icon_homepage_topo.png')),
-      label: '网络拓扑',
-    ),
-    BottomNavigationBarItem(
-      icon:
-          Image(image: AssetImage('assets/images/icon_homepage_no_route.png')),
-      activeIcon:
-          Image(image: AssetImage('assets/images/icon_homepage_route.png')),
-      label: '高级设置',
-    ),
-  ];
 
   /// 对应页面
   List<Widget> getPages() {
@@ -88,7 +65,37 @@ class _ToolbarState extends State<Toolbar> {
                   currentIndex = index;
                 });
               },
-              items: menuList),
+
+              /// 底部导航
+              items: [
+                BottomNavigationBarItem(
+                  icon: const Image(
+                      image: AssetImage(
+                          'assets/images/icon_homepage_no_state.png')),
+                  activeIcon: const Image(
+                      image:
+                          AssetImage('assets/images/icon_homepage_state.png')),
+                  label: S.of(context).state,
+                ),
+                BottomNavigationBarItem(
+                  icon: const Image(
+                      image: AssetImage(
+                          'assets/images/icon_homepage_no_topo.png')),
+                  activeIcon: const Image(
+                      image:
+                          AssetImage('assets/images/icon_homepage_topo.png')),
+                  label: S.of(context).netTopo,
+                ),
+                BottomNavigationBarItem(
+                  icon: const Image(
+                      image: AssetImage(
+                          'assets/images/icon_homepage_no_route.png')),
+                  activeIcon: const Image(
+                      image:
+                          AssetImage('assets/images/icon_homepage_route.png')),
+                  label: S.of(context).advancedSet,
+                ),
+              ]),
         ),
         onWillPop: () async =>
             SignOutAppUtil.exitBy2Click(status: _scaffoldKey.currentState));

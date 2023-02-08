@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
+import 'package:flutter_template/generated/l10n.dart';
 import 'package:flutter_template/pages/get_equipment/water_ripple_painter.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:flutter_template/pages/login/model/equipment_data.dart';
@@ -126,8 +127,8 @@ class _MyWidgetState extends State<Equipment> {
                 color: Colors.black,
               )),
           centerTitle: true,
-          title: const Text(
-            '发现设备',
+          title: Text(
+            S.of(context).DiscoveryEqu,
             style: TextStyle(color: Colors.black),
           ),
           elevation: 0,
@@ -156,7 +157,7 @@ class _MyWidgetState extends State<Equipment> {
                       if (loginController.loading.value)
                         Center(
                           child: Text(
-                            '正在扫描',
+                            S.of(context).Scanning,
                             style: TextStyle(
                               fontSize: 36.sp,
                               height: 2.5,
@@ -166,7 +167,7 @@ class _MyWidgetState extends State<Equipment> {
                       if (equipmentData.systemProductModel == null &&
                           !loginController.loading.value)
                         Center(
-                            child: Text('未发现设备',
+                            child: Text(S.of(context).noDevice,
                                 style: TextStyle(
                                   fontSize: 36.sp,
                                   height: 2.5,
@@ -187,7 +188,7 @@ class _MyWidgetState extends State<Equipment> {
                               if (mounted) getEquipmentData();
                             });
                           },
-                          child: const Text('重新扫描'),
+                          child: Text(S.of(context).rescan),
                         ),
                     ],
                   ),
@@ -237,7 +238,7 @@ class _MyWidgetState extends State<Equipment> {
                                 }
                               });
                             },
-                            child: const Text('连接设备'),
+                            child: Text(S.of(context).conDev),
                           ),
                         ),
                       ],

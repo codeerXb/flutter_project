@@ -10,6 +10,7 @@ import 'package:flutter_template/pages/wifi_set/visitor/5G_visitor/5GHZ_datas.da
 
 import '../../../../core/utils/toast.dart';
 import '../../../../core/widget/common_picker.dart';
+import '../../../../generated/l10n.dart';
 
 class Visitor5 extends StatefulWidget {
   const Visitor5({Key? key}) : super(key: key);
@@ -149,7 +150,7 @@ class _Visitor5State extends State<Visitor5> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const TitleWidger(title: '设置'),
+                   TitleWidger(title: S.of(context).Settings),
                   InfoBox(
                       boxCotainer: Column(
                     children: [
@@ -158,7 +159,7 @@ class _Visitor5State extends State<Visitor5> {
                         rowtem: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('访客网络索引',
+                            Text(S.of(context).NetworkIndex,
                                 style: TextStyle(
                                     color: const Color.fromARGB(255, 5, 0, 0),
                                     fontSize: 28.sp)),
@@ -174,7 +175,7 @@ class _Visitor5State extends State<Visitor5> {
                         rowtem: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('是否允许访问内网',
+                            Text(S.of(context).AllowAccess,
                                 style: TextStyle(
                                     color: const Color.fromARGB(255, 5, 0, 0),
                                     fontSize: 28.sp)),
@@ -227,12 +228,12 @@ class _Visitor5State extends State<Visitor5> {
                         rowtem: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('最大设备数',
+                            Text(S.of(context).Maximum,
                                 style: TextStyle(
                                     color: const Color.fromARGB(255, 5, 0, 0),
                                     fontSize: 28.sp)),
                             SizedBox(
-                              width: 300.w,
+                              width: 100.w,
                               child: TextFormField(
                                 textAlign: TextAlign.right,
                                 keyboardType: TextInputType.number,
@@ -257,7 +258,7 @@ class _Visitor5State extends State<Visitor5> {
                         rowtem: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('隐藏SSID网络',
+                            Text(S.of(context).HideSSIDBroadcast,
                                 style: TextStyle(
                                     color: const Color.fromARGB(255, 5, 0, 0),
                                     fontSize: 28.sp)),
@@ -281,7 +282,7 @@ class _Visitor5State extends State<Visitor5> {
                         rowtem: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('AP隔离',
+                            Text(S.of(context).APIsolation,
                                 style: TextStyle(
                                     color: const Color.fromARGB(255, 5, 0, 0),
                                     fontSize: 28.sp)),
@@ -337,7 +338,7 @@ class _Visitor5State extends State<Visitor5> {
                           rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('安全',
+                              Text(S.of(context).Security,
                                   style: TextStyle(
                                       color: const Color.fromARGB(255, 5, 0, 0),
                                       fontSize: 28.sp)),
@@ -393,7 +394,7 @@ class _Visitor5State extends State<Visitor5> {
                           rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('WPA加密',
+                              Text(S.of(context).WPAEncry,
                                   style: TextStyle(
                                       color: const Color.fromARGB(255, 5, 0, 0),
                                       fontSize: 28.sp)),
@@ -420,7 +421,7 @@ class _Visitor5State extends State<Visitor5> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('密码',
+                          Text(S.of(context).Password,
                               style: TextStyle(
                                   color: const Color.fromARGB(255, 5, 0, 0),
                                   fontSize: 28.sp)),
@@ -472,7 +473,7 @@ class _Visitor5State extends State<Visitor5> {
                                 '{"table":"WiFi5GSsidTable","value":[{"id":2,"AllowAccessIntranet":"${networkCheck ? "1" : "0"}","Ssid":"${ssidVal.text}","MaxClient":"${maxVal.text}","SsidHide":"${showSsid ? "1" : "0"}","ApIsolate":"${apVAl ? "1" : "0"}","Encryption":"$safeVal+$wpaVal","ShowPasswd":"0","Key":"${password.text}"}]}');
                           },
                           child: Text(
-                            '提交',
+                            S.of(context).save,
                             style: TextStyle(fontSize: 30.sp),
                           ),
                         ),

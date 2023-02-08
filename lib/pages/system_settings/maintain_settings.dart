@@ -11,6 +11,7 @@ import '../../core/utils/shared_preferences_util.dart';
 import '../../core/utils/toast.dart';
 import '../../core/widget/common_box.dart';
 import '../../core/widget/common_picker.dart';
+import '../../generated/l10n.dart';
 import 'model/maintain_data.dart';
 
 /// 维护设置
@@ -712,7 +713,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                       getTrestsetData();
                     }
                   },
-                  child: const Text('提交'),
+                  child:  Text(S.of(context).save),
                 ),
               )),
               Padding(padding: EdgeInsets.only(top: 60.sp)),

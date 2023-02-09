@@ -4,6 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/pages/topo/model/equipment_datas.dart';
 import 'package:get/get.dart';
 
+import '../../generated/l10n.dart';
+
 class TopoItem extends StatefulWidget {
   final String title;
   final bool isShow;
@@ -80,7 +82,7 @@ class _TopoItemState extends State<TopoItem> {
                     width: 30,
                     padding: const EdgeInsets.only(left: 2),
                     child: Text(
-                      '本机',
+                      S.current.local,
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 22.sp),
                     ),

@@ -46,18 +46,18 @@ class _RadioSettingsState extends State<RadioSettings> {
         setState(() {
           radioConcatenate = RadioConcatenateData.fromJson(d);
           if (radioConcatenate.success == true) {
-            ToastUtils.toast('修改成功');
+            ToastUtils.toast( S.current.success);
           } else {
-            ToastUtils.toast('修改失败');
+            ToastUtils.toast( S.current.error);
           }
         });
       } on FormatException catch (e) {
         print(e);
-        ToastUtils.toast('修改失败');
+        ToastUtils.toast( S.current.error);
       }
     }).catchError((e) {
       debugPrint('获取Radio设置失败：$e.toString()');
-      ToastUtils.toast('获取Radio设置失败');
+      ToastUtils.toast(S.current.error);
     });
   }
 
@@ -89,7 +89,7 @@ class _RadioSettingsState extends State<RadioSettings> {
       });
     } catch (e) {
       debugPrint('获取Radio 状态失败：$e.toString()');
-      ToastUtils.toast('获取Radio 状态失败');
+      ToastUtils.toast(S.current.error);
     }
   }
 

@@ -73,16 +73,16 @@ class _AccessEquipmentState extends State<AccessEquipment> {
           // if (restart.success == true) {
           //   ToastUtils.toast('提交成功');
           // } else {
-          //   ToastUtils.toast('提交失败');
+          //   ToastUtils.toast(S.current.error);
           // }
         });
       } on FormatException catch (e) {
         print(e);
-        ToastUtils.toast('提交失败');
+        ToastUtils.toast(S.current.error);
       }
     }).catchError((onError) {
       debugPrint('失败：${onError.toString()}');
-      ToastUtils.toast('提交失败');
+      ToastUtils.toast(S.current.error);
     });
   }
 
@@ -397,7 +397,7 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                                   bottomLeft: Radius.circular(30.w))),
                           alignment: Alignment.center,
                           child: Text(
-                            "取消",
+                            S.current.cancel,
                             style: TextStyle(
                                 fontSize: 22.sp, fontWeight: FontWeight.w600),
                           ),
@@ -420,7 +420,7 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                                   bottomRight: Radius.circular(30.w))),
                           alignment: Alignment.center,
                           child: Text(
-                            "确认",
+                            S.of(context).confirm,
                             style: TextStyle(
                                 fontSize: 22.sp, fontWeight: FontWeight.w600),
                           ),

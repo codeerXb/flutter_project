@@ -90,7 +90,7 @@ class _ODUState extends State<ODU> {
   onData(msg) {
     Map<String, dynamic> transmission = jsonDecode(msg);
     if (transmission['code'] != null && transmission['code'] == 500) {
-      ToastUtils.error('设备连接超时!');
+      ToastUtils.error(S.current.timeout);
       setState(() {
         isShow = true;
       });
@@ -189,7 +189,7 @@ class _ODUState extends State<ODU> {
         });
         //  关闭ws
         channel?.sink.close();
-        ToastUtils.toast('终止搜索');
+        ToastUtils.toast(S.current.stopSerch);
       }
     } else if (message.param2 == 3) {
       // 复位

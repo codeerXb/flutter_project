@@ -110,31 +110,31 @@ class S {
     );
   }
 
-  /// `enter your passworld`
-  String get passworLdLabel {
+  /// `enter your password`
+  String get passwordLabel {
     return Intl.message(
-      'enter your passworld',
-      name: 'passworLdLabel',
+      'enter your password',
+      name: 'passwordLabel',
       desc: '',
       args: [],
     );
   }
 
-  /// ` enter your passworld again`
-  String get passWorLdAgain {
+  /// ` enter your password again`
+  String get passwordAgain {
     return Intl.message(
-      ' enter your passworld again',
-      name: 'passWorLdAgain',
+      ' enter your password again',
+      name: 'passwordAgain',
       desc: '',
       args: [],
     );
   }
 
   /// `The secondary code is inconsistent`
-  String get passworLdAgainError {
+  String get passwordAgainError {
     return Intl.message(
       'The secondary code is inconsistent',
-      name: 'passworLdAgainError',
+      name: 'passwordAgainError',
       desc: '',
       args: [],
     );
@@ -1695,6 +1695,316 @@ class S {
     return Intl.message(
       'Sat',
       name: 'Sat',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No device is connected`
+  String get NoDeviceConnected {
+    return Intl.message(
+      'No device is connected',
+      name: 'NoDeviceConnected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ddDayHHourmmminutes`
+  String get time {
+    return Intl.message(
+      'ddDayHHourmmminutes',
+      name: 'time',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Input detection server`
+  String get detectionServer {
+    return Intl.message(
+      'Input detection server',
+      name: 'detectionServer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The device will restart after submission. Do you want to continue?`
+  String get isGoOn {
+    return Intl.message(
+      'The device will restart after submission. Do you want to continue?',
+      name: 'isGoOn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Password error, number of attempts left:`
+  String get passError {
+    return Intl.message(
+      'Password error, number of attempts left:',
+      name: 'passError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `locked`
+  String get locked {
+    return Intl.message(
+      'locked',
+      name: 'locked',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `S unlock`
+  String get unlock {
+    return Intl.message(
+      'S unlock',
+      name: 'unlock',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The account cannot be empty`
+  String get accountEmpty {
+    return Intl.message(
+      'The account cannot be empty',
+      name: 'accountEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The password cannot be empty`
+  String get passwordEmpty {
+    return Intl.message(
+      'The password cannot be empty',
+      name: 'passwordEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `account`
+  String get account {
+    return Intl.message(
+      'account',
+      name: 'account',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter the account number`
+  String get accountEnter {
+    return Intl.message(
+      'Please enter the account number',
+      name: 'accountEnter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Administrator login`
+  String get Administratorlogin {
+    return Intl.message(
+      'Administrator login',
+      name: 'Administratorlogin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Device connection timeout`
+  String get timeout {
+    return Intl.message(
+      'Device connection timeout',
+      name: 'timeout',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Abort search`
+  String get stopSerch {
+    return Intl.message(
+      'Abort search',
+      name: 'stopSerch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `change password`
+  String get EditPass {
+    return Intl.message(
+      'change password',
+      name: 'EditPass',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The password must be a combination of 8 to 16 digits and characters.`
+  String get PassRule {
+    return Intl.message(
+      'The password must be a combination of 8 to 16 digits and characters.',
+      name: 'PassRule',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The new password is different from the confirmed password`
+  String get newOldError {
+    return Intl.message(
+      'The new password is different from the confirmed password',
+      name: 'newOldError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please confirm the password.`
+  String get confrimPassorld {
+    return Intl.message(
+      'Please confirm the password.',
+      name: 'confrimPassorld',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `new password`
+  String get newPassowld {
+    return Intl.message(
+      'new password',
+      name: 'newPassowld',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter a new password`
+  String get ConfirmnewPassowld {
+    return Intl.message(
+      'Please enter a new password',
+      name: 'ConfirmnewPassowld',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `old password`
+  String get oldPassowld {
+    return Intl.message(
+      'old password',
+      name: 'oldPassowld',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter a old password`
+  String get ConfirmOldPassowld {
+    return Intl.message(
+      'Please enter a old password',
+      name: 'ConfirmOldPassowld',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please set the login password`
+  String get loginPassword {
+    return Intl.message(
+      'Please set the login password',
+      name: 'loginPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Change passwords periodically to improve security`
+  String get improveSecurity {
+    return Intl.message(
+      'Change passwords periodically to improve security',
+      name: 'improveSecurity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The restart date must be selected`
+  String get mustSuccess {
+    return Intl.message(
+      'The restart date must be selected',
+      name: 'mustSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `local`
+  String get local {
+    return Intl.message(
+      'local',
+      name: 'local',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `examine`
+  String get examine {
+    return Intl.message(
+      'examine',
+      name: 'examine',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `no Data`
+  String get noData {
+    return Intl.message(
+      'no Data',
+      name: 'noData',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ASCII characters of 8 to 63 characters`
+  String get ASCII {
+    return Intl.message(
+      'ASCII characters of 8 to 63 characters',
+      name: 'ASCII',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `not Empty!`
+  String get notEmpty {
+    return Intl.message(
+      'not Empty!',
+      name: 'notEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `enter`
+  String get enter {
+    return Intl.message(
+      'enter',
+      name: 'enter',
       desc: '',
       args: [],
     );

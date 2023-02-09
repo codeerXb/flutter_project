@@ -77,7 +77,11 @@ class _WlanSetState extends State<WlanSet> {
     '40MHz',
     '80MHz',
   ];
-  List<String> wpaOptions = ['WPA2-PSK', 'WPA-PSK&WPA2-PSK', S.current.emptyNORecommend];
+  List<String> wpaOptions = [
+    'WPA2-PSK',
+    'WPA-PSK&WPA2-PSK',
+    S.current.emptyNORecommend
+  ];
   List<String> wpaOptionsV = ['psk2', 'psk-mixed', 'none'];
   List<String> wpajmOptions = [
     S.current.aesRecommend,
@@ -134,11 +138,11 @@ class _WlanSetState extends State<WlanSet> {
   void setData() async {
     if ((pdVal == 0 && isCheck)) {
       ssid.text == '';
-      ToastUtils.waring('SSID 不能为空！');
+      ToastUtils.waring('SSID ' + S.current.notEmpty);
     }
     if (pdVal == 1 && isCheck5) {
       ssid5.text == '';
-      ToastUtils.waring('SSID 不能为空！');
+      ToastUtils.waring('SSID ' + S.current.notEmpty);
     }
     var param;
     if (pdVal == 1) {
@@ -175,10 +179,10 @@ class _WlanSetState extends State<WlanSet> {
           setTab();
         }
       } else {
-        ToastUtils.error('提交失败！');
+        ToastUtils.error(S.current.error);
       }
     } catch (e) {
-      ToastUtils.error('提交失败！');
+      ToastUtils.error(S.current.error);
     }
   }
 
@@ -196,12 +200,12 @@ class _WlanSetState extends State<WlanSet> {
       var response = await XHttp.get('/data.html', data);
       var d = json.decode(response.toString());
       if (d['success'] == true) {
-        ToastUtils.success('提交成功！');
+        ToastUtils.success(S.current.success);
       } else {
-        ToastUtils.error('提交失败！');
+        ToastUtils.error(S.current.error);
       }
     } catch (e) {
-      ToastUtils.error('提交失败！');
+      ToastUtils.error(S.current.error);
     }
   }
 
@@ -363,7 +367,7 @@ class _WlanSetState extends State<WlanSet> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: customAppbar(context: context, title:  S.of(context).wlanSet),
+        appBar: customAppbar(context: context, title: S.of(context).wlanSet),
         body: GestureDetector(
           onTap: () => closeKeyboard(context),
           behavior: HitTestBehavior.opaque,
@@ -376,7 +380,7 @@ class _WlanSetState extends State<WlanSet> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   //一般设置
-                   TitleWidger(title: S.of(context).General),
+                  TitleWidger(title: S.of(context).General),
                   InfoBox(
                       boxCotainer: Column(
                     children: [
@@ -710,7 +714,7 @@ class _WlanSetState extends State<WlanSet> {
                   )),
                   //配置
                   if (pdVal == 0 ? isCheck : isCheck5)
-                     TitleWidger(title: S.of(context).Configuration),
+                    TitleWidger(title: S.of(context).Configuration),
                   if (pdVal == 0 ? isCheck : isCheck5)
                     InfoBox(
                         boxCotainer: Column(
@@ -733,7 +737,7 @@ class _WlanSetState extends State<WlanSet> {
                                       fontSize: 26.sp,
                                       color: const Color(0xff051220)),
                                   decoration: InputDecoration(
-                                    hintText: "输入SSID",
+                                    hintText: S.current.enter + "SSID",
                                     hintStyle: TextStyle(
                                         fontSize: 26.sp,
                                         color: const Color(0xff737A83)),
@@ -974,7 +978,7 @@ class _WlanSetState extends State<WlanSet> {
                                       fontSize: 26.sp,
                                       color: const Color(0xff051220)),
                                   decoration: InputDecoration(
-                                    hintText: "输入新密码",
+                                    hintText: S.current.enter+S.current.newPassowld,
                                     hintStyle: TextStyle(
                                         fontSize: 26.sp,
                                         color: const Color(0xff737A83)),
@@ -998,7 +1002,7 @@ class _WlanSetState extends State<WlanSet> {
                                   const Color.fromARGB(255, 48, 118, 250))),
                           onPressed: setData,
                           child: Text(
-                             '提交',
+                            S.current.save,
                             style: TextStyle(fontSize: 36.sp),
                           ),
                         ),

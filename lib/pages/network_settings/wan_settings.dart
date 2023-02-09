@@ -45,19 +45,19 @@ class _WanSettingsState extends State<WanSettings> {
         setState(() {
           wanNetwork = WanNetworkModel.fromJson(d);
           if (wanNetwork.success == true) {
-            ToastUtils.toast('修改成功');
+            ToastUtils.toast( S.current.success);
             loginout();
           } else {
-            ToastUtils.toast('修改失败');
+            ToastUtils.toast( S.current.error);
           }
         });
       } on FormatException catch (e) {
         print(e);
-        ToastUtils.toast('修改失败');
+        ToastUtils.toast( S.current.error);
       }
     }).catchError((onError) {
       debugPrint('失败：${onError.toString()}');
-      ToastUtils.toast('修改失败');
+      ToastUtils.toast( S.current.error);
     });
   }
 
@@ -93,7 +93,7 @@ class _WanSettingsState extends State<WanSettings> {
       });
     } catch (e) {
       debugPrint('失败：$e.toString()');
-      ToastUtils.toast('获取失败');
+      ToastUtils.toast(S.current.error);
     }
   }
 

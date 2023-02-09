@@ -84,19 +84,19 @@ class _MaintainSettingsState extends State<MaintainSettings> {
         setState(() {
           maintainVal = MaintainData.fromJson(d);
           if (maintainVal.success == true) {
-            ToastUtils.toast('重启成功');
+            ToastUtils.toast(S.current.success);
             loginout();
           } else {
-            ToastUtils.toast('重启失败');
+            ToastUtils.toast(S.current.error);
           }
         });
       } on FormatException catch (e) {
         print(e);
-        ToastUtils.toast('重启失败');
+        ToastUtils.toast(S.current.error);
       }
     }).catchError((onError) {
       debugPrint('失败：${onError.toString()}');
-      ToastUtils.toast('重启失败');
+      ToastUtils.toast(S.current.error);
     });
   }
 
@@ -120,18 +120,18 @@ class _MaintainSettingsState extends State<MaintainSettings> {
         setState(() {
           restart = MaintainData.fromJson(d);
           if (restart.success == true) {
-            ToastUtils.toast('提交成功');
+            ToastUtils.toast(S.current.success);
           } else {
-            ToastUtils.toast('提交失败');
+            ToastUtils.toast(S.current.error);
           }
         });
       } on FormatException catch (e) {
         print(e);
-        ToastUtils.toast('提交失败');
+        ToastUtils.toast(S.current.error);
       }
     }).catchError((onError) {
       debugPrint('失败：${onError.toString()}');
-      ToastUtils.toast('提交失败');
+      ToastUtils.toast(S.current.error);
     });
   }
 
@@ -242,7 +242,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
       });
     } catch (e) {
       debugPrint('获取重启定时 失败：$e.toString()');
-      ToastUtils.toast('获取重启定时 失败');
+      ToastUtils.toast(S.current.error);
     }
   }
 
@@ -258,19 +258,19 @@ class _MaintainSettingsState extends State<MaintainSettings> {
         setState(() {
           factoryReset = MaintainData.fromJson(d);
           if (factoryReset.success == true) {
-            ToastUtils.toast('恢复出厂 成功');
+            ToastUtils.toast(S.current.success);
             loginout();
           } else {
-            ToastUtils.toast('恢复出厂 失败');
+            ToastUtils.toast(S.current.error);
           }
         });
       } on FormatException catch (e) {
         print(e);
-        ToastUtils.toast('恢复出厂 失败');
+        ToastUtils.toast(S.current.error);
       }
     }).catchError((onError) {
       debugPrint('失败：${onError.toString()}');
-      ToastUtils.toast('恢复出厂 失败');
+      ToastUtils.toast(S.current.error);
     });
   }
 
@@ -323,7 +323,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                         topLeft: Radius.circular(30.w),
                         bottomLeft: Radius.circular(30.w))),
                 alignment: Alignment.center,
-                child: const Text("取消",
+                child:  Text(S.current.cancel,
                     style: TextStyle(fontWeight: FontWeight.w600)),
               ),
             ),
@@ -375,7 +375,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                         topRight: Radius.circular(30.w),
                         bottomRight: Radius.circular(30.w))),
                 alignment: Alignment.center,
-                child: const Text("确定",
+                child:  Text(S.of(context).confirm,
                     style: TextStyle(fontWeight: FontWeight.w600)),
               ),
             )
@@ -704,7 +704,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                             const Color.fromARGB(255, 48, 118, 250))),
                     onPressed: () {
                       if (tranfer == '0;0;0;0;0;0;0' && isCheck == true) {
-                        ToastUtils.toast('重启日期必须选一个');
+                        ToastUtils.toast(S.current.mustSuccess);
                       } else {
                         getTrestsetData();
                       }

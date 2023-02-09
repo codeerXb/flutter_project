@@ -82,9 +82,9 @@ class _LoginState extends State<Login> {
           Get.offNamed('/loginPage');
           if (errRes.code == 201) {
             ToastUtils.toast(
-                '密码错误,剩余尝试次数：${5 - int.parse(errRes.webLoginFailedTimes.toString())}');
+              S.current.passError+  '${5 - int.parse(errRes.webLoginFailedTimes.toString())}');
           } else if (errRes.code == 202) {
-            ToastUtils.error('已锁定，${errRes.webLoginRetryTimeout}s后解锁');
+            ToastUtils.error(S.current.locked+'${errRes.webLoginRetryTimeout}'+S.current.unlock);
           }
         }
         debugPrint('登录失败：${errRes.code}');
@@ -96,9 +96,9 @@ class _LoginState extends State<Login> {
   void onSubmit(BuildContext context) {
     closeKeyboard(context);
     if (_account.trim().isEmpty) {
-      ToastUtils.toast("账号不能为空");
+      ToastUtils.toast(S.current.accountEmpty);
     } else if (_password.trim().isEmpty) {
-      ToastUtils.toast("密码不能为空");
+      ToastUtils.toast(S.current.passwordEmpty);
     } else {
       Map<String, dynamic> data = {
         'username': _account.trim(),
@@ -127,7 +127,7 @@ class _LoginState extends State<Login> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("账号",
+          Text(S.current.account,
               style:
                   TextStyle(fontSize: 32.sp, color: const Color(0xff737A83))),
           Container(
@@ -144,7 +144,7 @@ class _LoginState extends State<Login> {
                     TextStyle(fontSize: 32.sp, color: const Color(0xff051220)),
                 decoration: InputDecoration(
                   // 表单提示信息
-                  hintText: "请输入账号",
+                  hintText:S.current.accountEnter,
                   hintStyle: TextStyle(
                       fontSize: 32.sp, color: const Color(0xff737A83)),
                   // 取消自带的下边框
@@ -196,7 +196,7 @@ class _LoginState extends State<Login> {
                       decoration: InputDecoration(
                         icon: const Icon(Icons.lock),
                         // 表单提示信息
-                        hintText: "请输入密码",
+                        hintText: S.current.passwordLabel,
                         hintStyle: TextStyle(
                             fontSize: 32.sp, color: const Color(0xff737A83)),
                         // 取消自带的下边框
@@ -329,7 +329,7 @@ class _LoginState extends State<Login> {
                   ),
                   // Padding(padding: EdgeInsets.only(top: 70.w)),
                   Text(
-                    '管理员登录',
+                   S.current.Administratorlogin,
                     style: TextStyle(fontSize: 48.sp),
                   ),
                   Padding(padding: EdgeInsets.only(top: 10.w)),

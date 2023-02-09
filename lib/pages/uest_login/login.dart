@@ -19,6 +19,9 @@ class UserLogin extends StatefulWidget {
   State<StatefulWidget> createState() => _UserLoginState();
 }
 
+//_formKey
+final GlobalKey _formKey = GlobalKey<FormState>();
+
 class _UserLoginState extends State<UserLogin> {
   final LoginController loginController = Get.put(LoginController());
   bool passwordValShow = true;
@@ -68,6 +71,7 @@ class _UserLoginState extends State<UserLogin> {
               color: Colors.white,
               padding: EdgeInsets.only(left: 52.w, right: 52.w),
               child: Form(
+                key: _formKey,
                 child: Column(
                   children: [
                     Padding(padding: EdgeInsets.only(top: 100.w)),
@@ -126,6 +130,15 @@ class _UserLoginState extends State<UserLogin> {
                                     // 取消自带的下边框
                                     border: InputBorder.none,
                                   ),
+                                  validator: (value) {
+                                    RegExp reg = RegExp(
+                                        r'^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$');
+                                    if (!reg.hasMatch(value!)) {
+                                      return S.of(context).phoneError;
+                                    } else {
+                                      return null;
+                                    }
+                                  },
                                 ),
                               ),
                             ),
@@ -167,13 +180,19 @@ class _UserLoginState extends State<UserLogin> {
                                             ? Icons.visibility
                                             : Icons.visibility_off)),
                                     // 表单提示信息
-                                    hintText: S.of(context).passworLdLabel,
+                                    hintText: S.of(context).passwordLabel,
                                     hintStyle: TextStyle(
                                         fontSize: 32.sp,
                                         color: const Color(0xff737A83)),
                                     // 取消自带的下边框
                                     border: InputBorder.none,
                                   ),
+                                  validator: (value) {
+                                    if (value!.isEmpty) {
+                                      return S.of(context).passwordLabel;
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                             ),
@@ -221,26 +240,30 @@ class _UserLoginState extends State<UserLogin> {
                               const Color.fromARGB(255, 30, 104, 233)),
                         ),
                         onPressed: () async {
-                          Map<String, dynamic> data = {
-                            "account": phone.text,
-                            "password": AESUtil.generateAES(password.text),
-                          };
-                          var res = await dio.post(
-                              '${BaseConfig.cloudBaseUrl}/fota/fota/appCustomer/login',
-                              data: data);
-                          var d = json.decode(res.toString());
-                          debugPrint('响应------>$d');
-                          if (d['code'] != 200) {
-                            ToastUtils.toast(d['message']);
-                            return;
+                          if ((_formKey.currentState as FormState).validate()) {
+                            Map<String, dynamic> data = {
+                              "account": phone.text,
+                              "password": AESUtil.generateAES(password.text),
+                            };
+                            var res = await dio.post(
+                                '${BaseConfig.cloudBaseUrl}/fota/fota/appCustomer/login',
+                                data: data);
+                            var d = json.decode(res.toString());
+                            debugPrint('响应------>$d');
+                            if (d['code'] != 200) {
+                              ToastUtils.toast(d['message']);
+                              return;
+                            } else {
+                              ToastUtils.toast('success');
+                              Get.offAllNamed("/get_equipment");
+                              //存储用户信息
+                              sharedAddAndUpdate(
+                                  "user_token", String, (d['data']['token']));
+                              sharedAddAndUpdate(
+                                  "user_phone", String, (d['data']['account']));
+                            }
                           } else {
-                            ToastUtils.toast('success');
-                            Get.offAllNamed("/get_equipment");
-                            //存储用户信息
-                            sharedAddAndUpdate(
-                                "user_token", String, (d['data']['token']));
-                            sharedAddAndUpdate(
-                                "user_phone", String, (d['data']['account']));
+                            return;
                           }
                         },
                         child: Text(

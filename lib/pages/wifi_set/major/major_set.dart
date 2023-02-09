@@ -37,13 +37,13 @@ class _MajorSetState extends State<MajorSet> {
     };
     XHttp.get('/data.html', data).then((res) {
       try {
-        ToastUtils.toast('修改成功');
+        ToastUtils.toast( S.current.success);
       } on FormatException catch (e) {
         print(e);
       }
     }).catchError((onError) {
       debugPrint('失败：${onError.toString()}');
-      ToastUtils.toast('修改失败');
+      ToastUtils.toast( S.current.error);
     });
   }
 

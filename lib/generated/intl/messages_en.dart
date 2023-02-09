@@ -23,6 +23,10 @@ class MessageLookup extends MessageLookupByLibrary {
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "APIsolation": MessageLookupByLibrary.simpleMessage("AP isolation"),
+        "ASCII": MessageLookupByLibrary.simpleMessage(
+            "ASCII characters of 8 to 63 characters"),
+        "Administratorlogin":
+            MessageLookupByLibrary.simpleMessage("Administrator login"),
         "AllowAccess": MessageLookupByLibrary.simpleMessage(
             "Allow Access to the Intranet"),
         "Australia": MessageLookupByLibrary.simpleMessage("Australia"),
@@ -35,6 +39,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "China": MessageLookupByLibrary.simpleMessage("China"),
         "ClientPIN": MessageLookupByLibrary.simpleMessage("Client PIN"),
         "Configuration": MessageLookupByLibrary.simpleMessage("Configuration"),
+        "ConfirmOldPassowld":
+            MessageLookupByLibrary.simpleMessage("Please enter a old password"),
+        "ConfirmnewPassowld":
+            MessageLookupByLibrary.simpleMessage("Please enter a new password"),
         "Connected": MessageLookupByLibrary.simpleMessage("Connected"),
         "DLFrequency": MessageLookupByLibrary.simpleMessage("DL Frequency"),
         "DLVelocity": MessageLookupByLibrary.simpleMessage("DL Velocity"),
@@ -45,6 +53,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "DiscoveryEqu":
             MessageLookupByLibrary.simpleMessage("Discovery equipment"),
         "DynamicIP": MessageLookupByLibrary.simpleMessage("Dynamic IP"),
+        "EditPass": MessageLookupByLibrary.simpleMessage("change password"),
         "ElapsedTime": MessageLookupByLibrary.simpleMessage("Elapsed Time"),
         "EnableRebootScheduler":
             MessageLookupByLibrary.simpleMessage("Enable Reboot Scheduler"),
@@ -77,6 +86,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "NetworkIndex":
             MessageLookupByLibrary.simpleMessage("Visitor Network Index"),
         "NetworkMode": MessageLookupByLibrary.simpleMessage("Network Mode"),
+        "NoDeviceConnected":
+            MessageLookupByLibrary.simpleMessage("No device is connected"),
         "Notset": MessageLookupByLibrary.simpleMessage("Not set"),
         "OnlineTime": MessageLookupByLibrary.simpleMessage("Online Time"),
         "PackageCapacity":
@@ -86,6 +97,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Package Duration"),
         "PackageSetting":
             MessageLookupByLibrary.simpleMessage("Package Setting"),
+        "PassRule": MessageLookupByLibrary.simpleMessage(
+            "The password must be a combination of 8 to 16 digits and characters."),
         "Password": MessageLookupByLibrary.simpleMessage("Password"),
         "Poland": MessageLookupByLibrary.simpleMessage("Poland"),
         "PrimaryDNS": MessageLookupByLibrary.simpleMessage("Primary DNS"),
@@ -131,6 +144,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "WPAEncry": MessageLookupByLibrary.simpleMessage("WPA encryption"),
         "Wed": MessageLookupByLibrary.simpleMessage("Wed"),
         "accomplish": MessageLookupByLibrary.simpleMessage("accomplish"),
+        "account": MessageLookupByLibrary.simpleMessage("account"),
+        "accountEmpty":
+            MessageLookupByLibrary.simpleMessage("The account cannot be empty"),
+        "accountEnter": MessageLookupByLibrary.simpleMessage(
+            "Please enter the account number"),
         "accountSecurity": MessageLookupByLibrary.simpleMessage("Account"),
         "advancedSet":
             MessageLookupByLibrary.simpleMessage("advanced Settings"),
@@ -144,6 +162,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Please click Reboot to reboot device"),
         "conDev": MessageLookupByLibrary.simpleMessage("connecting device"),
         "confirm": MessageLookupByLibrary.simpleMessage("confirm"),
+        "confrimPassorld": MessageLookupByLibrary.simpleMessage(
+            "Please confirm the password."),
         "connectMethod": MessageLookupByLibrary.simpleMessage("connectMethod"),
         "connectStatus": MessageLookupByLibrary.simpleMessage("connect Status"),
         "connectionMode":
@@ -155,6 +175,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("current Orientation"),
         "currentValue": MessageLookupByLibrary.simpleMessage("current Value"),
         "day": MessageLookupByLibrary.simpleMessage("day"),
+        "detectionServer":
+            MessageLookupByLibrary.simpleMessage("Input detection server"),
         "deviceInfo":
             MessageLookupByLibrary.simpleMessage("Device Information"),
         "dnsSettings": MessageLookupByLibrary.simpleMessage("DNS Settings"),
@@ -163,18 +185,28 @@ class MessageLookup extends MessageLookupByLibrary {
         "emptyNORecommend":
             MessageLookupByLibrary.simpleMessage("None(not recommended)"),
         "endIPAddress": MessageLookupByLibrary.simpleMessage("end IP Address"),
+        "enter": MessageLookupByLibrary.simpleMessage("enter"),
         "error": MessageLookupByLibrary.simpleMessage("error"),
+        "examine": MessageLookupByLibrary.simpleMessage("examine"),
         "fri": MessageLookupByLibrary.simpleMessage("fri"),
         "getVerficationCode":
             MessageLookupByLibrary.simpleMessage("Verify Code"),
         "hint": MessageLookupByLibrary.simpleMessage("hint"),
+        "improveSecurity": MessageLookupByLibrary.simpleMessage(
+            "Change passwords periodically to improve security"),
+        "isGoOn": MessageLookupByLibrary.simpleMessage(
+            "The device will restart after submission. Do you want to continue?"),
         "lanHostSettings":
             MessageLookupByLibrary.simpleMessage("LAN Host Settings"),
         "lanSettings": MessageLookupByLibrary.simpleMessage("LAN Settings"),
         "lanStatus": MessageLookupByLibrary.simpleMessage("LAN Status"),
         "linkStatus": MessageLookupByLibrary.simpleMessage("link Status"),
+        "local": MessageLookupByLibrary.simpleMessage("local"),
+        "locked": MessageLookupByLibrary.simpleMessage("locked"),
         "logOut": MessageLookupByLibrary.simpleMessage("log out"),
         "login": MessageLookupByLibrary.simpleMessage("login"),
+        "loginPassword": MessageLookupByLibrary.simpleMessage(
+            "Please set the login password"),
         "loginSuccess":
             MessageLookupByLibrary.simpleMessage("login successfully"),
         "maintainSettings": MessageLookupByLibrary.simpleMessage("Maintenance"),
@@ -183,18 +215,30 @@ class MessageLookup extends MessageLookupByLibrary {
         "minutes": MessageLookupByLibrary.simpleMessage("minutes"),
         "mon": MessageLookupByLibrary.simpleMessage("mon"),
         "month": MessageLookupByLibrary.simpleMessage("month"),
+        "mustSuccess": MessageLookupByLibrary.simpleMessage(
+            "The restart date must be selected"),
         "netSet": MessageLookupByLibrary.simpleMessage("NetWork"),
         "netTopo": MessageLookupByLibrary.simpleMessage("Net Topo"),
+        "newOldError": MessageLookupByLibrary.simpleMessage(
+            "The new password is different from the confirmed password"),
+        "newPassowld": MessageLookupByLibrary.simpleMessage("new password"),
+        "noData": MessageLookupByLibrary.simpleMessage("no Data"),
         "noDevice": MessageLookupByLibrary.simpleMessage("Device not found"),
         "noLogin": MessageLookupByLibrary.simpleMessage("not log in"),
+        "notEmpty": MessageLookupByLibrary.simpleMessage("not Empty!"),
         "notEnable": MessageLookupByLibrary.simpleMessage("not Enable"),
         "notstart": MessageLookupByLibrary.simpleMessage("not start"),
-        "passWorLdAgain":
-            MessageLookupByLibrary.simpleMessage(" enter your passworld again"),
-        "passworLdAgainError": MessageLookupByLibrary.simpleMessage(
+        "oldPassowld": MessageLookupByLibrary.simpleMessage("old password"),
+        "passError": MessageLookupByLibrary.simpleMessage(
+            "Password error, number of attempts left:"),
+        "passwordAgain":
+            MessageLookupByLibrary.simpleMessage(" enter your password again"),
+        "passwordAgainError": MessageLookupByLibrary.simpleMessage(
             "The secondary code is inconsistent"),
-        "passworLdLabel":
-            MessageLookupByLibrary.simpleMessage("enter your passworld"),
+        "passwordEmpty": MessageLookupByLibrary.simpleMessage(
+            "The password cannot be empty"),
+        "passwordLabel":
+            MessageLookupByLibrary.simpleMessage("enter your password"),
         "phoneError":
             MessageLookupByLibrary.simpleMessage("the phone number is wrong"),
         "phoneLabel": MessageLookupByLibrary.simpleMessage(
@@ -214,12 +258,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "state": MessageLookupByLibrary.simpleMessage("State"),
         "staticIP": MessageLookupByLibrary.simpleMessage("staticIP"),
         "status": MessageLookupByLibrary.simpleMessage("status"),
+        "stopSerch": MessageLookupByLibrary.simpleMessage("Abort search"),
         "success": MessageLookupByLibrary.simpleMessage("success"),
         "systemInfo":
             MessageLookupByLibrary.simpleMessage("system Information"),
+        "time": MessageLookupByLibrary.simpleMessage("ddDayHHourmmminutes"),
         "timeOnline": MessageLookupByLibrary.simpleMessage("time Online"),
+        "timeout":
+            MessageLookupByLibrary.simpleMessage("Device connection timeout"),
         "unblockdevice": MessageLookupByLibrary.simpleMessage(
             "Confirm to unblock the current device"),
+        "unlock": MessageLookupByLibrary.simpleMessage("S unlock"),
         "ununited": MessageLookupByLibrary.simpleMessage("ununited"),
         "verficationCode":
             MessageLookupByLibrary.simpleMessage(" enter verification code"),

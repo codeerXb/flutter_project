@@ -222,7 +222,7 @@ class _SettingState extends State<Setting> {
                           // height: 80.w,
                           alignment: Alignment.center,
                           child: Text(
-                            "取消",
+                            S.current.cancel,
                             style: TextStyle(
                                 fontSize: 22.sp, fontWeight: FontWeight.w600),
                           ),
@@ -246,7 +246,7 @@ class _SettingState extends State<Setting> {
                           // height: 80.w,
                           alignment: Alignment.center,
                           child: Text(
-                            "确认",
+                            S.of(context).confirm,
                             style: TextStyle(
                                 fontSize: 22.sp, fontWeight: FontWeight.w600),
                           ),

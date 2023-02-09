@@ -51,10 +51,10 @@ class _WpsSetState extends State<WpsSet> {
     };
     try {
       await XHttp.get('/data.html', data);
-      ToastUtils.toast('修改成功');
+      ToastUtils.toast( S.current.success);
     } catch (e) {
       debugPrint('wps设置失败:$e.toString()');
-      ToastUtils.toast('修改失败');
+      ToastUtils.toast( S.current.error);
     }
   }
 
@@ -66,10 +66,10 @@ class _WpsSetState extends State<WpsSet> {
     };
     try {
       await XHttp.get('/data.html', data);
-      ToastUtils.toast('修改成功');
+      ToastUtils.toast( S.current.success);
     } catch (e) {
       debugPrint('wps设置失败:$e.toString()');
-      ToastUtils.toast('修改失败');
+      ToastUtils.toast( S.current.error);
     }
   }
 

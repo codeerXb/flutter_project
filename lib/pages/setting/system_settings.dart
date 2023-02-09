@@ -27,7 +27,7 @@ class _SystemSettingsState extends State<SystemSettings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppbar(context: context, title: '系统设置'),
+      appBar: customAppbar(context: context, title: S.current.SystemSettings),
       body: SingleChildScrollView(
         child: Container(
           decoration:

@@ -94,11 +94,11 @@ class _AccountSecurityState extends State<AccountSecurity> {
         });
       } on FormatException catch (e) {
         print(e);
-        ToastUtils.toast('密码修改失败');
+        ToastUtils.toast(S.current.error);
       }
     }).catchError((onError) {
       debugPrint('失败：${onError.toString()}');
-      ToastUtils.toast('密码修改失败');
+      ToastUtils.toast(S.current.error);
     });
   }
 
@@ -113,7 +113,7 @@ class _AccountSecurityState extends State<AccountSecurity> {
         accountSetData = AccountSettingData.fromJson(d);
         if (accountSetData.success == true) {
           loginout();
-          ToastUtils.toast('密码修改 成功');
+          ToastUtils.toast(S.current.success);
         } else {
           ToastUtils.toast(accountSetData.msg.toString());
         }
@@ -122,7 +122,7 @@ class _AccountSecurityState extends State<AccountSecurity> {
       }
     }).catchError((onError) {
       debugPrint('失败333：${onError.toString()}');
-      ToastUtils.toast('失败333');
+      ToastUtils.toast(S.current.error+'333');
     });
   }
 
@@ -137,7 +137,7 @@ class _AccountSecurityState extends State<AccountSecurity> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppbar(context: context, title: '修改密码'),
+      appBar: customAppbar(context: context, title: S.current.EditPass),
       body: InkWell(
         onTap: () => closeKeyboard(context),
         child: SingleChildScrollView(
@@ -209,10 +209,10 @@ class _AccountSecurityState extends State<AccountSecurity> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            "请设置登陆密码",
+            S.current.loginPassword,
             style: TextStyle(fontSize: 22.sp),
           ),
-          Text("定期更新密码提高安全性", style: TextStyle(fontSize: 22.sp)),
+          Text(S.current.improveSecurity, style: TextStyle(fontSize: 22.sp)),
         ],
       ),
     );
@@ -230,7 +230,7 @@ class _AccountSecurityState extends State<AccountSecurity> {
           SizedBox(
             width: 150.w,
             child: Text(
-              "旧密码",
+            S.current.oldPassowld,
               style: TextStyle(fontSize: 26.sp, color: const Color(0xff737A83)),
             ),
           ),
@@ -246,7 +246,7 @@ class _AccountSecurityState extends State<AccountSecurity> {
                     style: TextStyle(
                         fontSize: 26.sp, color: const Color(0xff051220)),
                     decoration: InputDecoration(
-                      hintText: "请输入旧密码",
+                      hintText: S.current.ConfirmOldPassowld,
                       hintStyle: TextStyle(
                           fontSize: 26.sp, color: const Color(0xff737A83)),
                       border: InputBorder.none,
@@ -294,7 +294,7 @@ class _AccountSecurityState extends State<AccountSecurity> {
           SizedBox(
             width: 150.w,
             child: Text(
-              "新密码",
+             S.current.newPassowld,
               style: TextStyle(fontSize: 26.sp, color: const Color(0xff737A83)),
             ),
           ),
@@ -310,7 +310,7 @@ class _AccountSecurityState extends State<AccountSecurity> {
                     style: TextStyle(
                         fontSize: 26.sp, color: const Color(0xff051220)),
                     decoration: InputDecoration(
-                      hintText: "请输入新密码",
+                      hintText:S.current.ConfirmnewPassowld,
                       hintStyle: TextStyle(
                           fontSize: 26.sp, color: const Color(0xff737A83)),
                       border: InputBorder.none,
@@ -358,7 +358,7 @@ class _AccountSecurityState extends State<AccountSecurity> {
           SizedBox(
             width: 150.w,
             child: Text(
-              "确认密码",
+           S.current.confrimPassorld,
               style: TextStyle(fontSize: 26.sp, color: const Color(0xff737A83)),
             ),
           ),
@@ -373,7 +373,7 @@ class _AccountSecurityState extends State<AccountSecurity> {
                     style: TextStyle(
                         fontSize: 26.sp, color: const Color(0xff051220)),
                     decoration: InputDecoration(
-                      hintText: "请确认新密码",
+                      hintText:S.current.confrimPassorld,
                       hintStyle: TextStyle(
                           fontSize: 26.sp, color: const Color(0xff737A83)),
                       border: InputBorder.none,
@@ -416,7 +416,7 @@ class _AccountSecurityState extends State<AccountSecurity> {
         top: 20.w,
       ),
       child: Text(
-        "密码必须是8~16位的数字、字符组合（不能是纯数字）",
+      S.current.PassRule,
         style: TextStyle(fontSize: 22.sp),
       ),
     );
@@ -426,13 +426,13 @@ class _AccountSecurityState extends State<AccountSecurity> {
   void onSubmit(BuildContext context) {
     closeKeyboard(context);
     if (oldPassword.trim().isEmpty) {
-      ToastUtils.toast("旧密码不能为空");
+      ToastUtils.toast(S.current.passwordEmpty);
     } else if (newPassword.trim().isEmpty) {
-      ToastUtils.toast("新密码不能为空");
+      ToastUtils.toast(S.current.passwordEmpty);
     } else if (renewPassword.trim().isEmpty) {
-      ToastUtils.toast("确认密码不能为空");
+      ToastUtils.toast(S.current.passwordEmpty);
     } else if (newPassword != renewPassword) {
-      ToastUtils.toast("新密码和确认密码不一致");
+      ToastUtils.toast(S.current.newOldError);
     } else {
       // 这里还可能旧密码输入错误
       getAccountSetting();

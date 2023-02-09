@@ -124,13 +124,13 @@ class _Visitor4State extends State<Visitor4> {
     };
     XHttp.get('/data.html', data).then((res) {
       try {
-        ToastUtils.toast('修改成功');
+        ToastUtils.toast( S.current.success);
       } on FormatException catch (e) {
         print(e);
       }
     }).catchError((onError) {
       debugPrint('失败：${onError.toString()}');
-      ToastUtils.toast('修改失败');
+      ToastUtils.toast( S.current.error);
     });
   }
 
@@ -444,7 +444,7 @@ class _Visitor4State extends State<Visitor4> {
                                     icon: Icon(!passwordValShow
                                         ? Icons.visibility
                                         : Icons.visibility_off)),
-                                hintText: "8~63位ASCII字符",
+                                hintText:S.current.ASCII,
                                 hintStyle: TextStyle(
                                     fontSize: 26.sp,
                                     color: const Color(0xff737A83)),

@@ -176,7 +176,7 @@ class _LanSettingsState extends State<LanSettings> {
       });
     } catch (e) {
       debugPrint('获取LAN设置 失败：$e.toString()');
-      ToastUtils.toast('获取LAN设置 失败');
+      ToastUtils.toast(S.current.error);
     }
   }
 
@@ -194,19 +194,19 @@ class _LanSettingsState extends State<LanSettings> {
         setState(() {
           lanSet = LanSetRec.fromJson(d);
           if (lanSet.success == true) {
-            ToastUtils.toast('修改LAN设置 成功');
+            ToastUtils.toast(S.current.success);
             loginout();
           } else {
-            ToastUtils.toast('修改LAN设置 失败');
+            ToastUtils.toast(S.current.error);
           }
         });
       } on FormatException catch (e) {
         print(e);
-        ToastUtils.toast('修改LAN设置 失败');
+        ToastUtils.toast(S.current.error);
       }
     }).catchError((onError) {
       debugPrint('失败：${onError.toString()}');
-      ToastUtils.toast('修改LAN设置 失败');
+      ToastUtils.toast(S.current.error);
     });
   }
 
@@ -225,18 +225,18 @@ class _LanSettingsState extends State<LanSettings> {
           lanSetDis = LanSetRec.fromJson(d);
           if (lanSetDis.success == true) {
             loginout();
-            ToastUtils.toast('修改LAN设置 成功');
+            ToastUtils.toast(S.current.success);
           } else {
-            ToastUtils.toast('修改LAN设置 失败');
+            ToastUtils.toast(S.current.error);
           }
         });
       } on FormatException catch (e) {
         print(e);
-        ToastUtils.toast('修改LAN设置 失败');
+        ToastUtils.toast(S.current.error);
       }
     }).catchError((onError) {
       debugPrint('失败：${onError.toString()}');
-      ToastUtils.toast('修改LAN设置 失败');
+      ToastUtils.toast(S.current.error);
     });
   }
 

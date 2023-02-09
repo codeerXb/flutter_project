@@ -77,10 +77,10 @@ class _WlanSetState extends State<WlanSet> {
     '40MHz',
     '80MHz',
   ];
-  List<String> wpaOptions = ['WPA2-PSK', 'WPA-PSK&WPA2-PSK', '空(不推荐)'];
+  List<String> wpaOptions = ['WPA2-PSK', 'WPA-PSK&WPA2-PSK', S.current.emptyNORecommend];
   List<String> wpaOptionsV = ['psk2', 'psk-mixed', 'none'];
   List<String> wpajmOptions = [
-    'AES(推荐)',
+    S.current.aesRecommend,
     'TKIP',
     'TKIP&AES',
   ];
@@ -105,7 +105,7 @@ class _WlanSetState extends State<WlanSet> {
   int aqVal = 0;
   int aqVal5 = 0;
   //WPA加密
-  String wpaShowVal = 'AES(推荐)';
+  String wpaShowVal = S.current.aesRecommend;
   int wpaVal = 0;
   int wpaVal5 = 0;
   //check
@@ -998,7 +998,7 @@ class _WlanSetState extends State<WlanSet> {
                                   const Color.fromARGB(255, 48, 118, 250))),
                           onPressed: setData,
                           child: Text(
-                             S.of(context).save,
+                             '提交',
                             style: TextStyle(fontSize: 36.sp),
                           ),
                         ),

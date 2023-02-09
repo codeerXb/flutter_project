@@ -3,6 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
+import '../../generated/l10n.dart';
+
 /// @Author: tzh
 ///
 /// @CreateDate: 2021/8/30 11:46
@@ -52,14 +54,14 @@ class _StepsWidgetState extends State<StepsWidget> {
                     children: [
                       Text(
                         widget.currentIndex == 0
-                            ? "自检中"
+                            ? S.of(context).Intest
                             : widget.currentIndex == 1
-                                ? "搜索中"
+                                ? S.of(context).Insearch
                                 : widget.currentIndex == 2
-                                    ? "完成"
+                                    ? S.of(context).accomplish
                                     : widget.currentIndex == -2
-                                        ? '复位中'
-                                        : "未开始",
+                                        ? S.of(context).reset
+                                        :  S.of(context).notstart,
                         style: TextStyle(
                             fontWeight: FontWeight.w600, fontSize: 28.sp),
                       ),

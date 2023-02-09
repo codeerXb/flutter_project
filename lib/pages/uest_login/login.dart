@@ -234,7 +234,7 @@ class _UserLoginState extends State<UserLogin> {
                             ToastUtils.toast(d['message']);
                             return;
                           } else {
-                            ToastUtils.toast(S.of(context).loginSuccess);
+                            ToastUtils.toast('success');
                             Get.offAllNamed("/get_equipment");
                             //存储用户信息
                             sharedAddAndUpdate(

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
+import '../../generated/l10n.dart';
+
 class CommonPicker {
   static Future<int?>? showPicker({
     BuildContext? context,
@@ -27,13 +29,13 @@ class CommonPicker {
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child: const Text('取消'),
+                      child:  Text( S.current.cancel),
                     ),
                     TextButton(
                       onPressed: () {
                         Navigator.of(context).pop(controller.selectedItem);
                       },
-                      child: const Text('确定'),
+                      child:  Text( S.current.confirm),
                     ),
                   ],
                 ),

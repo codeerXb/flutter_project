@@ -5,6 +5,7 @@ import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../core/widget/custom_app_bar.dart';
+import '../../generated/l10n.dart';
 
 /// 以太网
 class FeedBack extends StatefulWidget {
@@ -31,7 +32,7 @@ class _FeedBackState extends State<FeedBack> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppbar(context: context, title: '以太网'),
+      appBar: customAppbar(context: context, title:S.current.Ethernet ),
       body: InkWell(
         onTap: () => closeKeyboard(context),
         child: SingleChildScrollView(

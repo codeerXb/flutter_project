@@ -217,7 +217,7 @@ class _DnsSettingsState extends State<DnsSettings> {
                     const Icon(Icons.priority_high, color: Colors.red),
                     Flexible(
                       child: Text(
-                        '静态DNS，VPN DNS具有最高优先级，LTE DNS具有最低优先级. 如果要恢复VPN / LTE DNS，请清除两个DNS配置并提交',
+                        S.of(context).dnsStatic,
                         style: TextStyle(fontSize: 24.sp, color: Colors.red),
                       ),
                     ),

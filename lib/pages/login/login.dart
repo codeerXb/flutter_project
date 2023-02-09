@@ -261,7 +261,7 @@ class _LoginState extends State<Login> {
         ),
       ),
       // CommonWidget.buttonWidget(
-      //     title: '登录',
+      //     title:S.of(context).login,
       //     padding: EdgeInsets.only(left: 0, top: 32.w, bottom: 30.w, right: 0),
       //     callBack: () {
       //       if ((_formKey.currentState as FormState).validate()) {
@@ -334,7 +334,7 @@ class _LoginState extends State<Login> {
                   ),
                   Padding(padding: EdgeInsets.only(top: 10.w)),
                   Text(
-                    '当前设备 $vn',
+                   S.of(context).currentDeive+  ' $vn',
                     style: TextStyle(
                         fontSize: 28.sp, color: const Color(0xFF373543)),
                   ),

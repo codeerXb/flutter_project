@@ -15,6 +15,7 @@ import 'package:flutter_template/pages/net_status/model/net_connect_status.dart'
 import 'package:flutter_template/pages/net_status/dashboard.dart';
 
 import '../../core/http/http.dart';
+import '../../generated/l10n.dart';
 import 'homepage_state_btn.dart';
 
 /// 消息页面
@@ -31,9 +32,13 @@ class _NetStatusState extends State<NetStatus> {
   // 定义套餐总量
   double _totalComboData = 0;
   // 定义显示套餐状况
-  String _comboLabel = '未设置';
+  String _comboLabel =  S.current.Notset;
   // 套餐周期
-  List<String> comboCycleLabel = ['日', '月', '年'];
+  List<String> comboCycleLabel = [
+    S.current.day,
+    S.current.month,
+    S.current.year
+  ];
   // 有线连接状况：1:连通0：未连接
   String _wanStatus = '0';
   // wifi连接状况：1:连通0：未连接
@@ -249,7 +254,8 @@ class _NetStatusState extends State<NetStatus> {
                                     border: Border.all(
                                         width: 1, color: Colors.white)),
                                 child: Text(
-                                  '套餐总量：$_comboLabel',
+                                  S.of(context).TotalPackageQuantity +
+                                      ' :$_comboLabel',
                                   style: const TextStyle(color: Colors.white),
                                 ),
                               ),
@@ -304,7 +310,7 @@ class _NetStatusState extends State<NetStatus> {
                                         CrossAxisAlignment.center,
                                     children: [
                                       Text(
-                                        '套餐设置',
+                                        S.of(context).PackageSetting,
                                         style: TextStyle(
                                             height: 1,
                                             fontSize: 28.sp,

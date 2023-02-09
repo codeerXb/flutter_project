@@ -74,10 +74,10 @@ class _RadioSettingsState extends State<RadioSettings> {
         radioGState = RadioGData.fromJson(d);
         radioStateVal = radioGState.lteMainStatusGet.toString();
         if (radioGState.lteNetSelectMode.toString() == 'auto_select') {
-          showVal = '自动';
+          showVal = S.current.Auto;
           val = 0;
         } else {
-          showVal = '手动';
+          showVal = S.current.Manual;
           val = 1;
         }
         if (radioGState.lteBandGet5g.toString() == '--' ||
@@ -124,7 +124,7 @@ class _RadioSettingsState extends State<RadioSettings> {
                       onTap: () {
                         var result = CommonPicker.showPicker(
                           context: context,
-                          options: ['自动', '手动'],
+                          options: [S.current.Auto, S.current.Manual],
                           value: val,
                         );
                         result?.then((selectedValue) => {
@@ -132,7 +132,7 @@ class _RadioSettingsState extends State<RadioSettings> {
                                 {
                                   setState(() => {
                                         val = selectedValue,
-                                        showVal = ['自动', '手动'][val],
+                                        showVal = [S.current.Auto, S.current.Manual][val],
                                         if (val == 0)
                                           {
                                             radioShowVal = 'auto_select',

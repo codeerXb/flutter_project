@@ -83,7 +83,7 @@ class _WanSettingsState extends State<WanSettings> {
           val = 0;
         }
         if (wanSettingVal.networkWanSettingsMode.toString() == 'bridge') {
-          showVal = '桥接';
+          showVal = S.current.BRIDGE;
           val = 1;
         }
         if (wanSettingVal.networkWanSettingsMode.toString() == 'router') {
@@ -115,7 +115,7 @@ class _WanSettingsState extends State<WanSettings> {
                       onTap: () {
                         var result = CommonPicker.showPicker(
                           context: context,
-                          options: ['NAT', '桥接', 'ROUTER'],
+                          options: ['NAT', S.current.BRIDGE, 'ROUTER'],
                           value: val,
                         );
                         result?.then((selectedValue) => {
@@ -123,7 +123,7 @@ class _WanSettingsState extends State<WanSettings> {
                                 {
                                   setState(() => {
                                         val = selectedValue,
-                                        showVal = ['NAT', '桥接', 'ROUTER'][val],
+                                        showVal = ['NAT', S.current.BRIDGE, 'ROUTER'][val],
                                         if (val == 0)
                                           {wanVal = 'nat', getWanData()},
                                         if (val == 1)

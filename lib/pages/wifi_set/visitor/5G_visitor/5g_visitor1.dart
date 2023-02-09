@@ -101,7 +101,7 @@ class _Visitor4State extends State<Visitor4> {
           wpaIndex = 2;
         } else {
           currentData.encryption.toString().split('+')[1] == 'aes'
-              ? wpaShowVal = 'AES(推荐使用)'
+              ? wpaShowVal = S.current.aesRecommend
               : wpaShowVal = 'TKIP';
           currentData.encryption.toString().split('+')[1] == 'aes'
               ? wpaIndex = 0
@@ -366,7 +366,7 @@ class _Visitor4State extends State<Visitor4> {
                           closeKeyboard(context);
                           var result = CommonPicker.showPicker(
                             context: context,
-                            options: ['AES(推荐使用)', 'TKIP', 'TKIP&AES'],
+                            options: [S.current.aesRecommend, 'TKIP', 'TKIP&AES'],
                             value: wpaIndex,
                           );
                           result?.then((selectedValue) => {
@@ -376,7 +376,7 @@ class _Visitor4State extends State<Visitor4> {
                                     setState(() => {
                                           wpaIndex = selectedValue,
                                           wpaShowVal = [
-                                            'AES(推荐使用)',
+                                            S.current.aesRecommend,
                                             'TKIP',
                                             'TKIP&AES'
                                           ][wpaIndex],

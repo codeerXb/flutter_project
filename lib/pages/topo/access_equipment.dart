@@ -311,7 +311,7 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text('开始时间',
+                                  Text(S.of(context).DateReboot,
                                       style: TextStyle(fontSize: 30.sp)),
                                   Row(
                                     children: [
@@ -353,7 +353,7 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text('结束时间',
+                                  Text(S.of(context).TimeReboot,
                                       style: TextStyle(fontSize: 30.sp)),
                                   Row(
                                     children: [

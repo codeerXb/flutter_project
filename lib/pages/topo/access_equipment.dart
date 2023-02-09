@@ -31,10 +31,15 @@ class _AccessEquipmentState extends State<AccessEquipment> {
 // 添加
   bool isClick = false;
 
-// 时间
-  String tim = '';
-  String timeStart = '';
-  String timeStop = '';
+// 开始时间
+  String startTim = '';
+  String startTimeH = '';
+  String startTimeM = '';
+
+// 结束时间
+  String stopTim = '';
+  String stopTimeH = '';
+  String stopTimeM = '';
 
   TimeOfDay _time = TimeOfDay.now().replacing(hour: 11, minute: 30);
   void onTimeChanged(TimeOfDay newTime) {
@@ -43,7 +48,6 @@ class _AccessEquipmentState extends State<AccessEquipment> {
     });
   }
 
-  String endShowVal = '';
   @override
   void initState() {
     super.initState();
@@ -53,13 +57,14 @@ class _AccessEquipmentState extends State<AccessEquipment> {
     print(Get.arguments);
   }
 
-// 重启定时提交
+// 家长控制 提交
   void getTrestsetData() {
     Map<String, dynamic> data = {
       'method': 'tab_add',
       'param':
-          '{"table":"FwParentControlTable","value":{"Name":"UNKNOWN","Weekdays":"Tue","TimeStart":"$timeStart:00","TimeStop":"$timeStop:00","Host":"B4:4C:3B:9E:46:3D","Target":"DROP"}}',
+          '{"table":"FwParentControlTable","value":{"Name":"UNKNOWN","Weekdays":"Tue","TimeStart":"$startTimeH:$startTimeM","TimeStop":"$startTimeH:$startTimeM","Host":"B4:4C:3B:9E:46:3D",}}',
     };
+    printInfo(info: '---data----$data');
     XHttp.get('/data.html', data).then((res) {
       try {
         var d = json.decode(res.toString());
@@ -141,6 +146,7 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                 Padding(
                   padding: EdgeInsets.only(top: 10.sp),
                 ),
+                // 家长控制
                 Row(children: [
                   TitleWidger(title: accTitle),
                   Padding(
@@ -160,7 +166,7 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                     },
                   ),
                 ]),
-                // 列表
+                // 控制列表
                 // Offstage(
                 //   offstage: isCheck,
                 //   child: InfoBox(
@@ -201,7 +207,7 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                     ),
                   ),
                 ),
-                //  + 按钮
+                // 控制 + 按钮
                 Offstage(
                   offstage: !isCheck,
                   child: Row(
@@ -231,7 +237,6 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                           ))), //圆角弧度
                         ),
                         onPressed: () {
-                          printInfo(info: '点击过了');
                           addClick();
                         },
                         child: Text("+", style: TextStyle(fontSize: 60.sp)),
@@ -296,12 +301,11 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                                 minuteInterval: MinuteInterval.FIVE,
                                 // Optional onChange to receive value as DateTime
                                 onChangeDateTime: (DateTime dateTime) {
-                                  tim = dateTime.toString();
-                                  timeStop = tim.split(':')[1].split('-')[0];
-                                  timeStart = tim
-                                      .split(':')[0]
-                                      .split('-')[2]
-                                      .split(' ')[1];
+                                  startTim = dateTime.toString();
+                                  startTimeH =
+                                      startTim.split(' ')[1].split(':')[0];
+                                  startTimeM =
+                                      startTim.split(' ')[1].split(':')[1];
                                 },
                               ),
                             );
@@ -315,7 +319,7 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                                       style: TextStyle(fontSize: 30.sp)),
                                   Row(
                                     children: [
-                                      Text(endShowVal,
+                                      Text(('$startTimeH:$startTimeM'),
                                           style: TextStyle(fontSize: 30.sp)),
                                       Icon(
                                         Icons.arrow_forward_ios_outlined,
@@ -338,12 +342,11 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                                 minuteInterval: MinuteInterval.FIVE,
                                 // Optional onChange to receive value as DateTime
                                 onChangeDateTime: (DateTime dateTime) {
-                                  tim = dateTime.toString();
-                                  timeStop = tim.split(':')[1].split('-')[0];
-                                  timeStart = tim
-                                      .split(':')[0]
-                                      .split('-')[2]
-                                      .split(' ')[1];
+                                  stopTim = dateTime.toString();
+                                  stopTimeH =
+                                      stopTim.split(' ')[1].split(':')[0];
+                                  stopTimeM =
+                                      stopTim.split(' ')[1].split(':')[1];
                                 },
                               ),
                             );
@@ -357,7 +360,7 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                                       style: TextStyle(fontSize: 30.sp)),
                                   Row(
                                     children: [
-                                      Text(endShowVal,
+                                      Text(('$stopTimeH:$stopTimeM'),
                                           style: TextStyle(fontSize: 30.sp)),
                                       Icon(
                                         Icons.arrow_forward_ios_outlined,
@@ -392,7 +395,6 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                               borderRadius: BorderRadius.only(
                                   topLeft: Radius.circular(30.w),
                                   bottomLeft: Radius.circular(30.w))),
-                          // height: 80.w,
                           alignment: Alignment.center,
                           child: Text(
                             "取消",
@@ -403,7 +405,7 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                       ),
                       InkWell(
                         onTap: () {
-                          Get.offAllNamed("/get_equipment");
+                          getTrestsetData();
                         },
                         child: Container(
                           height: 60.w,
@@ -416,7 +418,6 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                               borderRadius: BorderRadius.only(
                                   topRight: Radius.circular(30.w),
                                   bottomRight: Radius.circular(30.w))),
-                          // height: 80.w,
                           alignment: Alignment.center,
                           child: Text(
                             "确认",

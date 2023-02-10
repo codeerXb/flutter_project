@@ -13,6 +13,7 @@ import 'package:intl/intl.dart';
 import '../../core/http/http.dart';
 import '../../core/utils/toast.dart';
 import '../../generated/l10n.dart';
+import 'model/access_datas.dart';
 
 class AccessEquipment extends StatefulWidget {
   const AccessEquipment({super.key});
@@ -25,8 +26,34 @@ class _AccessEquipmentState extends State<AccessEquipment> {
   OnlineDeviceTable data = OnlineDeviceTable(mAC: '');
   String uNKTitle = '设备信息';
 
+// 提交
+  AccessDatas restart = AccessDatas();
+
   String accTitle = '家长控制';
   bool isCheck = false;
+
+//工作日
+  List arr = [];
+  String b = '';
+  String c = '';
+  String d = '';
+  String e = '';
+  String f = '';
+  String g = '';
+  String h = '';
+  List arrList = [];
+  List arrListEng = [];
+  String tranfer = '';
+  String dateFormat(List<Map<String, dynamic>> date) {
+    String res = '';
+    for (var i = 0; i < date.length; i++) {
+      res = '$res${date[i]['value'] ? '1' : '0'}';
+      if (i < date.length - 1) {
+        res = '$res,';
+      }
+    }
+    return res;
+  }
 
 // 添加
   bool isClick = false;
@@ -48,33 +75,45 @@ class _AccessEquipmentState extends State<AccessEquipment> {
     });
   }
 
+  // 家长控制列表
+  AccessListDatas accessList = AccessListDatas();
+  List accesslistD = [];
+  List<Widget> temList = [];
+
+// 名称  设备
+  String hostN = '';
+  String mac = '';
   @override
   void initState() {
     super.initState();
     setState(() {
       data = Get.arguments;
     });
+    hostN = data.hostName.toString();
+    mac = data.mAC.toString();
+
     print(Get.arguments);
+    getAccessList();
   }
 
 // 家长控制 提交
-  void getTrestsetData() {
+  void getAccessData() {
     Map<String, dynamic> data = {
       'method': 'tab_add',
       'param':
-          '{"table":"FwParentControlTable","value":{"Name":"UNKNOWN","Weekdays":"Tue","TimeStart":"$startTimeH:$startTimeM","TimeStop":"$startTimeH:$startTimeM","Host":"B4:4C:3B:9E:46:3D",}}',
+          '{"table":"FwParentControlTable","value":{"Name":"$hostN","Weekdays":"${arrListEng.join()}","TimeStart":"$startTimeH:$startTimeM","TimeStop":"$startTimeH:$startTimeM","Host":"$mac","Target":"DROP"}}',
     };
     printInfo(info: '---data----$data');
     XHttp.get('/data.html', data).then((res) {
       try {
         var d = json.decode(res.toString());
         setState(() {
-          // restart = MaintainData.fromJson(d);
-          // if (restart.success == true) {
-          //   ToastUtils.toast('提交成功');
-          // } else {
-          //   ToastUtils.toast('提交失败');
-          // }
+          restart = AccessDatas.fromJson(d);
+          if (restart.success == true) {
+            ToastUtils.toast('提交成功');
+          } else {
+            ToastUtils.toast('提交失败');
+          }
         });
       } on FormatException catch (e) {
         print(e);
@@ -86,16 +125,81 @@ class _AccessEquipmentState extends State<AccessEquipment> {
     });
   }
 
+// 家长控制列表获取
+  void getAccessList() async {
+    Map<String, dynamic> data = {
+      'method': 'tab_dump',
+      'param': '["FwParentControlTable"]'
+    };
+    try {
+      var response = await XHttp.get('/data.html', data);
+      var d = json.decode(response.toString());
+      setState(() {
+        accessList = AccessListDatas.fromJson(d);
+        accesslistD = accessList.fwParentControlTable!;
+        print('--------${accessList.fwParentControlTable?[0].timeStart}');
+        print('...${accesslistD != '' ? true : false}');
+        if (accessList.fwParentControlTable != '') {
+          print('走了');
+          alist();
+          print('===打印===$temList');
+
+          print('是这里');
+        }
+        // tranfer = accessList.systemScheduleRebootDays.toString();
+        // if (tranfer != '') {
+        //   // 展示获取回来的重启日期
+        //   arr = tranfer.split(';').map((String text) => (text)).toList();
+        //   if (arr[0] == '1') {
+        //     arrList.add('周日');
+        //   }
+        //   if (arr[1] == '1') {
+        //     arrList.add('周一');
+        //   }
+        //   if (arr[2] == '1') {
+        //     arrList.add('周二');
+        //   }
+        //   if (arr[3] == '1') {
+        //     arrList.add('周三');
+        //   }
+        //   if (arr[4] == '1') {
+        //     arrList.add('周四');
+        //   }
+        //   if (arr[5] == '1') {
+        //     arrList.add('周五');
+        //   }
+        //   if (arr[6] == '1') {
+        //     arrList.add('周六');
+        // }
+        // }
+      });
+    } catch (e) {
+      debugPrint('获取家长列表 失败：$e.toString()');
+      ToastUtils.toast('获取家长列表 失败');
+    }
+  }
+
+  List<Widget> alist() {
+    for (var i = 0; i < accessList.fwParentControlTable!.length; i++) {
+      temList.add(ListTile(
+          title: Text(
+              '78${accessList.fwParentControlTable![i].timeStart}--${accessList.fwParentControlTable![i].timeStop}禁止访问'),
+          subtitle:
+              Text('132${accessList.fwParentControlTable![i].weekdays}')));
+    }
+    return temList;
+  }
+
   @override
   Widget build(BuildContext context) {
-    String formatDuration(Duration duration) {
-      String hours = duration.inHours.toString().padLeft(0, '2');
-      String minutes =
-          duration.inMinutes.remainder(60).toString().padLeft(2, '0');
-      String seconds =
-          duration.inSeconds.remainder(60).toString().padLeft(2, '0');
-      return "$hours:$minutes:$seconds";
-    }
+    // String formatDuration(Duration duration) {
+    //   String hours = duration.inHours.toString().padLeft(0, '2');
+    //   String minutes =
+    //       duration.inMinutes.remainder(60).toString().padLeft(2, '0');
+    //   String seconds =
+    //       duration.inSeconds.remainder(60).toString().padLeft(2, '0');
+    //   return "$hours:$minutes:$seconds";
+    // }
 
     return Scaffold(
       appBar: customAppbar(context: context, title: data.hostName.toString()),
@@ -197,7 +301,7 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                       children: [
                         Column(
                           children: const [
-                            Text('列表',
+                            Text('',
                                 style: TextStyle(
                                   color: Color.fromARGB(255, 5, 0, 0),
                                 )),
@@ -250,6 +354,167 @@ class _AccessEquipmentState extends State<AccessEquipment> {
     );
   }
 
+  // 工作日弹窗
+  String result = '';
+  List<Map<String, dynamic>> checkboxList = [
+    {'text': '周日', 'value': false, 'index': 0},
+    {'text': '周一', 'value': false, 'index': 1},
+    {'text': '周二', 'value': false, 'index': 2},
+    {'text': '周三', 'value': false, 'index': 3},
+    {'text': '周四', 'value': false, 'index': 4},
+    {'text': '周五', 'value': false, 'index': 5},
+    {'text': '周六', 'value': false, 'index': 6},
+  ];
+  //显示底部弹框的功能
+  void showBottomSheet() {
+    //用于在底部打开弹框的效果
+    showModalBottomSheet(
+        builder: (BuildContext context) {
+          //构建弹框中的内容
+          return buildBottomSheetWidget(context);
+        },
+        context: context);
+  }
+
+  Widget buildBottomSheetWidget(BuildContext context) {
+    //弹框中内容  310 的调试
+    return SizedBox(
+      height: 600.w,
+      child: Column(
+        children: [
+          buildItem(result, onTap: () {}),
+
+          Padding(padding: EdgeInsets.only(top: 60.sp)),
+          //   //取消按钮
+          //   //添加个点击事件
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            InkWell(
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+              child: Container(
+                width: 0.5.sw - 30.w,
+                height: 60.w,
+                decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.black12,
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(30.w),
+                        bottomLeft: Radius.circular(30.w))),
+                alignment: Alignment.center,
+                child: const Text("取消",
+                    style: TextStyle(fontWeight: FontWeight.w600)),
+              ),
+            ),
+            InkWell(
+              onTap: () {
+                Navigator.of(context).pop(checkboxList);
+                setState(() {
+                  tranfer = dateFormat(checkboxList);
+                  // 选中后更新工作日
+                  // Sun,Mon,Tue,Wed,Thu,Fri,Sat
+                  arrList = [];
+                  arrListEng = [];
+                  if (arrList != []) {
+                    arr = tranfer
+                        .split(',')
+                        .map((String text) => (text))
+                        .toList();
+                    if (arr[0] == '1') {
+                      arrList.add('周日,');
+                      arrListEng.add('Sun,');
+                    }
+                    if (arr[1] == '1') {
+                      arrList.add('周一,');
+                      arrListEng.add('Mon,');
+                    }
+                    if (arr[2] == '1') {
+                      arrList.add('周二,');
+                      arrListEng.add('Tue,');
+                    }
+                    if (arr[3] == '1') {
+                      arrList.add('周三,');
+                      arrListEng.add('Wed,');
+                    }
+                    if (arr[4] == '1') {
+                      arrList.add('周四,');
+                      arrListEng.add('Thu,');
+                    }
+                    if (arr[5] == '1') {
+                      arrList.add('周五,');
+                      arrListEng.add('Fri,');
+                    }
+                    if (arr[6] == '1') {
+                      arrList.add('周六');
+                      arrListEng.add('Sat');
+                    }
+                    printInfo(info: '----${arrListEng.join()}');
+                  }
+                });
+              },
+              child: Container(
+                height: 60.w,
+                width: 0.5.sw - 30.w,
+                decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.black12,
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(30.w),
+                        bottomRight: Radius.circular(30.w))),
+                alignment: Alignment.center,
+                child: const Text("确定",
+                    style: TextStyle(fontWeight: FontWeight.w600)),
+              ),
+            )
+          ])
+        ],
+      ),
+    );
+  }
+
+  Widget buildItem(String title, {onTap}) {
+    //添加点击事件
+    return StatefulBuilder(
+        builder: (context, void Function(void Function()) setState) {
+      return InkWell(
+          //点击回调
+          onTap: () {
+            //关闭弹框
+            Navigator.of(context).pop();
+            //外部回调
+            if (onTap != null) {
+              onTap();
+            }
+          },
+          child: SizedBox(
+              height: 460.w,
+              child: Column(
+                children: checkboxList
+                    .map((item) => Flexible(
+                          child: CheckboxListTile(
+                            title: Text('${item['text']}'),
+                            value: item['value'],
+                            activeColor: Colors.blueAccent,
+                            isThreeLine: false,
+                            dense: false,
+                            selected: false,
+                            controlAffinity: ListTileControlAffinity.trailing,
+                            onChanged: (data) {
+                              setState(() {
+                                checkboxList[item['index']]['value'] = data;
+                              });
+                            },
+                          ),
+                        ))
+                    .toList(),
+              )));
+    });
+  }
+
 // 点击 + 弹窗
   addClick() {
     showModalBottomSheet(
@@ -280,17 +545,55 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                           leftText: '设备',
                           righText: data.mAC.toString(),
                         )),
-                        BottomLine(
+                        GestureDetector(
+                          onTap: () {
+                            // Sun,Mon,Tue,Wed,Thu,Fri,Sat
+                            // 勾选框的状态
+                            if (arrList.contains('周日')) {
+                              checkboxList[0]['value'] = true;
+                            }
+                            if (arrList.contains('周一')) {
+                              checkboxList[1]['value'] = true;
+                            }
+                            if (arrList.contains('周二')) {
+                              checkboxList[2]['value'] = true;
+                            }
+                            if (arrList.contains('周三')) {
+                              checkboxList[3]['value'] = true;
+                            }
+                            if (arrList.contains('周四')) {
+                              checkboxList[4]['value'] = true;
+                            }
+                            if (arrList.contains('周五')) {
+                              checkboxList[5]['value'] = true;
+                            }
+                            if (arrList.contains('周六')) {
+                              checkboxList[6]['value'] = true;
+                            }
+                            showBottomSheet();
+                          },
+                          child: BottomLine(
                             rowtem: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
-                            Text('工作日',
-                                style: TextStyle(
-                                  color: Color.fromARGB(255, 5, 0, 0),
-                                )),
-                            // SizedBox(width: 50, child: Workday())
-                          ],
-                        )),
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('工作日',
+                                      style: TextStyle(fontSize: 30.sp)),
+                                  Row(
+                                    children: [
+                                      Text(arrList.join(),
+                                          style: TextStyle(fontSize: 30.sp)),
+                                      Icon(
+                                        Icons.arrow_forward_ios_outlined,
+                                        color: const Color.fromRGBO(
+                                            144, 147, 153, 1),
+                                        size: 30.w,
+                                      )
+                                    ],
+                                  ),
+                                ]),
+                          ),
+                        ),
                         GestureDetector(
                           onTap: () {
                             Navigator.of(context).push(
@@ -405,7 +708,7 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                       ),
                       InkWell(
                         onTap: () {
-                          getTrestsetData();
+                          getAccessData();
                         },
                         child: Container(
                           height: 60.w,

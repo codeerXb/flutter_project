@@ -110,31 +110,31 @@ class S {
     );
   }
 
-  /// `enter your passworld`
-  String get passworLdLabel {
+  /// `enter your password`
+  String get passwordLabel {
     return Intl.message(
-      'enter your passworld',
-      name: 'passworLdLabel',
+      'enter your password',
+      name: 'passwordLabel',
       desc: '',
       args: [],
     );
   }
 
-  /// ` enter your passworld again`
-  String get passWorLdAgain {
+  /// ` enter your password again`
+  String get passwordAgain {
     return Intl.message(
-      ' enter your passworld again',
-      name: 'passWorLdAgain',
+      ' enter your password again',
+      name: 'passwordAgain',
       desc: '',
       args: [],
     );
   }
 
   /// `The secondary code is inconsistent`
-  String get passworLdAgainError {
+  String get passwordAgainError {
     return Intl.message(
       'The secondary code is inconsistent',
-      name: 'passworLdAgainError',
+      name: 'passwordAgainError',
       desc: '',
       args: [],
     );
@@ -420,30 +420,30 @@ class S {
     );
   }
 
-  /// `maintainSettings`
+  /// `Maintenance`
   String get maintainSettings {
     return Intl.message(
-      'maintainSettings',
+      'Maintenance',
       name: 'maintainSettings',
       desc: '',
       args: [],
     );
   }
 
-  /// `accountSecurity`
+  /// `Account`
   String get accountSecurity {
     return Intl.message(
-      'accountSecurity',
+      'Account',
       name: 'accountSecurity',
       desc: '',
       args: [],
     );
   }
 
-  /// `System Settings`
+  /// `System`
   String get SystemSettings {
     return Intl.message(
-      'System Settings',
+      'System',
       name: 'SystemSettings',
       desc: '',
       args: [],
@@ -870,6 +870,26 @@ class S {
     );
   }
 
+  /// `UL Velocity`
+  String get ULVelocity {
+    return Intl.message(
+      'UL Velocity',
+      name: 'ULVelocity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `DL Velocity`
+  String get DLVelocity {
+    return Intl.message(
+      'DL Velocity',
+      name: 'DLVelocity',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `start IP Address`
   String get startIPAddress {
     return Intl.message(
@@ -995,6 +1015,996 @@ class S {
     return Intl.message(
       'priority',
       name: 'priority',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `current Deive`
+  String get currentDeive {
+    return Intl.message(
+      'current Deive',
+      name: 'currentDeive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `log out`
+  String get logOut {
+    return Intl.message(
+      'log out',
+      name: 'logOut',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `not log in`
+  String get noLogin {
+    return Intl.message(
+      'not log in',
+      name: 'noLogin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `time Online`
+  String get timeOnline {
+    return Intl.message(
+      'time Online',
+      name: 'timeOnline',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Package Setting`
+  String get PackageSetting {
+    return Intl.message(
+      'Package Setting',
+      name: 'PackageSetting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `AES(Recommend)`
+  String get aesRecommend {
+    return Intl.message(
+      'AES(Recommend)',
+      name: 'aesRecommend',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `None(not recommended)`
+  String get emptyNORecommend {
+    return Intl.message(
+      'None(not recommended)',
+      name: 'emptyNORecommend',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Type of package`
+  String get TypeOfPackage {
+    return Intl.message(
+      'Type of package',
+      name: 'TypeOfPackage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Package Capacity`
+  String get PackageCapacity {
+    return Intl.message(
+      'Package Capacity',
+      name: 'PackageCapacity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Package Duration`
+  String get PackageDuration {
+    return Intl.message(
+      'Package Duration',
+      name: 'PackageDuration',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Package Cycle`
+  String get PackageCycle {
+    return Intl.message(
+      'Package Cycle',
+      name: 'PackageCycle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Total Package Quantity`
+  String get TotalPackageQuantity {
+    return Intl.message(
+      'Total Package Quantity',
+      name: 'TotalPackageQuantity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `year`
+  String get year {
+    return Intl.message(
+      'year',
+      name: 'year',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `month`
+  String get month {
+    return Intl.message(
+      'month',
+      name: 'month',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `day`
+  String get day {
+    return Intl.message(
+      'day',
+      name: 'day',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Statistics by flow`
+  String get StatisticsByFlow {
+    return Intl.message(
+      'Statistics by flow',
+      name: 'StatisticsByFlow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Time length statistics`
+  String get TimeLengthStatistics {
+    return Intl.message(
+      'Time length statistics',
+      name: 'TimeLengthStatistics',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connected`
+  String get Connected {
+    return Intl.message(
+      'Connected',
+      name: 'Connected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ununited`
+  String get ununited {
+    return Intl.message(
+      'ununited',
+      name: 'ununited',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Dynamic IP`
+  String get DynamicIP {
+    return Intl.message(
+      'Dynamic IP',
+      name: 'DynamicIP',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `staticIP`
+  String get staticIP {
+    return Intl.message(
+      'staticIP',
+      name: 'staticIP',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `LAN Only`
+  String get LANOnly {
+    return Intl.message(
+      'LAN Only',
+      name: 'LANOnly',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `BRIDGE`
+  String get BRIDGE {
+    return Intl.message(
+      'BRIDGE',
+      name: 'BRIDGE',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Auto`
+  String get Auto {
+    return Intl.message(
+      'Auto',
+      name: 'Auto',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Manual`
+  String get Manual {
+    return Intl.message(
+      'Manual',
+      name: 'Manual',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `China`
+  String get China {
+    return Intl.message(
+      'China',
+      name: 'China',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `France`
+  String get France {
+    return Intl.message(
+      'France',
+      name: 'France',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Russia`
+  String get Russia {
+    return Intl.message(
+      'Russia',
+      name: 'Russia',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `United States`
+  String get UnitedStates {
+    return Intl.message(
+      'United States',
+      name: 'UnitedStates',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Singapore`
+  String get Singapore {
+    return Intl.message(
+      'Singapore',
+      name: 'Singapore',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Australia`
+  String get Australia {
+    return Intl.message(
+      'Australia',
+      name: 'Australia',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Chile`
+  String get Chile {
+    return Intl.message(
+      'Chile',
+      name: 'Chile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Poland`
+  String get Poland {
+    return Intl.message(
+      'Poland',
+      name: 'Poland',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reboot Scheduler`
+  String get RebootScheduler {
+    return Intl.message(
+      'Reboot Scheduler',
+      name: 'RebootScheduler',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enable Reboot Scheduler`
+  String get EnableRebootScheduler {
+    return Intl.message(
+      'Enable Reboot Scheduler',
+      name: 'EnableRebootScheduler',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Reboot`
+  String get Reboot {
+    return Intl.message(
+      'Reboot',
+      name: 'Reboot',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please click Reboot to reboot device`
+  String get clickReboot {
+    return Intl.message(
+      'Please click Reboot to reboot device',
+      name: 'clickReboot',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Factory Reset`
+  String get FactoryReset {
+    return Intl.message(
+      'Factory Reset',
+      name: 'FactoryReset',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please click Factory Reset to restore device to its factory settings`
+  String get clickFactory {
+    return Intl.message(
+      'Please click Factory Reset to restore device to its factory settings',
+      name: 'clickFactory',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm to unblock the current device`
+  String get unblockdevice {
+    return Intl.message(
+      'Confirm to unblock the current device',
+      name: 'unblockdevice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `binding?`
+  String get binding {
+    return Intl.message(
+      'binding?',
+      name: 'binding',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `hint`
+  String get hint {
+    return Intl.message(
+      'hint',
+      name: 'hint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `cancel`
+  String get cancel {
+    return Intl.message(
+      'cancel',
+      name: 'cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `confirm`
+  String get confirm {
+    return Intl.message(
+      'confirm',
+      name: 'confirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `set`
+  String get set {
+    return Intl.message(
+      'set',
+      name: 'set',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Not set`
+  String get Notset {
+    return Intl.message(
+      'Not set',
+      name: 'Notset',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Used Flow`
+  String get UsedFlow {
+    return Intl.message(
+      'Used Flow',
+      name: 'UsedFlow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Elapsed Time`
+  String get ElapsedTime {
+    return Intl.message(
+      'Elapsed Time',
+      name: 'ElapsedTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `In self test`
+  String get Intest {
+    return Intl.message(
+      'In self test',
+      name: 'Intest',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `In search`
+  String get Insearch {
+    return Intl.message(
+      'In search',
+      name: 'Insearch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `accomplish`
+  String get accomplish {
+    return Intl.message(
+      'accomplish',
+      name: 'accomplish',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `reset`
+  String get reset {
+    return Intl.message(
+      'reset',
+      name: 'reset',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `not start`
+  String get notstart {
+    return Intl.message(
+      'not start',
+      name: 'notstart',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `start Search`
+  String get startSearch {
+    return Intl.message(
+      'start Search',
+      name: 'startSearch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `current Value`
+  String get currentValue {
+    return Intl.message(
+      'current Value',
+      name: 'currentValue',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `max Value`
+  String get maxValue {
+    return Intl.message(
+      'max Value',
+      name: 'maxValue',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `current Orientation`
+  String get currentOrientation {
+    return Intl.message(
+      'current Orientation',
+      name: 'currentOrientation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Static DNS has the highest priority, VPN DNS follows it and LTE DNS has the lowest priority. If you want to restore the VPN/LTE DNS, please clear the two DNS configuration and submit`
+  String get dnsStatic {
+    return Intl.message(
+      'Static DNS has the highest priority, VPN DNS follows it and LTE DNS has the lowest priority. If you want to restore the VPN/LTE DNS, please clear the two DNS configuration and submit',
+      name: 'dnsStatic',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enable Reboot Scheduler`
+  String get EnableScheduler {
+    return Intl.message(
+      'Enable Reboot Scheduler',
+      name: 'EnableScheduler',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Date to Reboot`
+  String get DateReboot {
+    return Intl.message(
+      'Date to Reboot',
+      name: 'DateReboot',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Time of Day to Reboot`
+  String get TimeReboot {
+    return Intl.message(
+      'Time of Day to Reboot',
+      name: 'TimeReboot',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sun`
+  String get Sun {
+    return Intl.message(
+      'Sun',
+      name: 'Sun',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `mon`
+  String get mon {
+    return Intl.message(
+      'mon',
+      name: 'mon',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tue`
+  String get Tue {
+    return Intl.message(
+      'Tue',
+      name: 'Tue',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Wed`
+  String get Wed {
+    return Intl.message(
+      'Wed',
+      name: 'Wed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Thu`
+  String get Thu {
+    return Intl.message(
+      'Thu',
+      name: 'Thu',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `fri`
+  String get fri {
+    return Intl.message(
+      'fri',
+      name: 'fri',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Sat`
+  String get Sat {
+    return Intl.message(
+      'Sat',
+      name: 'Sat',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No device is connected`
+  String get NoDeviceConnected {
+    return Intl.message(
+      'No device is connected',
+      name: 'NoDeviceConnected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ddDayHHourmmminutes`
+  String get time {
+    return Intl.message(
+      'ddDayHHourmmminutes',
+      name: 'time',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Input detection server`
+  String get detectionServer {
+    return Intl.message(
+      'Input detection server',
+      name: 'detectionServer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The device will restart after submission. Do you want to continue?`
+  String get isGoOn {
+    return Intl.message(
+      'The device will restart after submission. Do you want to continue?',
+      name: 'isGoOn',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Password error, number of attempts left:`
+  String get passError {
+    return Intl.message(
+      'Password error, number of attempts left:',
+      name: 'passError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `locked`
+  String get locked {
+    return Intl.message(
+      'locked',
+      name: 'locked',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `S unlock`
+  String get unlock {
+    return Intl.message(
+      'S unlock',
+      name: 'unlock',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The account cannot be empty`
+  String get accountEmpty {
+    return Intl.message(
+      'The account cannot be empty',
+      name: 'accountEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The password cannot be empty`
+  String get passwordEmpty {
+    return Intl.message(
+      'The password cannot be empty',
+      name: 'passwordEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `account`
+  String get account {
+    return Intl.message(
+      'account',
+      name: 'account',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter the account number`
+  String get accountEnter {
+    return Intl.message(
+      'Please enter the account number',
+      name: 'accountEnter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Administrator login`
+  String get Administratorlogin {
+    return Intl.message(
+      'Administrator login',
+      name: 'Administratorlogin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Device connection timeout`
+  String get timeout {
+    return Intl.message(
+      'Device connection timeout',
+      name: 'timeout',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Abort search`
+  String get stopSerch {
+    return Intl.message(
+      'Abort search',
+      name: 'stopSerch',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `change password`
+  String get EditPass {
+    return Intl.message(
+      'change password',
+      name: 'EditPass',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The password must be a combination of 8 to 16 digits and characters.`
+  String get PassRule {
+    return Intl.message(
+      'The password must be a combination of 8 to 16 digits and characters.',
+      name: 'PassRule',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The new password is different from the confirmed password`
+  String get newOldError {
+    return Intl.message(
+      'The new password is different from the confirmed password',
+      name: 'newOldError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please confirm the password.`
+  String get confrimPassorld {
+    return Intl.message(
+      'Please confirm the password.',
+      name: 'confrimPassorld',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `new password`
+  String get newPassowld {
+    return Intl.message(
+      'new password',
+      name: 'newPassowld',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter a new password`
+  String get ConfirmnewPassowld {
+    return Intl.message(
+      'Please enter a new password',
+      name: 'ConfirmnewPassowld',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `old password`
+  String get oldPassowld {
+    return Intl.message(
+      'old password',
+      name: 'oldPassowld',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please enter a old password`
+  String get ConfirmOldPassowld {
+    return Intl.message(
+      'Please enter a old password',
+      name: 'ConfirmOldPassowld',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please set the login password`
+  String get loginPassword {
+    return Intl.message(
+      'Please set the login password',
+      name: 'loginPassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Change passwords periodically to improve security`
+  String get improveSecurity {
+    return Intl.message(
+      'Change passwords periodically to improve security',
+      name: 'improveSecurity',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The restart date must be selected`
+  String get mustSuccess {
+    return Intl.message(
+      'The restart date must be selected',
+      name: 'mustSuccess',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `local`
+  String get local {
+    return Intl.message(
+      'local',
+      name: 'local',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `examine`
+  String get examine {
+    return Intl.message(
+      'examine',
+      name: 'examine',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `no Data`
+  String get noData {
+    return Intl.message(
+      'no Data',
+      name: 'noData',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ASCII characters of 8 to 63 characters`
+  String get ASCII {
+    return Intl.message(
+      'ASCII characters of 8 to 63 characters',
+      name: 'ASCII',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `not Empty!`
+  String get notEmpty {
+    return Intl.message(
+      'not Empty!',
+      name: 'notEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `enter`
+  String get enter {
+    return Intl.message(
+      'enter',
+      name: 'enter',
       desc: '',
       args: [],
     );

@@ -37,13 +37,13 @@ class _MajorSetState extends State<MajorSet> {
     };
     XHttp.get('/data.html', data).then((res) {
       try {
-        ToastUtils.toast('修改成功');
+        ToastUtils.toast( S.current.success);
       } on FormatException catch (e) {
         print(e);
       }
     }).catchError((onError) {
       debugPrint('失败：${onError.toString()}');
-      ToastUtils.toast('修改失败');
+      ToastUtils.toast( S.current.error);
     });
   }
 
@@ -63,28 +63,28 @@ class _MajorSetState extends State<MajorSet> {
         //读取地区
         switch (majorData.wifiRegionCountry.toString()) {
           case 'CN':
-            showVal = '中国';
+            showVal = S.current.China;
             break;
           case 'FR':
-            showVal = '法国';
+            showVal = S.current.France;
             break;
           case 'RU':
-            showVal = '俄罗斯';
+            showVal = S.current.Russia;
             break;
           case 'US':
-            showVal = '美国';
+            showVal = S.current.UnitedStates;
             break;
           case 'SG':
-            showVal = '新加坡';
+            showVal = S.current.Singapore;
             break;
           case 'AU':
-            showVal = '澳大利亚';
+            showVal = S.current.Australia;
             break;
           case 'CL':
-            showVal = '智利';
+            showVal = S.current.Chile;
             break;
           case 'PL':
-            showVal = '波兰';
+            showVal = S.current.Poland;
             break;
         }
       });
@@ -115,14 +115,14 @@ class _MajorSetState extends State<MajorSet> {
                         var result = CommonPicker.showPicker(
                           context: context,
                           options: [
-                            '中国',
-                            '法国',
-                            '俄罗斯',
-                            '美国',
-                            '新加坡',
-                            '澳大利亚',
-                            '智利',
-                            '波兰'
+                            S.current.China,
+                            S.current.France,
+                            S.current.Russia,
+                            S.current.UnitedStates,
+                            S.current.Singapore,
+                            S.current.Australia,
+                            S.current.Chile,
+                            S.current.Poland
                           ],
                           value: index,
                         );
@@ -133,14 +133,14 @@ class _MajorSetState extends State<MajorSet> {
                                   setState(() => {
                                         index = selectedValue,
                                         showVal = [
-                                          '中国',
-                                          '法国',
-                                          '俄罗斯',
-                                          '美国',
-                                          '新加坡',
-                                          '澳大利亚',
-                                          '智利',
-                                          '波兰'
+                                          S.current.China,
+                                          S.current.France,
+                                          S.current.Russia,
+                                          S.current.UnitedStates,
+                                          S.current.Singapore,
+                                          S.current.Australia,
+                                          S.current.Chile,
+                                          S.current.Poland
                                         ][index],
                                         val = [
                                           'CN',

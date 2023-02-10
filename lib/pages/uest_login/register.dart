@@ -199,7 +199,7 @@ class _UserRegisterState extends State<UserRegister> {
                                             ? Icons.visibility
                                             : Icons.visibility_off)),
                                     // 表单提示信息
-                                    hintText: S.of(context).passworLdLabel,
+                                    hintText: S.of(context).passwordLabel,
                                     hintStyle: TextStyle(
                                         fontSize: 32.sp,
                                         color: const Color(0xff737A83)),
@@ -210,7 +210,7 @@ class _UserRegisterState extends State<UserRegister> {
                                       _passwordVal = value,
                                   validator: (value) {
                                     if (value!.isEmpty) {
-                                      return S.of(context).passworLdLabel;
+                                      return S.of(context).passwordLabel;
                                     }
                                     return null;
                                   },
@@ -250,7 +250,7 @@ class _UserRegisterState extends State<UserRegister> {
                                             ? Icons.visibility
                                             : Icons.visibility_off)),
                                     // 表单提示信息
-                                    hintText: S.of(context).passWorLdAgain,
+                                    hintText: S.of(context).passwordAgain,
                                     hintStyle: TextStyle(
                                         fontSize: 32.sp,
                                         color: const Color(0xff737A83)),
@@ -261,7 +261,7 @@ class _UserRegisterState extends State<UserRegister> {
                                       _againPassVal = value,
                                   validator: (value) {
                                     if (_passwordVal != _againPassVal) {
-                                      return S.of(context).passworLdAgainError;
+                                      return S.of(context).passwordAgainError;
                                     }
                                     return null;
                                   },

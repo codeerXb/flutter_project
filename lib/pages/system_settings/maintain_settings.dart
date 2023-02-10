@@ -84,19 +84,19 @@ class _MaintainSettingsState extends State<MaintainSettings> {
         setState(() {
           maintainVal = MaintainData.fromJson(d);
           if (maintainVal.success == true) {
-            ToastUtils.toast('重启成功');
+            ToastUtils.toast(S.current.success);
             loginout();
           } else {
-            ToastUtils.toast('重启失败');
+            ToastUtils.toast(S.current.error);
           }
         });
       } on FormatException catch (e) {
         print(e);
-        ToastUtils.toast('重启失败');
+        ToastUtils.toast(S.current.error);
       }
     }).catchError((onError) {
       debugPrint('失败：${onError.toString()}');
-      ToastUtils.toast('重启失败');
+      ToastUtils.toast(S.current.error);
     });
   }
 
@@ -120,18 +120,18 @@ class _MaintainSettingsState extends State<MaintainSettings> {
         setState(() {
           restart = MaintainData.fromJson(d);
           if (restart.success == true) {
-            ToastUtils.toast('提交成功');
+            ToastUtils.toast(S.current.success);
           } else {
-            ToastUtils.toast('提交失败');
+            ToastUtils.toast(S.current.error);
           }
         });
       } on FormatException catch (e) {
         print(e);
-        ToastUtils.toast('提交失败');
+        ToastUtils.toast(S.current.error);
       }
     }).catchError((onError) {
       debugPrint('失败：${onError.toString()}');
-      ToastUtils.toast('提交失败');
+      ToastUtils.toast(S.current.error);
     });
   }
 
@@ -218,31 +218,31 @@ class _MaintainSettingsState extends State<MaintainSettings> {
           // 展示获取回来的重启日期
           arr = tranfer.split(';').map((String text) => (text)).toList();
           if (arr[0] == '1') {
-            arrList.add('周日');
+            arrList.add(S.of(context).Sun);
           }
           if (arr[1] == '1') {
-            arrList.add('周一');
+            arrList.add(S.of(context).mon);
           }
           if (arr[2] == '1') {
-            arrList.add('周二');
+            arrList.add(S.current.Tue);
           }
           if (arr[3] == '1') {
-            arrList.add('周三');
+            arrList.add(S.current.Wed);
           }
           if (arr[4] == '1') {
-            arrList.add('周四');
+            arrList.add(S.current.Thu);
           }
           if (arr[5] == '1') {
-            arrList.add('周五');
+            arrList.add(S.current.fri);
           }
           if (arr[6] == '1') {
-            arrList.add('周六');
+            arrList.add(S.current.Sat);
           }
         }
       });
     } catch (e) {
       debugPrint('获取重启定时 失败：$e.toString()');
-      ToastUtils.toast('获取重启定时 失败');
+      ToastUtils.toast(S.current.error);
     }
   }
 
@@ -258,32 +258,32 @@ class _MaintainSettingsState extends State<MaintainSettings> {
         setState(() {
           factoryReset = MaintainData.fromJson(d);
           if (factoryReset.success == true) {
-            ToastUtils.toast('恢复出厂 成功');
+            ToastUtils.toast(S.current.success);
             loginout();
           } else {
-            ToastUtils.toast('恢复出厂 失败');
+            ToastUtils.toast(S.current.error);
           }
         });
       } on FormatException catch (e) {
         print(e);
-        ToastUtils.toast('恢复出厂 失败');
+        ToastUtils.toast(S.current.error);
       }
     }).catchError((onError) {
       debugPrint('失败：${onError.toString()}');
-      ToastUtils.toast('恢复出厂 失败');
+      ToastUtils.toast(S.current.error);
     });
   }
 
 // 日期弹窗
   String result = '';
   List<Map<String, dynamic>> checkboxList = [
-    {'text': '周日', 'value': false, 'index': 0},
-    {'text': '周一', 'value': false, 'index': 1},
-    {'text': '周二', 'value': false, 'index': 2},
-    {'text': '周三', 'value': false, 'index': 3},
-    {'text': '周四', 'value': false, 'index': 4},
-    {'text': '周五', 'value': false, 'index': 5},
-    {'text': '周六', 'value': false, 'index': 6},
+    {'text': S.current.Sun, 'value': false, 'index': 0},
+    {'text': S.current.mon, 'value': false, 'index': 1},
+    {'text': S.current.Tue, 'value': false, 'index': 2},
+    {'text': S.current.Wed, 'value': false, 'index': 3},
+    {'text': S.current.Thu, 'value': false, 'index': 4},
+    {'text': S.current.fri, 'value': false, 'index': 5},
+    {'text': S.current.Sat, 'value': false, 'index': 6},
   ];
   //显示底部弹框的功能
   void showBottomSheet() {
@@ -304,7 +304,6 @@ class _MaintainSettingsState extends State<MaintainSettings> {
         children: [
           buildItem(result, onTap: () {}),
 
-          Padding(padding: EdgeInsets.only(top: 60.sp)),
           //   //取消按钮
           //   //添加个点击事件
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -324,7 +323,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                         topLeft: Radius.circular(30.w),
                         bottomLeft: Radius.circular(30.w))),
                 alignment: Alignment.center,
-                child: const Text("取消",
+                child:  Text(S.current.cancel,
                     style: TextStyle(fontWeight: FontWeight.w600)),
               ),
             ),
@@ -341,25 +340,25 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                         .map((String text) => (text))
                         .toList();
                     if (arr[0] == '1') {
-                      arrList.add('周日');
+                      arrList.add(S.of(context).Sun);
                     }
                     if (arr[1] == '1') {
-                      arrList.add('周一');
+                      arrList.add(S.of(context).mon);
                     }
                     if (arr[2] == '1') {
-                      arrList.add('周二');
+                      arrList.add(S.current.Tue);
                     }
                     if (arr[3] == '1') {
-                      arrList.add('周三');
+                      arrList.add(S.current.Wed);
                     }
                     if (arr[4] == '1') {
-                      arrList.add('周四');
+                      arrList.add(S.current.Thu);
                     }
                     if (arr[5] == '1') {
-                      arrList.add('周五');
+                      arrList.add(S.current.fri);
                     }
                     if (arr[6] == '1') {
-                      arrList.add('周六');
+                      arrList.add(S.current.Sat);
                     }
                   }
                 });
@@ -376,7 +375,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                         topRight: Radius.circular(30.w),
                         bottomRight: Radius.circular(30.w))),
                 alignment: Alignment.center,
-                child: const Text("确定",
+                child:  Text(S.of(context).confirm,
                     style: TextStyle(fontWeight: FontWeight.w600)),
               ),
             )
@@ -428,19 +427,16 @@ class _MaintainSettingsState extends State<MaintainSettings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppbar(context: context, title: '维护设置'),
+      appBar: customAppbar(context: context, title: S.current.maintainSettings),
       body: SingleChildScrollView(
         child: Container(
-          padding: EdgeInsets.only(bottom: 20.w, left: 30.w, right: 30.w),
           decoration:
               const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
           height: 2000.w,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Padding(padding: EdgeInsets.only(top: 20.sp)),
-              Row(children: const [
-                TitleWidger(title: '重启定时'),
-              ]),
+              TitleWidger(title: S.current.RebootScheduler),
               InfoBox(
                   boxCotainer: Column(children: [
                 // 开启冲重定时
@@ -448,7 +444,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                   rowtem: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('开启重启定时'),
+                      Text(S.current.EnableRebootScheduler),
                       Switch(
                         value: isCheck,
                         onChanged: (newVal) {
@@ -471,25 +467,25 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                   child: GestureDetector(
                     onTap: () {
                       // 勾选框的状态
-                      if (arrList.contains('周日')) {
+                      if (arrList.contains(S.of(context).Sun)) {
                         checkboxList[0]['value'] = true;
                       }
-                      if (arrList.contains('周一')) {
+                      if (arrList.contains(S.of(context).mon)) {
                         checkboxList[1]['value'] = true;
                       }
-                      if (arrList.contains('周二')) {
+                      if (arrList.contains(S.current.Tue)) {
                         checkboxList[2]['value'] = true;
                       }
-                      if (arrList.contains('周三')) {
+                      if (arrList.contains(S.current.Wed)) {
                         checkboxList[3]['value'] = true;
                       }
-                      if (arrList.contains('周四')) {
+                      if (arrList.contains(S.current.Thu)) {
                         checkboxList[4]['value'] = true;
                       }
-                      if (arrList.contains('周五')) {
+                      if (arrList.contains(S.current.fri)) {
                         checkboxList[5]['value'] = true;
                       }
-                      if (arrList.contains('周六')) {
+                      if (arrList.contains(S.current.Sat)) {
                         checkboxList[6]['value'] = true;
                       }
                       showBottomSheet();
@@ -498,7 +494,8 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                       rowtem: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('重启日期', style: TextStyle(fontSize: 30.sp)),
+                            Text(S.of(context).EnableScheduler,
+                                style: TextStyle(fontSize: 30.sp)),
                             Row(
                               children: [
                                 Text(arrList.join(),
@@ -589,7 +586,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                       rowtem: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('开始时间', style: TextStyle(fontSize: 30.sp)),
+                            Text(S.of(context).DateReboot, style: TextStyle(fontSize: 30.sp)),
                             Row(
                               children: [
                                 Text(startShowVal,
@@ -680,7 +677,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                       rowtem: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('结束时间', style: TextStyle(fontSize: 30.sp)),
+                            Text(S.of(context).TimeReboot, style: TextStyle(fontSize: 30.sp)),
                             Row(
                               children: [
                                 Text(endShowVal,
@@ -697,120 +694,87 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                   ),
                 )
               ])),
-              Padding(padding: EdgeInsets.only(top: 10.w)),
               Center(
-                  child: SizedBox(
-                height: 70.sp,
-                width: 680.sp,
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(
-                          const Color.fromARGB(255, 48, 118, 250))),
-                  onPressed: () {
-                    if (tranfer == '0;0;0;0;0;0;0' && isCheck == true) {
-                      ToastUtils.toast('重启日期必须选一个');
-                    } else {
-                      getTrestsetData();
-                    }
-                  },
-                  child:  Text(S.of(context).save),
-                ),
-              )),
-              Padding(padding: EdgeInsets.only(top: 60.sp)),
-              Row(children: const [
-                TitleWidger(title: '重启'),
-              ]),
-              Column(children: [
-                Padding(padding: EdgeInsets.only(top: 10.sp)),
-                InfoBox(
-                  boxCotainer: BottomLine(
-                    rowtem: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          '点击 重启 按钮重启设备',
-                        ),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(
-                                  const Color.fromARGB(255, 48, 118, 250))),
-                          onPressed: () {
-                            getmaintaData();
-                          },
-                          child: const Text('重启'),
-                        ),
-                      ],
-                    ),
+                child: SizedBox(
+                  height: 70.sp,
+                  width: 680.sp,
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(
+                            const Color.fromARGB(255, 48, 118, 250))),
+                    onPressed: () {
+                      if (tranfer == '0;0;0;0;0;0;0' && isCheck == true) {
+                        ToastUtils.toast(S.current.mustSuccess);
+                      } else {
+                        getTrestsetData();
+                      }
+                    },
+                    child: Text(S.of(context).save),
                   ),
                 ),
-              ]),
-              Padding(padding: EdgeInsets.only(top: 60.sp)),
-              Row(children: const [
-                TitleWidger(title: '恢复出厂'),
-              ]),
-              Column(children: [
-                Padding(padding: EdgeInsets.only(top: 10.sp)),
-                InfoBox(
-                  boxCotainer: BottomLine(
-                    rowtem: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          '点击 恢复出厂 按钮进行恢复出厂操作',
-                        ),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(
-                                  const Color.fromARGB(255, 48, 118, 250))),
-                          onPressed: () {
-                            getfactoryReset();
-                          },
-                          child: const Text('恢复出厂'),
-                        ),
-                      ],
-                    ),
+              ),
+              Padding(padding: EdgeInsets.only(top: 10.sp)),
+              TitleWidger(title: S.current.Reboot),
+              InfoBox(
+                boxCotainer: BottomLine(
+                  rowtem: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        S.current.clickReboot,
+                      ),
+                    ],
                   ),
                 ),
-              ]),
+              ),
+              Center(
+                child: SizedBox(
+                  height: 70.sp,
+                  width: 680.sp,
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(
+                            const Color.fromARGB(255, 48, 118, 250))),
+                    onPressed: () {
+                      getmaintaData();
+                    },
+                    child: Text(S.current.Reboot),
+                  ),
+                ),
+              ),
+              Padding(padding: EdgeInsets.only(top: 10.sp)),
+              TitleWidger(title: S.current.FactoryReset),
+              InfoBox(
+                boxCotainer: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    BottomLine(
+                      rowtem: Text(
+                        S.current.clickFactory,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Center(
+                child: SizedBox(
+                  height: 70.sp,
+                  width: 680.sp,
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(
+                            const Color.fromARGB(255, 48, 118, 250))),
+                    onPressed: () {
+                      getfactoryReset();
+                    },
+                    child: Text(S.current.FactoryReset),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
       ),
     );
-  }
-}
-
-class TitleWidger extends StatelessWidget {
-  final String title;
-
-  const TitleWidger({super.key, required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(bottom: 10.0),
-      child: Text(
-        title,
-        style: TextStyle(color: Colors.blueAccent, fontSize: 32.sp),
-      ),
-    );
-  }
-}
-
-class InfoBox extends StatelessWidget {
-  final Widget boxCotainer;
-
-  const InfoBox({super.key, required this.boxCotainer});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        padding: EdgeInsets.all(10.0.sp),
-        margin: EdgeInsets.only(bottom: 5.sp),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: boxCotainer);
   }
 }

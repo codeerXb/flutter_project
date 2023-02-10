@@ -183,8 +183,8 @@ class _SettingState extends State<Setting> {
                               topRight: Radius.circular(30.w))),
                       height: 80.w,
                       alignment: Alignment.center,
-                      child: const Text(
-                        "提示",
+                      child:  Text(
+                          S.of(context).hint,
                         style: TextStyle(fontWeight: FontWeight.w700),
                       ),
                     ),
@@ -194,7 +194,7 @@ class _SettingState extends State<Setting> {
                       height: 60.w,
                       alignment: Alignment.topLeft,
                       child: Text(
-                        "确定解除对当前设备 ${loginController.equipment['systemVersionSn']} 的绑定?",
+                       S.of(context).unblockdevice+ " ${loginController.equipment['systemVersionSn']} "+S.of(context).binding,
                         style:
                             TextStyle(color: Colors.black45, fontSize: 22.sp),
                       ),
@@ -222,7 +222,7 @@ class _SettingState extends State<Setting> {
                           // height: 80.w,
                           alignment: Alignment.center,
                           child: Text(
-                            "取消",
+                            S.current.cancel,
                             style: TextStyle(
                                 fontSize: 22.sp, fontWeight: FontWeight.w600),
                           ),
@@ -246,7 +246,7 @@ class _SettingState extends State<Setting> {
                           // height: 80.w,
                           alignment: Alignment.center,
                           child: Text(
-                            "确认",
+                            S.of(context).confirm,
                             style: TextStyle(
                                 fontSize: 22.sp, fontWeight: FontWeight.w600),
                           ),

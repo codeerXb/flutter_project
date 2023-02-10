@@ -4,6 +4,8 @@ import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:get/get.dart';
 
+import '../../generated/l10n.dart';
+
 class UserCard extends StatefulWidget {
   final name;
   const UserCard({super.key, this.name});
@@ -51,19 +53,19 @@ class _UserCardState extends State<UserCard> {
                     width: 50),
               ),
               //中间文字
-              title: Text(_userPhone != 'null' ? _userPhone : '未登录',
+              title: Text(_userPhone != 'null' ? _userPhone :S.of(context).noLogin,
                   style: _userPhone != 'null'
                       ? const TextStyle(
                           color: Color.fromARGB(255, 54, 152, 244))
                       : TextStyle(fontSize: 44.2.sp, color: Colors.grey)),
               //title下方显示的内容
-              subtitle: Text(_userPhone != 'null' ? '当前设备 ${widget.name}' : '',
+              subtitle: Text(_userPhone != 'null' ?  S.of(context).currentDeive+' ${widget.name}' : '',
                   style:_userPhone != 'null'
                     ? TextStyle(fontSize: 22.sp, color: Colors.black)
                     :  TextStyle(fontSize: 0.sp)),
               //标题后显示的widget
               trailing: CommonWidget.buttonWidget(
-                title: _userPhone != 'null' ? '退出登录' : '登录',
+                title: _userPhone != 'null' ? S.of(context).logOut :S.of(context).login,
                 callBack: () {
                   Get.offNamed("/use_login");
                   sharedDeleteData('user_phone');

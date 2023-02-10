@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../core/widget/custom_app_bar.dart';
+import '../../generated/l10n.dart';
 
 /// 用户详情
 class UserDetail extends StatefulWidget {
@@ -152,8 +153,8 @@ class _UserDetailState extends State<UserDetail> {
                   child: Container(
                     height: 80.w,
                     alignment: Alignment.center,
-                    child: const Text(
-                      "取消",
+                    child:  Text(
+                     S.current.cancel,
                     ),
                   ),
                   onTap: () {

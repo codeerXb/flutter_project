@@ -6,6 +6,7 @@ import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import '../../core/utils/string_util.dart';
 import '../../core/widget/common_picker.dart';
 import '../../core/widget/custom_app_bar.dart';
+import '../../generated/l10n.dart';
 
 class NetServerSettings extends StatefulWidget {
   const NetServerSettings({super.key});
@@ -16,13 +17,20 @@ class NetServerSettings extends StatefulWidget {
 
 class _NetServerSettingsState extends State<NetServerSettings> {
   // 套餐类型
-  List<String> comboTypeLabel = ['按流量统计', '按时长统计'];
+  List<String> comboTypeLabel = [
+    S.current.StatisticsByFlow,
+    S.current.TimeLengthStatistics
+  ];
   int comboType = 0;
   // 套餐容量
   double comboContain = -1;
   final TextEditingController _containController = TextEditingController();
   // 套餐周期
-  List<String> comboCycleLabel = ['日', '月', '年'];
+  List<String> comboCycleLabel = [
+    S.current.day,
+    S.current.month,
+    S.current.year
+  ];
   int comboCycle = 1;
 
   @override
@@ -79,7 +87,7 @@ class _NetServerSettingsState extends State<NetServerSettings> {
     return Scaffold(
       appBar: customAppbar(
           context: context,
-          title: '套餐设置',
+          title: S.of(context).PackageSetting,
           titleColor: Colors.white,
           backgroundColor: const Color(0xFF2F5AF5),
           result: {
@@ -122,7 +130,7 @@ class _NetServerSettingsState extends State<NetServerSettings> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('套餐类型',
+                      Text(S.of(context).TypeOfPackage,
                           style: TextStyle(
                               height: 1.1,
                               color: const Color.fromARGB(255, 5, 0, 0),
@@ -154,7 +162,10 @@ class _NetServerSettingsState extends State<NetServerSettings> {
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(comboType == 0 ? '套餐容量' : '套餐时长',
+                    Text(
+                        comboType == 0
+                            ? S.of(context).PackageCapacity
+                            : S.of(context).PackageDuration,
                         style: TextStyle(
                             color: const Color.fromARGB(255, 5, 0, 0),
                             fontSize: 32.sp)),
@@ -220,7 +231,7 @@ class _NetServerSettingsState extends State<NetServerSettings> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('套餐周期',
+                    Text(S.of(context).PackageCycle,
                         style: TextStyle(
                             height: 1.1,
                             color: const Color.fromARGB(255, 5, 0, 0),

@@ -33,10 +33,10 @@ class _NetSetState extends State<NetSet> {
       //检测服务器
       ethernetDetectServer: '');
   //连接模式
-  String showVal = '动态ip';
+  String showVal =  S.current.DynamicIP;
   int val = 0;
   //优先级
-  String priorityVal = '以太网';
+  String priorityVal = S.current.Ethernet;
   int priorityIndex = 0;
   bool isCheck = true;
   final TextEditingController mtu = TextEditingController();
@@ -96,13 +96,13 @@ class _NetSetState extends State<NetSet> {
     };
     XHttp.get('/data.html', data).then((res) {
       try {
-        ToastUtils.toast('修改成功');
+        ToastUtils.toast( S.current.success);
       } on FormatException catch (e) {
         print(e);
       }
     }).catchError((onError) {
       debugPrint('失败：${onError.toString()}');
-      ToastUtils.toast('修改失败');
+      ToastUtils.toast( S.current.error);
     });
   }
 
@@ -121,13 +121,13 @@ class _NetSetState extends State<NetSet> {
         //连接模式
         switch (netdata.ethernetConnectMode.toString()) {
           case 'dhcp':
-            showVal = '动态ip';
+            showVal =  S.current.DynamicIP;
             break;
           case 'static':
-            showVal = '静态ip';
+            showVal = S.current.staticIP;
             break;
           case 'lanonly':
-            showVal = '仅LAN';
+            showVal = S.current.LANOnly;
             break;
         }
         val = ['dhcp', 'static', 'lanonly']
@@ -136,8 +136,8 @@ class _NetSetState extends State<NetSet> {
         isCheck = netdata.ethernetConnectOnly.toString() == '1' ? true : false;
         //优先级 == '1' 4g
         priorityVal =
-            netdata.ethernetConnectPriority.toString() == '1' ? '4G/5G' : '以太网';
-        priorityIndex = ['以太网', '4G/5G'].indexOf(priorityVal);
+            netdata.ethernetConnectPriority.toString() == '1' ? '4G/5G' :  S.current.Ethernet;
+        priorityIndex = [ S.current.Ethernet, '4G/5G'].indexOf(priorityVal);
         //mtu
         mtu.text = netdata.ethernetMtu.toString();
         //检测服务器
@@ -210,7 +210,7 @@ class _NetSetState extends State<NetSet> {
                           closeKeyboard(context);
                           var result = CommonPicker.showPicker(
                             context: context,
-                            options: ['动态ip', '静态ip', '仅LAN'],
+                            options: [ S.current.DynamicIP, S.current.staticIP, S.current.LANOnly],
                             value: val,
                           );
                           result?.then((selectedValue) => {
@@ -220,7 +220,7 @@ class _NetSetState extends State<NetSet> {
                                     setState(() => {
                                           val = selectedValue,
                                           showVal =
-                                              ['动态ip', '静态ip', '仅LAN'][val],
+                                              [ S.current.DynamicIP, S.current.staticIP, S.current.LANOnly][val],
                                         })
                                   }
                               });
@@ -253,7 +253,7 @@ class _NetSetState extends State<NetSet> {
                       ),
                       //仅以太网
                       Offstage(
-                        offstage: showVal == '仅LAN',
+                        offstage: showVal == S.current.LANOnly,
                         child: BottomLine(
                           rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -280,13 +280,13 @@ class _NetSetState extends State<NetSet> {
                       ),
                       //优先级
                       Offstage(
-                        offstage: isCheck || showVal == '仅LAN',
+                        offstage: isCheck || showVal == S.current.LANOnly,
                         child: GestureDetector(
                           onTap: () {
                             closeKeyboard(context);
                             var result = CommonPicker.showPicker(
                               context: context,
-                              options: ['以太网', '4G/5G'],
+                              options: [ S.current.Ethernet, '4G/5G'],
                               value: priorityIndex,
                             );
                             result?.then((selectedValue) => {
@@ -296,7 +296,7 @@ class _NetSetState extends State<NetSet> {
                                       setState(() => {
                                             priorityIndex = selectedValue,
                                             priorityVal =
-                                                ['以太网', '4G/5G'][priorityIndex],
+                                                [ S.current.Ethernet, '4G/5G'][priorityIndex],
                                           })
                                     }
                                 });
@@ -332,7 +332,7 @@ class _NetSetState extends State<NetSet> {
                       //------------------------------------------
                       //IP地址 ethernetIp
                       Offstage(
-                        offstage: showVal != '静态ip',
+                        offstage: showVal != S.current.staticIP,
                         child: BottomLine(
                           rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -357,7 +357,7 @@ class _NetSetState extends State<NetSet> {
                       ),
                       //子网掩码 ethernetMask
                       Offstage(
-                        offstage: showVal != '静态ip',
+                        offstage: showVal != S.current.staticIP,
                         child: BottomLine(
                           rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -380,7 +380,7 @@ class _NetSetState extends State<NetSet> {
                       ),
                       //默认网关 ethernetDefaultGateway
                       Offstage(
-                        offstage: showVal != '静态ip',
+                        offstage: showVal != S.current.staticIP,
                         child: BottomLine(
                           rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -403,7 +403,7 @@ class _NetSetState extends State<NetSet> {
                       ),
                       //主DNS ethernetPrimaryDns
                       Offstage(
-                        offstage: showVal != '静态ip',
+                        offstage: showVal != S.current.staticIP,
                         child: BottomLine(
                           rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -426,7 +426,7 @@ class _NetSetState extends State<NetSet> {
                       ),
                       //辅DNS ethernetSecondaryDns
                       Offstage(
-                        offstage: showVal != '静态ip',
+                        offstage: showVal != S.current.staticIP,
                         child: BottomLine(
                           rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -450,7 +450,7 @@ class _NetSetState extends State<NetSet> {
                       //------------------------------------------
                       //MTU
                       Offstage(
-                        offstage: showVal == '仅LAN',
+                        offstage: showVal == S.current.LANOnly,
                         child: BottomLine(
                           rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -483,7 +483,7 @@ class _NetSetState extends State<NetSet> {
                       ),
                       //检测服务器
                       Offstage(
-                        offstage: showVal == '仅LAN',
+                        offstage: showVal == S.current.LANOnly,
                         child: BottomLine(
                           rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -501,7 +501,7 @@ class _NetSetState extends State<NetSet> {
                                       fontSize: 26.sp,
                                       color: const Color(0xff051220)),
                                   decoration: InputDecoration(
-                                    hintText: "输入检测服务器",
+                                    hintText: S.current.detectionServer,
                                     hintStyle: TextStyle(
                                         fontSize: 26.sp,
                                         color: const Color(0xff737A83)),
@@ -532,25 +532,25 @@ class _NetSetState extends State<NetSet> {
                               context: context,
                               builder: (context) {
                                 return AlertDialog(
-                                    title: const Text("提示"),
-                                    content: const Text("提交后设备将会重启，是否继续?"),
+                                    title:  Text(S.current.hint),
+                                    content:  Text(S.of(context).isGoOn),
                                     actions: <Widget>[
                                       TextButton(
-                                        child: const Text("取消"),
+                                        child:  Text(S.current.cancel),
                                         onPressed: () {
                                           //取消
                                           Navigator.pop(context, 'Cancle');
                                         },
                                       ),
                                       TextButton(
-                                          child: const Text("确定"),
+                                          child:  Text(S.current.confirm),
                                           onPressed: () {
                                             //确定
                                             Navigator.pop(context, "Ok");
                                             Navigator.push(context,
                                                 DialogRouter(LoadingDialog()));
                                             //动态ip
-                                            if (showVal == '动态ip') {
+                                            if (showVal ==  S.current.DynamicIP) {
                                               //isCheck选中不携带 优先级
                                               //不携带 优先级 {"ethernetConnectMode":"dhcp","ethernetMtu":"1500","ethernetConnectOnly":"1","ethernetDetectServer":"0"}
                                               // 携带 优先级 {"ethernetConnectMode":"dhcp","ethernetMtu":"1500","ethernetConnectOnly":"0","ethernetConnectPriority":"0","ethernetDetectServer":"1"}
@@ -558,10 +558,10 @@ class _NetSetState extends State<NetSet> {
                                                   ? handleSave(
                                                       '{"ethernetConnectMode":"dhcp","ethernetMtu":"${mtu.text}","ethernetConnectOnly":"1","ethernetDetectServer":"${server.text}"}')
                                                   : handleSave(
-                                                      '{"ethernetConnectMode":"dhcp","ethernetMtu":"${mtu.text}","ethernetConnectOnly":"0","ethernetConnectPriority":"${priorityVal == '以太网' ? '0' : '1'}","ethernetDetectServer":"${server.text}"}');
+                                                      '{"ethernetConnectMode":"dhcp","ethernetMtu":"${mtu.text}","ethernetConnectOnly":"0","ethernetConnectPriority":"${priorityVal ==  S.current.Ethernet ? '0' : '1'}","ethernetDetectServer":"${server.text}"}');
                                             }
                                             //静态ip
-                                            else if (showVal == '静态ip') {
+                                            else if (showVal == S.current.staticIP) {
                                               //isCheck选中不携带 优先级
                                               //不携带 优先级 {"ethernetConnectMode":"static","ethernetIp":"172.16.20.224","ethernetMask":"255.255.255.0","ethernetDefaultGateway":"172.16.20.253","ethernetPrimaryDns":"114.114.114.114","ethernetSecondaryDns":"8.8.8.8","ethernetMtu":"1500","ethernetConnectOnly":"1","ethernetDetectServer":"0"}
                                               // 携带 优先级{"ethernetConnectMode":"static","ethernetIp":"172.16.20.224","ethernetMask":"255.255.255.0","ethernetDefaultGateway":"172.16.20.253","ethernetPrimaryDns":"114.114.114.114","ethernetSecondaryDns":"8.8.8.8","ethernetMtu":"1500","ethernetConnectOnly":"0","ethernetConnectPriority":"1","ethernetDetectServer":"0"}
@@ -569,17 +569,17 @@ class _NetSetState extends State<NetSet> {
                                                   ? handleSave(
                                                       '{"ethernetConnectMode":"static","ethernetIp":"${fDNSVal1.text}.${fDNSVal2.text}.${fDNSVal3.text}.${fDNSVal4.text}","ethernetMask":"${zwVal1.text}.${zwVal2.text}.${zwVal3.text}.${zwVal4.text}","ethernetDefaultGateway":"${ipVal1.text}.${ipVal2.text}.${ipVal3.text}.${ipVal4.text}","ethernetPrimaryDns":"${mrwgVal1.text}.${mrwgVal2.text}.${mrwgVal3.text}.${mrwgVal4.text}","ethernetSecondaryDns":"${zdnsVal1.text}.${zdnsVal2.text}.${zdnsVal3.text}.${zdnsVal4.text}","ethernetMtu":"${mtu.text}","ethernetConnectOnly":"1","ethernetDetectServer":"${server.text}"}')
                                                   : handleSave(
-                                                      '{"ethernetConnectMode":"static","ethernetIp":"${fDNSVal1.text}.${fDNSVal2.text}.${fDNSVal3.text}.${fDNSVal4.text}","ethernetMask":"${zwVal1.text}.${zwVal2.text}.${zwVal3.text}.${zwVal4.text}","ethernetDefaultGateway":"${ipVal1.text}.${ipVal2.text}.${ipVal3.text}.${ipVal4.text}","ethernetPrimaryDns":"${mrwgVal1.text}.${mrwgVal2.text}.${mrwgVal3.text}.${mrwgVal4.text}","ethernetSecondaryDns":"${zdnsVal1.text}.${zdnsVal2.text}.${zdnsVal3.text}.${zdnsVal4.text}","ethernetMtu":"${mtu.text}","ethernetConnectOnly":"0","ethernetConnectPriority":"${priorityVal == '以太网' ? '0' : '1'}","ethernetDetectServer":"${server.text}"}');
+                                                      '{"ethernetConnectMode":"static","ethernetIp":"${fDNSVal1.text}.${fDNSVal2.text}.${fDNSVal3.text}.${fDNSVal4.text}","ethernetMask":"${zwVal1.text}.${zwVal2.text}.${zwVal3.text}.${zwVal4.text}","ethernetDefaultGateway":"${ipVal1.text}.${ipVal2.text}.${ipVal3.text}.${ipVal4.text}","ethernetPrimaryDns":"${mrwgVal1.text}.${mrwgVal2.text}.${mrwgVal3.text}.${mrwgVal4.text}","ethernetSecondaryDns":"${zdnsVal1.text}.${zdnsVal2.text}.${zdnsVal3.text}.${zdnsVal4.text}","ethernetMtu":"${mtu.text}","ethernetConnectOnly":"0","ethernetConnectPriority":"${priorityVal ==  S.current.Ethernet ? '0' : '1'}","ethernetDetectServer":"${server.text}"}');
                                             }
                                             // 仅LAN
                                             else {
-                                              debugPrint('仅LAN');
+                                              debugPrint(S.current.LANOnly);
                                               //{"ethernetConnectMode":"lanonly","ethernetConnectOnly":"0","ethernetConnectPriority":"1"}
                                               handleSave({
                                                 "ethernetConnectMode":
                                                     "lanonly",
                                                 "ethernetConnectOnly":
-                                                    priorityVal == '以太网'
+                                                    priorityVal ==  S.current.Ethernet
                                                         ? '0'
                                                         : '1'
                                               });

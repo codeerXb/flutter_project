@@ -46,18 +46,18 @@ class _RadioSettingsState extends State<RadioSettings> {
         setState(() {
           radioConcatenate = RadioConcatenateData.fromJson(d);
           if (radioConcatenate.success == true) {
-            ToastUtils.toast('修改成功');
+            ToastUtils.toast( S.current.success);
           } else {
-            ToastUtils.toast('修改失败');
+            ToastUtils.toast( S.current.error);
           }
         });
       } on FormatException catch (e) {
         print(e);
-        ToastUtils.toast('修改失败');
+        ToastUtils.toast( S.current.error);
       }
     }).catchError((e) {
       debugPrint('获取Radio设置失败：$e.toString()');
-      ToastUtils.toast('获取Radio设置失败');
+      ToastUtils.toast(S.current.error);
     });
   }
 
@@ -74,10 +74,10 @@ class _RadioSettingsState extends State<RadioSettings> {
         radioGState = RadioGData.fromJson(d);
         radioStateVal = radioGState.lteMainStatusGet.toString();
         if (radioGState.lteNetSelectMode.toString() == 'auto_select') {
-          showVal = '自动';
+          showVal = S.current.Auto;
           val = 0;
         } else {
-          showVal = '手动';
+          showVal = S.current.Manual;
           val = 1;
         }
         if (radioGState.lteBandGet5g.toString() == '--' ||
@@ -89,7 +89,7 @@ class _RadioSettingsState extends State<RadioSettings> {
       });
     } catch (e) {
       debugPrint('获取Radio 状态失败：$e.toString()');
-      ToastUtils.toast('获取Radio 状态失败');
+      ToastUtils.toast(S.current.error);
     }
   }
 
@@ -124,7 +124,7 @@ class _RadioSettingsState extends State<RadioSettings> {
                       onTap: () {
                         var result = CommonPicker.showPicker(
                           context: context,
-                          options: ['自动', '手动'],
+                          options: [S.current.Auto, S.current.Manual],
                           value: val,
                         );
                         result?.then((selectedValue) => {
@@ -132,7 +132,7 @@ class _RadioSettingsState extends State<RadioSettings> {
                                 {
                                   setState(() => {
                                         val = selectedValue,
-                                        showVal = ['自动', '手动'][val],
+                                        showVal = [S.current.Auto, S.current.Manual][val],
                                         if (val == 0)
                                           {
                                             radioShowVal = 'auto_select',

@@ -72,23 +72,23 @@ class _NetTypeState extends State<NetType> {
                     leftText:  S.of(context).connectionMode,
                     righText:
                         NetTypeData.ethernetConnectMode.toString() == 'dhcp'
-                            ? '动态 IP'
-                            : '非动态 IP',
+                            ? S.current.DynamicIP
+                            : S.current.staticIP,
                   )),
                   BottomLine(
                       rowtem: RowContainer(
                     leftText: S.of(context).linkStatus,
                     righText:
                         NetTypeData.ethernetConnectionStatus.toString() == '1'
-                            ? '已连接'
-                            : '未连接',
+                            ? S.current.Connected
+                            : S.current.ununited,
                   )),
                   BottomLine(
                       rowtem: RowContainer(
                     leftText:  S.of(context).connectStatus,
                     righText: NetTypeData.ethernetLinkStatus.toString() == '1'
-                        ? '已连接'
-                        : '未连接',
+                        ? S.current.Connected
+                        : S.current.ununited,
                   )),
                   BottomLine(
                       rowtem: RowContainer(

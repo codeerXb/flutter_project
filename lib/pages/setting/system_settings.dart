@@ -13,6 +13,7 @@ import '../../core/utils/app_update_util.dart';
 import '../../core/utils/shared_preferences_util.dart';
 import '../../core/widget/common_widget.dart';
 import '../../core/widget/custom_app_bar.dart';
+import '../../generated/l10n.dart';
 
 /// 系统设置
 class SystemSettings extends StatefulWidget {
@@ -26,7 +27,7 @@ class _SystemSettingsState extends State<SystemSettings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppbar(context: context, title: '系统设置'),
+      appBar: customAppbar(context: context, title: S.current.SystemSettings),
       body: SingleChildScrollView(
         child: Container(
           decoration:
@@ -60,13 +61,13 @@ class _SystemSettingsState extends State<SystemSettings> {
                               const Color.fromARGB(255, 48, 118, 250))),
                       onPressed: loginout,
                       child: Text(
-                        '退出登录',
+                        S.of(context).logOut,
                         style: TextStyle(fontSize: 36.sp),
                       ),
                     ),
                   )))
               // CommonWidget.buttonWidget(
-              //     title: '退出登录',
+              //     title: S.of(context)logOut,
               //     background: Colors.white,
               //     fontColor: Colors.red,
               //     callBack: loginout),

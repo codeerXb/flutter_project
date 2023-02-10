@@ -12,6 +12,7 @@ import 'package:flutter_template/pages/topo/model/equipment_datas.dart';
 import 'package:flutter_template/pages/topo/mesh_item.dart';
 import 'package:get/get.dart';
 
+import '../../generated/l10n.dart';
 import 'topo_data.dart';
 import 'topo_item.dart';
 
@@ -82,7 +83,7 @@ class _TopoState extends State<Topo> {
     };
     XHttp.get('/data.html', data).then((res) {
       if (sx) {
-        ToastUtils.toast('刷新成功');
+        ToastUtils.toast(S.current.success);
       }
       try {
         debugPrint("\n================== 获取在线设备 ==========================");
@@ -359,7 +360,7 @@ class _TopoState extends State<Topo> {
                     child: Container(
                         margin: EdgeInsets.only(top: 100.sp),
                         height: 200.w,
-                        child: const Text('暂无设备连接')),
+                        child: Text(S.of(context).NoDeviceConnected)),
                   )
               ],
             ),

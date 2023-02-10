@@ -45,19 +45,19 @@ class _WanSettingsState extends State<WanSettings> {
         setState(() {
           wanNetwork = WanNetworkModel.fromJson(d);
           if (wanNetwork.success == true) {
-            ToastUtils.toast('修改成功');
+            ToastUtils.toast( S.current.success);
             loginout();
           } else {
-            ToastUtils.toast('修改失败');
+            ToastUtils.toast( S.current.error);
           }
         });
       } on FormatException catch (e) {
         print(e);
-        ToastUtils.toast('修改失败');
+        ToastUtils.toast( S.current.error);
       }
     }).catchError((onError) {
       debugPrint('失败：${onError.toString()}');
-      ToastUtils.toast('修改失败');
+      ToastUtils.toast( S.current.error);
     });
   }
 
@@ -83,7 +83,7 @@ class _WanSettingsState extends State<WanSettings> {
           val = 0;
         }
         if (wanSettingVal.networkWanSettingsMode.toString() == 'bridge') {
-          showVal = '桥接';
+          showVal = S.current.BRIDGE;
           val = 1;
         }
         if (wanSettingVal.networkWanSettingsMode.toString() == 'router') {
@@ -93,7 +93,7 @@ class _WanSettingsState extends State<WanSettings> {
       });
     } catch (e) {
       debugPrint('失败：$e.toString()');
-      ToastUtils.toast('获取失败');
+      ToastUtils.toast(S.current.error);
     }
   }
 
@@ -115,7 +115,7 @@ class _WanSettingsState extends State<WanSettings> {
                       onTap: () {
                         var result = CommonPicker.showPicker(
                           context: context,
-                          options: ['NAT', '桥接', 'ROUTER'],
+                          options: ['NAT', S.current.BRIDGE, 'ROUTER'],
                           value: val,
                         );
                         result?.then((selectedValue) => {
@@ -123,7 +123,7 @@ class _WanSettingsState extends State<WanSettings> {
                                 {
                                   setState(() => {
                                         val = selectedValue,
-                                        showVal = ['NAT', '桥接', 'ROUTER'][val],
+                                        showVal = ['NAT', S.current.BRIDGE, 'ROUTER'][val],
                                         if (val == 0)
                                           {wanVal = 'nat', getWanData()},
                                         if (val == 1)

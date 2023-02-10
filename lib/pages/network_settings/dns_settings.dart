@@ -141,7 +141,7 @@ class _DnsSettingsState extends State<DnsSettings> {
       }
     } catch (e) {
       debugPrint('获取DSN 失败：$e.toString()');
-      ToastUtils.toast('获取DSN 失败');
+      ToastUtils.toast(S.current.error);
     }
   }
 
@@ -158,18 +158,18 @@ class _DnsSettingsState extends State<DnsSettings> {
         setState(() {
           dnsDataVal = DnsData.fromJson(d);
           if (dnsDataVal.success == true) {
-            ToastUtils.toast('修改DSN 成功');
+            ToastUtils.toast(S.current.success);
           } else {
-            ToastUtils.toast('修改DSN 失败11');
+            ToastUtils.toast(S.current.error+'11');
           }
         });
       } on FormatException catch (e) {
         print(e);
-        ToastUtils.toast('修改DNS 失败22');
+        ToastUtils.toast(S.current.error+'22');
       }
     }).catchError((e) {
       debugPrint('修改DSN 失败：$e.toString()');
-      ToastUtils.toast('修改DSN 失败33');
+      ToastUtils.toast(S.current.error+'33');
     });
   }
 
@@ -185,18 +185,18 @@ class _DnsSettingsState extends State<DnsSettings> {
         setState(() {
           dnsDataVal = DnsData.fromJson(d);
           if (dnsDataVal.success == true) {
-            ToastUtils.toast('修改DSN 成功');
+            ToastUtils.toast(S.current.success);
           } else {
-            ToastUtils.toast('修改DSN 失败11');
+            ToastUtils.toast(S.current.error+'11');
           }
         });
       } on FormatException catch (e) {
         print(e);
-        ToastUtils.toast('修改DNS 失败22');
+        ToastUtils.toast(S.current.error+'22');
       }
     }).catchError((e) {
-      debugPrint('修改DSN 失败：$e.toString()');
-      ToastUtils.toast('修改DSN 失败33');
+      debugPrint(S.current.error);
+      ToastUtils.toast(S.current.error+'33');
     });
   }
 
@@ -217,7 +217,7 @@ class _DnsSettingsState extends State<DnsSettings> {
                     const Icon(Icons.priority_high, color: Colors.red),
                     Flexible(
                       child: Text(
-                        '静态DNS，VPN DNS具有最高优先级，LTE DNS具有最低优先级. 如果要恢复VPN / LTE DNS，请清除两个DNS配置并提交',
+                        S.of(context).dnsStatic,
                         style: TextStyle(fontSize: 24.sp, color: Colors.red),
                       ),
                     ),

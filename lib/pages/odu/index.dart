@@ -10,6 +10,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/steps_widget%20copy%202.dart';
+import 'package:flutter_template/generated/l10n.dart';
 
 import 'package:flutter_template/pages/odu/model/odu_data.dart';
 import 'package:get/get.dart';
@@ -89,7 +90,7 @@ class _ODUState extends State<ODU> {
   onData(msg) {
     Map<String, dynamic> transmission = jsonDecode(msg);
     if (transmission['code'] != null && transmission['code'] == 500) {
-      ToastUtils.error('设备连接超时!');
+      ToastUtils.error(S.current.timeout);
       setState(() {
         isShow = true;
       });
@@ -188,7 +189,7 @@ class _ODUState extends State<ODU> {
         });
         //  关闭ws
         channel?.sink.close();
-        ToastUtils.toast('终止搜索');
+        ToastUtils.toast(S.current.stopSerch);
       }
     } else if (message.param2 == 3) {
       // 复位
@@ -324,11 +325,11 @@ class _ODUState extends State<ODU> {
                   radarMap: RadarMapModel(
                     legend: [
                       LegendModel(
-                          '实时数值', const Color.fromARGB(255, 34, 177, 16)),
+                         S.of(context).currentValue, const Color.fromARGB(255, 34, 177, 16)),
                       LegendModel(
-                          '最大数值', const Color.fromARGB(255, 234, 65, 53)),
+                           S.of(context).maxValue, const Color.fromARGB(255, 234, 65, 53)),
                       LegendModel(
-                          '当前指向', const Color.fromARGB(255, 255, 166, 1)),
+                          S.of(context).currentOrientation, const Color.fromARGB(255, 255, 166, 1)),
                     ],
                     indicator: legend,
                     data: [
@@ -516,7 +517,7 @@ class _ODUState extends State<ODU> {
                             : Colors.white)),
                     onPressed: connectReceiveData,
                     child: Text(
-                      '开始搜索',
+                     S.of(context).startSearch,
                       style:
                           TextStyle(color: isShow ? Colors.white : Colors.grey),
                     ),

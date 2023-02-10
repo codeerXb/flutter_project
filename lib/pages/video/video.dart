@@ -11,6 +11,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/widget/custom_app_bar.dart';
 import 'package:get/get.dart';
 
+import '../../generated/l10n.dart';
+
 // show 表示只导出 VideoSourceFormat 类
 class SimpleVideoPage extends StatefulWidget {
   const SimpleVideoPage({Key? key}) : super(key: key);
@@ -120,7 +122,7 @@ class _SimpleVideoPageState extends State<SimpleVideoPage> {
                                     }
                                   ]);
                                 },
-                                child: const Text('查看'),
+                                child:  Text(S.current.examine),
                               ),
                             ),
                           ],
@@ -128,8 +130,8 @@ class _SimpleVideoPageState extends State<SimpleVideoPage> {
                       );
                     }).toList(),
                   ])
-                : const Center(
-                    child: Text('暂无数据'),
+                :  Center(
+                    child: Text(S.current.noData),
                   ),
           ),
         ]));

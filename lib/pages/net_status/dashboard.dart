@@ -9,6 +9,7 @@ import 'package:flutter_template/pages/net_status/model/net_connect_status.dart'
 import 'package:flutter_template/pages/net_status/model/online_device.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../generated/l10n.dart';
 import 'arc_progress_bar.dart';
 
 class Dashboard extends StatefulWidget {
@@ -252,7 +253,7 @@ class _DashboardState extends State<Dashboard> {
                                 : 'assets/images/icon_homepage_time.png')),
                       ),
                       Text(
-                        widget.comboType == 0 ? '已用流量' : '已用时长',
+                        widget.comboType == 0 ?  S.current.UsedFlow : S.current.ElapsedTime,
                         style: TextStyle(
                             fontSize: 24.sp,
                             fontWeight: FontWeight.w400,
@@ -329,9 +330,9 @@ class OnlineCount extends StatelessWidget {
             ),
             Padding(
               padding: EdgeInsets.only(left: 4.sp),
-              child: const Text(
-                '台',
-                style: TextStyle(
+              child:  Text(
+               S.of(context).set,
+                style:const TextStyle(
                     height: 2.2,
                     color: Color(0xFF87868E),
                     fontWeight: FontWeight.w400),
@@ -340,10 +341,10 @@ class OnlineCount extends StatelessWidget {
           ],
         ),
         Row(
-          children: const [
+          children:  [
             Text(
-              '实时在线',
-              style: TextStyle(fontWeight: FontWeight.w400),
+              S.of(context).timeOnline,
+              style: const TextStyle(fontWeight: FontWeight.w400),
             ),
           ],
         ),
@@ -409,9 +410,9 @@ class DownloadSpeed extends StatelessWidget {
           ],
         ),
         Row(
-          children: const [
+          children:  [
             Text(
-              '下行速度',
+              S.of(context).DLVelocity,
               style: TextStyle(fontWeight: FontWeight.w400),
             ),
           ],
@@ -480,9 +481,9 @@ class UploadSpeed extends StatelessWidget {
           ],
         ),
         Row(
-          children: const [
+          children:  [
             Text(
-              '上行速度',
+              S.of(context).ULVelocity,
               style: TextStyle(fontWeight: FontWeight.w400),
             ),
           ],

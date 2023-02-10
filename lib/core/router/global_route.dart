@@ -41,6 +41,8 @@ import '../../pages/setting/system_settings.dart';
 import '../../pages/system_settings/maintain_settings.dart';
 import '../../pages/system_settings/account_security.dart';
 import '../../pages/toolbar.dart';
+import '../../pages/topo/parental_control.dart';
+import '../../pages/topo/parental_pop.dart';
 
 /// 路由
 class GlobalRouter {
@@ -174,11 +176,17 @@ class GlobalRouter {
     // 忘记密码
     '/forget_password': (BuildContext context, {Object? args}) =>
         const ForgetPassword(),
-        
+
     // 视频
     '/video_play': (BuildContext context, {Object? args}) => const VideoPlay(),
     // 图片
     '/img': (BuildContext context, {Object? args}) => const SwiperPage(),
+    // 家长控制
+    '/parental_control': (BuildContext context, {Object? args}) =>
+        const ParentalControl(),
+    // 家长控制
+    '/parental_pop': (BuildContext context, {Object? args}) =>
+        const ParentalPop(),
   };
 
   static GlobalRouter? _singleton;

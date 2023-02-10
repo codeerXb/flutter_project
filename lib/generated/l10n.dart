@@ -1870,10 +1870,10 @@ class S {
     );
   }
 
-  /// `Please confirm the password.`
+  /// ` confirm the password.`
   String get confrimPassorld {
     return Intl.message(
-      'Please confirm the password.',
+      ' confirm the password.',
       name: 'confrimPassorld',
       desc: '',
       args: [],
@@ -2005,6 +2005,76 @@ class S {
     return Intl.message(
       'enter',
       name: 'enter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `1~32 ASCII character`
+  String get ascii32 {
+    return Intl.message(
+      '1~32 ASCII character',
+      name: 'ascii32',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `restart...`
+  String get restart {
+    return Intl.message(
+      'restart...',
+      name: 'restart',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `version Updating`
+  String get versionUpdating {
+    return Intl.message(
+      'version Updating',
+      name: 'versionUpdating',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `privacy Policy`
+  String get privacyPolicy {
+    return Intl.message(
+      'privacy Policy',
+      name: 'privacyPolicy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `user Agreement`
+  String get userAgreement {
+    return Intl.message(
+      'user Agreement',
+      name: 'userAgreement',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cache Cleared`
+  String get CacheCleared {
+    return Intl.message(
+      'Cache Cleared',
+      name: 'CacheCleared',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `天`
+  String get date {
+    return Intl.message(
+      '天',
+      name: 'date',
       desc: '',
       args: [],
     );

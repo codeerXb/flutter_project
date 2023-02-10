@@ -3,7 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/utils/cache_util.dart';
 import 'package:flutter_template/core/utils/common_util.dart';
 import 'package:flutter_template/core/utils/toast.dart';
+import 'package:flutter_template/generated/l10n.dart';
 import 'package:get/get.dart';
+import '../../core/widget/common_box.dart';
 import '../../core/widget/common_widget.dart';
 import '../../core/widget/custom_app_bar.dart';
 
@@ -36,18 +38,28 @@ class _ClearCacheState extends State<ClearCache> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppbar(context: context, title: '清除缓存'),
+      appBar: customAppbar(context: context, title: S.current.clearCache),
       body: SingleChildScrollView(
         child: Container(
           decoration:
               const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
-          height: 2000.w,
+          height: 1400.w,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               /// 清除缓存
-              CommonWidget.simpleWidgetWithUserDetail("清除缓存",
-                  value: cacheSizeStr),
+              TitleWidger(title: S.current.clearCache),
+              InfoBox(
+                  boxCotainer: Column(
+                children: [
+                  //value: cacheSizeStr
+                  BottomLine(
+                      rowtem: RowContainer(
+                    leftText: S.of(context).clearCache,
+                    righText: cacheSizeStr,
+                  )),
+                ],
+              )),
 
               /// 清除缓存按钮
               Padding(
@@ -62,11 +74,11 @@ class _ClearCacheState extends State<ClearCache> {
                               const Color.fromARGB(255, 48, 118, 250))),
                       onPressed: () {
                         CacheUtils.clearApplicationCache();
-                        ToastUtils.success("缓存已清空");
+                        ToastUtils.success( S.current.CacheCleared);
                         Get.back();
                       },
                       child: Text(
-                        '清除缓存',
+                       S.of(context).clearCache,
                         style: TextStyle(fontSize: 36.sp),
                       ),
                     ),

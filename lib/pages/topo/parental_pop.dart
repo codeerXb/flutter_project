@@ -128,14 +128,14 @@ class _ParentalPopState extends State<ParentalPop> {
       appBar: customAppbar(context: context, title: '家长控制'),
       body: SingleChildScrollView(
           child: Container(
-        height: 660.w,
+        height: 1400.w,
         decoration: BoxDecoration(
-            color: Colors.white,
+            color:  const Color.fromRGBO(240, 240, 240, 1),
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(30.w),
                 topRight: Radius.circular(30.w))),
         child: Padding(
-          padding: EdgeInsets.only(left: 30.w, right: 30.w, top: 10.w),
+          padding: EdgeInsets.only(left: 30.w, right: 30.w, top: 100.w),
           child: Column(
             children: <Widget>[
               InfoBox(

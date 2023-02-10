@@ -97,6 +97,8 @@ class _WlanSetState extends State<WlanSet> {
   String xtShowVal = 'Auto';
   int xtVal = 0;
   int xtVal5 = 0;
+  //密码
+  bool passwordValShow = true;
   //发射功率
   String fsShowVal = '100%';
   List<String> wifiTxpower = ['20', '17', '14'];
@@ -676,9 +678,8 @@ class _WlanSetState extends State<WlanSet> {
                                     }
                                 });
                           },
-                          child: Container(
-                            padding: EdgeInsets.only(top: 20.w),
-                            child: Row(
+                          child: BottomLine(
+                            rowtem: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(S.of(context).TxPower,
@@ -959,34 +960,49 @@ class _WlanSetState extends State<WlanSet> {
                         if (aqVal != 2)
 
                           //密码
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                S.of(context).Password,
-                                style: TextStyle(
-                                    color: const Color.fromARGB(255, 5, 0, 0),
-                                    fontSize: 28.sp),
-                              ),
-                              SizedBox(
-                                width: 250.w,
-                                child: TextFormField(
-                                  autovalidateMode: AutovalidateMode.always,
-                                  textAlign: TextAlign.right,
-                                  controller: pdVal == 0 ? password : password5,
+                          BottomLine(
+                            rowtem: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  S.of(context).Password,
                                   style: TextStyle(
-                                      fontSize: 26.sp,
-                                      color: const Color(0xff051220)),
-                                  decoration: InputDecoration(
-                                    hintText: S.current.enter+S.current.newPassowld,
-                                    hintStyle: TextStyle(
+                                      color: const Color.fromARGB(255, 5, 0, 0),
+                                      fontSize: 28.sp),
+                                ),
+                                SizedBox(
+                                  width: 250.w,
+                                  child: TextFormField(
+                                    autovalidateMode: AutovalidateMode.always,
+                                    obscureText: passwordValShow,
+                                    textAlign: TextAlign.right,
+                                    controller:
+                                        pdVal == 0 ? password : password5,
+                                    style: TextStyle(
                                         fontSize: 26.sp,
-                                        color: const Color(0xff737A83)),
-                                    border: InputBorder.none,
+                                        color: const Color(0xff051220)),
+                                    decoration: InputDecoration(
+                                      suffixIcon: IconButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              passwordValShow =
+                                                  !passwordValShow;
+                                            });
+                                          },
+                                          icon: Icon(!passwordValShow
+                                              ? Icons.visibility
+                                              : Icons.visibility_off)),
+                                      hintText: S.current.enter +
+                                          S.current.newPassowld,
+                                      hintStyle: TextStyle(
+                                          fontSize: 26.sp,
+                                          color: const Color(0xff737A83)),
+                                      border: InputBorder.none,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                       ],
                     )),

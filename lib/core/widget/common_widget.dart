@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_template/config/constant.dart';
 import 'package:flutter_template/core/utils/string_util.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/generated/l10n.dart';
 
 /// 通用Widget
 class CommonWidget {
@@ -688,14 +689,14 @@ class LoadingDialog extends Dialog {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: const <Widget>[
+                children:  <Widget>[
                   CircularProgressIndicator(),
                   Padding(
-                    padding: EdgeInsets.only(
+                    padding: const EdgeInsets.only(
                       top: 20.0,
                     ),
                     child: Text(
-                      "设备重启中...",
+                      S.current.restart,
                       style: TextStyle(fontSize: 16.0),
                     ),
                   ),

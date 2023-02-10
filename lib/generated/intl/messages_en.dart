@@ -34,6 +34,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "BRIDGE": MessageLookupByLibrary.simpleMessage("BRIDGE"),
         "Band": MessageLookupByLibrary.simpleMessage("Band"),
         "Bandwidth": MessageLookupByLibrary.simpleMessage("Bandwidth"),
+        "CacheCleared": MessageLookupByLibrary.simpleMessage("Cache Cleared"),
         "Channel": MessageLookupByLibrary.simpleMessage("Channel"),
         "Chile": MessageLookupByLibrary.simpleMessage("Chile"),
         "China": MessageLookupByLibrary.simpleMessage("China"),
@@ -153,6 +154,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "advancedSet":
             MessageLookupByLibrary.simpleMessage("advanced Settings"),
         "aesRecommend": MessageLookupByLibrary.simpleMessage("AES(Recommend)"),
+        "ascii32": MessageLookupByLibrary.simpleMessage("1~32 ASCII character"),
         "binding": MessageLookupByLibrary.simpleMessage("binding?"),
         "cancel": MessageLookupByLibrary.simpleMessage("cancel"),
         "clearCache": MessageLookupByLibrary.simpleMessage("clearCache"),
@@ -162,8 +164,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Please click Reboot to reboot device"),
         "conDev": MessageLookupByLibrary.simpleMessage("connecting device"),
         "confirm": MessageLookupByLibrary.simpleMessage("confirm"),
-        "confrimPassorld": MessageLookupByLibrary.simpleMessage(
-            "Please confirm the password."),
+        "confrimPassorld":
+            MessageLookupByLibrary.simpleMessage(" confirm the password."),
         "connectMethod": MessageLookupByLibrary.simpleMessage("connectMethod"),
         "connectStatus": MessageLookupByLibrary.simpleMessage("connect Status"),
         "connectionMode":
@@ -174,6 +176,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "currentOrientation":
             MessageLookupByLibrary.simpleMessage("current Orientation"),
         "currentValue": MessageLookupByLibrary.simpleMessage("current Value"),
+        "date": MessageLookupByLibrary.simpleMessage("天"),
         "day": MessageLookupByLibrary.simpleMessage("day"),
         "detectionServer":
             MessageLookupByLibrary.simpleMessage("Input detection server"),
@@ -244,10 +247,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "phoneLabel": MessageLookupByLibrary.simpleMessage(
             "enter your mobile phone nubmer"),
         "priority": MessageLookupByLibrary.simpleMessage("priority"),
+        "privacyPolicy": MessageLookupByLibrary.simpleMessage("privacy Policy"),
         "radioSettings": MessageLookupByLibrary.simpleMessage("Radio Settings"),
         "register": MessageLookupByLibrary.simpleMessage("register"),
         "rescan": MessageLookupByLibrary.simpleMessage("rescan"),
         "reset": MessageLookupByLibrary.simpleMessage("reset"),
+        "restart": MessageLookupByLibrary.simpleMessage("restart..."),
         "save": MessageLookupByLibrary.simpleMessage("save"),
         "server": MessageLookupByLibrary.simpleMessage("Server"),
         "set": MessageLookupByLibrary.simpleMessage("set"),
@@ -270,12 +275,15 @@ class MessageLookup extends MessageLookupByLibrary {
             "Confirm to unblock the current device"),
         "unlock": MessageLookupByLibrary.simpleMessage("S unlock"),
         "ununited": MessageLookupByLibrary.simpleMessage("ununited"),
+        "userAgreement": MessageLookupByLibrary.simpleMessage("user Agreement"),
         "verficationCode":
             MessageLookupByLibrary.simpleMessage(" enter verification code"),
         "verficationCodeError":
             MessageLookupByLibrary.simpleMessage("Verification code error"),
         "versionInfo":
             MessageLookupByLibrary.simpleMessage("version Information"),
+        "versionUpdating":
+            MessageLookupByLibrary.simpleMessage("version Updating"),
         "visitorNet": MessageLookupByLibrary.simpleMessage("Guest Network"),
         "wanSettings": MessageLookupByLibrary.simpleMessage("WAN Settings"),
         "wlanSet": MessageLookupByLibrary.simpleMessage("WLAN Setting"),

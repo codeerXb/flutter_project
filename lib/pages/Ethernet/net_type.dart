@@ -55,7 +55,8 @@ class _NetTypeState extends State<NetType> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppbar(context: context, title:  S.of(context).EthernetSettings),
+      appBar:
+          customAppbar(context: context, title: S.of(context).EthernetSettings),
       body: Container(
         decoration:
             const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
@@ -63,13 +64,13 @@ class _NetTypeState extends State<NetType> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             //1系统信息
-             TitleWidger(title:  S.of(context).status),
+            TitleWidger(title: S.of(context).status),
             InfoBox(
               boxCotainer: Column(
                 children: [
                   BottomLine(
                       rowtem: RowContainer(
-                    leftText:  S.of(context).connectionMode,
+                    leftText: S.of(context).connectionMode,
                     righText:
                         NetTypeData.ethernetConnectMode.toString() == 'dhcp'
                             ? S.current.DynamicIP
@@ -85,14 +86,14 @@ class _NetTypeState extends State<NetType> {
                   )),
                   BottomLine(
                       rowtem: RowContainer(
-                    leftText:  S.of(context).connectStatus,
+                    leftText: S.of(context).connectStatus,
                     righText: NetTypeData.ethernetLinkStatus.toString() == '1'
                         ? S.current.Connected
                         : S.current.ununited,
                   )),
                   BottomLine(
                       rowtem: RowContainer(
-                    leftText:  S.of(context).OnlineTime,
+                    leftText: S.of(context).OnlineTime,
                     righText: DateFormat("dd天HH小时mm分钟").format(
                         DateTime.fromMillisecondsSinceEpoch(int.parse(
                                 NetTypeData.systemOnlineTime.toString() +
@@ -101,12 +102,12 @@ class _NetTypeState extends State<NetType> {
                   )),
                   BottomLine(
                       rowtem: RowContainer(
-                    leftText:  S.of(context).IPAddress,
+                    leftText: S.of(context).IPAddress,
                     righText: NetTypeData.ethernetConnectionIp.toString(),
                   )),
                   BottomLine(
                       rowtem: RowContainer(
-                    leftText:  S.of(context).SubnetMask,
+                    leftText: S.of(context).SubnetMask,
                     righText: NetTypeData.ethernetConnectionMask.toString(),
                   )),
                   BottomLine(
@@ -119,10 +120,9 @@ class _NetTypeState extends State<NetType> {
                     leftText: S.of(context).PrimaryDNS,
                     righText: NetTypeData.ethernetConnectionDns1.toString(),
                   )),
-                  Container(
-                    padding: EdgeInsets.only(top: 20.w),
-                    child: RowContainer(
-                      leftText:  S.of(context).SecondaryDNS,
+                  BottomLine(
+                    rowtem: RowContainer(
+                      leftText: S.of(context).SecondaryDNS,
                       righText: NetTypeData.ethernetConnectionDns2.toString(),
                     ),
                   )

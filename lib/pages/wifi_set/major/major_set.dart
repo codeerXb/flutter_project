@@ -37,13 +37,13 @@ class _MajorSetState extends State<MajorSet> {
     };
     XHttp.get('/data.html', data).then((res) {
       try {
-        ToastUtils.toast( S.current.success);
+        ToastUtils.toast(S.current.success);
       } on FormatException catch (e) {
         print(e);
       }
     }).catchError((onError) {
       debugPrint('失败：${onError.toString()}');
-      ToastUtils.toast( S.current.error);
+      ToastUtils.toast(S.current.error);
     });
   }
 
@@ -156,27 +156,30 @@ class _MajorSetState extends State<MajorSet> {
                                 }
                             });
                       },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text( S.of(context).Region,
-                              style: TextStyle(
-                                  color: const Color.fromARGB(255, 5, 0, 0),
-                                  fontSize: 28.sp)),
-                          Row(
-                            children: [
-                              Text(showVal,
-                                  style: TextStyle(
-                                      color: const Color.fromARGB(255, 5, 0, 0),
-                                      fontSize: 28.sp)),
-                              Icon(
-                                Icons.arrow_forward_ios_outlined,
-                                color: const Color.fromRGBO(144, 147, 153, 1),
-                                size: 30.w,
-                              )
-                            ],
-                          ),
-                        ],
+                      child: BottomLine(
+                        rowtem: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(S.of(context).Region,
+                                style: TextStyle(
+                                    color: const Color.fromARGB(255, 5, 0, 0),
+                                    fontSize: 28.sp)),
+                            Row(
+                              children: [
+                                Text(showVal,
+                                    style: TextStyle(
+                                        color:
+                                            const Color.fromARGB(255, 5, 0, 0),
+                                        fontSize: 28.sp)),
+                                Icon(
+                                  Icons.arrow_forward_ios_outlined,
+                                  color: const Color.fromRGBO(144, 147, 153, 1),
+                                  size: 30.w,
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],

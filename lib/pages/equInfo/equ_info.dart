@@ -61,7 +61,7 @@ class _EquInfoState extends State<EquInfo> {
         body: Container(
           decoration:
               const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
-          height: 2000.w,
+          height: 1400.w,
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,

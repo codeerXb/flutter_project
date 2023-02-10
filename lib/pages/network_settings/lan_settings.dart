@@ -258,7 +258,7 @@ class _LanSettingsState extends State<LanSettings> {
           child: Container(
             decoration:
                 const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
-            height: 2000.w,
+            height: 1400.w,
             child: Column(
               children: [
                 Row(children:  [

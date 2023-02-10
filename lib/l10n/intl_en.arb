@@ -181,7 +181,7 @@
   "EditPass": "change password",
   "PassRule": "The password must be a combination of 8 to 16 digits and characters.",
   "newOldError": "The new password is different from the confirmed password",
-  "confrimPassorld": "Please confirm the password.",
+  "confrimPassorld": " confirm the password.",
   "newPassowld": "new password",
   "ConfirmnewPassowld": "Please enter a new password",
   "oldPassowld": "old password",
@@ -195,5 +195,12 @@
   "ASCII": "ASCII characters of 8 to 63 characters",
   "notEmpty": "not Empty!",
   "enter": "enter",
+  "ascii32": "1~32 ASCII character",
+  "restart": "restart...",
+  "versionUpdating": "version Updating",
+  "privacyPolicy": "privacy Policy",
+  "userAgreement": "user Agreement",
+  "CacheCleared": "Cache Cleared",
+  "date": "天",
   "a ": "111"
 }

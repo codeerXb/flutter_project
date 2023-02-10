@@ -193,7 +193,13 @@
   "ASCII": "8~63位ASCII字符",
   "notEmpty": "不能为空！",
   "enter": "输入",
-
+  "ascii32": "1~32位ASCII字符",
+  "restart": "设备重启中...",
+  "versionUpdating": "版本更新",
+  "privacyPolicy": "隐私政策",
+  "userAgreement": "用户协议",
+  "CacheCleared": "缓存已清空",
+  "date": "天",
   
   "a": "111"
 }

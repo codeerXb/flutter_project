@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 
 import '../../core/utils/app_update_util.dart';
 import '../../core/utils/shared_preferences_util.dart';
+import '../../core/widget/common_box.dart';
 import '../../core/widget/common_widget.dart';
 import '../../core/widget/custom_app_bar.dart';
 import '../../generated/l10n.dart';
@@ -32,23 +33,85 @@ class _SystemSettingsState extends State<SystemSettings> {
         child: Container(
           decoration:
               const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
-          height: 2000.w,
+          height: 1400.w,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              CommonWidget.simpleWidgetWithUserDetail("版本更新", callBack: () {
-                print("版本更新");
-                if (false) {
-                  /// 这里先注释掉
-                  AppUpdateUtils().updateApp(fromHome: false);
-                }
-              }),
-              CommonWidget.simpleWidgetWithUserDetail("隐私政策", callBack: () {
-                print("隐私政策");
-              }),
-              CommonWidget.simpleWidgetWithUserDetail("用户协议", callBack: () {
-                print("用户协议");
-              }),
+              //系统设置
+              TitleWidger(title: S.current.SystemSettings),
+
+              InfoBox(
+                boxCotainer: Column(children: [
+                  //版本更新
+                  GestureDetector(
+                    onTap: () {
+                      debugPrint('版本更新');
+                    },
+                    child: BottomLine(
+                      rowtem: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(S.current.versionUpdating,
+                              style: TextStyle(
+                                  color: const Color.fromARGB(255, 5, 0, 0),
+                                  fontSize: 28.sp)),
+                          Icon(
+                            Icons.arrow_forward_ios_outlined,
+                            color: const Color.fromRGBO(144, 147, 153, 1),
+                            size: 30.w,
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  //隐私政策
+                  GestureDetector(
+                    onTap: () {
+                      debugPrint('隐私政策');
+                    },
+                    child: BottomLine(
+                      rowtem: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(S.current.privacyPolicy,
+                              style: TextStyle(
+                                  color: const Color.fromARGB(255, 5, 0, 0),
+                                  fontSize: 28.sp)),
+                          Icon(
+                            Icons.arrow_forward_ios_outlined,
+                            color: const Color.fromRGBO(144, 147, 153, 1),
+                            size: 30.w,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  //用户协议
+                  GestureDetector(
+                    onTap: () {
+                      debugPrint('用户协议');
+                    },
+                    child: BottomLine(
+                      rowtem: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(S.current.userAgreement,
+                              style: TextStyle(
+                                  color: const Color.fromARGB(255, 5, 0, 0),
+                                  fontSize: 28.sp)),
+                          Icon(
+                            Icons.arrow_forward_ios_outlined,
+                            color: const Color.fromRGBO(144, 147, 153, 1),
+                            size: 30.w,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ]),
+              ),
+
+              //退出登录
               Padding(
                   padding: EdgeInsets.only(top: 15.w),
                   child: Center(
@@ -66,11 +129,6 @@ class _SystemSettingsState extends State<SystemSettings> {
                       ),
                     ),
                   )))
-              // CommonWidget.buttonWidget(
-              //     title: S.of(context)logOut,
-              //     background: Colors.white,
-              //     fontColor: Colors.red,
-              //     callBack: loginout),
             ],
           ),
         ),

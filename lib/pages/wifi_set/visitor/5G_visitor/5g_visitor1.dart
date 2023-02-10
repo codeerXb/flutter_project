@@ -211,7 +211,7 @@ class _Visitor4State extends State<Visitor4> {
                                     fontSize: 26.sp,
                                     color: const Color(0xff051220)),
                                 decoration: InputDecoration(
-                                  hintText: "1~32位ASCII字符",
+                                  hintText: S.current.ascii32,
                                   hintStyle: TextStyle(
                                       fontSize: 26.sp,
                                       color: const Color(0xff737A83)),
@@ -417,42 +417,44 @@ class _Visitor4State extends State<Visitor4> {
                         ),
                       ),
                       //密码
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(S.of(context).Password,
-                              style: TextStyle(
-                                  color: const Color.fromARGB(255, 5, 0, 0),
-                                  fontSize: 28.sp)),
-                          SizedBox(
-                            height: 80.w,
-                            width: 300.w,
-                            child: TextFormField(
-                              textAlign: TextAlign.right,
-                              obscureText: passwordValShow,
-                              controller: password,
-                              style: TextStyle(
-                                  fontSize: 26.sp,
-                                  color: const Color(0xff051220)),
-                              decoration: InputDecoration(
-                                suffixIcon: IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        passwordValShow = !passwordValShow;
-                                      });
-                                    },
-                                    icon: Icon(!passwordValShow
-                                        ? Icons.visibility
-                                        : Icons.visibility_off)),
-                                hintText:S.current.ASCII,
-                                hintStyle: TextStyle(
+                      BottomLine(
+                        rowtem: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(S.of(context).Password,
+                                style: TextStyle(
+                                    color: const Color.fromARGB(255, 5, 0, 0),
+                                    fontSize: 28.sp)),
+                            SizedBox(
+                              height: 80.w,
+                              width: 300.w,
+                              child: TextFormField(
+                                textAlign: TextAlign.right,
+                                obscureText: passwordValShow,
+                                controller: password,
+                                style: TextStyle(
                                     fontSize: 26.sp,
-                                    color: const Color(0xff737A83)),
-                                border: InputBorder.none,
+                                    color: const Color(0xff051220)),
+                                decoration: InputDecoration(
+                                  suffixIcon: IconButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          passwordValShow = !passwordValShow;
+                                        });
+                                      },
+                                      icon: Icon(!passwordValShow
+                                          ? Icons.visibility
+                                          : Icons.visibility_off)),
+                                  hintText:S.current.ASCII,
+                                  hintStyle: TextStyle(
+                                      fontSize: 26.sp,
+                                      color: const Color(0xff737A83)),
+                                  border: InputBorder.none,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ],
                   )),

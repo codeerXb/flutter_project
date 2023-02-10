@@ -105,7 +105,7 @@ class _WanSettingsState extends State<WanSettings> {
         child: Container(
             decoration:
                 const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
-            height: 2000.w,
+            height: 1400.w,
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [

@@ -201,6 +201,9 @@
   "privacyPolicy": "privacy Policy",
   "userAgreement": "user Agreement",
   "CacheCleared": "Cache Cleared",
-  "date": "天",
+  "date": "date",
+  "subService": "subscription service",
+  "parentalControl": "parental control",
+  "gameAcceleration": "game acceleration",
   "a ": "111"
 }

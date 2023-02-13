@@ -9,6 +9,9 @@ import 'package:flutter_template/pages/setting/contact_customer.dart';
 import 'package:flutter_template/pages/setting/file_upload_download.dart';
 import 'package:flutter_template/pages/Ethernet/net_type.dart';
 import 'package:flutter_template/pages/setting/user_detail.dart';
+import 'package:flutter_template/pages/sub_service/game_acceleration.dart';
+import 'package:flutter_template/pages/sub_service/index.dart';
+import 'package:flutter_template/pages/sub_service/parental_control.dart';
 import 'package:flutter_template/pages/uest_login/forgetPassword.dart';
 import 'package:flutter_template/pages/uest_login/login.dart';
 import 'package:flutter_template/pages/uest_login/register.dart';
@@ -187,6 +190,15 @@ class GlobalRouter {
     // 家长控制
     '/parental_pop': (BuildContext context, {Object? args}) =>
         const ParentalPop(),
+    // 订阅服务
+    '/sub_service': (BuildContext context, {Object? args}) =>
+        const SubSerivce(),
+    // 家长控制详情
+    '/parcontrol_info': (BuildContext context, {Object? args}) =>
+        const Parcontrol(),
+    // 游戏加速详情
+    '/gameacce_inofo': (BuildContext context, {Object? args}) =>
+        const Gameacce(),
   };
 
   static GlobalRouter? _singleton;

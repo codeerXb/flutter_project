@@ -2070,11 +2070,41 @@ class S {
     );
   }
 
-  /// `天`
+  /// `date`
   String get date {
     return Intl.message(
-      '天',
+      'date',
       name: 'date',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `subscription service`
+  String get subService {
+    return Intl.message(
+      'subscription service',
+      name: 'subService',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `parental control`
+  String get parentalControl {
+    return Intl.message(
+      'parental control',
+      name: 'parentalControl',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `game acceleration`
+  String get gameAcceleration {
+    return Intl.message(
+      'game acceleration',
+      name: 'gameAcceleration',
       desc: '',
       args: [],
     );

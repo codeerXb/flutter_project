@@ -200,6 +200,9 @@
   "userAgreement": "用户协议",
   "CacheCleared": "缓存已清空",
   "date": "天",
+  "subService": "订阅服务",
+  "parentalControl": "家长控制",
+  "gameAcceleration": "游戏加速",
   
   "a": "111"
 }

@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import '../../core/http/http.dart';
 import '../../core/utils/toast.dart';
 import 'model/access_datas.dart';
+// import 'package:flutter_template/core/widget/left_slide_actions.dart';
 
 class ParentalControl extends StatefulWidget {
   const ParentalControl({super.key});
@@ -20,21 +21,16 @@ class ParentalControl extends StatefulWidget {
 
 class _ParentalControlState extends State<ParentalControl> {
   OnlineDeviceTable data = OnlineDeviceTable(mAC: '');
-  AccessDatas restart = AccessDatas();
   AccessOpen aOpen = AccessOpen();
-// 添加
+// 启用
+  AccessDatas restart = AccessDatas();
   bool isCheck = false;
   int checkVal = 0;
 
   // 家长控制列表
   AccessListDatas accessList =
       AccessListDatas(fwParentControlTable: [], max: null);
-  List accesslistD = [];
-  List<Widget> temList = [];
 
-// 名称  设备
-  String hostN = '';
-  String mac = '';
   @override
   void initState() {
     super.initState();
@@ -137,7 +133,6 @@ class _ParentalControlState extends State<ParentalControl> {
       appBar: customAppbar(context: context, title: '家长控制'),
       body: ListView(children: [
         Container(
-            // height: 1400.w,
             padding: const EdgeInsets.all(10.0),
             decoration:
                 const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
@@ -180,7 +175,7 @@ class _ParentalControlState extends State<ParentalControl> {
                           boxCotainer: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text('${item.timeStart!}至${item.timeStop!}不允许访问网络',
+                          Text('${item.timeStart!}至${item.timeStop!}禁止访问',
                               style: TextStyle(
                                   color: const Color.fromARGB(255, 5, 0, 0),
                                   fontSize: ScreenUtil().setWidth(30.0))),
@@ -195,6 +190,7 @@ class _ParentalControlState extends State<ParentalControl> {
                 Padding(
                   padding: EdgeInsets.only(top: 25.sp),
                 ),
+                // + 新增
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

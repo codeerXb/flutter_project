@@ -90,18 +90,18 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                   padding: EdgeInsets.only(top: 10.sp),
                 ),
                 InfoBox(
-                  boxCotainer: GestureDetector(
-                    onTap: () {
-                      Get.toNamed("/parental_control", arguments: data);
-                    },
-                    child: BottomLine(
-                      rowtem: Row(
+                  boxCotainer: SizedBox(
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {
+                        Get.toNamed("/parental_control", arguments: data);
+                      },
+                      child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text('家长控制', style: TextStyle(fontSize: 30.sp)),
                             Row(
                               children: [
-                                Text('', style: TextStyle(fontSize: 30.sp)),
                                 Icon(
                                   Icons.arrow_forward_ios_outlined,
                                   color: const Color.fromRGBO(144, 147, 153, 1),

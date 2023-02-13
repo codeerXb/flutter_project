@@ -11,8 +11,8 @@ class BottomLine extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 90.w,
-      padding:  EdgeInsets.only(bottom: 6.w),
-      margin:  EdgeInsets.only(bottom: 6.w),
+      padding: EdgeInsets.only(bottom: 6.w),
+      margin: EdgeInsets.only(bottom: 6.w),
       decoration: const BoxDecoration(
           border: Border(bottom: BorderSide(color: Colors.black12))),
       child: rowtem,
@@ -34,12 +34,12 @@ class RowContainer extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(leftText,
-            style:  TextStyle(
-                color:const Color.fromARGB(255, 5, 0, 0), fontSize: 28.sp)),
+            style: TextStyle(
+                color: const Color.fromARGB(255, 5, 0, 0), fontSize: 28.sp)),
         Text(
           righText,
-          style:  TextStyle(
-              color:const Color.fromARGB(255, 37, 37, 36), fontSize: 26.sp),
+          style: TextStyle(
+              color: const Color.fromARGB(255, 37, 37, 36), fontSize: 26.sp),
         ),
       ],
     );
@@ -55,7 +55,7 @@ class TitleWidger extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin:  EdgeInsets.only(top:10.w,bottom: 20.w,left: 30.w,right: 30.w),
+      margin: EdgeInsets.only(top: 10.w, bottom: 20.w, left: 30.w, right: 30.w),
       child: Text(
         title,
         style: TextStyle(color: Colors.blueAccent, fontSize: 32.sp),
@@ -73,8 +73,8 @@ class InfoBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding:  EdgeInsets.all(28.0.w),
-        margin:  EdgeInsets.only(bottom: 20.w,left: 30.w,right: 30.w),
+        padding: EdgeInsets.all(28.0.w),
+        margin: EdgeInsets.only(bottom: 20.w, left: 30.w, right: 30.w),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(18.w),

@@ -180,16 +180,16 @@ class _ParentalPopState extends State<ParentalPop> {
                         rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('工作日', style: TextStyle(fontSize: 30.sp)),
+                              Text('工作日', style: TextStyle(fontSize: 28.sp)),
                               Row(
                                 children: [
                                   Text(arrList.join(),
-                                      style: TextStyle(fontSize: 30.sp)),
+                                      style: TextStyle(fontSize: 28.sp)),
                                   Icon(
                                     Icons.arrow_forward_ios_outlined,
                                     color:
                                         const Color.fromRGBO(144, 147, 153, 1),
-                                    size: 30.w,
+                                    size: 28.w,
                                   )
                                 ],
                               ),
@@ -218,14 +218,14 @@ class _ParentalPopState extends State<ParentalPop> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(S.of(context).DateReboot,
-                                  style: TextStyle(fontSize: 30.sp)),
+                                  style: TextStyle(fontSize: 28.sp)),
                               Row(
                                 children: [
                                   Text(
                                       (startTimeH == '' && startTimeM == ''
                                           ? ''
                                           : ('$startTimeH:$startTimeM')),
-                                      style: TextStyle(fontSize: 30.sp)),
+                                      style: TextStyle(fontSize: 28.sp)),
                                   Icon(
                                     Icons.arrow_forward_ios_outlined,
                                     color:
@@ -259,14 +259,14 @@ class _ParentalPopState extends State<ParentalPop> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(S.of(context).TimeReboot,
-                                  style: TextStyle(fontSize: 30.sp)),
+                                  style: TextStyle(fontSize: 28.sp)),
                               Row(
                                 children: [
                                   Text(
                                       (stopTimeH == '' && stopTimeM == ''
                                           ? ''
                                           : ('$stopTimeH:$stopTimeM')),
-                                      style: TextStyle(fontSize: 30.sp)),
+                                      style: TextStyle(fontSize: 28.sp)),
                                   Icon(
                                     Icons.arrow_forward_ios_outlined,
                                     color:

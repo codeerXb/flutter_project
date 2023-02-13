@@ -137,7 +137,7 @@ class _ParentalControlState extends State<ParentalControl> {
       appBar: customAppbar(context: context, title: '家长控制'),
       body: ListView(children: [
         Container(
-            height: 1400.w,
+            // height: 1400.w,
             padding: const EdgeInsets.all(10.0),
             decoration:
                 const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
@@ -147,54 +147,53 @@ class _ParentalControlState extends State<ParentalControl> {
                 Padding(
                   padding: EdgeInsets.only(top: 10.sp),
                 ),
-                Row(children: [
-                  const TitleWidger(title: '家长控制'),
-                  Padding(
-                    padding: EdgeInsets.only(left: 400.sp),
-                  ),
-                  Switch(
-                    value: isCheck,
-                    onChanged: (newVal) {
-                      setState(() {
-                        isCheck = newVal;
-                        if (isCheck == true) {
-                          checkVal = 1;
-                        } else {
-                          checkVal = 0;
-                        }
-                        getAccessOpen();
-                      });
-                    },
-                  ),
-                ]),
+                InfoBox(
+                  boxCotainer: Row(children: [
+                    const TitleWidger(title: '家长控制'),
+                    Padding(
+                      padding: EdgeInsets.only(left: 325.sp),
+                    ),
+                    Switch(
+                      value: isCheck,
+                      onChanged: (newVal) {
+                        setState(() {
+                          isCheck = newVal;
+                          if (isCheck == true) {
+                            checkVal = 1;
+                          } else {
+                            checkVal = 0;
+                          }
+                          getAccessOpen();
+                        });
+                      },
+                    ),
+                  ]),
+                ),
                 // 列表
                 if (accessList.fwParentControlTable!.isNotEmpty)
                   SizedBox(
                     width: 800.w,
-                    height: 800.w,
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    height: 900.w,
+                    child: ListView(
                         children: accessList.fwParentControlTable!.map((item) {
-                          return InfoBox(
-                              boxCotainer: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                  '${item.timeStart!}至${item.timeStop!}不允许访问网络',
-                                  style: TextStyle(
-                                      color: const Color.fromARGB(255, 5, 0, 0),
-                                      fontSize: ScreenUtil().setWidth(30.0))),
-                              Text(item.weekdays.toString(),
-                                  style: TextStyle(
-                                      color: const Color.fromRGBO(
-                                          147, 148, 168, 1),
-                                      fontSize: ScreenUtil().setWidth(28.0))),
-                            ],
-                          ));
-                        }).toList()),
+                      return InfoBox(
+                          boxCotainer: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text('${item.timeStart!}至${item.timeStop!}不允许访问网络',
+                              style: TextStyle(
+                                  color: const Color.fromARGB(255, 5, 0, 0),
+                                  fontSize: ScreenUtil().setWidth(30.0))),
+                          Text(item.weekdays.toString(),
+                              style: TextStyle(
+                                  color: const Color.fromRGBO(147, 148, 168, 1),
+                                  fontSize: ScreenUtil().setWidth(28.0))),
+                        ],
+                      ));
+                    }).toList()),
                   ),
                 Padding(
-                  padding: EdgeInsets.only(top: 50.sp),
+                  padding: EdgeInsets.only(top: 170.sp),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -223,7 +222,8 @@ class _ParentalControlState extends State<ParentalControl> {
                         ))), //圆角弧度
                       ),
                       onPressed: () {
-                        Get.toNamed("/parental_pop", arguments: data);
+                        Get.toNamed("/parental_pop", arguments: data)
+                            ?.then((value) => getAccessList());
                       },
                       child: Text("+", style: TextStyle(fontSize: 60.sp)),
                     )
@@ -233,5 +233,23 @@ class _ParentalControlState extends State<ParentalControl> {
             )),
       ]),
     );
+  }
+}
+
+class InfoBox extends StatelessWidget {
+  final Widget boxCotainer;
+
+  const InfoBox({super.key, required this.boxCotainer});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        padding: EdgeInsets.all(8.0.w),
+        margin: EdgeInsets.only(bottom: 20.w, left: 30.w, right: 30.w),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(18.w),
+        ),
+        child: boxCotainer);
   }
 }

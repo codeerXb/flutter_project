@@ -176,7 +176,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "currentOrientation":
             MessageLookupByLibrary.simpleMessage("current Orientation"),
         "currentValue": MessageLookupByLibrary.simpleMessage("current Value"),
-        "date": MessageLookupByLibrary.simpleMessage("天"),
+        "date": MessageLookupByLibrary.simpleMessage("date"),
         "day": MessageLookupByLibrary.simpleMessage("day"),
         "detectionServer":
             MessageLookupByLibrary.simpleMessage("Input detection server"),
@@ -192,6 +192,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "error": MessageLookupByLibrary.simpleMessage("error"),
         "examine": MessageLookupByLibrary.simpleMessage("examine"),
         "fri": MessageLookupByLibrary.simpleMessage("fri"),
+        "gameAcceleration":
+            MessageLookupByLibrary.simpleMessage("game acceleration"),
         "getVerficationCode":
             MessageLookupByLibrary.simpleMessage("Verify Code"),
         "hint": MessageLookupByLibrary.simpleMessage("hint"),
@@ -232,6 +234,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "notEnable": MessageLookupByLibrary.simpleMessage("not Enable"),
         "notstart": MessageLookupByLibrary.simpleMessage("not start"),
         "oldPassowld": MessageLookupByLibrary.simpleMessage("old password"),
+        "parentalControl":
+            MessageLookupByLibrary.simpleMessage("parental control"),
         "passError": MessageLookupByLibrary.simpleMessage(
             "Password error, number of attempts left:"),
         "passwordAgain":
@@ -264,6 +268,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "staticIP": MessageLookupByLibrary.simpleMessage("staticIP"),
         "status": MessageLookupByLibrary.simpleMessage("status"),
         "stopSerch": MessageLookupByLibrary.simpleMessage("Abort search"),
+        "subService":
+            MessageLookupByLibrary.simpleMessage("subscription service"),
         "success": MessageLookupByLibrary.simpleMessage("success"),
         "systemInfo":
             MessageLookupByLibrary.simpleMessage("system Information"),

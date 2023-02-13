@@ -89,6 +89,9 @@ class _SettingState extends State<Setting> {
                   //解绑
                   unbindingDevice(),
 
+                  //订阅服务
+                  subService(),
+
                   /// Wi-Fi设置
                   const TitleWidger(title: 'Wi-Fl'),
 
@@ -183,8 +186,8 @@ class _SettingState extends State<Setting> {
                               topRight: Radius.circular(30.w))),
                       height: 80.w,
                       alignment: Alignment.center,
-                      child:  Text(
-                          S.of(context).hint,
+                      child: Text(
+                        S.of(context).hint,
                         style: TextStyle(fontWeight: FontWeight.w700),
                       ),
                     ),
@@ -194,7 +197,9 @@ class _SettingState extends State<Setting> {
                       height: 60.w,
                       alignment: Alignment.topLeft,
                       child: Text(
-                       S.of(context).unblockdevice+ " ${loginController.equipment['systemVersionSn']} "+S.of(context).binding,
+                        S.of(context).unblockdevice +
+                            " ${loginController.equipment['systemVersionSn']} " +
+                            S.of(context).binding,
                         style:
                             TextStyle(color: Colors.black45, fontSize: 22.sp),
                       ),
@@ -417,6 +422,20 @@ class _SettingState extends State<Setting> {
         ),
         callBack: () {
           _openAvatarBottomSheet();
+        });
+  }
+
+  /// 订阅服务
+  Widget subService() {
+    return CommonWidget.simpleWidgetWithMine(
+        title: S.of(context).subService,
+        icon: const Image(
+          image: AssetImage('assets/images/line.png'),
+          width: 28,
+          height: 28,
+        ),
+        callBack: () {
+          Get.toNamed("/sub_service");
         });
   }
 

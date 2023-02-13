@@ -173,7 +173,7 @@ class _ParentalControlState extends State<ParentalControl> {
                 if (accessList.fwParentControlTable!.isNotEmpty)
                   SizedBox(
                     width: 800.w,
-                    height: 900.w,
+                    height: 1050.w,
                     child: ListView(
                         children: accessList.fwParentControlTable!.map((item) {
                       return InfoBox(
@@ -193,7 +193,7 @@ class _ParentalControlState extends State<ParentalControl> {
                     }).toList()),
                   ),
                 Padding(
-                  padding: EdgeInsets.only(top: 170.sp),
+                  padding: EdgeInsets.only(top: 25.sp),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

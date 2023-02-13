@@ -4,21 +4,20 @@ import 'package:flutter_template/core/widget/common_box.dart';
 import '../../core/widget/custom_app_bar.dart';
 import '../../generated/l10n.dart';
 
-/// 游戏加速
-class Gameacce extends StatefulWidget {
-  const Gameacce({Key? key}) : super(key: key);
+/// 视频
+class Aivideo extends StatefulWidget {
+  const Aivideo({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _GameacceState();
+  State<StatefulWidget> createState() => _AivideoState();
 }
 
-class _GameacceState extends State<Gameacce> {
+class _AivideoState extends State<Aivideo> {
   int index = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: customAppbar(
-            context: context, title: S.of(context).gameAcceleration),
+        appBar: customAppbar(context: context, title: S.of(context).aivideo),
         body: Container(
           decoration:
               const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
@@ -27,8 +26,8 @@ class _GameacceState extends State<Gameacce> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                //游戏加速
-                TitleWidger(title: S.of(context).gameAcceleration),
+                //视频
+                TitleWidger(title: S.of(context).aivideo),
                 Card(
                   elevation: 5, //设置卡片阴影的深度
                   shape: const RoundedRectangleBorder(
@@ -42,12 +41,12 @@ class _GameacceState extends State<Gameacce> {
                       ListTile(
                         leading: ClipOval(
                           child: Image.network(
-                            "https://img0.baidu.com/it/u=1731282158,1336459636&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=501",
+                            "https://img0.baidu.com/it/u=2731303767,1175207941&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500",
                             height: 50,
                             width: 50,
                           ),
                         ),
-                        title: Text(S.of(context).gameAcceleration),
+                        title: Text(S.of(context).aivideo),
                         subtitle: Text("剩余1个月"),
                         trailing: Text("￥9.99"),
                       ),
@@ -79,7 +78,7 @@ class _GameacceState extends State<Gameacce> {
                           });
                         },
                       ),
-                     commonLine(),
+                      commonLine(),
                       ListTile(
                         title: Text('2个月-￥19.88'),
                         trailing: Icon(

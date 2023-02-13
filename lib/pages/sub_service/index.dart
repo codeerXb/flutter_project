@@ -28,9 +28,8 @@ class _SubSerivceState extends State<SubSerivce> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                //家长控制
-                TitleWidger(title: S.of(context).parentalControl),
-
+                // Padding(padding: EdgeInsets.only(top: 30.w)),
+                TitleWidger(title: S.of(context).subService),
                 Card(
                   elevation: 5, //设置卡片阴影的深度
                   shape: const RoundedRectangleBorder(
@@ -41,35 +40,23 @@ class _SubSerivceState extends State<SubSerivce> {
                       left: 26.w, right: 26.w, bottom: 26.w), //设置卡片外边距
                   child: Column(
                     children: [
+                      //家长控制
                       ListTile(
                         leading: ClipOval(
                           child: Image.network(
-                              "https://img.zcool.cn/community/019b3559c38839a801218e18c0143d.jpg@1280w_1l_2o_100sh.jpg",
-                              height: 50,
-                              width: 50),
+                            "https://img1.baidu.com/it/u=3844424264,2786123313&fm=253&fmt=auto&app=138&f=JPEG?w=256&h=256",
+                            height: 50,
+                            width: 50,
+                          ),
                         ),
-                        title: Text("家长控制"),
-                        subtitle: Text("家长控制-12345678"),
+                        title: Text(S.of(context).parentalControl),
+                        subtitle: Text(S.of(context).parentalControl + "-未开启"),
                         trailing: Icon(Icons.arrow_forward_ios),
                         enabled: true,
                         onTap: () => Get.toNamed("/parcontrol_info"),
                       ),
-                    ],
-                  ),
-                ),
-
-                //游戏加速
-                TitleWidger(title: S.of(context).gameAcceleration),
-                Card(
-                  elevation: 5, //设置卡片阴影的深度
-                  shape: const RoundedRectangleBorder(
-                    //设置卡片圆角
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                  ),
-                  margin: EdgeInsets.only(
-                      left: 26.w, right: 26.w, bottom: 26.w), //设置卡片外边距
-                  child: Column(
-                    children: [
+                      commonLine(),
+                      //游戏加速
                       ListTile(
                         leading: ClipOval(
                           child: Image.network(
@@ -77,13 +64,40 @@ class _SubSerivceState extends State<SubSerivce> {
                               height: 50,
                               width: 50),
                         ),
-                        title: Text("游戏加速"),
-                        subtitle: Text("游戏加速-12345678"),
+                        title: Text(S.of(context).gameAcceleration),
+                        subtitle: Text(S.of(context).gameAcceleration + "-未开启"),
                         trailing: Icon(Icons.arrow_forward_ios),
                         enabled: true,
                         onTap: () => Get.toNamed("/gameacce_inofo"),
                       ),
+                      commonLine(),
+                      //ai视频
+                      ListTile(
+                        leading: ClipOval(
+                          child: Image.network(
+                              "https://img0.baidu.com/it/u=2731303767,1175207941&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=500",
+                              height: 50,
+                              width: 50),
+                        ),
+                        title: Text(S.of(context).aivideo),
+                        subtitle: Text(S.of(context).aivideo + "-未开启"),
+                        trailing: Icon(Icons.arrow_forward_ios),
+                        enabled: true,
+                        onTap: () => Get.toNamed("/ai_video"),
+                      ),
                     ],
+                  ),
+                ),
+                Card(
+                  elevation: 5, //设置卡片阴影的深度
+                  shape: const RoundedRectangleBorder(
+                    //设置卡片圆角
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                  margin: EdgeInsets.only(
+                      left: 26.w, right: 26.w, bottom: 26.w), //设置卡片外边距
+                  child: Column(
+                    children: [],
                   ),
                 ),
               ],

@@ -154,6 +154,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "advancedSet":
             MessageLookupByLibrary.simpleMessage("advanced Settings"),
         "aesRecommend": MessageLookupByLibrary.simpleMessage("AES(Recommend)"),
+        "aivideo": MessageLookupByLibrary.simpleMessage("ai video"),
         "ascii32": MessageLookupByLibrary.simpleMessage("1~32 ASCII character"),
         "binding": MessageLookupByLibrary.simpleMessage("binding?"),
         "cancel": MessageLookupByLibrary.simpleMessage("cancel"),
@@ -176,7 +177,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "currentOrientation":
             MessageLookupByLibrary.simpleMessage("current Orientation"),
         "currentValue": MessageLookupByLibrary.simpleMessage("current Value"),
-        "date": MessageLookupByLibrary.simpleMessage("date"),
+        "date": MessageLookupByLibrary.simpleMessage("d"),
         "day": MessageLookupByLibrary.simpleMessage("day"),
         "detectionServer":
             MessageLookupByLibrary.simpleMessage("Input detection server"),
@@ -197,6 +198,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "getVerficationCode":
             MessageLookupByLibrary.simpleMessage("Verify Code"),
         "hint": MessageLookupByLibrary.simpleMessage("hint"),
+        "hour": MessageLookupByLibrary.simpleMessage("h"),
         "improveSecurity": MessageLookupByLibrary.simpleMessage(
             "Change passwords periodically to improve security"),
         "isGoOn": MessageLookupByLibrary.simpleMessage(
@@ -217,6 +219,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "maintainSettings": MessageLookupByLibrary.simpleMessage("Maintenance"),
         "majorSet": MessageLookupByLibrary.simpleMessage("Professional"),
         "maxValue": MessageLookupByLibrary.simpleMessage("max Value"),
+        "minute": MessageLookupByLibrary.simpleMessage("m"),
         "minutes": MessageLookupByLibrary.simpleMessage("minutes"),
         "mon": MessageLookupByLibrary.simpleMessage("mon"),
         "month": MessageLookupByLibrary.simpleMessage("month"),
@@ -234,6 +237,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "notEnable": MessageLookupByLibrary.simpleMessage("not Enable"),
         "notstart": MessageLookupByLibrary.simpleMessage("not start"),
         "oldPassowld": MessageLookupByLibrary.simpleMessage("old password"),
+        "options": MessageLookupByLibrary.simpleMessage("options"),
         "parentalControl":
             MessageLookupByLibrary.simpleMessage("parental control"),
         "passError": MessageLookupByLibrary.simpleMessage(
@@ -273,10 +277,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "success": MessageLookupByLibrary.simpleMessage("success"),
         "systemInfo":
             MessageLookupByLibrary.simpleMessage("system Information"),
-        "time": MessageLookupByLibrary.simpleMessage("ddDayHHourmmminutes"),
         "timeOnline": MessageLookupByLibrary.simpleMessage("time Online"),
         "timeout":
             MessageLookupByLibrary.simpleMessage("Device connection timeout"),
+        "type": MessageLookupByLibrary.simpleMessage("type"),
         "unblockdevice": MessageLookupByLibrary.simpleMessage(
             "Confirm to unblock the current device"),
         "unlock": MessageLookupByLibrary.simpleMessage("S unlock"),
@@ -294,6 +298,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "wanSettings": MessageLookupByLibrary.simpleMessage("WAN Settings"),
         "wlanSet": MessageLookupByLibrary.simpleMessage("WLAN Setting"),
         "wpsSet": MessageLookupByLibrary.simpleMessage("WPS"),
-        "year": MessageLookupByLibrary.simpleMessage("year")
+        "year": MessageLookupByLibrary.simpleMessage("year"),
+        "yourServiece":
+            MessageLookupByLibrary.simpleMessage("your subscription")
       };
 }

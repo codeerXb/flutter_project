@@ -122,6 +122,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "accountSecurity": MessageLookupByLibrary.simpleMessage("登录管理"),
         "advancedSet": MessageLookupByLibrary.simpleMessage("高级设置"),
         "aesRecommend": MessageLookupByLibrary.simpleMessage("AES(推荐)"),
+        "aivideo": MessageLookupByLibrary.simpleMessage("ai视频"),
         "ascii32": MessageLookupByLibrary.simpleMessage("1~32位ASCII字符"),
         "binding": MessageLookupByLibrary.simpleMessage("绑定?"),
         "cancel": MessageLookupByLibrary.simpleMessage("取消"),
@@ -155,6 +156,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "gameAcceleration": MessageLookupByLibrary.simpleMessage("游戏加速"),
         "getVerficationCode": MessageLookupByLibrary.simpleMessage("获取验证码"),
         "hint": MessageLookupByLibrary.simpleMessage("提示"),
+        "hour": MessageLookupByLibrary.simpleMessage("时"),
         "improveSecurity": MessageLookupByLibrary.simpleMessage("定期更新密码提高安全性"),
         "isGoOn": MessageLookupByLibrary.simpleMessage("提交后设备将会重启，是否继续?"),
         "lanHostSettings": MessageLookupByLibrary.simpleMessage("LAN主机设置"),
@@ -169,6 +171,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "maintainSettings": MessageLookupByLibrary.simpleMessage("维护设置"),
         "majorSet": MessageLookupByLibrary.simpleMessage("专业设置"),
         "maxValue": MessageLookupByLibrary.simpleMessage("最大数值"),
+        "minute": MessageLookupByLibrary.simpleMessage("分"),
         "minutes": MessageLookupByLibrary.simpleMessage("请输入租约时间"),
         "mon": MessageLookupByLibrary.simpleMessage("周一"),
         "month": MessageLookupByLibrary.simpleMessage("月"),
@@ -184,6 +187,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "notEnable": MessageLookupByLibrary.simpleMessage("未启用"),
         "notstart": MessageLookupByLibrary.simpleMessage("未开始"),
         "oldPassowld": MessageLookupByLibrary.simpleMessage("旧密码"),
+        "options": MessageLookupByLibrary.simpleMessage("选项"),
         "parentalControl": MessageLookupByLibrary.simpleMessage("家长控制"),
         "passError": MessageLookupByLibrary.simpleMessage("密码错误,剩余尝试次数："),
         "passwordAgain": MessageLookupByLibrary.simpleMessage("请再次输入登录密码"),
@@ -212,9 +216,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "subService": MessageLookupByLibrary.simpleMessage("订阅服务"),
         "success": MessageLookupByLibrary.simpleMessage("成功"),
         "systemInfo": MessageLookupByLibrary.simpleMessage("系统信息"),
-        "time": MessageLookupByLibrary.simpleMessage("dd天HH小时mm分钟"),
         "timeOnline": MessageLookupByLibrary.simpleMessage("实时在线"),
         "timeout": MessageLookupByLibrary.simpleMessage("设备连接超时"),
+        "type": MessageLookupByLibrary.simpleMessage("类型"),
         "unblockdevice": MessageLookupByLibrary.simpleMessage("确定解除对当前设备"),
         "unlock": MessageLookupByLibrary.simpleMessage("s后解锁"),
         "ununited": MessageLookupByLibrary.simpleMessage("未连接"),
@@ -228,6 +232,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "wanSettings": MessageLookupByLibrary.simpleMessage("WAN设置"),
         "wlanSet": MessageLookupByLibrary.simpleMessage("WLAN设置"),
         "wpsSet": MessageLookupByLibrary.simpleMessage("WPS设置"),
-        "year": MessageLookupByLibrary.simpleMessage("年")
+        "year": MessageLookupByLibrary.simpleMessage("年"),
+        "yourServiece": MessageLookupByLibrary.simpleMessage("你的订阅")
       };
 }

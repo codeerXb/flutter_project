@@ -9,6 +9,7 @@ import 'package:flutter_template/pages/setting/contact_customer.dart';
 import 'package:flutter_template/pages/setting/file_upload_download.dart';
 import 'package:flutter_template/pages/Ethernet/net_type.dart';
 import 'package:flutter_template/pages/setting/user_detail.dart';
+import 'package:flutter_template/pages/sub_service/ai_video.dart';
 import 'package:flutter_template/pages/sub_service/game_acceleration.dart';
 import 'package:flutter_template/pages/sub_service/index.dart';
 import 'package:flutter_template/pages/sub_service/parental_control.dart';
@@ -199,6 +200,8 @@ class GlobalRouter {
     // 游戏加速详情
     '/gameacce_inofo': (BuildContext context, {Object? args}) =>
         const Gameacce(),
+    // ai视频
+    '/ai_video': (BuildContext context, {Object? args}) => const Aivideo(),
   };
 
   static GlobalRouter? _singleton;

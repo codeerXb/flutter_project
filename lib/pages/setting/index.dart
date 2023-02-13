@@ -88,7 +88,6 @@ class _SettingState extends State<Setting> {
                   testButton(),
                   //解绑
                   unbindingDevice(),
-
                   //订阅服务
                   subService(),
 
@@ -97,7 +96,6 @@ class _SettingState extends State<Setting> {
 
                   /// WLAN设置
                   wlanSet(),
-
                   /// 访客网络
                   visitorNet(),
 
@@ -429,11 +427,7 @@ class _SettingState extends State<Setting> {
   Widget subService() {
     return CommonWidget.simpleWidgetWithMine(
         title: S.of(context).subService,
-        icon: const Image(
-          image: AssetImage('assets/images/line.png'),
-          width: 28,
-          height: 28,
-        ),
+        icon:const Icon(Icons.monetization_on,color: Colors.blue,),
         callBack: () {
           Get.toNamed("/sub_service");
         });

@@ -17,8 +17,9 @@ class AccessEquipment extends StatefulWidget {
 
 class _AccessEquipmentState extends State<AccessEquipment> {
   OnlineDeviceTable data = OnlineDeviceTable(mAC: '');
-  String uNKTitle = '设备信息';
-
+  int day = 0;
+  int hour = 0;
+  int min = 0;
   @override
   void initState() {
     super.initState();
@@ -26,42 +27,32 @@ class _AccessEquipmentState extends State<AccessEquipment> {
       data = Get.arguments;
     });
 
-    print(Get.arguments);
+    var time = int.parse(data.leaseTime.toString());
+    day = time ~/ (24 * 3600);
+    hour = (time - day * 24 * 3600) ~/ 3600;
+    min = (time - day * 24 * 3600 - hour * 3600) ~/ 60;
   }
 
   @override
   Widget build(BuildContext context) {
-    // String formatDuration(Duration duration) {
-    //   String hours = duration.inHours.toString().padLeft(0, '2');
-    //   String minutes =
-    //       duration.inMinutes.remainder(60).toString().padLeft(2, '0');
-    //   String seconds =
-    //       duration.inSeconds.remainder(60).toString().padLeft(2, '0');
-    //   return "$hours:$minutes:$seconds";
-    // }
-
     return Scaffold(
       appBar: customAppbar(context: context, title: data.hostName.toString()),
       body: SingleChildScrollView(
         child: Container(
-            padding: const EdgeInsets.all(10.0),
             decoration:
                 const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Padding(
-                  padding: EdgeInsets.only(top: 10.sp),
-                ),
                 Row(children: [
-                  TitleWidger(title: uNKTitle),
+                  TitleWidger(title: S.current.deviceInfo),
                 ]),
                 InfoBox(
                   boxCotainer: Column(
                     children: [
                       BottomLine(
                           rowtem: RowContainer(
-                        leftText: 'MAC地址',
+                        leftText: S.current.MACAddress,
                         righText: data.mAC.toString(),
                       )),
                       BottomLine(
@@ -71,15 +62,18 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                       )),
                       BottomLine(
                         rowtem: RowContainer(
-                          leftText: '租约时间',
-                          righText: DateFormat("dd天HH小时mm分钟").format(
-                              DateTime.fromMillisecondsSinceEpoch(
-                                  int.parse('${data.leaseTime}000'))),
+                          leftText: S.current.LeaseTime,
+                          righText: day.toString() +
+                              S.of(context).date +
+                              hour.toString() +
+                              S.of(context).hour +
+                              min.toString() +
+                              S.of(context).minute,
                         ),
                       ),
                       BottomLine(
                         rowtem: RowContainer(
-                          leftText: '类型',
+                          leftText: S.current.type,
                           righText: data.type.toString(),
                         ),
                       ),

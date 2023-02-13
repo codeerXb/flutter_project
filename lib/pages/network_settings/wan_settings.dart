@@ -45,19 +45,19 @@ class _WanSettingsState extends State<WanSettings> {
         setState(() {
           wanNetwork = WanNetworkModel.fromJson(d);
           if (wanNetwork.success == true) {
-            ToastUtils.toast( S.current.success);
+            ToastUtils.toast(S.current.success);
             loginout();
           } else {
-            ToastUtils.toast( S.current.error);
+            ToastUtils.toast(S.current.error);
           }
         });
       } on FormatException catch (e) {
         print(e);
-        ToastUtils.toast( S.current.error);
+        ToastUtils.toast(S.current.error);
       }
     }).catchError((onError) {
       debugPrint('失败：${onError.toString()}');
-      ToastUtils.toast( S.current.error);
+      ToastUtils.toast(S.current.error);
     });
   }
 
@@ -110,7 +110,7 @@ class _WanSettingsState extends State<WanSettings> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   //WAN设置
-                   TitleWidger(title: S.of(context).wanSettings),
+                  TitleWidger(title: S.of(context).wanSettings),
                   GestureDetector(
                       onTap: () {
                         var result = CommonPicker.showPicker(
@@ -123,7 +123,11 @@ class _WanSettingsState extends State<WanSettings> {
                                 {
                                   setState(() => {
                                         val = selectedValue,
-                                        showVal = ['NAT', S.current.BRIDGE, 'ROUTER'][val],
+                                        showVal = [
+                                          'NAT',
+                                          S.current.BRIDGE,
+                                          'ROUTER'
+                                        ][val],
                                         if (val == 0)
                                           {wanVal = 'nat', getWanData()},
                                         if (val == 1)
@@ -140,7 +144,8 @@ class _WanSettingsState extends State<WanSettings> {
                           rowtem: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text( S.of(context).NetworkMode, style: TextStyle(fontSize: 30.sp)),
+                                Text(S.of(context).NetworkMode,
+                                    style: TextStyle(fontSize: 30.sp)),
                                 Row(
                                   children: [
                                     Text(showVal,

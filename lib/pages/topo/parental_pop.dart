@@ -127,11 +127,9 @@ class _ParentalPopState extends State<ParentalPop> {
       body: SingleChildScrollView(
           child: Container(
         height: 1400.w,
-        decoration: BoxDecoration(
-            color: const Color.fromRGBO(240, 240, 240, 1),
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(30.w),
-                topRight: Radius.circular(30.w))),
+        decoration: const BoxDecoration(
+          color: Color.fromRGBO(240, 240, 240, 1),
+        ),
         child: Padding(
           padding: EdgeInsets.only(left: 30.w, right: 30.w, top: 100.w),
           child: Column(

@@ -20,15 +20,15 @@ class ParentalControl extends StatefulWidget {
 
 class _ParentalControlState extends State<ParentalControl> {
   OnlineDeviceTable data = OnlineDeviceTable(mAC: '');
-  String uNKTitle = '设备信息';
-
-  bool isCheck = false;
-
+  AccessDatas restart = AccessDatas();
+  AccessOpen aOpen = AccessOpen();
 // 添加
-  bool isClick = false;
+  bool isCheck = false;
+  int checkVal = 0;
 
   // 家长控制列表
-  AccessListDatas accessList = AccessListDatas();
+  AccessListDatas accessList =
+      AccessListDatas(fwParentControlTable: [], max: null);
   List accesslistD = [];
   List<Widget> temList = [];
 
@@ -43,53 +43,101 @@ class _ParentalControlState extends State<ParentalControl> {
     });
     print(Get.arguments);
     getAccessList();
+    getAccess();
+  }
+
+// 家长控制开启
+  void getAccessOpen() {
+    Map<String, dynamic> data = {
+      'method': 'obj_set',
+      'param': '{"securityParentControlEnable":"$checkVal"}',
+    };
+    printInfo(info: '---data----$data');
+    XHttp.get('/data.html', data).then((res) {
+      try {
+        var d = json.decode(res.toString());
+        setState(() {
+          restart = AccessDatas.fromJson(d);
+          if (restart.success == true) {
+            ToastUtils.toast('提交成功');
+            Get.back();
+          } else {
+            ToastUtils.toast('提交失败');
+          }
+        });
+      } on FormatException catch (e) {
+        print(e);
+        // ToastUtils.toast(S.current.error);
+      }
+    }).catchError((onError) {
+      debugPrint('失败：${onError.toString()}');
+      // ToastUtils.toast(S.current.error);
+    });
+  }
+
+// 家长控制  开关获取
+  void getAccess() {
+    Map<String, dynamic> data = {
+      'method': 'obj_get',
+      'param':
+          '["securityParentControlEnable","Name","Host","Weekdays","TimeStart","Target"]'
+    };
+    XHttp.get('/data.html', data).then((res) {
+      try {
+        var d = json.decode(res.toString());
+        setState(() {
+          aOpen = AccessOpen.fromJson(d);
+          if (aOpen.securityParentControlEnable.toString() == '0') {
+            isCheck = false;
+            checkVal = 0;
+          } else {
+            isCheck = true;
+            checkVal = 1;
+          }
+        });
+      } on FormatException {
+        print('The provided string is not valid JSON');
+      }
+    }).catchError((onError) {
+      ToastUtils.toast('获取家长列表 失败');
+      debugPrint('获取家长列表 失败：${onError.toString()}');
+    });
   }
 
 // 家长控制列表获取
-  void getAccessList() async {
+  void getAccessList() {
     Map<String, dynamic> data = {
       'method': 'tab_dump',
       'param': '["FwParentControlTable"]'
     };
-    try {
-      var response = await XHttp.get('/data.html', data);
-      var d = json.decode(response.toString());
-      setState(() {
-        accessList = AccessListDatas.fromJson(d);
-        accesslistD = accessList.fwParentControlTable!;
-        print('--------${accessList.fwParentControlTable?[0].timeStart}');
-        print('...${accesslistD != '' ? true : false}');
-        if (accessList.fwParentControlTable != '') {
-          print('走了');
-          alist();
-          print('===打印===$temList');
-
-          print('是这里');
-        }
-      });
-    } catch (e) {
-      debugPrint('获取家长列表 失败：$e.toString()');
+    XHttp.get('/data.html', data).then((res) {
+      try {
+        debugPrint("\n======= 获取列表 =======");
+        var d = json.decode(res.toString());
+        print(d);
+        setState(() {
+          accessList = AccessListDatas.fromJson(d);
+        });
+      } on FormatException catch (e) {
+        setState(() {
+          accessList = AccessListDatas(fwParentControlTable: [], max: null);
+        });
+        print('The provided string is not valid JSON');
+        print(e);
+      }
+    }).catchError((onError) {
       ToastUtils.toast('获取家长列表 失败');
-    }
-  }
-
-  List<Widget> alist() {
-    for (var i = 0; i < accessList.fwParentControlTable!.length; i++) {
-      temList.add(ListTile(
-          title: Text(
-              '78${accessList.fwParentControlTable![i].timeStart}--${accessList.fwParentControlTable![i].timeStop}禁止访问'),
-          subtitle:
-              Text('132${accessList.fwParentControlTable![i].weekdays}')));
-    }
-    return temList;
+      debugPrint('获取家长列表 失败：${onError.toString()}');
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: customAppbar(context: context, title: '家长控制'),
-      body: SingleChildScrollView(
-        child: Container(
+      body: ListView(children: [
+        Container(
+            height: 1400.w,
             padding: const EdgeInsets.all(10.0),
             decoration:
                 const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
@@ -99,7 +147,6 @@ class _ParentalControlState extends State<ParentalControl> {
                 Padding(
                   padding: EdgeInsets.only(top: 10.sp),
                 ),
-                // 家长控制
                 Row(children: [
                   const TitleWidger(title: '家长控制'),
                   Padding(
@@ -110,52 +157,44 @@ class _ParentalControlState extends State<ParentalControl> {
                     onChanged: (newVal) {
                       setState(() {
                         isCheck = newVal;
-                        // if (isCheck == true) {
-                        //   checkVal = 1;
-                        // } else {
-                        //   checkVal = 0;
-                        // }
+                        if (isCheck == true) {
+                          checkVal = 1;
+                        } else {
+                          checkVal = 0;
+                        }
+                        getAccessOpen();
                       });
                     },
                   ),
                 ]),
-                // 控制列表
-                // Offstage(
-                //   offstage: isCheck,
-                //   child: InfoBox(
-                //     boxCotainer: Row(
-                //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //       children: [
-                //         Column(
-                //           children: const [
-                //             Text('02:00关闭Wi-Fi,06:00开启Wi-Fi',
-                //                 style: TextStyle(
-                //                   color: Color.fromARGB(255, 5, 0, 0),
-                //                 )),
-                //             Text('周一，周二，周三，周四，周五，周日',
-                //                 style: TextStyle(
-                //                   color: Color.fromARGB(255, 95, 94, 94),
-                //                 )),
-                //           ],
-                //         ),
-                //       ],
-                //     ),
-                //   ),
-                // ),
-                InfoBox(
-                  boxCotainer: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        children: const [
-                          Text('',
-                              style: TextStyle(
-                                color: Color.fromARGB(255, 5, 0, 0),
-                              )),
-                        ],
-                      ),
-                    ],
+                // 列表
+                if (accessList.fwParentControlTable!.isNotEmpty)
+                  SizedBox(
+                    width: 800.w,
+                    height: 800.w,
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: accessList.fwParentControlTable!.map((item) {
+                          return InfoBox(
+                              boxCotainer: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                  '${item.timeStart!}至${item.timeStop!}不允许访问网络',
+                                  style: TextStyle(
+                                      color: const Color.fromARGB(255, 5, 0, 0),
+                                      fontSize: ScreenUtil().setWidth(30.0))),
+                              Text(item.weekdays.toString(),
+                                  style: TextStyle(
+                                      color: const Color.fromRGBO(
+                                          147, 148, 168, 1),
+                                      fontSize: ScreenUtil().setWidth(28.0))),
+                            ],
+                          ));
+                        }).toList()),
                   ),
+                Padding(
+                  padding: EdgeInsets.only(top: 50.sp),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -192,7 +231,7 @@ class _ParentalControlState extends State<ParentalControl> {
                 ),
               ],
             )),
-      ),
+      ]),
     );
   }
 }

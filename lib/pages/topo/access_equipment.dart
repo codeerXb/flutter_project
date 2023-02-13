@@ -89,13 +89,6 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                 Padding(
                   padding: EdgeInsets.only(top: 10.sp),
                 ),
-                // 家长控制
-                // Row(children: [
-                //   const TitleWidger(title: '家长控制'),
-                //   Padding(
-                //     padding: EdgeInsets.only(left: 400.sp),
-                //   ),
-                // ]),
                 InfoBox(
                   boxCotainer: GestureDetector(
                     onTap: () {

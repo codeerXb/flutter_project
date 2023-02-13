@@ -53,9 +53,6 @@ class _ParentalPopState extends State<ParentalPop> {
     return res;
   }
 
-// 添加
-  bool isClick = false;
-
 // 开始时间
   String startTim = '';
   String startTimeH = '';
@@ -108,6 +105,7 @@ class _ParentalPopState extends State<ParentalPop> {
           restart = AccessDatas.fromJson(d);
           if (restart.success == true) {
             ToastUtils.toast('提交成功');
+            Get.back();
           } else {
             ToastUtils.toast('提交失败');
           }
@@ -130,7 +128,7 @@ class _ParentalPopState extends State<ParentalPop> {
           child: Container(
         height: 1400.w,
         decoration: BoxDecoration(
-            color:  const Color.fromRGBO(240, 240, 240, 1),
+            color: const Color.fromRGBO(240, 240, 240, 1),
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(30.w),
                 topRight: Radius.circular(30.w))),
@@ -283,7 +281,7 @@ class _ParentalPopState extends State<ParentalPop> {
                   ],
                 ),
               ),
-              Padding(padding: EdgeInsets.only(top: 15.w)),
+              Padding(padding: EdgeInsets.only(top: 55.w)),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

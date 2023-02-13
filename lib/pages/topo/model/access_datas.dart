@@ -85,3 +85,20 @@ class FwParentControlTable {
     return data;
   }
 }
+
+// 开启
+class AccessOpen {
+  String? securityParentControlEnable;
+
+  AccessOpen({this.securityParentControlEnable});
+
+  AccessOpen.fromJson(Map<String, dynamic> json) {
+    securityParentControlEnable = json['securityParentControlEnable'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['securityParentControlEnable'] = securityParentControlEnable;
+    return data;
+  }
+}

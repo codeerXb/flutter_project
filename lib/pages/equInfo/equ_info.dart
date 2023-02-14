@@ -31,6 +31,9 @@ class _EquInfoState extends State<EquInfo> {
     networkLanSettingMask: '',
     systemRunningTime: '',
   );
+  int day = 0;
+  int hour = 0;
+  int min = 0;
   @override
   void initState() {
     super.initState();
@@ -48,12 +51,10 @@ class _EquInfoState extends State<EquInfo> {
       var d = json.decode(response.toString());
       setState(() {
         equinfoData = EquinfoDatas.fromJson(d);
-        var time = equinfoData.systemRunningTime.toString();
-        // int day = int.parse(time) % (24 * 3600);
-        // int hour = (int.parse(time) - day * 24 * 3600) % 3600;
-        // int min = (int.parse(time)- day * 24 * 3600)%60;
-        // print('time-------------->$time');
-  
+        var time = int.parse(equinfoData.systemRunningTime.toString());
+        day = time ~/ (24 * 3600);
+        hour = (time - day * 24 * 3600) ~/ 3600;
+        min = (time - day * 24 * 3600 - hour * 3600) ~/ 60;
       });
     } catch (e) {
       debugPrint('获取设备信息失败：$e.toString()');
@@ -74,16 +75,17 @@ class _EquInfoState extends State<EquInfo> {
               children: [
                 //1系统信息
                 TitleWidger(title: S.of(context).systemInfo),
-                // InfoBox(
-                //   boxCotainer: RowContainer(
-                //     leftText:  S.of(context).RunningTime,
-                //     righText: DateFormat("dd天HH小时mm分钟").format(
-                //         DateTime.fromMillisecondsSinceEpoch(int.parse(
-                //                 equinfoData.systemRunningTime.toString() +
-                //                     '000') -
-                //             86400000)),
-                //   ),
-                // ),
+                InfoBox(
+                  boxCotainer: RowContainer(
+                    leftText: S.of(context).RunningTime,
+                    righText: day.toString() +
+                        S.of(context).date +
+                        hour.toString() +
+                        S.of(context).hour +
+                        min.toString() +
+                        S.of(context).minute,
+                  ),
+                ),
                 //2版本信息
                 TitleWidger(title: S.of(context).versionInfo),
                 InfoBox(

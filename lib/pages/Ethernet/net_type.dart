@@ -29,6 +29,9 @@ class _NetTypeState extends State<NetType> {
     ethernetConnectionDns1: '',
     ethernetConnectionDns2: '',
   );
+  int day = 0;
+  int hour = 0;
+  int min = 0;
   @override
   void initState() {
     super.initState();
@@ -46,6 +49,10 @@ class _NetTypeState extends State<NetType> {
       var d = json.decode(response.toString());
       setState(() {
         NetTypeData = NetTypeDatas.fromJson(d);
+        var time = int.parse(NetTypeData.systemOnlineTime.toString());
+        day = time ~/ (24 * 3600);
+        hour = (time - day * 24 * 3600) ~/ 3600;
+        min = (time - day * 24 * 3600 - hour * 3600) ~/ 60;
       });
     } catch (e) {
       debugPrint('获取以太网状态失败：$e.toString()');
@@ -56,7 +63,7 @@ class _NetTypeState extends State<NetType> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar:
-          customAppbar(context: context, title: S.of(context).EthernetSettings),
+          customAppbar(context: context, title: S.of(context).EthernetStatus),
       body: Container(
         decoration:
             const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
@@ -94,11 +101,12 @@ class _NetTypeState extends State<NetType> {
                   BottomLine(
                       rowtem: RowContainer(
                     leftText: S.of(context).OnlineTime,
-                    righText: DateFormat("dd天HH小时mm分钟").format(
-                        DateTime.fromMillisecondsSinceEpoch(int.parse(
-                                NetTypeData.systemOnlineTime.toString() +
-                                    '000') -
-                            86400000)),
+                    righText: day.toString() +
+                        S.of(context).date +
+                        hour.toString() +
+                        S.of(context).hour +
+                        min.toString() +
+                        S.of(context).minute,
                   )),
                   BottomLine(
                       rowtem: RowContainer(

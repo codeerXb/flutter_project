@@ -67,8 +67,7 @@ class TitleWidger extends StatelessWidget {
 //信息盒子
 class InfoBox extends StatelessWidget {
   final Widget boxCotainer;
-
-  const InfoBox({super.key, required this.boxCotainer});
+ const InfoBox({super.key, required this.boxCotainer});
 
   @override
   Widget build(BuildContext context) {
@@ -80,5 +79,16 @@ class InfoBox extends StatelessWidget {
           borderRadius: BorderRadius.circular(18.w),
         ),
         child: boxCotainer);
+  }
+}
+
+//线
+class commonLine extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+          border: Border(bottom: BorderSide(color: Colors.black12))),
+    );
   }
 }

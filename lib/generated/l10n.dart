@@ -1710,16 +1710,6 @@ class S {
     );
   }
 
-  /// `ddDayHHourmmminutes`
-  String get time {
-    return Intl.message(
-      'ddDayHHourmmminutes',
-      name: 'time',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Input detection server`
   String get detectionServer {
     return Intl.message(
@@ -2070,16 +2060,6 @@ class S {
     );
   }
 
-  /// `date`
-  String get date {
-    return Intl.message(
-      'date',
-      name: 'date',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `subscription service`
   String get subService {
     return Intl.message(
@@ -2105,6 +2085,76 @@ class S {
     return Intl.message(
       'game acceleration',
       name: 'gameAcceleration',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `your subscription`
+  String get yourServiece {
+    return Intl.message(
+      'your subscription',
+      name: 'yourServiece',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `options`
+  String get options {
+    return Intl.message(
+      'options',
+      name: 'options',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `ai video`
+  String get aivideo {
+    return Intl.message(
+      'ai video',
+      name: 'aivideo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `d`
+  String get date {
+    return Intl.message(
+      'd',
+      name: 'date',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `h`
+  String get hour {
+    return Intl.message(
+      'h',
+      name: 'hour',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `m`
+  String get minute {
+    return Intl.message(
+      'm',
+      name: 'minute',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `type`
+  String get type {
+    return Intl.message(
+      'type',
+      name: 'type',
       desc: '',
       args: [],
     );

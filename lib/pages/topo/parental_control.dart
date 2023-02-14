@@ -4,13 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/custom_app_bar.dart';
+import 'package:flutter_template/core/widget/left_slide_actions.dart';
 import 'package:flutter_template/pages/topo/model/equipment_datas.dart';
 import 'package:get/get.dart';
-
 import '../../core/http/http.dart';
 import '../../core/utils/toast.dart';
 import 'model/access_datas.dart';
-// import 'package:flutter_template/core/widget/left_slide_actions.dart';
 
 class ParentalControl extends StatefulWidget {
   const ParentalControl({super.key});
@@ -21,8 +20,9 @@ class ParentalControl extends StatefulWidget {
 
 class _ParentalControlState extends State<ParentalControl> {
   OnlineDeviceTable data = OnlineDeviceTable(mAC: '');
+  // 启用状态 获取
   AccessOpen aOpen = AccessOpen();
-// 启用
+// 启用 提交
   AccessDatas restart = AccessDatas();
   bool isCheck = false;
   int checkVal = 0;
@@ -31,6 +31,10 @@ class _ParentalControlState extends State<ParentalControl> {
   AccessListDatas accessList =
       AccessListDatas(fwParentControlTable: [], max: null);
 
+  // 列表左滑
+  static const int _itemNum = 20;
+  final List<String> _itemTextList = [];
+  final Map<String, VoidCallback> _mapForHideActions = {};
   @override
   void initState() {
     super.initState();
@@ -40,6 +44,10 @@ class _ParentalControlState extends State<ParentalControl> {
     print(Get.arguments);
     getAccessList();
     getAccess();
+
+    for (int i = 1; i <= _itemNum; i++) {
+      _itemTextList.add(i.toString());
+    }
   }
 
 // 家长控制开启
@@ -131,103 +139,210 @@ class _ParentalControlState extends State<ParentalControl> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: customAppbar(context: context, title: '家长控制'),
-      body: ListView(children: [
-        Container(
-            padding: const EdgeInsets.all(10.0),
-            decoration:
-                const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(top: 10.sp),
-                ),
-                InfoBox(
-                  boxCotainer: Row(children: [
-                    const TitleWidger(title: '家长控制'),
-                    Padding(
-                      padding: EdgeInsets.only(left: 325.sp),
+      body: SafeArea(
+          child: Container(
+        padding: const EdgeInsets.all(10.0),
+        decoration:
+            const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+          Padding(
+            padding: EdgeInsets.only(top: 10.sp),
+          ),
+          InfoBox(
+            boxCotainer: Row(children: [
+              const TitleWidger(title: '家长控制'),
+              Padding(
+                padding: EdgeInsets.only(left: 325.sp),
+              ),
+              Switch(
+                value: isCheck,
+                onChanged: (newVal) {
+                  setState(() {
+                    isCheck = newVal;
+                    if (isCheck == true) {
+                      checkVal = 1;
+                    } else {
+                      checkVal = 0;
+                    }
+                    getAccessOpen();
+                  });
+                },
+              ),
+            ]),
+          ),
+          Container(
+            padding: const EdgeInsets.all(5.0),
+            height: 1050.w,
+            child: ListView.separated(
+              scrollDirection: Axis.vertical,
+              padding: const EdgeInsets.fromLTRB(12, 20, 12, 30),
+              itemCount: _itemTextList.length,
+              itemBuilder: (BuildContext context, int index) {
+                if (index < _itemTextList.length) {
+                  final String tempStr = _itemTextList[index];
+                  return LeftSlideActions(
+                    key: Key(tempStr),
+                    actionsWidth: 60,
+                    actions: [
+                      _buildDeleteBtn(index),
+                    ],
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
                     ),
-                    Switch(
-                      value: isCheck,
-                      onChanged: (newVal) {
-                        setState(() {
-                          isCheck = newVal;
-                          if (isCheck == true) {
-                            checkVal = 1;
-                          } else {
-                            checkVal = 0;
-                          }
-                          getAccessOpen();
-                        });
-                      },
-                    ),
-                  ]),
+                    actionsWillShow: () {
+                      // 隐藏其他列表项的行为。
+                      for (int i = 0; i < _itemTextList.length; i++) {
+                        if (index == i) {
+                          continue;
+                        }
+                        String tempKey = _itemTextList[i];
+                        VoidCallback? hideActions = _mapForHideActions[tempKey];
+                        if (hideActions != null) {
+                          hideActions();
+                        }
+                      }
+                    },
+                    exportHideActions: (hideActions) {
+                      _mapForHideActions[tempStr] = hideActions;
+                    },
+                    child: _buildListItem(index),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+              separatorBuilder: (BuildContext context, int index) {
+                return const SizedBox(height: 10);
+              },
+              // 添加下面这句 内容未充满的时候也可以滚动。
+              physics: const AlwaysScrollableScrollPhysics(),
+              // 添加下面这句 是为了GridView的高度自适应, 否则GridView需要包裹在固定宽高的容器中。
+              //shrinkWrap: true,
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(top: 25.sp),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all(const Color(0xffffffff)), //背景颜色
+                  foregroundColor:
+                      MaterialStateProperty.all(const Color(0xff5E6573)), //字体颜色
+                  overlayColor:
+                      MaterialStateProperty.all(const Color(0xffffffff)), // 高亮色
+                  shadowColor:
+                      MaterialStateProperty.all(const Color(0xffffffff)), //阴影颜色
+                  elevation: MaterialStateProperty.all(0), //阴影值
+                  textStyle: MaterialStateProperty.all(
+                      const TextStyle(fontSize: 12)), //字体
+                  side: MaterialStateProperty.all(const BorderSide(
+                      width: 1, color: Color(0xffCAD0DB))), //边框
+                  shape: MaterialStateProperty.all(CircleBorder(
+                      side: BorderSide(
+                    //设置 界面效果
+                    color: Colors.green,
+                    width: 280.0.w,
+                    style: BorderStyle.none,
+                  ))), //圆角弧度
                 ),
-                // 列表
-                if (accessList.fwParentControlTable!.isNotEmpty)
-                  SizedBox(
-                    width: 800.w,
-                    height: 1050.w,
-                    child: ListView(
-                        children: accessList.fwParentControlTable!.map((item) {
-                      return InfoBox(
-                          boxCotainer: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text('${item.timeStart!}至${item.timeStop!}禁止访问',
-                              style: TextStyle(
-                                  color: const Color.fromARGB(255, 5, 0, 0),
-                                  fontSize: ScreenUtil().setWidth(30.0))),
-                          Text(item.weekdays.toString(),
-                              style: TextStyle(
-                                  color: const Color.fromRGBO(147, 148, 168, 1),
-                                  fontSize: ScreenUtil().setWidth(28.0))),
-                        ],
-                      ));
-                    }).toList()),
-                  ),
-                Padding(
-                  padding: EdgeInsets.only(top: 25.sp),
-                ),
-                // + 新增
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(
-                            const Color(0xffffffff)), //背景颜色
-                        foregroundColor: MaterialStateProperty.all(
-                            const Color(0xff5E6573)), //字体颜色
-                        overlayColor: MaterialStateProperty.all(
-                            const Color(0xffffffff)), // 高亮色
-                        shadowColor: MaterialStateProperty.all(
-                            const Color(0xffffffff)), //阴影颜色
-                        elevation: MaterialStateProperty.all(0), //阴影值
-                        textStyle: MaterialStateProperty.all(
-                            const TextStyle(fontSize: 12)), //字体
-                        side: MaterialStateProperty.all(const BorderSide(
-                            width: 1, color: Color(0xffCAD0DB))), //边框
-                        shape: MaterialStateProperty.all(CircleBorder(
-                            side: BorderSide(
-                          //设置 界面效果
-                          color: Colors.green,
-                          width: 280.0.w,
-                          style: BorderStyle.none,
-                        ))), //圆角弧度
-                      ),
-                      onPressed: () {
-                        Get.toNamed("/parental_pop", arguments: data)
-                            ?.then((value) => getAccessList());
-                      },
-                      child: Text("+", style: TextStyle(fontSize: 60.sp)),
-                    )
-                  ],
-                ),
-              ],
-            )),
-      ]),
+                onPressed: () {
+                  Get.toNamed("/parental_pop", arguments: data)
+                      ?.then((value) => getAccessList());
+                },
+                child: Text("+", style: TextStyle(fontSize: 60.sp)),
+              )
+            ],
+          ),
+        ]),
+      )),
+
+      // 列表
+      // if (accessList.fwParentControlTable!.isNotEmpty)
+      // SizedBox(
+      //   width: 800.w,
+      //   height: 1050.w,
+      //   child: ListView(
+      //       children:
+      //           accessList.fwParentControlTable!.map((item) {
+      //     return InfoBox(
+      //         boxCotainer: Column(
+      //       crossAxisAlignment: CrossAxisAlignment.start,
+      //       children: <Widget>[
+      //         Text('${item.timeStart!}至${item.timeStop!}禁止访问',
+      //             style: TextStyle(
+      //                 color: const Color.fromARGB(255, 5, 0, 0),
+      //                 fontSize: ScreenUtil().setWidth(30.0))),
+      //         Text(item.weekdays.toString(),
+      //             style: TextStyle(
+      //                 color:
+      //                     const Color.fromRGBO(147, 148, 168, 1),
+      //                 fontSize: ScreenUtil().setWidth(28.0))),
+      //       ],
+      //     ));
+      //   }).toList()),
+      // ),
+
+      // ]))
+    );
+  }
+
+  Widget _buildListItem(final int index) {
+    return Container(
+      height: 50,
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      alignment: Alignment.centerLeft,
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            // 阴影颜色。
+            color: Color(0x66EBEBEB),
+            // 阴影xy轴偏移量。
+            offset: Offset(0.0, 0.0),
+            // 阴影模糊程度。
+            blurRadius: 6.0,
+            // 阴影扩散程度。
+            spreadRadius: 4.0,
+          ),
+        ],
+      ),
+      child: Text(
+        ('行内容---${_itemTextList[index]}'),
+        style: const TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.w500,
+          color: Color(0xFF333333),
+          height: 1,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDeleteBtn(final int index) {
+    return GestureDetector(
+      onTap: () {
+        // 省略: 弹出是否删除的确认对话框。
+        setState(() {
+          _itemTextList.removeAt(index);
+        });
+      },
+      child: Container(
+        width: 60,
+        color: const Color(0xFFF20101),
+        alignment: Alignment.center,
+        child: const Text(
+          '删除',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: Colors.white,
+            height: 1,
+          ),
+        ),
+      ),
     );
   }
 }

@@ -434,7 +434,6 @@ class _ParentalPopState extends State<ParentalPop> {
                       arrList.add('周六');
                       arrListEng.add('Sat');
                     }
-                    printInfo(info: '----${arrListEng.join()}');
                   }
                 });
               },

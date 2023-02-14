@@ -30,11 +30,11 @@ class _ParentalControlState extends State<ParentalControl> {
   // 家长控制列表
   AccessListDatas accessList =
       AccessListDatas(fwParentControlTable: [], max: null);
-
+  List arr = [];
+  List arrList = [];
   // 列表左滑
-  static const int _itemNum = 20;
-  final List<String> _itemTextList = [];
   final Map<String, VoidCallback> _mapForHideActions = {};
+
   @override
   void initState() {
     super.initState();
@@ -44,10 +44,6 @@ class _ParentalControlState extends State<ParentalControl> {
     print(Get.arguments);
     getAccessList();
     getAccess();
-
-    for (int i = 1; i <= _itemNum; i++) {
-      _itemTextList.add(i.toString());
-    }
   }
 
 // 家长控制开启
@@ -121,6 +117,84 @@ class _ParentalControlState extends State<ParentalControl> {
         print(d);
         setState(() {
           accessList = AccessListDatas.fromJson(d);
+          arr = accessList.fwParentControlTable!.map((text) => (text)).toList();
+          for (var i in arr) {
+            switch (i.weekdays) {
+              case 'Sun':
+                i.weekdays = '周日';
+                break;
+              case 'Mon':
+                i.weekdays = '周一';
+                break;
+              case 'Tue':
+                i.weekdays = '周二';
+                break;
+              case 'Wed':
+                i.weekdays = '周三';
+                break;
+              case 'Thu':
+                i.weekdays = '周四';
+                break;
+              case 'Fri':
+                i.weekdays = '周五';
+                break;
+              case 'Sat':
+                i.weekdays = '周六';
+                break;
+            }
+            print(i.weekdays.split(','));
+            if (i.weekdays.split(',').length != 1) {
+              for (var item in i.weekdays.split(',')) {
+                print(item);
+                switch (item) {
+                  case 'Sun':
+                    item = '周日';
+                    break;
+                  case 'Mon':
+                    item = '周一';
+                    break;
+                  case 'Tue':
+                    item = '周二';
+                    break;
+                  case 'Wed':
+                    item = '周三';
+                    break;
+                  case 'Thu':
+                    item = '周四';
+                    break;
+                  case 'Fri':
+                    item = '周五';
+                    break;
+                  case 'Sat':
+                    item = '周六';
+                    break;
+                }
+              }
+            }
+          }
+          // Sun,Mon,Tue,Wed,Thu,Fri,Sat
+          // if (arr[0].weekdays == 'Sun') {
+          //   arrList.add('周日,');
+          // }
+          //   if (arr[1] == '1') {
+          //     arrList.add('周一,');
+          //   }
+          //   if (arr[2] == '1') {
+          //     arrList.add('周二,');
+          //   }
+          //   if (arr[3] == '1') {
+          //     arrList.add('周三,');
+          //   }
+          //   if (arr[4] == '1') {
+          //     arrList.add('周四,');
+          //   }
+          //   if (arr[5] == '1') {
+          //     arrList.add('周五,');
+          //   }
+          //   if (arr[6] == '1') {
+          //     arrList.add('周六');
+          //   }
+          printInfo(info: '----${arrList.join()}');
         });
       } on FormatException catch (e) {
         setState(() {
@@ -170,58 +244,69 @@ class _ParentalControlState extends State<ParentalControl> {
               ),
             ]),
           ),
-          Container(
-            padding: const EdgeInsets.all(5.0),
-            height: 1050.w,
-            child: ListView.separated(
-              scrollDirection: Axis.vertical,
-              padding: const EdgeInsets.fromLTRB(12, 20, 12, 30),
-              itemCount: _itemTextList.length,
-              itemBuilder: (BuildContext context, int index) {
-                if (index < _itemTextList.length) {
-                  final String tempStr = _itemTextList[index];
-                  return LeftSlideActions(
-                    key: Key(tempStr),
-                    actionsWidth: 60,
-                    actions: [
-                      _buildDeleteBtn(index),
-                    ],
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(5)),
-                    ),
-                    actionsWillShow: () {
-                      // 隐藏其他列表项的行为。
-                      for (int i = 0; i < _itemTextList.length; i++) {
-                        if (index == i) {
-                          continue;
+          // 列表
+          if (accessList.fwParentControlTable!.isNotEmpty)
+            Container(
+              padding: const EdgeInsets.all(5.0),
+              height: 1050.w,
+              child: ListView.separated(
+                scrollDirection: Axis.vertical,
+                padding: const EdgeInsets.fromLTRB(12, 20, 12, 30),
+                itemCount: accessList.fwParentControlTable!.length,
+                itemBuilder: (
+                  BuildContext context,
+                  int index,
+                ) {
+                  if (index < accessList.fwParentControlTable!.length) {
+                    final String tempStr =
+                        accessList.fwParentControlTable!.toString()[index];
+                    return LeftSlideActions(
+                      key: Key(tempStr),
+                      actionsWidth: 60,
+                      actions: [
+                        _buildDeleteBtn(index),
+                      ],
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                      ),
+                      actionsWillShow: () {
+                        // 隐藏其他列表项的行为。
+                        for (int i = 0;
+                            i < accessList.fwParentControlTable!.length;
+                            i++) {
+                          if (index == i) {
+                            continue;
+                          }
+                          String tempKey =
+                              accessList.fwParentControlTable!.toString()[i];
+                          VoidCallback? hideActions =
+                              _mapForHideActions[tempKey];
+                          if (hideActions != null) {
+                            hideActions();
+                          }
                         }
-                        String tempKey = _itemTextList[i];
-                        VoidCallback? hideActions = _mapForHideActions[tempKey];
-                        if (hideActions != null) {
-                          hideActions();
-                        }
-                      }
-                    },
-                    exportHideActions: (hideActions) {
-                      _mapForHideActions[tempStr] = hideActions;
-                    },
-                    child: _buildListItem(index),
-                  );
-                }
-                return const SizedBox.shrink();
-              },
-              separatorBuilder: (BuildContext context, int index) {
-                return const SizedBox(height: 10);
-              },
-              // 添加下面这句 内容未充满的时候也可以滚动。
-              physics: const AlwaysScrollableScrollPhysics(),
-              // 添加下面这句 是为了GridView的高度自适应, 否则GridView需要包裹在固定宽高的容器中。
-              //shrinkWrap: true,
+                      },
+                      exportHideActions: (hideActions) {
+                        _mapForHideActions[tempStr] = hideActions;
+                      },
+                      child: _buildListItem(index),
+                    );
+                  }
+                  return const SizedBox.shrink();
+                },
+                separatorBuilder: (BuildContext context, int index) {
+                  return const SizedBox(height: 10);
+                },
+                // 添加下面这句 内容未充满的时候也可以滚动。
+                physics: const AlwaysScrollableScrollPhysics(),
+                // 添加下面这句 是为了GridView的高度自适应, 否则GridView需要包裹在固定宽高的容器中。
+                //shrinkWrap: true,
+              ),
             ),
-          ),
           Padding(
             padding: EdgeInsets.only(top: 25.sp),
           ),
+          // + 按钮
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -258,67 +343,49 @@ class _ParentalControlState extends State<ParentalControl> {
           ),
         ]),
       )),
-
-      // 列表
-      // if (accessList.fwParentControlTable!.isNotEmpty)
-      // SizedBox(
-      //   width: 800.w,
-      //   height: 1050.w,
-      //   child: ListView(
-      //       children:
-      //           accessList.fwParentControlTable!.map((item) {
-      //     return InfoBox(
-      //         boxCotainer: Column(
-      //       crossAxisAlignment: CrossAxisAlignment.start,
-      //       children: <Widget>[
-      //         Text('${item.timeStart!}至${item.timeStop!}禁止访问',
-      //             style: TextStyle(
-      //                 color: const Color.fromARGB(255, 5, 0, 0),
-      //                 fontSize: ScreenUtil().setWidth(30.0))),
-      //         Text(item.weekdays.toString(),
-      //             style: TextStyle(
-      //                 color:
-      //                     const Color.fromRGBO(147, 148, 168, 1),
-      //                 fontSize: ScreenUtil().setWidth(28.0))),
-      //       ],
-      //     ));
-      //   }).toList()),
-      // ),
-
-      // ]))
     );
   }
 
   Widget _buildListItem(final int index) {
     return Container(
-      height: 50,
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      alignment: Alignment.centerLeft,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            // 阴影颜色。
-            color: Color(0x66EBEBEB),
-            // 阴影xy轴偏移量。
-            offset: Offset(0.0, 0.0),
-            // 阴影模糊程度。
-            blurRadius: 6.0,
-            // 阴影扩散程度。
-            spreadRadius: 4.0,
-          ),
-        ],
-      ),
-      child: Text(
-        ('行内容---${_itemTextList[index]}'),
-        style: const TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.w500,
-          color: Color(0xFF333333),
-          height: 1,
+        height: 100.w,
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        alignment: Alignment.centerLeft,
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              // 阴影颜色。
+              color: Color(0x66EBEBEB),
+              // 阴影xy轴偏移量。
+              offset: Offset(0.0, 0.0),
+              // 阴影模糊程度。
+              blurRadius: 6.0,
+              // 阴影扩散程度。
+              spreadRadius: 4.0,
+            ),
+          ],
         ),
-      ),
-    );
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(top: 5.sp),
+            ),
+            Text(
+                '${accessList.fwParentControlTable![index].timeStart!}至${accessList.fwParentControlTable![index].timeStop!}禁止访问',
+                style: TextStyle(
+                    color: const Color.fromARGB(255, 5, 0, 0),
+                    fontSize: ScreenUtil().setWidth(30.0))),
+            Padding(
+              padding: EdgeInsets.only(top: 5.sp),
+            ),
+            Text(accessList.fwParentControlTable![index].weekdays.toString(),
+                style: TextStyle(
+                    color: const Color.fromRGBO(147, 148, 168, 1),
+                    fontSize: ScreenUtil().setWidth(28.0))),
+          ],
+        ));
   }
 
   Widget _buildDeleteBtn(final int index) {
@@ -326,7 +393,7 @@ class _ParentalControlState extends State<ParentalControl> {
       onTap: () {
         // 省略: 弹出是否删除的确认对话框。
         setState(() {
-          _itemTextList.removeAt(index);
+          accessList.fwParentControlTable!.removeAt(index);
         });
       },
       child: Container(

@@ -34,7 +34,7 @@ class _ParentalControlState extends State<ParentalControl> {
   List arrList = [];
   // 列表左滑
   final Map<String, VoidCallback> _mapForHideActions = {};
-
+  int del = 0;
   @override
   void initState() {
     super.initState();
@@ -60,7 +60,7 @@ class _ParentalControlState extends State<ParentalControl> {
           restart = AccessDatas.fromJson(d);
           if (restart.success == true) {
             ToastUtils.toast('提交成功');
-            Get.back();
+            // Get.back();
           } else {
             ToastUtils.toast('提交失败');
           }
@@ -119,82 +119,16 @@ class _ParentalControlState extends State<ParentalControl> {
           accessList = AccessListDatas.fromJson(d);
           arr = accessList.fwParentControlTable!.map((text) => (text)).toList();
           for (var i in arr) {
-            switch (i.weekdays) {
-              case 'Sun':
-                i.weekdays = '周日';
-                break;
-              case 'Mon':
-                i.weekdays = '周一';
-                break;
-              case 'Tue':
-                i.weekdays = '周二';
-                break;
-              case 'Wed':
-                i.weekdays = '周三';
-                break;
-              case 'Thu':
-                i.weekdays = '周四';
-                break;
-              case 'Fri':
-                i.weekdays = '周五';
-                break;
-              case 'Sat':
-                i.weekdays = '周六';
-                break;
-            }
-            print(i.weekdays.split(','));
-            if (i.weekdays.split(',').length != 1) {
-              for (var item in i.weekdays.split(',')) {
-                print(item);
-                switch (item) {
-                  case 'Sun':
-                    item = '周日';
-                    break;
-                  case 'Mon':
-                    item = '周一';
-                    break;
-                  case 'Tue':
-                    item = '周二';
-                    break;
-                  case 'Wed':
-                    item = '周三';
-                    break;
-                  case 'Thu':
-                    item = '周四';
-                    break;
-                  case 'Fri':
-                    item = '周五';
-                    break;
-                  case 'Sat':
-                    item = '周六';
-                    break;
-                }
-              }
-            }
+            i.weekdays = i.weekdays
+                .toString()
+                .replaceAll('Sun', '周日')
+                .replaceAll('Mon', '周一')
+                .replaceAll('Tue', '周二')
+                .replaceAll('Wed', '周三')
+                .replaceAll('Thu', '周四')
+                .replaceAll('Fri', '周五')
+                .replaceAll('Sat', '周六');
           }
-          // Sun,Mon,Tue,Wed,Thu,Fri,Sat
-          // if (arr[0].weekdays == 'Sun') {
-          //   arrList.add('周日,');
-          // }
-          //   if (arr[1] == '1') {
-          //     arrList.add('周一,');
-          //   }
-          //   if (arr[2] == '1') {
-          //     arrList.add('周二,');
-          //   }
-          //   if (arr[3] == '1') {
-          //     arrList.add('周三,');
-          //   }
-          //   if (arr[4] == '1') {
-          //     arrList.add('周四,');
-          //   }
-          //   if (arr[5] == '1') {
-          //     arrList.add('周五,');
-          //   }
-          //   if (arr[6] == '1') {
-          //     arrList.add('周六');
-          //   }
-          printInfo(info: '----${arrList.join()}');
         });
       } on FormatException catch (e) {
         setState(() {
@@ -206,6 +140,35 @@ class _ParentalControlState extends State<ParentalControl> {
     }).catchError((onError) {
       ToastUtils.toast('获取家长列表 失败');
       debugPrint('获取家长列表 失败：${onError.toString()}');
+    });
+  }
+
+// 删除
+  void getAccessDe() {
+    Map<String, dynamic> data = {
+      'method': 'tab_del',
+      'param': '{"table":"FwParentControlTable","id":$del}',
+    };
+    printInfo(info: '---data----$data');
+    XHttp.get('/data.html', data).then((res) {
+      try {
+        var d = json.decode(res.toString());
+        setState(() {
+          restart = AccessDatas.fromJson(d);
+          if (restart.success == true) {
+            ToastUtils.toast('提交成功');
+            getAccessList();
+          } else {
+            ToastUtils.toast('提交失败');
+          }
+        });
+      } on FormatException catch (e) {
+        print(e);
+        // ToastUtils.toast(S.current.error);
+      }
+    }).catchError((onError) {
+      debugPrint('失败：${onError.toString()}');
+      // ToastUtils.toast(S.current.error);
     });
   }
 
@@ -388,12 +351,16 @@ class _ParentalControlState extends State<ParentalControl> {
         ));
   }
 
-  Widget _buildDeleteBtn(final int index) {
+  Widget _buildDeleteBtn(int index) {
     return GestureDetector(
       onTap: () {
         // 省略: 弹出是否删除的确认对话框。
+        // index = accessList.fwParentControlTable![index].id!;
+        // printInfo(info: '1111----$index');
+
         setState(() {
-          accessList.fwParentControlTable!.removeAt(index);
+          del = accessList.fwParentControlTable![index].id!;
+          getAccessDe();
         });
       },
       child: Container(

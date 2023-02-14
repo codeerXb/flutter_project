@@ -207,7 +207,11 @@
   "yourServiece": "你的订阅",
   "options": "选项",
   "aivideo": "ai视频",
-  "type": "类型",
+  "contimeout": "连接超时",
+  "Reqtimeout": "请求超时",
+  "Restimeout": "响应超时",
+  "Reqcancellation": "请求取消",
+  "networkError": "网络异常",
   
   "a": "111"
 }

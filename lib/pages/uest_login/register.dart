@@ -38,7 +38,9 @@ class _UserRegisterState extends State<UserRegister> {
   String _codeValue = '';
   bool iscode = false; //获取验证码状态
   int codeNum = 60; //倒计时 60秒
-  var dio = Dio();
+  var dio = Dio(BaseOptions(
+    connectTimeout: 2000,
+  ));
   @override
   void initState() {
     super.initState();
@@ -311,44 +313,57 @@ class _UserRegisterState extends State<UserRegister> {
                             ),
                             // 获取验证码
                             TextButton(
-                                onPressed: (() async {
+                                onPressed: (() {
                                   RegExp reg = RegExp(
                                       r'^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$');
                                   if (!reg.hasMatch(_phoneVal!)) {
                                     ToastUtils.toast(S.of(context).phoneError);
                                   } else {
                                     //发请求
-                                    var res = await dio.post(
-                                        '${BaseConfig.cloudBaseUrl}/fota/fota/appCustomer/sendSmsOrEmailCode?account=$_phoneVal');
-                                    var d = json.decode(res.toString());
-                                    debugPrint('响应------>$d');
-                                    d['code'] == 200
-                                        ? ToastUtils.toast(S.of(context).success)
-                                        : ToastUtils.toast(d['message']);
-                                    if (codeNum == 60) {
-                                      //倒计时60s
-                                      setState(() {
-                                        iscode = true;
-                                      });
-
-                                      timer = Timer.periodic(
-                                          const Duration(seconds: 1), (time) {
+                                    dio
+                                        .post(
+                                            '${BaseConfig.cloudBaseUrl}/fota/fota/appCustomer/sendSmsOrEmailCode?account=$_phoneVal')
+                                        .then((res) {
+                                      var d = json.decode(res.toString());
+                                      debugPrint('响应------>$d');
+                                      d['code'] == 200
+                                          ? ToastUtils.toast(
+                                              S.of(context).success)
+                                          : ToastUtils.toast(d['message']);
+                                      if (codeNum == 60) {
+                                        //倒计时60s
                                         setState(() {
-                                          codeNum--;
+                                          iscode = true;
                                         });
-                                        if (codeNum <= 1) {
-                                          timer.cancel();
+
+                                        timer = Timer.periodic(
+                                            const Duration(seconds: 1), (time) {
                                           setState(() {
-                                            codeNum = 60;
-                                            iscode = false;
+                                            codeNum--;
                                           });
-                                        }
-                                      });
-                                    }
+                                          if (codeNum <= 1) {
+                                            timer.cancel();
+                                            setState(() {
+                                              codeNum = 60;
+                                              iscode = false;
+                                            });
+                                          }
+                                        });
+                                      }
+                                    }).catchError((err) {
+                                      //相应超超时
+                                      if (err.type ==
+                                          DioErrorType.connectTimeout) {
+                                        debugPrint('timeout');
+                                        ToastUtils.error(S.current.contimeout);
+                                      }
+                                    });
                                   }
                                 }),
                                 child: Text(
-                                  iscode ? '$codeNum秒' : S.of(context).getVerficationCode,
+                                  iscode
+                                      ? '$codeNum秒'
+                                      : S.of(context).getVerficationCode,
                                   style: TextStyle(
                                       color: Colors.blue, fontSize: 30.w),
                                 )),
@@ -370,7 +385,7 @@ class _UserRegisterState extends State<UserRegister> {
                               backgroundColor: MaterialStateProperty.all(
                                   const Color.fromARGB(255, 30, 104, 233)),
                             ),
-                            onPressed: () async {
+                            onPressed: () {
                               Map<String, dynamic> data = {
                                 "id": 0,
                                 "account": _phoneVal,
@@ -380,17 +395,26 @@ class _UserRegisterState extends State<UserRegister> {
                               //表单校验
                               if ((_formKey.currentState as FormState)
                                   .validate()) {
-                                var res = await dio.post(
-                                    '${BaseConfig.cloudBaseUrl}/fota/fota/appCustomer/register',
-                                    data: data);
-                                var d = json.decode(res.toString());
-                                debugPrint('响应------>$d');
-                                ToastUtils.toast(d['message']);
-                                if (d['code'] != 200) {
-                                  return;
-                                } else {
-                                  Get.offAllNamed("/use_login");
-                                }
+                                dio
+                                    .post(
+                                        '${BaseConfig.cloudBaseUrl}/fota/fota/appCustomer/register',
+                                        data: data)
+                                    .then((res) {
+                                  var d = json.decode(res.toString());
+                                  debugPrint('响应------>$d');
+                                  ToastUtils.toast(d['message']);
+                                  if (d['code'] != 200) {
+                                    return;
+                                  } else {
+                                    Get.offAllNamed("/use_login");
+                                  }
+                                }).catchError((err) {
+                                  //相应超超时
+                                  if (err.type == DioErrorType.connectTimeout) {
+                                    debugPrint('timeout');
+                                    ToastUtils.error(S.current.contimeout);
+                                  }
+                                });
                               }
                             },
                             child: Text(

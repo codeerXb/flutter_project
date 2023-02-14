@@ -108,6 +108,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "RebootScheduler":
             MessageLookupByLibrary.simpleMessage("Reboot Scheduler"),
         "Region": MessageLookupByLibrary.simpleMessage("Region"),
+        "Reqcancellation":
+            MessageLookupByLibrary.simpleMessage("Request cancellation"),
+        "Reqtimeout": MessageLookupByLibrary.simpleMessage("Request timeout"),
+        "Restimeout": MessageLookupByLibrary.simpleMessage("Response timeout"),
         "RunningTime": MessageLookupByLibrary.simpleMessage("Running Time"),
         "Russia": MessageLookupByLibrary.simpleMessage("Russia"),
         "Sat": MessageLookupByLibrary.simpleMessage("Sat"),
@@ -171,6 +175,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "connectStatus": MessageLookupByLibrary.simpleMessage("connect Status"),
         "connectionMode":
             MessageLookupByLibrary.simpleMessage("connection Mode"),
+        "contimeout":
+            MessageLookupByLibrary.simpleMessage("connection timeout"),
         "cpeManagementPlatform":
             MessageLookupByLibrary.simpleMessage("cpeManagementPlatform"),
         "currentDeive": MessageLookupByLibrary.simpleMessage("current Deive"),
@@ -227,6 +233,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "The restart date must be selected"),
         "netSet": MessageLookupByLibrary.simpleMessage("NetWork"),
         "netTopo": MessageLookupByLibrary.simpleMessage("Net Topo"),
+        "networkError": MessageLookupByLibrary.simpleMessage("network anomaly"),
         "newOldError": MessageLookupByLibrary.simpleMessage(
             "The new password is different from the confirmed password"),
         "newPassowld": MessageLookupByLibrary.simpleMessage("new password"),

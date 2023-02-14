@@ -10,6 +10,7 @@ import '../../config/base_config.dart';
 import '../../core/utils/Aes.dart';
 import '../../core/utils/shared_preferences_util.dart';
 import '../../core/utils/toast.dart';
+import '../login/model/exception_login.dart';
 
 /// 用户登录
 class UserLogin extends StatefulWidget {
@@ -25,7 +26,9 @@ final GlobalKey _formKey = GlobalKey<FormState>();
 class _UserLoginState extends State<UserLogin> {
   final LoginController loginController = Get.put(LoginController());
   bool passwordValShow = true;
-  var dio = Dio();
+  var dio = Dio(BaseOptions(
+    connectTimeout: 2000,
+  ));
 
   @override
   void initState() {
@@ -239,29 +242,38 @@ class _UserLoginState extends State<UserLogin> {
                           backgroundColor: MaterialStateProperty.all(
                               const Color.fromARGB(255, 30, 104, 233)),
                         ),
-                        onPressed: () async {
+                        onPressed: () {
                           if ((_formKey.currentState as FormState).validate()) {
                             Map<String, dynamic> data = {
                               "account": phone.text,
                               "password": AESUtil.generateAES(password.text),
                             };
-                            var res = await dio.post(
-                                '${BaseConfig.cloudBaseUrl}/fota/fota/appCustomer/login',
-                                data: data);
-                            var d = json.decode(res.toString());
-                            debugPrint('响应------>$d');
-                            if (d['code'] != 200) {
-                              ToastUtils.toast(d['message']);
-                              return;
-                            } else {
-                              ToastUtils.toast('success');
-                              Get.offAllNamed("/get_equipment");
-                              //存储用户信息
-                              sharedAddAndUpdate(
-                                  "user_token", String, (d['data']['token']));
-                              sharedAddAndUpdate(
-                                  "user_phone", String, (d['data']['account']));
-                            }
+                            dio
+                                .post(
+                                    '${BaseConfig.cloudBaseUrl}/fota/fota/appCustomer/login',
+                                    data: data)
+                                .then((res) {
+                              var d = json.decode(res.toString());
+                              debugPrint('响应------>$d');
+                              if (d['code'] != 200) {
+                                ToastUtils.toast(d['message']);
+                                return;
+                              } else {
+                                ToastUtils.toast('success');
+                                Get.offAllNamed("/get_equipment");
+                                //存储用户信息
+                                sharedAddAndUpdate(
+                                    "user_token", String, (d['data']['token']));
+                                sharedAddAndUpdate("user_phone", String,
+                                    (d['data']['account']));
+                              }
+                            }).catchError((err) {
+                              //相应超超时
+                              if (err.type == DioErrorType.connectTimeout) {
+                                debugPrint('timeout');
+                                ToastUtils.error(S.current.contimeout);
+                              }
+                            });
                           } else {
                             return;
                           }

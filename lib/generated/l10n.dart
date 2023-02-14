@@ -2160,6 +2160,56 @@ class S {
     );
   }
 
+  /// `connection timeout`
+  String get contimeout {
+    return Intl.message(
+      'connection timeout',
+      name: 'contimeout',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request timeout`
+  String get Reqtimeout {
+    return Intl.message(
+      'Request timeout',
+      name: 'Reqtimeout',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Response timeout`
+  String get Restimeout {
+    return Intl.message(
+      'Response timeout',
+      name: 'Restimeout',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request cancellation`
+  String get Reqcancellation {
+    return Intl.message(
+      'Request cancellation',
+      name: 'Reqcancellation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `network anomaly`
+  String get networkError {
+    return Intl.message(
+      'network anomaly',
+      name: 'networkError',
+      desc: '',
+      args: [],
+    );
+  }
+
   // skipped getter for the 'a ' key
 }
 

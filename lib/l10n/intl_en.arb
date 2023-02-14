@@ -210,5 +210,10 @@
   "hour": "h",
   "minute": "m",
   "type": "type",
+  "contimeout": "connection timeout",
+  "Reqtimeout": "Request timeout",
+  "Restimeout": "Response timeout",
+  "Reqcancellation": "Request cancellation",
+  "networkError": "network anomaly",
   "a ": "111"
 }

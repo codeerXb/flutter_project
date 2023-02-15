@@ -41,7 +41,6 @@ class _ParentalControlState extends State<ParentalControl> {
     setState(() {
       data = Get.arguments;
     });
-    print(Get.arguments);
     getAccessList();
     getAccess();
   }
@@ -52,7 +51,6 @@ class _ParentalControlState extends State<ParentalControl> {
       'method': 'obj_set',
       'param': '{"securityParentControlEnable":"$checkVal"}',
     };
-    printInfo(info: '---data----$data');
     XHttp.get('/data.html', data).then((res) {
       try {
         var d = json.decode(res.toString());
@@ -60,7 +58,6 @@ class _ParentalControlState extends State<ParentalControl> {
           restart = AccessDatas.fromJson(d);
           if (restart.success == true) {
             ToastUtils.toast('提交成功');
-            // Get.back();
           } else {
             ToastUtils.toast('提交失败');
           }
@@ -114,7 +111,6 @@ class _ParentalControlState extends State<ParentalControl> {
       try {
         debugPrint("\n======= 获取列表 =======");
         var d = json.decode(res.toString());
-        print(d);
         setState(() {
           accessList = AccessListDatas.fromJson(d);
           arr = accessList.fwParentControlTable!.map((text) => (text)).toList();
@@ -134,7 +130,6 @@ class _ParentalControlState extends State<ParentalControl> {
         setState(() {
           accessList = AccessListDatas(fwParentControlTable: [], max: null);
         });
-        print('The provided string is not valid JSON');
         print(e);
       }
     }).catchError((onError) {
@@ -149,7 +144,6 @@ class _ParentalControlState extends State<ParentalControl> {
       'method': 'tab_del',
       'param': '{"table":"FwParentControlTable","id":$del}',
     };
-    printInfo(info: '---data----$data');
     XHttp.get('/data.html', data).then((res) {
       try {
         var d = json.decode(res.toString());
@@ -226,7 +220,7 @@ class _ParentalControlState extends State<ParentalControl> {
                     return LeftSlideActions(
                       key: Key(tempStr),
                       actionsWidth: 120,
-                      actions: [_buildDeleteBtn(index), _buildChangeBtn(index)],
+                      actions: [_buildChangeBtn(index), _buildDeleteBtn(index)],
                       decoration: const BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(5)),
                       ),
@@ -381,15 +375,11 @@ class _ParentalControlState extends State<ParentalControl> {
   Widget _buildChangeBtn(int index) {
     return GestureDetector(
       onTap: () {
-        // 省略: 弹出是否删除的确认对话框。
-        // index = accessList.fwParentControlTable![index].id!;
-        // printInfo(info: '1111----$index');
-        Get.toNamed("/parental_pop", arguments: data)
-            ?.then((value) => getAccessList());
-        setState(() {
-          // del = accessList.fwParentControlTable![index].id!;
-          // getAccessDel();
-        });
+        Get.toNamed("/parental_update", arguments: {
+          'data': data,
+          'dataList': accessList.fwParentControlTable![index]
+        })?.then((value) => getAccessList());
+        setState(() {});
       },
       child: Container(
         width: 60,

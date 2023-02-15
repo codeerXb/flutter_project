@@ -228,6 +228,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "systemInfo": MessageLookupByLibrary.simpleMessage("系统信息"),
         "timeOnline": MessageLookupByLibrary.simpleMessage("实时在线"),
         "timeout": MessageLookupByLibrary.simpleMessage("设备连接超时"),
+        "type": MessageLookupByLibrary.simpleMessage("类型"),
         "unblockdevice": MessageLookupByLibrary.simpleMessage("确定解除对当前设备"),
         "unlock": MessageLookupByLibrary.simpleMessage("s后解锁"),
         "ununited": MessageLookupByLibrary.simpleMessage("未连接"),

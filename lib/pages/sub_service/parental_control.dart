@@ -30,6 +30,7 @@ class _ParcontrolState extends State<Parcontrol> {
     sharedGetData('parental_control', int).then(((res) {
       if (res != null) {
         setState(() {
+          istrue = true;
           index = int.parse(res.toString());
           switch (index) {
             case 1:
@@ -81,7 +82,7 @@ class _ParcontrolState extends State<Parcontrol> {
                             width: 50,
                           ),
                         ),
-                        title: index == 0
+                        title: !istrue
                             ? Text('订阅解锁服务')
                             : Text('开始时间:$startDate'),
                         subtitle: Text("套餐类型:$type"),
@@ -90,9 +91,10 @@ class _ParcontrolState extends State<Parcontrol> {
                     ],
                   ),
                 ),
-                Text(istrue.toString()),
+                if (!istrue)
                   //选项
                   TitleWidger(title: S.of(context).options),
+                if (!istrue)
                   Card(
                     elevation: 5, //设置卡片阴影的深度
                     shape: const RoundedRectangleBorder(
@@ -144,7 +146,8 @@ class _ParcontrolState extends State<Parcontrol> {
                       ],
                     ),
                   ),
-                  //提交
+                //提交
+                if (!istrue)
                   Padding(
                     padding: EdgeInsets.only(top: 10.w),
                     child: Center(
@@ -170,6 +173,7 @@ class _ParcontrolState extends State<Parcontrol> {
                       ),
                     ),
                   ),
+                if (!istrue)
                   //阅读协议
                   Padding(
                     padding: EdgeInsets.only(top: 10.w),
@@ -184,6 +188,7 @@ class _ParcontrolState extends State<Parcontrol> {
                               child: Text('开始前阅读《服务协议》和《自动续费协议》'))),
                     ),
                   ),
+                if (istrue)
                   //取消订阅
                   Padding(
                     padding: EdgeInsets.only(top: 10.w),
@@ -197,6 +202,9 @@ class _ParcontrolState extends State<Parcontrol> {
                                   Color.fromARGB(255, 212, 40, 34))),
                           onPressed: () {
                             sharedDeleteData('parental_control');
+                            istrue = false;
+                            ToastUtils.toast('取消订阅成功');
+                            Get.toNamed("/sub_service");
                           },
                           child: Text(
                             "取消订阅",

@@ -110,6 +110,7 @@
   "year": "年",
   "month": "月",
   "day": "日",
+  "type": "类型",
   "StatisticsByFlow": "按流量统计",
   "TimeLengthStatistics": "按时长统计",
   "Connected": "已连接",

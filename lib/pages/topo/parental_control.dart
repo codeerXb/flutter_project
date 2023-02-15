@@ -225,7 +225,7 @@ class _ParentalControlState extends State<ParentalControl> {
                         accessList.fwParentControlTable!.toString()[index];
                     return LeftSlideActions(
                       key: Key(tempStr),
-                      actionsWidth: 120,
+                      actionsWidth: 120.w,
                       actions: [_buildDeleteBtn(index), _buildChangeBtn(index)],
                       decoration: const BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -309,8 +309,8 @@ class _ParentalControlState extends State<ParentalControl> {
 
   Widget _buildListItem(final int index) {
     return Container(
-        height: 100.w,
-        padding: const EdgeInsets.symmetric(horizontal: 10),
+        height: 150.w,
+        padding: const EdgeInsets.symmetric(horizontal: 20),
         alignment: Alignment.centerLeft,
         decoration: const BoxDecoration(
           color: Colors.white,
@@ -331,7 +331,7 @@ class _ParentalControlState extends State<ParentalControl> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.only(top: 5.sp),
+              padding: EdgeInsets.all(10.sp),
             ),
             Text(
                 '${accessList.fwParentControlTable![index].timeStart!}至${accessList.fwParentControlTable![index].timeStop!}禁止访问',
@@ -339,7 +339,7 @@ class _ParentalControlState extends State<ParentalControl> {
                     color: const Color.fromARGB(255, 5, 0, 0),
                     fontSize: ScreenUtil().setWidth(30.0))),
             Padding(
-              padding: EdgeInsets.only(top: 5.sp),
+              padding: EdgeInsets.only(top: 10.sp),
             ),
             Text(accessList.fwParentControlTable![index].weekdays.toString(),
                 style: TextStyle(

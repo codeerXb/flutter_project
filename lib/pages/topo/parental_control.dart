@@ -225,7 +225,7 @@ class _ParentalControlState extends State<ParentalControl> {
                         accessList.fwParentControlTable!.toString()[index];
                     return LeftSlideActions(
                       key: Key(tempStr),
-                      actionsWidth: 120.w,
+                      actionsWidth: 120,
                       actions: [_buildDeleteBtn(index), _buildChangeBtn(index)],
                       decoration: const BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(5)),

@@ -144,7 +144,7 @@ class _ParentalControlState extends State<ParentalControl> {
   }
 
 // 删除
-  void getAccessDe() {
+  void getAccessDel() {
     Map<String, dynamic> data = {
       'method': 'tab_del',
       'param': '{"table":"FwParentControlTable","id":$del}',
@@ -156,10 +156,10 @@ class _ParentalControlState extends State<ParentalControl> {
         setState(() {
           restart = AccessDatas.fromJson(d);
           if (restart.success == true) {
-            ToastUtils.toast('提交成功');
+            ToastUtils.toast('删除 成功');
             getAccessList();
           } else {
-            ToastUtils.toast('提交失败');
+            ToastUtils.toast('删除 失败');
           }
         });
       } on FormatException catch (e) {
@@ -225,10 +225,8 @@ class _ParentalControlState extends State<ParentalControl> {
                         accessList.fwParentControlTable!.toString()[index];
                     return LeftSlideActions(
                       key: Key(tempStr),
-                      actionsWidth: 60,
-                      actions: [
-                        _buildDeleteBtn(index),
-                      ],
+                      actionsWidth: 120,
+                      actions: [_buildDeleteBtn(index), _buildChangeBtn(index)],
                       decoration: const BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(5)),
                       ),
@@ -360,7 +358,7 @@ class _ParentalControlState extends State<ParentalControl> {
 
         setState(() {
           del = accessList.fwParentControlTable![index].id!;
-          getAccessDe();
+          getAccessDel();
         });
       },
       child: Container(
@@ -369,6 +367,36 @@ class _ParentalControlState extends State<ParentalControl> {
         alignment: Alignment.center,
         child: const Text(
           '删除',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: Colors.white,
+            height: 1,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildChangeBtn(int index) {
+    return GestureDetector(
+      onTap: () {
+        // 省略: 弹出是否删除的确认对话框。
+        // index = accessList.fwParentControlTable![index].id!;
+        // printInfo(info: '1111----$index');
+        Get.toNamed("/parental_pop", arguments: data)
+            ?.then((value) => getAccessList());
+        setState(() {
+          // del = accessList.fwParentControlTable![index].id!;
+          // getAccessDel();
+        });
+      },
+      child: Container(
+        width: 60,
+        color: Colors.green,
+        alignment: Alignment.center,
+        child: const Text(
+          '修改',
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w500,

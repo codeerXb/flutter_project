@@ -44,7 +44,7 @@ class _LeftSlideActionsState extends State<LeftSlideActions>
       lowerBound: -widget.actionsWidth,
       upperBound: 0,
       vsync: this,
-      duration: const Duration(milliseconds: 300),
+      duration: const Duration(milliseconds: 600),
     )..addListener(() {
         _translateX = _controller.value;
         setState(() {});
@@ -96,12 +96,12 @@ class _LeftSlideActionsState extends State<LeftSlideActions>
 
   void _onHorizontalDragEnd(DragEndDetails details) {
     _controller.value = _translateX;
-    if (details.velocity.pixelsPerSecond.dx > 200) {
+    if (details.velocity.pixelsPerSecond.dx > 400) {
       _hide();
-    } else if (details.velocity.pixelsPerSecond.dx < -200) {
+    } else if (details.velocity.pixelsPerSecond.dx < -400) {
       _show();
     } else {
-      if (_translateX.abs() > widget.actionsWidth / 2) {
+      if (_translateX.abs() > widget.actionsWidth / 4) {
         _show();
       } else {
         _hide();

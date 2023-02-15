@@ -1040,10 +1040,10 @@ class S {
     );
   }
 
-  /// `not log in`
+  /// `unlogin`
   String get noLogin {
     return Intl.message(
-      'not log in',
+      'unlogin',
       name: 'noLogin',
       desc: '',
       args: [],
@@ -2205,6 +2205,46 @@ class S {
     return Intl.message(
       'network anomaly',
       name: 'networkError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remote control can be realized after login`
+  String get Remote {
+    return Intl.message(
+      'Remote control can be realized after login',
+      name: 'Remote',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `language`
+  String get language {
+    return Intl.message(
+      'language',
+      name: 'language',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Follower system`
+  String get FollowerSystem {
+    return Intl.message(
+      'Follower system',
+      name: 'FollowerSystem',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Logout login failed, please check the network!`
+  String get checkNet {
+    return Intl.message(
+      'Logout login failed, please check the network!',
+      name: 'checkNet',
       desc: '',
       args: [],
     );

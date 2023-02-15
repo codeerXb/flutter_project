@@ -39,7 +39,6 @@ class _UserCardState extends State<UserCard> {
       ),
       margin: EdgeInsets.all(26.w), //设置卡片外边距
       child: Column(
-        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           ListTile(
               contentPadding: EdgeInsets.only(
@@ -58,15 +57,15 @@ class _UserCardState extends State<UserCard> {
                   style: _userPhone != 'null'
                       ? const TextStyle(
                           color: Color.fromARGB(255, 54, 152, 244))
-                      : TextStyle(fontSize: 56.sp, color: Colors.grey)),
+                      : TextStyle(fontSize: 40.sp, color: Colors.black38)),
               //title下方显示的内容
+              // 登录后可实现远程控制
               subtitle: Text(
                   _userPhone != 'null'
                       ? S.of(context).currentDeive + ' ${widget.name}'
-                      : '',
-                  style: _userPhone != 'null'
-                      ? TextStyle(fontSize: 22.sp, color: Colors.black)
-                      : TextStyle(fontSize: 0.sp)),
+                      :  S.of(context).Remote,
+                  style: TextStyle(fontSize: 30.sp, color: Colors.black38)
+              ),
               //标题后显示的widget
               trailing: CommonWidget.buttonWidget(
                 title: _userPhone != 'null'

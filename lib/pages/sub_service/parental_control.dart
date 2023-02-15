@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import '../../core/widget/custom_app_bar.dart';
 import '../../generated/l10n.dart';
@@ -14,6 +15,18 @@ class Parcontrol extends StatefulWidget {
 
 class _ParcontrolState extends State<Parcontrol> {
   int index = 0;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    //读取存储的订阅选项
+    sharedGetData('parental_control', int).then(((res) {
+      if (res == 0) return;
+      setState(() {
+        index = int.parse(res.toString());
+      });
+    }));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +53,7 @@ class _ParcontrolState extends State<Parcontrol> {
                       left: 26.w, right: 26.w, bottom: 26.w), //设置卡片外边距
                   child: Column(
                     children: [
+                      //您的订阅卡片
                       ListTile(
                         leading: ClipOval(
                           child: Image.network(
@@ -80,7 +94,7 @@ class _ParcontrolState extends State<Parcontrol> {
                           });
                         },
                       ),
-                       commonLine(),
+                      commonLine(),
                       ListTile(
                         title: Text('2个月-￥19.88'),
                         trailing: Icon(
@@ -110,6 +124,7 @@ class _ParcontrolState extends State<Parcontrol> {
                   ),
                 ),
 
+//提交
                 Padding(
                   padding: EdgeInsets.only(top: 10.w),
                   child: Center(
@@ -119,12 +134,14 @@ class _ParcontrolState extends State<Parcontrol> {
                       child: ElevatedButton(
                         style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all(
-                                const Color.fromARGB(255, 48, 118, 250))),
+                                index == 0
+                                    ? const Color.fromARGB(255, 48, 118, 250)
+                                    : const Color.fromARGB(214, 238, 42, 28))),
                         onPressed: () {
-                          print(index);
+                          sharedAddAndUpdate('parental_control', int, index);
                         },
                         child: Text(
-                          "订阅",
+                          index == 0 ? "订阅" : '取消订阅',
                           style: TextStyle(fontSize: 30.sp),
                         ),
                       ),

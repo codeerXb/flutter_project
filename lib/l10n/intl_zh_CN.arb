@@ -106,7 +106,7 @@
   "PackageCapacity": "套餐容量",
   "PackageDuration": "套餐时长",
   "Packagecycle": "套餐周期",
-  "TotalPackageQuantity  ": "套餐总量",
+  "TotalPackageQuantity": "套餐总量",
   "year": "年",
   "month": "月",
   "day": "日",
@@ -212,6 +212,10 @@
   "Restimeout": "响应超时",
   "Reqcancellation": "请求取消",
   "networkError": "网络异常",
+  "Remote": "登录后可实现远程控制",
+  "language": "选择语言",
+  "FollowerSystem": "跟随系统",
+  "checkNet": "退出登录失败，请检查网络！",
   
   "a": "111"
 }

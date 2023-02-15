@@ -98,7 +98,7 @@
   "priority": "priority",
   "currentDeive": "current Deive",
   "logOut": "log out",
-  "noLogin": "not log in",
+  "noLogin": "unlogin",
   "timeOnline": "time Online",
   "PackageSetting": "Package Setting",
   "aesRecommend": "AES(Recommend)",
@@ -215,5 +215,9 @@
   "Restimeout": "Response timeout",
   "Reqcancellation": "Request cancellation",
   "networkError": "network anomaly",
+  "Remote": "Remote control can be realized after login",
+  "language": "language",
+  "FollowerSystem": "Follower system",
+  "checkNet": "Logout login failed, please check the network!",
   "a ": "111"
 }

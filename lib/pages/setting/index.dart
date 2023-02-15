@@ -85,7 +85,6 @@ class _SettingState extends State<Setting> {
                   /// 文件上传与下载
                   // fileUplodAndDownload(),
                   // const Divider(),
-                  testButton(),
                   //解绑
                   unbindingDevice(),
                   //订阅服务
@@ -96,6 +95,7 @@ class _SettingState extends State<Setting> {
 
                   /// WLAN设置
                   wlanSet(),
+
                   /// 访客网络
                   visitorNet(),
 
@@ -380,35 +380,6 @@ class _SettingState extends State<Setting> {
         });
   }
 
-  /// testButton
-  Widget testButton() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        TextButton(
-          child: const Text(
-            '变成中文',
-          ),
-          onPressed: () {
-            setState(() {
-              S.load(const Locale("zh", "CN"));
-            });
-          },
-        ),
-        TextButton(
-          child: const Text(
-            '变成英文',
-          ),
-          onPressed: () {
-            setState(() {
-              S.load(const Locale("CN", "zh"));
-            });
-          },
-        ),
-      ],
-    );
-  }
-
   /// 解绑设备
   Widget unbindingDevice() {
     return CommonWidget.simpleWidgetWithMine(
@@ -427,7 +398,10 @@ class _SettingState extends State<Setting> {
   Widget subService() {
     return CommonWidget.simpleWidgetWithMine(
         title: S.of(context).subService,
-        icon:const Icon(Icons.monetization_on,color: Colors.blue,),
+        icon: const Icon(
+          Icons.monetization_on,
+          color: Colors.blue,
+        ),
         callBack: () {
           Get.toNamed("/sub_service");
         });

@@ -39,6 +39,7 @@ class _AccessEquipmentState extends State<AccessEquipment> {
       appBar: customAppbar(context: context, title: data.hostName.toString()),
       body: SingleChildScrollView(
         child: Container(
+            height: 1400.w,
             decoration:
                 const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
             child: Column(

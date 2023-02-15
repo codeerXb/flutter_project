@@ -60,7 +60,7 @@ class _TopoItemState extends State<TopoItem> {
                   width: 120.w,
                   margin: const EdgeInsets.all(5),
                   child: Image.asset(
-                    'assets/images/slices.png',
+                    'assets/images/camera.png',
                     // fit: BoxFit.cover,
                     width: 70.w,
                     height: 80.w,

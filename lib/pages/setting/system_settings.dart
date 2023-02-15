@@ -12,6 +12,7 @@ import 'package:get/get.dart';
 import '../../core/utils/app_update_util.dart';
 import '../../core/utils/shared_preferences_util.dart';
 import '../../core/widget/common_box.dart';
+import '../../core/widget/common_picker.dart';
 import '../../core/widget/common_widget.dart';
 import '../../core/widget/custom_app_bar.dart';
 import '../../generated/l10n.dart';
@@ -25,6 +26,34 @@ class SystemSettings extends StatefulWidget {
 }
 
 class _SystemSettingsState extends State<SystemSettings> {
+  int index = 0;
+  String showVal = S.current.FollowerSystem;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    //读取语言 选项
+    sharedGetData('langue', String).then(((res) {
+      print('res----->$res');
+      if (res != null) {
+        setState(() {
+          showVal = res.toString();
+          index = [
+            S.current.FollowerSystem,
+            '中文',
+            'Engish',
+          ].indexOf(showVal);
+        });
+      }
+    }));
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -108,6 +137,63 @@ class _SystemSettingsState extends State<SystemSettings> {
                       ),
                     ),
                   ),
+                  //选择语言
+                  GestureDetector(
+                    onTap: () {
+                      var result = CommonPicker.showPicker(
+                        context: context,
+                        options: [
+                          S.current.FollowerSystem,
+                          '中文',
+                          'Engish',
+                        ],
+                        value: index,
+                      );
+                      result?.then((selectedValue) => {
+                            if (index != selectedValue && selectedValue != null)
+                              {
+                                setState(() => {
+                                      index = selectedValue,
+                                      showVal = [
+                                        S.current.FollowerSystem,
+                                        '中文',
+                                        'Engish',
+                                      ][index],
+                                      //存储语言
+                                      sharedAddAndUpdate(
+                                          'langue', String, showVal),
+                                      index == 1
+                                          ? S.load(const Locale("zh", "CN"))
+                                          : S.load(const Locale("CN", "zh"))
+                                    })
+                              }
+                          });
+                    },
+                    child: BottomLine(
+                      rowtem: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(S.of(context).language,
+                              style: TextStyle(
+                                  color: const Color.fromARGB(255, 5, 0, 0),
+                                  fontSize: 28.sp)),
+                          Row(
+                            children: [
+                              Text(showVal,
+                                  style: TextStyle(
+                                      color: const Color.fromARGB(255, 5, 0, 0),
+                                      fontSize: 28.sp)),
+                              Icon(
+                                Icons.arrow_forward_ios_outlined,
+                                color: const Color.fromRGBO(144, 147, 153, 1),
+                                size: 30.w,
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ]),
               ),
 
@@ -155,7 +241,8 @@ class _SystemSettingsState extends State<SystemSettings> {
         sharedClearData();
         Get.offAllNamed("/get_equipment");
       } else {
-        ToastUtils.error('退出登录失败，请检查网络！');
+        //退出登录失败，请检查网络！
+        ToastUtils.error(S.current.checkNet);
       }
       printError(info: err.toString());
     }

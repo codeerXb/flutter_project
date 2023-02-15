@@ -67,6 +67,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "EthernetStatus":
             MessageLookupByLibrary.simpleMessage("Ethernet Status"),
         "FactoryReset": MessageLookupByLibrary.simpleMessage("Factory Reset"),
+        "FollowerSystem":
+            MessageLookupByLibrary.simpleMessage("Follower system"),
         "France": MessageLookupByLibrary.simpleMessage("France"),
         "GSCNARFCN": MessageLookupByLibrary.simpleMessage("GSCNARFCN"),
         "General": MessageLookupByLibrary.simpleMessage("General Settings"),
@@ -108,6 +110,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "RebootScheduler":
             MessageLookupByLibrary.simpleMessage("Reboot Scheduler"),
         "Region": MessageLookupByLibrary.simpleMessage("Region"),
+        "Remote": MessageLookupByLibrary.simpleMessage(
+            "Remote control can be realized after login"),
         "Reqcancellation":
             MessageLookupByLibrary.simpleMessage("Request cancellation"),
         "Reqtimeout": MessageLookupByLibrary.simpleMessage("Request timeout"),
@@ -162,6 +166,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "ascii32": MessageLookupByLibrary.simpleMessage("1~32 ASCII character"),
         "binding": MessageLookupByLibrary.simpleMessage("binding?"),
         "cancel": MessageLookupByLibrary.simpleMessage("cancel"),
+        "checkNet": MessageLookupByLibrary.simpleMessage(
+            "Logout login failed, please check the network!"),
         "clearCache": MessageLookupByLibrary.simpleMessage("clearCache"),
         "clickFactory": MessageLookupByLibrary.simpleMessage(
             "Please click Factory Reset to restore device to its factory settings"),
@@ -213,6 +219,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("LAN Host Settings"),
         "lanSettings": MessageLookupByLibrary.simpleMessage("LAN Settings"),
         "lanStatus": MessageLookupByLibrary.simpleMessage("LAN Status"),
+        "language": MessageLookupByLibrary.simpleMessage("language"),
         "linkStatus": MessageLookupByLibrary.simpleMessage("link Status"),
         "local": MessageLookupByLibrary.simpleMessage("local"),
         "locked": MessageLookupByLibrary.simpleMessage("locked"),
@@ -239,7 +246,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "newPassowld": MessageLookupByLibrary.simpleMessage("new password"),
         "noData": MessageLookupByLibrary.simpleMessage("no Data"),
         "noDevice": MessageLookupByLibrary.simpleMessage("Device not found"),
-        "noLogin": MessageLookupByLibrary.simpleMessage("not log in"),
+        "noLogin": MessageLookupByLibrary.simpleMessage("unlogin"),
         "notEmpty": MessageLookupByLibrary.simpleMessage("not Empty!"),
         "notEnable": MessageLookupByLibrary.simpleMessage("not Enable"),
         "notstart": MessageLookupByLibrary.simpleMessage("not start"),

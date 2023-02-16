@@ -303,7 +303,7 @@ class _ParentalControlState extends State<ParentalControl> {
 
   Widget _buildListItem(final int index) {
     return Container(
-        height: 150.w,
+        height: 130.w,
         padding: const EdgeInsets.symmetric(horizontal: 20),
         alignment: Alignment.centerLeft,
         decoration: const BoxDecoration(
@@ -343,16 +343,12 @@ class _ParentalControlState extends State<ParentalControl> {
         ));
   }
 
-  Widget _buildDeleteBtn(int index) {
+  Widget _buildDeleteBtn(final int index) {
     return GestureDetector(
       onTap: () {
-        // 省略: 弹出是否删除的确认对话框。
-        // index = accessList.fwParentControlTable![index].id!;
-        // printInfo(info: '1111----$index');
-
+        _openAvatarBottomSheet();
         setState(() {
           del = accessList.fwParentControlTable![index].id!;
-          getAccessDel();
         });
       },
       child: Container(
@@ -372,7 +368,108 @@ class _ParentalControlState extends State<ParentalControl> {
     );
   }
 
-  Widget _buildChangeBtn(int index) {
+  _openAvatarBottomSheet() {
+    showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.transparent,
+        builder: (BuildContext context) {
+          return Container(
+            height: 260.w,
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(30.w),
+                    topRight: Radius.circular(30.w))),
+            child: Padding(
+              padding: EdgeInsets.only(left: 30.w, right: 30.w, top: 10.w),
+              child: Column(
+                children: <Widget>[
+                  InkWell(
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(30.w),
+                              topRight: Radius.circular(30.w))),
+                      height: 80.w,
+                      alignment: Alignment.center,
+                      child: const Text(
+                        '提示',
+                        style: TextStyle(fontWeight: FontWeight.w700),
+                      ),
+                    ),
+                  ),
+                  InkWell(
+                    child: Container(
+                      height: 60.w,
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        '删除后将无法看到该条记录,请谨慎操作',
+                        style:
+                            TextStyle(color: Colors.black45, fontSize: 22.sp),
+                      ),
+                    ),
+                  ),
+                  Padding(padding: EdgeInsets.only(top: 15.w)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context).pop(true);
+                        },
+                        child: Container(
+                          width: 0.5.sw - 30.w,
+                          height: 60.w,
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.black12,
+                                width: 1,
+                              ),
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(30.w),
+                                  bottomLeft: Radius.circular(30.w))),
+                          alignment: Alignment.center,
+                          child: Text(
+                            '取消',
+                            style: TextStyle(
+                                fontSize: 22.sp, fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          getAccessDel();
+                        },
+                        child: Container(
+                          height: 60.w,
+                          width: 0.5.sw - 30.w,
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.black12,
+                                width: 1,
+                              ),
+                              borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(30.w),
+                                  bottomRight: Radius.circular(30.w))),
+                          alignment: Alignment.center,
+                          child: Text(
+                            '确定',
+                            style: TextStyle(
+                                fontSize: 22.sp, fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  Widget _buildChangeBtn(final int index) {
     return GestureDetector(
       onTap: () {
         Get.toNamed("/parental_update", arguments: {

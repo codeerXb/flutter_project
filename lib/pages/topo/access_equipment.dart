@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/custom_app_bar.dart';
 import 'package:flutter_template/pages/topo/model/equipment_datas.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 import '../../generated/l10n.dart';
 
@@ -95,6 +95,56 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text('家长控制', style: TextStyle(fontSize: 30.sp)),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.arrow_forward_ios_outlined,
+                                  color: const Color.fromRGBO(144, 147, 153, 1),
+                                  size: 30.w,
+                                )
+                              ],
+                            ),
+                          ]),
+                    ),
+                  ),
+                ),
+                InfoBox(
+                  boxCotainer: SizedBox(
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {
+                        ToastUtils.toast('暂未订阅 游戏加速 ,请前往 "订阅服务" 订阅');
+                        // Get.toNamed("/parental_control", arguments: data);
+                      },
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('游戏加速', style: TextStyle(fontSize: 30.sp)),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.arrow_forward_ios_outlined,
+                                  color: const Color.fromRGBO(144, 147, 153, 1),
+                                  size: 30.w,
+                                )
+                              ],
+                            ),
+                          ]),
+                    ),
+                  ),
+                ),
+                InfoBox(
+                  boxCotainer: SizedBox(
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {
+                        ToastUtils.toast('暂未订阅 AI视频 ,请前往 "订阅服务" 订阅');
+                        // Get.toNamed("/parental_control", arguments: data);
+                      },
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('AI视频', style: TextStyle(fontSize: 30.sp)),
                             Row(
                               children: [
                                 Icon(

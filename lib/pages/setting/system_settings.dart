@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/config/base_config.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/utils/toast.dart';
+import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
 import 'package:get/get.dart';
 
 import '../../core/utils/app_update_util.dart';
@@ -57,7 +58,25 @@ class _SystemSettingsState extends State<SystemSettings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppbar(context: context, title: S.current.SystemSettings),
+      appBar: AppBar(
+        leading: IconButton(
+            onPressed: () async {
+              // toolbarController.setPageIndex(1);
+              // toolbarController.setPageIndex(2);
+              Get.back();
+            },
+            icon: const Icon(
+              Icons.arrow_back_ios,
+              color: Colors.black,
+            )),
+        centerTitle: true,
+        title: Text(
+          S.of(context).SystemSettings,
+          style: TextStyle(color: Colors.black),
+        ),
+        elevation: 0,
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+      ),
       body: SingleChildScrollView(
         child: Container(
           decoration:
@@ -222,8 +241,11 @@ class _SystemSettingsState extends State<SystemSettings> {
     );
   }
 
+  final ToolbarController toolbarController = Get.put(ToolbarController());
+
   /// 退出登录
   void loginout() async {
+    toolbarController.setPageIndex(0);
     // 这里还需要调用后台接口的方法
     Dio dio = Dio();
     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =

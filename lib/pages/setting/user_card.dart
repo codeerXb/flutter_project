@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/widget/common_widget.dart';
+import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
 import 'package:get/get.dart';
 
 import '../../generated/l10n.dart';
@@ -28,7 +29,7 @@ class _UserCardState extends State<UserCard> {
       });
     }));
   }
-
+final ToolbarController toolbarController = Get.put(ToolbarController());
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -76,6 +77,7 @@ class _UserCardState extends State<UserCard> {
                   sharedDeleteData('user_phone');
                   sharedDeleteData('user_token');
                   debugPrint('清楚用户信息');
+                   toolbarController.setPageIndex(0);
                 },
                 background: _userPhone != 'null'
                     ? const Color.fromARGB(255, 255, 0, 0)

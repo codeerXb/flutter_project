@@ -7,6 +7,7 @@ import 'package:flutter_template/model/user_model.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:flutter_template/pages/setting/user_card.dart';
+import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
 import 'package:get/get.dart';
 import '../../core/utils/shared_preferences_util.dart';
 import '../../core/utils/string_util.dart';
@@ -22,6 +23,8 @@ class Setting extends StatefulWidget {
 }
 
 class _SettingState extends State<Setting> {
+final ToolbarController toolbarController = Get.put(ToolbarController());
+
   /// 用户信息
   UserModel userModel = UserModel();
   final LoginController loginController = Get.put(LoginController());
@@ -234,6 +237,7 @@ class _SettingState extends State<Setting> {
                       InkWell(
                         onTap: () {
                           Get.offAllNamed("/get_equipment");
+                           toolbarController.setPageIndex(0);
                         },
                         child: Container(
                           height: 60.w,
@@ -479,7 +483,7 @@ class _SettingState extends State<Setting> {
           title: S.of(context).SystemSettings,
           icon: const Image(image: AssetImage('assets/images/sys_set.png')),
           callBack: () {
-            Get.toNamed("/system_settings");
+            Get.toNamed ("/system_settings");
           }),
     );
   }

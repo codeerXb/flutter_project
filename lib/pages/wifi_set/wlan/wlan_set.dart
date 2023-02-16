@@ -1007,7 +1007,7 @@ class _WlanSetState extends State<WlanSet> {
                       ],
                     )),
                   Padding(
-                      padding: EdgeInsets.only(top: 10.w),
+                      padding: EdgeInsets.only(top: 10.w,bottom: 50.w),
                       child: Center(
                           child: SizedBox(
                         height: 70.sp,

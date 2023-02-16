@@ -98,7 +98,7 @@
   "priority": "priority",
   "currentDeive": "current Deive",
   "logOut": "log out",
-  "noLogin": "unlogin",
+  "noLogin": "Please login",
   "timeOnline": "time Online",
   "PackageSetting": "Package Setting",
   "aesRecommend": "AES(Recommend)",

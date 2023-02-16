@@ -7,12 +7,17 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/ashed_line.dart';
+import 'package:flutter_template/pages/net_status/index.dart';
 import 'package:flutter_template/pages/net_status/model/net_connect_status.dart';
+import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
 import 'package:flutter_template/pages/topo/model/equipment_datas.dart';
 import 'package:flutter_template/pages/topo/mesh_item.dart';
 import 'package:get/get.dart';
 
+import '../../core/utils/sign_out_util.dart';
 import '../../generated/l10n.dart';
+import '../setting/index.dart';
+import '../toolbar/index.dart';
 import 'topo_data.dart';
 import 'topo_item.dart';
 
@@ -33,6 +38,8 @@ class _TopoState extends State<Topo> {
     getTopoData(false);
   }
 
+  final ToolbarController toolbarController = Get.put(ToolbarController());
+  final PageController _pageController = PageController();
   // 有线连接状况：1:连通0：未连接
   String _wanStatus = '0';
   // wifi连接状况：1:连通0：未连接
@@ -265,13 +272,18 @@ class _TopoState extends State<Topo> {
                     ])
                   ],
                 ),
-                Center(
-                  child: Container(
-                    height: 108.w,
-                    width: 144.w,
-                    margin: const EdgeInsets.all(5),
-                    child: Image.asset('assets/images/router.png',
-                        fit: BoxFit.cover),
+                GestureDetector(
+                  onTap: () {
+                    toolbarController.setPageIndex(2);
+                  },
+                  child: Center(
+                    child: Container(
+                      height: 108.w,
+                      width: 144.w,
+                      margin: const EdgeInsets.all(5),
+                      child: Image.asset('assets/images/router.png',
+                          fit: BoxFit.cover),
+                    ),
                   ),
                 ),
                 Center(

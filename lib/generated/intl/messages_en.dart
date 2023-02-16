@@ -95,7 +95,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "OnlineTime": MessageLookupByLibrary.simpleMessage("Online Time"),
         "PackageCapacity":
             MessageLookupByLibrary.simpleMessage("Package Capacity"),
-        "PackageCycle": MessageLookupByLibrary.simpleMessage("Package Cycle"),
         "PackageDuration":
             MessageLookupByLibrary.simpleMessage("Package Duration"),
         "PackageSetting":
@@ -189,6 +188,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "currentOrientation":
             MessageLookupByLibrary.simpleMessage("current Orientation"),
         "currentValue": MessageLookupByLibrary.simpleMessage("current Value"),
+        "cycle": MessageLookupByLibrary.simpleMessage("Package Cycle"),
         "date": MessageLookupByLibrary.simpleMessage("d"),
         "day": MessageLookupByLibrary.simpleMessage("day"),
         "detectionServer":
@@ -246,7 +246,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "newPassowld": MessageLookupByLibrary.simpleMessage("new password"),
         "noData": MessageLookupByLibrary.simpleMessage("no Data"),
         "noDevice": MessageLookupByLibrary.simpleMessage("Device not found"),
-        "noLogin": MessageLookupByLibrary.simpleMessage("unlogin"),
+        "noLogin": MessageLookupByLibrary.simpleMessage("Please login"),
         "notEmpty": MessageLookupByLibrary.simpleMessage("not Empty!"),
         "notEnable": MessageLookupByLibrary.simpleMessage("not Enable"),
         "notstart": MessageLookupByLibrary.simpleMessage("not start"),

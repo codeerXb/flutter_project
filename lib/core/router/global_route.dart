@@ -44,7 +44,7 @@ import '../../pages/setting/scan_code.dart';
 import '../../pages/setting/system_settings.dart';
 import '../../pages/system_settings/maintain_settings.dart';
 import '../../pages/system_settings/account_security.dart';
-import '../../pages/toolbar.dart';
+import '../../pages/toolbar/index.dart';
 import '../../pages/topo/parental_control.dart';
 import '../../pages/topo/parental_pop.dart';
 import '../../pages/topo/parental_update.dart';
@@ -58,7 +58,6 @@ class GlobalRouter {
   static final _routes = {
     /// 过渡页面
     '/': (BuildContext context, {Object? args}) => const SplashPage(),
-
     /// 搜索设备
     '/get_equipment': (BuildContext context, {Object? args}) =>
         const Equipment(),

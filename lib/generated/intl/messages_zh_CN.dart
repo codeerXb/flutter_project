@@ -148,6 +148,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "currentDeive": MessageLookupByLibrary.simpleMessage("当前设备"),
         "currentOrientation": MessageLookupByLibrary.simpleMessage("当前指向"),
         "currentValue": MessageLookupByLibrary.simpleMessage("实时数值"),
+        "cycle": MessageLookupByLibrary.simpleMessage("套餐周期"),
         "date": MessageLookupByLibrary.simpleMessage("天"),
         "day": MessageLookupByLibrary.simpleMessage("日"),
         "detectionServer": MessageLookupByLibrary.simpleMessage("输入检测服务器"),

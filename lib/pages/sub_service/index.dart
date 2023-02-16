@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import '../../core/utils/shared_preferences_util.dart';
 import '../../core/widget/common_widget.dart';
 import '../../core/widget/custom_app_bar.dart';
 import '../../generated/l10n.dart';
@@ -16,6 +17,30 @@ class SubSerivce extends StatefulWidget {
 }
 
 class _SubSerivceState extends State<SubSerivce> {
+  String type = '暂未订阅';
+  @override
+  void initState() {
+    super.initState();
+    //读取存储的订阅选项
+    sharedGetData('parental_control', int).then(((res) {
+      if (res != null) {
+        setState(() {
+          switch (int.parse(res.toString())) {
+            case 1:
+              type = '连续包年';
+              break;
+            case 2:
+              type = '连续包季';
+              break;
+            case 3:
+              type = '连续包月';
+              break;
+          }
+        });
+      }
+    }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,7 +75,7 @@ class _SubSerivceState extends State<SubSerivce> {
                           ),
                         ),
                         title: Text(S.of(context).parentalControl),
-                        subtitle: Text(S.of(context).parentalControl + "-未开启"),
+                        subtitle: Text('套餐类型'+ "-$type"),
                         trailing: Icon(Icons.arrow_forward_ios),
                         enabled: true,
                         onTap: () => Get.toNamed("/parcontrol_info"),

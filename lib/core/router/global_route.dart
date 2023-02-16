@@ -44,9 +44,10 @@ import '../../pages/setting/scan_code.dart';
 import '../../pages/setting/system_settings.dart';
 import '../../pages/system_settings/maintain_settings.dart';
 import '../../pages/system_settings/account_security.dart';
-import '../../pages/toolbar.dart';
+import '../../pages/toolbar/index.dart';
 import '../../pages/topo/parental_control.dart';
 import '../../pages/topo/parental_pop.dart';
+import '../../pages/topo/parental_update.dart';
 
 /// 路由
 class GlobalRouter {
@@ -57,7 +58,6 @@ class GlobalRouter {
   static final _routes = {
     /// 过渡页面
     '/': (BuildContext context, {Object? args}) => const SplashPage(),
-
     /// 搜索设备
     '/get_equipment': (BuildContext context, {Object? args}) =>
         const Equipment(),
@@ -188,9 +188,12 @@ class GlobalRouter {
     // 家长控制
     '/parental_control': (BuildContext context, {Object? args}) =>
         const ParentalControl(),
-    // 家长控制
+    // 家长控制 新增
     '/parental_pop': (BuildContext context, {Object? args}) =>
         const ParentalPop(),
+    // 家长控制 修改
+    '/parental_update': (BuildContext context, {Object? args}) =>
+        const ParentalUpdate(),
     // 订阅服务
     '/sub_service': (BuildContext context, {Object? args}) =>
         const SubSerivce(),

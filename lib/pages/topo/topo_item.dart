@@ -30,9 +30,9 @@ class _TopoItemState extends State<TopoItem> {
     return GestureDetector(
       onTap: () {
         if (widget.topoData!.mAC == 'B4:4C:3B:9E:46:3D') {
-        Get.offNamed("/video_play");
+          Get.offNamed("/video_play");
         } else {
-        Get.toNamed("/access_equipment", arguments: widget.topoData);
+          Get.toNamed("/access_equipment", arguments: widget.topoData);
         }
         // var result = CommonPicker.showPicker(
         //   context: context,
@@ -60,7 +60,9 @@ class _TopoItemState extends State<TopoItem> {
                   width: 120.w,
                   margin: const EdgeInsets.all(5),
                   child: Image.asset(
-                    'assets/images/camera.png',
+                    widget.topoData!.mAC == 'B4:4C:3B:9E:46:3D'
+                        ? 'assets/images/camera.png'
+                        : 'assets/images/slices.png',
                     // fit: BoxFit.cover,
                     width: 70.w,
                     height: 80.w,

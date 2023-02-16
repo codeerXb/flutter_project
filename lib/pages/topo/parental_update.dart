@@ -14,16 +14,16 @@ import '../../core/widget/custom_app_bar.dart';
 import '../../generated/l10n.dart';
 import 'model/access_datas.dart';
 
-class ParentalPop extends StatefulWidget {
-  const ParentalPop({super.key});
+class ParentalUpdate extends StatefulWidget {
+  const ParentalUpdate({super.key});
 
   @override
-  State<ParentalPop> createState() => _ParentalPopState();
+  State<ParentalUpdate> createState() => _ParentalUpdateState();
 }
 
-class _ParentalPopState extends State<ParentalPop> {
+class _ParentalUpdateState extends State<ParentalUpdate> {
   OnlineDeviceTable data = OnlineDeviceTable(mAC: '');
-
+  FwParentControlTable dataList = FwParentControlTable();
 // 提交
   AccessDatas restart = AccessDatas();
 
@@ -57,11 +57,13 @@ class _ParentalPopState extends State<ParentalPop> {
   String startTim = '';
   String startTimeH = '';
   String startTimeM = '';
+  String startTimDate = '';
 
 // 结束时间
   String stopTim = '';
   String stopTimeH = '';
   String stopTimeM = '';
+  String stopTimDate = '';
 
   TimeOfDay _time = TimeOfDay.now().replacing(hour: 11, minute: 30);
   void onTimeChanged(TimeOfDay newTime) {
@@ -78,22 +80,29 @@ class _ParentalPopState extends State<ParentalPop> {
 // 名称  设备
   String hostN = '';
   String mac = '';
+  String id = '';
+
   @override
   void initState() {
     super.initState();
     setState(() {
-      data = Get.arguments;
+      data = Get.arguments['data'];
+      dataList = Get.arguments['dataList'];
     });
     hostN = data.hostName.toString();
     mac = data.mAC.toString();
+    id = dataList.id.toString();
+    arrList = dataList.weekdays.toString().split(',');
+    startTimDate = dataList.timeStart.toString();
+    stopTimDate = dataList.timeStop.toString();
   }
 
-// 家长控制 提交
+// 家长控制 修改
   void getAccessData() {
     Map<String, dynamic> data = {
-      'method': 'tab_add',
+      'method': 'tab_set',
       'param':
-          '{"table":"FwParentControlTable","value":{"Name":"$hostN","Weekdays":"${arrListEng.join()}","TimeStart":"$startTimeH:$startTimeM","TimeStop":"$startTimeH:$startTimeM","Host":"$mac","Target":"DROP"}}',
+          '{"table":"FwParentControlTable","value":[{"id":$id,"Name":"$hostN","Weekdays":"${arrListEng.join()}","TimeStart":"$startTimeH:$startTimeM","TimeStop":"$startTimeH:$startTimeM","Host":"$mac","Target":"DROP"}]}'
     };
     XHttp.get('/data.html', data).then((res) {
       try {
@@ -101,10 +110,10 @@ class _ParentalPopState extends State<ParentalPop> {
         setState(() {
           restart = AccessDatas.fromJson(d);
           if (restart.success == true) {
-            ToastUtils.toast('提交成功');
+            ToastUtils.toast('修改 成功');
             Get.back();
           } else {
-            ToastUtils.toast('提交失败');
+            ToastUtils.toast('修改 失败');
           }
         });
       } on FormatException catch (e) {
@@ -218,7 +227,7 @@ class _ParentalPopState extends State<ParentalPop> {
                                 children: [
                                   Text(
                                       (startTimeH == '' && startTimeM == ''
-                                          ? ''
+                                          ? startTimDate
                                           : ('$startTimeH:$startTimeM')),
                                       style: TextStyle(fontSize: 28.sp)),
                                   Icon(
@@ -259,7 +268,7 @@ class _ParentalPopState extends State<ParentalPop> {
                                 children: [
                                   Text(
                                       (stopTimeH == '' && stopTimeM == ''
-                                          ? ''
+                                          ? stopTimDate
                                           : ('$stopTimeH:$stopTimeM')),
                                       style: TextStyle(fontSize: 28.sp)),
                                   Icon(
@@ -432,6 +441,7 @@ class _ParentalPopState extends State<ParentalPop> {
                       arrListEng.add('Sat');
                     }
                   }
+                  printInfo(info: arrList.toString());
                 });
               },
               child: Container(

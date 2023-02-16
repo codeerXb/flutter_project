@@ -53,7 +53,9 @@ class _ToolbarState extends State<Toolbar> {
             children: getPages(),
           ),
           bottomNavigationBar: Obx(() {
-            _pageController.jumpToPage(toolbarController.pageIndex.value);
+            if (toolbarController.pageIndex.value !=0) {
+              _pageController.jumpToPage(toolbarController.pageIndex.value);
+            }
             return BottomNavigationBar(
                 backgroundColor: Colors.white,
                 selectedItemColor: const Color.fromRGBO(95, 141, 255, 1),

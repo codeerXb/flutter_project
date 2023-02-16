@@ -85,6 +85,9 @@ class _ODUState extends State<ODU> {
     "param2": 1,
     "param3": 0,
     "param4": 0,
+    "param5": 0,
+    "param6": 0,
+    "param7": 0,
     "data_table": [{}]
   };
   onData(msg) {
@@ -140,19 +143,19 @@ class _ODUState extends State<ODU> {
             return 0;
           });
           int len = message.dataTable!.length;
-          int degIndex =
-              ((message.dataTable![len - 1].degree! / 100).truncate() % 360);
           for (var i = 0; i < len; i++) {
-            mapData.add({
-              'deg': ((message.dataTable![i].degree! / 100).truncate() % 360),
-              'val': message.dataTable![i].sinr! / 100
-            });
-            curS = message.dataTable![i].sinr! / 100;
+            if (message.dataTable![i].degree != null) {
+              int degIndex =
+                  ((message.dataTable![i].degree! / 100).truncate() % 360);
+              mapData.add({
+                'deg': ((message.dataTable![i].degree! / 100).truncate() % 360),
+                'val': message.dataTable![i].sinr! / 100
+              });
+              curS = message.dataTable![i].sinr! / 100;
+              mapDataPoint[degIndex] = 30;
+              curA = degIndex;
+            }
           }
-
-          mapDataPoint[degIndex] = 30;
-          curA = degIndex;
-          debugPrint('degIndex:$degIndex');
           // mapData = mapData;
         });
       }
@@ -182,7 +185,8 @@ class _ODUState extends State<ODU> {
               if (e['deg'] == lastAngle) {
                 curS = e['val'];
                 currentAngle = e['deg'];
-                maxNumber = mapDataPoint[e['deg']] = e['val'];
+                maxNumber = e['val'];
+                mapDataPoint[e['deg']] = 30;
               }
             }
           }
@@ -200,6 +204,7 @@ class _ODUState extends State<ODU> {
         });
       }
     } else if (message.param2 == 5) {
+      // 定位
       if (message.dataTable![0].degree != null) {
         if (mounted) {
           setState(() {
@@ -238,6 +243,7 @@ class _ODUState extends State<ODU> {
       debugPrint("onDone");
     }), onError: (error) {
       debugPrint("连接ws 错误");
+      ToastUtils.error(S.current.error);
       if (mounted) {
         setState(() {
           isShow = true;
@@ -324,12 +330,12 @@ class _ODUState extends State<ODU> {
                   skewing: 0,
                   radarMap: RadarMapModel(
                     legend: [
-                      LegendModel(
-                         S.of(context).currentValue, const Color.fromARGB(255, 34, 177, 16)),
-                      LegendModel(
-                           S.of(context).maxValue, const Color.fromARGB(255, 234, 65, 53)),
-                      LegendModel(
-                          S.of(context).currentOrientation, const Color.fromARGB(255, 255, 166, 1)),
+                      LegendModel(S.of(context).currentValue,
+                          const Color.fromARGB(255, 34, 177, 16)),
+                      LegendModel(S.of(context).maxValue,
+                          const Color.fromARGB(255, 234, 65, 53)),
+                      LegendModel(S.of(context).currentOrientation,
+                          const Color.fromARGB(255, 255, 166, 1)),
                     ],
                     indicator: legend,
                     data: [
@@ -517,7 +523,7 @@ class _ODUState extends State<ODU> {
                             : Colors.white)),
                     onPressed: connectReceiveData,
                     child: Text(
-                     S.of(context).startSearch,
+                      S.of(context).startSearch,
                       style:
                           TextStyle(color: isShow ? Colors.white : Colors.grey),
                     ),

@@ -57,13 +57,6 @@ class _MaintainSettingsState extends State<MaintainSettings> {
 
   //重启日期展示数组
   List arr = [];
-  String b = '';
-  String c = '';
-  String d = '';
-  String e = '';
-  String f = '';
-  String g = '';
-  String h = '';
   List arrList = [];
 
   @override
@@ -323,8 +316,8 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                         topLeft: Radius.circular(30.w),
                         bottomLeft: Radius.circular(30.w))),
                 alignment: Alignment.center,
-                child:  Text(S.current.cancel,
-                    style: TextStyle(fontWeight: FontWeight.w600)),
+                child: Text(S.current.cancel,
+                    style: const TextStyle(fontWeight: FontWeight.w600)),
               ),
             ),
             InkWell(
@@ -375,8 +368,8 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                         topRight: Radius.circular(30.w),
                         bottomRight: Radius.circular(30.w))),
                 alignment: Alignment.center,
-                child:  Text(S.of(context).confirm,
-                    style: TextStyle(fontWeight: FontWeight.w600)),
+                child: Text(S.of(context).confirm,
+                    style: const TextStyle(fontWeight: FontWeight.w600)),
               ),
             )
           ])
@@ -586,7 +579,8 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                       rowtem: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(S.of(context).DateReboot, style: TextStyle(fontSize: 30.sp)),
+                            Text(S.of(context).DateReboot,
+                                style: TextStyle(fontSize: 30.sp)),
                             Row(
                               children: [
                                 Text(startShowVal,
@@ -677,7 +671,8 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                       rowtem: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(S.of(context).TimeReboot, style: TextStyle(fontSize: 30.sp)),
+                            Text(S.of(context).TimeReboot,
+                                style: TextStyle(fontSize: 30.sp)),
                             Row(
                               children: [
                                 Text(endShowVal,

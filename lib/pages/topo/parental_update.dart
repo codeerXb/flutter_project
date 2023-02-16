@@ -32,13 +32,6 @@ class _ParentalUpdateState extends State<ParentalUpdate> {
 
 //工作日
   List arr = [];
-  String b = '';
-  String c = '';
-  String d = '';
-  String e = '';
-  String f = '';
-  String g = '';
-  String h = '';
   List arrList = [];
   List arrListEng = [];
   String tranfer = '';

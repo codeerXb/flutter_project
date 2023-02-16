@@ -246,7 +246,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "newPassowld": MessageLookupByLibrary.simpleMessage("new password"),
         "noData": MessageLookupByLibrary.simpleMessage("no Data"),
         "noDevice": MessageLookupByLibrary.simpleMessage("Device not found"),
-        "noLogin": MessageLookupByLibrary.simpleMessage("unlogin"),
+        "noLogin": MessageLookupByLibrary.simpleMessage("Please login"),
         "notEmpty": MessageLookupByLibrary.simpleMessage("not Empty!"),
         "notEnable": MessageLookupByLibrary.simpleMessage("not Enable"),
         "notstart": MessageLookupByLibrary.simpleMessage("not start"),

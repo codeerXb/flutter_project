@@ -1040,10 +1040,10 @@ class S {
     );
   }
 
-  /// `unlogin`
+  /// `Please login`
   String get noLogin {
     return Intl.message(
-      'unlogin',
+      'Please login',
       name: 'noLogin',
       desc: '',
       args: [],

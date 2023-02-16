@@ -1121,10 +1121,10 @@ class S {
   }
 
   /// `Package Cycle`
-  String get PackageCycle {
+  String get cycle {
     return Intl.message(
       'Package Cycle',
-      name: 'PackageCycle',
+      name: 'cycle',
       desc: '',
       args: [],
     );

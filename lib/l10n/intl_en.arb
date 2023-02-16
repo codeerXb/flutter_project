@@ -106,7 +106,7 @@
   "TypeOfPackage": "Type of package",
   "PackageCapacity": "Package Capacity",
   "PackageDuration": "Package Duration",
-  "PackageCycle": "Package Cycle",
+  "cycle": "Package Cycle",
   "TotalPackageQuantity": "Total Package Quantity",
   "year": "year",
   "month": "month",

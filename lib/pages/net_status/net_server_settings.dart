@@ -184,9 +184,10 @@ class _NetServerSettingsState extends State<NetServerSettings> {
                             inputFormatters: [
                               FilteringTextInputFormatter.allow(
                                   RegExp("[0-9.]")),
+                                  LengthLimitingTextInputFormatter(10)
                             ],
                             keyboardType: TextInputType.number,
-                            maxLength: 10,
+                            // maxLength: 10,
                             onTap: () => _containController.selection =
                                 TextSelection(
                                     baseOffset: 0,
@@ -231,7 +232,7 @@ class _NetServerSettingsState extends State<NetServerSettings> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(S.of(context).PackageCycle,
+                    Text(S.of(context).cycle,
                         style: TextStyle(
                             height: 1.1,
                             color: const Color.fromARGB(255, 5, 0, 0),

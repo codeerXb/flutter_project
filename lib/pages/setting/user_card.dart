@@ -65,7 +65,7 @@ final ToolbarController toolbarController = Get.put(ToolbarController());
                   _userPhone != 'null'
                       ? S.of(context).currentDeive + ' ${widget.name}'
                       :  S.of(context).Remote,
-                  style: TextStyle(fontSize: 30.sp, color: Colors.black38)
+                  style: TextStyle(fontSize: 28.sp, color: Colors.black38)
               ),
               //标题后显示的widget
               trailing: CommonWidget.buttonWidget(

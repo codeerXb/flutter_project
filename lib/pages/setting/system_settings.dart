@@ -60,7 +60,7 @@ class _SystemSettingsState extends State<SystemSettings> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-            onPressed: () async {
+            onPressed: ()  {
               // toolbarController.setPageIndex(1);
               // toolbarController.setPageIndex(2);
               Get.back();

@@ -389,7 +389,7 @@ class _LanSettingsState extends State<LanSettings> {
                       children: [
                          Text( S.of(context).LeaseTime),
                         SizedBox(
-                          width: 480.sp,
+                          width: 400.sp,
                           child: TextFormField(
                               textAlign: TextAlign.right,
                             controller: lanTimeController,

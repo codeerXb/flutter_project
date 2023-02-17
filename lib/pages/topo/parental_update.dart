@@ -71,9 +71,9 @@ class _ParentalUpdateState extends State<ParentalUpdate> {
   List<Widget> temList = [];
 
 // 名称  设备
-  String hostN = '';
-  String mac = '';
   String id = '';
+  String name = '';
+  String equipmentName = '';
 
   @override
   void initState() {
@@ -82,12 +82,12 @@ class _ParentalUpdateState extends State<ParentalUpdate> {
       data = Get.arguments['data'];
       dataList = Get.arguments['dataList'];
     });
-    hostN = data.hostName.toString();
-    mac = data.mAC.toString();
     id = dataList.id.toString();
     arrList = dataList.weekdays.toString().split(',');
     startTimDate = dataList.timeStart.toString();
     stopTimDate = dataList.timeStop.toString();
+    name= dataList.name.toString();
+    equipmentName= dataList.host.toString();
   }
 
 // 家长控制 修改
@@ -95,7 +95,7 @@ class _ParentalUpdateState extends State<ParentalUpdate> {
     Map<String, dynamic> data = {
       'method': 'tab_set',
       'param':
-          '{"table":"FwParentControlTable","value":[{"id":$id,"Name":"$hostN","Weekdays":"${arrListEng.join()}","TimeStart":"$startTimeH:$startTimeM","TimeStop":"$startTimeH:$startTimeM","Host":"$mac","Target":"DROP"}]}'
+          '{"table":"FwParentControlTable","value":[{"id":$id,"Name":"$name","Weekdays":"${arrListEng.join()}","TimeStart":" $startTimeH=='' ? $startTimDate : {$startTimeH:$startTimeM}","TimeStop":"${stopTimeH ==''} ? $stopTimDate : {$startTimeH:$startTimeM}","Host":"$equipmentName","Target":"DROP"}]}'
     };
     XHttp.get('/data.html', data).then((res) {
       try {
@@ -139,12 +139,12 @@ class _ParentalUpdateState extends State<ParentalUpdate> {
                     BottomLine(
                         rowtem: RowContainer(
                       leftText: S.current.name,
-                      righText: data.hostName.toString(),
+                      righText: name,
                     )),
                     BottomLine(
                         rowtem: RowContainer(
                       leftText:S.current.equipment,
-                      righText: data.mAC.toString(),
+                      righText: equipmentName,
                     )),
                     GestureDetector(
                       onTap: () {

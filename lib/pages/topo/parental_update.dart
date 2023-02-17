@@ -27,7 +27,7 @@ class _ParentalUpdateState extends State<ParentalUpdate> {
 // 提交
   AccessDatas restart = AccessDatas();
 
-  String accTitle =S.current.parentalControl;
+  String accTitle = S.current.parentalControl;
   bool isCheck = false;
 
 //工作日
@@ -84,10 +84,25 @@ class _ParentalUpdateState extends State<ParentalUpdate> {
     });
     id = dataList.id.toString();
     arrList = dataList.weekdays.toString().split(',');
+    for (var i in arrList) {
+      arrListEng.add(i
+          .toString()
+          .replaceAll('周日', 'Sun')
+          .replaceAll('周一', 'Mon')
+          .replaceAll('周二', 'Tue')
+          .replaceAll('周三', 'Wed')
+          .replaceAll('周四', 'Thu')
+          .replaceAll('周五', 'Fri')
+          .replaceAll('周六', 'Sat'));
+    }
     startTimDate = dataList.timeStart.toString();
+    startTimeH = startTimDate.split(':')[0];
+    startTimeM = startTimDate.split(':')[1];
     stopTimDate = dataList.timeStop.toString();
-    name= dataList.name.toString();
-    equipmentName= dataList.host.toString();
+    stopTimeH = stopTimDate.split(':')[0];
+    stopTimeM = stopTimDate.split(':')[1];
+    name = dataList.name.toString();
+    equipmentName = dataList.host.toString();
   }
 
 // 家长控制 修改
@@ -95,7 +110,7 @@ class _ParentalUpdateState extends State<ParentalUpdate> {
     Map<String, dynamic> data = {
       'method': 'tab_set',
       'param':
-          '{"table":"FwParentControlTable","value":[{"id":$id,"Name":"$name","Weekdays":"${arrListEng.join()}","TimeStart":" $startTimeH=='' ? $startTimDate : {$startTimeH:$startTimeM}","TimeStop":"${stopTimeH ==''} ? $stopTimDate : {$startTimeH:$startTimeM}","Host":"$equipmentName","Target":"DROP"}]}'
+          '{"table":"FwParentControlTable","value":[{"id":$id,"Name":"$name","Weekdays":"${arrListEng.join(',')}","TimeStart":"$startTimeH:$startTimeM","TimeStop":"$stopTimeH:$stopTimeM","Host":"$equipmentName","Target":"DROP"}]}'
     };
     XHttp.get('/data.html', data).then((res) {
       try {
@@ -103,10 +118,10 @@ class _ParentalUpdateState extends State<ParentalUpdate> {
         setState(() {
           restart = AccessDatas.fromJson(d);
           if (restart.success == true) {
-            ToastUtils.toast(S.current.modification+S.current.success);
+            ToastUtils.toast(S.current.modification + S.current.success);
             Get.back();
           } else {
-            ToastUtils.toast(S.current.modification+S.current.error);
+            ToastUtils.toast(S.current.modification + S.current.error);
           }
         });
       } on FormatException catch (e) {
@@ -122,7 +137,7 @@ class _ParentalUpdateState extends State<ParentalUpdate> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppbar(context: context, title:S.current.parentalControl),
+      appBar: customAppbar(context: context, title: S.current.parentalControl),
       body: SingleChildScrollView(
           child: Container(
         height: 1400.w,
@@ -143,7 +158,7 @@ class _ParentalUpdateState extends State<ParentalUpdate> {
                     )),
                     BottomLine(
                         rowtem: RowContainer(
-                      leftText:S.current.equipment,
+                      leftText: S.current.equipment,
                       righText: equipmentName,
                     )),
                     GestureDetector(
@@ -177,7 +192,8 @@ class _ParentalUpdateState extends State<ParentalUpdate> {
                         rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(S.current.workday, style: TextStyle(fontSize: 28.sp)),
+                              Text(S.current.workday,
+                                  style: TextStyle(fontSize: 28.sp)),
                               Row(
                                 children: [
                                   Text(arrList.join(),
@@ -407,27 +423,27 @@ class _ParentalUpdateState extends State<ParentalUpdate> {
                         .toList();
                     if (arr[0] == '1') {
                       arrList.add('周日,');
-                      arrListEng.add('Sun,');
+                      arrListEng.add('Sun');
                     }
                     if (arr[1] == '1') {
                       arrList.add('周一,');
-                      arrListEng.add('Mon,');
+                      arrListEng.add('Mon');
                     }
                     if (arr[2] == '1') {
                       arrList.add('周二,');
-                      arrListEng.add('Tue,');
+                      arrListEng.add('Tue');
                     }
                     if (arr[3] == '1') {
                       arrList.add('周三,');
-                      arrListEng.add('Wed,');
+                      arrListEng.add('Wed');
                     }
                     if (arr[4] == '1') {
                       arrList.add('周四,');
-                      arrListEng.add('Thu,');
+                      arrListEng.add('Thu');
                     }
                     if (arr[5] == '1') {
                       arrList.add('周五,');
-                      arrListEng.add('Fri,');
+                      arrListEng.add('Fri');
                     }
                     if (arr[6] == '1') {
                       arrList.add(S.current.Sat);

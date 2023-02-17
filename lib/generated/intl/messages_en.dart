@@ -151,6 +151,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "UsedFlow": MessageLookupByLibrary.simpleMessage("Used Flow"),
         "WPAEncry": MessageLookupByLibrary.simpleMessage("WPA encryption"),
         "Wed": MessageLookupByLibrary.simpleMessage("Wed"),
+        "access": MessageLookupByLibrary.simpleMessage(" access forbidden"),
         "accomplish": MessageLookupByLibrary.simpleMessage("accomplish"),
         "account": MessageLookupByLibrary.simpleMessage("account"),
         "accountEmpty":
@@ -161,7 +162,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "advancedSet":
             MessageLookupByLibrary.simpleMessage("advanced Settings"),
         "aesRecommend": MessageLookupByLibrary.simpleMessage("AES(Recommend)"),
-        "aivideo": MessageLookupByLibrary.simpleMessage("ai video"),
+        "aivideo": MessageLookupByLibrary.simpleMessage("AI video"),
         "ascii32": MessageLookupByLibrary.simpleMessage("1~32 ASCII character"),
         "binding": MessageLookupByLibrary.simpleMessage("binding?"),
         "cancel": MessageLookupByLibrary.simpleMessage("cancel"),
@@ -191,6 +192,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "cycle": MessageLookupByLibrary.simpleMessage("Package Cycle"),
         "date": MessageLookupByLibrary.simpleMessage("d"),
         "day": MessageLookupByLibrary.simpleMessage("day"),
+        "delete": MessageLookupByLibrary.simpleMessage("delete"),
         "detectionServer":
             MessageLookupByLibrary.simpleMessage("Input detection server"),
         "deviceInfo":
@@ -202,11 +204,14 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("None(not recommended)"),
         "endIPAddress": MessageLookupByLibrary.simpleMessage("end IP Address"),
         "enter": MessageLookupByLibrary.simpleMessage("enter"),
+        "equipment": MessageLookupByLibrary.simpleMessage("equipment"),
         "error": MessageLookupByLibrary.simpleMessage("error"),
         "examine": MessageLookupByLibrary.simpleMessage("examine"),
         "fri": MessageLookupByLibrary.simpleMessage("fri"),
         "gameAcceleration":
             MessageLookupByLibrary.simpleMessage("game acceleration"),
+        "getParebtalError": MessageLookupByLibrary.simpleMessage(
+            "Failed to obtain the parent list"),
         "getVerficationCode":
             MessageLookupByLibrary.simpleMessage("Verify Code"),
         "hint": MessageLookupByLibrary.simpleMessage("hint"),
@@ -234,10 +239,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "maxValue": MessageLookupByLibrary.simpleMessage("max Value"),
         "minute": MessageLookupByLibrary.simpleMessage("m"),
         "minutes": MessageLookupByLibrary.simpleMessage("minutes"),
+        "modification": MessageLookupByLibrary.simpleMessage("edit"),
         "mon": MessageLookupByLibrary.simpleMessage("mon"),
         "month": MessageLookupByLibrary.simpleMessage("month"),
         "mustSuccess": MessageLookupByLibrary.simpleMessage(
             "The restart date must be selected"),
+        "name": MessageLookupByLibrary.simpleMessage("name"),
         "netSet": MessageLookupByLibrary.simpleMessage("NetWork"),
         "netTopo": MessageLookupByLibrary.simpleMessage("Net Topo"),
         "networkError": MessageLookupByLibrary.simpleMessage("network anomaly"),
@@ -247,6 +254,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "noData": MessageLookupByLibrary.simpleMessage("no Data"),
         "noDevice": MessageLookupByLibrary.simpleMessage("Device not found"),
         "noLogin": MessageLookupByLibrary.simpleMessage("Please login"),
+        "noaivideo": MessageLookupByLibrary.simpleMessage(
+            "Do not subscribe to AI videos yet, please go to the subscription service to subscribe"),
+        "nogameAcceleration": MessageLookupByLibrary.simpleMessage(
+            " Do not subscribe to game acceleration yet, please go to subscription service to subscribe"),
         "notEmpty": MessageLookupByLibrary.simpleMessage("not Empty!"),
         "notEnable": MessageLookupByLibrary.simpleMessage("not Enable"),
         "notstart": MessageLookupByLibrary.simpleMessage("not start"),
@@ -294,6 +305,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "timeOnline": MessageLookupByLibrary.simpleMessage("time Online"),
         "timeout":
             MessageLookupByLibrary.simpleMessage("Device connection timeout"),
+        "to": MessageLookupByLibrary.simpleMessage("to"),
         "type": MessageLookupByLibrary.simpleMessage("type"),
         "unblockdevice": MessageLookupByLibrary.simpleMessage(
             "Confirm to unblock the current device"),
@@ -311,6 +323,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "visitorNet": MessageLookupByLibrary.simpleMessage("Guest Network"),
         "wanSettings": MessageLookupByLibrary.simpleMessage("WAN Settings"),
         "wlanSet": MessageLookupByLibrary.simpleMessage("WLAN Setting"),
+        "workday": MessageLookupByLibrary.simpleMessage("workday"),
         "wpsSet": MessageLookupByLibrary.simpleMessage("WPS"),
         "year": MessageLookupByLibrary.simpleMessage("year"),
         "yourServiece":

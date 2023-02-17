@@ -9,6 +9,7 @@ import 'package:flutter_template/pages/topo/model/equipment_datas.dart';
 import 'package:get/get.dart';
 import '../../core/http/http.dart';
 import '../../core/utils/toast.dart';
+import '../../generated/l10n.dart';
 import 'model/access_datas.dart';
 
 class ParentalControl extends StatefulWidget {
@@ -57,9 +58,9 @@ class _ParentalControlState extends State<ParentalControl> {
         setState(() {
           restart = AccessDatas.fromJson(d);
           if (restart.success == true) {
-            ToastUtils.toast('提交成功');
+            ToastUtils.toast(S.current.save+S.current.success);
           } else {
-            ToastUtils.toast('提交失败');
+            ToastUtils.toast(S.current.save+S.current.error);
           }
         });
       } on FormatException catch (e) {
@@ -96,7 +97,8 @@ class _ParentalControlState extends State<ParentalControl> {
         print('The provided string is not valid JSON');
       }
     }).catchError((onError) {
-      ToastUtils.toast('获取家长列表 失败');
+      //获取家长列表 失败'
+      ToastUtils.toast(S.current.getParebtalError);
       debugPrint('获取家长列表 失败：${onError.toString()}');
     });
   }
@@ -117,13 +119,13 @@ class _ParentalControlState extends State<ParentalControl> {
           for (var i in arr) {
             i.weekdays = i.weekdays
                 .toString()
-                .replaceAll('Sun', '周日')
-                .replaceAll('Mon', '周一')
-                .replaceAll('Tue', '周二')
-                .replaceAll('Wed', '周三')
-                .replaceAll('Thu', '周四')
-                .replaceAll('Fri', '周五')
-                .replaceAll('Sat', '周六');
+                .replaceAll('Sun', S.current.Sun)
+                .replaceAll('Mon', S.current.mon)
+                .replaceAll('Tue', S.current.Tue)
+                .replaceAll('Wed', S.current.Wed)
+                .replaceAll('Thu', S.current.Thu)
+                .replaceAll('Fri', S.current.fri)
+                .replaceAll('Sat', S.current.Sat);
           }
         });
       } on FormatException catch (e) {
@@ -133,7 +135,8 @@ class _ParentalControlState extends State<ParentalControl> {
         print(e);
       }
     }).catchError((onError) {
-      ToastUtils.toast('获取家长列表 失败');
+      //获取家长列表 失败'
+      ToastUtils.toast(S.current.getParebtalError);
       debugPrint('获取家长列表 失败：${onError.toString()}');
     });
   }
@@ -150,10 +153,10 @@ class _ParentalControlState extends State<ParentalControl> {
         setState(() {
           restart = AccessDatas.fromJson(d);
           if (restart.success == true) {
-            ToastUtils.toast('删除 成功');
+            ToastUtils.toast(S.current.delete+S.current.success);
             getAccessList();
           } else {
-            ToastUtils.toast('删除 失败');
+            ToastUtils.toast(S.current.delete+S.current.error);
           }
         });
       } on FormatException catch (e) {
@@ -169,7 +172,7 @@ class _ParentalControlState extends State<ParentalControl> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppbar(context: context, title: '家长控制'),
+      appBar: customAppbar(context: context, title:S.current.parentalControl),
       body: SafeArea(
           child: Container(
         padding: const EdgeInsets.all(10.0),
@@ -180,11 +183,11 @@ class _ParentalControlState extends State<ParentalControl> {
             padding: EdgeInsets.only(top: 10.sp),
           ),
           InfoBox(
-            boxCotainer: Row(children: [
-              const TitleWidger(title: '家长控制'),
-              Padding(
-                padding: EdgeInsets.only(left: 325.sp),
-              ),
+            boxCotainer: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+               TitleWidger(title:S.current.parentalControl),
+             
               Switch(
                 value: isCheck,
                 onChanged: (newVal) {
@@ -328,7 +331,7 @@ class _ParentalControlState extends State<ParentalControl> {
               padding: EdgeInsets.all(10.sp),
             ),
             Text(
-                '${accessList.fwParentControlTable![index].timeStart!}至${accessList.fwParentControlTable![index].timeStop!}禁止访问',
+                '${accessList.fwParentControlTable![index].timeStart!}'+S.current.to+'${accessList.fwParentControlTable![index].timeStop!}'+S.current.access,
                 style: TextStyle(
                     color: const Color.fromARGB(255, 5, 0, 0),
                     fontSize: ScreenUtil().setWidth(30.0))),
@@ -355,9 +358,9 @@ class _ParentalControlState extends State<ParentalControl> {
         width: 60,
         color: const Color(0xFFF20101),
         alignment: Alignment.center,
-        child: const Text(
-          '删除',
-          style: TextStyle(
+        child:  Text(
+          S.current.delete,
+          style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w500,
             color: Colors.white,
@@ -482,9 +485,9 @@ class _ParentalControlState extends State<ParentalControl> {
         width: 60,
         color: Colors.green,
         alignment: Alignment.center,
-        child: const Text(
-          '修改',
-          style: TextStyle(
+        child:  Text(
+          S.current.modification,
+          style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.w500,
             color: Colors.white,

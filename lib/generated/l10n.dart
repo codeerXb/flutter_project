@@ -2110,10 +2110,10 @@ class S {
     );
   }
 
-  /// `ai video`
+  /// `AI video`
   String get aivideo {
     return Intl.message(
-      'ai video',
+      'AI video',
       name: 'aivideo',
       desc: '',
       args: [],
@@ -2230,6 +2230,16 @@ class S {
     );
   }
 
+  /// `delete`
+  String get delete {
+    return Intl.message(
+      'delete',
+      name: 'delete',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Follower system`
   String get FollowerSystem {
     return Intl.message(
@@ -2245,6 +2255,96 @@ class S {
     return Intl.message(
       'Logout login failed, please check the network!',
       name: 'checkNet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ` Do not subscribe to game acceleration yet, please go to subscription service to subscribe`
+  String get nogameAcceleration {
+    return Intl.message(
+      ' Do not subscribe to game acceleration yet, please go to subscription service to subscribe',
+      name: 'nogameAcceleration',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Do not subscribe to AI videos yet, please go to the subscription service to subscribe`
+  String get noaivideo {
+    return Intl.message(
+      'Do not subscribe to AI videos yet, please go to the subscription service to subscribe',
+      name: 'noaivideo',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed to obtain the parent list`
+  String get getParebtalError {
+    return Intl.message(
+      'Failed to obtain the parent list',
+      name: 'getParebtalError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `edit`
+  String get modification {
+    return Intl.message(
+      'edit',
+      name: 'modification',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// ` access forbidden`
+  String get access {
+    return Intl.message(
+      ' access forbidden',
+      name: 'access',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `to`
+  String get to {
+    return Intl.message(
+      'to',
+      name: 'to',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `equipment`
+  String get equipment {
+    return Intl.message(
+      'equipment',
+      name: 'equipment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `name`
+  String get name {
+    return Intl.message(
+      'name',
+      name: 'name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `workday`
+  String get workday {
+    return Intl.message(
+      'workday',
+      name: 'workday',
       desc: '',
       args: [],
     );

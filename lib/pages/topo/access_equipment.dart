@@ -94,7 +94,7 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('家长控制', style: TextStyle(fontSize: 30.sp)),
+                            Text( S.current.parentalControl, style: TextStyle(fontSize: 30.sp)),
                             Row(
                               children: [
                                 Icon(
@@ -113,13 +113,13 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                     child: GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: () {
-                        ToastUtils.toast('暂未订阅 游戏加速 ,请前往 "订阅服务" 订阅');
+                        ToastUtils.toast(S.current.nogameAcceleration);
                         // Get.toNamed("/parental_control", arguments: data);
                       },
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('游戏加速', style: TextStyle(fontSize: 30.sp)),
+                            Text( S.current.gameAcceleration, style: TextStyle(fontSize: 30.sp)),
                             Row(
                               children: [
                                 Icon(
@@ -138,13 +138,13 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                     child: GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: () {
-                        ToastUtils.toast('暂未订阅 AI视频 ,请前往 "订阅服务" 订阅');
+                        ToastUtils.toast(S.current.noaivideo);
                         // Get.toNamed("/parental_control", arguments: data);
                       },
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('AI视频', style: TextStyle(fontSize: 30.sp)),
+                            Text( S.current.aivideo, style: TextStyle(fontSize: 30.sp)),
                             Row(
                               children: [
                                 Icon(

@@ -27,7 +27,7 @@ class _ParentalPopState extends State<ParentalPop> {
 // 提交
   AccessDatas restart = AccessDatas();
 
-  String accTitle = '家长控制';
+  String accTitle =S.current.parentalControl;
   bool isCheck = false;
 
 //工作日
@@ -101,10 +101,10 @@ class _ParentalPopState extends State<ParentalPop> {
         setState(() {
           restart = AccessDatas.fromJson(d);
           if (restart.success == true) {
-            ToastUtils.toast('提交成功');
+            ToastUtils.toast(S.current.save+S.current.success);
             Get.back();
           } else {
-            ToastUtils.toast('提交失败');
+            ToastUtils.toast(S.current.save+S.current.error);
           }
         });
       } on FormatException catch (e) {
@@ -120,7 +120,7 @@ class _ParentalPopState extends State<ParentalPop> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppbar(context: context, title: '家长控制'),
+      appBar: customAppbar(context: context, title:S.current.parentalControl),
       body: SingleChildScrollView(
           child: Container(
         height: 1400.w,
@@ -136,37 +136,37 @@ class _ParentalPopState extends State<ParentalPop> {
                   children: [
                     BottomLine(
                         rowtem: RowContainer(
-                      leftText: '名称',
+                      leftText: S.current.name,
                       righText: data.hostName.toString(),
                     )),
                     BottomLine(
                         rowtem: RowContainer(
-                      leftText: '设备',
+                      leftText:S.current.equipment,
                       righText: data.mAC.toString(),
                     )),
                     GestureDetector(
                       onTap: () {
                         // Sun,Mon,Tue,Wed,Thu,Fri,Sat
                         // 勾选框的状态
-                        if (arrList.contains('周日')) {
+                        if (arrList.contains(S.current.Sun)) {
                           checkboxList[0]['value'] = true;
                         }
-                        if (arrList.contains('周一')) {
+                        if (arrList.contains(S.current.mon)) {
                           checkboxList[1]['value'] = true;
                         }
-                        if (arrList.contains('周二')) {
+                        if (arrList.contains(S.current.Tue)) {
                           checkboxList[2]['value'] = true;
                         }
-                        if (arrList.contains('周三')) {
+                        if (arrList.contains(S.current.Wed)) {
                           checkboxList[3]['value'] = true;
                         }
-                        if (arrList.contains('周四')) {
+                        if (arrList.contains(S.current.Thu)) {
                           checkboxList[4]['value'] = true;
                         }
-                        if (arrList.contains('周五')) {
+                        if (arrList.contains(S.current.fri)) {
                           checkboxList[5]['value'] = true;
                         }
-                        if (arrList.contains('周六')) {
+                        if (arrList.contains(S.current.Sat)) {
                           checkboxList[6]['value'] = true;
                         }
                         showBottomSheet();
@@ -175,7 +175,7 @@ class _ParentalPopState extends State<ParentalPop> {
                         rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('工作日', style: TextStyle(fontSize: 28.sp)),
+                              Text(S.current.workday, style: TextStyle(fontSize: 28.sp)),
                               Row(
                                 children: [
                                   Text(arrList.join(),
@@ -338,13 +338,13 @@ class _ParentalPopState extends State<ParentalPop> {
   // 工作日弹窗
   String result = '';
   List<Map<String, dynamic>> checkboxList = [
-    {'text': '周日', 'value': false, 'index': 0},
-    {'text': '周一', 'value': false, 'index': 1},
-    {'text': '周二', 'value': false, 'index': 2},
-    {'text': '周三', 'value': false, 'index': 3},
-    {'text': '周四', 'value': false, 'index': 4},
-    {'text': '周五', 'value': false, 'index': 5},
-    {'text': '周六', 'value': false, 'index': 6},
+    {'text': S.current.Sun, 'value': false, 'index': 0},
+    {'text': S.current.mon, 'value': false, 'index': 1},
+    {'text': S.current.Tue, 'value': false, 'index': 2},
+    {'text': S.current.Wed, 'value': false, 'index': 3},
+    {'text': S.current.Thu, 'value': false, 'index': 4},
+    {'text': S.current.fri, 'value': false, 'index': 5},
+    {'text': S.current.Sat, 'value': false, 'index': 6},
   ];
   //显示底部弹框的功能
   void showBottomSheet() {
@@ -428,7 +428,7 @@ class _ParentalPopState extends State<ParentalPop> {
                       arrListEng.add('Fri,');
                     }
                     if (arr[6] == '1') {
-                      arrList.add('周六');
+                      arrList.add(S.current.Sat);
                       arrListEng.add('Sat');
                     }
                   }

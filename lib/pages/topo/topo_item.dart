@@ -30,7 +30,7 @@ class _TopoItemState extends State<TopoItem> {
     return GestureDetector(
       onTap: () {
         if (widget.topoData!.mAC == 'B4:4C:3B:9E:46:3D') {
-          Get.offNamed("/video_play");
+          Get.toNamed("/video_play");
         } else {
           Get.toNamed("/access_equipment", arguments: widget.topoData);
         }

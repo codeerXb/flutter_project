@@ -122,7 +122,7 @@ class _SimpleVideoPageState extends State<SimpleVideoPage> {
                                     }
                                   ]);
                                 },
-                                child:  Text(S.current.examine),
+                                child: Text(S.current.examine),
                               ),
                             ),
                           ],
@@ -130,7 +130,7 @@ class _SimpleVideoPageState extends State<SimpleVideoPage> {
                       );
                     }).toList(),
                   ])
-                :  Center(
+                : Center(
                     child: Text(S.current.noData),
                   ),
           ),

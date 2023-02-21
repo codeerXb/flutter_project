@@ -2080,10 +2080,10 @@ class S {
     );
   }
 
-  /// `game acceleration`
+  /// `game booster`
   String get gameAcceleration {
     return Intl.message(
-      'game acceleration',
+      'game booster',
       name: 'gameAcceleration',
       desc: '',
       args: [],
@@ -2145,6 +2145,16 @@ class S {
     return Intl.message(
       'm',
       name: 'minute',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `second`
+  String get second {
+    return Intl.message(
+      'second',
+      name: 'second',
       desc: '',
       args: [],
     );

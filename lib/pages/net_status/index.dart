@@ -254,8 +254,7 @@ class _NetStatusState extends State<NetStatus> {
                                     border: Border.all(
                                         width: 1, color: Colors.white)),
                                 child: Text(
-                                  S.of(context).TotalPackageQuantity +
-                                      ' :$_comboLabel',
+                                  '${S.of(context).TotalPackageQuantity} :$_comboLabel',
                                   style: const TextStyle(color: Colors.white),
                                 ),
                               ),

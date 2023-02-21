@@ -226,6 +226,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "reset": MessageLookupByLibrary.simpleMessage("复位中"),
         "restart": MessageLookupByLibrary.simpleMessage("设备重启中..."),
         "save": MessageLookupByLibrary.simpleMessage("提交"),
+        "second": MessageLookupByLibrary.simpleMessage("秒"),
         "server": MessageLookupByLibrary.simpleMessage("服务器"),
         "set": MessageLookupByLibrary.simpleMessage("台"),
         "skip": MessageLookupByLibrary.simpleMessage("跳过"),

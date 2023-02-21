@@ -28,19 +28,21 @@ class SystemSettings extends StatefulWidget {
 
 class _SystemSettingsState extends State<SystemSettings> {
   int index = 0;
-  String showVal = S.current.FollowerSystem;
+  String showVal = '中文';
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    print(    sharedGetData('langue',String));
+
     //读取语言 选项
     sharedGetData('langue', String).then(((res) {
-      print('res----->$res');
+      print('当前语言----->$res');
       if (res != null) {
         setState(() {
           showVal = res.toString();
           index = [
-            S.current.FollowerSystem,
+            // S.current.FollowerSystem,
             '中文',
             'Engish',
           ].indexOf(showVal);
@@ -60,10 +62,9 @@ class _SystemSettingsState extends State<SystemSettings> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-            onPressed: ()  {
-              // toolbarController.setPageIndex(1);
-              // toolbarController.setPageIndex(2);
+            onPressed: () {
               Get.back();
+              toolbarController.setPageIndex(2);
             },
             icon: const Icon(
               Icons.arrow_back_ios,
@@ -159,10 +160,12 @@ class _SystemSettingsState extends State<SystemSettings> {
                   //选择语言
                   GestureDetector(
                     onTap: () {
+                      toolbarController.setPageIndex(1);
+                      print('ress----> ${S.delegate}');
                       var result = CommonPicker.showPicker(
                         context: context,
                         options: [
-                          S.current.FollowerSystem,
+                          // S.current.FollowerSystem,
                           '中文',
                           'Engish',
                         ],
@@ -174,14 +177,14 @@ class _SystemSettingsState extends State<SystemSettings> {
                                 setState(() => {
                                       index = selectedValue,
                                       showVal = [
-                                        S.current.FollowerSystem,
+                                        // S.current.FollowerSystem,
                                         '中文',
                                         'Engish',
                                       ][index],
                                       //存储语言
                                       sharedAddAndUpdate(
                                           'langue', String, showVal),
-                                      index == 1
+                                      index == 0
                                           ? S.load(const Locale("zh", "CN"))
                                           : S.load(const Locale("CN", "zh"))
                                     })

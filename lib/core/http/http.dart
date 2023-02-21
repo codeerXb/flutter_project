@@ -38,15 +38,10 @@ class XHttp {
     Response response;
     try {
       if (params != null) {
-        debugPrint('-------get -------');
-        debugPrint(params.toString());
-
         response = await dio.get(url, queryParameters: {
           ...params,
           // '_csrf_token': BaseConfig.token,
         });
-        debugPrint('------get响应------');
-        debugPrint(response.toString());
       } else {
         response = await dio.get(url);
       }
@@ -55,8 +50,8 @@ class XHttp {
       debugPrint('++++++++++++');
       debugPrint(params.toString());
       debugPrint(e.toString());
-      handleError(e);
-      debugPrint('++++++++++++-');
+      // handleError(e);
+      debugPrint('+++++++++++++');
       rethrow;
     }
   }

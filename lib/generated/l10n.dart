@@ -870,20 +870,20 @@ class S {
     );
   }
 
-  /// `UL Velocity`
+  /// `Up`
   String get ULVelocity {
     return Intl.message(
-      'UL Velocity',
+      'Up',
       name: 'ULVelocity',
       desc: '',
       args: [],
     );
   }
 
-  /// `DL Velocity`
+  /// `Down`
   String get DLVelocity {
     return Intl.message(
-      'DL Velocity',
+      'Down',
       name: 'DLVelocity',
       desc: '',
       args: [],
@@ -1050,10 +1050,10 @@ class S {
     );
   }
 
-  /// `time Online`
+  /// `Online`
   String get timeOnline {
     return Intl.message(
-      'time Online',
+      'Online',
       name: 'timeOnline',
       desc: '',
       args: [],
@@ -1130,10 +1130,10 @@ class S {
     );
   }
 
-  /// `Total Package Quantity`
+  /// `Traffic Package`
   String get TotalPackageQuantity {
     return Intl.message(
-      'Total Package Quantity',
+      'Traffic Package',
       name: 'TotalPackageQuantity',
       desc: '',
       args: [],
@@ -1460,10 +1460,10 @@ class S {
     );
   }
 
-  /// `set`
+  /// `Devices`
   String get set {
     return Intl.message(
-      'set',
+      'Devices',
       name: 'set',
       desc: '',
       args: [],
@@ -1480,10 +1480,10 @@ class S {
     );
   }
 
-  /// `Used Flow`
+  /// `Used Traffic`
   String get UsedFlow {
     return Intl.message(
-      'Used Flow',
+      'Used Traffic',
       name: 'UsedFlow',
       desc: '',
       args: [],
@@ -1500,60 +1500,60 @@ class S {
     );
   }
 
-  /// `In self test`
+  /// `Self Checking`
   String get Intest {
     return Intl.message(
-      'In self test',
+      'Self Checking',
       name: 'Intest',
       desc: '',
       args: [],
     );
   }
 
-  /// `In search`
+  /// `Searching`
   String get Insearch {
     return Intl.message(
-      'In search',
+      'Searching',
       name: 'Insearch',
       desc: '',
       args: [],
     );
   }
 
-  /// `accomplish`
+  /// `Finish`
   String get accomplish {
     return Intl.message(
-      'accomplish',
+      'Finish',
       name: 'accomplish',
       desc: '',
       args: [],
     );
   }
 
-  /// `reset`
+  /// `Reset`
   String get reset {
     return Intl.message(
-      'reset',
+      'Reset',
       name: 'reset',
       desc: '',
       args: [],
     );
   }
 
-  /// `not start`
+  /// `Not Started`
   String get notstart {
     return Intl.message(
-      'not start',
+      'Not Started',
       name: 'notstart',
       desc: '',
       args: [],
     );
   }
 
-  /// `start Search`
+  /// `To Search`
   String get startSearch {
     return Intl.message(
-      'start Search',
+      'To Search',
       name: 'startSearch',
       desc: '',
       args: [],

@@ -46,7 +46,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Please enter a new password"),
         "Connected": MessageLookupByLibrary.simpleMessage("Connected"),
         "DLFrequency": MessageLookupByLibrary.simpleMessage("DL Frequency"),
-        "DLVelocity": MessageLookupByLibrary.simpleMessage("DL Velocity"),
+        "DLVelocity": MessageLookupByLibrary.simpleMessage("Down"),
         "DateReboot": MessageLookupByLibrary.simpleMessage("Date to Reboot"),
         "DefaultGateway":
             MessageLookupByLibrary.simpleMessage("Default Gateway"),
@@ -77,8 +77,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "HideSSIDBroadcast":
             MessageLookupByLibrary.simpleMessage("Hide SSID broadcast"),
         "IPAddress": MessageLookupByLibrary.simpleMessage("IP Address"),
-        "Insearch": MessageLookupByLibrary.simpleMessage("In search"),
-        "Intest": MessageLookupByLibrary.simpleMessage("In self test"),
+        "Insearch": MessageLookupByLibrary.simpleMessage("Searching"),
+        "Intest": MessageLookupByLibrary.simpleMessage("Self Checking"),
         "LANOnly": MessageLookupByLibrary.simpleMessage("LAN Only"),
         "LeaseTime": MessageLookupByLibrary.simpleMessage("Lease Time"),
         "MACAddress": MessageLookupByLibrary.simpleMessage("MAC Address"),
@@ -138,21 +138,21 @@ class MessageLookup extends MessageLookupByLibrary {
         "TimeReboot":
             MessageLookupByLibrary.simpleMessage("Time of Day to Reboot"),
         "TotalPackageQuantity":
-            MessageLookupByLibrary.simpleMessage("Total Package Quantity"),
+            MessageLookupByLibrary.simpleMessage("Traffic Package"),
         "Tue": MessageLookupByLibrary.simpleMessage("Tue"),
         "TxPower": MessageLookupByLibrary.simpleMessage("TX Power"),
         "TypeOfPackage":
             MessageLookupByLibrary.simpleMessage("Type of package"),
         "UBOOTVersion": MessageLookupByLibrary.simpleMessage("UBOOT Version"),
         "ULFrequency": MessageLookupByLibrary.simpleMessage("UL Frequency"),
-        "ULVelocity": MessageLookupByLibrary.simpleMessage("UL Velocity"),
+        "ULVelocity": MessageLookupByLibrary.simpleMessage("Up"),
         "UnitedStates": MessageLookupByLibrary.simpleMessage("United States"),
         "UntyingEqui": MessageLookupByLibrary.simpleMessage("UntyingEqui"),
-        "UsedFlow": MessageLookupByLibrary.simpleMessage("Used Flow"),
+        "UsedFlow": MessageLookupByLibrary.simpleMessage("Used Traffic"),
         "WPAEncry": MessageLookupByLibrary.simpleMessage("WPA encryption"),
         "Wed": MessageLookupByLibrary.simpleMessage("Wed"),
         "access": MessageLookupByLibrary.simpleMessage(" access forbidden"),
-        "accomplish": MessageLookupByLibrary.simpleMessage("accomplish"),
+        "accomplish": MessageLookupByLibrary.simpleMessage("Finish"),
         "account": MessageLookupByLibrary.simpleMessage("account"),
         "accountEmpty":
             MessageLookupByLibrary.simpleMessage("The account cannot be empty"),
@@ -260,7 +260,7 @@ class MessageLookup extends MessageLookupByLibrary {
             " Do not subscribe to game acceleration yet, please go to subscription service to subscribe"),
         "notEmpty": MessageLookupByLibrary.simpleMessage("not Empty!"),
         "notEnable": MessageLookupByLibrary.simpleMessage("not Enable"),
-        "notstart": MessageLookupByLibrary.simpleMessage("not start"),
+        "notstart": MessageLookupByLibrary.simpleMessage("Not Started"),
         "oldPassowld": MessageLookupByLibrary.simpleMessage("old password"),
         "options": MessageLookupByLibrary.simpleMessage("options"),
         "parentalControl":
@@ -284,15 +284,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "radioSettings": MessageLookupByLibrary.simpleMessage("Radio Settings"),
         "register": MessageLookupByLibrary.simpleMessage("register"),
         "rescan": MessageLookupByLibrary.simpleMessage("rescan"),
-        "reset": MessageLookupByLibrary.simpleMessage("reset"),
+        "reset": MessageLookupByLibrary.simpleMessage("Reset"),
         "restart": MessageLookupByLibrary.simpleMessage("restart..."),
         "save": MessageLookupByLibrary.simpleMessage("save"),
         "server": MessageLookupByLibrary.simpleMessage("Server"),
-        "set": MessageLookupByLibrary.simpleMessage("set"),
+        "set": MessageLookupByLibrary.simpleMessage("Devices"),
         "skip": MessageLookupByLibrary.simpleMessage("skip"),
         "startIPAddress":
             MessageLookupByLibrary.simpleMessage("start IP Address"),
-        "startSearch": MessageLookupByLibrary.simpleMessage("start Search"),
+        "startSearch": MessageLookupByLibrary.simpleMessage("To Search"),
         "state": MessageLookupByLibrary.simpleMessage("State"),
         "staticIP": MessageLookupByLibrary.simpleMessage("staticIP"),
         "status": MessageLookupByLibrary.simpleMessage("status"),
@@ -302,7 +302,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "success": MessageLookupByLibrary.simpleMessage("success"),
         "systemInfo":
             MessageLookupByLibrary.simpleMessage("system Information"),
-        "timeOnline": MessageLookupByLibrary.simpleMessage("time Online"),
+        "timeOnline": MessageLookupByLibrary.simpleMessage("Online"),
         "timeout":
             MessageLookupByLibrary.simpleMessage("Device connection timeout"),
         "to": MessageLookupByLibrary.simpleMessage("to"),

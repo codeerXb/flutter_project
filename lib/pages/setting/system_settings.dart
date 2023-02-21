@@ -33,22 +33,21 @@ class _SystemSettingsState extends State<SystemSettings> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    print(    sharedGetData('langue',String));
 
     //读取语言 选项
-    sharedGetData('langue', String).then(((res) {
-      print('当前语言----->$res');
-      if (res != null) {
-        setState(() {
-          showVal = res.toString();
-          index = [
-            // S.current.FollowerSystem,
-            '中文',
-            'Engish',
-          ].indexOf(showVal);
-        });
-      }
-    }));
+    // sharedGetData('langue', String).then(((res) {
+    //   print('当前语言----->$res');
+    //   if (res != null) {
+    //     setState(() {
+    //       showVal = res.toString();
+    //       index = [
+    //         // S.current.FollowerSystem,
+    //         '中文',
+    //         'Engish',
+    //       ].indexOf(showVal);
+    //     });
+    //   }
+    // }));
   }
 
   @override
@@ -64,7 +63,7 @@ class _SystemSettingsState extends State<SystemSettings> {
         leading: IconButton(
             onPressed: () {
               Get.back();
-              toolbarController.setPageIndex(2);
+              // toolbarController.setPageIndex(2);
             },
             icon: const Icon(
               Icons.arrow_back_ios,
@@ -158,64 +157,64 @@ class _SystemSettingsState extends State<SystemSettings> {
                     ),
                   ),
                   //选择语言
-                  GestureDetector(
-                    onTap: () {
-                      toolbarController.setPageIndex(1);
-                      print('ress----> ${S.delegate}');
-                      var result = CommonPicker.showPicker(
-                        context: context,
-                        options: [
-                          // S.current.FollowerSystem,
-                          '中文',
-                          'Engish',
-                        ],
-                        value: index,
-                      );
-                      result?.then((selectedValue) => {
-                            if (index != selectedValue && selectedValue != null)
-                              {
-                                setState(() => {
-                                      index = selectedValue,
-                                      showVal = [
-                                        // S.current.FollowerSystem,
-                                        '中文',
-                                        'Engish',
-                                      ][index],
-                                      //存储语言
-                                      sharedAddAndUpdate(
-                                          'langue', String, showVal),
-                                      index == 0
-                                          ? S.load(const Locale("zh", "CN"))
-                                          : S.load(const Locale("CN", "zh"))
-                                    })
-                              }
-                          });
-                    },
-                    child: BottomLine(
-                      rowtem: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(S.of(context).language,
-                              style: TextStyle(
-                                  color: const Color.fromARGB(255, 5, 0, 0),
-                                  fontSize: 28.sp)),
-                          Row(
-                            children: [
-                              Text(showVal,
-                                  style: TextStyle(
-                                      color: const Color.fromARGB(255, 5, 0, 0),
-                                      fontSize: 28.sp)),
-                              Icon(
-                                Icons.arrow_forward_ios_outlined,
-                                color: const Color.fromRGBO(144, 147, 153, 1),
-                                size: 30.w,
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     toolbarController.setPageIndex(1);
+                  //     print('ress----> ${S.delegate}');
+                  //     var result = CommonPicker.showPicker(
+                  //       context: context,
+                  //       options: [
+                  //         // S.current.FollowerSystem,
+                  //         '中文',
+                  //         'Engish',
+                  //       ],
+                  //       value: index,
+                  //     );
+                  //     result?.then((selectedValue) => {
+                  //           if (index != selectedValue && selectedValue != null)
+                  //             {
+                  //               setState(() => {
+                  //                     index = selectedValue,
+                  //                     showVal = [
+                  //                       // S.current.FollowerSystem,
+                  //                       '中文',
+                  //                       'Engish',
+                  //                     ][index],
+                  //                     //存储语言
+                  //                     sharedAddAndUpdate(
+                  //                         'langue', String, showVal),
+                  //                     index == 0
+                  //                         ? S.load(const Locale("zh", "CN"))
+                  //                         : S.load(const Locale("CN", "zh"))
+                  //                   })
+                  //             }
+                  //         });
+                  //   },
+                  //   child: BottomLine(
+                  //     rowtem: Row(
+                  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //       children: [
+                  //         Text(S.of(context).language,
+                  //             style: TextStyle(
+                  //                 color: const Color.fromARGB(255, 5, 0, 0),
+                  //                 fontSize: 28.sp)),
+                  //         Row(
+                  //           children: [
+                  //             Text(showVal,
+                  //                 style: TextStyle(
+                  //                     color: const Color.fromARGB(255, 5, 0, 0),
+                  //                     fontSize: 28.sp)),
+                  //             Icon(
+                  //               Icons.arrow_forward_ios_outlined,
+                  //               color: const Color.fromRGBO(144, 147, 153, 1),
+                  //               size: 30.w,
+                  //             )
+                  //           ],
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
                 ]),
               ),
 

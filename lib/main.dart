@@ -77,23 +77,20 @@ class _MyAppState extends State<MyApp> {
       debugPrint(onError.toString());
     });
   }
+
   final ToolbarController toolbarController = Get.put(ToolbarController());
   var language = '';
   @override
   initState() {
     // TODO: implement initState
     super.initState();
-    sharedGetData('langue', String).then(((res) {
-      switch (res) {
-        case '中文':
-          setState(() {
-            language = res.toString();
-          });
-          break;
-      }
-      print(toolbarController.pageIndex);
-      print('当前语言----->$language');
-    }));
+    //读取当前语言
+    // sharedGetData('langue', String).then(((res) {
+    //   if (res != null) {
+    //     language = res.toString();
+    //   }
+    //   print('当前语言----->$language');
+    // }));
   }
 
   @override
@@ -112,12 +109,14 @@ class _MyAppState extends State<MyApp> {
               S.delegate,
             ],
             supportedLocales: S.delegate.supportedLocales,
+            // localeResolutionCallback: (locale, supportedLocales) {
+            //   if (language == '中文') {
+            //     return const Locale('zh', 'CN');
+            //   }else if(language == 'English'){
+            //     return const Locale('en', 'US');
 
-            localeResolutionCallback: (locale, supportedLocales) {
-              if (language == '中文') {
-                return const Locale('zh', 'CN');
-              }
-            },
+            //   }
+            // },
             key: navigatorKey,
             title: 'APP模板',
             // 不显示debug标签

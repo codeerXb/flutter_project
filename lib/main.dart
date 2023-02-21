@@ -10,6 +10,7 @@ import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 
@@ -77,6 +78,21 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  final ToolbarController toolbarController = Get.put(ToolbarController());
+  var language = '';
+  @override
+  initState() {
+    // TODO: implement initState
+    super.initState();
+    //读取当前语言
+    // sharedGetData('langue', String).then(((res) {
+    //   if (res != null) {
+    //     language = res.toString();
+    //   }
+    //   print('当前语言----->$language');
+    // }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
@@ -92,10 +108,15 @@ class _MyAppState extends State<MyApp> {
               GlobalCupertinoLocalizations.delegate,
               S.delegate,
             ],
-            // //讲en设置为第一项 没有配置语言时，英语为首选
-            supportedLocales: [
-              ...S.delegate.supportedLocales
-            ],
+            supportedLocales: S.delegate.supportedLocales,
+            // localeResolutionCallback: (locale, supportedLocales) {
+            //   if (language == '中文') {
+            //     return const Locale('zh', 'CN');
+            //   }else if(language == 'English'){
+            //     return const Locale('en', 'US');
+
+            //   }
+            // },
             key: navigatorKey,
             title: 'APP模板',
             // 不显示debug标签

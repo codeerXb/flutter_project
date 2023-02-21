@@ -362,7 +362,7 @@ class _UserRegisterState extends State<UserRegister> {
                                 }),
                                 child: Text(
                                   iscode
-                                      ? '$codeNum秒'
+                                      ? '$codeNum${S.current.second}'
                                       : S.of(context).getVerficationCode,
                                   style: TextStyle(
                                       color: Colors.blue, fontSize: 30.w),

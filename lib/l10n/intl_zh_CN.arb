@@ -204,6 +204,7 @@
   "date": "天",
   "hour": "时",
   "minute": "分",
+  "second": "秒",
   "subService": "订阅服务",
   "parentalControl": "家长控制",
   "gameAcceleration": "游戏加速",

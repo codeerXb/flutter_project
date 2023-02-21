@@ -209,7 +209,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "examine": MessageLookupByLibrary.simpleMessage("examine"),
         "fri": MessageLookupByLibrary.simpleMessage("fri"),
         "gameAcceleration":
-            MessageLookupByLibrary.simpleMessage("game acceleration"),
+            MessageLookupByLibrary.simpleMessage("game booster"),
         "getParebtalError": MessageLookupByLibrary.simpleMessage(
             "Failed to obtain the parent list"),
         "getVerficationCode":
@@ -287,6 +287,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "reset": MessageLookupByLibrary.simpleMessage("Reset"),
         "restart": MessageLookupByLibrary.simpleMessage("restart..."),
         "save": MessageLookupByLibrary.simpleMessage("save"),
+        "second": MessageLookupByLibrary.simpleMessage("second"),
         "server": MessageLookupByLibrary.simpleMessage("Server"),
         "set": MessageLookupByLibrary.simpleMessage("Devices"),
         "skip": MessageLookupByLibrary.simpleMessage("skip"),

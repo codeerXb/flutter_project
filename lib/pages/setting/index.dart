@@ -91,7 +91,7 @@ final ToolbarController toolbarController = Get.put(ToolbarController());
                   //解绑
                   unbindingDevice(),
                   //订阅服务
-                  subService(),
+                  // subService(),
 
                   /// Wi-Fi设置
                   const TitleWidger(title: 'Wi-Fl'),

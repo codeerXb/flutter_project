@@ -7,7 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/ashed_line.dart';
-import 'package:flutter_template/pages/net_status/index.dart';
+import 'package:flutter_template/pages/net_status/old_state.dart';
 import 'package:flutter_template/pages/net_status/model/net_connect_status.dart';
 import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
 import 'package:flutter_template/pages/topo/model/equipment_datas.dart';

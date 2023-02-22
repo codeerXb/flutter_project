@@ -29,7 +29,8 @@ class _UserCardState extends State<UserCard> {
       });
     }));
   }
-final ToolbarController toolbarController = Get.put(ToolbarController());
+
+  final ToolbarController toolbarController = Get.put(ToolbarController());
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -46,12 +47,9 @@ final ToolbarController toolbarController = Get.put(ToolbarController());
                   top: 20.w, bottom: 20.w, left: 40.w, right: 40.w),
               //图片
               leading: ClipOval(
-                child: Image.network(
-                    "https://img0.baidu.com/it/u=2488974456,3750793943&fm=253&fmt=auto&app=138&f=JPEG?w=442&h=500",
-                    fit: BoxFit.fitWidth,
-                    height: 50,
-                    width: 50),
-              ),
+                  child: Image.asset('assets/images/people.png',
+                      fit: BoxFit.fitWidth, height: 50, width: 50)
+                  ),
               //中间文字
               title: Text(
                   _userPhone != 'null' ? _userPhone : S.of(context).noLogin,
@@ -64,9 +62,8 @@ final ToolbarController toolbarController = Get.put(ToolbarController());
               subtitle: Text(
                   _userPhone != 'null'
                       ? S.of(context).currentDeive + ' ${widget.name}'
-                      :  S.of(context).Remote,
-                  style: TextStyle(fontSize: 28.sp, color: Colors.black38)
-              ),
+                      : S.of(context).Remote,
+                  style: TextStyle(fontSize: 28.sp, color: Colors.black38)),
               //标题后显示的widget
               trailing: CommonWidget.buttonWidget(
                 title: _userPhone != 'null'
@@ -77,7 +74,7 @@ final ToolbarController toolbarController = Get.put(ToolbarController());
                   sharedDeleteData('user_phone');
                   sharedDeleteData('user_token');
                   debugPrint('清楚用户信息');
-                   toolbarController.setPageIndex(0);
+                  toolbarController.setPageIndex(0);
                 },
                 background: _userPhone != 'null'
                     ? const Color.fromARGB(255, 255, 0, 0)

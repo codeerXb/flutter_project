@@ -1,3 +1,240 @@
+// import 'package:flutter/material.dart';
+// import 'package:flutter_html/flutter_html.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_template/core/widget/common_box.dart';
+// import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+// import '../../core/widget/common_widget.dart';
+
+// /// 消息页面
+// class NetStatus extends StatefulWidget {
+//   const NetStatus(this.service, {Key? key}) : super(key: key);
+//   final String service;
+//   @override
+//   State<StatefulWidget> createState() => _NetStatusState();
+// }
+
+// class _NetStatusState extends State<NetStatus> {
+//   // 点击空白  关闭键盘 时传的一个对象
+//   FocusNode blankNode = FocusNode();
+
+//   /// 点击空白  关闭输入键盘
+//   void closeKeyboard(BuildContext context) {
+//     FocusScope.of(context).requestFocus(blankNode);
+//   }
+
+//   String get vn => widget.service;
+//   // 下拉列表
+//   bool isShowList = false;
+//   List<Map<String, dynamic>> get serviceList => [
+//         {
+//           'label': widget.service,
+//           'sn': '12123213',
+//         },
+//         {
+//           'label': 'test',
+//           'sn': '12123213',
+//         }
+//       ];
+
+// // 下拉列表
+//   Widget buildGrid() {
+//     List<Widget> tiles = []; //先建一个数组用于存放循环生成的widget
+//     Widget content; //单独一个widget组件，用于返回需要生成的内容widget
+//     for (var item in serviceList) {
+//       tiles.add(Container(
+//         padding: EdgeInsets.only(left: 20.w, top: 20.w, bottom: 20.w),
+//         child: InkWell(
+//           onTap: () {},
+//           child: Row(children: <Widget>[
+//             if (item['label'] == vn)
+//               Padding(
+//                 padding: EdgeInsets.only(right: 16.sp),
+//                 child: FaIcon(
+//                   FontAwesomeIcons.chevronRight,
+//                   size: 30.w,
+//                   color: Colors.white,
+//                 ),
+//               ),
+//             Text(
+//               item['label'],
+//               style: TextStyle(color: Colors.white, fontSize: 30.sp),
+//             ),
+//           ]),
+//         ),
+//       ));
+//     }
+//     content = Container(
+//       color: const Color.fromARGB(153, 31, 31, 31),
+//       width: 1.sw,
+//       child: Column(
+//           children: tiles //重点在这里，因为用编辑器写Column生成的children后面会跟一个<Widget>[]，
+//           //此时如果我们直接把生成的tiles放在<Widget>[]中是会报一个类型不匹配的错误，把<Widget>[]删了就可以了
+//           ),
+//     );
+//     return content;
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       decoration: const BoxDecoration(
+//           image: DecorationImage(
+//               alignment: Alignment.topCenter,
+//               image: AssetImage(
+//                 'assets/images/picture_home.png',
+//               ),
+//               fit: BoxFit.fitWidth)),
+//       child: Scaffold(
+//         appBar: AppBar(
+//           elevation: 0,
+//           title: InkWell(
+//             overlayColor: const MaterialStatePropertyAll(Colors.transparent),
+//             onTap: () {
+//               setState(() {
+//                 isShowList = !isShowList;
+//               });
+//             },
+//             //下拉icon
+//             child: SizedBox(
+//               width: 1.sw,
+//               child: Row(
+//                 children: [
+//                   Text(vn),
+//                   FaIcon(
+//                     FontAwesomeIcons.chevronDown,
+//                     size: 30.w,
+//                   )
+//                 ],
+//               ),
+//             ),
+//           ),
+//           backgroundColor: Colors.transparent,
+//         ),
+//         backgroundColor: Colors.transparent,
+//         body: GestureDetector(
+//           onTap: () => closeKeyboard(context),
+//           behavior: HitTestBehavior.opaque,
+//           child: Container(
+//             decoration:
+//                 const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
+//             height: 1000,
+//             child: Stack(
+//               children: [
+//                 // 头部下拉widget
+//                 Container(
+//                   width: 1.sw,
+//                   height: 200.h,
+//                   color: Colors.transparent,
+//                 ),
+//                 if (isShowList) Positioned(top: 0.w, child: buildGrid()),
+//                 Column(
+//                   children: [
+//                     //2
+//                     Container(
+//                         height: 150.w,
+//                         padding: EdgeInsets.all(28.0.w),
+//                         margin: EdgeInsets.only(
+//                             bottom: 20.w, left: 30.w, right: 30.w),
+//                         decoration: BoxDecoration(
+//                           color: Colors.white,
+//                           borderRadius: BorderRadius.circular(18.w),
+//                         ),
+//                         child: Row(
+//                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                           children: [
+//                             Text(
+//                               '已连接',
+//                               style: TextStyle(
+//                                   fontSize: 30.sp,
+//                                   color: const Color(0xff051220)),
+//                             ),
+//                             Column(
+//                               children: [
+//                                 Text(
+//                                   '优',
+//                                   style: TextStyle(
+//                                       fontSize: 30.sp, color: Colors.blue),
+//                                 ),
+//                                 Text(
+//                                   '网络环境',
+//                                   style: TextStyle(
+//                                       fontSize: 30.sp, color: Colors.blue),
+//                                 ),
+//                               ],
+//                             ),
+//                             IconButton(
+//                               onPressed: () {
+//                                 debugPrint('1');
+//                               },
+//                               icon: const Icon(Icons.rocket),
+//                             )
+//                           ],
+//                         )),
+//                     //3
+//                     Container(
+//                         height: 150.w,
+//                         padding: EdgeInsets.all(28.0.w),
+//                         margin: EdgeInsets.only(
+//                             bottom: 20.w, left: 30.w, right: 30.w),
+//                         decoration: BoxDecoration(
+//                           color: Colors.white,
+//                           borderRadius: BorderRadius.circular(18.w),
+//                         ),
+//                         child: Row(
+//                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                           children: [
+//                             Column(
+//                               children: [
+//                                 Text(
+//                                   '0.4MB',
+//                                   style: TextStyle(
+//                                       fontSize: 30.sp,
+//                                       color: const Color(0xff051220)),
+//                                 ),
+//                                 Text(
+//                                   '已使用',
+//                                   style: TextStyle(
+//                                       fontSize: 30.sp,
+//                                       color: const Color(0xff051220)),
+//                                 ),
+//                               ],
+//                             ),
+//                          FloatingActionButton(onPressed: (){
+
+//                          },
+//                              child: Text('我是浮动按钮'),
+//                          ),
+//                             Column(
+//                               children: [
+//                                 Text(
+//                                   '5 GB/月',
+//                                   style: TextStyle(
+//                                       fontSize: 30.sp,
+//                                       color: const Color(0xff051220)),
+//                                 ),
+//                                 Text(
+//                                   '流量套餐',
+//                                   style: TextStyle(
+//                                       fontSize: 30.sp,
+//                                       color: const Color(0xff051220)),
+//                                 ),
+//                               ],
+//                             ),
+//                           ],
+//                         )),
+//                     Text('2'),
+//                     Text('3'),
+//                   ],
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ffi';
@@ -124,11 +361,13 @@ class _NetStatusState extends State<NetStatus> {
         setState(() => _comboType = int.parse(value.toString()));
       }
     });
+
     sharedGetData('c_contain', double).then((value) {
       if (value != null) {
         setState(() => _totalComboData = double.parse(value.toString()));
       }
     });
+
     Future.wait([
       sharedGetData('c_type', int),
       sharedGetData('c_contain', double),
@@ -144,6 +383,7 @@ class _NetStatusState extends State<NetStatus> {
     }).catchError((e) {
       printError(info: 'error:$e');
     });
+
     updateStatus();
 
     timer = Timer.periodic(const Duration(milliseconds: 2000), (t) async {

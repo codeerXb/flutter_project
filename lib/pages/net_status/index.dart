@@ -1,420 +1,8 @@
-// import 'package:flutter/material.dart';
-// import 'package:flutter_screenutil/flutter_screenutil.dart';
-// import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
-// import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-// import 'package:get/get.dart';
-
-// /// 消息页面
-// class NetStatus extends StatefulWidget {
-//   const NetStatus(this.service, {Key? key}) : super(key: key);
-//   final String service;
-//   @override
-//   State<StatefulWidget> createState() => _NetStatusState();
-// }
-
-// class _NetStatusState extends State<NetStatus> {
-//   // 点击空白  关闭键盘 时传的一个对象
-//   FocusNode blankNode = FocusNode();
-
-//   /// 点击空白  关闭输入键盘
-//   void closeKeyboard(BuildContext context) {
-//     FocusScope.of(context).requestFocus(blankNode);
-//   }
-
-//   final ToolbarController toolbarController = Get.put(ToolbarController());
-//   String get vn => widget.service;
-//   // 下拉列表
-//   bool isShowList = false;
-//   List<Map<String, dynamic>> get serviceList => [
-//         {
-//           'label': widget.service,
-//           'sn': '12123213',
-//         },
-//         {
-//           'label': 'test',
-//           'sn': '12123213',
-//         }
-//       ];
-
-// // 下拉列表
-//   Widget buildGrid() {
-//     List<Widget> tiles = []; //先建一个数组用于存放循环生成的widget
-//     Widget content; //单独一个widget组件，用于返回需要生成的内容widget
-//     for (var item in serviceList) {
-//       tiles.add(Container(
-//         padding: EdgeInsets.only(left: 20.w, top: 20.w, bottom: 20.w),
-//         child: InkWell(
-//           onTap: () {},
-//           child: Row(children: <Widget>[
-//             if (item['label'] == vn)
-//               Padding(
-//                 padding: EdgeInsets.only(right: 16.sp),
-//                 child: FaIcon(
-//                   FontAwesomeIcons.chevronRight,
-//                   size: 30.w,
-//                   color: Colors.white,
-//                 ),
-//               ),
-//             Text(
-//               item['label'],
-//               style: TextStyle(color: Colors.white, fontSize: 30.sp),
-//             ),
-//           ]),
-//         ),
-//       ));
-//     }
-//     content = Container(
-//       color: const Color.fromARGB(153, 31, 31, 31),
-//       width: 1.sw,
-//       child: Column(
-//           children: tiles //重点在这里，因为用编辑器写Column生成的children后面会跟一个<Widget>[]，
-//           //此时如果我们直接把生成的tiles放在<Widget>[]中是会报一个类型不匹配的错误，把<Widget>[]删了就可以了
-//           ),
-//     );
-//     return content;
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       decoration: const BoxDecoration(
-//           image: DecorationImage(
-//               alignment: Alignment.topCenter,
-//               image: AssetImage(
-//                 'assets/images/picture_home.png',
-//               ),
-//               fit: BoxFit.fitWidth)),
-//       child: Scaffold(
-//         appBar: AppBar(
-//           elevation: 0,
-//           title: InkWell(
-//             overlayColor: const MaterialStatePropertyAll(Colors.transparent),
-//             onTap: () {
-//               setState(() {
-//                 isShowList = !isShowList;
-//               });
-//             },
-//             //下拉icon
-//             child: SizedBox(
-//               width: 1.sw,
-//               child: Row(
-//                 children: [
-//                   Text(vn),
-//                   FaIcon(
-//                     FontAwesomeIcons.chevronDown,
-//                     size: 30.w,
-//                   )
-//                 ],
-//               ),
-//             ),
-//           ),
-//           backgroundColor: Colors.transparent,
-//         ),
-//         backgroundColor: Colors.transparent,
-//         body: GestureDetector(
-//           onTap: () => closeKeyboard(context),
-//           behavior: HitTestBehavior.opaque,
-//           child: Container(
-//             decoration:
-//                 const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
-//             height: 1000,
-//             child: Stack(
-//               children: [
-//                 // 头部下拉widget
-//                 Container(
-//                   width: 1.sw,
-//                   height: 200.h,
-//                   color: Colors.transparent,
-//                 ),
-//                 if (isShowList) Positioned(top: 10.w, child: buildGrid()),
-
-//                 Padding(
-//                   padding: EdgeInsets.only(top: 10.w),
-//                   child: ListView(
-//                     children: [
-//                       Image.asset( 'assets/images/state.png', ),
-
-//                       // //热力图
-//                       // WhiteCard(
-//                       //   boxCotainer: Image.asset(
-//                       //     'assets/images/state.png',
-//                       //     width: 1000,
-//                       //     height: 1000,
-//                       //   ),
-//                       // ),
-//                       //网络环境
-//                       WhiteCard(
-//                           boxCotainer: Row(
-//                         mainAxisAlignment: MainAxisAlignment.spaceAround,
-//                         children: [
-//                           Text(
-//                             '已连接',
-//                             style: TextStyle(
-//                                 fontSize: 30.sp,
-//                                 color: const Color(0xff051220)),
-//                           ),
-//                           Column(
-//                             children: [
-//                               Text(
-//                                 '优',
-//                                 style: TextStyle(
-//                                     fontSize: 30.sp, color: Colors.blue),
-//                               ),
-//                               Text(
-//                                 '网络环境',
-//                                 style: TextStyle(
-//                                     fontSize: 30.sp, color: Colors.blue),
-//                               ),
-//                             ],
-//                           ),
-//                           ElevatedButton(
-//                             onPressed: () {},
-//                             style: ButtonStyle(
-//                               shape: MaterialStateProperty.all(
-//                                   const CircleBorder()),
-//                             ),
-//                             child: const Icon(Icons.rocket),
-//                           )
-//                         ],
-//                       )),
-//                       //流量套餐
-//                       WhiteCard(
-//                           boxCotainer: Row(
-//                         mainAxisAlignment: MainAxisAlignment.spaceAround,
-//                         children: [
-//                           Column(
-//                             children: [
-//                               Text(
-//                                 '0.4  MB',
-//                                 style: TextStyle(
-//                                     fontSize: 30.sp,
-//                                     color: const Color(0xff051220)),
-//                               ),
-//                               Text(
-//                                 '已经使用',
-//                                 style: TextStyle(
-//                                   fontSize: 28.sp,
-//                                   color: Colors.black54,
-//                                 ),
-//                               ),
-//                             ],
-//                           ),
-//                           ElevatedButton(
-//                             style: ButtonStyle(
-//                               shape: MaterialStateProperty.all(
-//                                   const CircleBorder()),
-//                             ),
-//                             onPressed: () {},
-//                             child: Column(
-//                                 mainAxisAlignment: MainAxisAlignment.center,
-//                                 children: const [
-//                                   Text('套餐'),
-//                                   Text('设置'),
-//                                 ]),
-//                           ),
-//                           Column(
-//                             children: [
-//                               Text(
-//                                 '5 GB/月',
-//                                 style: TextStyle(
-//                                     fontSize: 30.sp,
-//                                     color: const Color(0xff051220)),
-//                               ),
-//                               Text(
-//                                 '流量套餐',
-//                                 style: TextStyle(
-//                                   fontSize: 28.sp,
-//                                   color: Colors.black54,
-//                                 ),
-//                               ),
-//                             ],
-//                           ),
-//                         ],
-//                       )),
-//                       //下载速率
-//                       WhiteCard(
-//                           boxCotainer: Row(
-//                         mainAxisAlignment: MainAxisAlignment.spaceAround,
-//                         children: [
-//                           Column(
-//                             children: [
-//                               Text(
-//                                 '0.4Kbps',
-//                                 style: TextStyle(
-//                                     fontSize: 30.sp,
-//                                     color: const Color(0xff051220)),
-//                               ),
-//                               Text(
-//                                 '下载速率',
-//                                 style: TextStyle(
-//                                   fontSize: 28.sp,
-//                                   color: Colors.black54,
-//                                 ),
-//                               ),
-//                             ],
-//                           ),
-//                           ElevatedButton(
-//                             style: ButtonStyle(
-//                               shape: MaterialStateProperty.all(
-//                                   const CircleBorder()),
-//                             ),
-//                             onPressed: () {},
-//                             child: const Icon(Icons.wifi),
-//                           ),
-//                           Column(
-//                             children: [
-//                               Text(
-//                                 '5 GB/月',
-//                                 style: TextStyle(
-//                                     fontSize: 30.sp,
-//                                     color: const Color(0xff051220)),
-//                               ),
-//                               Text(
-//                                 '流量套餐',
-//                                 style: TextStyle(
-//                                   fontSize: 28.sp,
-//                                   color: Colors.black54,
-//                                 ),
-//                               ),
-//                             ],
-//                           ),
-//                         ],
-//                       )),
-//                       //2*3网格
-//                       SizedBox(
-//                         height: 550.w,
-//                         child: GridView(
-//                           physics: const NeverScrollableScrollPhysics(), //禁止滚动
-//                           gridDelegate:
-//                               const SliverGridDelegateWithFixedCrossAxisCount(
-//                                   crossAxisCount: 2, //一行的Widget数量
-//                                   childAspectRatio: 2 //宽高比为1
-//                                   ),
-//                           children: <Widget>[
-//                             //接入设备
-//                             WhiteCard(
-//                                 boxCotainer: Row(
-//                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                               children: [
-//                                 Icon(Icons.devices_other_rounded),
-//                                 Column(
-//                                   mainAxisAlignment: MainAxisAlignment.center,
-//                                   children: [
-//                                     const Text('接入设备'),
-//                                     Text(
-//                                       '1个在线 ',
-//                                       style: TextStyle(
-//                                           color: Colors.black54,
-//                                           fontSize: 25.sp),
-//                                     ),
-//                                   ],
-//                                 )
-//                               ],
-//                             )),
-
-//                             //儿童上网
-//                             WhiteCard(
-//                                 boxCotainer: Row(
-//                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                               children: const [
-//                                 Icon(Icons.child_care),
-//                                 Text('儿童上网'),
-//                               ],
-//                             )),
-//                             //智能检测
-//                             WhiteCard(
-//                                 boxCotainer: Row(
-//                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                               children: [
-//                                 Icon(Icons.security),
-//                                 const Text('智能检测'),
-//                               ],
-//                             )),
-//                             //网络测速
-//                             WhiteCard(
-//                                 boxCotainer: Row(
-//                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                               children: [
-//                                 Icon(Icons.network_check),
-//                                 const Text('网络测速'),
-//                               ],
-//                             )),
-//                             //网课加速
-//                             WhiteCard(
-//                                 boxCotainer: Row(
-//                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                               children: [
-//                                 Icon(Icons.book),
-//                                 const Text('网课加速'),
-//                               ],
-//                             )),
-//                             //游戏加速
-//                             WhiteCard(
-//                                 boxCotainer: Row(
-//                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                               children: [
-//                                 Icon(Icons.speed),
-//                                 const Text('游戏加速'),
-//                               ],
-//                             )),
-//                           ],
-//                         ),
-//                       ),
-//                       //查看更多
-//                       TextButton(
-//                           onPressed: () {
-//                             toolbarController.setPageIndex(2);
-//                           },
-//                           child: const Text('查看更多'))
-//                     ],
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// //card
-// class WhiteCard extends StatelessWidget {
-//   final Widget boxCotainer;
-//   const WhiteCard({super.key, required this.boxCotainer});
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       height: 150.w,
-//       padding: EdgeInsets.all(28.0.w),
-//       margin: EdgeInsets.only(bottom: 20.w, left: 30.w, right: 30.w),
-//       decoration: BoxDecoration(
-//         color: Colors.white,
-//         borderRadius: BorderRadius.circular(18.w),
-//       ),
-//       child: boxCotainer,
-//     );
-//   }
-// }
-import 'dart:async';
-import 'dart:convert';
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_template/core/utils/shared_preferences_util.dart';
-import 'package:flutter_template/core/utils/toast.dart';
-import 'package:flutter_template/core/widget/common_widget.dart';
-import 'package:flutter_template/core/widget/custom_app_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:flutter_template/pages/net_status/arc_progress_bar.dart';
-import 'package:flutter_template/pages/net_status/model/net_connect_status.dart';
-import 'package:flutter_template/pages/net_status/dashboard.dart';
-
-import '../../core/http/http.dart';
-import '../../generated/l10n.dart';
-import 'homepage_state_btn.dart';
 
 /// 消息页面
 class NetStatus extends StatefulWidget {
@@ -425,33 +13,18 @@ class NetStatus extends StatefulWidget {
 }
 
 class _NetStatusState extends State<NetStatus> {
-  // 定义套餐类型
-  int _comboType = 0;
-  // 定义套餐总量
-  double _totalComboData = 0;
-  // 定义显示套餐状况
-  String _comboLabel =  S.current.Notset;
-  // 套餐周期
-  List<String> comboCycleLabel = [
-    S.current.day,
-    S.current.month,
-    S.current.year
-  ];
-  // 有线连接状况：1:连通0：未连接
-  String _wanStatus = '0';
-  // wifi连接状况：1:连通0：未连接
-  String _wifiStatus = '0';
-  // sim卡连接状况：1:连通0：未连接
-  String _simStatus = '0';
-  // 上行速率
-  double _upRate = 0;
-  // 下行速率
-  double _downRate = 0;
+  // 点击空白  关闭键盘 时传的一个对象
+  FocusNode blankNode = FocusNode();
 
+  /// 点击空白  关闭输入键盘
+  void closeKeyboard(BuildContext context) {
+    FocusScope.of(context).requestFocus(blankNode);
+  }
+
+  final ToolbarController toolbarController = Get.put(ToolbarController());
   String get vn => widget.service;
   // 下拉列表
   bool isShowList = false;
-
   List<Map<String, dynamic>> get serviceList => [
         {
           'label': widget.service,
@@ -462,95 +35,6 @@ class _NetStatusState extends State<NetStatus> {
           'sn': '12123213',
         }
       ];
-
-  /// 获取网络连接状态和上下行速率并更新
-  void updateStatus() async {
-    Map<String, dynamic> netStatus = {
-      'method': 'obj_get',
-      'param':
-          '["ethernetConnectionStatus","systemDataRateDlCurrent","systemDataRateUlCurrent","wifiHaveOrNot","wifi5gHaveOrNot","wifiEnable","wifi5gEnable","lteRoam"]'
-    };
-    try {
-      var response = await XHttp.get('/data.html', netStatus);
-      // 以 { 或者 [ 开头的
-      RegExp exp = RegExp('^[{[]');
-      if (!exp.hasMatch(response) && mounted) {
-        setState(() {
-          _wanStatus = '0';
-          _wifiStatus = '0';
-          _simStatus = '0';
-          _upRate = 0;
-          _downRate = 0;
-        });
-        debugPrint('netStatus得到数据不是json');
-      }
-      var resObj = NetConnecStatus.fromJson(json.decode(response));
-      String wanStatus = resObj.ethernetConnectionStatus == '1' ? '1' : '0';
-      String wifiStatus =
-          (resObj.wifiHaveOrNot == '1' || resObj.wifi5gHaveOrNot == '1')
-              ? '1'
-              : '0';
-      String simStatus = resObj.lteRoam == '1' ? '1' : '0';
-      double upRate = resObj.systemDataRateUlCurrent != null
-          ? double.parse(resObj.systemDataRateUlCurrent!)
-          : 0;
-      double downRate = resObj.systemDataRateDlCurrent != null
-          ? double.parse(resObj.systemDataRateDlCurrent!)
-          : 0;
-      if (mounted) {
-        setState(() {
-          _wanStatus = wanStatus;
-          _wifiStatus = wifiStatus;
-          _simStatus = simStatus;
-          _upRate = upRate;
-          _downRate = downRate;
-        });
-      }
-      debugPrint('wanStatus=$wanStatus,wifi=$wifiStatus,sim=$simStatus');
-    } catch (err) {
-      debugPrint(err.toString());
-    }
-  }
-
-  Timer? timer;
-  @override
-  void initState() {
-    super.initState();
-    // 获取套餐总量
-    sharedGetData('c_type', int).then((value) {
-      if (value != null) {
-        setState(() => _comboType = int.parse(value.toString()));
-      }
-    });
-
-    sharedGetData('c_contain', double).then((value) {
-      if (value != null) {
-        setState(() => _totalComboData = double.parse(value.toString()));
-      }
-    });
-
-    Future.wait([
-      sharedGetData('c_type', int),
-      sharedGetData('c_contain', double),
-      sharedGetData('c_cycle', int),
-    ]).then((results) {
-      if (results[0] != null && results[1] != null && results[2] != null) {
-        setState(() {
-          _comboLabel = results[0] == 0
-              ? '${results[1]}GB/${comboCycleLabel[results[2] as int]}'
-              : '${results[1]}h/${comboCycleLabel[results[2] as int]}';
-        });
-      }
-    }).catchError((e) {
-      printError(info: 'error:$e');
-    });
-
-    updateStatus();
-
-    timer = Timer.periodic(const Duration(milliseconds: 2000), (t) async {
-      if (mounted) updateStatus();
-    });
-  }
 
 // 下拉列表
   Widget buildGrid() {
@@ -596,7 +80,9 @@ class _NetStatusState extends State<NetStatus> {
       decoration: const BoxDecoration(
           image: DecorationImage(
               alignment: Alignment.topCenter,
-              image: AssetImage('assets/images/picture_home_bg.png'),
+              image: AssetImage(
+                'assets/images/picture_home.png',
+              ),
               fit: BoxFit.fitWidth)),
       child: Scaffold(
         appBar: AppBar(
@@ -608,6 +94,7 @@ class _NetStatusState extends State<NetStatus> {
                 isShowList = !isShowList;
               });
             },
+            //下拉icon
             child: SizedBox(
               width: 1.sw,
               child: Row(
@@ -624,134 +111,311 @@ class _NetStatusState extends State<NetStatus> {
           backgroundColor: Colors.transparent,
         ),
         backgroundColor: Colors.transparent,
-        body: Stack(
-          children: [
-            Column(
-              children: <Widget>[
-                // 头部widget
+        body: GestureDetector(
+          onTap: () => closeKeyboard(context),
+          behavior: HitTestBehavior.opaque,
+          child: Container(
+            decoration:
+                const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
+            height: 1000,
+            child: Stack(
+              children: [
+                // 头部下拉widget
                 Container(
-                  alignment: Alignment.topCenter,
-                  padding: EdgeInsets.only(
-                      left: 30.sp, right: 26.sp, top: 0, bottom: 30.sp),
                   width: 1.sw,
-                  height: 240.h,
+                  height: 200.h,
                   color: Colors.transparent,
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
+                ),
+                // if (isShowList) Positioned(top: 10.w, child: buildGrid()),
+
+                Padding(
+                  padding: EdgeInsets.only(top: 10.w),
+                  child: ListView(
+                    children: [
+                      // //热力图
+                      Container(
+                        height: 600.w,
+                        margin: EdgeInsets.only(
+                            bottom: 20.w, left: 30.w, right: 30.w),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(18.w),
+                        ),
+                        child: Image.asset(
+                          'assets/images/state.png',
+                        ),
+                      ),
+                      //网络环境
+                      WhiteCard(
+                          boxCotainer: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Text(
+                            '已连接',
+                            style: TextStyle(
+                                fontSize: 30.sp,
+                                color: const Color(0xff051220)),
+                          ),
+                          Column(
                             children: [
-                              Container(
-                                height: 40.h,
-                                padding: EdgeInsets.only(
-                                    left: 16.sp,
-                                    right: 16.sp,
-                                    top: 0,
-                                    bottom: 0),
-                                decoration: BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(8.sp)),
-                                    border: Border.all(
-                                        width: 1, color: Colors.white)),
-                                child: Text(
-                                  '${S.of(context).TotalPackageQuantity} :$_comboLabel',
-                                  style: const TextStyle(color: Colors.white),
+                              Text(
+                                '优',
+                                style: TextStyle(
+                                    fontSize: 30.sp, color: Colors.blue),
+                              ),
+                              Text(
+                                '网络环境',
+                                style: TextStyle(
+                                    fontSize: 30.sp, color: Colors.blue),
+                              ),
+                            ],
+                          ),
+                          ElevatedButton(
+                            onPressed: () {},
+                            style: ButtonStyle(
+                              shape: MaterialStateProperty.all(
+                                  const CircleBorder()),
+                            ),
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Icon(
+                                    Icons.rocket,
+                                    size: 32,
+                                  )
+                                ]),
+                          )
+                        ],
+                      )),
+                      //流量套餐
+                      WhiteCard(
+                          boxCotainer: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Column(
+                            children: [
+                              Text(
+                                '0.4  MB',
+                                style: TextStyle(
+                                    fontSize: 30.sp,
+                                    color: const Color(0xff051220)),
+                              ),
+                              Text(
+                                '已经使用',
+                                style: TextStyle(
+                                  fontSize: 28.sp,
+                                  color: Colors.black54,
                                 ),
                               ),
-                            ]),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                HomePageStateBtn(
-                                  imageUrl:
-                                      'assets/images/icon_homepage_wan.png',
-                                  offImageUrl:
-                                      'assets/images/icon_homepage_no_wan.png',
-                                  routeName: '/wan_settings',
-                                  status: _wanStatus,
-                                ),
-                                HomePageStateBtn(
-                                  imageUrl:
-                                      'assets/images/icon_homepage_wifi.png',
-                                  offImageUrl:
-                                      'assets/images/icon_homepage_no_wifi.png',
-                                  routeName: '/wlan_set',
-                                  status: _wifiStatus,
-                                ),
-                                HomePageStateBtn(
-                                  imageUrl:
-                                      'assets/images/icon_homepage_sim.png',
-                                  offImageUrl:
-                                      'assets/images/icon_homepage_no_sim.png',
-                                  status: _simStatus,
-                                  routeName: '/radio_settings',
-                                ),
-                              ],
+                            ],
+                          ),
+                          ElevatedButton(
+                            style: ButtonStyle(
+                              shape: MaterialStateProperty.all(
+                                  const CircleBorder()),
                             ),
-                            TextButton(
-                                onPressed: () => {
-                                      Get.toNamed('/net_server_settings')
-                                          ?.then((value) {
-                                        setState(() {
-                                          _comboLabel = value['type'] == 0
-                                              ? '${value['contain']}GB/${comboCycleLabel[value['cycle']]}'
-                                              : '${value['contain']}h/${comboCycleLabel[value['cycle']]}';
-                                          _comboType = value['type'];
-                                          _totalComboData = value['contain'];
-                                        });
-                                      })
-                                    },
-                                child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        S.of(context).PackageSetting,
-                                        style: TextStyle(
-                                            height: 1,
-                                            fontSize: 28.sp,
-                                            color: Colors.white),
-                                      ),
-                                      Container(
-                                        margin: EdgeInsets.only(left: 8.sp),
-                                        child: FaIcon(
-                                          FontAwesomeIcons.chevronRight,
-                                          size: 34.sp,
-                                          color: Colors.white,
-                                        ),
-                                      )
-                                    ]))
+                            onPressed: () {},
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Text('套餐'),
+                                  Text('设置'),
+                                ]),
+                          ),
+                          Column(
+                            children: [
+                              Text(
+                                '5 GB/月',
+                                style: TextStyle(
+                                    fontSize: 30.sp,
+                                    color: const Color(0xff051220)),
+                              ),
+                              Text(
+                                '流量套餐',
+                                style: TextStyle(
+                                  fontSize: 28.sp,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      )),
+                      //下载速率
+                      WhiteCard(
+                          boxCotainer: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Column(
+                            children: [
+                              Text(
+                                '0.4Kbps',
+                                style: TextStyle(
+                                    fontSize: 30.sp,
+                                    color: const Color(0xff051220)),
+                              ),
+                              Text(
+                                '下载速率',
+                                style: TextStyle(
+                                  fontSize: 28.sp,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ],
+                          ),
+                          ElevatedButton(
+                            style: ButtonStyle(
+                              shape: MaterialStateProperty.all(
+                                  const CircleBorder()),
+                            ),
+                            onPressed: () {},
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Icon(
+                                    Icons.wifi_outlined,
+                                    size: 32,
+                                  )
+                                ]),
+                          ),
+                          Column(
+                            children: [
+                              Text(
+                                '5 GB/月',
+                                style: TextStyle(
+                                    fontSize: 30.sp,
+                                    color: const Color(0xff051220)),
+                              ),
+                              Text(
+                                '流量套餐',
+                                style: TextStyle(
+                                  fontSize: 28.sp,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      )),
+                      //2*3网格
+                      SizedBox(
+                        height: 550.w,
+                        child: GridView(
+                          physics: const NeverScrollableScrollPhysics(), //禁止滚动
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2, //一行的Widget数量
+                                  childAspectRatio: 2 //宽高比为1
+                                  ),
+                          children: <Widget>[
+                            //接入设备
+                            WhiteCard(
+                                boxCotainer: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Icon(Icons.devices_other_rounded,
+                                    color: Colors.blue[500], size: 80.sp),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Text('接入设备'),
+                                    Text(
+                                      '1个在线 ',
+                                      style: TextStyle(
+                                          color: Colors.black54,
+                                          fontSize: 25.sp),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            )),
+
+                            //儿童上网
+                            WhiteCard(
+                                boxCotainer: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Icon(Icons.child_care,
+                                    color: Colors.blue[500], size: 80.sp),
+                                const Text('儿童上网'),
+                              ],
+                            )),
+                            //摄像头
+                            WhiteCard(
+                                boxCotainer: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Icon(Icons.camera_alt,
+                                    color: Colors.blue[500], size: 80.sp),
+                                const Text('摄像头'),
+                              ],
+                            )),
+                            //网络测速
+                            WhiteCard(
+                                boxCotainer: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Icon(Icons.network_check,
+                                    color: Colors.blue[500], size: 80.sp),
+                                const Text('网络测速'),
+                              ],
+                            )),
+                            //网课加速
+                            WhiteCard(
+                                boxCotainer: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Icon(Icons.book,
+                                    color: Colors.blue[500], size: 80.sp),
+                                const Text('网课加速'),
+                              ],
+                            )),
+                            //游戏加速
+                            WhiteCard(
+                                boxCotainer: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Icon(Icons.speed,
+                                    color: Colors.blue[500], size: 80.sp),
+                                const Text('游戏加速'),
+                              ],
+                            )),
                           ],
-                        )
-                      ]),
+                        ),
+                      ),
+                      //查看更多
+                      TextButton(
+                          onPressed: () {
+                            toolbarController.setPageIndex(2);
+                          },
+                          child: const Text('查看更多'))
+                    ],
+                  ),
                 ),
-                // 仪表盘和数值显示
-                Expanded(
-                    flex: 1,
-                    child: Dashboard(
-                      comboType: _comboType,
-                      totalComboData: _totalComboData,
-                      upRate: _upRate,
-                      downRate: _downRate,
-                    )),
               ],
             ),
-            if (isShowList) Positioned(top: 0.w, child: buildGrid()),
-          ],
+          ),
         ),
       ),
     );
   }
+}
 
+//card
+class WhiteCard extends StatelessWidget {
+  final Widget boxCotainer;
+  const WhiteCard({super.key, required this.boxCotainer});
   @override
-  void dispose() {
-    super.dispose();
-    debugPrint('状态页面销毁');
-    timer?.cancel();
-    timer = null;
+  Widget build(BuildContext context) {
+    return Container(
+      height: 150.w,
+      padding: EdgeInsets.all(28.0.w),
+      margin: EdgeInsets.only(bottom: 20.w, left: 30.w, right: 30.w),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18.w),
+      ),
+      child: boxCotainer,
+    );
   }
 }

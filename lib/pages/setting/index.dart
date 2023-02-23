@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_widget.dart';
@@ -23,6 +22,8 @@ class Setting extends StatefulWidget {
 }
 
 class _SettingState extends State<Setting> {
+  final ToolbarController toolbarController = Get.put(ToolbarController());
+
   /// 用户信息
   UserModel userModel = UserModel();
   final LoginController loginController = Get.put(LoginController());
@@ -193,7 +194,7 @@ class _SettingState extends State<Setting> {
                       alignment: Alignment.center,
                       child: Text(
                         S.of(context).hint,
-                        style: TextStyle(fontWeight: FontWeight.w700),
+                        style: const TextStyle(fontWeight: FontWeight.w700),
                       ),
                     ),
                   ),
@@ -202,9 +203,7 @@ class _SettingState extends State<Setting> {
                       height: 60.w,
                       alignment: Alignment.topLeft,
                       child: Text(
-                        S.of(context).unblockdevice +
-                            " ${loginController.equipment['systemVersionSn']} " +
-                            S.of(context).binding,
+                        "${S.of(context).unblockdevice} ${loginController.equipment['systemVersionSn']} ${S.of(context).binding}",
                         style:
                             TextStyle(color: Colors.black45, fontSize: 22.sp),
                       ),
@@ -241,6 +240,7 @@ class _SettingState extends State<Setting> {
                       InkWell(
                         onTap: () {
                           Get.offAllNamed("/get_equipment");
+                          toolbarController.setPageIndex(0);
                         },
                         child: Container(
                           height: 60.w,
@@ -399,24 +399,22 @@ class _SettingState extends State<Setting> {
           height: 28,
         ),
         callBack: () {
-          _User == 'null'
-              ? print(1)
-              : _openAvatarBottomSheet();
+          _User == 'null' ? print(1) : _openAvatarBottomSheet();
         });
   }
 
   /// 订阅服务
-  Widget subService() {
-    return CommonWidget.simpleWidgetWithMine(
-        title: S.of(context).subService,
-        icon: const Icon(
-          Icons.monetization_on,
-          color: Colors.blue,
-        ),
-        callBack: () {
-          Get.toNamed("/sub_service");
-        });
-  }
+  // Widget subService() {
+  //   return CommonWidget.simpleWidgetWithMine(
+  //       title: S.of(context).subService,
+  //       icon: const Icon(
+  //         Icons.monetization_on,
+  //         color: Colors.blue,
+  //       ),
+  //       callBack: () {
+  //         Get.toNamed("/sub_service");
+  //       });
+  // }
 
   /// 以太网状态
   Widget feedback() {

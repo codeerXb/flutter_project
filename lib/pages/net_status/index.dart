@@ -304,10 +304,10 @@ class _NetStatusState extends State<NetStatus> {
                           physics: const NeverScrollableScrollPhysics(), //禁止滚动
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2, //一行的Widget数量
-                                  childAspectRatio: 2 ,//宽高比为1
-                                  crossAxisSpacing:16,//横轴方向子元素的间距
-                                  ),
+                            crossAxisCount: 2, //一行的Widget数量
+                            childAspectRatio: 2, //宽高比为1
+                            crossAxisSpacing: 16, //横轴方向子元素的间距
+                          ),
                           children: <Widget>[
                             //接入设备
                             GardCard(
@@ -341,15 +341,21 @@ class _NetStatusState extends State<NetStatus> {
                               ],
                             )),
                             //摄像头
-                            GardCard(
-                                boxCotainer: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Icon(Icons.camera_alt,
-                                    color: Colors.blue[500], size: 80.sp),
-                                const Text('摄像头'),
-                              ],
-                            )),
+                            GestureDetector(
+                              onTap: () {
+                                Get.toNamed('/vidicon');
+                              },
+                              child: GardCard(
+                                  boxCotainer: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Icon(Icons.camera_alt,
+                                      color: Colors.blue[500], size: 80.sp),
+                                  const Text('摄像头'),
+                                ],
+                              )),
+                            ),
                             //网络测速
                             GardCard(
                                 boxCotainer: Row(

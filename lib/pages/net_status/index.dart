@@ -115,6 +115,7 @@ class _NetStatusState extends State<NetStatus> {
           onTap: () => closeKeyboard(context),
           behavior: HitTestBehavior.opaque,
           child: Container(
+            padding: EdgeInsets.only(left: 30.w, right: 30.0.w),
             decoration:
                 const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
             height: 1000,
@@ -129,14 +130,13 @@ class _NetStatusState extends State<NetStatus> {
                 // if (isShowList) Positioned(top: 10.w, child: buildGrid()),
 
                 Padding(
-                  padding: EdgeInsets.only(top: 10.w),
+                  padding: EdgeInsets.only(top: 20.w),
                   child: ListView(
                     children: [
                       // //热力图
                       Container(
                         height: 600.w,
-                        margin: EdgeInsets.only(
-                            bottom: 20.w, left: 30.w, right: 30.w),
+                        margin: EdgeInsets.only(bottom: 20.w),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(18.w),
@@ -299,17 +299,18 @@ class _NetStatusState extends State<NetStatus> {
                       )),
                       //2*3网格
                       SizedBox(
-                        height: 550.w,
+                        height: 480.w,
                         child: GridView(
                           physics: const NeverScrollableScrollPhysics(), //禁止滚动
                           gridDelegate:
                               const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 2, //一行的Widget数量
-                                  childAspectRatio: 2 //宽高比为1
+                                  childAspectRatio: 2 ,//宽高比为1
+                                  crossAxisSpacing:16,//横轴方向子元素的间距
                                   ),
                           children: <Widget>[
                             //接入设备
-                            WhiteCard(
+                            GardCard(
                                 boxCotainer: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -329,9 +330,8 @@ class _NetStatusState extends State<NetStatus> {
                                 )
                               ],
                             )),
-
                             //儿童上网
-                            WhiteCard(
+                            GardCard(
                                 boxCotainer: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -341,7 +341,7 @@ class _NetStatusState extends State<NetStatus> {
                               ],
                             )),
                             //摄像头
-                            WhiteCard(
+                            GardCard(
                                 boxCotainer: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -351,7 +351,7 @@ class _NetStatusState extends State<NetStatus> {
                               ],
                             )),
                             //网络测速
-                            WhiteCard(
+                            GardCard(
                                 boxCotainer: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -361,7 +361,7 @@ class _NetStatusState extends State<NetStatus> {
                               ],
                             )),
                             //网课加速
-                            WhiteCard(
+                            GardCard(
                                 boxCotainer: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -371,7 +371,7 @@ class _NetStatusState extends State<NetStatus> {
                               ],
                             )),
                             //游戏加速
-                            WhiteCard(
+                            GardCard(
                                 boxCotainer: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -410,7 +410,26 @@ class WhiteCard extends StatelessWidget {
     return Container(
       height: 150.w,
       padding: EdgeInsets.all(28.0.w),
-      margin: EdgeInsets.only(bottom: 20.w, left: 30.w, right: 30.w),
+      margin: EdgeInsets.only(bottom: 20.w),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18.w),
+      ),
+      child: boxCotainer,
+    );
+  }
+}
+
+//card
+class GardCard extends StatelessWidget {
+  final Widget boxCotainer;
+  const GardCard({super.key, required this.boxCotainer});
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 150.w,
+      padding: EdgeInsets.all(28.0.w),
+      margin: EdgeInsets.only(bottom: 20.w),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(18.w),

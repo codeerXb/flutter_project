@@ -67,7 +67,7 @@ class TitleWidger extends StatelessWidget {
 //信息盒子
 class InfoBox extends StatelessWidget {
   final Widget boxCotainer;
- const InfoBox({super.key, required this.boxCotainer});
+  const InfoBox({super.key, required this.boxCotainer});
 
   @override
   Widget build(BuildContext context) {
@@ -92,3 +92,4 @@ class commonLine extends StatelessWidget {
     );
   }
 }
+

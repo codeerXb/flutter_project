@@ -23,12 +23,11 @@ class Setting extends StatefulWidget {
 }
 
 class _SettingState extends State<Setting> {
-final ToolbarController toolbarController = Get.put(ToolbarController());
-
   /// 用户信息
   UserModel userModel = UserModel();
   final LoginController loginController = Get.put(LoginController());
-
+  //验证云平台登录
+  String _User = '';
   @override
   void initState() {
     super.initState();
@@ -46,6 +45,11 @@ final ToolbarController toolbarController = Get.put(ToolbarController());
         });
       }
     });
+    sharedGetData('user_token', String).then(((res) {
+      setState(() {
+        _User = res.toString();
+      });
+    }));
   }
 
   @override
@@ -237,7 +241,6 @@ final ToolbarController toolbarController = Get.put(ToolbarController());
                       InkWell(
                         onTap: () {
                           Get.offAllNamed("/get_equipment");
-                           toolbarController.setPageIndex(0);
                         },
                         child: Container(
                           height: 60.w,
@@ -387,14 +390,18 @@ final ToolbarController toolbarController = Get.put(ToolbarController());
   /// 解绑设备
   Widget unbindingDevice() {
     return CommonWidget.simpleWidgetWithMine(
-        title: S.of(context).UntyingEqui,
-        icon: const Image(
-          image: AssetImage('assets/images/line.png'),
+        title: _User == 'null' ? S.of(context).band : S.of(context).UntyingEqui,
+        icon: Image(
+          image: _User == 'null'
+              ? const AssetImage('assets/images/band.png')
+              : const AssetImage('assets/images/line.png'),
           width: 28,
           height: 28,
         ),
         callBack: () {
-          _openAvatarBottomSheet();
+          _User == 'null'
+              ? print(1)
+              : _openAvatarBottomSheet();
         });
   }
 
@@ -483,7 +490,7 @@ final ToolbarController toolbarController = Get.put(ToolbarController());
           title: S.of(context).SystemSettings,
           icon: const Image(image: AssetImage('assets/images/sys_set.png')),
           callBack: () {
-            Get.toNamed ("/system_settings");
+            Get.toNamed("/system_settings");
           }),
     );
   }

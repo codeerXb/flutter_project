@@ -9,6 +9,7 @@ import 'package:flutter_template/generated/l10n.dart';
 import 'package:flutter_template/pages/get_equipment/water_ripple_painter.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:flutter_template/pages/login/model/equipment_data.dart';
+import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
 import 'package:get/get.dart';
 
 class Equipment extends StatefulWidget {
@@ -20,8 +21,9 @@ class Equipment extends StatefulWidget {
 
 class _MyWidgetState extends State<Equipment> {
   final LoginController loginController = Get.put(LoginController());
-  EquipmentData equipmentData = EquipmentData();
+  final ToolbarController toolbarController = Get.put(ToolbarController());
 
+  EquipmentData equipmentData = EquipmentData();
   @override
   void initState() {
     super.initState();
@@ -214,6 +216,8 @@ class _MyWidgetState extends State<Equipment> {
                           ),
                           trailing: TextButton(
                             onPressed: () {
+                              //底部导航回到第一页
+                              toolbarController.setPageIndex(0);
                               loginController.setEquipment('systemVersionSn',
                                   equipmentData.systemVersionSn);
                               childKey.currentState!.controllerStop();

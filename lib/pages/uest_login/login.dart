@@ -59,6 +59,9 @@ class _UserLoginState extends State<UserLogin> {
             TextButton(
                 onPressed: () {
                   Get.offAllNamed("/get_equipment");
+                  sharedDeleteData('user_phone');
+                  sharedDeleteData('user_token');
+                  debugPrint('清楚用户信息');
                 },
                 child: Text(
                   S.of(context).skip,

@@ -30,7 +30,6 @@ class _UserCardState extends State<UserCard> {
     }));
   }
 
-  final ToolbarController toolbarController = Get.put(ToolbarController());
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -74,7 +73,6 @@ class _UserCardState extends State<UserCard> {
                   sharedDeleteData('user_phone');
                   sharedDeleteData('user_token');
                   debugPrint('清楚用户信息');
-                  toolbarController.setPageIndex(0);
                 },
                 background: _userPhone != 'null'
                     ? const Color.fromARGB(255, 255, 0, 0)

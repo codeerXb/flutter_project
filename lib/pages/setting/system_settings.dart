@@ -243,11 +243,9 @@ class _SystemSettingsState extends State<SystemSettings> {
     );
   }
 
-  final ToolbarController toolbarController = Get.put(ToolbarController());
 
   /// 退出登录
   void loginout() async {
-    toolbarController.setPageIndex(0);
     // 这里还需要调用后台接口的方法
     Dio dio = Dio();
     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =

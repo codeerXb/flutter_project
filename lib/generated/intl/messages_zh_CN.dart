@@ -131,6 +131,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "aesRecommend": MessageLookupByLibrary.simpleMessage("AES(推荐)"),
         "aivideo": MessageLookupByLibrary.simpleMessage("AI视频"),
         "ascii32": MessageLookupByLibrary.simpleMessage("1~32位ASCII字符"),
+        "band": MessageLookupByLibrary.simpleMessage("绑定设备"),
         "binding": MessageLookupByLibrary.simpleMessage("绑定?"),
         "cancel": MessageLookupByLibrary.simpleMessage("取消"),
         "checkNet": MessageLookupByLibrary.simpleMessage("退出登录失败，请检查网络！"),

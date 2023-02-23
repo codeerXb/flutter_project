@@ -185,8 +185,7 @@ class _NetSetState extends State<NetSet> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) {return Scaffold(
         appBar: customAppbar(
             context: context, title: S.of(context).EthernetSettings),
         body: GestureDetector(

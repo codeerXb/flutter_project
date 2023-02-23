@@ -50,80 +50,80 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
-  /// `register`
+  /// `Register`
   String get register {
     return Intl.message(
-      'register',
+      'Register',
       name: 'register',
       desc: '',
       args: [],
     );
   }
 
-  /// `skip`
+  /// `Skip`
   String get skip {
     return Intl.message(
-      'skip',
+      'Skip',
       name: 'skip',
       desc: '',
       args: [],
     );
   }
 
-  /// `login`
+  /// `Login`
   String get login {
     return Intl.message(
-      'login',
+      'Login',
       name: 'login',
       desc: '',
       args: [],
     );
   }
 
-  /// `cpeManagementPlatform`
+  /// `Cpe management platform`
   String get cpeManagementPlatform {
     return Intl.message(
-      'cpeManagementPlatform',
+      'Cpe management platform',
       name: 'cpeManagementPlatform',
       desc: '',
       args: [],
     );
   }
 
-  /// `enter your mobile phone nubmer`
+  /// `Enter your mobile phone nubmer`
   String get phoneLabel {
     return Intl.message(
-      'enter your mobile phone nubmer',
+      'Enter your mobile phone nubmer',
       name: 'phoneLabel',
       desc: '',
       args: [],
     );
   }
 
-  /// `the phone number is wrong`
+  /// `The phone number is wrong`
   String get phoneError {
     return Intl.message(
-      'the phone number is wrong',
+      'The phone number is wrong',
       name: 'phoneError',
       desc: '',
       args: [],
     );
   }
 
-  /// `enter your password`
+  /// `Enter your password`
   String get passwordLabel {
     return Intl.message(
-      'enter your password',
+      'Enter your password',
       name: 'passwordLabel',
       desc: '',
       args: [],
     );
   }
 
-  /// ` enter your password again`
+  /// ` Enter your password again`
   String get passwordAgain {
     return Intl.message(
-      ' enter your password again',
+      ' Enter your password again',
       name: 'passwordAgain',
       desc: '',
       args: [],
@@ -140,20 +140,20 @@ class S {
     );
   }
 
-  /// ` enter verification code`
+  /// ` Enter verification code`
   String get verficationCode {
     return Intl.message(
-      ' enter verification code',
+      ' Enter verification code',
       name: 'verficationCode',
       desc: '',
       args: [],
     );
   }
 
-  /// `Verification code error`
+  /// `Verification code Error`
   String get verficationCodeError {
     return Intl.message(
-      'Verification code error',
+      'Verification code Error',
       name: 'verficationCodeError',
       desc: '',
       args: [],
@@ -170,40 +170,40 @@ class S {
     );
   }
 
-  /// `login successfully`
+  /// `login Successfully`
   String get loginSuccess {
     return Intl.message(
-      'login successfully',
+      'login Successfully',
       name: 'loginSuccess',
       desc: '',
       args: [],
     );
   }
 
-  /// `Discovery equipment`
+  /// `Discovery Equipment`
   String get DiscoveryEqu {
     return Intl.message(
-      'Discovery equipment',
+      'Discovery Equipment',
       name: 'DiscoveryEqu',
       desc: '',
       args: [],
     );
   }
 
-  /// `success`
+  /// `Success`
   String get success {
     return Intl.message(
-      'success',
+      'Success',
       name: 'success',
       desc: '',
       args: [],
     );
   }
 
-  /// `connecting device`
+  /// `Connecting Device`
   String get conDev {
     return Intl.message(
-      'connecting device',
+      'Connecting Device',
       name: 'conDev',
       desc: '',
       args: [],
@@ -230,20 +230,20 @@ class S {
     );
   }
 
-  /// `rescan`
+  /// `Rescan`
   String get rescan {
     return Intl.message(
-      'rescan',
+      'Rescan',
       name: 'rescan',
       desc: '',
       args: [],
     );
   }
 
-  /// `UntyingEqui`
+  /// `Unbind Device`
   String get UntyingEqui {
     return Intl.message(
-      'UntyingEqui',
+      'Unbind Device',
       name: 'UntyingEqui',
       desc: '',
       args: [],
@@ -300,20 +300,20 @@ class S {
     );
   }
 
-  /// `system Information`
+  /// `System Information`
   String get systemInfo {
     return Intl.message(
-      'system Information',
+      'System Information',
       name: 'systemInfo',
       desc: '',
       args: [],
     );
   }
 
-  /// `version Information`
+  /// `Version Information`
   String get versionInfo {
     return Intl.message(
-      'version Information',
+      'Version Information',
       name: 'versionInfo',
       desc: '',
       args: [],
@@ -410,10 +410,10 @@ class S {
     );
   }
 
-  /// `LAN Host Settings`
+  /// `LAN host settings`
   String get lanHostSettings {
     return Intl.message(
-      'LAN Host Settings',
+      'LAN host settings',
       name: 'lanHostSettings',
       desc: '',
       args: [],
@@ -450,10 +450,10 @@ class S {
     );
   }
 
-  /// `clearCache`
+  /// `Clear Cache`
   String get clearCache {
     return Intl.message(
-      'clearCache',
+      'Clear Cache',
       name: 'clearCache',
       desc: '',
       args: [],
@@ -480,10 +480,10 @@ class S {
     );
   }
 
-  /// `advanced Settings`
+  /// `Advanced Settings`
   String get advancedSet {
     return Intl.message(
-      'advanced Settings',
+      'Advanced Settings',
       name: 'advancedSet',
       desc: '',
       args: [],
@@ -580,10 +580,10 @@ class S {
     );
   }
 
-  /// `AP isolation`
+  /// `AP Isolation`
   String get APIsolation {
     return Intl.message(
-      'AP isolation',
+      'AP Isolation',
       name: 'APIsolation',
       desc: '',
       args: [],
@@ -600,10 +600,10 @@ class S {
     );
   }
 
-  /// `WPA encryption`
+  /// `WPA Encryption`
   String get WPAEncry {
     return Intl.message(
-      'WPA encryption',
+      'WPA Encryption',
       name: 'WPAEncry',
       desc: '',
       args: [],
@@ -620,20 +620,20 @@ class S {
     );
   }
 
-  /// `error`
+  /// `Error`
   String get error {
     return Intl.message(
-      'error',
+      'Error',
       name: 'error',
       desc: '',
       args: [],
     );
   }
 
-  /// `not Enable`
+  /// `Not Enable`
   String get notEnable {
     return Intl.message(
-      'not Enable',
+      'Not Enable',
       name: 'notEnable',
       desc: '',
       args: [],
@@ -650,20 +650,20 @@ class S {
     );
   }
 
-  /// `Visitor Network Index`
+  /// `Visitor network index`
   String get NetworkIndex {
     return Intl.message(
-      'Visitor Network Index',
+      'Visitor network index',
       name: 'NetworkIndex',
       desc: '',
       args: [],
     );
   }
 
-  /// `Allow Access to the Intranet`
+  /// `Allow access to the intranet`
   String get AllowAccess {
     return Intl.message(
-      'Allow Access to the Intranet',
+      'Allow access to the intranet',
       name: 'AllowAccess',
       desc: '',
       args: [],
@@ -810,30 +810,30 @@ class S {
     );
   }
 
-  /// `save`
+  /// `Save`
   String get save {
     return Intl.message(
-      'save',
+      'Save',
       name: 'save',
       desc: '',
       args: [],
     );
   }
 
-  /// `status`
+  /// `Status`
   String get status {
     return Intl.message(
-      'status',
+      'Status',
       name: 'status',
       desc: '',
       args: [],
     );
   }
 
-  /// `connectMethod`
+  /// `Connect Method`
   String get connectMethod {
     return Intl.message(
-      'connectMethod',
+      'Connect Method',
       name: 'connectMethod',
       desc: '',
       args: [],
@@ -890,20 +890,20 @@ class S {
     );
   }
 
-  /// `start IP Address`
+  /// `Start iP address`
   String get startIPAddress {
     return Intl.message(
-      'start IP Address',
+      'Start iP address',
       name: 'startIPAddress',
       desc: '',
       args: [],
     );
   }
 
-  /// `end IP Address`
+  /// `End iP address`
   String get endIPAddress {
     return Intl.message(
-      'end IP Address',
+      'End iP address',
       name: 'endIPAddress',
       desc: '',
       args: [],
@@ -920,10 +920,10 @@ class S {
     );
   }
 
-  /// `minutes`
+  /// `Minutes`
   String get minutes {
     return Intl.message(
-      'minutes',
+      'Minutes',
       name: 'minutes',
       desc: '',
       args: [],
@@ -940,30 +940,30 @@ class S {
     );
   }
 
-  /// `connection Mode`
+  /// `Connection Mode`
   String get connectionMode {
     return Intl.message(
-      'connection Mode',
+      'Connection Mode',
       name: 'connectionMode',
       desc: '',
       args: [],
     );
   }
 
-  /// `link Status`
+  /// `Link Status`
   String get linkStatus {
     return Intl.message(
-      'link Status',
+      'Link Status',
       name: 'linkStatus',
       desc: '',
       args: [],
     );
   }
 
-  /// `connect Status`
+  /// `Connect Status`
   String get connectStatus {
     return Intl.message(
-      'connect Status',
+      'Connect Status',
       name: 'connectStatus',
       desc: '',
       args: [],
@@ -1010,30 +1010,30 @@ class S {
     );
   }
 
-  /// `priority`
+  /// `Priority`
   String get priority {
     return Intl.message(
-      'priority',
+      'Priority',
       name: 'priority',
       desc: '',
       args: [],
     );
   }
 
-  /// `current Deive`
+  /// `Current Deive`
   String get currentDeive {
     return Intl.message(
-      'current Deive',
+      'Current Deive',
       name: 'currentDeive',
       desc: '',
       args: [],
     );
   }
 
-  /// `log out`
+  /// `Log Out`
   String get logOut {
     return Intl.message(
-      'log out',
+      'Log Out',
       name: 'logOut',
       desc: '',
       args: [],
@@ -1140,30 +1140,30 @@ class S {
     );
   }
 
-  /// `year`
+  /// `Year`
   String get year {
     return Intl.message(
-      'year',
+      'Year',
       name: 'year',
       desc: '',
       args: [],
     );
   }
 
-  /// `month`
+  /// `Month`
   String get month {
     return Intl.message(
-      'month',
+      'Month',
       name: 'month',
       desc: '',
       args: [],
     );
   }
 
-  /// `day`
+  /// `Day`
   String get day {
     return Intl.message(
-      'day',
+      'Day',
       name: 'day',
       desc: '',
       args: [],
@@ -1220,10 +1220,10 @@ class S {
     );
   }
 
-  /// `staticIP`
+  /// `StaticIP`
   String get staticIP {
     return Intl.message(
-      'staticIP',
+      'StaticIP',
       name: 'staticIP',
       desc: '',
       args: [],
@@ -1360,10 +1360,10 @@ class S {
     );
   }
 
-  /// `Enable Reboot Scheduler`
+  /// `Enable reboot scheduler`
   String get EnableRebootScheduler {
     return Intl.message(
-      'Enable Reboot Scheduler',
+      'Enable reboot scheduler',
       name: 'EnableRebootScheduler',
       desc: '',
       args: [],
@@ -1380,10 +1380,10 @@ class S {
     );
   }
 
-  /// `Please click Reboot to reboot device`
+  /// `Please click reboot to reboot device`
   String get clickReboot {
     return Intl.message(
-      'Please click Reboot to reboot device',
+      'Please click reboot to reboot device',
       name: 'clickReboot',
       desc: '',
       args: [],
@@ -1400,60 +1400,60 @@ class S {
     );
   }
 
-  /// `Please click Factory Reset to restore device to its factory settings`
+  /// `Please click factory reset to restore device to its factory settings`
   String get clickFactory {
     return Intl.message(
-      'Please click Factory Reset to restore device to its factory settings',
+      'Please click factory reset to restore device to its factory settings',
       name: 'clickFactory',
       desc: '',
       args: [],
     );
   }
 
-  /// `Confirm to unblock the current device`
+  /// `Confirm to unbind the current device`
   String get unblockdevice {
     return Intl.message(
-      'Confirm to unblock the current device',
+      'Confirm to unbind the current device',
       name: 'unblockdevice',
       desc: '',
       args: [],
     );
   }
 
-  /// `binding?`
+  /// `Binding?`
   String get binding {
     return Intl.message(
-      'binding?',
+      'Binding?',
       name: 'binding',
       desc: '',
       args: [],
     );
   }
 
-  /// `hint`
+  /// `Hint`
   String get hint {
     return Intl.message(
-      'hint',
+      'Hint',
       name: 'hint',
       desc: '',
       args: [],
     );
   }
 
-  /// `cancel`
+  /// `Cancel`
   String get cancel {
     return Intl.message(
-      'cancel',
+      'Cancel',
       name: 'cancel',
       desc: '',
       args: [],
     );
   }
 
-  /// `confirm`
+  /// `Confirm`
   String get confirm {
     return Intl.message(
-      'confirm',
+      'Confirm',
       name: 'confirm',
       desc: '',
       args: [],
@@ -1470,10 +1470,10 @@ class S {
     );
   }
 
-  /// `Not set`
+  /// `Not Set`
   String get Notset {
     return Intl.message(
-      'Not set',
+      'Not Set',
       name: 'Notset',
       desc: '',
       args: [],
@@ -1570,60 +1570,60 @@ class S {
     );
   }
 
-  /// `max Value`
+  /// `Max Value`
   String get maxValue {
     return Intl.message(
-      'max Value',
+      'Max Value',
       name: 'maxValue',
       desc: '',
       args: [],
     );
   }
 
-  /// `current Orientation`
+  /// `Current orientation`
   String get currentOrientation {
     return Intl.message(
-      'current Orientation',
+      'Current orientation',
       name: 'currentOrientation',
       desc: '',
       args: [],
     );
   }
 
-  /// `Static DNS has the highest priority, VPN DNS follows it and LTE DNS has the lowest priority. If you want to restore the VPN/LTE DNS, please clear the two DNS configuration and submit`
+  /// `Static dNS has the highest priority, VPN DNS follows it and LTE DNS has the lowest priority. If you want to restore the VPN/LTE DNS, please clear the two DNS configuration and submit`
   String get dnsStatic {
     return Intl.message(
-      'Static DNS has the highest priority, VPN DNS follows it and LTE DNS has the lowest priority. If you want to restore the VPN/LTE DNS, please clear the two DNS configuration and submit',
+      'Static dNS has the highest priority, VPN DNS follows it and LTE DNS has the lowest priority. If you want to restore the VPN/LTE DNS, please clear the two DNS configuration and submit',
       name: 'dnsStatic',
       desc: '',
       args: [],
     );
   }
 
-  /// `Enable Reboot Scheduler`
+  /// `Enable reboot scheduler`
   String get EnableScheduler {
     return Intl.message(
-      'Enable Reboot Scheduler',
+      'Enable reboot scheduler',
       name: 'EnableScheduler',
       desc: '',
       args: [],
     );
   }
 
-  /// `Date to Reboot`
+  /// `Date to reboot`
   String get DateReboot {
     return Intl.message(
-      'Date to Reboot',
+      'Date to reboot',
       name: 'DateReboot',
       desc: '',
       args: [],
     );
   }
 
-  /// `Time of Day to Reboot`
+  /// `Time of day to reboot`
   String get TimeReboot {
     return Intl.message(
-      'Time of Day to Reboot',
+      'Time of day to reboot',
       name: 'TimeReboot',
       desc: '',
       args: [],
@@ -1750,10 +1750,10 @@ class S {
     );
   }
 
-  /// `S unlock`
+  /// `S Unlock`
   String get unlock {
     return Intl.message(
-      'S unlock',
+      'S Unlock',
       name: 'unlock',
       desc: '',
       args: [],
@@ -1800,10 +1800,10 @@ class S {
     );
   }
 
-  /// `Administrator login`
+  /// `Administrator Login`
   String get Administratorlogin {
     return Intl.message(
-      'Administrator login',
+      'Administrator Login',
       name: 'Administratorlogin',
       desc: '',
       args: [],
@@ -1820,20 +1820,20 @@ class S {
     );
   }
 
-  /// `Abort search`
+  /// `Abort Search`
   String get stopSerch {
     return Intl.message(
-      'Abort search',
+      'Abort Search',
       name: 'stopSerch',
       desc: '',
       args: [],
     );
   }
 
-  /// `change password`
+  /// `change Password`
   String get EditPass {
     return Intl.message(
-      'change password',
+      'change Password',
       name: 'EditPass',
       desc: '',
       args: [],
@@ -1860,20 +1860,20 @@ class S {
     );
   }
 
-  /// ` confirm the password.`
+  /// ` Confirm the password.`
   String get confrimPassorld {
     return Intl.message(
-      ' confirm the password.',
+      ' Confirm the password.',
       name: 'confrimPassorld',
       desc: '',
       args: [],
     );
   }
 
-  /// `new password`
+  /// `New Password`
   String get newPassowld {
     return Intl.message(
-      'new password',
+      'New Password',
       name: 'newPassowld',
       desc: '',
       args: [],
@@ -1890,10 +1890,10 @@ class S {
     );
   }
 
-  /// `old password`
+  /// `Old Password`
   String get oldPassowld {
     return Intl.message(
-      'old password',
+      'Old Password',
       name: 'oldPassowld',
       desc: '',
       args: [],
@@ -1940,30 +1940,30 @@ class S {
     );
   }
 
-  /// `local`
+  /// `Local`
   String get local {
     return Intl.message(
-      'local',
+      'Local',
       name: 'local',
       desc: '',
       args: [],
     );
   }
 
-  /// `examine`
+  /// `Examine`
   String get examine {
     return Intl.message(
-      'examine',
+      'Examine',
       name: 'examine',
       desc: '',
       args: [],
     );
   }
 
-  /// `no Data`
+  /// `No Data`
   String get noData {
     return Intl.message(
-      'no Data',
+      'No Data',
       name: 'noData',
       desc: '',
       args: [],
@@ -1980,50 +1980,50 @@ class S {
     );
   }
 
-  /// `not Empty!`
+  /// `Not Empty!`
   String get notEmpty {
     return Intl.message(
-      'not Empty!',
+      'Not Empty!',
       name: 'notEmpty',
       desc: '',
       args: [],
     );
   }
 
-  /// `enter`
+  /// `Enter`
   String get enter {
     return Intl.message(
-      'enter',
+      'Enter',
       name: 'enter',
       desc: '',
       args: [],
     );
   }
 
-  /// `1~32 ASCII character`
+  /// `1~32 ASCII Character`
   String get ascii32 {
     return Intl.message(
-      '1~32 ASCII character',
+      '1~32 ASCII Character',
       name: 'ascii32',
       desc: '',
       args: [],
     );
   }
 
-  /// `restart...`
+  /// `Restart...`
   String get restart {
     return Intl.message(
-      'restart...',
+      'Restart...',
       name: 'restart',
       desc: '',
       args: [],
     );
   }
 
-  /// `version Updating`
+  /// `Version Updating`
   String get versionUpdating {
     return Intl.message(
-      'version Updating',
+      'Version Updating',
       name: 'versionUpdating',
       desc: '',
       args: [],
@@ -2040,10 +2040,10 @@ class S {
     );
   }
 
-  /// `user Agreement`
+  /// `User Agreement`
   String get userAgreement {
     return Intl.message(
-      'user Agreement',
+      'User Agreement',
       name: 'userAgreement',
       desc: '',
       args: [],
@@ -2060,50 +2060,50 @@ class S {
     );
   }
 
-  /// `subscription service`
+  /// `Subscription Service`
   String get subService {
     return Intl.message(
-      'subscription service',
+      'Subscription Service',
       name: 'subService',
       desc: '',
       args: [],
     );
   }
 
-  /// `parental control`
+  /// `Parental Control`
   String get parentalControl {
     return Intl.message(
-      'parental control',
+      'Parental Control',
       name: 'parentalControl',
       desc: '',
       args: [],
     );
   }
 
-  /// `game booster`
+  /// `Game Booster`
   String get gameAcceleration {
     return Intl.message(
-      'game booster',
+      'Game Booster',
       name: 'gameAcceleration',
       desc: '',
       args: [],
     );
   }
 
-  /// `your subscription`
+  /// `Your Subscription`
   String get yourServiece {
     return Intl.message(
-      'your subscription',
+      'Your Subscription',
       name: 'yourServiece',
       desc: '',
       args: [],
     );
   }
 
-  /// `options`
+  /// `Options`
   String get options {
     return Intl.message(
-      'options',
+      'Options',
       name: 'options',
       desc: '',
       args: [],
@@ -2120,100 +2120,100 @@ class S {
     );
   }
 
-  /// `d`
+  /// `D`
   String get date {
     return Intl.message(
-      'd',
+      'D',
       name: 'date',
       desc: '',
       args: [],
     );
   }
 
-  /// `h`
+  /// `H`
   String get hour {
     return Intl.message(
-      'h',
+      'H',
       name: 'hour',
       desc: '',
       args: [],
     );
   }
 
-  /// `m`
+  /// `M`
   String get minute {
     return Intl.message(
-      'm',
+      'M',
       name: 'minute',
       desc: '',
       args: [],
     );
   }
 
-  /// `second`
+  /// `Second`
   String get second {
     return Intl.message(
-      'second',
+      'Second',
       name: 'second',
       desc: '',
       args: [],
     );
   }
 
-  /// `type`
+  /// `Type`
   String get type {
     return Intl.message(
-      'type',
+      'Type',
       name: 'type',
       desc: '',
       args: [],
     );
   }
 
-  /// `connection timeout`
+  /// `Connection Timeout`
   String get contimeout {
     return Intl.message(
-      'connection timeout',
+      'Connection Timeout',
       name: 'contimeout',
       desc: '',
       args: [],
     );
   }
 
-  /// `Request timeout`
+  /// `Request Timeout`
   String get Reqtimeout {
     return Intl.message(
-      'Request timeout',
+      'Request Timeout',
       name: 'Reqtimeout',
       desc: '',
       args: [],
     );
   }
 
-  /// `Response timeout`
+  /// `Response Timeout`
   String get Restimeout {
     return Intl.message(
-      'Response timeout',
+      'Response Timeout',
       name: 'Restimeout',
       desc: '',
       args: [],
     );
   }
 
-  /// `Request cancellation`
+  /// `Request Cancellation`
   String get Reqcancellation {
     return Intl.message(
-      'Request cancellation',
+      'Request Cancellation',
       name: 'Reqcancellation',
       desc: '',
       args: [],
     );
   }
 
-  /// `network anomaly`
+  /// `Network Anomaly`
   String get networkError {
     return Intl.message(
-      'network anomaly',
+      'Network Anomaly',
       name: 'networkError',
       desc: '',
       args: [],
@@ -2230,60 +2230,60 @@ class S {
     );
   }
 
-  /// `language`
+  /// `Language`
   String get language {
     return Intl.message(
-      'language',
+      'Language',
       name: 'language',
       desc: '',
       args: [],
     );
   }
 
-  /// `delete`
+  /// `Delete`
   String get delete {
     return Intl.message(
-      'delete',
+      'Delete',
       name: 'delete',
       desc: '',
       args: [],
     );
   }
 
-  /// `Follower system`
+  /// `Follower System`
   String get FollowerSystem {
     return Intl.message(
-      'Follower system',
+      'Follower System',
       name: 'FollowerSystem',
       desc: '',
       args: [],
     );
   }
 
-  /// `Logout login failed, please check the network!`
+  /// `Logout login failed, Please check the network!`
   String get checkNet {
     return Intl.message(
-      'Logout login failed, please check the network!',
+      'Logout login failed, Please check the network!',
       name: 'checkNet',
       desc: '',
       args: [],
     );
   }
 
-  /// ` Do not subscribe to game acceleration yet, please go to subscription service to subscribe`
+  /// ` Do not subscribe to game acceleration yet, Please go to subscription service to subscribe`
   String get nogameAcceleration {
     return Intl.message(
-      ' Do not subscribe to game acceleration yet, please go to subscription service to subscribe',
+      ' Do not subscribe to game acceleration yet, Please go to subscription service to subscribe',
       name: 'nogameAcceleration',
       desc: '',
       args: [],
     );
   }
 
-  /// `Do not subscribe to AI videos yet, please go to the subscription service to subscribe`
+  /// `Do not subscribe to AI Videos tet, Please go to the subscription service to subscribe`
   String get noaivideo {
     return Intl.message(
-      'Do not subscribe to AI videos yet, please go to the subscription service to subscribe',
+      'Do not subscribe to AI Videos tet, Please go to the subscription service to subscribe',
       name: 'noaivideo',
       desc: '',
       args: [],
@@ -2300,61 +2300,71 @@ class S {
     );
   }
 
-  /// `edit`
+  /// `Edit`
   String get modification {
     return Intl.message(
-      'edit',
+      'Edit',
       name: 'modification',
       desc: '',
       args: [],
     );
   }
 
-  /// ` access forbidden`
+  /// ` Access Forbidden`
   String get access {
     return Intl.message(
-      ' access forbidden',
+      ' Access Forbidden',
       name: 'access',
       desc: '',
       args: [],
     );
   }
 
-  /// `to`
+  /// `To`
   String get to {
     return Intl.message(
-      'to',
+      'To',
       name: 'to',
       desc: '',
       args: [],
     );
   }
 
-  /// `equipment`
+  /// `Equipment`
   String get equipment {
     return Intl.message(
-      'equipment',
+      'Equipment',
       name: 'equipment',
       desc: '',
       args: [],
     );
   }
 
-  /// `name`
+  /// `Name`
   String get name {
     return Intl.message(
-      'name',
+      'Name',
       name: 'name',
       desc: '',
       args: [],
     );
   }
 
-  /// `workday`
+  /// `Workday`
   String get workday {
     return Intl.message(
-      'workday',
+      'Workday',
       name: 'workday',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Binding Device`
+  String get band {
+    return Intl.message(
+      'Binding Device',
+      name: 'band',
       desc: '',
       args: [],
     );

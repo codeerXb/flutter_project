@@ -1,10 +1,8 @@
 // import 'package:flutter/material.dart';
-// import 'package:flutter_html/flutter_html.dart';
 // import 'package:flutter_screenutil/flutter_screenutil.dart';
-// import 'package:flutter_template/core/widget/common_box.dart';
+// import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
 // import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
-// import '../../core/widget/common_widget.dart';
+// import 'package:get/get.dart';
 
 // /// 消息页面
 // class NetStatus extends StatefulWidget {
@@ -23,6 +21,7 @@
 //     FocusScope.of(context).requestFocus(blankNode);
 //   }
 
+//   final ToolbarController toolbarController = Get.put(ToolbarController());
 //   String get vn => widget.service;
 //   // 下拉列表
 //   bool isShowList = false;
@@ -127,111 +126,273 @@
 //                   height: 200.h,
 //                   color: Colors.transparent,
 //                 ),
-//                 if (isShowList) Positioned(top: 0.w, child: buildGrid()),
-//                 Column(
-//                   children: [
-//                     //2
-//                     Container(
-//                         height: 150.w,
-//                         padding: EdgeInsets.all(28.0.w),
-//                         margin: EdgeInsets.only(
-//                             bottom: 20.w, left: 30.w, right: 30.w),
-//                         decoration: BoxDecoration(
-//                           color: Colors.white,
-//                           borderRadius: BorderRadius.circular(18.w),
-//                         ),
-//                         child: Row(
-//                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                           children: [
-//                             Text(
-//                               '已连接',
-//                               style: TextStyle(
-//                                   fontSize: 30.sp,
-//                                   color: const Color(0xff051220)),
-//                             ),
-//                             Column(
-//                               children: [
-//                                 Text(
-//                                   '优',
-//                                   style: TextStyle(
-//                                       fontSize: 30.sp, color: Colors.blue),
-//                                 ),
-//                                 Text(
-//                                   '网络环境',
-//                                   style: TextStyle(
-//                                       fontSize: 30.sp, color: Colors.blue),
-//                                 ),
-//                               ],
-//                             ),
-//                             IconButton(
-//                               onPressed: () {
-//                                 debugPrint('1');
-//                               },
-//                               icon: const Icon(Icons.rocket),
-//                             )
-//                           ],
-//                         )),
-//                     //3
-//                     Container(
-//                         height: 150.w,
-//                         padding: EdgeInsets.all(28.0.w),
-//                         margin: EdgeInsets.only(
-//                             bottom: 20.w, left: 30.w, right: 30.w),
-//                         decoration: BoxDecoration(
-//                           color: Colors.white,
-//                           borderRadius: BorderRadius.circular(18.w),
-//                         ),
-//                         child: Row(
-//                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                           children: [
-//                             Column(
-//                               children: [
-//                                 Text(
-//                                   '0.4MB',
-//                                   style: TextStyle(
-//                                       fontSize: 30.sp,
-//                                       color: const Color(0xff051220)),
-//                                 ),
-//                                 Text(
-//                                   '已使用',
-//                                   style: TextStyle(
-//                                       fontSize: 30.sp,
-//                                       color: const Color(0xff051220)),
-//                                 ),
-//                               ],
-//                             ),
-//                          FloatingActionButton(onPressed: (){
+//                 if (isShowList) Positioned(top: 10.w, child: buildGrid()),
 
-//                          },
-//                              child: Text('我是浮动按钮'),
-//                          ),
-//                             Column(
-//                               children: [
-//                                 Text(
-//                                   '5 GB/月',
-//                                   style: TextStyle(
-//                                       fontSize: 30.sp,
-//                                       color: const Color(0xff051220)),
-//                                 ),
-//                                 Text(
-//                                   '流量套餐',
-//                                   style: TextStyle(
-//                                       fontSize: 30.sp,
-//                                       color: const Color(0xff051220)),
-//                                 ),
-//                               ],
+//                 Padding(
+//                   padding: EdgeInsets.only(top: 10.w),
+//                   child: ListView(
+//                     children: [
+//                       Image.asset( 'assets/images/state.png', ),
+
+//                       // //热力图
+//                       // WhiteCard(
+//                       //   boxCotainer: Image.asset(
+//                       //     'assets/images/state.png',
+//                       //     width: 1000,
+//                       //     height: 1000,
+//                       //   ),
+//                       // ),
+//                       //网络环境
+//                       WhiteCard(
+//                           boxCotainer: Row(
+//                         mainAxisAlignment: MainAxisAlignment.spaceAround,
+//                         children: [
+//                           Text(
+//                             '已连接',
+//                             style: TextStyle(
+//                                 fontSize: 30.sp,
+//                                 color: const Color(0xff051220)),
+//                           ),
+//                           Column(
+//                             children: [
+//                               Text(
+//                                 '优',
+//                                 style: TextStyle(
+//                                     fontSize: 30.sp, color: Colors.blue),
+//                               ),
+//                               Text(
+//                                 '网络环境',
+//                                 style: TextStyle(
+//                                     fontSize: 30.sp, color: Colors.blue),
+//                               ),
+//                             ],
+//                           ),
+//                           ElevatedButton(
+//                             onPressed: () {},
+//                             style: ButtonStyle(
+//                               shape: MaterialStateProperty.all(
+//                                   const CircleBorder()),
 //                             ),
+//                             child: const Icon(Icons.rocket),
+//                           )
+//                         ],
+//                       )),
+//                       //流量套餐
+//                       WhiteCard(
+//                           boxCotainer: Row(
+//                         mainAxisAlignment: MainAxisAlignment.spaceAround,
+//                         children: [
+//                           Column(
+//                             children: [
+//                               Text(
+//                                 '0.4  MB',
+//                                 style: TextStyle(
+//                                     fontSize: 30.sp,
+//                                     color: const Color(0xff051220)),
+//                               ),
+//                               Text(
+//                                 '已经使用',
+//                                 style: TextStyle(
+//                                   fontSize: 28.sp,
+//                                   color: Colors.black54,
+//                                 ),
+//                               ),
+//                             ],
+//                           ),
+//                           ElevatedButton(
+//                             style: ButtonStyle(
+//                               shape: MaterialStateProperty.all(
+//                                   const CircleBorder()),
+//                             ),
+//                             onPressed: () {},
+//                             child: Column(
+//                                 mainAxisAlignment: MainAxisAlignment.center,
+//                                 children: const [
+//                                   Text('套餐'),
+//                                   Text('设置'),
+//                                 ]),
+//                           ),
+//                           Column(
+//                             children: [
+//                               Text(
+//                                 '5 GB/月',
+//                                 style: TextStyle(
+//                                     fontSize: 30.sp,
+//                                     color: const Color(0xff051220)),
+//                               ),
+//                               Text(
+//                                 '流量套餐',
+//                                 style: TextStyle(
+//                                   fontSize: 28.sp,
+//                                   color: Colors.black54,
+//                                 ),
+//                               ),
+//                             ],
+//                           ),
+//                         ],
+//                       )),
+//                       //下载速率
+//                       WhiteCard(
+//                           boxCotainer: Row(
+//                         mainAxisAlignment: MainAxisAlignment.spaceAround,
+//                         children: [
+//                           Column(
+//                             children: [
+//                               Text(
+//                                 '0.4Kbps',
+//                                 style: TextStyle(
+//                                     fontSize: 30.sp,
+//                                     color: const Color(0xff051220)),
+//                               ),
+//                               Text(
+//                                 '下载速率',
+//                                 style: TextStyle(
+//                                   fontSize: 28.sp,
+//                                   color: Colors.black54,
+//                                 ),
+//                               ),
+//                             ],
+//                           ),
+//                           ElevatedButton(
+//                             style: ButtonStyle(
+//                               shape: MaterialStateProperty.all(
+//                                   const CircleBorder()),
+//                             ),
+//                             onPressed: () {},
+//                             child: const Icon(Icons.wifi),
+//                           ),
+//                           Column(
+//                             children: [
+//                               Text(
+//                                 '5 GB/月',
+//                                 style: TextStyle(
+//                                     fontSize: 30.sp,
+//                                     color: const Color(0xff051220)),
+//                               ),
+//                               Text(
+//                                 '流量套餐',
+//                                 style: TextStyle(
+//                                   fontSize: 28.sp,
+//                                   color: Colors.black54,
+//                                 ),
+//                               ),
+//                             ],
+//                           ),
+//                         ],
+//                       )),
+//                       //2*3网格
+//                       SizedBox(
+//                         height: 550.w,
+//                         child: GridView(
+//                           physics: const NeverScrollableScrollPhysics(), //禁止滚动
+//                           gridDelegate:
+//                               const SliverGridDelegateWithFixedCrossAxisCount(
+//                                   crossAxisCount: 2, //一行的Widget数量
+//                                   childAspectRatio: 2 //宽高比为1
+//                                   ),
+//                           children: <Widget>[
+//                             //接入设备
+//                             WhiteCard(
+//                                 boxCotainer: Row(
+//                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                               children: [
+//                                 Icon(Icons.devices_other_rounded),
+//                                 Column(
+//                                   mainAxisAlignment: MainAxisAlignment.center,
+//                                   children: [
+//                                     const Text('接入设备'),
+//                                     Text(
+//                                       '1个在线 ',
+//                                       style: TextStyle(
+//                                           color: Colors.black54,
+//                                           fontSize: 25.sp),
+//                                     ),
+//                                   ],
+//                                 )
+//                               ],
+//                             )),
+
+//                             //儿童上网
+//                             WhiteCard(
+//                                 boxCotainer: Row(
+//                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                               children: const [
+//                                 Icon(Icons.child_care),
+//                                 Text('儿童上网'),
+//                               ],
+//                             )),
+//                             //智能检测
+//                             WhiteCard(
+//                                 boxCotainer: Row(
+//                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                               children: [
+//                                 Icon(Icons.security),
+//                                 const Text('智能检测'),
+//                               ],
+//                             )),
+//                             //网络测速
+//                             WhiteCard(
+//                                 boxCotainer: Row(
+//                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                               children: [
+//                                 Icon(Icons.network_check),
+//                                 const Text('网络测速'),
+//                               ],
+//                             )),
+//                             //网课加速
+//                             WhiteCard(
+//                                 boxCotainer: Row(
+//                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                               children: [
+//                                 Icon(Icons.book),
+//                                 const Text('网课加速'),
+//                               ],
+//                             )),
+//                             //游戏加速
+//                             WhiteCard(
+//                                 boxCotainer: Row(
+//                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                               children: [
+//                                 Icon(Icons.speed),
+//                                 const Text('游戏加速'),
+//                               ],
+//                             )),
 //                           ],
-//                         )),
-//                     Text('2'),
-//                     Text('3'),
-//                   ],
+//                         ),
+//                       ),
+//                       //查看更多
+//                       TextButton(
+//                           onPressed: () {
+//                             toolbarController.setPageIndex(2);
+//                           },
+//                           child: const Text('查看更多'))
+//                     ],
+//                   ),
 //                 ),
 //               ],
 //             ),
 //           ),
 //         ),
 //       ),
+//     );
+//   }
+// }
+
+// //card
+// class WhiteCard extends StatelessWidget {
+//   final Widget boxCotainer;
+//   const WhiteCard({super.key, required this.boxCotainer});
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       height: 150.w,
+//       padding: EdgeInsets.all(28.0.w),
+//       margin: EdgeInsets.only(bottom: 20.w, left: 30.w, right: 30.w),
+//       decoration: BoxDecoration(
+//         color: Colors.white,
+//         borderRadius: BorderRadius.circular(18.w),
+//       ),
+//       child: boxCotainer,
 //     );
 //   }
 // }

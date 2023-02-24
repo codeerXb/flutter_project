@@ -1,9 +1,8 @@
 // 存储管理
 import 'package:flutter/material.dart';
-import 'package:flutter_template/core/widget/custom_app_bar.dart';
 
 class AtorageAdministration extends StatefulWidget {
-  const AtorageAdministration({super.key});
+  const AtorageAdministration({Key? key}) : super(key: key);
 
   @override
   State<AtorageAdministration> createState() => _AtorageAdministrationState();
@@ -26,18 +25,35 @@ class _AtorageAdministrationState extends State<AtorageAdministration> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: customAppbar(context: context, title: '存储管理'),
-      body: SingleChildScrollView(
-        child: InkWell(
-          onTap: () => closeKeyboard(context),
-          child: const Image(
-            image: AssetImage('assets/images/storageadministration.png'),
-            width: 390,
-            height: 700,
-          ),
-        ),
-      ),
-    );
+    return DefaultTabController(
+        length: 3,
+        child: Scaffold(
+            appBar: AppBar(
+              bottom: const TabBar(
+                tabs: <Widget>[
+                  Tab(text: "云存"),
+                  Tab(text: "本地"),
+                  Tab(text: "SD卡")
+                ],
+              ),
+            ),
+            body: TabBarView(children: <Widget>[
+              ListView(
+                children: const <Widget>[
+                  ListTile(title: Text("暂未开通")),
+                ],
+              ),
+              ListView(
+                children: const <Widget>[
+                  ListTile(title: Text("暂未下载")),
+                ],
+              ),
+              InkWell(
+                onTap: () => closeKeyboard(context),
+                child: const Image(
+                  image: AssetImage('assets/images/storageadministration.png'),
+                ),
+              ),
+            ])));
   }
 }

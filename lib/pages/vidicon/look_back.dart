@@ -1,9 +1,8 @@
 // 回看
 import 'package:flutter/material.dart';
-import 'package:flutter_template/core/widget/custom_app_bar.dart';
 
 class LookBack extends StatefulWidget {
-  const LookBack({super.key});
+  const LookBack({Key? key}) : super(key: key);
 
   @override
   State<LookBack> createState() => _LookBackState();
@@ -26,18 +25,28 @@ class _LookBackState extends State<LookBack> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: customAppbar(context: context, title: '回看'),
-      body: SingleChildScrollView(
-        child: InkWell(
-          onTap: () => closeKeyboard(context),
-          child: const Image(
-            image: AssetImage('assets/images/lookback.png'),
-            width: 390,
-            height: 700,
-          ),
-        ),
-      ),
-    );
+    return DefaultTabController(
+        length: 2,
+        child: Scaffold(
+            appBar: AppBar(
+              // backgroundColor: Colors.white,
+              centerTitle: true,
+              bottom: const TabBar(
+                tabs: <Widget>[Tab(text: "云存"), Tab(text: "SD卡")],
+              ),
+            ),
+            body: TabBarView(children: <Widget>[
+              ListView(
+                children: const <Widget>[
+                  ListTile(title: Text("暂未开通")),
+                ],
+              ),
+              InkWell(
+                onTap: () => closeKeyboard(context),
+                child: const Image(
+                  image: AssetImage('assets/images/lookback.png'),
+                ),
+              ),
+            ])));
   }
 }

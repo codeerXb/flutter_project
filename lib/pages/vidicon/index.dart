@@ -48,6 +48,7 @@ class _VidiconState extends State<Vidicon> {
           child: InkWell(
             onTap: () => closeKeyboard(context),
             child: Container(
+              padding: EdgeInsets.only(left: 30.w, right: 30.0.w),
               decoration:
                   const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
               height: 1400.w,
@@ -55,8 +56,25 @@ class _VidiconState extends State<Vidicon> {
                 children: [
                   const Image(
                     image: AssetImage('assets/images/videocan.png'),
-                    width: 390,
-                    height: 350,
+                    // height: 350,
+                  ),
+                  Container(
+                    height: 150.w,
+                    padding: EdgeInsets.all(28.0.w),
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.vertical(
+                          bottom: Radius.elliptical(20, 20)),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: const [
+                        Icon(Icons.mic),
+                        Icon(Icons.camera_alt_rounded),
+                        Icon(Icons.videocam_rounded),
+                        Icon(Icons.settings_overscan),
+                      ],
+                    ),
                   ),
                   Padding(padding: EdgeInsets.only(top: 20.sp)),
                   InfoBox(
@@ -237,7 +255,7 @@ class InfoBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         padding: EdgeInsets.all(28.0.w),
-        margin: EdgeInsets.only(bottom: 20.w, left: 30.w, right: 30.w),
+        margin: EdgeInsets.only(bottom: 20.w),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(18.w),
         ),

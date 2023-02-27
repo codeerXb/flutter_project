@@ -18,6 +18,10 @@ import 'package:flutter_template/pages/uest_login/login.dart';
 import 'package:flutter_template/pages/uest_login/register.dart';
 import 'package:flutter_template/pages/video/index.dart';
 import 'package:flutter_template/pages/video/show_img.dart';
+import 'package:flutter_template/pages/vidicon/index.dart';
+import 'package:flutter_template/pages/vidicon/look_back.dart';
+import 'package:flutter_template/pages/vidicon/look_house.dart';
+import 'package:flutter_template/pages/vidicon/storage_administration.dart';
 import 'package:flutter_template/pages/wifi_set/major/major_set.dart';
 import 'package:flutter_template/pages/wifi_set/visitor/2.4GHZ_visitor/2.4GHZ_visitor1.dart';
 import 'package:flutter_template/pages/wifi_set/visitor/2.4GHZ_visitor/2.4GHZ_visitor2.dart';
@@ -58,6 +62,7 @@ class GlobalRouter {
   static final _routes = {
     /// 过渡页面
     '/': (BuildContext context, {Object? args}) => const SplashPage(),
+
     /// 搜索设备
     '/get_equipment': (BuildContext context, {Object? args}) =>
         const Equipment(),
@@ -205,6 +210,15 @@ class GlobalRouter {
         const Gameacce(),
     // ai视频
     '/ai_video': (BuildContext context, {Object? args}) => const Aivideo(),
+    // 摄像机
+    '/vidicon': (BuildContext context, {Object? args}) => const Vidicon(),
+    // 回看
+    '/look_back': (BuildContext context, {Object? args}) => const LookBack(),
+    // 看家
+    '/look_house': (BuildContext context, {Object? args}) => const LookHouse(),
+    // 存储管理
+    '/storage_administration': (BuildContext context, {Object? args}) =>
+        const AtorageAdministration(),
   };
 
   static GlobalRouter? _singleton;

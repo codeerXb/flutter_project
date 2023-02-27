@@ -118,7 +118,7 @@ class _MyAppState extends State<MyApp> {
             //   }
             // },
             key: navigatorKey,
-            title: 'APP模板',
+            title: 'smawave',
             // 不显示debug标签
             debugShowCheckedModeBanner: false,
             initialRoute: '/',

@@ -312,227 +312,230 @@ class _ODUState extends State<ODU> {
               ),
             ),
             backgroundColor: Colors.transparent,
-            body: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                    padding: EdgeInsets.only(
-                      bottom: 20.w,
-                      top: 10.w,
+            body: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                      padding: EdgeInsets.only(
+                        bottom: 20.w,
+                        top: 10.w,
+                      ),
+                      child: StepsWidget(currentIndex: currentIndex)),
+
+                  // Row(
+                  //   children: const [StepsWidget(currentIndex: 1)],
+                  // ),
+
+                  RadarWidget(
+                    skewing: 0,
+                    radarMap: RadarMapModel(
+                      legend: [
+                        LegendModel(S.of(context).currentValue,
+                            const Color.fromARGB(255, 34, 177, 16)),
+                        LegendModel(S.of(context).maxValue,
+                            const Color.fromARGB(255, 234, 65, 53)),
+                        LegendModel(S.of(context).currentOrientation,
+                            const Color.fromARGB(255, 255, 166, 1)),
+                      ],
+                      indicator: legend,
+                      data: [
+                        //   MapDataModel([48,32.04,1.00,94.5,19,60,50,30,19,60,50]),
+                        //   MapDataModel([42.59,34.04,1.10,68,99,30,19,60,50,19,30]),
+
+                        mapData,
+                        MapDataModel(pointer),
+                        MapDataModel(mapDataPoint)
+                      ],
+                      radius: 200.w,
+                      duration: 500,
+                      shape: Shape.circle,
+                      maxWidth: 50.w,
+                      paintStatus: endStatus,
+                      line: LineModel(3,
+                          color: const Color.fromARGB(255, 255, 255, 255)),
                     ),
-                    child: StepsWidget(currentIndex: currentIndex)),
-
-                // Row(
-                //   children: const [StepsWidget(currentIndex: 1)],
-                // ),
-
-                RadarWidget(
-                  skewing: 0,
-                  radarMap: RadarMapModel(
-                    legend: [
-                      LegendModel(S.of(context).currentValue,
-                          const Color.fromARGB(255, 34, 177, 16)),
-                      LegendModel(S.of(context).maxValue,
-                          const Color.fromARGB(255, 234, 65, 53)),
-                      LegendModel(S.of(context).currentOrientation,
-                          const Color.fromARGB(255, 255, 166, 1)),
-                    ],
-                    indicator: legend,
-                    data: [
-                      //   MapDataModel([48,32.04,1.00,94.5,19,60,50,30,19,60,50]),
-                      //   MapDataModel([42.59,34.04,1.10,68,99,30,19,60,50,19,30]),
-
-                      mapData,
-                      MapDataModel(pointer),
-                      MapDataModel(mapDataPoint)
-                    ],
-                    radius: 200.w,
-                    duration: 500,
-                    shape: Shape.circle,
-                    maxWidth: 50.w,
-                    paintStatus: endStatus,
-                    line: LineModel(3,
-                        color: const Color.fromARGB(255, 255, 255, 255)),
+                    textStyle:
+                        const TextStyle(color: Colors.black, fontSize: 10),
+                    isNeedDrawLegend: true,
+                    lineText: (p, length) => "${(p * 30 ~/ length)}dB",
+                    // dilogText: (IndicatorModel indicatorModel,
+                    //     List<LegendModel> legendModels, List<double> mapDataModels) {
+                    //   StringBuffer text = StringBuffer("");
+                    //   for (int i = 0; i < mapDataModels.length; i++) {
+                    //     text.write(
+                    //         "${legendModels[i].name} : ${mapDataModels[i].toString()}");
+                    //     if (i != mapDataModels.length - 1) {
+                    //       text.write("\n");
+                    //     }
+                    //   }
+                    //   return text.toString();
+                    // },
+                    // outLineText: (data, max) {
+                    //   return data > 0 && selfInspection ? "$data" : '';
+                    // },
                   ),
-                  textStyle: const TextStyle(color: Colors.black, fontSize: 10),
-                  isNeedDrawLegend: true,
-                  lineText: (p, length) => "${(p * 30 ~/ length)}dB",
-                  // dilogText: (IndicatorModel indicatorModel,
-                  //     List<LegendModel> legendModels, List<double> mapDataModels) {
-                  //   StringBuffer text = StringBuffer("");
-                  //   for (int i = 0; i < mapDataModels.length; i++) {
-                  //     text.write(
-                  //         "${legendModels[i].name} : ${mapDataModels[i].toString()}");
-                  //     if (i != mapDataModels.length - 1) {
-                  //       text.write("\n");
-                  //     }
-                  //   }
-                  //   return text.toString();
-                  // },
-                  // outLineText: (data, max) {
-                  //   return data > 0 && selfInspection ? "$data" : '';
-                  // },
-                ),
-                Padding(
-                    padding: EdgeInsets.only(
-                  top: 20.w,
-                )),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Column(
-                        children: [
-                          Row(
-                            children: [
-                              const Text(
-                                'CurA',
-                                style: TextStyle(
-                                    color: Color.fromARGB(178, 35, 177, 16)),
-                              ),
-                              Card(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.w),
-                                  side: const BorderSide(
-                                    color: Color.fromARGB(255, 218, 218, 218),
-                                    width: 1,
+                  Padding(
+                      padding: EdgeInsets.only(
+                    top: 20.w,
+                  )),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Column(
+                          children: [
+                            Row(
+                              children: [
+                                const Text(
+                                  'CurA',
+                                  style: TextStyle(
+                                      color: Color.fromARGB(178, 35, 177, 16)),
+                                ),
+                                Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.w),
+                                    side: const BorderSide(
+                                      color: Color.fromARGB(255, 218, 218, 218),
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: Container(
+                                    width: 150.w,
+                                    alignment: Alignment.centerLeft,
+                                    padding: EdgeInsets.all(5.w),
+                                    child: Text(" $curA°",
+                                        style: TextStyle(
+                                            fontSize: 30.sp,
+                                            color: const Color.fromARGB(
+                                                255, 34, 177, 16))),
                                   ),
                                 ),
-                                child: Container(
-                                  width: 150.w,
-                                  alignment: Alignment.centerLeft,
-                                  padding: EdgeInsets.all(5.w),
-                                  child: Text(" $curA°",
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                const Text(
+                                  'CurS',
+                                  style: TextStyle(
+                                      color: Color.fromARGB(178, 34, 177, 16)),
+                                ),
+                                Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.w),
+                                    side: const BorderSide(
+                                      color: Color.fromARGB(255, 218, 218, 218),
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: Container(
+                                    width: 150.w,
+                                    alignment: Alignment.centerLeft,
+                                    padding: EdgeInsets.all(5.w),
+                                    child: Text(
+                                      " $curS dB",
                                       style: TextStyle(
                                           fontSize: 30.sp,
                                           color: const Color.fromARGB(
-                                              255, 34, 177, 16))),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              const Text(
-                                'CurS',
-                                style: TextStyle(
-                                    color: Color.fromARGB(178, 34, 177, 16)),
-                              ),
-                              Card(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.w),
-                                  side: const BorderSide(
-                                    color: Color.fromARGB(255, 218, 218, 218),
-                                    width: 1,
+                                              255, 34, 177, 16)),
+                                    ),
                                   ),
                                 ),
-                                child: Container(
-                                  width: 150.w,
-                                  alignment: Alignment.centerLeft,
-                                  padding: EdgeInsets.all(5.w),
-                                  child: Text(
-                                    " $curS dB",
-                                    style: TextStyle(
-                                        fontSize: 30.sp,
-                                        color: const Color.fromARGB(
-                                            255, 34, 177, 16)),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Row(
+                              children: [
+                                const Text(
+                                  'MaxA',
+                                  style: TextStyle(
+                                      color: Color.fromARGB(255, 189, 56, 46)),
+                                ),
+                                Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.w),
+                                    side: const BorderSide(
+                                      color: Color.fromARGB(255, 218, 218, 218),
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: Container(
+                                    width: 150.w,
+                                    alignment: Alignment.centerLeft,
+                                    padding: EdgeInsets.all(5.w),
+                                    child: Text(
+                                      " ${isShow ? currentAngle : 0}°",
+                                      style: TextStyle(
+                                          fontSize: 30.sp,
+                                          color: const Color.fromARGB(
+                                              255, 234, 65, 53)),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                const Text(
+                                  'MaxS',
+                                  style: TextStyle(
+                                      color: Color.fromARGB(255, 189, 56, 46)),
+                                ),
+                                Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.w),
+                                    side: const BorderSide(
+                                      color: Color.fromARGB(255, 218, 218, 218),
+                                      width: 1,
+                                    ),
+                                  ),
+                                  child: Container(
+                                    width: 150.w,
+                                    alignment: Alignment.centerLeft,
+                                    padding: EdgeInsets.all(5.w),
+                                    child: Text(
+                                      " ${isShow ? maxNumber : 0.0} dB",
+                                      style: TextStyle(
+                                          fontSize: 30.sp,
+                                          color: const Color.fromARGB(
+                                              255, 234, 104, 53)),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ]),
+                  // Text(
+                  //     '当前旋转(角度/dB)${(_index) * 10}° / ${mapData[_index == 0 ? 0 : _index - 1]}dB'),
+                  // Text('信号最大值-旋转角度$MaxNumber dB - $CurrentAngle°'),
+                  Padding(
+                    padding: EdgeInsets.only(top: 110.w),
+                  ),
+                  SizedBox(
+                    height: 70.sp,
+                    width: 410.sp,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(isShow
+                              ? const Color.fromARGB(255, 48, 118, 250)
+                              : Colors.white)),
+                      onPressed: connectReceiveData,
+                      child: Text(
+                        S.of(context).startSearch,
+                        style: TextStyle(
+                            color: isShow ? Colors.white : Colors.grey),
                       ),
-                      Column(
-                        children: [
-                          Row(
-                            children: [
-                              const Text(
-                                'MaxA',
-                                style: TextStyle(
-                                    color: Color.fromARGB(255, 189, 56, 46)),
-                              ),
-                              Card(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.w),
-                                  side: const BorderSide(
-                                    color: Color.fromARGB(255, 218, 218, 218),
-                                    width: 1,
-                                  ),
-                                ),
-                                child: Container(
-                                  width: 150.w,
-                                  alignment: Alignment.centerLeft,
-                                  padding: EdgeInsets.all(5.w),
-                                  child: Text(
-                                    " ${isShow ? currentAngle : 0}°",
-                                    style: TextStyle(
-                                        fontSize: 30.sp,
-                                        color: const Color.fromARGB(
-                                            255, 234, 65, 53)),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              const Text(
-                                'MaxS',
-                                style: TextStyle(
-                                    color: Color.fromARGB(255, 189, 56, 46)),
-                              ),
-                              Card(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.w),
-                                  side: const BorderSide(
-                                    color: Color.fromARGB(255, 218, 218, 218),
-                                    width: 1,
-                                  ),
-                                ),
-                                child: Container(
-                                  width: 150.w,
-                                  alignment: Alignment.centerLeft,
-                                  padding: EdgeInsets.all(5.w),
-                                  child: Text(
-                                    " ${isShow ? maxNumber : 0.0} dB",
-                                    style: TextStyle(
-                                        fontSize: 30.sp,
-                                        color: const Color.fromARGB(
-                                            255, 234, 104, 53)),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ]),
-                // Text(
-                //     '当前旋转(角度/dB)${(_index) * 10}° / ${mapData[_index == 0 ? 0 : _index - 1]}dB'),
-                // Text('信号最大值-旋转角度$MaxNumber dB - $CurrentAngle°'),
-                Padding(
-                  padding: EdgeInsets.only(top: 110.w),
-                ),
-                SizedBox(
-                  height: 70.sp,
-                  width: 410.sp,
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(isShow
-                            ? const Color.fromARGB(255, 48, 118, 250)
-                            : Colors.white)),
-                    onPressed: connectReceiveData,
-                    child: Text(
-                      S.of(context).startSearch,
-                      style:
-                          TextStyle(color: isShow ? Colors.white : Colors.grey),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 70.w),
-                ),
-              ],
+                  Padding(
+                    padding: EdgeInsets.only(top: 70.w),
+                  ),
+                ],
+              ),
             ),
           ),
         )

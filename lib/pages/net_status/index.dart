@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/generated/l10n.dart';
 import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -151,7 +152,7 @@ class _NetStatusState extends State<NetStatus> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           Text(
-                            '已连接',
+                            S.current.Connected,
                             style: TextStyle(
                                 fontSize: 30.sp,
                                 color: const Color(0xff051220)),
@@ -159,12 +160,12 @@ class _NetStatusState extends State<NetStatus> {
                           Column(
                             children: [
                               Text(
-                                '优',
+                                S.of(context).good,
                                 style: TextStyle(
                                     fontSize: 30.sp, color: Colors.blue),
                               ),
                               Text(
-                                '网络环境',
+                                S.of(context).Environment,
                                 style: TextStyle(
                                     fontSize: 30.sp, color: Colors.blue),
                               ),
@@ -201,7 +202,7 @@ class _NetStatusState extends State<NetStatus> {
                                     color: const Color(0xff051220)),
                               ),
                               Text(
-                                '已经使用',
+                                S.of(context).used,
                                 style: TextStyle(
                                   fontSize: 28.sp,
                                   color: Colors.black54,
@@ -217,23 +218,23 @@ class _NetStatusState extends State<NetStatus> {
                             onPressed: () {},
                             child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [
-                                  Text('套餐'),
-                                  Text('设置'),
+                                children: [
+                                  Text(S.of(context).traffic),
+                                  Text(S.of(context).sets),
                                 ]),
                           ),
                           Column(
                             children: [
                               Text(
-                                '5 GB/月',
+                                '5 GB/' + S.current.month,
                                 style: TextStyle(
                                     fontSize: 30.sp,
                                     color: const Color(0xff051220)),
                               ),
                               Text(
-                                '流量套餐',
+                                S.of(context).trafficPackage,
                                 style: TextStyle(
-                                  fontSize: 28.sp,
+                                  fontSize: 24.sp,
                                   color: Colors.black54,
                                 ),
                               ),
@@ -255,7 +256,7 @@ class _NetStatusState extends State<NetStatus> {
                                     color: const Color(0xff051220)),
                               ),
                               Text(
-                                '下载速率',
+                                S.current.up,
                                 style: TextStyle(
                                   fontSize: 28.sp,
                                   color: Colors.black54,
@@ -281,13 +282,13 @@ class _NetStatusState extends State<NetStatus> {
                           Column(
                             children: [
                               Text(
-                                '5 GB/月',
+                                '5 GB/' + S.current.month,
                                 style: TextStyle(
                                     fontSize: 30.sp,
                                     color: const Color(0xff051220)),
                               ),
                               Text(
-                                '流量套餐',
+                                S.current.down,
                                 style: TextStyle(
                                   fontSize: 28.sp,
                                   color: Colors.black54,
@@ -319,9 +320,9 @@ class _NetStatusState extends State<NetStatus> {
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    const Text('接入设备'),
+                                    Text(S.current.device),
                                     Text(
-                                      '1个在线 ',
+                                      '1 ' + S.current.line,
                                       style: TextStyle(
                                           color: Colors.black54,
                                           fontSize: 25.sp),
@@ -337,7 +338,7 @@ class _NetStatusState extends State<NetStatus> {
                               children: [
                                 Icon(Icons.child_care,
                                     color: Colors.blue[500], size: 80.sp),
-                                const Text('儿童上网'),
+                                Text(S.current.parent),
                               ],
                             )),
                             //摄像头
@@ -350,9 +351,9 @@ class _NetStatusState extends State<NetStatus> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Icon(Icons.camera_alt,
+                                  FaIcon(FontAwesomeIcons.video,
                                       color: Colors.blue[500], size: 80.sp),
-                                  const Text('摄像头'),
+                                  Text(S.current.monitor),
                                 ],
                               )),
                             ),
@@ -363,7 +364,7 @@ class _NetStatusState extends State<NetStatus> {
                               children: [
                                 Icon(Icons.network_check,
                                     color: Colors.blue[500], size: 80.sp),
-                                const Text('网络测速'),
+                                Text(S.current.netSpeed),
                               ],
                             )),
                             //网课加速
@@ -373,7 +374,7 @@ class _NetStatusState extends State<NetStatus> {
                               children: [
                                 Icon(Icons.book,
                                     color: Colors.blue[500], size: 80.sp),
-                                const Text('网课加速'),
+                                Text(S.current.online),
                               ],
                             )),
                             //游戏加速
@@ -383,7 +384,7 @@ class _NetStatusState extends State<NetStatus> {
                               children: [
                                 Icon(Icons.speed,
                                     color: Colors.blue[500], size: 80.sp),
-                                const Text('游戏加速'),
+                                Text(S.current.game),
                               ],
                             )),
                           ],
@@ -394,7 +395,7 @@ class _NetStatusState extends State<NetStatus> {
                           onPressed: () {
                             toolbarController.setPageIndex(2);
                           },
-                          child: const Text('查看更多'))
+                          child: Text(S.current.more))
                     ],
                   ),
                 ),

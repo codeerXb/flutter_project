@@ -2370,6 +2370,166 @@ class S {
     );
   }
 
+  /// `Good`
+  String get good {
+    return Intl.message(
+      'Good',
+      name: 'good',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Environment`
+  String get Environment {
+    return Intl.message(
+      'Environment',
+      name: 'Environment',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Used`
+  String get used {
+    return Intl.message(
+      'Used',
+      name: 'used',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Traffic`
+  String get traffic {
+    return Intl.message(
+      'Traffic',
+      name: 'traffic',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Set`
+  String get sets {
+    return Intl.message(
+      'Set',
+      name: 'sets',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Traffic Package`
+  String get trafficPackage {
+    return Intl.message(
+      'Traffic Package',
+      name: 'trafficPackage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Up`
+  String get up {
+    return Intl.message(
+      'Up',
+      name: 'up',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Down`
+  String get down {
+    return Intl.message(
+      'Down',
+      name: 'down',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Devices`
+  String get device {
+    return Intl.message(
+      'Devices',
+      name: 'device',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Parent Control`
+  String get parent {
+    return Intl.message(
+      'Parent Control',
+      name: 'parent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Monitor`
+  String get monitor {
+    return Intl.message(
+      'Monitor',
+      name: 'monitor',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Net Speed Test`
+  String get netSpeed {
+    return Intl.message(
+      'Net Speed Test',
+      name: 'netSpeed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Online Course`
+  String get online {
+    return Intl.message(
+      'Online Course',
+      name: 'online',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Game Booster`
+  String get game {
+    return Intl.message(
+      'Game Booster',
+      name: 'game',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Online`
+  String get line {
+    return Intl.message(
+      'Online',
+      name: 'line',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `View More`
+  String get more {
+    return Intl.message(
+      'View More',
+      name: 'more',
+      desc: '',
+      args: [],
+    );
+  }
+
   // skipped getter for the 'a ' key
 }
 

@@ -60,6 +60,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Enable reboot scheduler"),
         "EnableScheduler":
             MessageLookupByLibrary.simpleMessage("Enable reboot scheduler"),
+        "Environment": MessageLookupByLibrary.simpleMessage("Environment"),
         "Ethernet": MessageLookupByLibrary.simpleMessage("Ethernet"),
         "EthernetOnly": MessageLookupByLibrary.simpleMessage("Ethernet Only"),
         "EthernetSettings":
@@ -196,11 +197,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "delete": MessageLookupByLibrary.simpleMessage("Delete"),
         "detectionServer":
             MessageLookupByLibrary.simpleMessage("Input detection server"),
+        "device": MessageLookupByLibrary.simpleMessage("Devices"),
         "deviceInfo":
             MessageLookupByLibrary.simpleMessage("Device Information"),
         "dnsSettings": MessageLookupByLibrary.simpleMessage("DNS Settings"),
         "dnsStatic": MessageLookupByLibrary.simpleMessage(
             "Static dNS has the highest priority, VPN DNS follows it and LTE DNS has the lowest priority. If you want to restore the VPN/LTE DNS, please clear the two DNS configuration and submit"),
+        "down": MessageLookupByLibrary.simpleMessage("Down"),
         "emptyNORecommend":
             MessageLookupByLibrary.simpleMessage("None(not recommended)"),
         "endIPAddress": MessageLookupByLibrary.simpleMessage("End iP address"),
@@ -209,12 +212,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "error": MessageLookupByLibrary.simpleMessage("Error"),
         "examine": MessageLookupByLibrary.simpleMessage("Examine"),
         "fri": MessageLookupByLibrary.simpleMessage("fri"),
+        "game": MessageLookupByLibrary.simpleMessage("Game Booster"),
         "gameAcceleration":
             MessageLookupByLibrary.simpleMessage("Game Booster"),
         "getParebtalError": MessageLookupByLibrary.simpleMessage(
             "Failed to obtain the parent list"),
         "getVerficationCode":
             MessageLookupByLibrary.simpleMessage("Verify Code"),
+        "good": MessageLookupByLibrary.simpleMessage("Good"),
         "hint": MessageLookupByLibrary.simpleMessage("Hint"),
         "hour": MessageLookupByLibrary.simpleMessage("H"),
         "improveSecurity": MessageLookupByLibrary.simpleMessage(
@@ -226,6 +231,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "lanSettings": MessageLookupByLibrary.simpleMessage("LAN Settings"),
         "lanStatus": MessageLookupByLibrary.simpleMessage("LAN Status"),
         "language": MessageLookupByLibrary.simpleMessage("Language"),
+        "line": MessageLookupByLibrary.simpleMessage("Online"),
         "linkStatus": MessageLookupByLibrary.simpleMessage("Link Status"),
         "local": MessageLookupByLibrary.simpleMessage("Local"),
         "locked": MessageLookupByLibrary.simpleMessage("locked"),
@@ -242,11 +248,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "minutes": MessageLookupByLibrary.simpleMessage("Minutes"),
         "modification": MessageLookupByLibrary.simpleMessage("Edit"),
         "mon": MessageLookupByLibrary.simpleMessage("mon"),
+        "monitor": MessageLookupByLibrary.simpleMessage("Monitor"),
         "month": MessageLookupByLibrary.simpleMessage("Month"),
+        "more": MessageLookupByLibrary.simpleMessage("View More"),
         "mustSuccess": MessageLookupByLibrary.simpleMessage(
             "The restart date must be selected"),
         "name": MessageLookupByLibrary.simpleMessage("Name"),
         "netSet": MessageLookupByLibrary.simpleMessage("NetWork"),
+        "netSpeed": MessageLookupByLibrary.simpleMessage("Net Speed Test"),
         "netTopo": MessageLookupByLibrary.simpleMessage("Net Topo"),
         "networkError": MessageLookupByLibrary.simpleMessage("Network Anomaly"),
         "newOldError": MessageLookupByLibrary.simpleMessage(
@@ -263,7 +272,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "notEnable": MessageLookupByLibrary.simpleMessage("Not Enable"),
         "notstart": MessageLookupByLibrary.simpleMessage("Not Started"),
         "oldPassowld": MessageLookupByLibrary.simpleMessage("Old Password"),
+        "online": MessageLookupByLibrary.simpleMessage("Online Course"),
         "options": MessageLookupByLibrary.simpleMessage("Options"),
+        "parent": MessageLookupByLibrary.simpleMessage("Parent Control"),
         "parentalControl":
             MessageLookupByLibrary.simpleMessage("Parental Control"),
         "passError": MessageLookupByLibrary.simpleMessage(
@@ -291,6 +302,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "second": MessageLookupByLibrary.simpleMessage("Second"),
         "server": MessageLookupByLibrary.simpleMessage("Server"),
         "set": MessageLookupByLibrary.simpleMessage("Devices"),
+        "sets": MessageLookupByLibrary.simpleMessage("Set"),
         "skip": MessageLookupByLibrary.simpleMessage("Skip"),
         "startIPAddress":
             MessageLookupByLibrary.simpleMessage("Start iP address"),
@@ -308,11 +320,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "timeout":
             MessageLookupByLibrary.simpleMessage("Device connection timeout"),
         "to": MessageLookupByLibrary.simpleMessage("To"),
+        "traffic": MessageLookupByLibrary.simpleMessage("Traffic"),
+        "trafficPackage":
+            MessageLookupByLibrary.simpleMessage("Traffic Package"),
         "type": MessageLookupByLibrary.simpleMessage("Type"),
         "unblockdevice": MessageLookupByLibrary.simpleMessage(
             "Confirm to unbind the current device"),
         "unlock": MessageLookupByLibrary.simpleMessage("S Unlock"),
         "ununited": MessageLookupByLibrary.simpleMessage("ununited"),
+        "up": MessageLookupByLibrary.simpleMessage("Up"),
+        "used": MessageLookupByLibrary.simpleMessage("Used"),
         "userAgreement": MessageLookupByLibrary.simpleMessage("User Agreement"),
         "verficationCode":
             MessageLookupByLibrary.simpleMessage(" Enter verification code"),

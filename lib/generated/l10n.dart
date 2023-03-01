@@ -2220,10 +2220,10 @@ class S {
     );
   }
 
-  /// `Remote control can be realized after login`
+  /// `You can enjoy more services`
   String get Remote {
     return Intl.message(
-      'Remote control can be realized after login',
+      'You can enjoy more services',
       name: 'Remote',
       desc: '',
       args: [],

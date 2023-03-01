@@ -110,8 +110,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "RebootScheduler":
             MessageLookupByLibrary.simpleMessage("Reboot Scheduler"),
         "Region": MessageLookupByLibrary.simpleMessage("Region"),
-        "Remote": MessageLookupByLibrary.simpleMessage(
-            "Remote control can be realized after login"),
+        "Remote":
+            MessageLookupByLibrary.simpleMessage("You can enjoy more services"),
         "Reqcancellation":
             MessageLookupByLibrary.simpleMessage("Request Cancellation"),
         "Reqtimeout": MessageLookupByLibrary.simpleMessage("Request Timeout"),

@@ -32,13 +32,13 @@ class _LookBackState extends State<LookBack> {
               // backgroundColor: Colors.white,
               centerTitle: true,
               bottom: const TabBar(
-                tabs: <Widget>[Tab(text: "云存"), Tab(text: "SD卡")],
+                tabs: <Widget>[Tab(text: "cloud"), Tab(text: "SD Card")],
               ),
             ),
             body: TabBarView(children: <Widget>[
               ListView(
                 children: const <Widget>[
-                  ListTile(title: Text("暂未开通")),
+                  ListTile(title: Text("Not open yet")),
                 ],
               ),
               InkWell(

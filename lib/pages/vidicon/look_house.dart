@@ -27,14 +27,12 @@ class _LookHouseState extends State<LookHouse> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: customAppbar(context: context, title: '看家'),
+        appBar: customAppbar(context: context, title: 'Home surveillance'),
         body: SingleChildScrollView(
           child: InkWell(
             onTap: () => closeKeyboard(context),
             child: const Image(
               image: AssetImage('assets/images/lookhouse.png'),
-              width: 390,
-              height: 700,
             ),
           ),
         ));

@@ -43,7 +43,7 @@ class _VidiconState extends State<Vidicon> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: customAppbar(context: context, title: '摄像机'),
+        appBar: customAppbar(context: context, title: 'Camera'),
         body: SingleChildScrollView(
           child: InkWell(
             onTap: () => closeKeyboard(context),
@@ -107,9 +107,10 @@ class _VidiconState extends State<Vidicon> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text('看家',
+                                        Text('Surveillance',
                                             style: TextStyle(fontSize: 30.sp)),
-                                        Text('拍摄到的重要事件 ',
+                                            //拍摄到的重要事件 
+                                        Text('Recorded important events',
                                             style: TextStyle(
                                                 fontSize: 24.sp,
                                                 color: const Color.fromRGBO(
@@ -161,9 +162,9 @@ class _VidiconState extends State<Vidicon> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text('回看',
+                                        Text('Playback',
                                             style: TextStyle(fontSize: 30.sp)),
-                                        Text('查看历史监测记录 ',
+                                        Text('Vlew surveillance history',
                                             style: TextStyle(
                                                 fontSize: 24.sp,
                                                 color: const Color.fromRGBO(
@@ -215,9 +216,9 @@ class _VidiconState extends State<Vidicon> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text('存储管理',
+                                        Text('Storage management',
                                             style: TextStyle(fontSize: 30.sp)),
-                                        Text('云存、SD卡和本地 ',
+                                        Text('cloud、SD card and local ',
                                             style: TextStyle(
                                                 fontSize: 24.sp,
                                                 color: const Color.fromRGBO(

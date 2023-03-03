@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_template/pages/Ethernet/net/net_set.dart';
 import 'package:flutter_template/pages/get_equipment/index.dart';
 import 'package:flutter_template/pages/odu/index.dart';
+import 'package:flutter_template/pages/parent_control/Internet_access/index.dart';
+import 'package:flutter_template/pages/parent_control/Internet_usage/index.dart';
+import 'package:flutter_template/pages/parent_control/card_list/Blocklist.dart';
+import 'package:flutter_template/pages/parent_control/card_list/Games.dart';
+import 'package:flutter_template/pages/parent_control/card_list/Installed.dart';
+import 'package:flutter_template/pages/parent_control/index.dart';
 import 'package:flutter_template/pages/setting/about_us.dart';
 import 'package:flutter_template/pages/setting/clear_cache.dart';
 import 'package:flutter_template/pages/equInfo/equ_info.dart';
@@ -43,6 +49,9 @@ import '../../pages/network_settings/dns_settings.dart';
 import '../../pages/network_settings/lan_settings.dart';
 import '../../pages/network_settings/radio_settings.dart';
 import '../../pages/network_settings/wan_settings.dart';
+import '../../pages/parent_control/card_list/Payment.dart';
+import '../../pages/parent_control/card_list/Social.dart';
+import '../../pages/parent_control/card_list/Video.dart';
 import '../../pages/setting/chart_demo.dart';
 import '../../pages/setting/scan_code.dart';
 import '../../pages/setting/system_settings.dart';
@@ -219,6 +228,25 @@ class GlobalRouter {
     // 存储管理
     '/storage_administration': (BuildContext context, {Object? args}) =>
         const AtorageAdministration(),
+    // 首页_家长控制
+    '/parent': (BuildContext context, {Object? args}) => const Parent(),
+    // 家长控制_game
+    '/games': (BuildContext context, {Object? args}) => const Games(),
+    // 家长控制_video
+    '/Video': (BuildContext context, {Object? args}) => const Video(),
+    // 家长控制_Social
+    '/Social': (BuildContext context, {Object? args}) => const Social(),
+    // 家长控制_Payment
+    '/Payment': (BuildContext context, {Object? args}) => const Payment(),
+    // 家长控制_Installed
+    '/Installed': (BuildContext context, {Object? args}) => const Intsalled(),
+    // 家长控制_Blocklist
+    '/Blocklist': (BuildContext context, {Object? args}) => const Blocklist(),
+    // 家长控制_Internet
+    '/Internet': (BuildContext context, {Object? args}) => const Internet(),
+    // 家长控制_Internetaccess
+    '/Internetaccess': (BuildContext context, {Object? args}) =>
+        const Internetaccess(),
   };
 
   static GlobalRouter? _singleton;

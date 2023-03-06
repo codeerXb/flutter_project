@@ -32,7 +32,7 @@ class _LookBackState extends State<LookBack> {
               // backgroundColor: Colors.white,
               centerTitle: true,
               bottom: const TabBar(
-                tabs: <Widget>[Tab(text: "cloud"), Tab(text: "SD Card")],
+                tabs: <Widget>[Tab(text: "Cloud"), Tab(text: "SD Card")],
               ),
             ),
             body: TabBarView(children: <Widget>[

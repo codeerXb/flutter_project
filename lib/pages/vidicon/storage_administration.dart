@@ -32,7 +32,7 @@ class _AtorageAdministrationState extends State<AtorageAdministration> {
               bottom: const TabBar(
                 tabs: <Widget>[
                   Tab(text: "Cloud"),
-                  Tab(text: "Locak"),
+                  Tab(text: "Local"),
                   Tab(text: "SD Card")
                 ],
               ),

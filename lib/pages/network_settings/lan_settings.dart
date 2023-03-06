@@ -261,53 +261,59 @@ class _LanSettingsState extends State<LanSettings> {
             height: 1400.w,
             child: Column(
               children: [
-                Row(children:  [
-                  TitleWidger(title:  S.of(context).lanHostSettings),
+                Row(children: [
+                  TitleWidger(title: S.of(context).lanHostSettings),
                 ]),
                 InfoBox(
                   boxCotainer: Column(children: [
                     BottomLine(
-                      rowtem: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                           Text( S.of(context).IPAddress),
-                          OtpInput(address, false),
-                          const Text('.'),
-                          OtpInput(address1, false),
-                          const Text('.'),
-                          OtpInput(address2, false),
-                          const Text('.'),
-                          OtpInput(address3, false),
-                          const Text(
-                            '*',
-                            style: TextStyle(color: Colors.red),
-                          )
-                        ],
+                      rowtem: FittedBox(
+                        fit: BoxFit.contain,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text(S.of(context).IPAddress),
+                            OtpInput(address, false),
+                            const Text('.'),
+                            OtpInput(address1, false),
+                            const Text('.'),
+                            OtpInput(address2, false),
+                            const Text('.'),
+                            OtpInput(address3, false),
+                            const Text(
+                              '*',
+                              style: TextStyle(color: Colors.red),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                     BottomLine(
-                      rowtem: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                           Text( S.of(context).SubnetMask),
-                          DisInput(subnetMask, false),
-                          const Text('.'),
-                          DisInput(subnetMask1, false),
-                          const Text('.'),
-                          DisInput(subnetMask2, false),
-                          const Text('.'),
-                          OtpInput(subnetMask3, false),
-                          const Text(
-                            '*',
-                            style: TextStyle(color: Colors.red),
-                          )
-                        ],
+                      rowtem: FittedBox(
+                        fit: BoxFit.contain,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text(S.of(context).SubnetMask),
+                            DisInput(subnetMask, false),
+                            const Text('.'),
+                            DisInput(subnetMask1, false),
+                            const Text('.'),
+                            DisInput(subnetMask2, false),
+                            const Text('.'),
+                            OtpInput(subnetMask3, false),
+                            const Text(
+                              '*',
+                              style: TextStyle(color: Colors.red),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ]),
                 ),
-                Row(children:  [
-                  TitleWidger(title: 'DHCP '+ S.of(context).Settings),
+                Row(children: [
+                  TitleWidger(title: 'DHCP ' + S.of(context).Settings),
                 ]),
                 InfoBox(
                   boxCotainer: Column(children: [
@@ -315,7 +321,7 @@ class _LanSettingsState extends State<LanSettings> {
                       rowtem: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                             Text('DHCP '+S.of(context).server),
+                            Text('DHCP ' + S.of(context).server),
                             Switch(
                               value: isCheck,
                               onChanged: (newVal) {
@@ -332,70 +338,75 @@ class _LanSettingsState extends State<LanSettings> {
                           ]),
                     ),
                     BottomLine(
-                      rowtem: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                           Text( S.of(context).startIPAddress),
-                          DisInput(address, false),
-                          const Text('.'),
-                          DisInput(address1, false),
-                          const Text('.'),
-                          DisInput(address2, false),
-                          const Text('.'),
-                          Offstage(
-                            offstage: isCheck == false,
-                            child: OtpInput(start, false),
-                          ),
-                          Offstage(
-                            offstage: isCheck == true,
-                            child: DisInput(start, false),
-                          ),
-                          const Text(
-                            '*',
-                            style: TextStyle(color: Colors.red),
-                          )
-                        ],
+                      rowtem: FittedBox(
+                        fit: BoxFit.contain,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text(S.of(context).startIPAddress),
+                            DisInput(address, false),
+                            const Text('.'),
+                            DisInput(address1, false),
+                            const Text('.'),
+                            DisInput(address2, false),
+                            const Text('.'),
+                            Offstage(
+                              offstage: isCheck == false,
+                              child: OtpInput(start, false),
+                            ),
+                            Offstage(
+                              offstage: isCheck == true,
+                              child: DisInput(start, false),
+                            ),
+                            const Text(
+                              '*',
+                              style: TextStyle(color: Colors.red),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                     BottomLine(
-                      rowtem: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                           Text(S.of(context).endIPAddress),
-                          DisInput(address, false),
-                          const Text('.'),
-                          DisInput(address1, false),
-                          const Text('.'),
-                          DisInput(address2, false),
-                          const Text('.'),
-                          Offstage(
-                            offstage: isCheck == false,
-                            child: OtpInput(end, false),
-                          ),
-                          Offstage(
-                            offstage: isCheck == true,
-                            child: DisInput(end, false),
-                          ),
-                          const Text(
-                            '*',
-                            style: TextStyle(color: Colors.red),
-                          )
-                        ],
+                      rowtem: FittedBox(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text(S.of(context).endIPAddress),
+                            DisInput(address, false),
+                            const Text('.'),
+                            DisInput(address1, false),
+                            const Text('.'),
+                            DisInput(address2, false),
+                            const Text('.'),
+                            Offstage(
+                              offstage: isCheck == false,
+                              child: OtpInput(end, false),
+                            ),
+                            Offstage(
+                              offstage: isCheck == true,
+                              child: DisInput(end, false),
+                            ),
+                            const Text(
+                              '*',
+                              style: TextStyle(color: Colors.red),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                     Padding(padding: EdgeInsets.only(top: 40.sp)),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                         Text( S.of(context).LeaseTime),
+                        Text(S.of(context).LeaseTime),
                         SizedBox(
                           width: 400.sp,
                           child: TextFormField(
-                              textAlign: TextAlign.right,
+                            textAlign: TextAlign.right,
                             controller: lanTimeController,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
-                              labelText: S.of(context).minutes+"(2/m~1440/m)",
+                              labelText: S.of(context).minutes + "(2/m~1440/m)",
                               border: const OutlineInputBorder(),
                               enabled: isCheckVal == '1' ? true : false,
                               filled: isCheckVal == '1'

@@ -10,15 +10,13 @@ class BottomLine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        height: 90.w,
-        padding: EdgeInsets.only(bottom: 6.w),
-        margin: EdgeInsets.only(bottom: 6.w),
-        decoration: const BoxDecoration(
-            border: Border(bottom: BorderSide(color: Colors.black12))),
-        child: FittedBox(
-          fit: BoxFit.contain,
-          child: rowtem,
-        ));
+      height: 90.w,
+      padding: EdgeInsets.only(bottom: 6.w),
+      margin: EdgeInsets.only(bottom: 6.w),
+      decoration: const BoxDecoration(
+          border: Border(bottom: BorderSide(color: Colors.black12))),
+      child: rowtem,
+    );
   }
 }
 

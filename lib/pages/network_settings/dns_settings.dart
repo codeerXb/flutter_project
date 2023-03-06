@@ -160,16 +160,16 @@ class _DnsSettingsState extends State<DnsSettings> {
           if (dnsDataVal.success == true) {
             ToastUtils.toast(S.current.success);
           } else {
-            ToastUtils.toast(S.current.error+'11');
+            ToastUtils.toast(S.current.error + '11');
           }
         });
       } on FormatException catch (e) {
         print(e);
-        ToastUtils.toast(S.current.error+'22');
+        ToastUtils.toast(S.current.error + '22');
       }
     }).catchError((e) {
       debugPrint('修改DSN 失败：$e.toString()');
-      ToastUtils.toast(S.current.error+'33');
+      ToastUtils.toast(S.current.error + '33');
     });
   }
 
@@ -187,23 +187,24 @@ class _DnsSettingsState extends State<DnsSettings> {
           if (dnsDataVal.success == true) {
             ToastUtils.toast(S.current.success);
           } else {
-            ToastUtils.toast(S.current.error+'11');
+            ToastUtils.toast(S.current.error + '11');
           }
         });
       } on FormatException catch (e) {
         print(e);
-        ToastUtils.toast(S.current.error+'22');
+        ToastUtils.toast(S.current.error + '22');
       }
     }).catchError((e) {
       debugPrint(S.current.error);
-      ToastUtils.toast(S.current.error+'33');
+      ToastUtils.toast(S.current.error + '33');
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: customAppbar(context: context, title: S.of(context).dnsSettings),
+        appBar:
+            customAppbar(context: context, title: S.of(context).dnsSettings),
         body: SingleChildScrollView(
           child: InkWell(
             onTap: () => closeKeyboard(context),
@@ -226,18 +227,21 @@ class _DnsSettingsState extends State<DnsSettings> {
                   InfoBox(
                     boxCotainer: Column(children: [
                       BottomLine(
-                        rowtem: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                             Text( S.of(context).PrimaryDNS),
-                            OtpInput(dsnMain, false),
-                            const Text('.'),
-                            OtpInput(dsnMain1, false),
-                            const Text('.'),
-                            OtpInput(dsnMain2, false),
-                            const Text('.'),
-                            OtpInput(dsnMain3, false),
-                          ],
+                        rowtem: FittedBox(
+                          fit: BoxFit.contain,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Text(S.of(context).PrimaryDNS),
+                              OtpInput(dsnMain, false),
+                              const Text('.'),
+                              OtpInput(dsnMain1, false),
+                              const Text('.'),
+                              OtpInput(dsnMain2, false),
+                              const Text('.'),
+                              OtpInput(dsnMain3, false),
+                            ],
+                          ),
                         ),
                       ),
                       Padding(padding: EdgeInsets.only(top: 30.sp)),
@@ -245,7 +249,7 @@ class _DnsSettingsState extends State<DnsSettings> {
                         rowtem: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                             Text( S.of(context).SecondaryDNS),
+                            Text(S.of(context).SecondaryDNS),
                             OtpInput(dsnAssist, false),
                             const Text('.'),
                             OtpInput(dsnAssist1, false),

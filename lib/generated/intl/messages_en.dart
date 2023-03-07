@@ -249,7 +249,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "modification": MessageLookupByLibrary.simpleMessage("Edit"),
         "mon": MessageLookupByLibrary.simpleMessage("mon"),
         "monitor": MessageLookupByLibrary.simpleMessage("Monitor"),
-        "month": MessageLookupByLibrary.simpleMessage("Month"),
+        "month": MessageLookupByLibrary.simpleMessage("Mon"),
         "more": MessageLookupByLibrary.simpleMessage("View More"),
         "mustSuccess": MessageLookupByLibrary.simpleMessage(
             "The restart date must be selected"),

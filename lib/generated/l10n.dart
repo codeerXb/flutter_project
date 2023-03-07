@@ -1150,10 +1150,10 @@ class S {
     );
   }
 
-  /// `Month`
+  /// `Mon`
   String get month {
     return Intl.message(
-      'Month',
+      'Mon',
       name: 'month',
       desc: '',
       args: [],

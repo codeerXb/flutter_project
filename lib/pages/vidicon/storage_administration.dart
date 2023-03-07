@@ -31,21 +31,21 @@ class _AtorageAdministrationState extends State<AtorageAdministration> {
             appBar: AppBar(
               bottom: const TabBar(
                 tabs: <Widget>[
-                  Tab(text: "云存"),
-                  Tab(text: "本地"),
-                  Tab(text: "SD卡")
+                  Tab(text: "Cloud"),
+                  Tab(text: "Local"),
+                  Tab(text: "SD Card")
                 ],
               ),
             ),
             body: TabBarView(children: <Widget>[
               ListView(
                 children: const <Widget>[
-                  ListTile(title: Text("暂未开通")),
+                  ListTile(title: Text("Not open yet")),
                 ],
               ),
               ListView(
                 children: const <Widget>[
-                  ListTile(title: Text("暂未下载")),
+                  ListTile(title: Text("Not downloaded yet")),
                 ],
               ),
               InkWell(

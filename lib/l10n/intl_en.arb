@@ -109,7 +109,7 @@
   "cycle": "Package Cycle",
   "TotalPackageQuantity": "Traffic Package",
   "year": "Year",
-  "month": "Month",
+  "month": "Mon",
   "day": "Day",
   "StatisticsByFlow": "Statistics by flow",
   "TimeLengthStatistics": "Time length statistics",

@@ -297,7 +297,7 @@ class _NetStatusState extends State<NetStatus> {
                           Column(
                             children: [
                               Text(
-                                '1.1 Mbps',
+                                '5 Mbps',
                                 style: TextStyle(
                                     fontSize: 30.sp,
                                     color: const Color(0xff051220)),
@@ -347,15 +347,21 @@ class _NetStatusState extends State<NetStatus> {
                               ],
                             )),
                             //儿童上网
-                            GardCard(
-                                boxCotainer: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Icon(Icons.child_care,
-                                    color: Colors.blue[500], size: 80.sp),
-                                Text(S.current.parent),
-                              ],
-                            )),
+                            GestureDetector(
+                              onTap: () {
+                                Get.toNamed('/parent');
+                              },
+                              child: GardCard(
+                                  boxCotainer: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Icon(Icons.child_care,
+                                      color: Colors.blue[500], size: 80.sp),
+                                  Text(S.current.parent),
+                                ],
+                              )),
+                            ),
                             //摄像头
                             GestureDetector(
                               onTap: () {

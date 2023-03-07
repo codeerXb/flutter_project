@@ -19,13 +19,13 @@ class _ToolbarState extends State<Toolbar> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int currentIndex = 0;
   final PageController _pageController = PageController();
-  String vn = Get.arguments['vn'];
+  // String vn = Get.arguments['vn'];
   final ToolbarController toolbarController = Get.put(ToolbarController());
 
   /// 对应页面
   List<Widget> getPages() {
     List<Widget> pages = [
-      NetStatus(vn),
+      const NetStatus(),
       const Topo(),
       const Setting(),
     ];
@@ -44,7 +44,7 @@ class _ToolbarState extends State<Toolbar> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('vn=$vn');
+    // debugPrint('vn=$vn');
     return WillPopScope(
         child: Scaffold(
           body: PageView(
@@ -53,7 +53,7 @@ class _ToolbarState extends State<Toolbar> {
             children: getPages(),
           ),
           bottomNavigationBar: Obx(() {
-            if (toolbarController.pageIndex.value !=0) {
+            if (toolbarController.pageIndex.value != 0) {
               _pageController.jumpToPage(toolbarController.pageIndex.value);
             }
             return BottomNavigationBar(

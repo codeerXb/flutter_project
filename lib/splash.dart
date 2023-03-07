@@ -45,10 +45,13 @@ class _SplashPageState extends State<SplashPage> {
     //     Future.delayed(duration, () => Get.offNamed("/get_equipment"));
     //   }
     // });
-    sharedGetData("token", String).then((data) {
-      print('datadatadatadatadatadata');
-      print(data);
-      Future.delayed(duration, () => Get.offNamed("/use_login"));
+    sharedGetData("user_token", String).then((data) {
+      printInfo(info: 'USER TOKEN${data.toString()}');
+      if (data != null) {
+        Future.delayed(duration, () => Get.offNamed("/home"));
+      } else {
+        Future.delayed(duration, () => Get.offNamed("/user_login"));
+      }
     });
   }
 

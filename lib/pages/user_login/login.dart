@@ -11,6 +11,7 @@ import '../../core/utils/Aes.dart';
 import '../../core/utils/shared_preferences_util.dart';
 import '../../core/utils/toast.dart';
 import '../login/model/exception_login.dart';
+import '../toolbar/toolbar_controller.dart';
 
 /// 用户登录
 class UserLogin extends StatefulWidget {
@@ -50,6 +51,8 @@ class _UserLoginState extends State<UserLogin> {
     FocusScope.of(context).requestFocus(blankNode);
   }
 
+  final ToolbarController toolbarController = Get.put(ToolbarController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,7 +64,7 @@ class _UserLoginState extends State<UserLogin> {
                   Get.offAllNamed("/get_equipment");
                   sharedDeleteData('user_phone');
                   sharedDeleteData('user_token');
-                  debugPrint('清楚用户信息');
+                  debugPrint('清除用户信息');
                 },
                 child: Text(
                   S.of(context).skip,
@@ -215,7 +218,7 @@ class _UserLoginState extends State<UserLogin> {
                         //注册
                         TextButton(
                             onPressed: (() {
-                              Get.offAllNamed("/use_register");
+                              Get.offAllNamed("/user_register");
                             }),
                             child: Text(
                               S.of(context).register,
@@ -262,8 +265,18 @@ class _UserLoginState extends State<UserLogin> {
                                 ToastUtils.toast(d['message']);
                                 return;
                               } else {
-                                ToastUtils.toast('success');
-                                Get.offAllNamed("/get_equipment");
+                                sharedGetData(
+                                        loginController.isSn.value.toString(),
+                                        String)
+                                    .then((value) {
+                                  print('云平台登录，设备密码:$value');
+                                  if (value != null) {
+                                    Get.offAllNamed("/home");
+                                    toolbarController.setPageIndex(0);
+                                  } else {
+                                    Get.offAllNamed("/get_equipment");
+                                  }
+                                });
                                 //存储用户信息
                                 sharedAddAndUpdate(
                                     "user_token", String, (d['data']['token']));

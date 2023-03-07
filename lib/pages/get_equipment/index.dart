@@ -76,7 +76,6 @@ class _MyWidgetState extends State<Equipment> {
     XHttp.get('/pub/pub_data.html', data).then((res) {
       try {
         var d = json.decode(res.toString());
-        print('wwwwww${equipmentData.toString()}');
         if (equipmentData.systemVersionSn == null ||
             equipmentData.systemVersionSn !=
                 EquipmentData.fromJson(d).systemVersionSn) {
@@ -106,13 +105,13 @@ class _MyWidgetState extends State<Equipment> {
     });
   }
 
-  var timer;
+  Timer? timer;
   @override
   void dispose() {
     super.dispose();
     // 组件销毁时判断Timer是否仍然处于激活状态，是则取消
     if (timer != null) {
-      timer.cancel();
+      timer?.cancel();
     }
   }
 
@@ -120,18 +119,18 @@ class _MyWidgetState extends State<Equipment> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          leading: IconButton(
-              onPressed: () {
-                Get.offAllNamed("/use_login");
-              },
-              icon: const Icon(
-                Icons.arrow_back_ios,
-                color: Colors.black,
-              )),
+          // leading: IconButton(
+          //     onPressed: () {
+          //       Get.offAllNamed("/user_login");
+          //     },
+          //     icon: const Icon(
+          //       Icons.arrow_back_ios,
+          //       color: Colors.black,
+          //     )),
           centerTitle: true,
           title: Text(
             S.of(context).DiscoveryEqu,
-            style: TextStyle(color: Colors.black),
+            style: const TextStyle(color: Colors.black),
           ),
           elevation: 0,
           backgroundColor: const Color.fromARGB(255, 255, 255, 255),
@@ -182,10 +181,9 @@ class _MyWidgetState extends State<Equipment> {
                             timer = Timer.periodic(
                                 const Duration(milliseconds: 1000), (time) {
                               if (num > 5) {
-                                timer.cancel();
+                                timer?.cancel();
                               }
                               num += 2;
-                              print('wwwwww$time');
                               // 确保页面存在时，调用异步方法
                               if (mounted) getEquipmentData();
                             });
@@ -208,8 +206,8 @@ class _MyWidgetState extends State<Equipment> {
                         ListTile(
                           leading: Image.asset("assets/images/router.png",
                               fit: BoxFit.fitWidth, height: 60, width: 40),
-                          title: Text(
-                              '${equipmentData.systemProductModel.toString()}'),
+                          title:
+                              Text(equipmentData.systemProductModel.toString()),
                           subtitle: Text(
                             'SN ${equipmentData.systemVersionSn.toString()}',
                             style: TextStyle(fontSize: 18.sp),
@@ -225,7 +223,7 @@ class _MyWidgetState extends State<Equipment> {
                                       equipmentData.systemVersionSn.toString(),
                                       String)
                                   .then((data) {
-                                print('objectobjectobjectobject$data');
+                                debugPrint('objectobjectobjectobject$data');
                                 if (data != null) {
                                   appLogin(data, equipmentData.systemVersionSn,
                                       equipmentData.systemProductModel);

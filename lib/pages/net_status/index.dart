@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/core/request/request.dart';
 import 'package:flutter_template/generated/l10n.dart';
 import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -7,8 +8,7 @@ import 'package:get/get.dart';
 
 /// 消息页面
 class NetStatus extends StatefulWidget {
-  const NetStatus(this.service, {Key? key}) : super(key: key);
-  final String service;
+  const NetStatus({Key? key}) : super(key: key);
   @override
   State<StatefulWidget> createState() => _NetStatusState();
 }
@@ -22,13 +22,23 @@ class _NetStatusState extends State<NetStatus> {
     FocusScope.of(context).requestFocus(blankNode);
   }
 
+  String? name = '';
+  // 请求获取设备名
+  Future<String?> getDeviceName() async {
+    var res = await Request().getEquipmentData();
+    printInfo(info: '设备名字：${res.systemProductModel}');
+    setState(() {
+      name = res.systemProductModel;
+    });
+    return res.systemProductModel;
+  }
+
   final ToolbarController toolbarController = Get.put(ToolbarController());
-  String get vn => widget.service;
   // 下拉列表
   bool isShowList = false;
   List<Map<String, dynamic>> get serviceList => [
         {
-          'label': widget.service,
+          'label': name,
           'sn': '12123213',
         },
         {
@@ -36,6 +46,11 @@ class _NetStatusState extends State<NetStatus> {
           'sn': '12123213',
         }
       ];
+  @override
+  void initState() {
+    getDeviceName();
+    super.initState();
+  }
 
 // 下拉列表
   Widget buildGrid() {
@@ -47,7 +62,7 @@ class _NetStatusState extends State<NetStatus> {
         child: InkWell(
           onTap: () {},
           child: Row(children: <Widget>[
-            if (item['label'] == vn)
+            if (item['label'] == name.toString())
               Padding(
                 padding: EdgeInsets.only(right: 16.sp),
                 child: FaIcon(
@@ -100,7 +115,7 @@ class _NetStatusState extends State<NetStatus> {
               width: 1.sw,
               child: Row(
                 children: [
-                  Text(vn),
+                  Text(name.toString()),
                   FaIcon(
                     FontAwesomeIcons.chevronDown,
                     size: 30.w,
@@ -196,7 +211,7 @@ class _NetStatusState extends State<NetStatus> {
                           Column(
                             children: [
                               Text(
-                                '0.4  MB',
+                                '0.4 MB',
                                 style: TextStyle(
                                     fontSize: 30.sp,
                                     color: const Color(0xff051220)),
@@ -226,7 +241,7 @@ class _NetStatusState extends State<NetStatus> {
                           Column(
                             children: [
                               Text(
-                                '5 GB/' + S.current.month,
+                                '5 GB / ${S.current.month}',
                                 style: TextStyle(
                                     fontSize: 30.sp,
                                     color: const Color(0xff051220)),
@@ -250,7 +265,7 @@ class _NetStatusState extends State<NetStatus> {
                           Column(
                             children: [
                               Text(
-                                '0.4Kbps',
+                                '0.4 Kbps',
                                 style: TextStyle(
                                     fontSize: 30.sp,
                                     color: const Color(0xff051220)),
@@ -282,7 +297,7 @@ class _NetStatusState extends State<NetStatus> {
                           Column(
                             children: [
                               Text(
-                                '5 GB/' + S.current.month,
+                                '1.1 Mbps',
                                 style: TextStyle(
                                     fontSize: 30.sp,
                                     color: const Color(0xff051220)),

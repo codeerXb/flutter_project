@@ -63,7 +63,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
           elevation: 0,
           leading: IconButton(
               onPressed: () {
-                Get.offAllNamed("/use_login");
+                Get.offAllNamed("/user_login");
               },
               icon: const Icon(
                 Icons.arrow_back_ios,
@@ -279,7 +279,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                               // if (d['code'] != 200) {
                               //   return;
                               // } else {
-                              //   Get.offAllNamed("/use_login");
+                              //   Get.offAllNamed("/user_login");
                               // }
                             }
                           },

@@ -72,7 +72,7 @@ class _SystemSettingsState extends State<SystemSettings> {
         centerTitle: true,
         title: Text(
           S.of(context).SystemSettings,
-          style: TextStyle(color: Colors.black),
+          style: const TextStyle(color: Colors.black),
         ),
         elevation: 0,
         backgroundColor: const Color.fromARGB(255, 255, 255, 255),
@@ -243,7 +243,6 @@ class _SystemSettingsState extends State<SystemSettings> {
     );
   }
 
-
   /// 退出登录
   void loginout() async {
     // 这里还需要调用后台接口的方法
@@ -260,7 +259,8 @@ class _SystemSettingsState extends State<SystemSettings> {
     } on DioError catch (err) {
       if (err.message.toString().contains('302')) {
         sharedDeleteData("loginInfo");
-        sharedClearData();
+        sharedDeleteData("session");
+        sharedDeleteData("token");
         Get.offAllNamed("/get_equipment");
       } else {
         //退出登录失败，请检查网络！

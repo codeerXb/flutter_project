@@ -617,7 +617,7 @@ class _SettingState extends State<Setting> {
         title: '用户登录',
         icon: const Image(image: AssetImage('assets/images/WPS.png')),
         callBack: () {
-          Get.toNamed("/use_login");
+          Get.toNamed("/user_login");
         });
   }
 
@@ -627,7 +627,7 @@ class _SettingState extends State<Setting> {
         title: '用户注册',
         icon: const Image(image: AssetImage('assets/images/WPS.png')),
         callBack: () {
-          Get.toNamed("/use_register");
+          Get.toNamed("/user_register");
         });
   }
 }

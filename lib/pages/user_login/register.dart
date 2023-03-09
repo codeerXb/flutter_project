@@ -78,7 +78,7 @@ class _UserRegisterState extends State<UserRegister> {
           elevation: 0,
           leading: IconButton(
               onPressed: () {
-                Get.offAllNamed("/use_login");
+                Get.offAllNamed("/user_login");
               },
               icon: const Icon(
                 Icons.arrow_back_ios,
@@ -406,7 +406,7 @@ class _UserRegisterState extends State<UserRegister> {
                                   if (d['code'] != 200) {
                                     return;
                                   } else {
-                                    Get.offAllNamed("/use_login");
+                                    Get.offAllNamed("/user_login");
                                   }
                                 }).catchError((err) {
                                   //相应超超时

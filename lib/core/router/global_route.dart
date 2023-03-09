@@ -19,9 +19,9 @@ import 'package:flutter_template/pages/sub_service/ai_video.dart';
 import 'package:flutter_template/pages/sub_service/game_acceleration.dart';
 import 'package:flutter_template/pages/sub_service/index.dart';
 import 'package:flutter_template/pages/sub_service/parental_control.dart';
-import 'package:flutter_template/pages/uest_login/forgetPassword.dart';
-import 'package:flutter_template/pages/uest_login/login.dart';
-import 'package:flutter_template/pages/uest_login/register.dart';
+import 'package:flutter_template/pages/user_login/forgetPassword.dart';
+import 'package:flutter_template/pages/user_login/login.dart';
+import 'package:flutter_template/pages/user_login/register.dart';
 import 'package:flutter_template/pages/video/index.dart';
 import 'package:flutter_template/pages/video/show_img.dart';
 import 'package:flutter_template/pages/vidicon/index.dart';
@@ -186,10 +186,10 @@ class GlobalRouter {
         const NetServerSettings(),
 
     // 用户登录
-    '/use_login': (BuildContext context, {Object? args}) => const UserLogin(),
+    '/user_login': (BuildContext context, {Object? args}) => const UserLogin(),
 
     // 用户注册
-    '/use_register': (BuildContext context, {Object? args}) =>
+    '/user_register': (BuildContext context, {Object? args}) =>
         const UserRegister(),
     // 忘记密码
     '/forget_password': (BuildContext context, {Object? args}) =>

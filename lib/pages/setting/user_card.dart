@@ -24,6 +24,7 @@ class _UserCardState extends State<UserCard> {
     // TODO: implement initState
     super.initState();
     sharedGetData('user_phone', String).then(((res) {
+      printInfo(info: '用户手机号：$res');
       setState(() {
         _userPhone = res.toString();
       });
@@ -47,8 +48,7 @@ class _UserCardState extends State<UserCard> {
               //图片
               leading: ClipOval(
                   child: Image.asset('assets/images/people.png',
-                      fit: BoxFit.fitWidth, height: 50, width: 50)
-                  ),
+                      fit: BoxFit.fitWidth, height: 50, width: 50)),
               //中间文字
               title: Text(
                   _userPhone != 'null' ? _userPhone : S.of(context).noLogin,
@@ -69,7 +69,7 @@ class _UserCardState extends State<UserCard> {
                     ? S.of(context).logOut
                     : S.of(context).login,
                 callBack: () {
-                  Get.offNamed("/use_login");
+                  Get.offNamed("/user_login");
                   sharedDeleteData('user_phone');
                   sharedDeleteData('user_token');
                   debugPrint('清楚用户信息');

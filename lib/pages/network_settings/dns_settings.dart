@@ -219,6 +219,7 @@ class _DnsSettingsState extends State<DnsSettings> {
                     Flexible(
                       child: Text(
                         S.of(context).dnsStatic,
+                        
                         style: TextStyle(fontSize: 24.sp, color: Colors.red),
                       ),
                     ),

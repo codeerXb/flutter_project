@@ -261,6 +261,7 @@ class _SystemSettingsState extends State<SystemSettings> {
         sharedDeleteData("loginInfo");
         sharedDeleteData("session");
         sharedDeleteData("token");
+        sharedDeleteData("sn");
         Get.offAllNamed("/get_equipment");
       } else {
         //退出登录失败，请检查网络！

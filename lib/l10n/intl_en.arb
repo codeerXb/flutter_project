@@ -153,7 +153,7 @@
   "currentValue": "current Value",
   "maxValue": "Max Value",
   "currentOrientation": "Current orientation",
-  "dnsStatic": "Static dNS has the highest priority, VPN DNS follows it and LTE DNS has the lowest priority. If you want to restore the VPN/LTE DNS, please clear the two DNS configuration and submit",
+  "dnsStatic": "Static DNS has the highest priority, VPN DNS follows it and LTE DNS has the lowest priority. If you want to restore the VPN/LTE DNS, please clear the two DNS configuration and submit",
   "EnableScheduler": "Enable reboot scheduler",
   "DateReboot": "Date to reboot",
   "TimeReboot": "Time of day to reboot",

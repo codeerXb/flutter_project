@@ -160,16 +160,16 @@ class _DnsSettingsState extends State<DnsSettings> {
           if (dnsDataVal.success == true) {
             ToastUtils.toast(S.current.success);
           } else {
-            ToastUtils.toast(S.current.error + '11');
+            ToastUtils.toast('${S.current.error}11');
           }
         });
       } on FormatException catch (e) {
-        print(e);
-        ToastUtils.toast(S.current.error + '22');
+        debugPrint(e.toString());
+        ToastUtils.toast('${S.current.error}22');
       }
     }).catchError((e) {
       debugPrint('修改DSN 失败：$e.toString()');
-      ToastUtils.toast(S.current.error + '33');
+      ToastUtils.toast('${S.current.error}33');
     });
   }
 
@@ -187,16 +187,16 @@ class _DnsSettingsState extends State<DnsSettings> {
           if (dnsDataVal.success == true) {
             ToastUtils.toast(S.current.success);
           } else {
-            ToastUtils.toast(S.current.error + '11');
+            ToastUtils.toast('${S.current.error}11');
           }
         });
       } on FormatException catch (e) {
-        print(e);
-        ToastUtils.toast(S.current.error + '22');
+        debugPrint(e.toString());
+        ToastUtils.toast('${S.current.error}22');
       }
     }).catchError((e) {
       debugPrint(S.current.error);
-      ToastUtils.toast(S.current.error + '33');
+      ToastUtils.toast('${S.current.error}33');
     });
   }
 
@@ -211,7 +211,7 @@ class _DnsSettingsState extends State<DnsSettings> {
             child: Container(
               decoration:
                   const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
-              height: 1400.w,
+              // height: 1400.w,
               child: Column(
                 children: [
                   Row(children: [
@@ -227,36 +227,62 @@ class _DnsSettingsState extends State<DnsSettings> {
                   InfoBox(
                     boxCotainer: Column(children: [
                       BottomLine(
-                        rowtem: FittedBox(
-                          fit: BoxFit.contain,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Text(S.of(context).PrimaryDNS),
-                              OtpInput(dsnMain, false),
-                              const Text('.'),
-                              OtpInput(dsnMain1, false),
-                              const Text('.'),
-                              OtpInput(dsnMain2, false),
-                              const Text('.'),
-                              OtpInput(dsnMain3, false),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Padding(padding: EdgeInsets.only(top: 30.sp)),
-                      BottomLine(
                         rowtem: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
-                            Text(S.of(context).SecondaryDNS),
-                            OtpInput(dsnAssist, false),
-                            const Text('.'),
-                            OtpInput(dsnAssist1, false),
-                            const Text('.'),
-                            OtpInput(dsnAssist2, false),
-                            const Text('.'),
-                            OtpInput(dsnAssist3, false),
+                            ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  maxWidth: 160.w,
+                                ),
+                                child: FittedBox(
+                                  child: Text(
+                                    S.of(context).PrimaryDNS,
+                                    softWrap: false,
+                                  ),
+                                )),
+                            Row(
+                              children: [
+                                OtpInput(dsnMain, false),
+                                const Text('.'),
+                                OtpInput(dsnMain1, false),
+                                const Text('.'),
+                                OtpInput(dsnMain2, false),
+                                const Text('.'),
+                                OtpInput(dsnMain3, false),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                      // Padding(padding: EdgeInsets.only(top: 30.sp)),
+                      Container(
+                        height: 90.w,
+                        padding: EdgeInsets.only(bottom: 6.w),
+                        margin: EdgeInsets.only(bottom: 6.w),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  maxWidth: 160.w,
+                                ),
+                                child: FittedBox(
+                                  child: Text(
+                                    S.of(context).SecondaryDNS,
+                                    softWrap: false,
+                                  ),
+                                )),
+                            Row(
+                              children: [
+                                OtpInput(dsnAssist, false),
+                                const Text('.'),
+                                OtpInput(dsnAssist1, false),
+                                const Text('.'),
+                                OtpInput(dsnAssist2, false),
+                                const Text('.'),
+                                OtpInput(dsnAssist3, false),
+                              ],
+                            )
                           ],
                         ),
                       ),

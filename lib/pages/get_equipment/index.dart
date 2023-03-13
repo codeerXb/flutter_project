@@ -223,16 +223,16 @@ class _MyWidgetState extends State<Equipment> {
                                       equipmentData.systemVersionSn.toString(),
                                       String)
                                   .then((data) {
-                                debugPrint('objectobjectobjectobject$data');
                                 if (data != null) {
                                   appLogin(data, equipmentData.systemVersionSn,
                                       equipmentData.systemProductModel);
                                   loginController.setSn(
                                       equipmentData.systemVersionSn, data);
+                                  sharedAddAndUpdate('sn', String,
+                                      equipmentData.systemVersionSn.toString());
                                 } else {
                                   loginController.setSn(
-                                      equipmentData.systemVersionSn,
-                                      'superadmin');
+                                      equipmentData.systemVersionSn, '');
                                   Get.offNamed("/loginPage", arguments: {
                                     "sn": equipmentData.systemVersionSn,
                                     "vn": equipmentData.systemProductModel

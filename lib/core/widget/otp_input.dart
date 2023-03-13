@@ -10,22 +10,25 @@ class OtpInput extends StatelessWidget {
     return SizedBox(
       height: 25,
       width: 55,
-      child: TextField(
-        autofocus: autoFocus,
-        textAlign: TextAlign.center,
-        keyboardType: TextInputType.number,
-        controller: controller,
-        maxLength: 3,
-        cursorColor: Theme.of(context).primaryColor,
-        decoration: const InputDecoration(
-            border: OutlineInputBorder(),
-            counterText: '',
-            hintStyle: TextStyle(color: Colors.black, fontSize: 20.0)),
-        onChanged: (value) {
-          if (value.length == 3) {
-            FocusScope.of(context).nextFocus();
-          }
-        },
+      child: Center(
+        child: TextField(
+          autofocus: autoFocus,
+          textAlign: TextAlign.center,
+          keyboardType: TextInputType.number,
+          controller: controller,
+          maxLength: 3,
+          cursorColor: Theme.of(context).primaryColor,
+          decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              contentPadding: EdgeInsets.all(5),
+              counterText: '',
+              hintStyle: TextStyle(color: Colors.black, fontSize: 20.0)),
+          onChanged: (value) {
+            if (value.length == 3) {
+              FocusScope.of(context).nextFocus();
+            }
+          },
+        ),
       ),
     );
   }
@@ -50,6 +53,7 @@ class DisInput extends StatelessWidget {
         maxLength: 3,
         cursorColor: Theme.of(context).primaryColor,
         decoration: const InputDecoration(
+            contentPadding: EdgeInsets.all(5),
             border: OutlineInputBorder(),
             counterText: '',
             enabled: false,

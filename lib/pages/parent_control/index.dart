@@ -533,7 +533,10 @@ class SizedBoxs extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Social media'),
+                        ConstrainedBox(
+                            constraints: BoxConstraints(maxWidth: 150.w),
+                            child:
+                                const FittedBox(child: Text('Social media'))),
                         Text(
                           '2 allowed',
                           style:
@@ -571,7 +574,7 @@ class SizedBoxs extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Payment'),
+                        const Text('Payment'),
                         Text(
                           '4 allowed',
                           style:
@@ -608,7 +611,7 @@ class SizedBoxs extends StatelessWidget {
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('Installed'),
+                        const Text('Installed'),
                         Text(
                           '8 allowed',
                           style:
@@ -645,7 +648,10 @@ class SizedBoxs extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('URL blocklist'),
+                        ConstrainedBox(
+                            constraints: BoxConstraints(maxWidth: 150.w),
+                            child:
+                                const FittedBox(child: Text('URL blocklist'))),
                         Text(
                           '2 allowed',
                           style:

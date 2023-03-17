@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_template/config/base_config.dart';
+import 'package:flutter_template/core/http/http_app.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_widget.dart';
@@ -212,6 +216,7 @@ class _SettingState extends State<Setting> {
                   Padding(padding: EdgeInsets.only(top: 15.w)),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
+                    // 取消解绑
                     children: [
                       InkWell(
                         onTap: () {
@@ -237,10 +242,25 @@ class _SettingState extends State<Setting> {
                           ),
                         ),
                       ),
+                      // 确定解绑
                       InkWell(
                         onTap: () {
-                          Get.offAllNamed("/get_equipment");
-                          toolbarController.setPageIndex(0);
+                          App.post(
+                                  '${BaseConfig.cloudBaseUrl}/platform/appCustomer/unBoundCpe?deviceSn=${loginController.equipment['systemVersionSn']}')
+                              .then((res) {
+                            var d = json.decode(res.toString());
+                            debugPrint('响应------>$d');
+                            if (d['code'] == 200) {
+                              ToastUtils.toast(d['message']);
+                              Get.offAllNamed("/get_equipment");
+                              toolbarController.setPageIndex(0);
+                              return;
+                            } else {
+                              ToastUtils.error(d['message']);
+                            }
+                          }).catchError((err) {
+                            ToastUtils.error(S.current.contimeout);
+                          });
                         },
                         child: Container(
                           height: 60.w,
@@ -253,7 +273,6 @@ class _SettingState extends State<Setting> {
                               borderRadius: BorderRadius.only(
                                   topRight: Radius.circular(30.w),
                                   bottomRight: Radius.circular(30.w))),
-                          // height: 80.w,
                           alignment: Alignment.center,
                           child: Text(
                             S.of(context).confirm,

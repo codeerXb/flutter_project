@@ -4,7 +4,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
+import 'package:flutter_template/core/http/http_app.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
+import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/generated/l10n.dart';
 import 'package:flutter_template/pages/get_equipment/water_ripple_painter.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
@@ -33,8 +35,10 @@ class _MyWidgetState extends State<Equipment> {
     });
 
     loginController.setLoading(true);
+    getqueryingBoundDevices();
   }
 
+// 搜索页面   云平台进home 非云平台进登录  云平台列表判断sn, 判断当前绑定sn是否存在云平台列表，存在进home,不存在进登录
   void appLogin(pwd, sn, vn) {
     Map<String, dynamic> data = {
       'username': 'superadmin',
@@ -101,6 +105,34 @@ class _MyWidgetState extends State<Equipment> {
               systemVersionSn: '');
         });
       }
+      debugPrint(onError.toString());
+    });
+  }
+
+  // Querying bound devices 查询绑定设备 App
+  void getqueryingBoundDevices() {
+    App.get('/platform/appCustomer/queryCustomerCpe').then((res) {
+      var d = json.decode(res.toString());
+      ToastUtils.toast(d['message']);
+      debugPrint('响应------>$d');
+
+      printInfo(info: '绑定列表${d['data']}');
+      if (d['code'] != 200) {
+        ToastUtils.error(S.of(context).failed);
+        return;
+      } else {
+        ToastUtils.toast(d['message']);
+        // Get.offNamed("/home", arguments: {'vn': vn});
+      }
+    }).catchError((onError) {
+      // if (mounted) {
+      //   setState(() {
+      //     equipmentData = EquipmentData(
+      //         systemProductModel: null,
+      //         systemVersionRunning: '',
+      //         systemVersionSn: '');
+      //   });
+      // }
       debugPrint(onError.toString());
     });
   }
@@ -245,7 +277,71 @@ class _MyWidgetState extends State<Equipment> {
                         ),
                       ],
                     ),
-                  )
+                  ),
+                Padding(
+                  padding: EdgeInsets.only(top: 50.w),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 12),
+                      child: Text(S.of(context).list),
+                    )
+                  ],
+                ),
+                Card(
+                  elevation: 5, //设置卡片阴影的深度
+                  shape: const RoundedRectangleBorder(
+                    //设置卡片圆角
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                  margin: const EdgeInsets.all(10), //设置卡片外边距
+                  child: Column(
+                    children: [
+                      ListTile(
+                        leading: Image.asset("assets/images/router.png",
+                            fit: BoxFit.fitWidth, height: 60, width: 40),
+                        title:
+                            Text(equipmentData.systemProductModel.toString()),
+                        subtitle: Text(
+                          'SN ${equipmentData.systemVersionSn.toString()}',
+                          style: TextStyle(fontSize: 18.sp),
+                        ),
+                        trailing: TextButton(
+                          onPressed: () {
+                            //底部导航回到第一页
+                            toolbarController.setPageIndex(0);
+                            loginController.setEquipment('systemVersionSn',
+                                equipmentData.systemVersionSn);
+                            childKey.currentState!.controllerStop();
+                            sharedGetData(
+                                    equipmentData.systemVersionSn.toString(),
+                                    String)
+                                .then((data) {
+                              if (data != null) {
+                                appLogin(data, equipmentData.systemVersionSn,
+                                    equipmentData.systemProductModel);
+                                loginController.setSn(
+                                    equipmentData.systemVersionSn, data);
+                                sharedAddAndUpdate('sn', String,
+                                    equipmentData.systemVersionSn.toString());
+                              } else {
+                                loginController.setSn(
+                                    equipmentData.systemVersionSn, '');
+                                Get.offNamed("/loginPage", arguments: {
+                                  "sn": equipmentData.systemVersionSn,
+                                  "vn": equipmentData.systemProductModel
+                                });
+                              }
+                            });
+                          },
+                          child: Text(S.of(context).conDev),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
               ]),
         ));
   }

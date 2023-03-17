@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_template/config/base_config.dart';
+import 'package:flutter_template/core/http/http_app.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -27,6 +28,8 @@ Future<void> main() async {
   await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
   // 初始化请求过滤器
   XHttp.init();
+  App.init();
+
   // 初始化定位
   await AmapLocation.instance.updatePrivacyShow(true);
   await AmapLocation.instance.updatePrivacyAgree(true);

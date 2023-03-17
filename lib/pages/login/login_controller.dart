@@ -10,6 +10,10 @@ class LoginController extends GetxController {
     login.token.value = value;
   }
 
+  void setUserToken(value) {
+    login.userToken.value = value;
+  }
+
   void setEquipment(key, value) {
     equipment[key] = value;
   }
@@ -34,4 +38,5 @@ class LoginController extends GetxController {
 class Login {
   var token = ''.obs;
   var session = ''.obs;
+  var userToken = ''.obs;
 }

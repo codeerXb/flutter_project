@@ -1,4 +1,7 @@
 {
+  "list": "List of Bound Items",
+  "failed": "Failed to retrieve binding list",
+  "check": "Please check if the network is connected",
   "register": "Register",
   "skip": "Skip",
   "login": "Login",
@@ -231,8 +234,8 @@
   "name": "Name",
   "workday": "Workday",
   "band": "Binding Device",
-  "good":"Good",
-  "Environment":"Environment",
+  "good": "Good",
+  "Environment": "Environment",
   "used": "Used",
   "traffic": "Traffic",
   "sets": "Set",
@@ -247,5 +250,5 @@
   "game": "Game Booster",
   "line": "Online",
   "more": "View More",
-  "a ": "111"
+  "a": "111"
 }

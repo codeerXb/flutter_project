@@ -4,7 +4,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
@@ -322,7 +321,7 @@ class _UserRegisterState extends State<UserRegister> {
                                     //发请求
                                     dio
                                         .post(
-                                            '${BaseConfig.cloudBaseUrl}/fota/fota/appCustomer/sendSmsOrEmailCode?account=$_phoneVal')
+                                            '${BaseConfig.cloudBaseUrl}/platform/appCustomer/sendSmsOrEmailCode?account=$_phoneVal')
                                         .then((res) {
                                       var d = json.decode(res.toString());
                                       debugPrint('响应------>$d');
@@ -351,8 +350,9 @@ class _UserRegisterState extends State<UserRegister> {
                                         });
                                       }
                                     }).catchError((err) {
+                                      debugPrint('响应------>$err');
                                       //相应超超时
-                                      if (err.type ==
+                                      if (err['code'] ==
                                           DioErrorType.connectTimeout) {
                                         debugPrint('timeout');
                                         ToastUtils.error(S.current.contimeout);
@@ -386,8 +386,7 @@ class _UserRegisterState extends State<UserRegister> {
                                   const Color.fromARGB(255, 30, 104, 233)),
                             ),
                             onPressed: () {
-                              Map<String, dynamic> data = {
-                                "id": 0,
+                              final data = {
                                 "account": _phoneVal,
                                 "password": _passwordVal,
                                 "code": _codeValue
@@ -397,7 +396,7 @@ class _UserRegisterState extends State<UserRegister> {
                                   .validate()) {
                                 dio
                                     .post(
-                                        '${BaseConfig.cloudBaseUrl}/fota/fota/appCustomer/register',
+                                        '${BaseConfig.cloudBaseUrl}/platform/appCustomer/register',
                                         data: data)
                                     .then((res) {
                                   var d = json.decode(res.toString());
@@ -409,8 +408,11 @@ class _UserRegisterState extends State<UserRegister> {
                                     Get.offAllNamed("/user_login");
                                   }
                                 }).catchError((err) {
+                                  debugPrint('响应------>$err');
+
                                   //相应超超时
-                                  if (err.type == DioErrorType.connectTimeout) {
+                                  if (err['code'] ==
+                                      DioErrorType.connectTimeout) {
                                     debugPrint('timeout');
                                     ToastUtils.error(S.current.contimeout);
                                   }

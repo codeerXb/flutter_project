@@ -152,6 +152,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "UsedFlow": MessageLookupByLibrary.simpleMessage("Used Traffic"),
         "WPAEncry": MessageLookupByLibrary.simpleMessage("WPA Encryption"),
         "Wed": MessageLookupByLibrary.simpleMessage("Wed"),
+        "a": MessageLookupByLibrary.simpleMessage("111"),
         "access": MessageLookupByLibrary.simpleMessage(" Access Forbidden"),
         "accomplish": MessageLookupByLibrary.simpleMessage("Finish"),
         "account": MessageLookupByLibrary.simpleMessage("account"),
@@ -168,6 +169,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "band": MessageLookupByLibrary.simpleMessage("Binding Device"),
         "binding": MessageLookupByLibrary.simpleMessage("Binding?"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+        "check": MessageLookupByLibrary.simpleMessage(
+            "Please check if the network is connected"),
         "checkNet": MessageLookupByLibrary.simpleMessage(
             "Logout login failed, Please check the network!"),
         "clearCache": MessageLookupByLibrary.simpleMessage("Clear Cache"),
@@ -211,6 +214,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "equipment": MessageLookupByLibrary.simpleMessage("Equipment"),
         "error": MessageLookupByLibrary.simpleMessage("Error"),
         "examine": MessageLookupByLibrary.simpleMessage("Examine"),
+        "failed": MessageLookupByLibrary.simpleMessage(
+            "Failed to retrieve binding list"),
         "fri": MessageLookupByLibrary.simpleMessage("fri"),
         "game": MessageLookupByLibrary.simpleMessage("Game Booster"),
         "gameAcceleration":
@@ -233,6 +238,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "language": MessageLookupByLibrary.simpleMessage("Language"),
         "line": MessageLookupByLibrary.simpleMessage("Online"),
         "linkStatus": MessageLookupByLibrary.simpleMessage("Link Status"),
+        "list": MessageLookupByLibrary.simpleMessage("List of Bound Items"),
         "local": MessageLookupByLibrary.simpleMessage("Local"),
         "locked": MessageLookupByLibrary.simpleMessage("locked"),
         "logOut": MessageLookupByLibrary.simpleMessage("Log Out"),

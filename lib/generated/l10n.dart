@@ -50,6 +50,36 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `List of Bound Items`
+  String get list {
+    return Intl.message(
+      'List of Bound Items',
+      name: 'list',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Failed to retrieve binding list`
+  String get failed {
+    return Intl.message(
+      'Failed to retrieve binding list',
+      name: 'failed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please check if the network is connected`
+  String get check {
+    return Intl.message(
+      'Please check if the network is connected',
+      name: 'check',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Register`
   String get register {
     return Intl.message(
@@ -2530,7 +2560,15 @@ class S {
     );
   }
 
-  // skipped getter for the 'a ' key
+  /// `111`
+  String get a {
+    return Intl.message(
+      '111',
+      name: 'a',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

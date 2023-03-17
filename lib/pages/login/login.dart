@@ -1,9 +1,12 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/config/base_config.dart';
 import 'package:flutter_template/core/http/http.dart';
+import 'package:flutter_template/core/http/http_app.dart';
 import 'package:flutter_template/generated/l10n.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:flutter_template/pages/login/model/equipment_data.dart';
@@ -12,8 +15,6 @@ import 'package:get/get.dart';
 
 import '../../core/utils/shared_preferences_util.dart';
 import '../../core/utils/toast.dart';
-import '../../core/widget/common_widget.dart';
-import '../../core/widget/custom_app_bar.dart';
 
 /// 登录页面
 class Login extends StatefulWidget {
@@ -32,8 +33,8 @@ class _LoginState extends State<Login> {
   String _password = 'admin';
   dynamic sn = Get.arguments['sn'];
   dynamic vn = Get.arguments['vn'];
-  bool _isObscure = true;
-  Color _eyeColor = Colors.grey;
+  final bool _isObscure = true;
+  final Color _eyeColor = Colors.grey;
   Color _accountBorderColor = Colors.white;
   Color _passwordBorderColor = Colors.white;
   EquipmentData equipmentData = EquipmentData();
@@ -50,13 +51,35 @@ class _LoginState extends State<Login> {
       RegExp exp = RegExp(r'^[{[]');
       if (res != null && exp.hasMatch(res)) {
         var d = json.decode(res.toString());
+        printInfo(info: '登录返回$d');
         loginController.setToken(d['token']);
         loginController.setSession(d['sessionid']);
         sharedAddAndUpdate(
             sn.toString(), String, base64Encode(utf8.encode(_password)));
         sharedAddAndUpdate("token", String, d['token']);
         sharedAddAndUpdate("session", String, d['sessionid']);
-        Get.offNamed("/home", arguments: {'vn': vn});
+        if (d['code'] == 200) {
+          App.post(
+                  '${BaseConfig.cloudBaseUrl}/platform/appCustomer/bindingCpe?deviceSn=RS621A00211700113')
+              .then((res) {
+            var d = json.decode(res.toString());
+            debugPrint('响应------>$d');
+            if (d['code'] != 200) {
+              ToastUtils.error(S.current.check);
+              return;
+            } else {
+              ToastUtils.toast(d['message']);
+              Get.offNamed("/home", arguments: {'vn': vn});
+            }
+          }).catchError((err) {
+            debugPrint('响应------>$err');
+            //相应超超时
+            if (err['code'] == DioErrorType.connectTimeout) {
+              debugPrint('timeout');
+              ToastUtils.error(S.current.contimeout);
+            }
+          });
+        }
       }
     }).catchError((err) {
       if (err.response != null) {
@@ -82,9 +105,10 @@ class _LoginState extends State<Login> {
           Get.offNamed('/loginPage');
           if (errRes.code == 201) {
             ToastUtils.toast(
-              S.current.passError+  '${5 - int.parse(errRes.webLoginFailedTimes.toString())}');
+                '${S.current.passError}${5 - int.parse(errRes.webLoginFailedTimes.toString())}');
           } else if (errRes.code == 202) {
-            ToastUtils.error(S.current.locked+'${errRes.webLoginRetryTimeout}'+S.current.unlock);
+            ToastUtils.error(
+                '${S.current.locked}${errRes.webLoginRetryTimeout}${S.current.unlock}');
           }
         }
         debugPrint('登录失败：${errRes.code}');
@@ -144,7 +168,7 @@ class _LoginState extends State<Login> {
                     TextStyle(fontSize: 32.sp, color: const Color(0xff051220)),
                 decoration: InputDecoration(
                   // 表单提示信息
-                  hintText:S.current.accountEnter,
+                  hintText: S.current.accountEnter,
                   hintStyle: TextStyle(
                       fontSize: 32.sp, color: const Color(0xff737A83)),
                   // 取消自带的下边框
@@ -250,6 +274,7 @@ class _LoginState extends State<Login> {
               const Color.fromARGB(255, 30, 104, 233)),
         ),
         onPressed: () {
+          printInfo(info: '登陆了');
           if ((_formKey.currentState as FormState).validate()) {
             onSubmit(context);
             appLogin();
@@ -329,12 +354,12 @@ class _LoginState extends State<Login> {
                   ),
                   // Padding(padding: EdgeInsets.only(top: 70.w)),
                   Text(
-                   S.current.Administratorlogin,
+                    S.current.Administratorlogin,
                     style: TextStyle(fontSize: 48.sp),
                   ),
                   Padding(padding: EdgeInsets.only(top: 10.w)),
                   Text(
-                   S.of(context).currentDeive+  ' $vn',
+                    '${S.of(context).currentDeive} $vn',
                     style: TextStyle(
                         fontSize: 28.sp, color: const Color(0xFF373543)),
                   ),

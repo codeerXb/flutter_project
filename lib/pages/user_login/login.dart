@@ -10,7 +10,6 @@ import '../../config/base_config.dart';
 import '../../core/utils/Aes.dart';
 import '../../core/utils/shared_preferences_util.dart';
 import '../../core/utils/toast.dart';
-import '../login/model/exception_login.dart';
 import '../toolbar/toolbar_controller.dart';
 
 /// 用户登录
@@ -35,7 +34,7 @@ class _UserLoginState extends State<UserLogin> {
   void initState() {
     super.initState();
     phone.text = '19121757940';
-    password.text = '123';
+    password.text = '123456';
   }
 
   @override
@@ -256,11 +255,13 @@ class _UserLoginState extends State<UserLogin> {
                             };
                             dio
                                 .post(
-                                    '${BaseConfig.cloudBaseUrl}/fota/fota/appCustomer/login',
+                                    '${BaseConfig.cloudBaseUrl}/platform/appCustomer/login',
                                     data: data)
                                 .then((res) {
                               var d = json.decode(res.toString());
-                              debugPrint('响应------>$d');
+                              loginController.setUserToken(d['data']['token']);
+                              sharedAddAndUpdate(
+                                  "token", String, d['data']['token']);
                               if (d['code'] != 200) {
                                 ToastUtils.toast(d['message']);
                                 return;
@@ -284,8 +285,9 @@ class _UserLoginState extends State<UserLogin> {
                                     (d['data']['account']));
                               }
                             }).catchError((err) {
+                              debugPrint('响应------>$err');
                               //相应超超时
-                              if (err.type == DioErrorType.connectTimeout) {
+                              if (err['code'] == DioErrorType.connectTimeout) {
                                 debugPrint('timeout');
                                 ToastUtils.error(S.current.contimeout);
                               }

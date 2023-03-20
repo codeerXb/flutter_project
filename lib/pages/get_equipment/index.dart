@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/config/base_config.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/http/http_app.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
@@ -47,7 +49,6 @@ class _MyWidgetState extends State<Equipment> {
     XHttp.get('/action/appLogin', data).then((res) {
       try {
         print("+++++++++++++");
-
         var d = json.decode(res.toString());
         print(d['token']);
         loginController.setSession(d['sessionid']);
@@ -55,7 +56,31 @@ class _MyWidgetState extends State<Equipment> {
 
         loginController.setToken(d['token']);
         sharedAddAndUpdate("token", String, d['token']);
-        Get.offNamed("/home", arguments: {"sn": sn, "vn": vn});
+        if (d['code'] == 200) {
+          App.post(
+                  '${BaseConfig.cloudBaseUrl}/platform/appCustomer/bindingCpe?deviceSn=$sn')
+              .then((res) {
+            var d = json.decode(res.toString());
+
+            debugPrint('99999------>$d');
+            if (d['code'] != 200) {
+              ToastUtils.error(S.current.check);
+              return;
+            } else {
+              ToastUtils.toast(d['message']);
+              loginController.setUserEquipment('deviceSn', sn);
+              sharedAddAndUpdate("deviceSn", String, sn);
+              Get.offNamed("/home", arguments: {"sn": sn, "vn": vn});
+            }
+          }).catchError((err) {
+            debugPrint('响应------>$err');
+            //相应超超时
+            if (err['code'] == DioErrorType.connectTimeout) {
+              debugPrint('timeout');
+              ToastUtils.error(S.current.contimeout);
+            }
+          });
+        }
         // print(d);
       } on FormatException catch (e) {
         print('----------');
@@ -109,30 +134,23 @@ class _MyWidgetState extends State<Equipment> {
     });
   }
 
-  // Querying bound devices 查询绑定设备 App
+  List appList = [];
+  //  查询绑定设备 App
   void getqueryingBoundDevices() {
     App.get('/platform/appCustomer/queryCustomerCpe').then((res) {
-      var d = json.decode(res.toString());
+      var d = json.decode(json.encode(res));
+      appList = d['data'];
       ToastUtils.toast(d['message']);
-      debugPrint('响应------>$d');
-
-      printInfo(info: '绑定列表${d['data']}');
+      if (d['data'] != []) {
+        appList = d['data'].map((text) => (text)).toList();
+      }
       if (d['code'] != 200) {
         ToastUtils.error(S.of(context).failed);
         return;
       } else {
         ToastUtils.toast(d['message']);
-        // Get.offNamed("/home", arguments: {'vn': vn});
       }
     }).catchError((onError) {
-      // if (mounted) {
-      //   setState(() {
-      //     equipmentData = EquipmentData(
-      //         systemProductModel: null,
-      //         systemVersionRunning: '',
-      //         systemVersionSn: '');
-      //   });
-      // }
       debugPrint(onError.toString());
     });
   }
@@ -169,6 +187,8 @@ class _MyWidgetState extends State<Equipment> {
         ),
         body: Obx(
           () => ListView(
+              // shrinkWrap: true,
+              // physics: const NeverScrollableScrollPhysics(),
               padding: EdgeInsets.only(left: 20.w, right: 20.w),
               children: [
                 Padding(
@@ -255,6 +275,7 @@ class _MyWidgetState extends State<Equipment> {
                                       equipmentData.systemVersionSn.toString(),
                                       String)
                                   .then((data) {
+                                printInfo(info: 'data是啥$data');
                                 if (data != null) {
                                   appLogin(data, equipmentData.systemVersionSn,
                                       equipmentData.systemProductModel);
@@ -278,6 +299,7 @@ class _MyWidgetState extends State<Equipment> {
                       ],
                     ),
                   ),
+                // 已绑定列表
                 Padding(
                   padding: EdgeInsets.only(top: 50.w),
                 ),
@@ -290,58 +312,57 @@ class _MyWidgetState extends State<Equipment> {
                     )
                   ],
                 ),
-                Card(
-                  elevation: 5, //设置卡片阴影的深度
-                  shape: const RoundedRectangleBorder(
-                    //设置卡片圆角
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                  ),
-                  margin: const EdgeInsets.all(10), //设置卡片外边距
-                  child: Column(
+                if (appList.isEmpty)
+                  Column(
                     children: [
-                      ListTile(
-                        leading: Image.asset("assets/images/router.png",
-                            fit: BoxFit.fitWidth, height: 60, width: 40),
-                        title:
-                            Text(equipmentData.systemProductModel.toString()),
-                        subtitle: Text(
-                          'SN ${equipmentData.systemVersionSn.toString()}',
-                          style: TextStyle(fontSize: 18.sp),
-                        ),
-                        trailing: TextButton(
-                          onPressed: () {
-                            //底部导航回到第一页
-                            toolbarController.setPageIndex(0);
-                            loginController.setEquipment('systemVersionSn',
-                                equipmentData.systemVersionSn);
-                            childKey.currentState!.controllerStop();
-                            sharedGetData(
-                                    equipmentData.systemVersionSn.toString(),
-                                    String)
-                                .then((data) {
-                              if (data != null) {
-                                appLogin(data, equipmentData.systemVersionSn,
-                                    equipmentData.systemProductModel);
-                                loginController.setSn(
-                                    equipmentData.systemVersionSn, data);
-                                sharedAddAndUpdate('sn', String,
-                                    equipmentData.systemVersionSn.toString());
-                              } else {
-                                loginController.setSn(
-                                    equipmentData.systemVersionSn, '');
-                                Get.offNamed("/loginPage", arguments: {
-                                  "sn": equipmentData.systemVersionSn,
-                                  "vn": equipmentData.systemProductModel
-                                });
-                              }
-                            });
-                          },
-                          child: Text(S.of(context).conDev),
-                        ),
-                      ),
+                      Text(S.of(context).noData),
                     ],
                   ),
-                )
+
+                if (appList.isNotEmpty)
+                  // Column(
+                  //   children: appList
+                  //       .map((item) => Flexible(
+                  //             child:
+                  Card(
+                    elevation: 5, //设置卡片阴影的深度
+                    shape: const RoundedRectangleBorder(
+                      //设置卡片圆角
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    ),
+                    margin: const EdgeInsets.all(10), //设置卡片外边距
+                    child: Column(
+                      children: [
+                        ListTile(
+                          leading: Image.asset("assets/images/router.png",
+                              fit: BoxFit.fitWidth, height: 60, width: 40),
+                          title: Text(appList[0]['type'].toString()),
+                          subtitle: Text(
+                            'SN ${appList[0]['deviceSn'].toString()}',
+                            style: TextStyle(fontSize: 18.sp),
+                          ),
+                          trailing: TextButton(
+                            onPressed: () {
+                              //底部导航回到第一页
+                              toolbarController.setPageIndex(0);
+                              loginController.setUserEquipment('deviceSn',
+                                  appList[0]['deviceSn'].toString());
+                              sharedAddAndUpdate("deviceSn", String,
+                                  appList[0]['deviceSn'].toString());
+                              Get.offNamed("/home", arguments: {
+                                "sn": appList[0]['deviceSn'].toString(),
+                                "vn": appList[0]['type'].toString()
+                              });
+                            },
+                            child: Text(S.of(context).conDev),
+                          ),
+                        ),
+                      ],
+                      // ),
+                    ),
+                    // ))
+                    // .toList(),
+                  )
               ]),
         ));
   }

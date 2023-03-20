@@ -73,7 +73,7 @@ class _SettingState extends State<Setting> {
           children: [
             /// 头部
             UserCard(
-              name: loginController.equipment['systemVersionSn'],
+              name: loginController.equipment['deviceSn'],
             ),
 
             Expanded(
@@ -207,7 +207,7 @@ class _SettingState extends State<Setting> {
                       height: 60.w,
                       alignment: Alignment.topLeft,
                       child: Text(
-                        "${S.of(context).unblockdevice} ${loginController.equipment['systemVersionSn']} ${S.of(context).binding}",
+                        "${S.of(context).unblockdevice} ${loginController.userEquipment['deviceSn']} ${S.of(context).binding}",
                         style:
                             TextStyle(color: Colors.black45, fontSize: 22.sp),
                       ),
@@ -246,12 +246,14 @@ class _SettingState extends State<Setting> {
                       InkWell(
                         onTap: () {
                           App.post(
-                                  '${BaseConfig.cloudBaseUrl}/platform/appCustomer/unBoundCpe?deviceSn=${loginController.equipment['systemVersionSn']}')
+                                  '${BaseConfig.cloudBaseUrl}/platform/appCustomer/unBoundCpe?deviceSn=${loginController.userEquipment['deviceSn']}')
                               .then((res) {
                             var d = json.decode(res.toString());
                             debugPrint('响应------>$d');
                             if (d['code'] == 200) {
                               ToastUtils.toast(d['message']);
+                              sharedDeleteData("deviceSn");
+                              sharedDeleteData("systemVersionSn");
                               Get.offAllNamed("/get_equipment");
                               toolbarController.setPageIndex(0);
                               return;

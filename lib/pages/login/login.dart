@@ -60,16 +60,19 @@ class _LoginState extends State<Login> {
         sharedAddAndUpdate("session", String, d['sessionid']);
         if (d['code'] == 200) {
           App.post(
-                  '${BaseConfig.cloudBaseUrl}/platform/appCustomer/bindingCpe?deviceSn=RS621A00211700113')
+                  '${BaseConfig.cloudBaseUrl}/platform/appCustomer/bindingCpe?deviceSn=$sn')
               .then((res) {
             var d = json.decode(res.toString());
-            debugPrint('响应------>$d');
+
+            debugPrint('响应99999------>$d');
             if (d['code'] != 200) {
               ToastUtils.error(S.current.check);
               return;
             } else {
               ToastUtils.toast(d['message']);
-              Get.offNamed("/home", arguments: {'vn': vn});
+              loginController.setUserEquipment('deviceSn', sn);
+              sharedAddAndUpdate("deviceSn", String, sn);
+              Get.offNamed("/home", arguments: {"sn": sn, "vn": vn});
             }
           }).catchError((err) {
             debugPrint('响应------>$err');
@@ -359,7 +362,7 @@ class _LoginState extends State<Login> {
                   ),
                   Padding(padding: EdgeInsets.only(top: 10.w)),
                   Text(
-                    '${S.of(context).currentDeive} $vn',
+                    '${S.of(context).currentDeive} ${loginController.userEquipment['deviceSn']}',
                     style: TextStyle(
                         fontSize: 28.sp, color: const Color(0xFF373543)),
                   ),

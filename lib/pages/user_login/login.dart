@@ -263,7 +263,7 @@ class _UserLoginState extends State<UserLogin> {
                               sharedAddAndUpdate(
                                   "token", String, d['data']['token']);
                               if (d['code'] != 200) {
-                                ToastUtils.toast(d['message']);
+                                ToastUtils.error(d['message']);
                                 return;
                               } else {
                                 sharedGetData(

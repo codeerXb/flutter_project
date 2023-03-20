@@ -5,6 +5,8 @@ class LoginController extends GetxController {
   var loading = false.obs;
   final Map sn = {}.obs;
   final Map equipment = {}.obs;
+  final Map userEquipment = {}.obs;
+
   var isSn = ''.obs;
   void setToken(value) {
     login.token.value = value;
@@ -16,6 +18,10 @@ class LoginController extends GetxController {
 
   void setEquipment(key, value) {
     equipment[key] = value;
+  }
+
+  void setUserEquipment(key, value) {
+    userEquipment[key] = value;
   }
 
   void setSession(value) {

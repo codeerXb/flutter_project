@@ -320,48 +320,52 @@ class _MyWidgetState extends State<Equipment> {
                   ),
 
                 if (appList.isNotEmpty)
-                  // Column(
-                  //   children: appList
-                  //       .map((item) => Flexible(
-                  //             child:
-                  Card(
-                    elevation: 5, //设置卡片阴影的深度
-                    shape: const RoundedRectangleBorder(
-                      //设置卡片圆角
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                    ),
-                    margin: const EdgeInsets.all(10), //设置卡片外边距
-                    child: Column(
-                      children: [
-                        ListTile(
-                          leading: Image.asset("assets/images/router.png",
-                              fit: BoxFit.fitWidth, height: 60, width: 40),
-                          title: Text(appList[0]['type'].toString()),
-                          subtitle: Text(
-                            'SN ${appList[0]['deviceSn'].toString()}',
-                            style: TextStyle(fontSize: 18.sp),
+                  SizedBox(
+                    height: 400.w,
+                    child: ListView.builder(
+                      itemCount: appList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Card(
+                          elevation: 5, //设置卡片阴影的深度
+                          shape: const RoundedRectangleBorder(
+                            //设置卡片圆角
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
                           ),
-                          trailing: TextButton(
-                            onPressed: () {
-                              //底部导航回到第一页
-                              toolbarController.setPageIndex(0);
-                              loginController.setUserEquipment('deviceSn',
-                                  appList[0]['deviceSn'].toString());
-                              sharedAddAndUpdate("deviceSn", String,
-                                  appList[0]['deviceSn'].toString());
-                              Get.offNamed("/home", arguments: {
-                                "sn": appList[0]['deviceSn'].toString(),
-                                "vn": appList[0]['type'].toString()
-                              });
-                            },
-                            child: Text(S.of(context).conDev),
+                          margin: const EdgeInsets.all(10), //设置卡片外边距
+                          child: Column(
+                            children: [
+                              ListTile(
+                                leading: Image.asset("assets/images/router.png",
+                                    fit: BoxFit.fitWidth,
+                                    height: 60,
+                                    width: 40),
+                                title: Text(appList[index]['type'].toString()),
+                                subtitle: Text(
+                                  'SN ${appList[0]['deviceSn'].toString()}',
+                                  style: TextStyle(fontSize: 18.sp),
+                                ),
+                                trailing: TextButton(
+                                  onPressed: () {
+                                    //底部导航回到第一页
+                                    toolbarController.setPageIndex(0);
+                                    loginController.setUserEquipment('deviceSn',
+                                        appList[index]['deviceSn'].toString());
+                                    sharedAddAndUpdate("deviceSn", String,
+                                        appList[index]['deviceSn'].toString());
+                                    Get.offNamed("/home", arguments: {
+                                      "sn":
+                                          appList[index]['deviceSn'].toString(),
+                                      "vn": appList[index]['type'].toString()
+                                    });
+                                  },
+                                  child: Text(S.of(context).conDev),
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
-                      // ),
+                        );
+                      },
                     ),
-                    // ))
-                    // .toList(),
                   )
               ]),
         ));

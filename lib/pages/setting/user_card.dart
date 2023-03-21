@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/widget/common_widget.dart';
-import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
 import 'package:get/get.dart';
 
 import '../../generated/l10n.dart';
@@ -18,6 +17,7 @@ class UserCard extends StatefulWidget {
 class _UserCardState extends State<UserCard> {
   //手机号
   String _userPhone = 'null';
+  String sn = 'null';
 
   @override
   void initState() {
@@ -27,6 +27,12 @@ class _UserCardState extends State<UserCard> {
       printInfo(info: '用户手机号：$res');
       setState(() {
         _userPhone = res.toString();
+      });
+    }));
+    sharedGetData('deviceSn', String).then(((res) {
+      printInfo(info: 'deviceSn$res');
+      setState(() {
+        sn = res.toString();
       });
     }));
   }
@@ -60,9 +66,9 @@ class _UserCardState extends State<UserCard> {
               // 登录后可实现远程控制
               subtitle: Text(
                   _userPhone != 'null'
-                      ? S.of(context).currentDeive + ' ${widget.name}'
+                      ? '${S.of(context).currentDeive} $sn'
                       : S.of(context).Remote,
-                  style: TextStyle(fontSize: 28.sp, color: Colors.black38)),
+                  style: TextStyle(fontSize: 27.sp, color: Colors.black38)),
               //标题后显示的widget
               trailing: CommonWidget.buttonWidget(
                 title: _userPhone != 'null'

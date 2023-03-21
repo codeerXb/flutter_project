@@ -271,27 +271,27 @@ class _MyWidgetState extends State<Equipment> {
                               loginController.setEquipment('systemVersionSn',
                                   equipmentData.systemVersionSn);
                               childKey.currentState!.controllerStop();
-                              sharedGetData(
-                                      equipmentData.systemVersionSn.toString(),
-                                      String)
-                                  .then((data) {
-                                printInfo(info: 'data是啥$data');
-                                if (data != null) {
-                                  appLogin(data, equipmentData.systemVersionSn,
-                                      equipmentData.systemProductModel);
-                                  loginController.setSn(
-                                      equipmentData.systemVersionSn, data);
-                                  sharedAddAndUpdate('sn', String,
-                                      equipmentData.systemVersionSn.toString());
-                                } else {
-                                  loginController.setSn(
-                                      equipmentData.systemVersionSn, '');
-                                  Get.offNamed("/loginPage", arguments: {
-                                    "sn": equipmentData.systemVersionSn,
-                                    "vn": equipmentData.systemProductModel
-                                  });
-                                }
+                              // sharedGetData(
+                              //         equipmentData.systemVersionSn.toString(),
+                              //         String)
+                              //     .then((data) {
+                              //   printInfo(info: 'data是啥$data');
+                              //   if (data != null) {
+                              //     appLogin(data, equipmentData.systemVersionSn,
+                              //         equipmentData.systemProductModel);
+                              //     loginController.setSn(
+                              //         equipmentData.systemVersionSn, data);
+                              //     sharedAddAndUpdate('sn', String,
+                              //         equipmentData.systemVersionSn.toString());
+                              //   } else {
+                              loginController.setSn(
+                                  equipmentData.systemVersionSn, '');
+                              Get.offNamed("/loginPage", arguments: {
+                                "sn": equipmentData.systemVersionSn,
+                                "vn": equipmentData.systemProductModel
                               });
+                              // }
+                              // });s
                             },
                             child: Text(S.of(context).conDev),
                           ),

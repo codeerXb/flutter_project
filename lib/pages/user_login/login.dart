@@ -57,19 +57,19 @@ class _UserLoginState extends State<UserLogin> {
     return Scaffold(
         appBar: customAppbar(
           borderBottom: false,
-          actions: [
-            TextButton(
-                onPressed: () {
-                  Get.offAllNamed("/get_equipment");
-                  sharedDeleteData('user_phone');
-                  sharedDeleteData('user_token');
-                  debugPrint('清除用户信息');
-                },
-                child: Text(
-                  S.of(context).skip,
-                  style: TextStyle(fontSize: 32.w, fontWeight: FontWeight.w600),
-                )),
-          ],
+          // actions: [
+          //   TextButton(
+          //       onPressed: () {
+          //         Get.offAllNamed("/get_equipment");
+          //         sharedDeleteData('user_phone');
+          //         sharedDeleteData('user_token');
+          //         debugPrint('清除用户信息');
+          //       },
+          //       child: Text(
+          //         S.of(context).skip,
+          //         style: TextStyle(fontSize: 32.w, fontWeight: FontWeight.w600),
+          //       )),
+          // ],
         ),
         body: SingleChildScrollView(
           child: GestureDetector(

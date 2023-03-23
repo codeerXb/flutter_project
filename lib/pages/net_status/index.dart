@@ -1,7 +1,15 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/request/request.dart';
+import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/generated/l10n.dart';
+import 'package:flutter_template/pages/net_status/model/flow_statistics.dart';
+import 'package:flutter_template/pages/net_status/model/net_connect_status.dart';
+import 'package:flutter_template/pages/net_status/model/online_device.dart';
 import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -34,6 +42,26 @@ class _NetStatusState extends State<NetStatus> {
   }
 
   final ToolbarController toolbarController = Get.put(ToolbarController());
+  // 有线连接状况：1:连通0：未连接
+  String _wanStatus = '0';
+  // wifi连接状况：1:连通0：未连接
+  String _wifiStatus = '0';
+  // sim卡连接状况：1:连通0：未连接
+  String _simStatus = '0';
+  // 上行速率
+  double _upRate = 0;
+  // 下行速率
+  double _downRate = 0;
+  // 实时在线设备数量
+  int _onlineCount = 0;
+  // 剩余流量百分比
+  // double _progress = 0;
+
+  // 已经使用的流量
+  double _usedFlow = 0;
+  // 定义套餐总量
+  final double _totalComboData = 0;
+
   // 下拉列表
   bool isShowList = false;
   List<Map<String, dynamic>> get serviceList => [
@@ -46,10 +74,183 @@ class _NetStatusState extends State<NetStatus> {
           'sn': '12123213',
         }
       ];
+  Timer? timer;
   @override
   void initState() {
     getDeviceName();
+
     super.initState();
+    updateStatus();
+    // timer = Timer.periodic(const Duration(milliseconds: 2000), (t) async {
+    //   if (mounted) updateStatus();
+    // });
+
+    updateOnlineCount();
+    // _comboType == 0 ? getUsedFlow() : updateOnlineTime();
+    // timer = Timer.periodic(const Duration(milliseconds: 2000), (t) async {
+    //   if (mounted) {
+    //     widget.comboType == 0 ? getUsedFlow() : updateOnlineTime();
+    //     updateOnlineCount();
+    //   }
+    // });
+
+    getUsedFlow();
+
+    // 获取套餐总量
+    sharedGetData('c_type', int).then((value) {
+      printInfo(info: 'c_typevalue---$value');
+      // if (value != null) {
+      //   setState(() => _comboType = int.parse(value.toString()));
+      // }
+    });
+
+    sharedGetData('c_contain', double).then((value) {
+      printInfo(info: 'c_containvalue---$value');
+
+      // if (value != null) {
+      //   setState(() => _totalComboData = double.parse(value.toString()));
+      // }
+    });
+
+    // Future.wait([
+    //   sharedGetData('c_type', int),
+    //   sharedGetData('c_contain', double),
+    //   sharedGetData('c_cycle', int),
+    // ]).then((results) {
+    //   if (results[0] != null && results[1] != null && results[2] != null) {
+    //     setState(() {
+    //       _comboLabel = results[0] == 0
+    //           ? '${results[1]}GB/${comboCycleLabel[results[2] as int]}'
+    //           : '${results[1]}h/${comboCycleLabel[results[2] as int]}';
+    //     });
+    //   }
+    // }).catchError((e) {
+    //   printError(info: 'error:$e');
+    // });
+  }
+
+  /// 获取设备列表并更新在线数量
+  void updateOnlineCount() async {
+    try {
+      Map<String, dynamic> queryOnlineDevice = {
+        'method': 'tab_dump',
+        'param': '["OnlineDeviceTable"]'
+      };
+      var res = await XHttp.get('/data.html', queryOnlineDevice);
+      // 以 { 或者 [ 开头的
+      RegExp exp = RegExp('^[{[]');
+      if (!exp.hasMatch(res) && mounted) {
+        setState(() {
+          _onlineCount = 0;
+        });
+        debugPrint('queryOnlineDevice得到数据不是json');
+      }
+      var onlineDevice =
+          OnlineDevice.fromJson(jsonDecode(res)).onlineDeviceTable;
+      if (onlineDevice != null && mounted) {
+        setState(() {
+          _onlineCount = onlineDevice.length;
+        });
+      }
+      debugPrint('在线设备数量：${onlineDevice?.length}');
+    } catch (e) {
+      debugPrint("获取设备列表错误：${e.toString()}");
+    }
+  }
+
+  /// 获取网络连接状态和上下行速率并更新
+  void updateStatus() async {
+    Map<String, dynamic> netStatus = {
+      'method': 'obj_get',
+      'param':
+          '["ethernetConnectionStatus","systemDataRateDlCurrent","systemDataRateUlCurrent","wifiHaveOrNot","wifi5gHaveOrNot","wifiEnable","wifi5gEnable","lteRoam"]'
+    };
+    try {
+      var response = await XHttp.get('/data.html', netStatus);
+      printInfo(info: 'response-----$response');
+      // 以 { 或者 [ 开头的
+      RegExp exp = RegExp('^[{[]');
+      if (!exp.hasMatch(response) && mounted) {
+        setState(() {
+          _wanStatus = '0';
+          _wifiStatus = '0';
+          _simStatus = '0';
+          _upRate = 0;
+          _downRate = 0;
+        });
+        debugPrint('netStatus得到数据不是json');
+      }
+      var resObj = NetConnecStatus.fromJson(json.decode(response));
+      String wanStatus = resObj.ethernetConnectionStatus == '1' ? '1' : '0';
+      String wifiStatus =
+          (resObj.wifiHaveOrNot == '1' || resObj.wifi5gHaveOrNot == '1')
+              ? '1'
+              : '0';
+      String simStatus = resObj.lteRoam == '1' ? '1' : '0';
+      double upRate = resObj.systemDataRateUlCurrent != null
+          ? double.parse(resObj.systemDataRateUlCurrent!)
+          : 0;
+      double downRate = resObj.systemDataRateDlCurrent != null
+          ? double.parse(resObj.systemDataRateDlCurrent!)
+          : 0;
+      if (mounted) {
+        setState(() {
+          _wanStatus = wanStatus;
+          _wifiStatus = wifiStatus;
+          _simStatus = simStatus;
+          _upRate = upRate;
+          _downRate = downRate;
+        });
+      }
+      debugPrint('wanStatus=$wanStatus,wifi=$wifiStatus,sim=$simStatus');
+    } catch (err) {
+      debugPrint(err.toString());
+    }
+  }
+
+  /// 请求获取已用流量
+  Future<double> getUsedFlow() async {
+    Map<String, dynamic> flowStatistics = {
+      'method': 'tab_dump',
+      'param': '["FlowTable"]',
+    };
+    try {
+      var obj = await XHttp.get('/data.html', flowStatistics);
+      printInfo(info: '获取流量 $obj');
+      // 以 { 或者 [ 开头的
+      RegExp exp = RegExp('^[{[]');
+      if (!exp.hasMatch(obj) && mounted) {
+        setState(() {
+          _usedFlow = 0;
+          // _progress = 0;
+        });
+        debugPrint('flowStatistics得到数据不是json');
+      }
+      var jsonObj = json.decode(obj);
+      var flowTable = FlowStatistics.fromJson(jsonObj).flowTable;
+      if (flowTable != null && mounted) {
+        // 得到流量卡的总通过流量
+        double usedFlowBytes = double.parse(flowTable[0].recvBytes!) +
+            double.parse(flowTable[0].sendBytes!) +
+            double.parse(flowTable[1].recvBytes!) +
+            double.parse(flowTable[1].sendBytes!) +
+            double.parse(flowTable[2].recvBytes!) +
+            double.parse(flowTable[2].sendBytes!) +
+            double.parse(flowTable[3].recvBytes!) +
+            double.parse(flowTable[3].sendBytes!);
+        setState(() {
+          _usedFlow = usedFlowBytes / 1048576;
+          // _progress =
+          //     (1 - (usedFlowBytes / (_totalComboData * 1024 * 1024 * 1024))) *
+          //         100;
+        });
+      }
+      printInfo(info: '_usedFlow$_usedFlow');
+      return _usedFlow;
+    } catch (e) {
+      debugPrint('获取流量信息错误：${e.toString()}');
+    }
+    return _usedFlow;
   }
 
 // 下拉列表
@@ -211,7 +412,7 @@ class _NetStatusState extends State<NetStatus> {
                           Column(
                             children: [
                               Text(
-                                '0.4 MB',
+                                '$_usedFlow',
                                 style: TextStyle(
                                     fontSize: 30.sp,
                                     color: const Color(0xff051220)),
@@ -265,7 +466,7 @@ class _NetStatusState extends State<NetStatus> {
                           Column(
                             children: [
                               Text(
-                                '0.4 Kbps',
+                                '$_downRate',
                                 style: TextStyle(
                                     fontSize: 30.sp,
                                     color: const Color(0xff051220)),
@@ -297,7 +498,7 @@ class _NetStatusState extends State<NetStatus> {
                           Column(
                             children: [
                               Text(
-                                '5 Mbps',
+                                '$_upRate',
                                 style: TextStyle(
                                     fontSize: 30.sp,
                                     color: const Color(0xff051220)),
@@ -337,7 +538,7 @@ class _NetStatusState extends State<NetStatus> {
                                   children: [
                                     Text(S.current.device),
                                     Text(
-                                      '1 ' + S.current.line,
+                                      '$_onlineCount ${S.current.line}',
                                       style: TextStyle(
                                           color: Colors.black54,
                                           fontSize: 25.sp),
@@ -426,6 +627,14 @@ class _NetStatusState extends State<NetStatus> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    debugPrint('状态页面销毁');
+    timer?.cancel();
+    timer = null;
   }
 }
 

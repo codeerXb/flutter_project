@@ -1,21 +1,8 @@
-import 'dart:async';
-
-import 'package:dio/adapter.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_template/config/base_config.dart';
-import 'package:flutter_template/core/http/http.dart';
-import 'package:flutter_template/core/utils/toast.dart';
-import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
 import 'package:get/get.dart';
 
-import '../../core/utils/app_update_util.dart';
-import '../../core/utils/shared_preferences_util.dart';
 import '../../core/widget/common_box.dart';
-import '../../core/widget/common_picker.dart';
-import '../../core/widget/common_widget.dart';
-import '../../core/widget/custom_app_bar.dart';
 import '../../generated/l10n.dart';
 
 /// 系统设置
@@ -219,23 +206,23 @@ class _SystemSettingsState extends State<SystemSettings> {
               ),
 
               //退出登录
-              Padding(
-                  padding: EdgeInsets.only(top: 15.w),
-                  child: Center(
-                      child: SizedBox(
-                    height: 70.sp,
-                    width: 680.sp,
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(
-                              const Color.fromARGB(255, 48, 118, 250))),
-                      onPressed: loginout,
-                      child: Text(
-                        S.of(context).logOut,
-                        style: TextStyle(fontSize: 36.sp),
-                      ),
-                    ),
-                  )))
+              // Padding(
+              //     padding: EdgeInsets.only(top: 15.w),
+              //     child: Center(
+              //         child: SizedBox(
+              //       height: 70.sp,
+              //       width: 680.sp,
+              //       child: ElevatedButton(
+              //         style: ButtonStyle(
+              //             backgroundColor: MaterialStateProperty.all(
+              //                 const Color.fromARGB(255, 48, 118, 250))),
+              //         onPressed: loginout,
+              //         child: Text(
+              //           S.of(context).logOut,
+              //           style: TextStyle(fontSize: 36.sp),
+              //         ),
+              //       ),
+              //     )))
             ],
           ),
         ),
@@ -244,30 +231,30 @@ class _SystemSettingsState extends State<SystemSettings> {
   }
 
   /// 退出登录
-  void loginout() async {
-    // 这里还需要调用后台接口的方法
-    Dio dio = Dio();
-    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-        (client) {
-      client.badCertificateCallback = (cert, host, port) {
-        return true; // 返回true强制通过
-      };
-      return null;
-    };
-    try {
-      await dio.post('${BaseConfig.baseUrl}/action/logout');
-    } on DioError catch (err) {
-      if (err.message.toString().contains('302')) {
-        sharedDeleteData("loginInfo");
-        sharedDeleteData("session");
-        sharedDeleteData("token");
-        sharedDeleteData("sn");
-        Get.offAllNamed("/get_equipment");
-      } else {
-        //退出登录失败，请检查网络！
-        ToastUtils.error(S.current.checkNet);
-      }
-      printError(info: err.toString());
-    }
-  }
+  // void loginout() async {
+  //   // 这里还需要调用后台接口的方法
+  //   Dio dio = Dio();
+  //   (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+  //       (client) {
+  //     client.badCertificateCallback = (cert, host, port) {
+  //       return true; // 返回true强制通过
+  //     };
+  //     return null;
+  //   };
+  //   try {
+  //     await dio.post('${BaseConfig.baseUrl}/action/logout');
+  //   } on DioError catch (err) {
+  //     if (err.message.toString().contains('302')) {
+  //       sharedDeleteData("loginInfo");
+  //       sharedDeleteData("session");
+  //       sharedDeleteData("token");
+  //       sharedDeleteData("sn");
+  //       Get.offAllNamed("/get_equipment");
+  //     } else {
+  //       //退出登录失败，请检查网络！
+  //       ToastUtils.error(S.current.checkNet);
+  //     }
+  //     printError(info: err.toString());
+  //   }
+  // }
 }

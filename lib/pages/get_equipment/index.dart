@@ -291,7 +291,7 @@ class _MyWidgetState extends State<Equipment> {
                                 "vn": equipmentData.systemProductModel
                               });
                               // }
-                              // });s
+                              // });
                             },
                             child: Text(S.of(context).conDev),
                           ),

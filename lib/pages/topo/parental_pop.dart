@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:day_night_time_picker/day_night_time_picker.dart';
 import 'package:day_night_time_picker/lib/constants.dart';
 import 'package:day_night_time_picker/lib/daynight_timepicker.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,7 @@ class _ParentalPopState extends State<ParentalPop> {
 // 提交
   AccessDatas restart = AccessDatas();
 
-  String accTitle =S.current.parentalControl;
+  String accTitle = S.current.parentalControl;
   bool isCheck = false;
 
 //工作日
@@ -63,8 +64,8 @@ class _ParentalPopState extends State<ParentalPop> {
   String stopTimeH = '';
   String stopTimeM = '';
 
-  TimeOfDay _time = TimeOfDay.now().replacing(hour: 11, minute: 30);
-  void onTimeChanged(TimeOfDay newTime) {
+  Time _time = Time(hour: 11, minute: 30);
+  void onTimeChanged(Time newTime) {
     setState(() {
       _time = newTime;
     });
@@ -101,10 +102,10 @@ class _ParentalPopState extends State<ParentalPop> {
         setState(() {
           restart = AccessDatas.fromJson(d);
           if (restart.success == true) {
-            ToastUtils.toast(S.current.save+S.current.success);
+            ToastUtils.toast(S.current.save + S.current.success);
             Get.back();
           } else {
-            ToastUtils.toast(S.current.save+S.current.error);
+            ToastUtils.toast(S.current.save + S.current.error);
           }
         });
       } on FormatException catch (e) {
@@ -120,7 +121,7 @@ class _ParentalPopState extends State<ParentalPop> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppbar(context: context, title:S.current.parentalControl),
+      appBar: customAppbar(context: context, title: S.current.parentalControl),
       body: SingleChildScrollView(
           child: Container(
         height: 1400.w,
@@ -141,7 +142,7 @@ class _ParentalPopState extends State<ParentalPop> {
                     )),
                     BottomLine(
                         rowtem: RowContainer(
-                      leftText:S.current.equipment,
+                      leftText: S.current.equipment,
                       righText: data.mAC.toString(),
                     )),
                     GestureDetector(
@@ -175,7 +176,8 @@ class _ParentalPopState extends State<ParentalPop> {
                         rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(S.current.workday, style: TextStyle(fontSize: 28.sp)),
+                              Text(S.current.workday,
+                                  style: TextStyle(fontSize: 28.sp)),
                               Row(
                                 children: [
                                   Text(arrList.join(),
@@ -198,7 +200,7 @@ class _ParentalPopState extends State<ParentalPop> {
                             context: context,
                             value: _time,
                             onChange: onTimeChanged,
-                            minuteInterval: MinuteInterval.FIVE,
+                            minuteInterval: TimePickerInterval.FIVE,
                             // Optional onChange to receive value as DateTime
                             onChangeDateTime: (DateTime dateTime) {
                               startTim = dateTime.toString();
@@ -239,7 +241,7 @@ class _ParentalPopState extends State<ParentalPop> {
                             context: context,
                             value: _time,
                             onChange: onTimeChanged,
-                            minuteInterval: MinuteInterval.FIVE,
+                            minuteInterval: TimePickerInterval.FIVE,
                             // Optional onChange to receive value as DateTime
                             onChangeDateTime: (DateTime dateTime) {
                               stopTim = dateTime.toString();

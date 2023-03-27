@@ -61,9 +61,9 @@ class _SplashPageState extends State<SplashPage> {
       printInfo(info: 'USER TOKEN${data.toString()}');
       if (data != null) {
         // 看是否存储了设备的sn和密码
-        sharedGetData('sn', String).then((sn) {
+        sharedGetData('deviceSn', String).then((sn) {
           if (sn != null) {
-            debugPrint('sn$sn');
+            debugPrint('设备sn号$sn');
             sharedGetData(sn.toString(), String).then((value) {
               debugPrint('设备登录：$value');
               if (value != null) {

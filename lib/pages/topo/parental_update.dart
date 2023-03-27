@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:day_night_time_picker/day_night_time_picker.dart';
 import 'package:day_night_time_picker/lib/constants.dart';
 import 'package:day_night_time_picker/lib/daynight_timepicker.dart';
 import 'package:flutter/material.dart';
@@ -58,10 +59,20 @@ class _ParentalUpdateState extends State<ParentalUpdate> {
   String stopTimeM = '';
   String stopTimDate = '';
 
-  TimeOfDay _time = TimeOfDay.now().replacing(hour: 11, minute: 30);
-  void onTimeChanged(TimeOfDay newTime) {
+  // 传给showpicker组件
+  // 开始时间
+  Time _timeStart = Time(hour: 0, minute: 0);
+  void onTimeStartChanged(Time newTime) {
     setState(() {
-      _time = newTime;
+      _timeStart = newTime;
+    });
+  }
+
+  // 结束时间
+  Time _timeEnd = Time(hour: 0, minute: 0);
+  void onTimeEndChanged(Time newTime) {
+    setState(() {
+      _timeEnd = newTime;
     });
   }
 
@@ -103,6 +114,11 @@ class _ParentalUpdateState extends State<ParentalUpdate> {
     stopTimeM = stopTimDate.split(':')[1];
     name = dataList.name.toString();
     equipmentName = dataList.host.toString();
+    setState(() {
+      _timeStart =
+          Time(hour: int.parse(startTimeH), minute: int.parse(startTimeM));
+      _timeEnd = Time(hour: int.parse(stopTimeH), minute: int.parse(stopTimeM));
+    });
   }
 
 // 家长控制 修改
@@ -214,9 +230,9 @@ class _ParentalUpdateState extends State<ParentalUpdate> {
                         Navigator.of(context).push(
                           showPicker(
                             context: context,
-                            value: _time,
-                            onChange: onTimeChanged,
-                            minuteInterval: MinuteInterval.FIVE,
+                            value: _timeStart,
+                            onChange: onTimeStartChanged,
+                            minuteInterval: TimePickerInterval.FIVE,
                             // Optional onChange to receive value as DateTime
                             onChangeDateTime: (DateTime dateTime) {
                               startTim = dateTime.toString();
@@ -255,9 +271,9 @@ class _ParentalUpdateState extends State<ParentalUpdate> {
                         Navigator.of(context).push(
                           showPicker(
                             context: context,
-                            value: _time,
-                            onChange: onTimeChanged,
-                            minuteInterval: MinuteInterval.FIVE,
+                            value: _timeEnd,
+                            onChange: onTimeEndChanged,
+                            minuteInterval: TimePickerInterval.FIVE,
                             // Optional onChange to receive value as DateTime
                             onChangeDateTime: (DateTime dateTime) {
                               stopTim = dateTime.toString();

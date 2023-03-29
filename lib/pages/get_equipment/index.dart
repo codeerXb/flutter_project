@@ -31,13 +31,12 @@ class _MyWidgetState extends State<Equipment> {
   @override
   void initState() {
     super.initState();
-    // Future.delayed(const D uration(milliseconds: 2000), () {
-    // getEquipmentData();
-    // return;
-    // });
+    Future.delayed(const Duration(milliseconds: 2000), () {
+      getqueryingBoundDevices();
+      return;
+    });
 
     loginController.setLoading(true);
-    getqueryingBoundDevices();
   }
 
 // 搜索页面
@@ -323,12 +322,12 @@ class _MyWidgetState extends State<Equipment> {
                 //     )
                 //   ],
                 // ),
-                if (appList.isEmpty)
-                  Column(
-                    children: [
-                      Text(S.of(context).noData),
-                    ],
-                  ),
+                // if (appList.isEmpty)
+                //   Column(
+                //     children: [
+                //       Text(S.of(context).noData),
+                //     ],
+                //   ),
 
                 if (appList.isNotEmpty)
                   SizedBox(

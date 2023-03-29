@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/request/request.dart';
+import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/pages/equInfo/equinfo_datas.dart';
 import 'package:get/get_utils/src/extensions/dynamic_extensions.dart';
@@ -35,11 +36,19 @@ class _EquInfoState extends State<EquInfo> {
   int day = 0;
   int hour = 0;
   int min = 0;
+  String sn = 'null';
+
   @override
   void initState() {
     super.initState();
+    sharedGetData('deviceSn', String).then(((res) {
+      printInfo(info: 'deviceSn$res');
+      setState(() {
+        sn = res.toString();
+        getDeviceName();
+      });
+    }));
     getEquinfoDatas();
-    // getDeviceName();
   }
 
   void getEquinfoDatas() async {
@@ -63,15 +72,16 @@ class _EquInfoState extends State<EquInfo> {
     }
   }
 
-  // getDeviceName() async {
-  //   printInfo(info: '走了嘛');
-  //   var res = await Request().getTREquinfoDatas();
-  //   printInfo(info: '获取数据-------$res');
-  //   // setState(() {
-  //   //   name = res.systemProductModel;
-  //   // });
-  //   return res;
-  // }
+  getDeviceName() async {
+    printInfo(info: '走了嘛');
+    printInfo(info: 'sn  -----有值吗$sn');
+    var res = await Request().getTREquinfoDatas(sn);
+    printInfo(info: '获取数据-------$res');
+    // setState(() {
+    //   name = res.systemProductModel;
+    // });
+    return res;
+  }
 
   @override
   Widget build(BuildContext context) {

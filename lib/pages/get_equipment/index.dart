@@ -304,7 +304,7 @@ class _MyWidgetState extends State<Equipment> {
                                 // }
                                 // });s
                               },
-                              child: Text(S.of(context).conDev),
+                              child: Text(S.of(context).band),
                             ),
                           ),
                         ],

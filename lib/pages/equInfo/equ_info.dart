@@ -3,9 +3,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
+import 'package:flutter_template/core/request/request.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/pages/equInfo/equinfo_datas.dart';
-import 'package:intl/intl.dart';
+import 'package:get/get_utils/src/extensions/dynamic_extensions.dart';
 import '../../core/widget/custom_app_bar.dart';
 import '../../generated/l10n.dart';
 
@@ -38,6 +39,7 @@ class _EquInfoState extends State<EquInfo> {
   void initState() {
     super.initState();
     getEquinfoDatas();
+    // getDeviceName();
   }
 
   void getEquinfoDatas() async {
@@ -60,6 +62,16 @@ class _EquInfoState extends State<EquInfo> {
       debugPrint('获取设备信息失败：$e.toString()');
     }
   }
+
+  // getDeviceName() async {
+  //   printInfo(info: '走了嘛');
+  //   var res = await Request().getTREquinfoDatas();
+  //   printInfo(info: '获取数据-------$res');
+  //   // setState(() {
+  //   //   name = res.systemProductModel;
+  //   // });
+  //   return res;
+  // }
 
   @override
   Widget build(BuildContext context) {

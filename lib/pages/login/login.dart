@@ -52,12 +52,6 @@ class _LoginState extends State<Login> {
       if (res != null && exp.hasMatch(res)) {
         var d = json.decode(res.toString());
         printInfo(info: '登录返回$d');
-        loginController.setToken(d['token']);
-        loginController.setSession(d['sessionid']);
-        sharedAddAndUpdate(
-            sn.toString(), String, base64Encode(utf8.encode(_password)));
-        sharedAddAndUpdate("token", String, d['token']);
-        sharedAddAndUpdate("session", String, d['sessionid']);
         if (d['code'] == 200) {
           App.post(
                   '${BaseConfig.cloudBaseUrl}/platform/appCustomer/bindingCpe?deviceSn=$sn')
@@ -82,6 +76,12 @@ class _LoginState extends State<Login> {
               ToastUtils.error(S.current.contimeout);
             }
           });
+          loginController.setToken(d['token']);
+          loginController.setSession(d['sessionid']);
+          sharedAddAndUpdate(
+              sn.toString(), String, base64Encode(utf8.encode(_password)));
+          sharedAddAndUpdate("token", String, d['token']);
+          sharedAddAndUpdate("session", String, d['sessionid']);
         }
       }
     }).catchError((err) {

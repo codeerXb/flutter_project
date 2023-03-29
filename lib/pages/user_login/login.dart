@@ -259,13 +259,12 @@ class _UserLoginState extends State<UserLogin> {
                                     data: data)
                                 .then((res) {
                               var d = json.decode(res.toString());
-                              loginController.setUserToken(d['data']['token']);
-                              sharedAddAndUpdate(
-                                  "token", String, d['data']['token']);
                               if (d['code'] != 200) {
                                 ToastUtils.error(d['message']);
                                 return;
                               } else {
+                                loginController
+                                    .setUserToken(d['data']['token']);
                                 sharedGetData(
                                         loginController.isSn.value.toString(),
                                         String)

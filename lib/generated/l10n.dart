@@ -100,6 +100,16 @@ class S {
     );
   }
 
+  /// `Subscriber Login`
+  String get userLogin {
+    return Intl.message(
+      'Subscriber Login',
+      name: 'userLogin',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Login`
   String get login {
     return Intl.message(
@@ -110,10 +120,10 @@ class S {
     );
   }
 
-  /// `Cpe management platform`
+  /// ``
   String get cpeManagementPlatform {
     return Intl.message(
-      'Cpe management platform',
+      '',
       name: 'cpeManagementPlatform',
       desc: '',
       args: [],
@@ -210,10 +220,10 @@ class S {
     );
   }
 
-  /// `Discovery Equipment`
+  /// `Looking for your Wi-Fi`
   String get DiscoveryEqu {
     return Intl.message(
-      'Discovery Equipment',
+      'Looking for your Wi-Fi',
       name: 'DiscoveryEqu',
       desc: '',
       args: [],
@@ -2410,10 +2420,10 @@ class S {
     );
   }
 
-  /// `Environment`
+  /// `Wi-Fi Converage`
   String get Environment {
     return Intl.message(
-      'Environment',
+      'Wi-Fi Converage',
       name: 'Environment',
       desc: '',
       args: [],
@@ -2450,10 +2460,10 @@ class S {
     );
   }
 
-  /// `Traffic Package`
+  /// `Data Plan`
   String get trafficPackage {
     return Intl.message(
-      'Traffic Package',
+      'Data Plan',
       name: 'trafficPackage',
       desc: '',
       args: [],

@@ -58,7 +58,7 @@ class _LoginState extends State<Login> {
               .then((res) {
             var d = json.decode(res.toString());
 
-            debugPrint('响应99999------>$d');
+            debugPrint('本地登录响应------>$d');
             if (d['code'] != 200) {
               ToastUtils.error(S.current.check);
               return;
@@ -362,7 +362,8 @@ class _LoginState extends State<Login> {
                   ),
                   Padding(padding: EdgeInsets.only(top: 10.w)),
                   Text(
-                    '${S.of(context).currentDeive} ${loginController.userEquipment['deviceSn']}',
+                    // '${S.of(context).currentDeive} ${loginController.userEquipment['deviceSn']}',
+                    '${S.of(context).currentDeive} RS621A00211700113',
                     style: TextStyle(
                         fontSize: 28.sp, color: const Color(0xFF373543)),
                   ),

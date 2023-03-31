@@ -51,7 +51,7 @@ class _AtorageAdministrationState extends State<AtorageAdministration> {
               InkWell(
                 onTap: () => closeKeyboard(context),
                 child: const Image(
-                  image: AssetImage('assets/images/storageadministration.png'),
+                  image: AssetImage('assets/images/storageadministration.jpg'),
                 ),
               ),
             ])));

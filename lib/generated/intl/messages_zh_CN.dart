@@ -268,6 +268,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "up": MessageLookupByLibrary.simpleMessage("下载速率"),
         "used": MessageLookupByLibrary.simpleMessage("已经使用"),
         "userAgreement": MessageLookupByLibrary.simpleMessage("用户协议"),
+        "userLogin": MessageLookupByLibrary.simpleMessage("用户登录"),
         "verficationCode": MessageLookupByLibrary.simpleMessage("请输入验证码"),
         "verficationCodeError":
             MessageLookupByLibrary.simpleMessage("请输入正确验证码"),

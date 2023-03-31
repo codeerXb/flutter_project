@@ -35,7 +35,9 @@ class _MyWidgetState extends State<Equipment> {
       getqueryingBoundDevices();
       return;
     });
-
+    sharedGetData("user_token", String).then((data) {
+      loginController.setUserToken(data);
+    });
     loginController.setLoading(true);
   }
 
@@ -144,10 +146,12 @@ class _MyWidgetState extends State<Equipment> {
   List appList = [];
   //  查询绑定设备 App
   void getqueryingBoundDevices() {
+    sharedGetData("user_token", String).then((data) {
+      loginController.setUserToken(data);
+    });
     App.get('/platform/appCustomer/queryCustomerCpe').then((res) {
       var d = json.decode(json.encode(res));
       appList = d['data'];
-      ToastUtils.toast(d['message']);
       if (d['data'] != []) {
         appList = d['data'].map((text) => (text)).toList();
         printInfo(info: 'isStringBPresent$isStringBPresent');
@@ -156,8 +160,6 @@ class _MyWidgetState extends State<Equipment> {
       if (d['code'] != 200) {
         ToastUtils.error(S.of(context).failed);
         return;
-      } else {
-        ToastUtils.toast(d['message']);
       }
     }).catchError((onError) {
       debugPrint(onError.toString());
@@ -247,7 +249,7 @@ class _MyWidgetState extends State<Equipment> {
                             //   num += 2;
                             //   // 确保页面存在时，调用异步方法
                             // });
-                            if (mounted) getEquipmentData();
+                            if (mounted) getqueryingBoundDevices();
                           },
                           child: Text(S.of(context).rescan),
                         ),

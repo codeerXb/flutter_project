@@ -52,7 +52,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Default Gateway"),
         "Detect": MessageLookupByLibrary.simpleMessage("Detect Server"),
         "DiscoveryEqu":
-            MessageLookupByLibrary.simpleMessage("Discovery Equipment"),
+            MessageLookupByLibrary.simpleMessage("Looking for your Wi-Fi"),
         "DynamicIP": MessageLookupByLibrary.simpleMessage("Dynamic IP"),
         "EditPass": MessageLookupByLibrary.simpleMessage("change Password"),
         "ElapsedTime": MessageLookupByLibrary.simpleMessage("Elapsed Time"),
@@ -60,7 +60,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Enable reboot scheduler"),
         "EnableScheduler":
             MessageLookupByLibrary.simpleMessage("Enable reboot scheduler"),
-        "Environment": MessageLookupByLibrary.simpleMessage("Environment"),
+        "Environment": MessageLookupByLibrary.simpleMessage("Wi-Fi Converage"),
         "Ethernet": MessageLookupByLibrary.simpleMessage("Ethernet"),
         "EthernetOnly": MessageLookupByLibrary.simpleMessage("Ethernet Only"),
         "EthernetSettings":
@@ -188,8 +188,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Connection Mode"),
         "contimeout":
             MessageLookupByLibrary.simpleMessage("Connection Timeout"),
-        "cpeManagementPlatform":
-            MessageLookupByLibrary.simpleMessage("Cpe management platform"),
+        "cpeManagementPlatform": MessageLookupByLibrary.simpleMessage(""),
         "currentDeive": MessageLookupByLibrary.simpleMessage("Current Deive"),
         "currentOrientation":
             MessageLookupByLibrary.simpleMessage("Current orientation"),
@@ -327,8 +326,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Device connection timeout"),
         "to": MessageLookupByLibrary.simpleMessage("To"),
         "traffic": MessageLookupByLibrary.simpleMessage("Traffic"),
-        "trafficPackage":
-            MessageLookupByLibrary.simpleMessage("Traffic Package"),
+        "trafficPackage": MessageLookupByLibrary.simpleMessage("Data Plan"),
         "type": MessageLookupByLibrary.simpleMessage("Type"),
         "unblockdevice": MessageLookupByLibrary.simpleMessage(
             "Confirm to unbind the current device"),
@@ -337,6 +335,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "up": MessageLookupByLibrary.simpleMessage("Up"),
         "used": MessageLookupByLibrary.simpleMessage("Used"),
         "userAgreement": MessageLookupByLibrary.simpleMessage("User Agreement"),
+        "userLogin": MessageLookupByLibrary.simpleMessage("Subscriber Login"),
         "verficationCode":
             MessageLookupByLibrary.simpleMessage(" Enter verification code"),
         "verficationCodeError":

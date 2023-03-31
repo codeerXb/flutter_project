@@ -651,7 +651,7 @@ class SizedBoxs extends StatelessWidget {
                         ConstrainedBox(
                             constraints: BoxConstraints(maxWidth: 150.w),
                             child:
-                                const FittedBox(child: Text('URL blocklist'))),
+                                const FittedBox(child: Text('Website Blocklist'))),
                         Text(
                           '2 allowed',
                           style:

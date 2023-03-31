@@ -345,11 +345,22 @@ class _NetStatusState extends State<NetStatus> {
                   color: Colors.transparent,
                 ),
                 // if (isShowList) Positioned(top: 10.w, child: buildGrid()),
-
                 Padding(
                   padding: EdgeInsets.only(top: 20.w),
                   child: ListView(
                     children: [
+                      Center(
+                        child: Padding(
+                          padding: EdgeInsets.only(bottom: 15.w),
+                          child: Text('Mapping out your Wi-Fi Coverage',
+                              style: TextStyle(
+                                  fontSize: 30.sp,
+                                  fontWeight: FontWeight.w900,
+                                  color:
+                                      const Color.fromARGB(255, 97, 97, 97))),
+                        ),
+                      ),
+
                       // //热力图
                       Container(
                         height: 600.w,
@@ -412,7 +423,7 @@ class _NetStatusState extends State<NetStatus> {
                           Column(
                             children: [
                               Text(
-                                '$_usedFlow',
+                                '$_usedFlow Kbit/s',
                                 style: TextStyle(
                                     fontSize: 30.sp,
                                     color: const Color(0xff051220)),
@@ -466,7 +477,7 @@ class _NetStatusState extends State<NetStatus> {
                           Column(
                             children: [
                               Text(
-                                '$_downRate',
+                                '$_upRate Kbit/s',
                                 style: TextStyle(
                                     fontSize: 30.sp,
                                     color: const Color(0xff051220)),
@@ -498,7 +509,7 @@ class _NetStatusState extends State<NetStatus> {
                           Column(
                             children: [
                               Text(
-                                '$_upRate',
+                                '$_upRate Kbit/s',
                                 style: TextStyle(
                                     fontSize: 30.sp,
                                     color: const Color(0xff051220)),

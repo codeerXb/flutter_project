@@ -239,7 +239,7 @@ class GlobalRouter {
     // 家长控制_Payment
     '/Payment': (BuildContext context, {Object? args}) => const Payment(),
     // 家长控制_Installed
-    '/Installed': (BuildContext context, {Object? args}) => const Intsalled(),
+    '/Installed': (BuildContext context, {Object? args}) => const Installed(),
     // 家长控制_Blocklist
     '/Blocklist': (BuildContext context, {Object? args}) => const Blocklist(),
     // 家长控制_Internet

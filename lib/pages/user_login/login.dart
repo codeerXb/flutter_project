@@ -94,7 +94,7 @@ class _UserLoginState extends State<UserLogin> {
                             ),
                           ),
                           Text(
-                            S.of(context).login,
+                            S.of(context).userLogin,
                             style: TextStyle(fontSize: 60.sp),
                           ),
                           Text(
@@ -296,7 +296,7 @@ class _UserLoginState extends State<UserLogin> {
                           }
                         },
                         child: Text(
-                          S.of(context).login,
+                          S.of(context).userLogin,
                           style: TextStyle(
                               fontSize: 32.sp, color: const Color(0xffffffff)),
                         ),

@@ -4,6 +4,7 @@
   "check": "请检查网络是否连接",
   "register": "注册",
   "skip": "跳过",
+  "userLogin": "用户登录",
   "login": "登录",
   "cpeManagementPlatform": "CPE管理平台",
   "phoneLabel": "请输入手机号",

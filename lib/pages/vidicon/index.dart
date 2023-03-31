@@ -107,10 +107,10 @@ class _VidiconState extends State<Vidicon> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text('Surveillance',
+                                        Text('Webcam',
                                             style: TextStyle(fontSize: 30.sp)),
-                                            //拍摄到的重要事件 
-                                        Text('Recorded important events',
+                                        //拍摄到的重要事件
+                                        Text('To record important events',
                                             style: TextStyle(
                                                 fontSize: 24.sp,
                                                 color: const Color.fromRGBO(
@@ -164,7 +164,7 @@ class _VidiconState extends State<Vidicon> {
                                       children: [
                                         Text('Playback',
                                             style: TextStyle(fontSize: 30.sp)),
-                                        Text('Vlew surveillance history',
+                                        Text('View past recordings',
                                             style: TextStyle(
                                                 fontSize: 24.sp,
                                                 color: const Color.fromRGBO(
@@ -218,7 +218,7 @@ class _VidiconState extends State<Vidicon> {
                                       children: [
                                         Text('Storage management',
                                             style: TextStyle(fontSize: 30.sp)),
-                                        Text('cloud、SD card and local ',
+                                        Text('Cloud、SD card and Local ',
                                             style: TextStyle(
                                                 fontSize: 24.sp,
                                                 color: const Color.fromRGBO(

@@ -23,7 +23,7 @@ class HttpAppInterceptors extends InterceptorsWrapper {
     options.path = options.uri.toString();
 
     options.queryParameters = {};
-    debugPrint("\n================== 请求数据9999 ==========================");
+    debugPrint("\n================== 云平台请求数据 ==========================");
     debugPrint("url = ${options.uri.toString()}");
     debugPrint("Authorization = ${options.headers}");
     debugPrint("params = ${options.data}");
@@ -37,7 +37,7 @@ class HttpAppInterceptors extends InterceptorsWrapper {
     if (isSn != '') {
       password = loginController.sn[isSn.toString()];
     }
-    debugPrint("\n================== 响应数据888 ==========================");
+    debugPrint("\n================== 云平台响应数据==========================");
     debugPrint("code = ${response.statusCode}");
     debugPrint("data = ${response.data}");
 
@@ -46,7 +46,7 @@ class HttpAppInterceptors extends InterceptorsWrapper {
 
   @override
   void onError(DioError err, ErrorInterceptorHandler handler) {
-    debugPrint("\n================== 错误响应数据 ======================");
+    debugPrint("\n================== 云平台错误响应数据 ======================");
     debugPrint("type = ${err.type}");
     debugPrint("message = ${err.message}");
     debugPrint("stackTrace = ${err.error}");

@@ -6,10 +6,15 @@ class LoginController extends GetxController {
   final Map sn = {}.obs;
   final Map equipment = {}.obs;
   final Map userEquipment = {}.obs;
+  String state = '';
 
   var isSn = ''.obs;
   void setToken(value) {
     login.token.value = value;
+  }
+
+  void setState(value) {
+    login.state = value;
   }
 
   void setUserToken(value) {
@@ -45,4 +50,6 @@ class Login {
   var token = ''.obs;
   var session = ''.obs;
   var userToken = ''.obs;
+  // 云端 cloud   本地 local
+  var state = 'cloud';
 }

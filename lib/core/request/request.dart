@@ -1,8 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter_template/config/base_config.dart';
 import 'package:flutter_template/core/http/http.dart';
-import 'package:flutter_template/core/http/http_app.dart';
 import './model/equipment_data.dart';
 
 class Request {
@@ -25,29 +23,5 @@ class Request {
     }
     print('设备：$equipmentData');
     return equipmentData;
-  }
-
-  getTREquinfoDatas(sn) async {
-    Map<String, dynamic> data = {
-      'deviceId': sn,
-      'name': 'getParameterValues',
-      'parameterNames': [
-        "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.ProductModel",
-        "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.HardVersion",
-        "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.SoftwareVersion",
-        "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.UBOOTVersion",
-        "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.SerialNumber",
-        "InternetGatewayDevice.WEB_GUI.Overview.ModuleInfo.IMEI",
-        "InternetGatewayDevice.WEB_GUI.Overview.ModuleInfo.IMSI",
-        "InternetGatewayDevice.WEB_GUI.Overview.LANStatus.MACAddress",
-        "InternetGatewayDevice.WEB_GUI.Overview.LANStatus.IPAddress",
-        "InternetGatewayDevice.WEB_GUI.Overview.LANStatus.SubnetMask",
-        "InternetGatewayDevice.WEB_GUI.Overview.SystemInfo.RunTime"
-      ]
-    };
-    var res = await App.post(
-        '${BaseConfig.cloudBaseUrl}/platform/tr069/getParameterValues',
-        data: data);
-    return res;
   }
 }

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 
 import 'package:flutter_template/pages/login/login_controller.dart';
 // ignore: library_prefixes
@@ -11,6 +12,10 @@ class HttpAppInterceptors extends InterceptorsWrapper {
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+    sharedGetData("user_token", String).then((data) {
+      loginController.setUserToken(data);
+    });
+
     String appLoginFlag = 'true';
     String authorization = loginController.login.userToken.value;
     debugPrint('authorization--$authorization');

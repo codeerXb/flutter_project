@@ -8,8 +8,6 @@ import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
 
 import 'core/utils/shared_preferences_util.dart';
-import 'core/utils/string_util.dart';
-import 'core/utils/toast.dart';
 
 /// 类似广告启动页
 class SplashPage extends StatefulWidget {
@@ -26,8 +24,8 @@ class _SplashPageState extends State<SplashPage> {
   void appLogin(pwd) {
     debugPrint('登录密码：$pwd');
     Map<String, dynamic> data = {
-      'username': 'admin',
-      'password': utf8.decode(base64Decode(pwd)),
+      'username': 'superadmin',
+      'password': 'admin', //utf8.decode(base64Decode(pwd))
     };
     XHttp.get('/action/appLogin', data).then((res) {
       try {

@@ -87,6 +87,26 @@ class _NetStatusState extends State<NetStatus> {
     getDeviceName();
 
     super.initState();
+
+    timer = Timer.periodic(const Duration(seconds: 2), (t) async {
+      printInfo(info: 'state--${loginController.login.state}');
+      if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
+        // 获取流量
+        getTRUsedFlow();
+        // 获取设备列表并更新在线数量
+        updateTROnlineCount();
+        // 获取网络连接状态和上下行速率并更新
+        updateTRStatus();
+      }
+      if (loginController.login.state == 'local' && mounted) {
+        // 获取流量
+        getUsedFlow();
+        // 获取设备列表并更新在线数量
+        updateOnlineCount();
+        // 获取网络连接状态和上下行速率并更新
+        updateStatus();
+      }
+    });
     // updateStatus();
     // timer = Timer.periodic(const Duration(milliseconds: 2000), (t) async {
     //   if (mounted) updateStatus();
@@ -714,15 +734,18 @@ class _NetStatusState extends State<NetStatus> {
                               )),
                             ),
                             //网络测速
-                            GardCard(
-                                boxCotainer: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Icon(Icons.network_check,
-                                    color: Colors.blue[500], size: 80.sp),
-                                Text(S.current.netSpeed),
-                              ],
-                            )),
+                            FittedBox(
+                              child: GardCard(
+                                  boxCotainer: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Icon(Icons.network_check,
+                                      color: Colors.blue[500], size: 80.sp),
+                                  Text(S.current.netSpeed),
+                                ],
+                              )),
+                            ),
                             //网课加速
                             GardCard(
                                 boxCotainer: Row(

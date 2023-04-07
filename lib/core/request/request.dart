@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:flutter_template/config/base_config.dart';
 import 'package:flutter_template/core/http/http.dart';
+import 'package:flutter_template/core/http/http_app.dart';
 import './model/equipment_data.dart';
 
 class Request {
@@ -23,5 +25,17 @@ class Request {
     }
     print('设备：$equipmentData');
     return equipmentData;
+  }
+
+  getTRUsedFlow(parameterNames, sn) async {
+    Map<String, dynamic> data = {
+      'deviceId': sn,
+      'name': 'getParameterValues',
+      'parameterNames': parameterNames
+    };
+    var res = await App.post(
+        '${BaseConfig.cloudBaseUrl}/platform/tr069/getParameterValues',
+        data: data);
+    return res;
   }
 }

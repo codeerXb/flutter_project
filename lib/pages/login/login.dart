@@ -401,7 +401,7 @@ class _LoginState extends State<Login> {
                   Padding(padding: EdgeInsets.only(top: 10.w)),
                   Text(
                     // '${S.of(context).currentDeive} ${loginController.userEquipment['deviceSn']}',
-                    '${S.of(context).currentDeive} RS621A00211700113',
+                    '${S.of(context).currentDeive} $sn',
                     style: TextStyle(
                         fontSize: 28.sp, color: const Color(0xFF373543)),
                   ),

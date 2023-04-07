@@ -187,7 +187,7 @@ class _SettingState extends State<Setting> {
   // 添加设备
   Widget addEquipments() {
     return CommonWidget.simpleWidgetWithMine(
-        title: S.of(context).EthernetStatus,
+        title: S.of(context).addDevice,
         icon: const Icon(Icons.add_circle_outline,
             color: Color.fromARGB(255, 61, 103, 243)),
         callBack: () {

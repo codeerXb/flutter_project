@@ -129,6 +129,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "accountEmpty": MessageLookupByLibrary.simpleMessage("账号不能为空"),
         "accountEnter": MessageLookupByLibrary.simpleMessage("请输入账号"),
         "accountSecurity": MessageLookupByLibrary.simpleMessage("登录管理"),
+        "addDevice": MessageLookupByLibrary.simpleMessage("添加设备"),
         "advancedSet": MessageLookupByLibrary.simpleMessage("高级设置"),
         "aesRecommend": MessageLookupByLibrary.simpleMessage("AES(推荐)"),
         "aivideo": MessageLookupByLibrary.simpleMessage("AI视频"),

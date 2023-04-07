@@ -161,6 +161,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "accountEnter": MessageLookupByLibrary.simpleMessage(
             "Please enter the account number"),
         "accountSecurity": MessageLookupByLibrary.simpleMessage("Account"),
+        "addDevice": MessageLookupByLibrary.simpleMessage("Add Device"),
         "advancedSet":
             MessageLookupByLibrary.simpleMessage("Advanced Settings"),
         "aesRecommend": MessageLookupByLibrary.simpleMessage("AES(Recommend)"),

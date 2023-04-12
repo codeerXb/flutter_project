@@ -100,7 +100,7 @@ class _NetStatusState extends State<NetStatus> {
       printInfo(info: 'state--${loginController.login.state}');
       if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
         if (mounted) {
-          updateTROnlineCount();
+          getTROnlineCount();
         }
       }
       if (loginController.login.state == 'local') {
@@ -168,7 +168,7 @@ class _NetStatusState extends State<NetStatus> {
         printInfo(info: 'state--${loginController.login.state}');
         if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
           if (mounted) {
-            updateTROnlineCount();
+            getTROnlineCount();
           }
         }
         if (loginController.login.state == 'local') {
@@ -186,7 +186,7 @@ class _NetStatusState extends State<NetStatus> {
   }
 
   ///  获取  云端
-  updateTROnlineCount() async {
+  getTROnlineCount() async {
     printInfo(info: 'sn在这里有值吗-------$sn');
     var parameterNames = [
       "InternetGatewayDevice.WEB_GUI.Overview.DeviceList",
@@ -194,7 +194,7 @@ class _NetStatusState extends State<NetStatus> {
       "InternetGatewayDevice.WEB_GUI.Overview.WANStatus.DLRateCurrent",
       "InternetGatewayDevice.WEB_GUI.Overview.WANStatus.ULRateCurrent"
     ];
-    var res = await Request().getTRUsedFlow(parameterNames, sn);
+    var res = await Request().setTRUsedFlow(parameterNames, sn);
     try {
       var jsonObj = jsonDecode(res);
       setState(() {
@@ -263,7 +263,6 @@ class _NetStatusState extends State<NetStatus> {
         upKb = double.parse(upKb.toStringAsFixed(2));
         upUnit = 'Kbps';
       });
-      return res;
     } catch (e) {
       debugPrint('获取信息失败：${e.toString()}');
     }

@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
+import 'package:flutter_template/core/request/request.dart';
+import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:flutter_template/pages/network_settings/model/wan_data.dart';
 import 'package:get/get.dart';
 import '../../../core/widget/custom_app_bar.dart';
@@ -25,13 +27,85 @@ class _WanSettingsState extends State<WanSettings> {
   String showVal = '';
   int val = 0;
   String wanVal = 'nat';
+  String sn = '';
+  String type = '';
 
   WanNetworkModel wanNetwork = WanNetworkModel();
+  final LoginController loginController = Get.put(LoginController());
 
   @override
   void initState() {
     super.initState();
-    getWanVal();
+    sharedGetData('deviceSn', String).then(((res) {
+      printInfo(info: 'deviceSn$res');
+      setState(() {
+        sn = res.toString();
+        //状态为local 请求本地  状态为cloud  请求云端
+        printInfo(info: 'state--${loginController.login.state}');
+        if (mounted) {
+          if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
+            getTRWanVal();
+          }
+          if (loginController.login.state == 'local') {
+            getWanVal();
+          }
+        }
+      });
+    }));
+  }
+
+  // 获取 云端
+  getTRWanVal() async {
+    printInfo(info: 'sn在这里有值吗-------$sn');
+    var parameterNames = [
+      "InternetGatewayDevice.WEB_GUI.Network.WANSettings.NetworkMode",
+    ];
+    var res = await Request().setTRUsedFlow(parameterNames, sn);
+    try {
+      var jsonObj = jsonDecode(res);
+      printInfo(info: '````$jsonObj');
+      setState(() {
+        type = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Network"]
+            ["WANSettings"]["NetworkMode"]["_type"];
+        printInfo(info: '2222$type');
+        var radioState = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
+            ["Network"]["WANSettings"]["NetworkMode"]["_value"];
+        if (radioState == 'nat') {
+          showVal = 'NAT';
+          val = 0;
+        }
+        if (radioState == 'bridge') {
+          showVal = S.current.BRIDGE;
+          val = 1;
+        }
+        if (radioState == 'router') {
+          showVal = 'ROUTER';
+          val = 2;
+        }
+      });
+    } catch (e) {
+      debugPrint('获取信息失败：${e.toString()}');
+    }
+  }
+
+// 设置 云端
+  setTRWanData() async {
+    var parameterNames = [
+      [
+        "InternetGatewayDevice.WEB_GUI.Network.WANSettings.NetworkMode",
+        wanVal,
+        type
+      ]
+    ];
+    var res = await Request().getTRUsedFlow(parameterNames, sn);
+    printInfo(info: '----$res');
+    try {
+      var jsonObj = jsonDecode(res);
+      printInfo(info: '````$jsonObj');
+      setState(() {});
+    } catch (e) {
+      debugPrint('获取信息失败：${e.toString()}');
+    }
   }
 
   void getWanData() {
@@ -129,11 +203,53 @@ class _WanSettingsState extends State<WanSettings> {
                                           'ROUTER'
                                         ][val],
                                         if (val == 0)
-                                          {wanVal = 'nat', getWanData()},
+                                          {
+                                            wanVal = 'nat',
+                                            if (mounted)
+                                              {
+                                                if (loginController
+                                                            .login.state ==
+                                                        'cloud' &&
+                                                    sn.isNotEmpty)
+                                                  {setTRWanData()}
+                                                else if (loginController
+                                                        .login.state ==
+                                                    'local')
+                                                  {getWanData()}
+                                              }
+                                          },
                                         if (val == 1)
-                                          {wanVal = 'bridge', getWanData()},
+                                          {
+                                            wanVal = 'bridge',
+                                            if (mounted)
+                                              {
+                                                if (loginController
+                                                            .login.state ==
+                                                        'cloud' &&
+                                                    sn.isNotEmpty)
+                                                  {setTRWanData()}
+                                                else if (loginController
+                                                        .login.state ==
+                                                    'local')
+                                                  {getWanData()}
+                                              }
+                                          },
                                         if (val == 2)
-                                          {wanVal = 'router', getWanData()},
+                                          {
+                                            wanVal = 'router',
+                                            if (mounted)
+                                              {
+                                                if (loginController
+                                                            .login.state ==
+                                                        'cloud' &&
+                                                    sn.isNotEmpty)
+                                                  {setTRWanData()}
+                                                else if (loginController
+                                                        .login.state ==
+                                                    'local')
+                                                  {getWanData()}
+                                              }
+                                          },
                                       })
                                 }
                             });

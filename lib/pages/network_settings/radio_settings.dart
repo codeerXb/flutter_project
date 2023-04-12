@@ -182,14 +182,13 @@ class _RadioSettingsState extends State<RadioSettings> {
           radioGTitle = '5G ${S.of(context).status}';
         }
       });
-      return res;
     } catch (e) {
       debugPrint('获取信息失败：${e.toString()}');
     }
   }
 
 // 设置 云端
-  getTRRadioSettingData() async {
+  setTRRadioSettingData() async {
     var parameterNames = [
       [
         "InternetGatewayDevice.WEB_GUI.Network.NR-LTE.ConnectMethod",
@@ -368,7 +367,7 @@ class _RadioSettingsState extends State<RadioSettings> {
                                                             .login.state ==
                                                         'cloud' &&
                                                     sn.isNotEmpty)
-                                                  {getTRRadioSettingData()}
+                                                  {setTRRadioSettingData()}
                                                 else if (loginController
                                                         .login.state ==
                                                     'local')
@@ -384,7 +383,7 @@ class _RadioSettingsState extends State<RadioSettings> {
                                                             .login.state ==
                                                         'cloud' &&
                                                     sn.isNotEmpty)
-                                                  {getTRRadioSettingData()}
+                                                  {setTRRadioSettingData()}
                                                 else if (loginController
                                                         .login.state ==
                                                     'local')

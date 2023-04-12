@@ -31,7 +31,9 @@ class _MyWidgetState extends State<Equipment> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(milliseconds: 2000), () {
-      getqueryingBoundDevices();
+      if (mounted) {
+        getqueryingBoundDevices();
+      }
       return;
     });
     sharedGetData("user_token", String).then((data) {

@@ -2,9 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_template/config/base_config.dart';
 import 'package:flutter_template/core/http/http.dart';
-import 'package:flutter_template/core/http/http_app.dart';
+import 'package:flutter_template/core/request/request.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/pages/equInfo/equinfo_datas.dart';
@@ -94,26 +93,21 @@ class _EquInfoState extends State<EquInfo> {
 
 // 云端
   getTREquinfoDatas() async {
-    Map<String, dynamic> data = {
-      'deviceId': sn,
-      'name': 'getParameterValues',
-      'parameterNames': [
-        "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.ProductModel",
-        "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.HardVersion",
-        "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.SoftwareVersion",
-        "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.UBOOTVersion",
-        "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.SerialNumber",
-        "InternetGatewayDevice.WEB_GUI.Overview.ModuleInfo.IMEI",
-        "InternetGatewayDevice.WEB_GUI.Overview.ModuleInfo.IMSI",
-        "InternetGatewayDevice.WEB_GUI.Overview.LANStatus.MACAddress",
-        "InternetGatewayDevice.WEB_GUI.Overview.LANStatus.IPAddress",
-        "InternetGatewayDevice.WEB_GUI.Overview.LANStatus.SubnetMask",
-        "InternetGatewayDevice.WEB_GUI.Overview.SystemInfo.RunTime"
-      ]
-    };
-    var res = await App.post(
-        '${BaseConfig.cloudBaseUrl}/platform/tr069/getParameterValues',
-        data: data);
+    printInfo(info: 'sn在这里有值吗-------$sn');
+    var parameterNames = [
+      "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.ProductModel",
+      "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.HardVersion",
+      "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.SoftwareVersion",
+      "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.UBOOTVersion",
+      "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.SerialNumber",
+      "InternetGatewayDevice.WEB_GUI.Overview.ModuleInfo.IMEI",
+      "InternetGatewayDevice.WEB_GUI.Overview.ModuleInfo.IMSI",
+      "InternetGatewayDevice.WEB_GUI.Overview.LANStatus.MACAddress",
+      "InternetGatewayDevice.WEB_GUI.Overview.LANStatus.IPAddress",
+      "InternetGatewayDevice.WEB_GUI.Overview.LANStatus.SubnetMask",
+      "InternetGatewayDevice.WEB_GUI.Overview.SystemInfo.RunTime"
+    ];
+    var res = await Request().setTRUsedFlow(parameterNames, sn);
     try {
       Map<String, dynamic> d = jsonDecode(res);
       setState(() {
@@ -143,7 +137,7 @@ class _EquInfoState extends State<EquInfo> {
             ["Overview"]["VersionInfo"]["UBOOTVersion"]["_value"];
       });
     } catch (e) {
-      debugPrint('获取设备信息失败：$e.toString()');
+      debugPrint('获取设备信息失败：${e.toString()}');
     }
   }
 

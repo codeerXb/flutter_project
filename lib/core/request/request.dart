@@ -27,7 +27,8 @@ class Request {
     return equipmentData;
   }
 
-  getTRUsedFlow(parameterNames, sn) async {
+  //获取云端数据
+  setTRUsedFlow(parameterNames, sn) async {
     Map<String, dynamic> data = {
       'deviceId': sn,
       'name': 'getParameterValues',
@@ -35,6 +36,19 @@ class Request {
     };
     var res = await App.post(
         '${BaseConfig.cloudBaseUrl}/platform/tr069/getParameterValues',
+        data: data);
+    return res;
+  }
+
+  //设置云端数据
+  getTRUsedFlow(parameterNames, sn) async {
+    Map<String, dynamic> data = {
+      'deviceId': sn,
+      'name': 'setParameterValues',
+      'parameterValues': parameterNames
+    };
+    var res = await App.post(
+        '${BaseConfig.cloudBaseUrl}/platform/tr069/setParameterValues',
         data: data);
     return res;
   }

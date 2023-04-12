@@ -51,17 +51,25 @@ class _NetStatusState extends State<NetStatus> {
   String _wifiStatus = '0';
   // sim卡连接状况：1:连通0：未连接
   String _simStatus = '0';
-  // 上行速率
+  // 上行速率总数
   double _upRate = 0;
-  // 下行速率
+  //下行速率转换
+  double upKb = 0;
+  // 下行速率总数
   double _downRate = 0;
+  // 下行速率转换
+  double downKb = 0;
   // 实时在线设备数量
   int _onlineCount = 0;
   // 剩余流量百分比
   // double _progress = 0;
 
-  // 已经使用的流量
+  // 已经使用的流量总数
   double _usedFlow = 0;
+  // 已经使用的流量总数 整数部分
+  int usedFlowInt = 0;
+  // 已经使用的流量总数 小数部分
+  String usedFlowDecimals = '0';
   // 定义套餐总量
   final double _totalComboData = 0;
 
@@ -91,20 +99,19 @@ class _NetStatusState extends State<NetStatus> {
     timer = Timer.periodic(const Duration(seconds: 2), (t) async {
       printInfo(info: 'state--${loginController.login.state}');
       if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
-        // 获取流量
-        getTRUsedFlow();
-        // 获取设备列表并更新在线数量
-        updateTROnlineCount();
-        // 获取网络连接状态和上下行速率并更新
-        updateTRStatus();
+        if (mounted) {
+          updateTROnlineCount();
+        }
       }
-      if (loginController.login.state == 'local' && mounted) {
-        // 获取流量
-        getUsedFlow();
-        // 获取设备列表并更新在线数量
-        updateOnlineCount();
-        // 获取网络连接状态和上下行速率并更新
-        updateStatus();
+      if (loginController.login.state == 'local') {
+        if (mounted) {
+          // 获取流量
+          getUsedFlow();
+          // 获取设备列表并更新在线数量
+          updateOnlineCount();
+          // 获取网络连接状态和上下行速率并更新
+          updateStatus();
+        }
       }
     });
     // updateStatus();
@@ -160,52 +167,106 @@ class _NetStatusState extends State<NetStatus> {
         //状态为local 请求本地  状态为cloud  请求云端
         printInfo(info: 'state--${loginController.login.state}');
         if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
-          // 获取流量
-          getTRUsedFlow();
-          // 获取设备列表并更新在线数量
-          updateTROnlineCount();
-          // 获取网络连接状态和上下行速率并更新
-          updateTRStatus();
+          if (mounted) {
+            updateTROnlineCount();
+          }
         }
-        if (loginController.login.state == 'local' && mounted) {
-          // 获取流量
-          getUsedFlow();
-          // 获取设备列表并更新在线数量
-          updateOnlineCount();
-          // 获取网络连接状态和上下行速率并更新
-          updateStatus();
+        if (loginController.login.state == 'local') {
+          if (mounted) {
+            // 获取流量
+            getUsedFlow();
+            // 获取设备列表并更新在线数量
+            updateOnlineCount();
+            // 获取网络连接状态和上下行速率并更新
+            updateStatus();
+          }
         }
       });
     }));
   }
 
-  ///  获取设备列表并更新在线数量  云端  未做完 接口返回数据不对
-  Future<String?> updateTROnlineCount() async {
+  ///  获取  云端
+  updateTROnlineCount() async {
     printInfo(info: 'sn在这里有值吗-------$sn');
-    var parameterNames = ["InternetGatewayDevice.WEB_GUI.Overview.DeviceList"];
+    var parameterNames = [
+      "InternetGatewayDevice.WEB_GUI.Overview.DeviceList",
+      "InternetGatewayDevice.WEB_GUI.Overview.ThroughputStatisticsList",
+      "InternetGatewayDevice.WEB_GUI.Overview.WANStatus.DLRateCurrent",
+      "InternetGatewayDevice.WEB_GUI.Overview.WANStatus.ULRateCurrent"
+    ];
     var res = await Request().getTRUsedFlow(parameterNames, sn);
-    setState(() {
+    try {
       var jsonObj = jsonDecode(res);
-      var flowTableName = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
-          ["Overview"]["DeviceList"];
-      printInfo(info: 'flowTableName---$flowTableName');
-      // double flowTable =
-      //     double.parse(flowTableName["1"]["ReceivedTotal"]["_value"]!) +
-      //         double.parse(flowTableName["1"]["SentTotal"]["_value"]!) +
-      //         double.parse(flowTableName["2"]["ReceivedTotal"]["_value"]!) +
-      //         double.parse(flowTableName["2"]["SentTotal"]["_value"]!) +
-      //         double.parse(flowTableName["3"]["ReceivedTotal"]["_value"]!) +
-      //         double.parse(flowTableName["3"]["SentTotal"]["_value"]!) +
-      //         double.parse(flowTableName["4"]["ReceivedTotal"]["_value"]!) +
-      //         double.parse(flowTableName["4"]["SentTotal"]["_value"]!);
       setState(() {
-        // _usedFlow = flowTable / 1048576;
-        // _progress =
-        //     (1 - (usedFlowBytes / (_totalComboData * 1024 * 1024 * 1024))) *
-        //         100;
+        // 列表数量
+        Map<String, dynamic> flowTableName = jsonObj["data"]
+            ["InternetGatewayDevice"]["WEB_GUI"]["Overview"]["DeviceList"];
+        printInfo(info: 'flowTableName---$flowTableName');
+        // List<dynamic> array = flowTableName.values.toList();
+
+        // print('+++++${array.length}');
+        // printInfo(info: 'flowTableName---${flowTableName.length}');
+        // flowTableName.Object.keys(flowTableName).filter(r=>/[0-9]+/g.test(r)).length;
+        // 已用流量
+        var flowTable = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
+            ["Overview"]["ThroughputStatisticsList"];
+        double flowTableVal =
+            double.parse(flowTable["1"]["ReceivedTotal"]["_value"]!) +
+                double.parse(flowTable["1"]["SentTotal"]["_value"]!) +
+                double.parse(flowTable["2"]["ReceivedTotal"]["_value"]!) +
+                double.parse(flowTable["2"]["SentTotal"]["_value"]!) +
+                double.parse(flowTable["3"]["ReceivedTotal"]["_value"]!) +
+                double.parse(flowTable["3"]["SentTotal"]["_value"]!) +
+                double.parse(flowTable["4"]["ReceivedTotal"]["_value"]!) +
+                double.parse(flowTable["4"]["SentTotal"]["_value"]!);
+        _usedFlow = flowTableVal / 1048576;
+
+        /// 舍弃当前变量的小数部分，结果为 33。返回值为 int 类型。
+        usedFlowInt = (_usedFlow >= 1024)
+            ? (_usedFlow / 1024).truncate()
+            : _usedFlow.truncate();
+
+        /// 获取小数部分，通过.分割，返回值为String类型
+        usedFlowDecimals = (_usedFlow >= 1024)
+            ? '${(_usedFlow / 1024).toStringAsFixed(2).toString().split('.')[1].substring(0, 2)}GB'
+            : '${_usedFlow.toStringAsFixed(2).toString().split('.')[1].substring(0, 1)}MB';
+
+        // 上下行速率
+        var flow = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
+            ["Overview"]["WANStatus"];
+        _upRate = double.parse(flow["ULRateCurrent"]["_value"]);
+        _downRate = double.parse(flow["DLRateCurrent"]["_value"]);
+
+        downKb = (_downRate * 8) / 1000;
+        if (downKb >= 1000 * 1000) {
+          // gb/s
+          downKb = double.parse((downKb / 1000 / 1000).toStringAsFixed(2));
+          dowUnit = 'Gbps';
+        } else if (downKb >= 1000) {
+          // mb/s
+          downKb = double.parse((downKb / 1000).toStringAsFixed(2));
+          dowUnit = 'Mbps';
+        }
+        downKb = double.parse(downKb.toStringAsFixed(2));
+        dowUnit = 'Kbps';
+
+        upKb = (_upRate * 8) / 1000;
+        if (upKb >= 1000 * 1000) {
+          // gb/s
+          upKb = double.parse((upKb / 1000 / 1000).toStringAsFixed(2));
+          upUnit = 'Gbps';
+        } else if (upKb >= 1000) {
+          // mb/s
+          upKb = double.parse((upKb / 1000).toStringAsFixed(2));
+          upUnit = 'Mbps';
+        }
+        upKb = double.parse(upKb.toStringAsFixed(2));
+        upUnit = 'Kbps';
       });
-    });
-    return res;
+      return res;
+    } catch (e) {
+      debugPrint('获取信息失败：${e.toString()}');
+    }
   }
 
   /// 获取设备列表并更新在线数量  本地
@@ -227,6 +288,7 @@ class _NetStatusState extends State<NetStatus> {
       var onlineDevice =
           OnlineDevice.fromJson(jsonDecode(res)).onlineDeviceTable;
       if (onlineDevice != null && mounted) {
+        printInfo(info: 'onlineDevice------$onlineDevice');
         printInfo(info: 'onlineDevice------${onlineDevice.length}');
         setState(() {
           _onlineCount = onlineDevice.length;
@@ -236,52 +298,6 @@ class _NetStatusState extends State<NetStatus> {
     } catch (e) {
       debugPrint("获取设备列表错误：${e.toString()}");
     }
-  }
-
-  ///  获取网络连接状态和上下行速率并更新  云端
-  Future<String?> updateTRStatus() async {
-    printInfo(info: 'sn在这里有值吗-------$sn');
-    var parameterNames = [
-      "InternetGatewayDevice.WEB_GUI.Overview.WANStatus.DLRateCurrent",
-      "InternetGatewayDevice.WEB_GUI.Overview.WANStatus.ULRateCurrent"
-    ];
-    var res = await Request().getTRUsedFlow(parameterNames, sn);
-    setState(() {
-      var jsonObj = jsonDecode(res);
-      var flowTableName = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
-          ["Overview"]["WANStatus"];
-      _upRate = double.parse(flowTableName["ULRateCurrent"]["_value"]);
-      _downRate = double.parse(flowTableName["DLRateCurrent"]["_value"]);
-
-      setState(() {
-        double downKb = (_downRate * 8) / 1000;
-        if (downKb >= 1000 * 1000) {
-          // gb/s
-          downKb = double.parse((downKb / 1000 / 1000).toStringAsFixed(2));
-          dowUnit = 'Gbit/s';
-        } else if (downKb >= 1000) {
-          // mb/s
-          downKb = double.parse((downKb / 1000).toStringAsFixed(2));
-          dowUnit = 'Mbit/s';
-        }
-        downKb = double.parse(downKb.toStringAsFixed(2));
-        dowUnit = 'Kbit/s';
-
-        double upKb = (_upRate * 8) / 1000;
-        if (upKb >= 1000 * 1000) {
-          // gb/s
-          upKb = double.parse((upKb / 1000 / 1000).toStringAsFixed(2));
-          upUnit = 'Gbit/s';
-        } else if (upKb >= 1000) {
-          // mb/s
-          upKb = double.parse((upKb / 1000).toStringAsFixed(2));
-          upUnit = 'Mbit/s';
-        }
-        upKb = double.parse(upKb.toStringAsFixed(2));
-        upUnit = 'Kbit/s';
-      });
-    });
-    return res;
   }
 
   /// 获取网络连接状态和上下行速率并更新  本地
@@ -326,42 +342,37 @@ class _NetStatusState extends State<NetStatus> {
           _simStatus = simStatus;
           _upRate = upRate;
           _downRate = downRate;
+          downKb = (_downRate * 8) / 1000;
+          if (downKb >= 1000 * 1000) {
+            // gb/s
+            downKb = double.parse((downKb / 1000 / 1000).toStringAsFixed(2));
+            dowUnit = 'Gbps';
+          } else if (downKb >= 1000) {
+            // mb/s
+            downKb = double.parse((downKb / 1000).toStringAsFixed(2));
+            dowUnit = 'Mbps';
+          }
+          downKb = double.parse(downKb.toStringAsFixed(2));
+          dowUnit = 'Kbps';
+
+          upKb = (_upRate * 8) / 1000;
+          if (upKb >= 1000 * 1000) {
+            // gb/s
+            upKb = double.parse((upKb / 1000 / 1000).toStringAsFixed(2));
+            upUnit = 'Gbps';
+          } else if (upKb >= 1000) {
+            // mb/s
+            upKb = double.parse((upKb / 1000).toStringAsFixed(2));
+            upUnit = 'Mbps';
+          }
+          upKb = double.parse(upKb.toStringAsFixed(2));
+          upUnit = 'Kbps';
         });
       }
       debugPrint('wanStatus=$wanStatus,wifi=$wifiStatus,sim=$simStatus');
     } catch (err) {
       debugPrint(err.toString());
     }
-  }
-
-  /// 获取云端已用流量  云端
-  Future<String?> getTRUsedFlow() async {
-    printInfo(info: 'sn在这里有值吗-------$sn');
-    var parameterNames = [
-      "InternetGatewayDevice.WEB_GUI.Overview.ThroughputStatisticsList"
-    ];
-    var res = await Request().getTRUsedFlow(parameterNames, sn);
-    setState(() {
-      var jsonObj = jsonDecode(res);
-      var flowTableName = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
-          ["Overview"]["ThroughputStatisticsList"];
-      double flowTable =
-          double.parse(flowTableName["1"]["ReceivedTotal"]["_value"]!) +
-              double.parse(flowTableName["1"]["SentTotal"]["_value"]!) +
-              double.parse(flowTableName["2"]["ReceivedTotal"]["_value"]!) +
-              double.parse(flowTableName["2"]["SentTotal"]["_value"]!) +
-              double.parse(flowTableName["3"]["ReceivedTotal"]["_value"]!) +
-              double.parse(flowTableName["3"]["SentTotal"]["_value"]!) +
-              double.parse(flowTableName["4"]["ReceivedTotal"]["_value"]!) +
-              double.parse(flowTableName["4"]["SentTotal"]["_value"]!);
-      setState(() {
-        _usedFlow = flowTable / 1048576;
-        // _progress =
-        //     (1 - (usedFlowBytes / (_totalComboData * 1024 * 1024 * 1024))) *
-        //         100;
-      });
-    });
-    return res;
   }
 
   /// 请求获取已用流量  本地
@@ -395,9 +406,16 @@ class _NetStatusState extends State<NetStatus> {
             double.parse(flowTable[3].sendBytes!);
         setState(() {
           _usedFlow = usedFlowBytes / 1048576;
-          // _progress =
-          //     (1 - (usedFlowBytes / (_totalComboData * 1024 * 1024 * 1024))) *
-          //         100;
+
+          /// 舍弃当前变量的小数部分，结果为 33。返回值为 int 类型。
+          usedFlowInt = (_usedFlow >= 1024)
+              ? (_usedFlow / 1024).truncate()
+              : _usedFlow.truncate();
+
+          /// 获取小数部分，通过.分割，返回值为String类型
+          usedFlowDecimals = (_usedFlow >= 1024)
+              ? '${(_usedFlow / 1024).toStringAsFixed(2).toString().split('.')[1].substring(0, 2)}GB'
+              : '${_usedFlow.toStringAsFixed(2).toString().split('.')[1].substring(0, 1)}MB';
         });
       }
       printInfo(info: '_usedFlow$_usedFlow');
@@ -566,7 +584,7 @@ class _NetStatusState extends State<NetStatus> {
                           Column(
                             children: [
                               Text(
-                                '$_usedFlow',
+                                '$usedFlowInt.$usedFlowDecimals',
                                 style: TextStyle(
                                     fontSize: 30.sp,
                                     color: const Color(0xff051220)),
@@ -612,7 +630,7 @@ class _NetStatusState extends State<NetStatus> {
                           ),
                         ],
                       )),
-                      //下载速率
+                      //上传速率
                       WhiteCard(
                           boxCotainer: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -620,7 +638,7 @@ class _NetStatusState extends State<NetStatus> {
                           Column(
                             children: [
                               Text(
-                                '$_downRate$dowUnit',
+                                '$upKb$upUnit',
                                 style: TextStyle(
                                     fontSize: 30.sp,
                                     color: const Color(0xff051220)),
@@ -649,10 +667,11 @@ class _NetStatusState extends State<NetStatus> {
                                   )
                                 ]),
                           ),
+                          // 下载速率
                           Column(
                             children: [
                               Text(
-                                '$_upRate$upUnit',
+                                '$downKb$dowUnit',
                                 style: TextStyle(
                                     fontSize: 30.sp,
                                     color: const Color(0xff051220)),

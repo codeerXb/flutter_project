@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
@@ -39,6 +40,34 @@ class _LoginState extends State<Login> {
   Color _passwordBorderColor = Colors.white;
   EquipmentData equipmentData = EquipmentData();
 
+  Timer? timer = Timer.periodic(const Duration(minutes: 0), (timer) {});
+
+  void login(pwd) {
+    debugPrint('登录密码：$pwd');
+    Map<String, dynamic> data = {
+      'username': 'superadmin',
+      'password': 'admin', //utf8.decode(base64Decode(pwd))
+    };
+    XHttp.get('/action/appLogin', data).then((res) {
+      try {
+        debugPrint("+++++++++++++");
+        var d = json.decode(res.toString());
+        debugPrint('登录成功${d['token']}');
+        loginController.setSession(d['sessionid']);
+        sharedAddAndUpdate("session", String, d['sessionid']);
+        loginController.setToken(d['token']);
+        sharedAddAndUpdate("token", String, d['token']);
+        // debugPrint(d);
+      } on FormatException catch (e) {
+        debugPrint('登录错误1$e');
+        Get.offNamed("/get_equipment");
+      }
+    }).catchError((onError) {
+      Get.offNamed("/get_equipment");
+      debugPrint('登录错误2${onError.toString()}');
+    });
+  }
+
   void appLogin() {
     Map<String, dynamic> data = {
       'username': _account.trim(),
@@ -66,9 +95,16 @@ class _LoginState extends State<Login> {
               ToastUtils.toast(d['message']);
               loginController.setUserEquipment('deviceSn', sn);
               sharedAddAndUpdate("deviceSn", String, sn);
+              timer = Timer.periodic(const Duration(minutes: 5), (timer) {
+                debugPrint('登录当前时间${DateTime.now()}');
+                // 再次请求登录
+                login(_password.trim());
+              });
               Get.offNamed("/home", arguments: {"sn": sn, "vn": vn});
             }
           }).catchError((err) {
+            timer?.cancel();
+            timer = null;
             debugPrint('响应------>$err');
             //相应超超时
             if (err['code'] == DioErrorType.connectTimeout) {
@@ -85,6 +121,8 @@ class _LoginState extends State<Login> {
         }
       }
     }).catchError((err) {
+      timer?.cancel();
+      timer = null;
       if (err.response != null) {
         var resjson = json.decode(err.response.toString());
         var errRes = ExceptionLogin.fromJson(resjson);
@@ -363,7 +401,7 @@ class _LoginState extends State<Login> {
                   Padding(padding: EdgeInsets.only(top: 10.w)),
                   Text(
                     // '${S.of(context).currentDeive} ${loginController.userEquipment['deviceSn']}',
-                    '${S.of(context).currentDeive} RS621A00211700113',
+                    '${S.of(context).currentDeive} $sn',
                     style: TextStyle(
                         fontSize: 28.sp, color: const Color(0xFF373543)),
                   ),

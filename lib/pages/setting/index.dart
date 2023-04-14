@@ -28,6 +28,9 @@ class Setting extends StatefulWidget {
 class _SettingState extends State<Setting> {
   final ToolbarController toolbarController = Get.put(ToolbarController());
 
+  // 获取sn
+  String sn = '';
+
   /// 用户信息
   UserModel userModel = UserModel();
   final LoginController loginController = Get.put(LoginController());
@@ -53,6 +56,12 @@ class _SettingState extends State<Setting> {
     sharedGetData('user_token', String).then(((res) {
       setState(() {
         _User = res.toString();
+      });
+    }));
+    sharedGetData('deviceSn', String).then(((res) {
+      printInfo(info: 'deviceSn$res');
+      setState(() {
+        sn = res.toString();
       });
     }));
   }
@@ -97,6 +106,10 @@ class _SettingState extends State<Setting> {
                   /// 文件上传与下载
                   // fileUplodAndDownload(),
                   // const Divider(),
+
+                  // 添加设备
+                  addEquipments(),
+
                   //解绑
                   unbindingDevice(),
                   //订阅服务
@@ -171,6 +184,17 @@ class _SettingState extends State<Setting> {
     );
   }
 
+  // 添加设备
+  Widget addEquipments() {
+    return CommonWidget.simpleWidgetWithMine(
+        title: S.of(context).addDevice,
+        icon: const Icon(Icons.add_circle_outline,
+            color: Color.fromARGB(255, 61, 103, 243)),
+        callBack: () {
+          Get.toNamed("/get_equipment");
+        });
+  }
+
   //解绑
   _openAvatarBottomSheet() {
     showModalBottomSheet(
@@ -207,7 +231,7 @@ class _SettingState extends State<Setting> {
                       height: 60.w,
                       alignment: Alignment.topLeft,
                       child: Text(
-                        "${S.of(context).unblockdevice} ${loginController.userEquipment['deviceSn']} ${S.of(context).binding}",
+                        "${S.of(context).unblockdevice} $sn ${S.of(context).binding}",
                         style:
                             TextStyle(color: Colors.black45, fontSize: 22.sp),
                       ),
@@ -246,7 +270,7 @@ class _SettingState extends State<Setting> {
                       InkWell(
                         onTap: () {
                           App.post(
-                                  '${BaseConfig.cloudBaseUrl}/platform/appCustomer/unBoundCpe?deviceSn=${loginController.userEquipment['deviceSn']}')
+                                  '${BaseConfig.cloudBaseUrl}/platform/appCustomer/unBoundCpe?deviceSn=$sn')
                               .then((res) {
                             var d = json.decode(res.toString());
                             debugPrint('响应------>$d');

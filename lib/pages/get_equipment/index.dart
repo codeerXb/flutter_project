@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_template/config/base_config.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/http/http_app.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
@@ -26,13 +24,16 @@ class Equipment extends StatefulWidget {
 class _MyWidgetState extends State<Equipment> {
   final LoginController loginController = Get.put(LoginController());
   final ToolbarController toolbarController = Get.put(ToolbarController());
-
+  bool isStringBPresent = false;
+  List appList = [];
   EquipmentData equipmentData = EquipmentData();
   @override
   void initState() {
     super.initState();
     Future.delayed(const Duration(milliseconds: 2000), () {
-      getqueryingBoundDevices();
+      if (mounted) {
+        getqueryingBoundDevices();
+      }
       return;
     });
     sharedGetData("user_token", String).then((data) {
@@ -42,56 +43,78 @@ class _MyWidgetState extends State<Equipment> {
   }
 
 // 搜索页面
-  void appLogin(pwd, sn, vn) {
-    Map<String, dynamic> data = {
-      'username': 'superadmin',
-      'password': utf8.decode(base64Decode(pwd)),
-    };
-    XHttp.get('/action/appLogin', data).then((res) {
-      try {
-        print("+++++++++++++");
-        var d = json.decode(res.toString());
-        print(d['token']);
-        loginController.setSession(d['sessionid']);
-        sharedAddAndUpdate("session", String, d['sessionid']);
+  // void appLogin(pwd, sn, vn) {
+  //   Map<String, dynamic> data = {
+  //     'username': 'superadmin',
+  //     'password': utf8.decode(base64Decode(pwd)),
+  //   };
+  //   XHttp.get('/action/appLogin', data).then((res) {
+  //     try {
+  //       print("+++++++++++++");
+  //       var d = json.decode(res.toString());
+  //       print(d['token']);
+  //       loginController.setSession(d['sessionid']);
+  //       sharedAddAndUpdate("session", String, d['sessionid']);
 
-        loginController.setToken(d['token']);
-        sharedAddAndUpdate("token", String, d['token']);
-        if (d['code'] == 200) {
-          App.post(
-                  '${BaseConfig.cloudBaseUrl}/platform/appCustomer/bindingCpe?deviceSn=$sn')
-              .then((res) {
-            var d = json.decode(res.toString());
+  //       loginController.setToken(d['token']);
+  //       sharedAddAndUpdate("token", String, d['token']);
+  //       if (d['code'] == 200) {
+  //         App.post(
+  //                 '${BaseConfig.cloudBaseUrl}/platform/appCustomer/bindingCpe?deviceSn=$sn')
+  //             .then((res) {
+  //           var d = json.decode(res.toString());
 
-            debugPrint('99999------>$d');
-            if (d['code'] != 200) {
-              ToastUtils.error(S.current.check);
-              return;
-            } else {
-              ToastUtils.toast(d['message']);
-              loginController.setUserEquipment('deviceSn', sn);
-              sharedAddAndUpdate("deviceSn", String, sn);
-              Get.offNamed("/home", arguments: {"sn": sn, "vn": vn});
-            }
-          }).catchError((err) {
-            debugPrint('响应------>$err');
-            //相应超超时
-            if (err['code'] == DioErrorType.connectTimeout) {
-              debugPrint('timeout');
-              ToastUtils.error(S.current.contimeout);
-            }
-          });
+  //           debugPrint('99999------>$d');
+  //           if (d['code'] != 200) {
+  //             ToastUtils.error(S.current.check);
+  //             return;
+  //           } else {
+  //             ToastUtils.toast(d['message']);
+  //             loginController.setUserEquipment('deviceSn', sn);
+  //             sharedAddAndUpdate("deviceSn", String, sn);
+  //             Get.offNamed("/home", arguments: {"sn": sn, "vn": vn});
+  //           }
+  //         }).catchError((err) {
+  //           debugPrint('响应------>$err');
+  //           //相应超超时
+  //           if (err['code'] == DioErrorType.connectTimeout) {
+  //             debugPrint('timeout');
+  //             ToastUtils.error(S.current.contimeout);
+  //           }
+  //         });
+  //       }
+  //       // print(d);
+  //     } on FormatException catch (e) {
+  //       print('----------');
+  //       Get.offNamed("/loginPage", arguments: {"sn": sn, "vn": vn});
+  //       print('The provided string is not valid JSON');
+  //       print(e);
+  //     }
+  //   }).catchError((onError) {
+  //     Get.offNamed("/loginPage", arguments: {"sn": sn, "vn": vn});
+
+  //     debugPrint(onError.toString());
+  //   });
+  // }
+
+  //  查询绑定设备 App
+  void getqueryingBoundDevices() {
+    sharedGetData("user_token", String).then((data) {
+      loginController.setUserToken(data);
+    });
+    App.get('/platform/appCustomer/queryCustomerCpe').then((res) {
+      var d = json.decode(json.encode(res));
+      if (d['code'] != 200) {
+        ToastUtils.error(S.of(context).failed);
+        return;
+      } else {
+        appList = d['data'];
+        if (d['data'] != []) {
+          appList = d['data'].map((text) => (text)).toList();
+          getEquipmentData();
         }
-        // print(d);
-      } on FormatException catch (e) {
-        print('----------');
-        Get.offNamed("/loginPage", arguments: {"sn": sn, "vn": vn});
-        print('The provided string is not valid JSON');
-        print(e);
       }
     }).catchError((onError) {
-      Get.offNamed("/loginPage", arguments: {"sn": sn, "vn": vn});
-
       debugPrint(onError.toString());
     });
   }
@@ -113,13 +136,19 @@ class _MyWidgetState extends State<Equipment> {
             equipmentData = EquipmentData.fromJson(d);
           });
         }
-        if (equipmentData.systemVersionSn != null || appList.isNotEmpty) {
-          for (var object in appList) {
-            if (object['deviceSn'].contains(equipmentData.systemVersionSn)) {
-              isStringBPresent = true;
+        setState(() {
+          if (equipmentData.systemVersionSn != null || appList.isNotEmpty) {
+            for (var object in appList) {
+              String dev = 'deviceSn';
+              String devvalue = equipmentData.systemVersionSn.toString();
+              if (object.containsKey(dev)) {
+                var value = object[dev];
+                isStringBPresent = value == devvalue;
+              }
+              printInfo(info: 'isStringBPresent===$isStringBPresent');
             }
           }
-        }
+        });
       } on FormatException catch (e) {
         setState(() {
           equipmentData = EquipmentData(
@@ -138,30 +167,6 @@ class _MyWidgetState extends State<Equipment> {
               systemVersionSn: '');
         });
       }
-      debugPrint(onError.toString());
-    });
-  }
-
-  bool isStringBPresent = false;
-  List appList = [];
-  //  查询绑定设备 App
-  void getqueryingBoundDevices() {
-    sharedGetData("user_token", String).then((data) {
-      loginController.setUserToken(data);
-    });
-    App.get('/platform/appCustomer/queryCustomerCpe').then((res) {
-      var d = json.decode(json.encode(res));
-      appList = d['data'];
-      if (d['data'] != []) {
-        appList = d['data'].map((text) => (text)).toList();
-        printInfo(info: 'isStringBPresent$isStringBPresent');
-        getEquipmentData();
-      }
-      if (d['code'] != 200) {
-        ToastUtils.error(S.of(context).failed);
-        return;
-      }
-    }).catchError((onError) {
       debugPrint(onError.toString());
     });
   }
@@ -240,7 +245,7 @@ class _MyWidgetState extends State<Equipment> {
                         TextButton(
                           onPressed: () {
                             childKey.currentState!.controllerForward();
-                            int num = 0;
+                            // int num = 0;
                             // timer = Timer.periodic(
                             //     const Duration(milliseconds: 1000), (time) {
                             //   if (num > 5) {
@@ -248,8 +253,9 @@ class _MyWidgetState extends State<Equipment> {
                             //   }
                             //   num += 2;
                             //   // 确保页面存在时，调用异步方法
-                            // });
+                            //   printInfo(info: '111先走这里嘛');
                             if (mounted) getqueryingBoundDevices();
+                            // });
                           },
                           child: Text(S.of(context).rescan),
                         ),
@@ -257,6 +263,7 @@ class _MyWidgetState extends State<Equipment> {
                   ),
                 ),
                 if (isStringBPresent == false)
+                  // Text('$isStringBPresent')
                   if (equipmentData.systemProductModel != null)
                     Card(
                       elevation: 5, //设置卡片阴影的深度
@@ -298,6 +305,10 @@ class _MyWidgetState extends State<Equipment> {
                                 //   } else {
                                 loginController.setSn(
                                     equipmentData.systemVersionSn, '');
+                                loginController.setState('local');
+                                printInfo(
+                                    info:
+                                        'state--${loginController.login.state}');
                                 Get.offNamed("/loginPage", arguments: {
                                   "sn": equipmentData.systemVersionSn,
                                   "vn": equipmentData.systemProductModel
@@ -364,6 +375,10 @@ class _MyWidgetState extends State<Equipment> {
                                         appList[index]['deviceSn'].toString());
                                     sharedAddAndUpdate("deviceSn", String,
                                         appList[index]['deviceSn'].toString());
+                                    loginController.setState('cloud');
+                                    printInfo(
+                                        info:
+                                            'state--${loginController.login.state}');
                                     Get.offNamed("/home", arguments: {
                                       "sn":
                                           appList[index]['deviceSn'].toString(),

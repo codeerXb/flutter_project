@@ -1,10 +1,11 @@
 {
+  "addDevice": "Add Device",
   "list": "List of Bound Items",
   "failed": "Failed to retrieve binding list",
   "check": "Please check if the network is connected",
   "register": "Register",
   "skip": "Skip",
-  "userLogin":"Subscriber Login",
+  "userLogin": "Subscriber Login",
   "login": "Login",
   "cpeManagementPlatform": "",
   "phoneLabel": "Enter your mobile phone nubmer",

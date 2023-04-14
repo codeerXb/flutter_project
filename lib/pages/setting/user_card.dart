@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/widget/common_widget.dart';
+import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
 
 import '../../generated/l10n.dart';
@@ -15,6 +16,8 @@ class UserCard extends StatefulWidget {
 }
 
 class _UserCardState extends State<UserCard> {
+  final LoginController loginController = Get.put(LoginController());
+
   //手机号
   String _userPhone = 'null';
   String sn = 'null';
@@ -75,6 +78,10 @@ class _UserCardState extends State<UserCard> {
                     ? S.of(context).logOut
                     : S.of(context).login,
                 callBack: () {
+                  if (_userPhone != 'null') {
+                    loginController.setState('cloud');
+                    printInfo(info: 'state--${loginController.login.state}');
+                  }
                   Get.offNamed("/user_login");
                   sharedDeleteData('user_phone');
                   sharedDeleteData('user_token');

@@ -50,6 +50,16 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `Add Device`
+  String get addDevice {
+    return Intl.message(
+      'Add Device',
+      name: 'addDevice',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `List of Bound Items`
   String get list {
     return Intl.message(

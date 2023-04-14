@@ -676,7 +676,9 @@ class _NetStatusState extends State<NetStatus> {
                               minimumSize: MaterialStateProperty.all<Size>(
                                   Size(100.w, 100.w)),
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              Get.toNamed('/wlan_set');
+                            },
                             child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: const [
@@ -753,7 +755,10 @@ class _NetStatusState extends State<NetStatus> {
                                 children: [
                                   Icon(Icons.child_care,
                                       color: Colors.blue[500], size: 80.sp),
-                                  Expanded(
+                                  ConstrainedBox(
+                                    constraints: BoxConstraints(
+                                      maxWidth: 180.w,
+                                    ),
                                     child: FittedBox(
                                       child: Text(
                                         S.current.parent,
@@ -779,10 +784,15 @@ class _NetStatusState extends State<NetStatus> {
                                     color: Colors.blue[500],
                                     size: 80.sp,
                                   ),
-                                  Expanded(
-                                    child: Text(
-                                      S.current.monitor,
-                                      textAlign: TextAlign.right,
+                                  ConstrainedBox(
+                                    constraints: BoxConstraints(
+                                      maxWidth: 180.w,
+                                    ),
+                                    child: FittedBox(
+                                      child: Text(
+                                        S.current.monitor,
+                                        textAlign: TextAlign.right,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -798,7 +808,10 @@ class _NetStatusState extends State<NetStatus> {
                                   color: Colors.blue[500],
                                   size: 80.sp,
                                 ),
-                                Expanded(
+                                ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    maxWidth: 180.w,
+                                  ),
                                   child: FittedBox(
                                     child: Text(
                                       S.current.netSpeed,
@@ -816,7 +829,10 @@ class _NetStatusState extends State<NetStatus> {
                                 children: [
                                   Icon(Icons.book,
                                       color: Colors.blue[500], size: 80.sp),
-                                  Expanded(
+                                  ConstrainedBox(
+                                    constraints: BoxConstraints(
+                                      maxWidth: 180.w,
+                                    ),
                                     child: FittedBox(
                                       child: Text(
                                         S.current.online,
@@ -837,7 +853,10 @@ class _NetStatusState extends State<NetStatus> {
                                   color: Colors.blue[500],
                                   size: 80.sp,
                                 ),
-                                Expanded(
+                                ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    maxWidth: 180.w,
+                                  ),
                                   child: FittedBox(
                                     child: Text(
                                       S.current.game,

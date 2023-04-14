@@ -279,7 +279,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "oldPassowld": MessageLookupByLibrary.simpleMessage("Old Password"),
         "online": MessageLookupByLibrary.simpleMessage("Online Course"),
         "options": MessageLookupByLibrary.simpleMessage("Options"),
-        "parent": MessageLookupByLibrary.simpleMessage("Parent Control"),
+        "parent": MessageLookupByLibrary.simpleMessage("Parental Control"),
         "parentalControl":
             MessageLookupByLibrary.simpleMessage("Parental Control"),
         "passError": MessageLookupByLibrary.simpleMessage(

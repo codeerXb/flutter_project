@@ -2500,10 +2500,10 @@ class S {
     );
   }
 
-  /// `Parent Control`
+  /// `Parental Control`
   String get parent {
     return Intl.message(
-      'Parent Control',
+      'Parental Control',
       name: 'parent',
       desc: '',
       args: [],

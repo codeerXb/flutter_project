@@ -1,4 +1,5 @@
 {
+  "tokenExpired": "登录已过期",
   "addDevice": "添加设备",
   "list": "已绑定列表",
   "failed": "获取绑定列表失败",

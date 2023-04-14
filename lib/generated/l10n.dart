@@ -50,6 +50,16 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `Login has expired`
+  String get tokenExpired {
+    return Intl.message(
+      'Login has expired',
+      name: 'tokenExpired',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Add Device`
   String get addDevice {
     return Intl.message(
@@ -70,10 +80,10 @@ class S {
     );
   }
 
-  /// `Failed to retrieve binding list`
+  /// `Failed to get the bound device`
   String get failed {
     return Intl.message(
-      'Failed to retrieve binding list',
+      'Failed to get the bound device',
       name: 'failed',
       desc: '',
       args: [],

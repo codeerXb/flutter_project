@@ -261,6 +261,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "timeOnline": MessageLookupByLibrary.simpleMessage("实时在线"),
         "timeout": MessageLookupByLibrary.simpleMessage("设备连接超时"),
         "to": MessageLookupByLibrary.simpleMessage("至"),
+        "tokenExpired": MessageLookupByLibrary.simpleMessage("登录已过期"),
         "traffic": MessageLookupByLibrary.simpleMessage("套餐"),
         "trafficPackage": MessageLookupByLibrary.simpleMessage("流量套餐"),
         "type": MessageLookupByLibrary.simpleMessage("类型"),

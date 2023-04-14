@@ -1,7 +1,8 @@
 {
+  "tokenExpired": "Login has expired",
   "addDevice": "Add Device",
   "list": "List of Bound Items",
-  "failed": "Failed to retrieve binding list",
+  "failed": "Failed to get the bound device",
   "check": "Please check if the network is connected",
   "register": "Register",
   "skip": "Skip",

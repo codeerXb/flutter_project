@@ -215,7 +215,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "error": MessageLookupByLibrary.simpleMessage("Error"),
         "examine": MessageLookupByLibrary.simpleMessage("Examine"),
         "failed": MessageLookupByLibrary.simpleMessage(
-            "Failed to retrieve binding list"),
+            "Failed to get the bound device"),
         "fri": MessageLookupByLibrary.simpleMessage("fri"),
         "game": MessageLookupByLibrary.simpleMessage("Game Booster"),
         "gameAcceleration":
@@ -326,6 +326,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "timeout":
             MessageLookupByLibrary.simpleMessage("Device connection timeout"),
         "to": MessageLookupByLibrary.simpleMessage("To"),
+        "tokenExpired":
+            MessageLookupByLibrary.simpleMessage("Login has expired"),
         "traffic": MessageLookupByLibrary.simpleMessage("Traffic"),
         "trafficPackage": MessageLookupByLibrary.simpleMessage("Data Plan"),
         "type": MessageLookupByLibrary.simpleMessage("Type"),

@@ -82,7 +82,11 @@ class _AccountSecurityState extends State<AccountSecurity> {
     super.dispose();
   }
 
-    //验证旧密码
+  // 云端 参数
+// InternetGatewayDevice.WEB_GUI.System.Account.ChangePassword
+// InternetGatewayDevice.WEB_GUI.System.Account.ChangePassword.Admin
+// InternetGatewayDevice.WEB_GUI.System.Account.ChangePassword.User
+  //验证旧密码
   void getAccountSetting() async {
     Map<String, dynamic> data = {
       'method': 'user_pwd',
@@ -101,7 +105,7 @@ class _AccountSecurityState extends State<AccountSecurity> {
             ToastUtils.toast(accountSetData.msg.toString());
           }
         });
-      } on FormatException catch (e) {
+      } on FormatException {
         ToastUtils.toast(S.current.error);
       }
     }).catchError((onError) {
@@ -130,7 +134,7 @@ class _AccountSecurityState extends State<AccountSecurity> {
       }
     }).catchError((onError) {
       debugPrint('失败333：${onError.toString()}');
-      ToastUtils.toast(S.current.error + '333');
+      ToastUtils.toast('${S.current.error}333');
     });
   }
 

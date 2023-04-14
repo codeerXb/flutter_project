@@ -100,6 +100,12 @@ class _MaintainSettingsState extends State<MaintainSettings> {
     Get.offAllNamed("/get_equipment");
   }
 
+// 重启定时 云端参数
+// InternetGatewayDevice.WEB_GUI.ScheduleReboot
+// InternetGatewayDevice.WEB_GUI.ScheduleReboot.DateToReboot	0;0;0;0;0;0;0
+// InternetGatewayDevice.WEB_GUI.ScheduleReboot.Enable	true
+// InternetGatewayDevice.WEB_GUI.ScheduleReboot.Time
+
   // 重启定时提交
   void getTrestsetData() {
     Map<String, dynamic> data = {

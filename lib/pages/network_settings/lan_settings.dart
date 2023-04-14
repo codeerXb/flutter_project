@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/core/request/request.dart';
+import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
 import '../../../core/widget/custom_app_bar.dart';
 import '../../core/http/http.dart';
@@ -68,10 +70,35 @@ class _LanSettingsState extends State<LanSettings> {
 
   double comboContain = -1;
 
+  String sn = '';
+  String typeIp = '';
+  String typeSub = '';
+  String typeSer = '';
+  String typeSta = '';
+  String typeEnd = '';
+  String typeLea = '';
+
+  final LoginController loginController = Get.put(LoginController());
+
   @override
   void initState() {
     super.initState();
-    getLanSettingData();
+    sharedGetData('deviceSn', String).then(((res) {
+      printInfo(info: 'deviceSn$res');
+      setState(() {
+        sn = res.toString();
+        //状态为local 请求本地  状态为cloud  请求云端
+        printInfo(info: 'state--${loginController.login.state}');
+        if (mounted) {
+          if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
+            getTRLanData();
+          }
+          if (loginController.login.state == 'local') {
+            getLanSettingData();
+          }
+        }
+      });
+    }));
 
     lanTimeController.addListener(() {
       debugPrint('监听租约时间：${lanTimeController.text}');
@@ -125,6 +152,128 @@ class _LanSettingsState extends State<LanSettings> {
       debugPrint(
           '1测试${address.text}.${address1.text}.${address2.text}.${address3.text}');
     });
+  }
+
+// 获取 云端
+  getTRLanData() async {
+    printInfo(info: 'sn在这里有值吗-------$sn');
+    var parameterNames = [
+      "InternetGatewayDevice.WEB_GUI.Network.LANSettings.LANHost.IPAddress",
+      "InternetGatewayDevice.WEB_GUI.Network.LANSettings.LANHost.SubnetMask",
+      "InternetGatewayDevice.WEB_GUI.Network.LANSettings.DHCP.ServerEnable",
+      "InternetGatewayDevice.WEB_GUI.Network.LANSettings.DHCP.StartIP",
+      "InternetGatewayDevice.WEB_GUI.Network.LANSettings.DHCP.EndIP",
+      "InternetGatewayDevice.WEB_GUI.Network.LANSettings.DHCP.LeaseTime",
+    ];
+    var res = await Request().setTRUsedFlow(parameterNames, sn);
+    try {
+      var jsonObj = jsonDecode(res);
+      printInfo(info: '````$jsonObj');
+      setState(() {
+        // 类型
+        typeIp = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Network"]
+            ["LANSettings"]["LANHost"]["IPAddress"]["_type"];
+        typeSub = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Network"]
+            ["LANSettings"]["LANHost"]["SubnetMask"]["_type"];
+        typeSer = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Network"]
+            ["LANSettings"]["DHCP"]["ServerEnable"]["_type"];
+        typeSta = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Network"]
+            ["LANSettings"]["DHCP"]["StartIP"]["_type"];
+        typeEnd = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Network"]
+            ["LANSettings"]["DHCP"]["EndIP"]["_type"];
+        typeLea = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Network"]
+            ["LANSettings"]["DHCP"]["LeaseTime"]["_type"];
+
+        // IP地址
+        addressVal = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
+            ["Network"]["LANSettings"]["LANHost"]["IPAddress"]["_value"];
+        address.text = addressVal.split('.')[0];
+        address1.text = addressVal.split('.')[1];
+        address2.text = addressVal.split('.')[2];
+        address3.text = addressVal.split('.')[3];
+
+        // 子网掩码
+        subnetMaskVal = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
+            ["Network"]["LANSettings"]["LANHost"]["SubnetMask"]["_value"];
+        subnetMask.text = subnetMaskVal.split('.')[0];
+        subnetMask1.text = subnetMaskVal.split('.')[1];
+        subnetMask2.text = subnetMaskVal.split('.')[2];
+        subnetMask3.text = subnetMaskVal.split('.')[3];
+
+        // DHCP
+        if (jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Network"]
+                ["LANSettings"]["DHCP"]["ServerEnable"]["_value"] ==
+            true) {
+          isCheck = true;
+          isCheckVal = '1';
+        } else {
+          isCheck = false;
+          isCheckVal = '0';
+        }
+
+        // 开始网址最后一位
+        startVal = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
+            ["Network"]["LANSettings"]["DHCP"]["StartIP"]["_value"];
+        start.text = startVal.split('.')[3];
+
+        // 结束网址最后一位 end
+        endVal = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Network"]
+            ["LANSettings"]["DHCP"]["EndIP"]["_value"];
+        end.text = endVal.split('.')[3];
+
+        // 租约时间
+        lanTimeController.text = jsonObj["data"]["InternetGatewayDevice"]
+                    ["WEB_GUI"]["Network"]["LANSettings"]["DHCP"]["LeaseTime"]
+                ["_value"]
+            .toString();
+      });
+    } catch (e) {
+      debugPrint('获取信息失败：${e.toString()}');
+    }
+  }
+
+// 设置 云端
+  setTRLanData() async {
+    var parameterNames = [
+      [
+        "InternetGatewayDevice.WEB_GUI.Network.LANSettings.LANHost.IPAddress",
+        '${address.text}.${address1.text}.${address2.text}.${address3.text}',
+        typeIp
+      ],
+      [
+        "InternetGatewayDevice.WEB_GUI.Network.LANSettings.LANHost.SubnetMask",
+        '${subnetMask.text}.${subnetMask1.text}.${subnetMask2.text}.${subnetMask3.text}',
+        typeSub
+      ],
+      [
+        "InternetGatewayDevice.WEB_GUI.Network.LANSettings.DHCP.ServerEnable",
+        '$isCheck',
+        typeSer
+      ],
+      [
+        "InternetGatewayDevice.WEB_GUI.Network.LANSettings.DHCP.StartIP",
+        '${address.text}.${address1.text}.${address2.text}.${start.text}',
+        typeSta
+      ],
+      [
+        "InternetGatewayDevice.WEB_GUI.Network.LANSettings.DHCP.EndIP",
+        '${address.text}.${address1.text}.${address2.text}.${end.text}',
+        typeEnd
+      ],
+      [
+        "InternetGatewayDevice.WEB_GUI.Network.LANSettings.DHCP.LeaseTime",
+        lanTimeController.text,
+        typeLea
+      ]
+    ];
+    var res = await Request().getTRUsedFlow(parameterNames, sn);
+    try {
+      var jsonObj = jsonDecode(res);
+      printInfo(info: '````$jsonObj');
+      setState(() {});
+    } catch (e) {
+      debugPrint('获取信息失败：${e.toString()}');
+    }
   }
 
   void getLanSettingData() async {
@@ -463,10 +612,17 @@ class _LanSettingsState extends State<LanSettings> {
                           backgroundColor: MaterialStateProperty.all(
                               const Color.fromARGB(255, 48, 118, 250))),
                       onPressed: () {
-                        if (isCheckVal == '1') {
-                          getLanSettingSubmit();
-                        } else {
-                          getLanSetting();
+                        if (mounted) {
+                          if (loginController.login.state == 'cloud' &&
+                              sn.isNotEmpty) {
+                            setTRLanData();
+                          } else if (loginController.login.state == 'local') {
+                            if (isCheckVal == '1') {
+                              getLanSettingSubmit();
+                            } else {
+                              getLanSetting();
+                            }
+                          }
                         }
                       },
                       child: Text(

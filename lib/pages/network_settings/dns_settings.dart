@@ -2,6 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/core/request/request.dart';
+import 'package:flutter_template/core/utils/shared_preferences_util.dart';
+import 'package:flutter_template/pages/login/login_controller.dart';
+import 'package:get/get.dart';
 import '../../../core/widget/custom_app_bar.dart';
 import '../../core/http/http.dart';
 import '../../core/utils/toast.dart';
@@ -37,13 +41,32 @@ class _DnsSettingsState extends State<DnsSettings> {
 
   DnsData dnsDataVal = DnsData();
 
-  String aa = '';
-  String bb = '';
+  // String primary = '';
+  // String subsidiary = '';
+  String sn = '';
+  String type = '';
+
+  final LoginController loginController = Get.put(LoginController());
 
   @override
   void initState() {
     super.initState();
-    getDnsData();
+    sharedGetData('deviceSn', String).then(((res) {
+      printInfo(info: 'deviceSn$res');
+      setState(() {
+        sn = res.toString();
+        //状态为local 请求本地  状态为cloud  请求云端
+        printInfo(info: 'state--${loginController.login.state}');
+        if (mounted) {
+          if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
+            getTRDnsData();
+          }
+          if (loginController.login.state == 'local') {
+            getDnsData();
+          }
+        }
+      });
+    }));
 
     dsnMain.addListener(() {
       debugPrint('监听主：${dsnMain.text}');
@@ -84,12 +107,12 @@ class _DnsSettingsState extends State<DnsSettings> {
     //     dsnMain1.text == '' &&
     //     dsnMain2.text == '' &&
     //     dsnMain3.text == '') {
-    //   aa = '{"lteManualDns1":"","lteManualDns2":""}';
-    //   debugPrint('----11---$aa');
+    //   primary = '{"lteManualDns1":"","lteManualDns2":""}';
+    //   debugPrint('----11---$primary');
     // } else {
-    //   aa =
-    // '{"lteManualDns1":"${dsnMain.text}.${dsnMain1.text}.${dsnMain2.text}.${dsnMain3.text}","lteManualDns2":"${dsnAssist.text}.${dsnAssist1.text}.${dsnAssist2.text}.${dsnAssist3.text}"}';
-    //   debugPrint('----22---$aa');
+    //   primary =
+    //       '{"lteManualDns1":"${dsnMain.text}.${dsnMain1.text}.${dsnMain2.text}.${dsnMain3.text}","lteManualDns2":"${dsnAssist.text}.${dsnAssist1.text}.${dsnAssist2.text}.${dsnAssist3.text}"}';
+    //   debugPrint('----22---$primary');
     // }
   }
 
@@ -99,6 +122,69 @@ class _DnsSettingsState extends State<DnsSettings> {
   /// 点击空白  关闭输入键盘
   void closeKeyboard(BuildContext context) {
     FocusScope.of(context).requestFocus(blankNode);
+  }
+
+  // 获取 云端
+  getTRDnsData() async {
+    printInfo(info: 'sn在这里有值吗-------$sn');
+    var parameterNames = [
+      "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.DNSServers",
+    ];
+    var res = await Request().setTRUsedFlow(parameterNames, sn);
+    try {
+      var jsonObj = jsonDecode(res);
+      printInfo(info: '````$jsonObj');
+      setState(() {
+        type = jsonObj["data"]["InternetGatewayDevice"]["WANDevice"]["1"]
+                ["WANConnectionDevice"]["1"]["WANIPConnection"]["1"]
+            ["DNSServers"]["_type"];
+        var dnsStart = jsonObj["data"]["InternetGatewayDevice"]["WANDevice"]
+                ["1"]["WANConnectionDevice"]["1"]["WANIPConnection"]["1"]
+            ["DNSServers"]["_value"];
+        dsnMainVal = dnsStart.split(',')[0];
+        dsnMain.text =
+            dsnMainVal.split('.')[0] == "" ? "" : dsnMainVal.split('.')[0];
+        dsnMain1.text =
+            dsnMainVal.split('.')[1] == "" ? "" : dsnMainVal.split('.')[1];
+        dsnMain2.text =
+            dsnMainVal.split('.')[2] == "" ? "" : dsnMainVal.split('.')[2];
+        dsnMain3.text =
+            dsnMainVal.split('.')[3] == "" ? "" : dsnMainVal.split('.')[3];
+
+        // 辅
+        dsnAssistVal = dnsStart.split(',')[1];
+        dsnAssist.text =
+            dsnAssistVal.split('.')[0] == "" ? "" : dsnAssistVal.split('.')[0];
+        dsnAssist1.text =
+            dsnAssistVal.split('.')[1] == "" ? "" : dsnAssistVal.split('.')[1];
+        dsnAssist2.text =
+            dsnAssistVal.split('.')[2] == "" ? "" : dsnAssistVal.split('.')[2];
+        dsnAssist3.text =
+            dsnAssistVal.split('.')[3] == "" ? "" : dsnAssistVal.split('.')[3];
+      });
+    } catch (e) {
+      debugPrint('获取信息失败：${e.toString()}');
+    }
+  }
+
+// 设置 云端
+  setTRDnsData() async {
+    var parameterNames = [
+      [
+        "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.DNSServers",
+        '${dsnMain.text}.${dsnMain1.text}.${dsnMain2.text}.${dsnMain3.text},${dsnAssist.text}.${dsnAssist1.text}.${dsnAssist2.text}.${dsnAssist3.text}',
+        type
+      ]
+    ];
+    var res = await Request().getTRUsedFlow(parameterNames, sn);
+    printInfo(info: '----$res');
+    try {
+      var jsonObj = jsonDecode(res);
+      printInfo(info: '````$jsonObj');
+      setState(() {});
+    } catch (e) {
+      debugPrint('获取信息失败：${e.toString()}');
+    }
   }
 
   void getDnsData() async {
@@ -219,7 +305,6 @@ class _DnsSettingsState extends State<DnsSettings> {
                     Flexible(
                       child: Text(
                         S.of(context).dnsStatic,
-                        
                         style: TextStyle(fontSize: 24.sp, color: Colors.red),
                       ),
                     ),
@@ -300,17 +385,25 @@ class _DnsSettingsState extends State<DnsSettings> {
                                 backgroundColor: MaterialStateProperty.all(
                                     const Color.fromARGB(255, 48, 118, 250))),
                             onPressed: () {
-                              if (dsnMain.text == '' &&
-                                  dsnMain1.text == '' &&
-                                  dsnMain2.text == '' &&
-                                  dsnMain3.text == '' &&
-                                  dsnAssist.text == '' &&
-                                  dsnAssist1.text == '' &&
-                                  dsnAssist2.text == '' &&
-                                  dsnAssist3.text == '') {
-                                getRadioData();
-                              } else {
-                                getRadioSettingData();
+                              if (mounted) {
+                                if (loginController.login.state == 'cloud' &&
+                                    sn.isNotEmpty) {
+                                  setTRDnsData();
+                                } else if (loginController.login.state ==
+                                    'local') {
+                                  if (dsnMain.text == '' &&
+                                      dsnMain1.text == '' &&
+                                      dsnMain2.text == '' &&
+                                      dsnMain3.text == '' &&
+                                      dsnAssist.text == '' &&
+                                      dsnAssist1.text == '' &&
+                                      dsnAssist2.text == '' &&
+                                      dsnAssist3.text == '') {
+                                    getRadioData();
+                                  } else {
+                                    getRadioSettingData();
+                                  }
+                                }
                               }
                             },
                             child: Text(

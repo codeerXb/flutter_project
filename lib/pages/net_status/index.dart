@@ -467,12 +467,13 @@ class _NetStatusState extends State<NetStatus> {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-          image: DecorationImage(
-              alignment: Alignment.topCenter,
-              image: AssetImage(
-                'assets/images/picture_home.png',
-              ),
-              fit: BoxFit.fitWidth)),
+        image: DecorationImage(
+            alignment: Alignment.topCenter,
+            image: AssetImage(
+              'assets/images/picture_home.png',
+            ),
+            fit: BoxFit.fitWidth),
+      ),
       child: Scaffold(
         appBar: AppBar(
           elevation: 0,
@@ -580,52 +581,67 @@ class _NetStatusState extends State<NetStatus> {
                           boxCotainer: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          Column(
-                            children: [
-                              Text(
-                                '$usedFlowInt.$usedFlowDecimals',
-                                style: TextStyle(
-                                    fontSize: 30.sp,
-                                    color: const Color(0xff051220)),
-                              ),
-                              Text(
-                                S.of(context).used,
-                                style: TextStyle(
-                                  fontSize: 28.sp,
-                                  color: Colors.black54,
+                          Expanded(
+                            child: Column(
+                              children: [
+                                Text(
+                                  '$usedFlowInt.$usedFlowDecimals',
+                                  style: TextStyle(
+                                      fontSize: 30.sp,
+                                      color: const Color(0xff051220)),
                                 ),
-                              ),
-                            ],
+                                Text(
+                                  S.of(context).used,
+                                  style: TextStyle(
+                                    fontSize: 28.sp,
+                                    color: Colors.black54,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                           ElevatedButton(
                             style: ButtonStyle(
                               shape: MaterialStateProperty.all(
                                   const CircleBorder()),
+                              minimumSize: MaterialStateProperty.all<Size>(
+                                  Size(100.w, 100.w)),
                             ),
                             onPressed: () {},
                             child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(S.of(context).traffic),
-                                  Text(S.of(context).sets),
-                                ]),
-                          ),
-                          Column(
-                            children: [
-                              Text(
-                                '5 GB / ${S.current.month}',
-                                style: TextStyle(
-                                    fontSize: 30.sp,
-                                    color: const Color(0xff051220)),
-                              ),
-                              Text(
-                                S.of(context).trafficPackage,
-                                style: TextStyle(
-                                  fontSize: 24.sp,
-                                  color: Colors.black54,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  S.of(context).traffic,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontSize: 20.sp),
                                 ),
-                              ),
-                            ],
+                                Text(
+                                  S.of(context).sets,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontSize: 20.sp),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              children: [
+                                Text(
+                                  '5 GB / ${S.current.month}',
+                                  style: TextStyle(
+                                      fontSize: 30.sp,
+                                      color: const Color(0xff051220)),
+                                ),
+                                Text(
+                                  S.of(context).trafficPackage,
+                                  style: TextStyle(
+                                    fontSize: 24.sp,
+                                    color: Colors.black54,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       )),
@@ -634,27 +650,31 @@ class _NetStatusState extends State<NetStatus> {
                           boxCotainer: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          Column(
-                            children: [
-                              Text(
-                                '$upKb$upUnit',
-                                style: TextStyle(
-                                    fontSize: 30.sp,
-                                    color: const Color(0xff051220)),
-                              ),
-                              Text(
-                                S.current.up,
-                                style: TextStyle(
-                                  fontSize: 28.sp,
-                                  color: Colors.black54,
+                          Expanded(
+                            child: Column(
+                              children: [
+                                Text(
+                                  '$upKb$upUnit',
+                                  style: TextStyle(
+                                      fontSize: 30.sp,
+                                      color: const Color(0xff051220)),
                                 ),
-                              ),
-                            ],
+                                Text(
+                                  S.current.up,
+                                  style: TextStyle(
+                                    fontSize: 28.sp,
+                                    color: Colors.black54,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                           ElevatedButton(
                             style: ButtonStyle(
                               shape: MaterialStateProperty.all(
                                   const CircleBorder()),
+                              minimumSize: MaterialStateProperty.all<Size>(
+                                  Size(100.w, 100.w)),
                             ),
                             onPressed: () {},
                             child: Column(
@@ -667,22 +687,24 @@ class _NetStatusState extends State<NetStatus> {
                                 ]),
                           ),
                           // 下载速率
-                          Column(
-                            children: [
-                              Text(
-                                '$downKb$dowUnit',
-                                style: TextStyle(
-                                    fontSize: 30.sp,
-                                    color: const Color(0xff051220)),
-                              ),
-                              Text(
-                                S.current.down,
-                                style: TextStyle(
-                                  fontSize: 28.sp,
-                                  color: Colors.black54,
+                          Expanded(
+                            child: Column(
+                              children: [
+                                Text(
+                                  '$downKb$dowUnit',
+                                  style: TextStyle(
+                                      fontSize: 30.sp,
+                                      color: const Color(0xff051220)),
                                 ),
-                              ),
-                            ],
+                                Text(
+                                  S.current.down,
+                                  style: TextStyle(
+                                    fontSize: 28.sp,
+                                    color: Colors.black54,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       )),
@@ -731,7 +753,14 @@ class _NetStatusState extends State<NetStatus> {
                                 children: [
                                   Icon(Icons.child_care,
                                       color: Colors.blue[500], size: 80.sp),
-                                  Text(S.current.parent),
+                                  Expanded(
+                                    child: FittedBox(
+                                      child: Text(
+                                        S.current.parent,
+                                        textAlign: TextAlign.right,
+                                      ),
+                                    ),
+                                  ),
                                 ],
                               )),
                             ),
@@ -745,43 +774,77 @@ class _NetStatusState extends State<NetStatus> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  FaIcon(FontAwesomeIcons.video,
-                                      color: Colors.blue[500], size: 80.sp),
-                                  Text(S.current.monitor),
+                                  FaIcon(
+                                    FontAwesomeIcons.video,
+                                    color: Colors.blue[500],
+                                    size: 80.sp,
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      S.current.monitor,
+                                      textAlign: TextAlign.right,
+                                    ),
+                                  ),
                                 ],
                               )),
                             ),
                             //网络测速
-                            FittedBox(
-                              child: GardCard(
-                                  boxCotainer: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Icon(Icons.network_check,
-                                      color: Colors.blue[500], size: 80.sp),
-                                  Text(S.current.netSpeed),
-                                ],
-                              )),
-                            ),
-                            //网课加速
                             GardCard(
                                 boxCotainer: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Icon(Icons.book,
-                                    color: Colors.blue[500], size: 80.sp),
-                                Text(S.current.online),
+                                Icon(
+                                  Icons.network_check,
+                                  color: Colors.blue[500],
+                                  size: 80.sp,
+                                ),
+                                Expanded(
+                                  child: FittedBox(
+                                    child: Text(
+                                      S.current.netSpeed,
+                                      textAlign: TextAlign.right,
+                                    ),
+                                  ),
+                                ),
                               ],
                             )),
+                            //网课加速
+                            GardCard(
+                              boxCotainer: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Icon(Icons.book,
+                                      color: Colors.blue[500], size: 80.sp),
+                                  Expanded(
+                                    child: FittedBox(
+                                      child: Text(
+                                        S.current.online,
+                                        textAlign: TextAlign.right,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                             //游戏加速
                             GardCard(
                                 boxCotainer: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Icon(Icons.speed,
-                                    color: Colors.blue[500], size: 80.sp),
-                                Text(S.current.game),
+                                Icon(
+                                  Icons.speed,
+                                  color: Colors.blue[500],
+                                  size: 80.sp,
+                                ),
+                                Expanded(
+                                  child: FittedBox(
+                                    child: Text(
+                                      S.current.game,
+                                      textAlign: TextAlign.right,
+                                    ),
+                                  ),
+                                ),
                               ],
                             )),
                           ],

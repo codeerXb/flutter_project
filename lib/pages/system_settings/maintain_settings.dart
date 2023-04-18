@@ -157,11 +157,11 @@ class _MaintainSettingsState extends State<MaintainSettings> {
       printInfo(info: '````$jsonObj');
       setState(() {
         typeEnable = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
-            ["ScheduleReboot"]["DateToReboot"]["_type"];
+            ["ScheduleReboot"]["DateToReboot"]["_type"]!;
         typeDateToReboot = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
-            ["ScheduleReboot"]["Enable"]["_type"];
+            ["ScheduleReboot"]["Enable"]["_type"]!;
         typeTime = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
-            ["ScheduleReboot"]["Time"]["_type"];
+            ["ScheduleReboot"]["Time"]["_type"]!;
 
         if (jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
                 ["ScheduleReboot"]["Enable"]["_value"] ==

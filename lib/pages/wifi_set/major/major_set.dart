@@ -3,10 +3,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
+import 'package:flutter_template/core/request/request.dart';
+import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_picker.dart';
+import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:flutter_template/pages/wifi_set/major/major_datas.dart';
+import 'package:get/get.dart';
 import '../../../core/widget/custom_app_bar.dart';
 import '../../../generated/l10n.dart';
 
@@ -23,10 +27,29 @@ class _MajorSetState extends State<MajorSet> {
   majorDatas majorData = majorDatas(wifiRegionCountry: 'CN');
   int index = 0;
   dynamic val = 'CN';
+
+  final LoginController loginController = Get.put(LoginController());
+  String sn = '';
+  String type = '';
   @override
   void initState() {
     super.initState();
-    getData();
+    sharedGetData('deviceSn', String).then(((res) {
+      printInfo(info: 'deviceSn$res');
+      setState(() {
+        sn = res.toString();
+        //状态为local 请求本地  状态为cloud  请求云端
+        printInfo(info: 'state--${loginController.login.state}');
+        if (mounted) {
+          if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
+            getTRDate();
+          }
+          if (loginController.login.state == 'local') {
+            // getWanVal();
+          }
+        }
+      });
+    }));
   }
 
   //保存
@@ -45,6 +68,71 @@ class _MajorSetState extends State<MajorSet> {
       debugPrint('失败：${onError.toString()}');
       ToastUtils.toast(S.current.error);
     });
+  }
+
+  // 获取 云端
+  getTRDate() async {
+    printInfo(info: 'sn在这里有值吗-------$sn');
+    var parameterNames = [
+      "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.CountryCode",
+    ];
+    var res = await Request().setTRUsedFlow(parameterNames, sn);
+    try {
+      var jsonObj = jsonDecode(res);
+      printInfo(info: '````$jsonObj');
+      setState(() {
+        type = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["WiFi"]
+            ["WLANSettings"]["CountryCode"]["_type"];
+        var radioState = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
+            ["WiFi"]["WLANSettings"]["CountryCode"]["_value"];
+        index = ['CN', 'FR', 'RU', 'US', 'SG', 'AU', 'CL', 'PL']
+            .indexOf(radioState);
+        //读取地区
+        switch (radioState) {
+          case 'CN':
+            showVal = S.current.China;
+            break;
+          case 'FR':
+            showVal = S.current.France;
+            break;
+          case 'RU':
+            showVal = S.current.Russia;
+            break;
+          case 'US':
+            showVal = S.current.UnitedStates;
+            break;
+          case 'SG':
+            showVal = S.current.Singapore;
+            break;
+          case 'AU':
+            showVal = S.current.Australia;
+            break;
+          case 'CL':
+            showVal = S.current.Chile;
+            break;
+          case 'PL':
+            showVal = S.current.Poland;
+            break;
+        }
+      });
+    } catch (e) {
+      debugPrint('获取信息失败：${e.toString()}');
+    }
+  }
+
+// 设置 云端
+  setTRData() async {
+    var parameterNames = [
+      ["InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.CountryCode", val, type]
+    ];
+    var res = await Request().getTRUsedFlow(parameterNames, sn);
+    try {
+      var jsonObj = jsonDecode(res);
+      printInfo(info: '````$jsonObj');
+      setState(() {});
+    } catch (e) {
+      debugPrint('获取信息失败：${e.toString()}');
+    }
   }
 
   //读取
@@ -195,7 +283,14 @@ class _MajorSetState extends State<MajorSet> {
                             backgroundColor: MaterialStateProperty.all(
                                 const Color.fromARGB(255, 48, 118, 250))),
                         onPressed: () {
-                          handleSave();
+                          if (mounted) {
+                            if (loginController.login.state == 'cloud' &&
+                                sn.isNotEmpty) {
+                              setTRData();
+                            } else if (loginController.login.state == 'local') {
+                              handleSave();
+                            }
+                          }
                         },
                         child: Text(
                           S.of(context).save,

@@ -97,7 +97,6 @@ class _WanSettingsState extends State<WanSettings> {
       ]
     ];
     var res = await Request().getTRUsedFlow(parameterNames, sn);
-    printInfo(info: '----$res');
     try {
       var jsonObj = jsonDecode(res);
       printInfo(info: '````$jsonObj');

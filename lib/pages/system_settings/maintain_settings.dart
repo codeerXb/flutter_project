@@ -151,7 +151,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
       "InternetGatewayDevice.WEB_GUI.ScheduleReboot.DateToReboot",
       "InternetGatewayDevice.WEB_GUI.ScheduleReboot.Time",
     ];
-    var res = await Request().setTRUsedFlow(parameterNames, sn);
+    var res = await Request().getTRUsedFlow(parameterNames, sn);
     try {
       var jsonObj = jsonDecode(res);
       printInfo(info: '````$jsonObj');
@@ -284,7 +284,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
         typeTime
       ]
     ];
-    var res = await Request().getTRUsedFlow(parameterNames, sn);
+    var res = await Request().setTRUsedFlow(parameterNames, sn);
     try {
       var jsonObj = jsonDecode(res);
       printInfo(info: '````$jsonObj');

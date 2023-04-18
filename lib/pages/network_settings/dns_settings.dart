@@ -130,7 +130,7 @@ class _DnsSettingsState extends State<DnsSettings> {
     var parameterNames = [
       "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.DNSServers",
     ];
-    var res = await Request().setTRUsedFlow(parameterNames, sn);
+    var res = await Request().getTRUsedFlow(parameterNames, sn);
     try {
       var jsonObj = jsonDecode(res);
       printInfo(info: '````$jsonObj');
@@ -176,7 +176,7 @@ class _DnsSettingsState extends State<DnsSettings> {
         type
       ]
     ];
-    var res = await Request().getTRUsedFlow(parameterNames, sn);
+    var res = await Request().setTRUsedFlow(parameterNames, sn);
     printInfo(info: '----$res');
     try {
       var jsonObj = jsonDecode(res);

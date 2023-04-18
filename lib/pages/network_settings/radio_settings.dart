@@ -106,7 +106,7 @@ class _RadioSettingsState extends State<RadioSettings> {
       "InternetGatewayDevice.WEB_GUI.Network.NR-LTE.Status.NR.NR-ARFCN",
       "InternetGatewayDevice.WEB_GUI.Network.NR-LTE.Status.NR.NR_Frequency",
     ];
-    var res = await Request().setTRUsedFlow(parameterNames, sn);
+    var res = await Request().getTRUsedFlow(parameterNames, sn);
     try {
       var jsonObj = jsonDecode(res);
       setState(() {
@@ -196,7 +196,7 @@ class _RadioSettingsState extends State<RadioSettings> {
         "xsd:string"
       ]
     ];
-    var res = await Request().getTRUsedFlow(parameterNames, sn);
+    var res = await Request().setTRUsedFlow(parameterNames, sn);
     printInfo(info: '----$res');
     try {
       var jsonObj = jsonDecode(res);

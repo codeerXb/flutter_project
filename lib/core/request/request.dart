@@ -28,7 +28,7 @@ class Request {
   }
 
   //获取云端数据
-  setTRUsedFlow(parameterNames, sn) async {
+  getTRUsedFlow(parameterNames, sn) async {
     Map<String, dynamic> data = {
       'deviceId': sn,
       'name': 'getParameterValues',
@@ -41,7 +41,7 @@ class Request {
   }
 
   //设置云端数据
-  getTRUsedFlow(parameterNames, sn) async {
+  setTRUsedFlow(parameterNames, sn) async {
     Map<String, dynamic> data = {
       'deviceId': sn,
       'name': 'setParameterValues',

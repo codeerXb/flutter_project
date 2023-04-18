@@ -104,7 +104,7 @@ class _AccountSecurityState extends State<AccountSecurity> {
         'xsd:string'
       ],
     ];
-    var res = await Request().getTRUsedFlow(parameterNames, sn);
+    var res = await Request().setTRUsedFlow(parameterNames, sn);
     printInfo(info: '----$res');
     try {
       var jsonObj = jsonDecode(res);

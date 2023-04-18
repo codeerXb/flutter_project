@@ -1660,30 +1660,30 @@ class S {
     );
   }
 
-  /// `Enable reboot scheduler`
+  /// `Date to reboot`
   String get EnableScheduler {
     return Intl.message(
-      'Enable reboot scheduler',
+      'Date to reboot',
       name: 'EnableScheduler',
       desc: '',
       args: [],
     );
   }
 
-  /// `Date to reboot`
+  /// `Restart start time`
   String get DateReboot {
     return Intl.message(
-      'Date to reboot',
+      'Restart start time',
       name: 'DateReboot',
       desc: '',
       args: [],
     );
   }
 
-  /// `Time of day to reboot`
+  /// `Restart end time`
   String get TimeReboot {
     return Intl.message(
-      'Time of day to reboot',
+      'Restart end time',
       name: 'TimeReboot',
       desc: '',
       args: [],

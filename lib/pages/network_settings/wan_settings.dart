@@ -67,7 +67,6 @@ class _WanSettingsState extends State<WanSettings> {
       setState(() {
         type = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Network"]
             ["WANSettings"]["NetworkMode"]["_type"];
-        printInfo(info: '2222$type');
         var radioState = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
             ["Network"]["WANSettings"]["NetworkMode"]["_value"];
         if (radioState == 'nat') {

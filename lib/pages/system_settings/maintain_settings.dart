@@ -4,6 +4,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/config/base_config.dart';
+import 'package:flutter_template/core/http/http_app.dart';
+import 'package:flutter_template/core/request/request.dart';
+import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
 import '../../../core/widget/custom_app_bar.dart';
 import '../../core/http/http.dart';
@@ -42,6 +46,8 @@ class _MaintainSettingsState extends State<MaintainSettings> {
 
   String num = '';
   MaintainTrestsetData acquireData = MaintainTrestsetData();
+  final LoginController loginController = Get.put(LoginController());
+
   // 转换重启日期
   String tranfer = '0;0;0;0;0;0;0';
   String dateFormat(List<Map<String, dynamic>> date) {
@@ -58,11 +64,48 @@ class _MaintainSettingsState extends State<MaintainSettings> {
   //重启日期展示数组
   List arr = [];
   List arrList = [];
+  String sn = '';
+  String typeEnable = '';
+  String typeDateToReboot = '';
+  String typeTime = '';
 
   @override
   void initState() {
     super.initState();
-    getTrestsetAcquireData();
+    sharedGetData('deviceSn', String).then(((res) {
+      printInfo(info: 'deviceSn$res');
+      setState(() {
+        sn = res.toString();
+        //状态为local 请求本地  状态为cloud  请求云端
+        printInfo(info: 'state--${loginController.login.state}');
+        if (mounted) {
+          if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
+            getTRAcquireData();
+          }
+          if (loginController.login.state == 'local') {
+            getTrestsetAcquireData();
+          }
+        }
+      });
+    }));
+  }
+
+  // 重启 云端
+  void getReBootData() {
+    App.post(
+            '${BaseConfig.cloudBaseUrl}/platform/tr069/rebootDevice?deviceId=$sn')
+        .then((res) {
+      var d = json.decode(res.toString());
+      debugPrint('响应------>$d');
+      if (d['code'] == 200) {
+        ToastUtils.toast(S.current.success);
+        loginout();
+      } else {
+        ToastUtils.toast(S.current.error);
+      }
+    }).catchError((err) {
+      ToastUtils.error(S.current.contimeout);
+    });
   }
 
   // 重启
@@ -100,18 +143,163 @@ class _MaintainSettingsState extends State<MaintainSettings> {
     Get.offAllNamed("/get_equipment");
   }
 
-// 重启定时 云端参数
-// InternetGatewayDevice.WEB_GUI.ScheduleReboot
-// InternetGatewayDevice.WEB_GUI.ScheduleReboot.DateToReboot	0;0;0;0;0;0;0
-// InternetGatewayDevice.WEB_GUI.ScheduleReboot.Enable	true
-// InternetGatewayDevice.WEB_GUI.ScheduleReboot.Time
+  // 获取 云端
+  getTRAcquireData() async {
+    printInfo(info: 'sn在这里有值吗-------$sn');
+    var parameterNames = [
+      "InternetGatewayDevice.WEB_GUI.ScheduleReboot.Enable",
+      "InternetGatewayDevice.WEB_GUI.ScheduleReboot.DateToReboot",
+      "InternetGatewayDevice.WEB_GUI.ScheduleReboot.Time",
+    ];
+    var res = await Request().setTRUsedFlow(parameterNames, sn);
+    try {
+      var jsonObj = jsonDecode(res);
+      printInfo(info: '````$jsonObj');
+      setState(() {
+        typeEnable = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
+            ["ScheduleReboot"]["DateToReboot"]["_type"];
+        typeDateToReboot = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
+            ["ScheduleReboot"]["Enable"]["_type"];
+        typeTime = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
+            ["ScheduleReboot"]["Time"]["_type"];
+
+        if (jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
+                ["ScheduleReboot"]["Enable"]["_value"] ==
+            false) {
+          isCheck = false;
+          checkVal = 0;
+        } else {
+          isCheck = true;
+          checkVal = 1;
+        }
+
+        tranfer = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
+            ["ScheduleReboot"]["DateToReboot"]["_value"];
+        if (tranfer != '') {
+          // 展示获取回来的重启日期
+          arr = tranfer.split(';').map((String text) => (text)).toList();
+          if (arr[0] == '1') {
+            arrList.add(S.of(context).Sun);
+          }
+          if (arr[1] == '1') {
+            arrList.add(S.of(context).mon);
+          }
+          if (arr[2] == '1') {
+            arrList.add(S.current.Tue);
+          }
+          if (arr[3] == '1') {
+            arrList.add(S.current.Wed);
+          }
+          if (arr[4] == '1') {
+            arrList.add(S.current.Thu);
+          }
+          if (arr[5] == '1') {
+            arrList.add(S.current.fri);
+          }
+          if (arr[6] == '1') {
+            arrList.add(S.current.Sat);
+          }
+        }
+
+        num = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
+            ["ScheduleReboot"]["Time"]["_value"];
+        if (num != '') {
+          startVal = [
+            '0',
+            '1',
+            '2',
+            '3',
+            '4',
+            '5',
+            '6',
+            '7',
+            '8',
+            '9',
+            '10',
+            '11',
+            '12',
+            '13',
+            '14',
+            '15',
+            '16',
+            '17',
+            '18',
+            '19',
+            '20',
+            '21',
+            '22',
+            '23',
+          ].indexOf(num.split(':')[0].toString());
+          startShowVal = num.split(':')[0];
+          endVal = [
+            '0',
+            '1',
+            '2',
+            '3',
+            '4',
+            '5',
+            '6',
+            '7',
+            '8',
+            '9',
+            '10',
+            '11',
+            '12',
+            '13',
+            '14',
+            '15',
+            '16',
+            '17',
+            '18',
+            '19',
+            '20',
+            '21',
+            '22',
+            '23',
+          ].indexOf(num.split(':')[1].toString());
+          endShowVal = num.split(':')[1];
+        }
+      });
+    } catch (e) {
+      debugPrint('获取信息失败：${e.toString()}');
+    }
+  }
+
+  // 设置 云端
+  setTRAcquireData() async {
+    var parameterNames = [
+      [
+        "InternetGatewayDevice.WEB_GUI.ScheduleReboot.Enable",
+        isCheck,
+        typeEnable
+      ],
+      [
+        "InternetGatewayDevice.WEB_GUI.ScheduleReboot.DateToReboot",
+        tranfer,
+        typeDateToReboot
+      ],
+      [
+        "InternetGatewayDevice.WEB_GUI.ScheduleReboot.Time",
+        '$startShowVal:$endShowVal',
+        typeTime
+      ]
+    ];
+    var res = await Request().getTRUsedFlow(parameterNames, sn);
+    try {
+      var jsonObj = jsonDecode(res);
+      printInfo(info: '````$jsonObj');
+      setState(() {});
+    } catch (e) {
+      debugPrint('获取信息失败：${e.toString()}');
+    }
+  }
 
   // 重启定时提交
   void getTrestsetData() {
     Map<String, dynamic> data = {
       'method': 'obj_set',
       'param':
-          '{"systemScheduleRebootEnable":"$checkVal","systemScheduleRebootDays":"$tranfer","systemScheduleRebootTime":"$endShowVal:$startShowVal"}',
+          '{"systemScheduleRebootEnable":"$checkVal","systemScheduleRebootDays":"$tranfer","systemScheduleRebootTime":"$startShowVal:$endShowVal"}',
     };
     XHttp.get('/data.html', data).then((res) {
       try {
@@ -134,7 +322,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
     });
   }
 
-// 重启定时 获取
+  // 重启定时 获取
   void getTrestsetAcquireData() async {
     Map<String, dynamic> data = {
       'method': 'obj_get',
@@ -245,7 +433,25 @@ class _MaintainSettingsState extends State<MaintainSettings> {
     }
   }
 
-// 恢复出厂
+  // 恢复出厂 云端
+  void getfactoryResetData() {
+    App.post(
+            '${BaseConfig.cloudBaseUrl}/platform/tr069/factoryReset?deviceId=$sn')
+        .then((res) {
+      var d = json.decode(res.toString());
+      debugPrint('响应------>$d');
+      if (d['code'] == 200) {
+        ToastUtils.toast(S.current.success);
+        loginout();
+      } else {
+        ToastUtils.toast(S.current.error);
+      }
+    }).catchError((err) {
+      ToastUtils.error(S.current.contimeout);
+    });
+  }
+
+  // 恢复出厂
   void getfactoryReset() {
     Map<String, dynamic> data = {
       'method': 'obj_set',
@@ -273,7 +479,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
     });
   }
 
-// 日期弹窗
+  // 日期弹窗
   String result = '';
   List<Map<String, dynamic>> checkboxList = [
     {'text': S.current.Sun, 'value': false, 'index': 0},
@@ -707,7 +913,14 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                       if (tranfer == '0;0;0;0;0;0;0' && isCheck == true) {
                         ToastUtils.toast(S.current.mustSuccess);
                       } else {
-                        getTrestsetData();
+                        if (mounted) {
+                          if (loginController.login.state == 'cloud' &&
+                              sn.isNotEmpty) {
+                            setTRAcquireData();
+                          } else if (loginController.login.state == 'local') {
+                            getTrestsetData();
+                          }
+                        }
                       }
                     },
                     child: Text(S.of(context).save),
@@ -737,7 +950,15 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                         backgroundColor: MaterialStateProperty.all(
                             const Color.fromARGB(255, 48, 118, 250))),
                     onPressed: () {
-                      getmaintaData();
+                      if (mounted) {
+                        if (loginController.login.state == 'cloud' &&
+                            sn.isNotEmpty) {
+                          getReBootData();
+                        }
+                        if (loginController.login.state == 'local') {
+                          getmaintaData();
+                        }
+                      }
                     },
                     child: Text(S.current.Reboot),
                   ),
@@ -766,7 +987,15 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                         backgroundColor: MaterialStateProperty.all(
                             const Color.fromARGB(255, 48, 118, 250))),
                     onPressed: () {
-                      getfactoryReset();
+                      if (mounted) {
+                        if (loginController.login.state == 'cloud' &&
+                            sn.isNotEmpty) {
+                          getfactoryResetData();
+                        }
+                        if (loginController.login.state == 'local') {
+                          getfactoryReset();
+                        }
+                      }
                     },
                     child: Text(S.current.FactoryReset),
                   ),

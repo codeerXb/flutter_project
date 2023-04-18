@@ -47,7 +47,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "Connected": MessageLookupByLibrary.simpleMessage("Connected"),
         "DLFrequency": MessageLookupByLibrary.simpleMessage("DL Frequency"),
         "DLVelocity": MessageLookupByLibrary.simpleMessage("Down"),
-        "DateReboot": MessageLookupByLibrary.simpleMessage("Date to reboot"),
+        "DateReboot":
+            MessageLookupByLibrary.simpleMessage("Restart start time"),
         "DefaultGateway":
             MessageLookupByLibrary.simpleMessage("Default Gateway"),
         "Detect": MessageLookupByLibrary.simpleMessage("Detect Server"),
@@ -59,7 +60,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "EnableRebootScheduler":
             MessageLookupByLibrary.simpleMessage("Enable reboot scheduler"),
         "EnableScheduler":
-            MessageLookupByLibrary.simpleMessage("Enable reboot scheduler"),
+            MessageLookupByLibrary.simpleMessage("Date to reboot"),
         "Environment": MessageLookupByLibrary.simpleMessage("Wi-Fi Converage"),
         "Ethernet": MessageLookupByLibrary.simpleMessage("Ethernet"),
         "EthernetOnly": MessageLookupByLibrary.simpleMessage("Ethernet Only"),
@@ -136,8 +137,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Thu": MessageLookupByLibrary.simpleMessage("Thu"),
         "TimeLengthStatistics":
             MessageLookupByLibrary.simpleMessage("Time length statistics"),
-        "TimeReboot":
-            MessageLookupByLibrary.simpleMessage("Time of day to reboot"),
+        "TimeReboot": MessageLookupByLibrary.simpleMessage("Restart end time"),
         "TotalPackageQuantity":
             MessageLookupByLibrary.simpleMessage("Traffic Package"),
         "Tue": MessageLookupByLibrary.simpleMessage("Tue"),

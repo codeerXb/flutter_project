@@ -61,7 +61,6 @@ import 'package:flutter_template/pages/toolbar/index.dart';
 import 'package:flutter_template/pages/topo/parental_control.dart';
 import 'package:flutter_template/pages/topo/parental_pop.dart';
 import 'package:flutter_template/pages/topo/parental_update.dart';
-import 'package:flutter_template/pages/signal_cover/index%20copy%202.dart';
 
 /// 路由
 class GlobalRouter {
@@ -72,9 +71,6 @@ class GlobalRouter {
   static final _routes = {
     /// 过渡页面
     '/': (BuildContext context, {Object? args}) => const SplashPage(),
-
-    /// 信号覆盖
-    '/signal_cover': (BuildContext context, {Object? args}) => MyApp(),
 
     /// 搜索设备
     '/get_equipment': (BuildContext context, {Object? args}) =>

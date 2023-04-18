@@ -201,12 +201,16 @@ class _NetStatusState extends State<NetStatus> {
         // 列表数量
         Map<String, dynamic> flowTableName = jsonObj["data"]
             ["InternetGatewayDevice"]["WEB_GUI"]["Overview"]["DeviceList"];
-        printInfo(info: 'flowTableName---$flowTableName');
-        // List<dynamic> array = flowTableName.values.toList();
+        _onlineCount = flowTableName.keys
+            .toList()
+            .where((element) {
+              var pattern = RegExp(r'[0-9]+');
+              var isMatch = pattern.hasMatch(element);
+              return isMatch;
+            })
+            .toList()
+            .length;
 
-        // print('+++++${array.length}');
-        // printInfo(info: 'flowTableName---${flowTableName.length}');
-        // flowTableName.Object.keys(flowTableName).filter(r=>/[0-9]+/g.test(r)).length;
         // 已用流量
         var flowTable = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
             ["Overview"]["ThroughputStatisticsList"];
@@ -287,8 +291,6 @@ class _NetStatusState extends State<NetStatus> {
       var onlineDevice =
           OnlineDevice.fromJson(jsonDecode(res)).onlineDeviceTable;
       if (onlineDevice != null && mounted) {
-        printInfo(info: 'onlineDevice------$onlineDevice');
-        printInfo(info: 'onlineDevice------${onlineDevice.length}');
         setState(() {
           _onlineCount = onlineDevice.length;
         });

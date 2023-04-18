@@ -37,6 +37,7 @@ Future<void> main() async {
   //顶部状态栏透明
   SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+
   runApp(const MyApp());
 }
 
@@ -51,18 +52,17 @@ class _MyAppState extends State<MyApp> {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey();
 
   final ToolbarController toolbarController = Get.put(ToolbarController());
-  var language = '';
+  String language = '';
   @override
   initState() {
-    // TODO: implement initState
-    super.initState();
     //读取当前语言
-    // sharedGetData('langue', String).then(((res) {
-    //   if (res != null) {
-    //     language = res.toString();
-    //   }
-    //   print('当前语言----->$language');
-    // }));
+    sharedGetData('lang', String).then(((res) {
+      setState(() {
+        language = res.toString();
+      });
+      printInfo(info: '当前设置的语言${res.toString()}');
+    }));
+    super.initState();
   }
 
   @override
@@ -81,14 +81,32 @@ class _MyAppState extends State<MyApp> {
               S.delegate,
             ],
             supportedLocales: S.delegate.supportedLocales,
-            // localeResolutionCallback: (locale, supportedLocales) {
-            //   if (language == '中文') {
-            //     return const Locale('zh', 'CN');
-            //   }else if(language == 'English'){
-            //     return const Locale('en', 'US');
-
-            //   }
-            // },
+            localeResolutionCallback: (locale, supportedLocales) {
+              debugPrint('当前设置的语言lang$language');
+              sharedGetData('lang', String).then((res) {
+                String lang = res.toString();
+                debugPrint('当前设置的语言1$lang---$locale---${lang.isNotEmpty}');
+                if (lang != 'null') {
+                  if (lang == 'zh_CN') {
+                    debugPrint('当前设置的语言1-1');
+                    S.load(const Locale('zh', 'CN'));
+                    return const Locale('zh', 'CN');
+                  } else if (lang == 'en_US') {
+                    debugPrint('当前设置的语言1-2');
+                    S.load(const Locale('en', 'US'));
+                    return const Locale('en', 'US');
+                  } else if (locale == null) {
+                    debugPrint('当前设置的语言1-3');
+                    return null;
+                  }
+                }
+              });
+              debugPrint('当前设置的语言1-4');
+              S.load(Locale(locale.toString().split('_')[0],
+                  locale.toString().split('_')[1]));
+              return Locale(locale.toString().split('_')[0],
+                  locale.toString().split('_')[1]);
+            },
             key: navigatorKey,
             title: 'smawave',
             // 不显示debug标签

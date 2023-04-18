@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
+import '../../core/utils/shared_preferences_util.dart';
 import '../../core/widget/common_box.dart';
+import '../../core/widget/common_picker.dart';
 import '../../generated/l10n.dart';
+import '../toolbar/toolbar_controller.dart';
 
 /// 系统设置
 class SystemSettings extends StatefulWidget {
@@ -14,32 +17,31 @@ class SystemSettings extends StatefulWidget {
 }
 
 class _SystemSettingsState extends State<SystemSettings> {
-  int index = 0;
-  String showVal = '中文';
+  String showVal = S.current.autoLang;
+  final ToolbarController toolbarController = Get.put(ToolbarController());
   @override
   void initState() {
-    // TODO: implement initState
-    super.initState();
-
     //读取语言 选项
-    // sharedGetData('langue', String).then(((res) {
-    //   print('当前语言----->$res');
-    //   if (res != null) {
-    //     setState(() {
-    //       showVal = res.toString();
-    //       index = [
-    //         // S.current.FollowerSystem,
-    //         '中文',
-    //         'Engish',
-    //       ].indexOf(showVal);
-    //     });
-    //   }
-    // }));
+    sharedGetData('lang', String).then(((res) {
+      debugPrint('当前语言----->$res');
+      if (res != null) {
+        setState(() {
+          if (res.toString() == 'en_US') {
+            showVal = 'English';
+          } else if (res.toString() == 'zh_CN') {
+            showVal = '中文简体';
+          } else {
+            showVal = S.current.autoLang;
+          }
+        });
+      }
+    }));
+
+    super.initState();
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
   }
 
@@ -144,64 +146,35 @@ class _SystemSettingsState extends State<SystemSettings> {
                     ),
                   ),
                   //选择语言
-                  // GestureDetector(
-                  //   onTap: () {
-                  //     toolbarController.setPageIndex(1);
-                  //     print('ress----> ${S.delegate}');
-                  //     var result = CommonPicker.showPicker(
-                  //       context: context,
-                  //       options: [
-                  //         // S.current.FollowerSystem,
-                  //         '中文',
-                  //         'Engish',
-                  //       ],
-                  //       value: index,
-                  //     );
-                  //     result?.then((selectedValue) => {
-                  //           if (index != selectedValue && selectedValue != null)
-                  //             {
-                  //               setState(() => {
-                  //                     index = selectedValue,
-                  //                     showVal = [
-                  //                       // S.current.FollowerSystem,
-                  //                       '中文',
-                  //                       'Engish',
-                  //                     ][index],
-                  //                     //存储语言
-                  //                     sharedAddAndUpdate(
-                  //                         'langue', String, showVal),
-                  //                     index == 0
-                  //                         ? S.load(const Locale("zh", "CN"))
-                  //                         : S.load(const Locale("CN", "zh"))
-                  //                   })
-                  //             }
-                  //         });
-                  //   },
-                  //   child: BottomLine(
-                  //     rowtem: Row(
-                  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //       children: [
-                  //         Text(S.of(context).language,
-                  //             style: TextStyle(
-                  //                 color: const Color.fromARGB(255, 5, 0, 0),
-                  //                 fontSize: 28.sp)),
-                  //         Row(
-                  //           children: [
-                  //             Text(showVal,
-                  //                 style: TextStyle(
-                  //                     color: const Color.fromARGB(255, 5, 0, 0),
-                  //                     fontSize: 28.sp)),
-                  //             Icon(
-                  //               Icons.arrow_forward_ios_outlined,
-                  //               color: const Color.fromRGBO(144, 147, 153, 1),
-                  //               size: 30.w,
-                  //             )
-                  //           ],
-                  //         ),
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
+                  GestureDetector(
+                    onTap: () {
+                      Get.toNamed('/language_change');
+                    },
+                    child: BottomLine(
+                      rowtem: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(S.of(context).language,
+                              style: TextStyle(
+                                  color: const Color.fromARGB(255, 5, 0, 0),
+                                  fontSize: 28.sp)),
+                          Row(
+                            children: [
+                              Text(showVal,
+                                  style: TextStyle(
+                                      color: const Color.fromARGB(255, 5, 0, 0),
+                                      fontSize: 28.sp)),
+                              Icon(
+                                Icons.arrow_forward_ios_outlined,
+                                color: const Color.fromRGBO(144, 147, 153, 1),
+                                size: 30.w,
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ]),
               ),
 

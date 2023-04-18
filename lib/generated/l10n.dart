@@ -50,6 +50,16 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `Auto`
+  String get autoLang {
+    return Intl.message(
+      'Auto',
+      name: 'autoLang',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Login has expired`
   String get tokenExpired {
     return Intl.message(
@@ -260,10 +270,10 @@ class S {
     );
   }
 
-  /// `Connecting Device`
+  /// `Connect Device`
   String get conDev {
     return Intl.message(
-      'Connecting Device',
+      'Connect Device',
       name: 'conDev',
       desc: '',
       args: [],
@@ -2420,10 +2430,10 @@ class S {
     );
   }
 
-  /// `Binding Device`
+  /// `Bind Device`
   String get band {
     return Intl.message(
-      'Binding Device',
+      'Bind Device',
       name: 'band',
       desc: '',
       args: [],

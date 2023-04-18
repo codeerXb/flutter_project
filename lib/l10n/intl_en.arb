@@ -1,4 +1,5 @@
 {
+  "autoLang": "Auto",
   "tokenExpired": "Login has expired",
   "addDevice": "Add Device",
   "list": "List of Bound Items",
@@ -20,7 +21,7 @@
   "loginSuccess": "login Successfully",
   "DiscoveryEqu": "Looking for your Wi-Fi",
   "success": "Success",
-  "conDev": "Connecting Device",
+  "conDev": "Connect Device",
   "Scanning": "Scanning in progress",
   "noDevice": "Device not found",
   "rescan": "Rescan",
@@ -236,7 +237,7 @@
   "equipment": "Equipment",
   "name": "Name",
   "workday": "Workday",
-  "band": "Binding Device",
+  "band": "Bind Device",
   "good": "Good",
   "Environment": "Wi-Fi Converage",
   "used": "Used",

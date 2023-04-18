@@ -167,7 +167,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "aesRecommend": MessageLookupByLibrary.simpleMessage("AES(Recommend)"),
         "aivideo": MessageLookupByLibrary.simpleMessage("AI video"),
         "ascii32": MessageLookupByLibrary.simpleMessage("1~32 ASCII Character"),
-        "band": MessageLookupByLibrary.simpleMessage("Binding Device"),
+        "autoLang": MessageLookupByLibrary.simpleMessage("Auto"),
+        "band": MessageLookupByLibrary.simpleMessage("Bind Device"),
         "binding": MessageLookupByLibrary.simpleMessage("Binding?"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "check": MessageLookupByLibrary.simpleMessage(
@@ -179,7 +180,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Please click factory reset to restore device to its factory settings"),
         "clickReboot": MessageLookupByLibrary.simpleMessage(
             "Please click reboot to reboot device"),
-        "conDev": MessageLookupByLibrary.simpleMessage("Connecting Device"),
+        "conDev": MessageLookupByLibrary.simpleMessage("Connect Device"),
         "confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
         "confrimPassorld":
             MessageLookupByLibrary.simpleMessage(" Confirm the password."),

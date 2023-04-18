@@ -14,6 +14,7 @@ import 'package:flutter_template/pages/equInfo/equ_info.dart';
 import 'package:flutter_template/pages/setting/contact_customer.dart';
 import 'package:flutter_template/pages/setting/file_upload_download.dart';
 import 'package:flutter_template/pages/Ethernet/net_type.dart';
+import 'package:flutter_template/pages/setting/language_change.dart';
 import 'package:flutter_template/pages/setting/user_detail.dart';
 import 'package:flutter_template/pages/sub_service/ai_video.dart';
 import 'package:flutter_template/pages/sub_service/game_acceleration.dart';
@@ -41,26 +42,26 @@ import 'package:flutter_template/pages/wifi_set/wps/wps_set.dart';
 import 'package:flutter_template/pages/topo/access_equipment.dart';
 import 'package:flutter_template/splash.dart';
 import 'package:flutter_template/pages/net_status/net_server_settings.dart';
-
-import '../../pages/address_book/address_book_detail.dart';
-import '../../pages/login/login.dart';
-import '../../pages/login/user_agreement.dart';
-import '../../pages/network_settings/dns_settings.dart';
-import '../../pages/network_settings/lan_settings.dart';
-import '../../pages/network_settings/radio_settings.dart';
-import '../../pages/network_settings/wan_settings.dart';
-import '../../pages/parent_control/card_list/Payment.dart';
-import '../../pages/parent_control/card_list/Social.dart';
-import '../../pages/parent_control/card_list/Video.dart';
-import '../../pages/setting/chart_demo.dart';
-import '../../pages/setting/scan_code.dart';
-import '../../pages/setting/system_settings.dart';
-import '../../pages/system_settings/maintain_settings.dart';
-import '../../pages/system_settings/account_security.dart';
-import '../../pages/toolbar/index.dart';
-import '../../pages/topo/parental_control.dart';
-import '../../pages/topo/parental_pop.dart';
-import '../../pages/topo/parental_update.dart';
+import 'package:flutter_template/pages/address_book/address_book_detail.dart';
+import 'package:flutter_template/pages/login/login.dart';
+import 'package:flutter_template/pages/login/user_agreement.dart';
+import 'package:flutter_template/pages/network_settings/dns_settings.dart';
+import 'package:flutter_template/pages/network_settings/lan_settings.dart';
+import 'package:flutter_template/pages/network_settings/radio_settings.dart';
+import 'package:flutter_template/pages/network_settings/wan_settings.dart';
+import 'package:flutter_template/pages/parent_control/card_list/Payment.dart';
+import 'package:flutter_template/pages/parent_control/card_list/Social.dart';
+import 'package:flutter_template/pages/parent_control/card_list/Video.dart';
+import 'package:flutter_template/pages/setting/chart_demo.dart';
+import 'package:flutter_template/pages/setting/scan_code.dart';
+import 'package:flutter_template/pages/setting/system_settings.dart';
+import 'package:flutter_template/pages/system_settings/maintain_settings.dart';
+import 'package:flutter_template/pages/system_settings/account_security.dart';
+import 'package:flutter_template/pages/toolbar/index.dart';
+import 'package:flutter_template/pages/topo/parental_control.dart';
+import 'package:flutter_template/pages/topo/parental_pop.dart';
+import 'package:flutter_template/pages/topo/parental_update.dart';
+import 'package:flutter_template/pages/signal_cover/index%20copy%202.dart';
 
 /// 路由
 class GlobalRouter {
@@ -72,6 +73,9 @@ class GlobalRouter {
     /// 过渡页面
     '/': (BuildContext context, {Object? args}) => const SplashPage(),
 
+    /// 信号覆盖
+    '/signal_cover': (BuildContext context, {Object? args}) => MyApp(),
+
     /// 搜索设备
     '/get_equipment': (BuildContext context, {Object? args}) =>
         const Equipment(),
@@ -79,7 +83,7 @@ class GlobalRouter {
     /// 主页面
     '/home': (BuildContext context, {Object? args}) => const Toolbar(),
 
-    /// 登录页面
+    /// 设备登录
     '/loginPage': (BuildContext context, {Object? args}) => const Login(),
 
     /// 用户协议页面
@@ -185,10 +189,10 @@ class GlobalRouter {
     '/net_server_settings': (BuildContext context, {Object? args}) =>
         const NetServerSettings(),
 
-    // 用户登录
+    // 用户登录（云平台登录）
     '/user_login': (BuildContext context, {Object? args}) => const UserLogin(),
 
-    // 用户注册
+    // 用户注册（云平台注册）
     '/user_register': (BuildContext context, {Object? args}) =>
         const UserRegister(),
     // 忘记密码
@@ -247,6 +251,9 @@ class GlobalRouter {
     // 家长控制_Internetaccess
     '/Internetaccess': (BuildContext context, {Object? args}) =>
         const Internetaccess(),
+    // 更改语言
+    '/language_change': (BuildContext context, {Object? args}) =>
+        const LanguageChange(),
   };
 
   static GlobalRouter? _singleton;

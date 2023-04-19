@@ -96,7 +96,7 @@ class _WanSettingsState extends State<WanSettings> {
         type
       ]
     ];
-    var res = await Request().getACSNode(parameterNames, sn);
+    var res = await Request().setACSNode(parameterNames, sn);
     try {
       var jsonObj = jsonDecode(res);
       printInfo(info: '````$jsonObj');

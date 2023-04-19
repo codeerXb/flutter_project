@@ -194,7 +194,7 @@ class _NetStatusState extends State<NetStatus> {
       "InternetGatewayDevice.WEB_GUI.Overview.WANStatus.DLRateCurrent",
       "InternetGatewayDevice.WEB_GUI.Overview.WANStatus.ULRateCurrent"
     ];
-    var res = await Request().setTRUsedFlow(parameterNames, sn);
+    var res = await Request().getACSNode(parameterNames, sn);
     try {
       var jsonObj = jsonDecode(res);
       setState(() {

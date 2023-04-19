@@ -76,7 +76,7 @@ class _MajorSetState extends State<MajorSet> {
     var parameterNames = [
       "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.CountryCode",
     ];
-    var res = await Request().setACSNode(parameterNames, sn);
+    var res = await Request().getACSNode(parameterNames, sn);
     try {
       var jsonObj = jsonDecode(res);
       printInfo(info: '````$jsonObj');
@@ -125,7 +125,7 @@ class _MajorSetState extends State<MajorSet> {
     var parameterNames = [
       ["InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.CountryCode", val, type]
     ];
-    var res = await Request().getACSNode(parameterNames, sn);
+    var res = await Request().setACSNode(parameterNames, sn);
     try {
       var jsonObj = jsonDecode(res);
       printInfo(info: '````$jsonObj');

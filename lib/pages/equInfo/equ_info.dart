@@ -107,7 +107,7 @@ class _EquInfoState extends State<EquInfo> {
       "InternetGatewayDevice.WEB_GUI.Overview.LANStatus.SubnetMask",
       "InternetGatewayDevice.WEB_GUI.Overview.SystemInfo.RunTime"
     ];
-    var res = await Request().getTRUsedFlow(parameterNames, sn);
+    var res = await Request().getACSNode(parameterNames, sn);
     try {
       Map<String, dynamic> d = jsonDecode(res);
       setState(() {

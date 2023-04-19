@@ -60,7 +60,7 @@ class _WanSettingsState extends State<WanSettings> {
     var parameterNames = [
       "InternetGatewayDevice.WEB_GUI.Network.WANSettings.NetworkMode",
     ];
-    var res = await Request().setTRUsedFlow(parameterNames, sn);
+    var res = await Request().getACSNode(parameterNames, sn);
     try {
       var jsonObj = jsonDecode(res);
       printInfo(info: '````$jsonObj');
@@ -96,7 +96,7 @@ class _WanSettingsState extends State<WanSettings> {
         type
       ]
     ];
-    var res = await Request().getTRUsedFlow(parameterNames, sn);
+    var res = await Request().getACSNode(parameterNames, sn);
     try {
       var jsonObj = jsonDecode(res);
       printInfo(info: '````$jsonObj');

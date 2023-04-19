@@ -165,7 +165,7 @@ class _LanSettingsState extends State<LanSettings> {
       "InternetGatewayDevice.WEB_GUI.Network.LANSettings.DHCP.EndIP",
       "InternetGatewayDevice.WEB_GUI.Network.LANSettings.DHCP.LeaseTime",
     ];
-    var res = await Request().getTRUsedFlow(parameterNames, sn);
+    var res = await Request().getACSNode(parameterNames, sn);
     try {
       var jsonObj = jsonDecode(res);
       printInfo(info: '````$jsonObj');
@@ -266,7 +266,7 @@ class _LanSettingsState extends State<LanSettings> {
         typeLea
       ]
     ];
-    var res = await Request().setTRUsedFlow(parameterNames, sn);
+    var res = await Request().setACSNode(parameterNames, sn);
     try {
       var jsonObj = jsonDecode(res);
       printInfo(info: '````$jsonObj');

@@ -9,10 +9,14 @@ import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_picker.dart';
 import 'package:flutter_template/pages/wifi_set/wlan/wlan_datas.dart';
 import 'package:flutter_template/pages/wifi_set/wlan/channel_list.dart';
+import 'package:get/get.dart';
+import '../../../core/utils/shared_preferences_util.dart';
 import '../../../core/widget/custom_app_bar.dart';
 import '../../../generated/l10n.dart';
+import '../../login/login_controller.dart';
 import 'wifi5g_table.dart';
 import 'wifi_table.dart';
+import 'package:flutter_template/core/request/request.dart';
 
 /// WLAN设置
 class WlanSet extends StatefulWidget {
@@ -39,13 +43,71 @@ class _WlanSetState extends State<WlanSet> {
   channelList channelLists = channelList();
   wifiSsidTable wifiSsidTableLists = wifiSsidTable();
   wifi5GSsidTable wifi5GSsidTableLists = wifi5GSsidTable();
+  // 0:2.4g,1:5g
   int pdVal = 0;
   //模式
-
-  List<String> wifi5gCountryChannelList = ['auto'];
-  List<String> wifiCountryChannelList_HT20 = ['auto'];
-  List<String> wifiCountryChannelList_HT40j = ['auto'];
-  List<String> wifiCountryChannelList_HT40 = ['auto'];
+  List<String> wifi5gCountryChannelList = [
+    'auto',
+    "36",
+    "40",
+    "44",
+    "48",
+    "52",
+    "56",
+    "60",
+    "64",
+    "100",
+    "104",
+    "108",
+    "112",
+    "116",
+    "120",
+    "124",
+    "128",
+    "132",
+    "136",
+    "140"
+  ];
+  List<String> wifiCountryChannelListHT20 = [
+    'auto',
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13"
+  ];
+  List<String> wifiCountryChannelListHT40j = [
+    'auto',
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9"
+  ];
+  List<String> wifiCountryChannelListHT40 = [
+    'auto',
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13"
+  ];
   List<String> wifiModeV = ['11ng', '11axg', '11g', '11b'];
   List<String> wifi5gModeV = ['11ac', '11axa', '11na', '11a'];
   List<String> wifiMode = [
@@ -63,10 +125,9 @@ class _WlanSetState extends State<WlanSet> {
   int msVal = 0;
   int msVal5 = 0;
   //带宽
-
   int kdVal = 0;
   int kdVal5 = 0;
-  List<String> wifiChannelBandwidth = ['20 MHz', '40+MHz', '40-MHz'];
+  List<String> wifiChannelBandwidth = ['20MHz', '40+MHz', '40-MHz'];
   List<String> wifiChannelBandwidth5 = [
     '20 MHz',
     '20/40 MHz',
@@ -127,26 +188,155 @@ class _WlanSetState extends State<WlanSet> {
   final TextEditingController max5 = TextEditingController();
   final TextEditingController password = TextEditingController();
   final TextEditingController password5 = TextEditingController();
+  String sn = '';
+  final LoginController loginController = Get.put(LoginController());
   @override
   void initState() {
     super.initState();
-
-    getList();
-    getWiFiSsidTable();
-    getWiFi5GSsidTable();
+    sharedGetData('deviceSn', String).then(((res) {
+      printInfo(info: 'deviceSn$res');
+      setState(() {
+        sn = res.toString();
+        //状态为local 请求本地  状态为cloud  请求云端
+        printInfo(info: 'state--${loginController.login.state}');
+        if (mounted) {
+          if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
+            // 云端请求赋值
+            get24gList();
+          }
+          if (loginController.login.state == 'local') {
+            // 本地请求赋值
+            getList();
+            getWiFiSsidTable();
+            getWiFi5GSsidTable();
+          }
+        }
+      });
+    }));
   }
 
-//提交
+  // 云端获取接口
+  // 2.4g
+  Future get24gList() async {
+    Object? sn = await sharedGetData('deviceSn', String);
+    List<String> parameterNames = [
+      'InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.1'
+    ];
+    var res = await Request().getACSNode(parameterNames, sn.toString());
+    var list = json.decode(res)['data']['InternetGatewayDevice']['WEB_GUI']
+        ['WiFi']['WLANSettings']['1'];
+    // WLAN Enable
+    bool enable = list['Enable']['_value'];
+    // Mode
+    String mode = list['Mode']['_value'];
+    // Bandwidth
+    String bandwidth = list['ChannelBandwidth']['_value'];
+    // Channel
+    String channel = list['Channel']['_value'];
+    // TX Power
+    String txPower = list['TxPower']['_value'];
+    // SSID
+    String ssidText = list['SSIDProfile']['1']['SSID']['_value'];
+    // MAX
+    int maxText = list['SSIDProfile']['1']['MaxNoOfDev']['_value'];
+    // HIDE BROADCAST
+    bool hideBroadcast =
+        list['SSIDProfile']['1']['HideSSIDBroadcast']['_value'];
+    // AP Isolation
+    bool isolation = list['SSIDProfile']['1']['APIsolation']['_value'];
+    // encryptionmode
+    var encyptionmode = list['SSIDProfile']['1']['EncryptionMode']['_value'];
+    // SERCURITY
+    String sercurity = encyptionmode.split('+')[0];
+    // WPA ENCYPITON
+    String wpaEncyption = encyptionmode.split('+').skip(1).join('+');
+    // PASSWORD
+    // 暂无PASSWORD
+    setState(() {
+      pdVal = 0;
+      isCheck = enable;
+      msVal = wifiModeV.indexOf(mode);
+      kdVal = wifiChannelBandwidth.indexOf(bandwidth);
+      xtVal = kdVal == 0
+          ? wifiCountryChannelListHT20.indexOf(channel)
+          : kdVal == 1
+              ? wifiCountryChannelListHT40j.indexOf(channel)
+              : wifiCountryChannelListHT40.indexOf(channel);
+      // fsVal = txPower;
+
+      ssid.text = ssidText;
+      max.text = maxText.toString();
+      ssidisCheck = hideBroadcast;
+      apisCheck = isolation;
+      aqVal = wpaOptionsV.indexOf(sercurity);
+      wpaVal = wpajmOptionsV.indexOf(wpaEncyption);
+    });
+  }
+
+  // 5g
+  Future get5gList() async {
+    Object? sn = await sharedGetData('deviceSn', String);
+    List<String> parameterNames = [
+      'InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.2'
+    ];
+    var res = await Request().getACSNode(parameterNames, sn.toString());
+    var list = json.decode(res)['data']['InternetGatewayDevice']['WEB_GUI']
+        ['WiFi']['WLANSettings']['2'];
+    // WLAN Enable
+    bool enable = list['Enable']['_value'];
+    // Mode
+    String mode = list['Mode']['_value'];
+    // Bandwidth
+    String bandwidth = list['ChannelBandwidth']['_value'];
+    // Channel
+    String channel = list['Channel']['_value'];
+    // TX Power
+    String txPower = list['TxPower']['_value'];
+    // SSID
+    String ssidText = list['SSIDProfile']['1']['SSID']['_value'];
+    // MAX
+    int maxText = list['SSIDProfile']['1']['MaxNoOfDev']['_value'];
+    // HIDE BROADCAST
+    bool hideBroadcast =
+        list['SSIDProfile']['1']['HideSSIDBroadcast']['_value'];
+    // AP Isolation
+    bool isolation = list['SSIDProfile']['1']['APIsolation']['_value'];
+    // encryptionmode
+    var encyptionmode = list['SSIDProfile']['1']['EncryptionMode']['_value'];
+    // SERCURITY
+    String sercurity = encyptionmode.split('+')[0];
+    // WPA ENCYPITON
+    String wpaEncyption = encyptionmode.split('+').skip(1).join('+');
+    // PASSWORD
+    // 暂无PASSWORD
+    setState(() {
+      pdVal = 1;
+      isCheck5 = enable;
+      msVal5 = wifi5gModeV.indexOf(mode);
+      kdVal5 = wifiChannelBandwidth5V.indexOf(bandwidth);
+      xtVal5 = wifi5gCountryChannelList.indexOf(channel);
+      // fsVal = txPower;
+
+      ssid5.text = ssidText;
+      max5.text = maxText.toString();
+      ssidisCheck5 = hideBroadcast;
+      apisCheck5 = isolation;
+      aqVal5 = wpaOptionsV.indexOf(sercurity);
+      wpaVal5 = wpajmOptionsV.indexOf(wpaEncyption);
+    });
+  }
+
+  //提交
   void setData() async {
     if ((pdVal == 0 && isCheck)) {
       ssid.text == '';
-      ToastUtils.waring('SSID ' + S.current.notEmpty);
+      ToastUtils.waring('SSID ${S.current.notEmpty}');
     }
     if (pdVal == 1 && isCheck5) {
       ssid5.text == '';
-      ToastUtils.waring('SSID ' + S.current.notEmpty);
+      ToastUtils.waring('SSID ${S.current.notEmpty}');
     }
-    var param;
+    String param;
     if (pdVal == 1) {
       if (isCheck5) {
         if (msVal5 < 3) {
@@ -163,10 +353,10 @@ class _WlanSetState extends State<WlanSet> {
       if (isCheck) {
         if (msVal < 2) {
           param =
-              '{"wifiEnable":"1","wifiMode":"${wifiModeV[msVal]}","wifiHtmode":"${wifiChannelBandwidth[kdVal]}","wifiChannel":"${kdVal == 0 ? wifiCountryChannelList_HT20[xtVal] : kdVal == 1 ? wifiCountryChannelList_HT40j[xtVal] : wifiCountryChannelList_HT40}","wifiTxpower":"${wifiTxpower[fsVal]}"}';
+              '{"wifiEnable":"1","wifiMode":"${wifiModeV[msVal]}","wifiHtmode":"${wifiChannelBandwidth[kdVal]}","wifiChannel":"${kdVal == 0 ? wifiCountryChannelListHT20[xtVal] : kdVal == 1 ? wifiCountryChannelListHT40j[xtVal] : wifiCountryChannelListHT40}","wifiTxpower":"${wifiTxpower[fsVal]}"}';
         } else {
           param =
-              '{"wifiEnable":"1","wifiMode":"${wifiModeV[msVal]}",,"wifiChannel":"${kdVal == 0 ? wifiCountryChannelList_HT20[xtVal] : kdVal == 1 ? wifiCountryChannelList_HT40j[xtVal] : wifiCountryChannelList_HT40}","wifiTxpower":"${wifiTxpower[fsVal]}"}';
+              '{"wifiEnable":"1","wifiMode":"${wifiModeV[msVal]}",,"wifiChannel":"${kdVal == 0 ? wifiCountryChannelListHT20[xtVal] : kdVal == 1 ? wifiCountryChannelListHT40j[xtVal] : wifiCountryChannelListHT40}","wifiTxpower":"${wifiTxpower[fsVal]}"}';
         }
       } else {
         param = '{"wifiEnable": "0"}';
@@ -189,7 +379,7 @@ class _WlanSetState extends State<WlanSet> {
   }
 
   void setTab() async {
-    var param;
+    String param;
     if (pdVal == 0) {
       param =
           '{"table":"WiFiSsidTable","value":[{"id":0,"Enable":"1","Ssid":"${ssid.text}","MaxClient":"${max.text}","SsidHide":"${ssidisCheck ? 1 : 0}","ApIsolate":"${apisCheck ? 1 : 0}","Encryption":"${wpaOptionsV[aqVal]}+${wpajmOptionsV[wpaVal]}","Key":"${password.text}"}]}';
@@ -213,6 +403,7 @@ class _WlanSetState extends State<WlanSet> {
 
   //读取
   void getData() async {
+    // 请求的参数
     Map<String, dynamic> data = {
       'method': 'obj_get',
       'param':
@@ -220,74 +411,87 @@ class _WlanSetState extends State<WlanSet> {
     };
     try {
       var response = await XHttp.get('/data.html', data);
+      if (response == null || response.toString().isEmpty) {
+        throw Exception('Response is empty.');
+      }
       var d = json.decode(response.toString());
       setState(() {
         wlanData = wlanDatas.fromJson(d);
-        //SSID
-
-        // wifiModeV.indexOf(wlanData.wifiMode.toString());
-        if (!wifiModeV.contains(wlanData.wifiMode.toString())) {
-          return;
-        }
-        msVal = wifiModeV.indexOf(wlanData.wifiMode.toString());
-        msVal5 = wifi5gModeV.indexOf(wlanData.wifi5gMode.toString());
-        kdVal = wifiChannelBandwidth.indexOf(wlanData.wifiHtmode.toString());
-        kdVal5 =
-            wifiChannelBandwidth5V.indexOf(wlanData.wifi5gHtmode.toString());
-        fsVal = wifiTxpower.indexOf(wlanData.wifiTxpower.toString());
-        fsVal5 = wifi5gTxpower.indexOf(wlanData.wifi5gTxpower.toString());
-
-        // wlanData.wifiMode.
-        if (wlanData.wifiHtmode.toString() == '20MHz') {
-          xtVal = wifiCountryChannelList_HT20
-              .indexOf(wlanData.wifiChannel.toString());
-        } else if (wlanData.wifiHtmode.toString() == '40+MHz') {
-          xtVal = wifiCountryChannelList_HT40j
-              .indexOf(wlanData.wifiChannel.toString());
-        } else if (wlanData.wifiHtmode.toString() == '40-MHz') {
-          xtVal = wifiCountryChannelList_HT40
-              .indexOf(wlanData.wifiChannel.toString());
-        }
-
-        xtVal5 =
-            wifi5gCountryChannelList.indexOf(wlanData.wifi5gChannel.toString());
-        isCheck = wlanData.wifiEnable == '1';
-        isCheck5 = wlanData.wifi5gEnable == '1';
-
-        print(wlanData.toString());
+        updateState();
       });
     } catch (e) {
-      debugPrint('设置失败:$e.toString()');
+      // 异步出错goback
+      Get.back();
     }
   }
 
-//读取
+  void updateState() {
+    //SSID
+    // wifiModeV.indexOf(wlanData.wifiMode.toString());
+    if (!wifiModeV.contains(wlanData.wifiMode.toString())) {
+      return;
+    }
+    msVal = wifiModeV.indexOf(wlanData.wifiMode.toString());
+    msVal5 = wifi5gModeV.indexOf(wlanData.wifi5gMode.toString());
+    kdVal = wifiChannelBandwidth.indexOf(wlanData.wifiHtmode.toString());
+    kdVal5 = wifiChannelBandwidth5V.indexOf(wlanData.wifi5gHtmode.toString());
+    fsVal = wifiTxpower.indexOf(wlanData.wifiTxpower.toString());
+    fsVal5 = wifi5gTxpower.indexOf(wlanData.wifi5gTxpower.toString());
+
+    // wlanData.wifiMode.
+    if (wlanData.wifiHtmode.toString() == '20MHz') {
+      xtVal =
+          wifiCountryChannelListHT20.indexOf(wlanData.wifiChannel.toString());
+    } else if (wlanData.wifiHtmode.toString() == '40+MHz') {
+      xtVal =
+          wifiCountryChannelListHT40j.indexOf(wlanData.wifiChannel.toString());
+    } else if (wlanData.wifiHtmode.toString() == '40-MHz') {
+      xtVal =
+          wifiCountryChannelListHT40.indexOf(wlanData.wifiChannel.toString());
+    }
+
+    xtVal5 =
+        wifi5gCountryChannelList.indexOf(wlanData.wifi5gChannel.toString());
+    isCheck = wlanData.wifiEnable == '1';
+    isCheck5 = wlanData.wifi5gEnable == '1';
+
+    printInfo(info: 'wlanData$wlanData');
+  }
+
+// 读取Channel
+  void addChannelList(List<String> list, String? channelList) {
+    if (channelList != null) {
+      list.addAll(channelList.split(';'));
+    }
+  }
+
   void getList() async {
     Map<String, dynamic> data = {
       'method': 'obj_get',
       'param':
           '["wifiCountryChannelList_HT20","wifiCountryChannelList_HT40+","wifiCountryChannelList_HT40-","wifiHtmode","wifi5gCountryChannelList"]',
     };
+    var response = await XHttp.get('/data.html', data);
+    Map<String, dynamic> d;
     try {
-      var response = await XHttp.get('/data.html', data);
-      var d = json.decode(response.toString());
-      setState(() {
-        channelLists = channelList.fromJson(d);
-        print("+++++++++++++++$channelLists");
-
-        wifi5gCountryChannelList
-            .addAll(channelLists.wifi5gCountryChannelList!.split(';'));
-        wifiCountryChannelList_HT20
-            .addAll(channelLists.wifiCountryChannelListHT20!.split(';'));
-        wifiCountryChannelList_HT40j
-            .addAll(channelLists.wifiCountryChannelListHT40j!.split(';'));
-        wifiCountryChannelList_HT40
-            .addAll(channelLists.wifiCountryChannelListHT40!.split(';'));
-      });
-      getData();
+      d = json.decode(response.toString());
     } catch (e) {
-      debugPrint('获取wps设置失败:$e.toString()');
+      throw Exception('Failed to decode config data: $e');
     }
+    setState(() {
+      channelLists = channelList.fromJson(d);
+      debugPrint("+++++++++++++++$channelLists");
+
+      addChannelList(
+          wifi5gCountryChannelList, channelLists.wifi5gCountryChannelList);
+      addChannelList(
+          wifiCountryChannelListHT20, channelLists.wifiCountryChannelListHT20);
+      addChannelList(wifiCountryChannelListHT40j,
+          channelLists.wifiCountryChannelListHT40j);
+      addChannelList(
+          wifiCountryChannelListHT40, channelLists.wifiCountryChannelListHT40);
+    });
+    getData();
   }
 
 //读取WiFiSsidTable
@@ -384,335 +588,356 @@ class _WlanSetState extends State<WlanSet> {
                   //一般设置
                   TitleWidger(title: S.of(context).General),
                   InfoBox(
-                      boxCotainer: Column(
-                    children: [
-                      //频段
-                      GestureDetector(
-                        onTap: () {
-                          closeKeyboard(context);
-                          var result = CommonPicker.showPicker(
-                            context: context,
-                            options: ['2.4GHz', '5GHz'],
-                            value: pdVal,
-                          );
-                          result?.then((selectedValue) => {
-                                if (pdVal != selectedValue &&
-                                    selectedValue != null)
-                                  {
-                                    setState(() => {
-                                          pdVal = selectedValue,
-                                        })
+                    boxCotainer: Column(
+                      children: [
+                        //频段
+                        GestureDetector(
+                          onTap: () {
+                            closeKeyboard(context);
+                            var result = CommonPicker.showPicker(
+                              context: context,
+                              options: ['2.4GHz', '5GHz'],
+                              value: pdVal,
+                            );
+                            result?.then((selectedValue) {
+                              if (pdVal != selectedValue &&
+                                  selectedValue != null) {
+                                setState(() {
+                                  pdVal = selectedValue;
+                                  if (selectedValue == 0) {
+                                    get24gList();
+                                  } else if (selectedValue == 1) {
+                                    get5gList();
                                   }
-                              });
-                        },
-                        child: BottomLine(
+                                });
+                              }
+                            });
+                          },
+                          child: BottomLine(
+                            rowtem: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  S.of(context).Band,
+                                  style: TextStyle(
+                                      color: const Color.fromARGB(255, 5, 0, 0),
+                                      fontSize: 28.sp),
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      ['2.4GHz', '5GHz'][pdVal],
+                                      style: TextStyle(
+                                          color: const Color.fromARGB(
+                                              255, 5, 0, 0),
+                                          fontSize: 28.sp),
+                                    ),
+                                    Icon(
+                                      Icons.arrow_forward_ios_outlined,
+                                      color: const Color.fromRGBO(
+                                          144, 147, 153, 1),
+                                      size: 30.w,
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        //WLAN
+                        BottomLine(
                           rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(S.of(context).Band,
-                                  style: TextStyle(
-                                      color: const Color.fromARGB(255, 5, 0, 0),
-                                      fontSize: 28.sp)),
+                              Text(
+                                'WLAN',
+                                style: TextStyle(
+                                    color: const Color.fromARGB(255, 5, 0, 0),
+                                    fontSize: 28.sp),
+                              ),
                               Row(
                                 children: [
-                                  Text(['2.4GHz', '5GHz'][pdVal],
+                                  Switch(
+                                    value: pdVal == 0 ? isCheck : isCheck5,
+                                    onChanged: (newVal) {
+                                      setState(() {
+                                        if (pdVal == 0) {
+                                          isCheck = newVal;
+                                        } else {
+                                          isCheck5 = newVal;
+                                        }
+                                      });
+                                    },
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+
+                        //模式
+                        if (pdVal == 0 ? isCheck : isCheck5)
+                          GestureDetector(
+                            onTap: () {
+                              closeKeyboard(context);
+                              var result = CommonPicker.showPicker(
+                                context: context,
+                                options: pdVal == 0 ? wifiMode : wifi5gMode,
+                                value: pdVal == 0 ? msVal : msVal5,
+                              );
+                              result?.then((selectedValue) => {
+                                    if (msVal != selectedValue &&
+                                        selectedValue != null)
+                                      {
+                                        setState(() => {
+                                              if (pdVal == 0)
+                                                {
+                                                  msVal = selectedValue,
+                                                  kdVal = 0
+                                                }
+                                              else
+                                                {
+                                                  msVal5 = selectedValue,
+                                                  kdVal5 = 0
+                                                }
+                                            })
+                                      }
+                                  });
+                            },
+                            child: BottomLine(
+                              rowtem: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(S.of(context).Mode,
                                       style: TextStyle(
                                           color: const Color.fromARGB(
                                               255, 5, 0, 0),
                                           fontSize: 28.sp)),
-                                  Icon(
-                                    Icons.arrow_forward_ios_outlined,
-                                    color:
-                                        const Color.fromRGBO(144, 147, 153, 1),
-                                    size: 30.w,
-                                  )
+                                  Row(
+                                    children: [
+                                      Text(
+                                          pdVal == 0
+                                              ? wifiMode[msVal]
+                                              : wifi5gMode[msVal5],
+                                          style: TextStyle(
+                                              color: const Color.fromARGB(
+                                                  255, 5, 0, 0),
+                                              fontSize: 28.sp)),
+                                      Icon(
+                                        Icons.arrow_forward_ios_outlined,
+                                        color: const Color.fromRGBO(
+                                            144, 147, 153, 1),
+                                        size: 30.w,
+                                      )
+                                    ],
+                                  ),
                                 ],
                               ),
-                            ],
+                            ),
                           ),
-                        ),
-                      ),
-                      //WLAN
-                      BottomLine(
-                        rowtem: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('WLAN',
-                                style: TextStyle(
-                                    color: const Color.fromARGB(255, 5, 0, 0),
-                                    fontSize: 28.sp)),
-                            Row(
-                              children: [
-                                Switch(
-                                  value: pdVal == 0 ? isCheck : isCheck5,
-                                  onChanged: (newVal) {
-                                    setState(() {
-                                      if (pdVal == 0) {
-                                        isCheck = newVal;
-                                      } else {
-                                        isCheck5 = newVal;
+                        //带宽
+                        if (pdVal == 0
+                            ? isCheck && (msVal < 2)
+                            : isCheck5 && msVal5 != 3)
+                          GestureDetector(
+                            onTap: () {
+                              closeKeyboard(context);
+                              var result = CommonPicker.showPicker(
+                                context: context,
+                                options: pdVal == 0
+                                    ? wifiChannelBandwidth
+                                    : wifiChannelBandwidth5,
+                                value: pdVal == 0 ? kdVal : kdVal5,
+                              );
+                              result?.then((selectedValue) => {
+                                    if (kdVal != selectedValue &&
+                                        selectedValue != null)
+                                      {
+                                        setState(() => {
+                                              if (pdVal == 0)
+                                                {
+                                                  kdVal = selectedValue,
+                                                  xtVal = 0
+                                                }
+                                              else
+                                                {
+                                                  kdVal5 = selectedValue,
+                                                  xtVal5 = 0
+                                                }
+                                            })
                                       }
-                                    });
-                                  },
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-
-                      //模式
-                      if (pdVal == 0 ? isCheck : isCheck5)
-                        GestureDetector(
-                          onTap: () {
-                            closeKeyboard(context);
-                            var result = CommonPicker.showPicker(
-                              context: context,
-                              options: pdVal == 0 ? wifiMode : wifi5gMode,
-                              value: pdVal == 0 ? msVal : msVal5,
-                            );
-                            result?.then((selectedValue) => {
-                                  if (msVal != selectedValue &&
-                                      selectedValue != null)
-                                    {
-                                      setState(() => {
-                                            if (pdVal == 0)
-                                              {msVal = selectedValue, kdVal = 0}
-                                            else
-                                              {
-                                                msVal5 = selectedValue,
-                                                kdVal5 = 0
-                                              }
-                                          })
-                                    }
-                                });
-                          },
-                          child: BottomLine(
-                            rowtem: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(S.of(context).Mode,
-                                    style: TextStyle(
-                                        color:
-                                            const Color.fromARGB(255, 5, 0, 0),
-                                        fontSize: 28.sp)),
-                                Row(
-                                  children: [
-                                    Text(
-                                        pdVal == 0
-                                            ? wifiMode[msVal]
-                                            : wifi5gMode[msVal5],
-                                        style: TextStyle(
-                                            color: const Color.fromARGB(
-                                                255, 5, 0, 0),
-                                            fontSize: 28.sp)),
-                                    Icon(
-                                      Icons.arrow_forward_ios_outlined,
-                                      color: const Color.fromRGBO(
-                                          144, 147, 153, 1),
-                                      size: 30.w,
-                                    )
-                                  ],
-                                ),
-                              ],
+                                  });
+                            },
+                            child: BottomLine(
+                              rowtem: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(S.of(context).Bandwidth,
+                                      style: TextStyle(
+                                          color: const Color.fromARGB(
+                                              255, 5, 0, 0),
+                                          fontSize: 28.sp)),
+                                  Row(
+                                    children: [
+                                      Text(
+                                          pdVal == 0
+                                              ? wifiChannelBandwidth[kdVal]
+                                              : wifiChannelBandwidth5[kdVal5],
+                                          style: TextStyle(
+                                              color: const Color.fromARGB(
+                                                  255, 5, 0, 0),
+                                              fontSize: 28.sp)),
+                                      Icon(
+                                        Icons.arrow_forward_ios_outlined,
+                                        color: const Color.fromRGBO(
+                                            144, 147, 153, 1),
+                                        size: 30.w,
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      //带宽
-                      if (pdVal == 0
-                          ? isCheck && (msVal < 2)
-                          : isCheck5 && msVal5 != 3)
-                        GestureDetector(
-                          onTap: () {
-                            closeKeyboard(context);
-                            var result = CommonPicker.showPicker(
-                              context: context,
-                              options: pdVal == 0
-                                  ? wifiChannelBandwidth
-                                  : wifiChannelBandwidth5,
-                              value: pdVal == 0 ? kdVal : kdVal5,
-                            );
-                            result?.then((selectedValue) => {
-                                  if (kdVal != selectedValue &&
-                                      selectedValue != null)
-                                    {
-                                      setState(() => {
-                                            if (pdVal == 0)
-                                              {kdVal = selectedValue, xtVal = 0}
-                                            else
-                                              {
-                                                kdVal5 = selectedValue,
-                                                xtVal5 = 0
-                                              }
-                                          })
-                                    }
-                                });
-                          },
-                          child: BottomLine(
-                            rowtem: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(S.of(context).Bandwidth,
-                                    style: TextStyle(
-                                        color:
-                                            const Color.fromARGB(255, 5, 0, 0),
-                                        fontSize: 28.sp)),
-                                Row(
-                                  children: [
-                                    Text(
-                                        pdVal == 0
-                                            ? wifiChannelBandwidth[kdVal]
-                                            : wifiChannelBandwidth5[kdVal5],
-                                        style: TextStyle(
-                                            color: const Color.fromARGB(
-                                                255, 5, 0, 0),
-                                            fontSize: 28.sp)),
-                                    Icon(
-                                      Icons.arrow_forward_ios_outlined,
-                                      color: const Color.fromRGBO(
-                                          144, 147, 153, 1),
-                                      size: 30.w,
-                                    )
-                                  ],
-                                ),
-                              ],
+                        //信道
+                        if (pdVal == 0 ? isCheck : isCheck5)
+                          GestureDetector(
+                            onTap: () {
+                              closeKeyboard(context);
+                              var result = CommonPicker.showPicker(
+                                context: context,
+                                options: pdVal == 1
+                                    ? wifi5gCountryChannelList
+                                    : kdVal == 0
+                                        ? wifiCountryChannelListHT20
+                                        : kdVal == 1
+                                            ? wifiCountryChannelListHT40j
+                                            : wifiCountryChannelListHT40,
+                                value: pdVal == 0 ? xtVal : xtVal5,
+                              );
+                              result?.then((selectedValue) => {
+                                    if (xtVal != selectedValue &&
+                                        selectedValue != null)
+                                      {
+                                        setState(() => {
+                                              xtVal = selectedValue,
+                                              if (pdVal == 1)
+                                                {xtVal5 = selectedValue}
+                                              else
+                                                {xtVal = selectedValue}
+                                            })
+                                      }
+                                  });
+                            },
+                            child: BottomLine(
+                              rowtem: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(S.of(context).Channel,
+                                      style: TextStyle(
+                                          color: const Color.fromARGB(
+                                              255, 5, 0, 0),
+                                          fontSize: 28.sp)),
+                                  Row(
+                                    children: [
+                                      Text(
+                                          pdVal == 1
+                                              ? wifi5gCountryChannelList[xtVal5]
+                                              : kdVal == 0
+                                                  ? wifiCountryChannelListHT20[
+                                                      xtVal]
+                                                  : kdVal == 1
+                                                      ? wifiCountryChannelListHT40j[
+                                                          xtVal]
+                                                      : wifiCountryChannelListHT40[
+                                                          xtVal],
+                                          style: TextStyle(
+                                              color: const Color.fromARGB(
+                                                  255, 5, 0, 0),
+                                              fontSize: 28.sp)),
+                                      Icon(
+                                        Icons.arrow_forward_ios_outlined,
+                                        color: const Color.fromRGBO(
+                                            144, 147, 153, 1),
+                                        size: 30.w,
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      //信道
-                      if (pdVal == 0 ? isCheck : isCheck5)
-                        GestureDetector(
-                          onTap: () {
-                            closeKeyboard(context);
-                            var result = CommonPicker.showPicker(
-                              context: context,
-                              options: pdVal == 1
-                                  ? wifi5gCountryChannelList
-                                  : kdVal == 0
-                                      ? wifiCountryChannelList_HT20
-                                      : kdVal == 1
-                                          ? wifiCountryChannelList_HT40j
-                                          : wifiCountryChannelList_HT40,
-                              value: pdVal == 0 ? xtVal : xtVal5,
-                            );
-                            result?.then((selectedValue) => {
-                                  if (xtVal != selectedValue &&
-                                      selectedValue != null)
-                                    {
-                                      setState(() => {
-                                            xtVal = selectedValue,
-                                            if (pdVal == 1)
-                                              {xtVal5 = selectedValue}
-                                            else
-                                              {xtVal = selectedValue}
-                                          })
-                                    }
-                                });
-                          },
-                          child: BottomLine(
-                            rowtem: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(S.of(context).Channel,
-                                    style: TextStyle(
-                                        color:
-                                            const Color.fromARGB(255, 5, 0, 0),
-                                        fontSize: 28.sp)),
-                                Row(
-                                  children: [
-                                    Text(
-                                        pdVal == 1
-                                            ? wifi5gCountryChannelList[xtVal5]
-                                            : kdVal == 0
-                                                ? wifiCountryChannelList_HT20[
-                                                    xtVal]
-                                                : kdVal == 1
-                                                    ? wifiCountryChannelList_HT40j[
-                                                        xtVal]
-                                                    : wifiCountryChannelList_HT40[
-                                                        xtVal],
-                                        style: TextStyle(
-                                            color: const Color.fromARGB(
-                                                255, 5, 0, 0),
-                                            fontSize: 28.sp)),
-                                    Icon(
-                                      Icons.arrow_forward_ios_outlined,
-                                      color: const Color.fromRGBO(
-                                          144, 147, 153, 1),
-                                      size: 30.w,
-                                    )
-                                  ],
-                                ),
-                              ],
+                        //发射功率
+                        if (pdVal == 0 ? isCheck : isCheck5)
+                          GestureDetector(
+                            onTap: () {
+                              closeKeyboard(context);
+                              var result = CommonPicker.showPicker(
+                                context: context,
+                                options: [
+                                  '100%',
+                                  '50%',
+                                  '20%',
+                                ],
+                                value: pdVal == 0 ? fsVal : fsVal5,
+                              );
+                              result?.then((selectedValue) => {
+                                    if (fsVal != selectedValue &&
+                                        selectedValue != null)
+                                      {
+                                        setState(() => {
+                                              if (pdVal == 0)
+                                                {
+                                                  fsVal = selectedValue,
+                                                }
+                                              else
+                                                {
+                                                  fsVal5 = selectedValue,
+                                                }
+                                            })
+                                      }
+                                  });
+                            },
+                            child: BottomLine(
+                              rowtem: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(S.of(context).TxPower,
+                                      style: TextStyle(
+                                          color: const Color.fromARGB(
+                                              255, 5, 0, 0),
+                                          fontSize: 28.sp)),
+                                  Row(
+                                    children: [
+                                      Text(
+                                          [
+                                            '100%',
+                                            '50%',
+                                            '20%',
+                                          ][pdVal == 0 ? fsVal : fsVal5],
+                                          style: TextStyle(
+                                              color: const Color.fromARGB(
+                                                  255, 5, 0, 0),
+                                              fontSize: 28.sp)),
+                                      Icon(
+                                        Icons.arrow_forward_ios_outlined,
+                                        color: const Color.fromRGBO(
+                                            144, 147, 153, 1),
+                                        size: 30.w,
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      //发射功率
-                      if (pdVal == 0 ? isCheck : isCheck5)
-                        GestureDetector(
-                          onTap: () {
-                            closeKeyboard(context);
-                            var result = CommonPicker.showPicker(
-                              context: context,
-                              options: [
-                                '100%',
-                                '50%',
-                                '20%',
-                              ],
-                              value: pdVal == 0 ? fsVal : fsVal5,
-                            );
-                            result?.then((selectedValue) => {
-                                  if (fsVal != selectedValue &&
-                                      selectedValue != null)
-                                    {
-                                      setState(() => {
-                                            if (pdVal == 0)
-                                              {
-                                                fsVal = selectedValue,
-                                              }
-                                            else
-                                              {
-                                                fsVal5 = selectedValue,
-                                              }
-                                          })
-                                    }
-                                });
-                          },
-                          child: BottomLine(
-                            rowtem: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(S.of(context).TxPower,
-                                    style: TextStyle(
-                                        color:
-                                            const Color.fromARGB(255, 5, 0, 0),
-                                        fontSize: 28.sp)),
-                                Row(
-                                  children: [
-                                    Text(
-                                        [
-                                          '100%',
-                                          '50%',
-                                          '20%',
-                                        ][pdVal == 0 ? fsVal : fsVal5],
-                                        style: TextStyle(
-                                            color: const Color.fromARGB(
-                                                255, 5, 0, 0),
-                                            fontSize: 28.sp)),
-                                    Icon(
-                                      Icons.arrow_forward_ios_outlined,
-                                      color: const Color.fromRGBO(
-                                          144, 147, 153, 1),
-                                      size: 30.w,
-                                    )
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                    ],
-                  )),
+                      ],
+                    ),
+                  ),
                   //配置
                   if (pdVal == 0 ? isCheck : isCheck5)
                     TitleWidger(title: S.of(context).Configuration),
@@ -735,13 +960,15 @@ class _WlanSetState extends State<WlanSet> {
                                   controller: pdVal == 0 ? ssid : ssid5,
                                   textAlign: TextAlign.right,
                                   style: TextStyle(
-                                      fontSize: 26.sp,
-                                      color: const Color(0xff051220)),
+                                    fontSize: 26.sp,
+                                    color: const Color(0xff051220),
+                                  ),
                                   decoration: InputDecoration(
-                                    hintText: S.current.enter + "SSID",
+                                    hintText: "${S.current.enter}SSID",
                                     hintStyle: TextStyle(
-                                        fontSize: 26.sp,
-                                        color: const Color(0xff737A83)),
+                                      fontSize: 26.sp,
+                                      color: const Color(0xff737A83),
+                                    ),
                                     border: InputBorder.none,
                                   ),
                                 ),
@@ -764,7 +991,9 @@ class _WlanSetState extends State<WlanSet> {
                                   keyboardType: TextInputType.number,
                                   inputFormatters: [
                                     FilteringTextInputFormatter.allow(
-                                        RegExp(r'^7[0]$|^[1-6]\d$|^[1-9]$'))
+                                      RegExp(
+                                          r'^[1-6][0-4]$|^[1-9]$|^[1-5][0-9]$'),
+                                    )
                                   ],
                                   textAlign: TextAlign.right,
                                   controller: pdVal == 0 ? max : max5,
@@ -772,7 +1001,7 @@ class _WlanSetState extends State<WlanSet> {
                                       fontSize: 26.sp,
                                       color: const Color(0xff051220)),
                                   decoration: InputDecoration(
-                                    hintText: S.of(context).Maximum,
+                                    hintText: S.of(context).MaximumRange,
                                     hintStyle: TextStyle(
                                         fontSize: 26.sp,
                                         color: const Color(0xff737A83)),
@@ -801,8 +1030,7 @@ class _WlanSetState extends State<WlanSet> {
                                       setState(() {
                                         if (pdVal == 0) {
                                           ssidisCheck = newVal;
-                                        }
-                                        {
+                                        } else {
                                           ssidisCheck5 = newVal;
                                         }
                                       });
@@ -958,7 +1186,6 @@ class _WlanSetState extends State<WlanSet> {
                             ),
                           ),
                         if (aqVal != 2)
-
                           //密码
                           BottomLine(
                             rowtem: Row(
@@ -1007,7 +1234,7 @@ class _WlanSetState extends State<WlanSet> {
                       ],
                     )),
                   Padding(
-                      padding: EdgeInsets.only(top: 10.w,bottom: 50.w),
+                      padding: EdgeInsets.only(top: 10.w, bottom: 50.w),
                       child: Center(
                           child: SizedBox(
                         height: 70.sp,

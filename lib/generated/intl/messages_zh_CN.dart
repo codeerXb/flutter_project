@@ -71,6 +71,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "MACAddress": MessageLookupByLibrary.simpleMessage("MAC地址"),
         "Manual": MessageLookupByLibrary.simpleMessage("手动"),
         "Maximum": MessageLookupByLibrary.simpleMessage("最大设备数"),
+        "MaximumRange": MessageLookupByLibrary.simpleMessage("1-64"),
         "Mode": MessageLookupByLibrary.simpleMessage("模式"),
         "NetworkIndex": MessageLookupByLibrary.simpleMessage("访客网络索引"),
         "NetworkMode": MessageLookupByLibrary.simpleMessage("网络模式"),

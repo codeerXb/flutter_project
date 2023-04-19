@@ -59,6 +59,7 @@
   "TxPower": "发射功率",
   "Configuration": "配置",
   "Maximum": "最大设备数",
+  "MaximumRange": "1-64",
   "HideSSIDBroadcast": "隐藏SSID网络",
   "APIsolation": "AP隔离",
   "Security": "安全",

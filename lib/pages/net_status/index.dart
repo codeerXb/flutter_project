@@ -51,6 +51,18 @@ class _NetStatusState extends State<NetStatus> {
   String _wifiStatus = '0';
   // sim卡连接状况：1:连通0：未连接
   String _simStatus = '0';
+
+  // 定义套餐类型
+  int _comboType = 0;
+  // 定义套餐总量
+  // 定义显示套餐状况
+  String _comboLabel = S.current.Notset;
+  // 套餐周期
+  List<String> comboCycleLabel = [
+    S.current.day,
+    S.current.month,
+    S.current.year
+  ];
   // 上行速率总数
   double _upRate = 0;
   //下行速率转换
@@ -69,9 +81,7 @@ class _NetStatusState extends State<NetStatus> {
   // 已经使用的流量总数 整数部分
   int usedFlowInt = 0;
   // 已经使用的流量总数 小数部分
-  String usedFlowDecimals = '0';
-  // 定义套餐总量
-  final double _totalComboData = 0;
+  String usedFlowDecimals = '0KB';
 
   // 下拉列表
   bool isShowList = false;
@@ -86,8 +96,8 @@ class _NetStatusState extends State<NetStatus> {
         }
       ];
   String sn = '';
-  String dowUnit = '';
-  String upUnit = '';
+  String dowUnit = 'Kbps';
+  String upUnit = 'Kbps';
 
   Timer? timer;
   @override
@@ -188,15 +198,17 @@ class _NetStatusState extends State<NetStatus> {
   ///  获取  云端
   getTROnlineCount() async {
     printInfo(info: 'sn在这里有值吗-------$sn');
+
     var parameterNames = [
       "InternetGatewayDevice.WEB_GUI.Overview.DeviceList",
       "InternetGatewayDevice.WEB_GUI.Overview.ThroughputStatisticsList",
       "InternetGatewayDevice.WEB_GUI.Overview.WANStatus.DLRateCurrent",
       "InternetGatewayDevice.WEB_GUI.Overview.WANStatus.ULRateCurrent"
     ];
-    var res = await Request().setTRUsedFlow(parameterNames, sn);
+    var res = await Request().getACSNode(parameterNames, sn);
     try {
       var jsonObj = jsonDecode(res);
+      if (!mounted) return;
       setState(() {
         // 列表数量
         Map<String, dynamic> flowTableName = jsonObj["data"]
@@ -609,7 +621,17 @@ class _NetStatusState extends State<NetStatus> {
                               minimumSize: MaterialStateProperty.all<Size>(
                                   Size(100.w, 100.w)),
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              Get.toNamed('/net_server_settings')
+                                  ?.then((value) {
+                                setState(() {
+                                  _comboLabel = value['type'] == 0
+                                      ? '${value['contain']}GB/${comboCycleLabel[value['cycle']]}'
+                                      : '${value['contain']}h/${comboCycleLabel[value['cycle']]}';
+                                  _comboType = value['type'];
+                                });
+                              });
+                            },
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [

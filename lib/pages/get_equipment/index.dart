@@ -24,7 +24,7 @@ class Equipment extends StatefulWidget {
 class _MyWidgetState extends State<Equipment> {
   final LoginController loginController = Get.put(LoginController());
   final ToolbarController toolbarController = Get.put(ToolbarController());
-  bool isStringBPresent = false;
+  bool isExistLocalDevice = false;
   List appList = [];
   EquipmentData equipmentData = EquipmentData();
   @override
@@ -41,61 +41,6 @@ class _MyWidgetState extends State<Equipment> {
     });
     loginController.setLoading(true);
   }
-
-// 搜索页面
-  // void appLogin(pwd, sn, vn) {
-  //   Map<String, dynamic> data = {
-  //     'username': 'superadmin',
-  //     'password': utf8.decode(base64Decode(pwd)),
-  //   };
-  //   XHttp.get('/action/appLogin', data).then((res) {
-  //     try {
-  //       print("+++++++++++++");
-  //       var d = json.decode(res.toString());
-  //       print(d['token']);
-  //       loginController.setSession(d['sessionid']);
-  //       sharedAddAndUpdate("session", String, d['sessionid']);
-
-  //       loginController.setToken(d['token']);
-  //       sharedAddAndUpdate("token", String, d['token']);
-  //       if (d['code'] == 200) {
-  //         App.post(
-  //                 '${BaseConfig.cloudBaseUrl}/platform/appCustomer/bindingCpe?deviceSn=$sn')
-  //             .then((res) {
-  //           var d = json.decode(res.toString());
-
-  //           debugPrint('99999------>$d');
-  //           if (d['code'] != 200) {
-  //             ToastUtils.error(S.current.check);
-  //             return;
-  //           } else {
-  //             ToastUtils.toast(d['message']);
-  //             loginController.setUserEquipment('deviceSn', sn);
-  //             sharedAddAndUpdate("deviceSn", String, sn);
-  //             Get.offNamed("/home", arguments: {"sn": sn, "vn": vn});
-  //           }
-  //         }).catchError((err) {
-  //           debugPrint('响应------>$err');
-  //           //相应超超时
-  //           if (err['code'] == DioErrorType.connectTimeout) {
-  //             debugPrint('timeout');
-  //             ToastUtils.error(S.current.contimeout);
-  //           }
-  //         });
-  //       }
-  //       // print(d);
-  //     } on FormatException catch (e) {
-  //       print('----------');
-  //       Get.offNamed("/loginPage", arguments: {"sn": sn, "vn": vn});
-  //       print('The provided string is not valid JSON');
-  //       print(e);
-  //     }
-  //   }).catchError((onError) {
-  //     Get.offNamed("/loginPage", arguments: {"sn": sn, "vn": vn});
-
-  //     debugPrint(onError.toString());
-  //   });
-  // }
 
   //  查询绑定设备 App
   void getqueryingBoundDevices() {
@@ -125,8 +70,10 @@ class _MyWidgetState extends State<Equipment> {
       } else {
         appList = d['data'];
         if (d['data'] != []) {
-          appList = d['data'].map((text) => (text)).toList();
-          getEquipmentData();
+          setState(() {
+            appList = d['data'].map((text) => (text)).toList();
+          });
+          getEquipmentData(d['data'].map((text) => (text)).toList());
         }
       }
     }).catchError((onError) {
@@ -134,7 +81,7 @@ class _MyWidgetState extends State<Equipment> {
     });
   }
 
-  void getEquipmentData() {
+  void getEquipmentData(appList) {
     Map<String, dynamic> data = {
       'method': 'obj_get',
       'param':
@@ -153,14 +100,21 @@ class _MyWidgetState extends State<Equipment> {
         }
         setState(() {
           if (equipmentData.systemVersionSn != null || appList.isNotEmpty) {
-            for (var object in appList) {
+            int left = 0;
+            int right = appList.length - 1;
+            while (left <= right) {
+              int mid = (left + right) ~/ 2;
               String dev = 'deviceSn';
               String devvalue = equipmentData.systemVersionSn.toString();
-              if (object.containsKey(dev)) {
-                var value = object[dev];
-                isStringBPresent = value == devvalue;
+              var value = appList[mid][dev];
+              if (value == devvalue) {
+                isExistLocalDevice = true;
+                return;
+              } else if (value.compareTo(devvalue) < 0) {
+                left = mid + 1;
+              } else {
+                right = mid - 1;
               }
-              printInfo(info: 'isStringBPresent===$isStringBPresent');
             }
           }
         });
@@ -200,14 +154,6 @@ class _MyWidgetState extends State<Equipment> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          // leading: IconButton(
-          //     onPressed: () {
-          //       Get.offAllNamed("/user_login");
-          //     },
-          //     icon: const Icon(
-          //       Icons.arrow_back_ios,
-          //       color: Colors.black,
-          //     )),
           centerTitle: true,
           title: Text(
             S.of(context).DiscoveryEqu,
@@ -218,8 +164,6 @@ class _MyWidgetState extends State<Equipment> {
         ),
         body: Obx(
           () => ListView(
-              // shrinkWrap: true,
-              // physics: const NeverScrollableScrollPhysics(),
               padding: EdgeInsets.only(left: 20.w, right: 20.w),
               children: [
                 Padding(
@@ -277,86 +221,65 @@ class _MyWidgetState extends State<Equipment> {
                     ],
                   ),
                 ),
-                if (isStringBPresent == false)
-                  // Text('$isStringBPresent')
-                  if (equipmentData.systemProductModel != null)
-                    Card(
-                      elevation: 5, //设置卡片阴影的深度
-                      shape: const RoundedRectangleBorder(
-                        //设置卡片圆角
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ),
-                      margin: const EdgeInsets.all(10), //设置卡片外边距
-                      child: Column(
-                        children: [
-                          ListTile(
-                            leading: Image.asset("assets/images/router.png",
-                                fit: BoxFit.fitWidth, height: 60, width: 40),
-                            title: Text(
-                                equipmentData.systemProductModel.toString()),
-                            subtitle: Text(
-                              'SN ${equipmentData.systemVersionSn.toString()}',
-                              style: TextStyle(fontSize: 18.sp),
-                            ),
-                            trailing: TextButton(
-                              onPressed: () {
-                                //底部导航回到第一页
-                                toolbarController.setPageIndex(0);
-                                loginController.setEquipment('systemVersionSn',
-                                    equipmentData.systemVersionSn);
-                                childKey.currentState!.controllerStop();
-                                // sharedGetData(
-                                //         equipmentData.systemVersionSn.toString(),
-                                //         String)
-                                //     .then((data) {
-                                //   printInfo(info: 'data是啥$data');
-                                //   if (data != null) {
-                                //     appLogin(data, equipmentData.systemVersionSn,
-                                //         equipmentData.systemProductModel);
-                                //     loginController.setSn(
-                                //         equipmentData.systemVersionSn, data);
-                                //     sharedAddAndUpdate('sn', String,
-                                //         equipmentData.systemVersionSn.toString());
-                                //   } else {
-                                loginController.setSn(
-                                    equipmentData.systemVersionSn, '');
-                                loginController.setState('local');
-                                printInfo(
-                                    info:
-                                        'state--${loginController.login.state}');
-                                Get.offNamed("/loginPage", arguments: {
-                                  "sn": equipmentData.systemVersionSn,
-                                  "vn": equipmentData.systemProductModel
-                                });
-                                // }
-                                // });s
-                              },
-                              child: Text(S.of(context).band),
-                            ),
-                          ),
-                        ],
-                      ),
+                if (!isExistLocalDevice &&
+                    equipmentData.systemProductModel != null)
+                  Card(
+                    elevation: 5, //设置卡片阴影的深度
+                    shape: const RoundedRectangleBorder(
+                      //设置卡片圆角
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
-                // 已绑定列表
-                // Padding(
-                //   padding: EdgeInsets.only(top: 50.w),
-                // ),
-                // Column(
-                //   crossAxisAlignment: CrossAxisAlignment.stretch,
-                //   children: [
-                //     Padding(
-                //       padding: const EdgeInsets.only(left: 12),
-                //       child: Text(S.of(context).list),
-                //     )
-                //   ],
-                // ),
-                // if (appList.isEmpty)
-                //   Column(
-                //     children: [
-                //       Text(S.of(context).noData),
-                //     ],
-                //   ),
-
+                    margin: const EdgeInsets.all(10), //设置卡片外边距
+                    child: Column(
+                      children: [
+                        ListTile(
+                          leading: Image.asset("assets/images/router.png",
+                              fit: BoxFit.fitWidth, height: 60, width: 40),
+                          title:
+                              Text(equipmentData.systemProductModel.toString()),
+                          subtitle: Text(
+                            'SN ${equipmentData.systemVersionSn.toString()}',
+                            style: TextStyle(fontSize: 18.sp),
+                          ),
+                          trailing: TextButton(
+                            onPressed: () {
+                              //底部导航回到第一页
+                              toolbarController.setPageIndex(0);
+                              loginController.setEquipment('systemVersionSn',
+                                  equipmentData.systemVersionSn);
+                              childKey.currentState!.controllerStop();
+                              // sharedGetData(
+                              //         equipmentData.systemVersionSn.toString(),
+                              //         String)
+                              //     .then((data) {
+                              //   printInfo(info: 'data是啥$data');
+                              //   if (data != null) {
+                              //     appLogin(data, equipmentData.systemVersionSn,
+                              //         equipmentData.systemProductModel);
+                              //     loginController.setSn(
+                              //         equipmentData.systemVersionSn, data);
+                              //     sharedAddAndUpdate('sn', String,
+                              //         equipmentData.systemVersionSn.toString());
+                              //   } else {
+                              loginController.setSn(
+                                  equipmentData.systemVersionSn, '');
+                              loginController.setState('local');
+                              printInfo(
+                                  info:
+                                      'state--${loginController.login.state}');
+                              Get.offNamed("/loginPage", arguments: {
+                                "sn": equipmentData.systemVersionSn,
+                                "vn": equipmentData.systemProductModel
+                              });
+                              // }
+                              // });s
+                            },
+                            child: Text(S.of(context).band),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 if (appList.isNotEmpty)
                   SizedBox(
                     height: 400.w,

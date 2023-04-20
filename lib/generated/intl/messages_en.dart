@@ -87,6 +87,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Manual": MessageLookupByLibrary.simpleMessage("Manual"),
         "Maximum":
             MessageLookupByLibrary.simpleMessage("Maximum number of devices"),
+        "MaximumRange": MessageLookupByLibrary.simpleMessage("1-64"),
         "Mode": MessageLookupByLibrary.simpleMessage("Mode"),
         "NetworkIndex":
             MessageLookupByLibrary.simpleMessage("Visitor network index"),

@@ -58,6 +58,7 @@
   "TxPower": "TX Power",
   "Configuration": "Configuration",
   "Maximum": "Maximum number of devices",
+  "MaximumRange": "1-64",
   "HideSSIDBroadcast": "Hide SSID broadcast",
   "APIsolation": "AP Isolation",
   "Security": "Security",

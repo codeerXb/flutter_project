@@ -62,6 +62,7 @@ class _MyWidgetState extends State<Equipment> {
             d['code'] == 9997 ||
             d['code'] == 900) {
           ToastUtils.error(S.of(context).tokenExpired);
+          sharedDeleteData('user_token');
           Get.offAllNamed('/user_login');
         } else {
           ToastUtils.error(S.of(context).failed);

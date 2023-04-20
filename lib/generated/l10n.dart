@@ -640,6 +640,16 @@ class S {
     );
   }
 
+  /// `1-64`
+  String get MaximumRange {
+    return Intl.message(
+      '1-64',
+      name: 'MaximumRange',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Hide SSID broadcast`
   String get HideSSIDBroadcast {
     return Intl.message(

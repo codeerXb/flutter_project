@@ -5,21 +5,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
+import 'package:flutter_template/core/request/request.dart';
+import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/ashed_line.dart';
-import 'package:flutter_template/pages/net_status/old_state.dart';
+import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:flutter_template/pages/net_status/model/net_connect_status.dart';
 import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
 import 'package:flutter_template/pages/topo/model/equipment_datas.dart';
-import 'package:flutter_template/pages/topo/mesh_item.dart';
+import 'package:flutter_template/pages/topo/topo_cloud.dart';
+import 'package:flutter_template/pages/topo/topo_item.dart';
 import 'package:get/get.dart';
 
-import '../../core/utils/sign_out_util.dart';
 import '../../generated/l10n.dart';
-import '../setting/index.dart';
-import '../toolbar/index.dart';
-import 'topo_data.dart';
-import 'topo_item.dart';
 
 //网络拓扑
 class Topo extends StatefulWidget {
@@ -31,11 +29,34 @@ class Topo extends StatefulWidget {
 
 class _TopoState extends State<Topo> {
   EquipmentDatas topoData = EquipmentDatas(onlineDeviceTable: [], max: null);
+  final LoginController loginController = Get.put(LoginController());
+  String sn = '';
+  Map<dynamic, dynamic> onlineCount = {};
+  List<String> deviceNames = [];
+
   @override
   void initState() {
     super.initState();
     updateStatus();
-    getTopoData(false);
+    sharedGetData('deviceSn', String).then(((res) {
+      printInfo(info: 'deviceSn$res');
+      setState(() {
+        sn = res.toString();
+        //状态为local 请求本地  状态为cloud  请求云端
+        printInfo(info: 'state--${loginController.login.state}');
+        if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
+          if (mounted) {
+            getTRTopoData(false);
+          }
+        }
+        if (loginController.login.state == 'local') {
+          if (mounted) {
+            // 获取设备列表并更新在线数量
+            getTopoData(false);
+          }
+        }
+      });
+    }));
   }
 
   final ToolbarController toolbarController = Get.put(ToolbarController());
@@ -83,6 +104,37 @@ class _TopoState extends State<Topo> {
     }
   }
 
+  //  获取在线设备  云端
+  getTRTopoData(sx) async {
+    printInfo(info: 'sn在这里有值吗-------$sn');
+    var parameterNames = [
+      "InternetGatewayDevice.WEB_GUI.Overview.DeviceList",
+    ];
+    var res = await Request().getACSNode(parameterNames, sn);
+    if (sx) {
+      ToastUtils.toast(S.current.success);
+    }
+    try {
+      var jsonObj = jsonDecode(res);
+      if (!mounted) return;
+      setState(() {
+        onlineCount = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
+            ["Overview"]["DeviceList"]!;
+        List<String> onlineCountName = [];
+        onlineCount.forEach((key, value) {
+          if (value is Map && value.containsKey('DeviceName')) {
+            onlineCountName.add(value['DeviceName']['_value']);
+            printInfo(info: 'deviceNames$deviceNames');
+          }
+        });
+        deviceNames = onlineCountName;
+      });
+    } catch (e) {
+      debugPrint('获取信息失败：${e.toString()}');
+    }
+  }
+
+  // 获取在线设备 本地
   void getTopoData(sx) {
     Map<String, dynamic> data = {
       'method': 'tab_dump',
@@ -95,7 +147,7 @@ class _TopoState extends State<Topo> {
       try {
         debugPrint("\n================== 获取在线设备 ==========================");
         var d = json.decode(res.toString());
-        print(d);
+        printInfo(info: 'd$d');
         setState(() {
           topoData = EquipmentDatas.fromJson(d);
         });
@@ -145,7 +197,14 @@ class _TopoState extends State<Topo> {
               leading: IconButton(
                   onPressed: () {
                     //刷新
-                    getTopoData(true);
+                    if (mounted) {
+                      if (loginController.login.state == 'cloud' &&
+                          sn.isNotEmpty) {
+                        getTRTopoData(true);
+                      } else if (loginController.login.state == 'local') {
+                        getTopoData(true);
+                      }
+                    }
                   },
                   icon: const Icon(
                     Icons.refresh,
@@ -350,7 +409,36 @@ class _TopoState extends State<Topo> {
                         ],
                       )),
                 ),
-                if (topoData.onlineDeviceTable!.isNotEmpty)
+                if (onlineCount.isNotEmpty &&
+                    loginController.login.state == 'cloud' &&
+                    sn.isNotEmpty)
+                  GridView.count(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    crossAxisCount: 4,
+                    childAspectRatio: 1.0,
+                    children: deviceNames
+                        .map(
+                          (e) => TopoCloud(
+                            title: e,
+                            isNative: false,
+                            isShow: true,
+                            topoData: e,
+                          ),
+                        )
+                        .toList(),
+                  ),
+                if (onlineCount.isEmpty &&
+                    loginController.login.state == 'cloud' &&
+                    sn.isNotEmpty)
+                  Center(
+                    child: Container(
+                        margin: EdgeInsets.only(top: 100.sp),
+                        height: 200.w,
+                        child: Text(S.of(context).NoDeviceConnected)),
+                  ),
+                if (topoData.onlineDeviceTable!.isNotEmpty &&
+                    loginController.login.state == 'local')
                   GridView.count(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
@@ -367,7 +455,8 @@ class _TopoState extends State<Topo> {
                         )
                         .toList(),
                   ),
-                if (!topoData.onlineDeviceTable!.isNotEmpty)
+                if (!topoData.onlineDeviceTable!.isNotEmpty &&
+                    loginController.login.state == 'local')
                   Center(
                     child: Container(
                         margin: EdgeInsets.only(top: 100.sp),

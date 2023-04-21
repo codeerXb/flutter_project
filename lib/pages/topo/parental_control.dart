@@ -20,7 +20,7 @@ class ParentalControl extends StatefulWidget {
 }
 
 class _ParentalControlState extends State<ParentalControl> {
-  OnlineDeviceTable data = OnlineDeviceTable(mAC: '');
+  OnlineDeviceTable data = OnlineDeviceTable(mac: '');
   // 启用状态 获取
   AccessOpen aOpen = AccessOpen();
 // 启用 提交

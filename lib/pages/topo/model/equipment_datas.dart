@@ -29,18 +29,18 @@ class OnlineDeviceTable {
   int? id;
   String? leaseTime;
   String? iP;
-  String? mAC;
+  String? mac;
   String? hostName;
   String? type;
 
   OnlineDeviceTable(
-      {this.id, this.leaseTime, this.iP, this.mAC, this.hostName, this.type});
+      {this.id, this.leaseTime, this.iP, this.mac, this.hostName, this.type});
 
   OnlineDeviceTable.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     leaseTime = json['LeaseTime'];
     iP = json['IP'];
-    mAC = json['MAC'];
+    mac = json['MAC'];
     hostName = json['HostName'];
     type = json['Type'];
   }
@@ -50,7 +50,7 @@ class OnlineDeviceTable {
     data['id'] = id;
     data['LeaseTime'] = leaseTime;
     data['IP'] = iP;
-    data['MAC'] = mAC;
+    data['MAC'] = mac;
     data['HostName'] = hostName;
     data['Type'] = type;
     return data;

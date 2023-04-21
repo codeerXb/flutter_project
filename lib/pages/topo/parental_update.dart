@@ -23,7 +23,7 @@ class ParentalUpdate extends StatefulWidget {
 }
 
 class _ParentalUpdateState extends State<ParentalUpdate> {
-  OnlineDeviceTable data = OnlineDeviceTable(mAC: '');
+  OnlineDeviceTable data = OnlineDeviceTable(mac: '');
   FwParentControlTable dataList = FwParentControlTable();
 // 提交
   AccessDatas restart = AccessDatas();

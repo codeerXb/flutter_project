@@ -102,8 +102,6 @@ class _NetStatusState extends State<NetStatus> {
   Timer? timer;
   @override
   void initState() {
-    getDeviceName();
-
     super.initState();
 
     timer = Timer.periodic(const Duration(seconds: 2), (t) async {
@@ -115,6 +113,8 @@ class _NetStatusState extends State<NetStatus> {
       }
       if (loginController.login.state == 'local') {
         if (mounted) {
+          // 获取设备类型
+          getDeviceName();
           // 获取流量
           getUsedFlow();
           // 获取设备列表并更新在线数量
@@ -200,6 +200,7 @@ class _NetStatusState extends State<NetStatus> {
     printInfo(info: 'sn在这里有值吗-------$sn');
 
     var parameterNames = [
+      "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.ProductModel",
       "InternetGatewayDevice.WEB_GUI.Overview.DeviceList",
       "InternetGatewayDevice.WEB_GUI.Overview.ThroughputStatisticsList",
       "InternetGatewayDevice.WEB_GUI.Overview.WANStatus.DLRateCurrent",
@@ -222,7 +223,9 @@ class _NetStatusState extends State<NetStatus> {
             })
             .toList()
             .length;
-
+        // 设定名字为产品类型
+        name = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Overview"]
+            ['VersionInfo']['ProductModel']['_value'];
         // 已用流量
         var flowTable = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
             ["Overview"]["ThroughputStatisticsList"];

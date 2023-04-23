@@ -23,7 +23,7 @@ class ParentalPop extends StatefulWidget {
 }
 
 class _ParentalPopState extends State<ParentalPop> {
-  OnlineDeviceTable data = OnlineDeviceTable(mAC: '');
+  OnlineDeviceTable data = OnlineDeviceTable(mac: '');
 
 // 提交
   AccessDatas restart = AccessDatas();
@@ -86,7 +86,7 @@ class _ParentalPopState extends State<ParentalPop> {
       data = Get.arguments;
     });
     hostN = data.hostName.toString();
-    mac = data.mAC.toString();
+    mac = data.mac.toString();
   }
 
 // 家长控制 提交
@@ -143,7 +143,7 @@ class _ParentalPopState extends State<ParentalPop> {
                     BottomLine(
                         rowtem: RowContainer(
                       leftText: S.current.equipment,
-                      righText: data.mAC.toString(),
+                      righText: data.mac.toString(),
                     )),
                     GestureDetector(
                       onTap: () {

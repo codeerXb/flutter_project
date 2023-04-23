@@ -3,10 +3,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
+import 'package:flutter_template/core/request/request.dart';
+import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_picker.dart';
+import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:flutter_template/pages/wifi_set/wps/wps_datas.dart';
+import 'package:get/get.dart';
 import '../../../core/widget/custom_app_bar.dart';
 import '../../../generated/l10n.dart';
 
@@ -37,10 +41,113 @@ class _WpsSetState extends State<WpsSet> {
   int modeVal = 0;
   dynamic parmas = '';
   final TextEditingController pinVal = TextEditingController();
+
+  final LoginController loginController = Get.put(LoginController());
+  String sn = '';
+  String type = '';
+
   @override
   void initState() {
     super.initState();
-    getData();
+    sharedGetData('deviceSn', String).then(((res) {
+      printInfo(info: 'deviceSn$res');
+      setState(() {
+        sn = res.toString();
+        //状态为local 请求本地  状态为cloud  请求云端
+        printInfo(info: 'state--${loginController.login.state}');
+        if (mounted) {
+          if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
+            getTRWpsData();
+          }
+          if (loginController.login.state == 'local') {
+            getData();
+          }
+        }
+      });
+    }));
+  }
+
+  // 获取 云端   2.4G
+  getTRWpsData() async {
+    printInfo(info: 'sn在这里有值吗-------$sn');
+    var parameterNames = [
+      "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.1.WPS"
+    ];
+    var res = await Request().getACSNode(parameterNames, sn);
+    try {
+      var jsonObj = jsonDecode(res);
+      printInfo(info: '````$jsonObj');
+      setState(() {
+        type = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["WiFi"]
+            ["WLANSettings"]["1"]["WPS"]["Enable"]["_type"];
+        var wps1 = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["WiFi"]
+            ["WLANSettings"]["1"]["WPS"]["Enable"]["_value"]!;
+        isCheck = wps1 == true ? true : false;
+        printInfo(info: '${isCheck = wps1 == true ? true : false}');
+      });
+    } catch (e) {
+      debugPrint('获取信息失败：${e.toString()}');
+    }
+  }
+
+  // 获取 云端  5G
+  getTRWpsData2() async {
+    printInfo(info: 'sn在这里有值吗-------$sn');
+    var parameterNames = [
+      "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.2.WPS"
+    ];
+    var res = await Request().getACSNode(parameterNames, sn);
+    try {
+      var jsonObj = jsonDecode(res);
+      printInfo(info: '````$jsonObj');
+      setState(() {
+        type = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["WiFi"]
+            ["WLANSettings"]["2"]["WPS"]["Enable"]["_type"];
+        var wps2 = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["WiFi"]
+            ["WLANSettings"]["2"]["WPS"]["Enable"]["_value"]!;
+        isCheck = wps2 == true ? true : false;
+      });
+    } catch (e) {
+      debugPrint('获取信息失败：${e.toString()}');
+    }
+  }
+
+// 设置 云端   2.4G
+  setTRWpsData() async {
+    var parameterNames = [
+      [
+        "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.1.WPS.Enable",
+        isCheck,
+        type
+      ]
+    ];
+    var res = await Request().setACSNode(parameterNames, sn);
+    try {
+      var jsonObj = jsonDecode(res);
+      printInfo(info: '````$jsonObj');
+      setState(() {});
+    } catch (e) {
+      debugPrint('获取信息失败：${e.toString()}');
+    }
+  }
+
+  // 设置 云端   5G
+  setTRWpsData2() async {
+    var parameterNames = [
+      [
+        "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.2.WPS.Enable",
+        isCheck,
+        type
+      ]
+    ];
+    var res = await Request().setACSNode(parameterNames, sn);
+    try {
+      var jsonObj = jsonDecode(res);
+      printInfo(info: '````$jsonObj');
+      setState(() {});
+    } catch (e) {
+      debugPrint('获取信息失败：${e.toString()}');
+    }
   }
 
   //1 保存
@@ -51,10 +158,10 @@ class _WpsSetState extends State<WpsSet> {
     };
     try {
       await XHttp.get('/data.html', data);
-      ToastUtils.toast( S.current.success);
+      ToastUtils.toast(S.current.success);
     } catch (e) {
       debugPrint('wps设置失败:$e.toString()');
-      ToastUtils.toast( S.current.error);
+      ToastUtils.toast(S.current.error);
     }
   }
 
@@ -66,10 +173,10 @@ class _WpsSetState extends State<WpsSet> {
     };
     try {
       await XHttp.get('/data.html', data);
-      ToastUtils.toast( S.current.success);
+      ToastUtils.toast(S.current.success);
     } catch (e) {
       debugPrint('wps设置失败:$e.toString()');
-      ToastUtils.toast( S.current.error);
+      ToastUtils.toast(S.current.error);
     }
   }
 
@@ -147,7 +254,7 @@ class _WpsSetState extends State<WpsSet> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                   TitleWidger(title: S.of(context).Settings),
+                  TitleWidger(title: S.of(context).Settings),
                   InfoBox(
                       boxCotainer: Column(
                     children: [
@@ -167,6 +274,11 @@ class _WpsSetState extends State<WpsSet> {
                                     setState(() => {
                                           val = selectedValue,
                                           showVal = ['2.4GHz', '5GHz'][val],
+                                          printInfo(info: 'showVal$showVal'),
+                                          if (showVal == '2.4GHz')
+                                            {getTRWpsData()}
+                                          else
+                                            {getTRWpsData2()},
                                           //提交时改变key
                                           paramKey = val == 0
                                               ? 'wifiWps'
@@ -179,7 +291,7 @@ class _WpsSetState extends State<WpsSet> {
                           rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text( S.of(context).Band,
+                              Text(S.of(context).Band,
                                   style: TextStyle(
                                       color: const Color.fromARGB(255, 5, 0, 0),
                                       fontSize: 28.sp)),
@@ -254,7 +366,7 @@ class _WpsSetState extends State<WpsSet> {
                             rowtem: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text( S.of(context).Mode,
+                                Text(S.of(context).Mode,
                                     style: TextStyle(
                                         color:
                                             const Color.fromARGB(255, 5, 0, 0),
@@ -286,7 +398,7 @@ class _WpsSetState extends State<WpsSet> {
                           rowtem: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text( S.of(context).ClientPIN,
+                              Text(S.of(context).ClientPIN,
                                   style: TextStyle(
                                       color: const Color.fromARGB(255, 5, 0, 0),
                                       fontSize: 28.sp)),
@@ -325,18 +437,30 @@ class _WpsSetState extends State<WpsSet> {
                             backgroundColor: MaterialStateProperty.all(
                                 const Color.fromARGB(255, 48, 118, 250))),
                         onPressed: () {
-                          handleSave();
-                          //选择PBC
-                          if (isCheck && modeShowVal == 'PBC') {
-                            savePbc('{"${paramKey}Mode": "$modeShowVal"}');
-                          }
-                          //选择Client PIN
-                          if (isCheck && modeShowVal == 'Client PIN') {
-                            showVal == '2.4GHz'
-                                ? savePbc(
-                                    '{ "${paramKey}Mode": "client",  "wifiWpsClientPin": "${pinVal.text}"}')
-                                : savePbc(
-                                    '{ "${paramKey}Mode": "client",  "wifi5gWpsClientPin": "${pinVal.text}"}');
+                          printInfo(info: 'showVal$showVal');
+                          if (mounted) {
+                            if (loginController.login.state == 'cloud' &&
+                                sn.isNotEmpty) {
+                              if (showVal == '2.4G') {
+                                setTRWpsData();
+                              } else {
+                                setTRWpsData2();
+                              }
+                            } else if (loginController.login.state == 'local') {
+                              handleSave();
+                              //选择PBC
+                              if (isCheck && modeShowVal == 'PBC') {
+                                savePbc('{"${paramKey}Mode": "$modeShowVal"}');
+                              }
+                              //选择Client PIN
+                              if (isCheck && modeShowVal == 'Client PIN') {
+                                showVal == '2.4GHz'
+                                    ? savePbc(
+                                        '{ "${paramKey}Mode": "client",  "wifiWpsClientPin": "${pinVal.text}"}')
+                                    : savePbc(
+                                        '{ "${paramKey}Mode": "client",  "wifi5gWpsClientPin": "${pinVal.text}"}');
+                              }
+                            }
                           }
                         },
                         child: Text(

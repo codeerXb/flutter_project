@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:css_filter/css_filter.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_template/pages/topo/model/equipment_datas.dart';
 import 'package:get/get.dart';
 
 import '../../generated/l10n.dart';
 
-class TopoItem extends StatefulWidget {
+class TopoCloud extends StatefulWidget {
   final String title;
   final bool isShow;
   final bool isNative;
-  final OnlineDeviceTable? topoData;
-  const TopoItem(
+  final topoData;
+  const TopoCloud(
       {Key? key,
       required this.title,
       required this.isShow,
@@ -20,20 +19,20 @@ class TopoItem extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<TopoItem> createState() => _TopoItemState();
+  State<TopoCloud> createState() => _TopoCloudState();
 }
 
-class _TopoItemState extends State<TopoItem> {
+class _TopoCloudState extends State<TopoCloud> {
   // int value = 0;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        if (widget.topoData!.mac == 'B4:4C:3B:9E:46:3D') {
-          Get.toNamed("/video_play");
-        } else {
-          Get.toNamed("/access_equipment", arguments: widget.topoData);
-        }
+        // if (widget.topoData!.mAC == 'B4:4C:3B:9E:46:3D') {
+        //   Get.toNamed("/video_play");
+        // } else {
+        Get.toNamed("/access_equipment", arguments: widget.topoData);
+        // }
         // var result = CommonPicker.showPicker(
         //   context: context,
         //   options: ['高楼层', '中楼层', '低楼层'],
@@ -60,9 +59,10 @@ class _TopoItemState extends State<TopoItem> {
                   width: 120.w,
                   margin: const EdgeInsets.all(5),
                   child: Image.asset(
-                    widget.topoData!.mac == 'B4:4C:3B:9E:46:3D'
-                        ? 'assets/images/camera.png'
-                        : 'assets/images/slices.png',
+                    // widget.topoData!.mAC == 'B4:4C:3B:9E:46:3D'
+                    //     ? 'assets/images/camera.png'
+                    //     :
+                    'assets/images/slices.png',
                     // fit: BoxFit.cover,
                     width: 70.w,
                     height: 80.w,

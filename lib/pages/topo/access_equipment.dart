@@ -16,7 +16,7 @@ class AccessEquipment extends StatefulWidget {
 }
 
 class _AccessEquipmentState extends State<AccessEquipment> {
-  OnlineDeviceTable data = OnlineDeviceTable(mAC: '');
+  OnlineDeviceTable data = OnlineDeviceTable(mac: '');
   int day = 0;
   int hour = 0;
   int min = 0;
@@ -54,7 +54,7 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                       BottomLine(
                           rowtem: RowContainer(
                         leftText: S.current.MACAddress,
-                        righText: data.mAC.toString(),
+                        righText: data.mac.toString(),
                       )),
                       BottomLine(
                           rowtem: RowContainer(
@@ -94,7 +94,8 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text( S.current.parentalControl, style: TextStyle(fontSize: 30.sp)),
+                            Text(S.current.parentalControl,
+                                style: TextStyle(fontSize: 30.sp)),
                             Row(
                               children: [
                                 Icon(
@@ -119,7 +120,8 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text( S.current.gameAcceleration, style: TextStyle(fontSize: 30.sp)),
+                            Text(S.current.gameAcceleration,
+                                style: TextStyle(fontSize: 30.sp)),
                             Row(
                               children: [
                                 Icon(
@@ -144,7 +146,8 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                       child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text( S.current.aivideo, style: TextStyle(fontSize: 30.sp)),
+                            Text(S.current.aivideo,
+                                style: TextStyle(fontSize: 30.sp)),
                             Row(
                               children: [
                                 Icon(

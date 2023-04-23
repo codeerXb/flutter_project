@@ -68,9 +68,9 @@ class _TopoState extends State<Topo> {
   String _wifiStatus = '0';
   // wifi连接状况：true:连通false：未连接 云端
   // 4G
-  final String _wifiStatus4 = 'false';
+  bool _wifiStatus4 = false;
   // 5G
-  final String _wifiStatus5 = 'false';
+  bool _wifiStatus5 = false;
 
   // sim卡连接状况：1:连通0：未连接
   String _simStatus = '0';
@@ -131,8 +131,8 @@ class _TopoState extends State<Topo> {
             ["Network"]["NR-LTE"]["ConnectStatus"]["_value"];
         var wiFiStatus = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
             ["Overview"]["WiFiStatus"];
-        var wiFiStatus4 = wiFiStatus["1"]["Enable"]["_value"];
-        var wiFiStatus5 = wiFiStatus["2"]["Enable"]["_value"];
+        _wifiStatus4 = wiFiStatus["1"]["Enable"]["_value"];
+        _wifiStatus5 = wiFiStatus["2"]["Enable"]["_value"];
 
         onlineCount = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
             ["Overview"]["DeviceList"]!;
@@ -431,8 +431,8 @@ class _TopoState extends State<Topo> {
                                         ),
                                       ),
                                     ),
-                                    if (_wifiStatus4 == 'false' &&
-                                        _wifiStatus5 == 'fasle' &&
+                                    if (_wifiStatus4 == false &&
+                                        _wifiStatus5 == false &&
                                         loginController.login.state == 'cloud')
                                       Positioned(
                                         top: 25.w,

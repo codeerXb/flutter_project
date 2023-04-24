@@ -37,7 +37,6 @@ class _TopoState extends State<Topo> {
   @override
   void initState() {
     super.initState();
-    updateStatus();
     sharedGetData('deviceSn', String).then(((res) {
       printInfo(info: 'deviceSn$res');
       setState(() {
@@ -53,6 +52,8 @@ class _TopoState extends State<Topo> {
           if (mounted) {
             // 获取设备列表并更新在线数量
             getTopoData(false);
+            //获取网络链接状态
+            updateStatus();
           }
         }
       });
@@ -63,8 +64,14 @@ class _TopoState extends State<Topo> {
   final PageController _pageController = PageController();
   // 有线连接状况：1:连通0：未连接
   String _wanStatus = '0';
-  // wifi连接状况：1:连通0：未连接
+  // wifi连接状况：1:连通0：未连接 本地
   String _wifiStatus = '0';
+  // wifi连接状况：true:连通false：未连接 云端
+  // 4G
+  bool _wifiStatus4 = false;
+  // 5G
+  bool _wifiStatus5 = false;
+
   // sim卡连接状况：1:连通0：未连接
   String _simStatus = '0';
 
@@ -109,6 +116,8 @@ class _TopoState extends State<Topo> {
     printInfo(info: 'sn在这里有值吗-------$sn');
     var parameterNames = [
       "InternetGatewayDevice.WEB_GUI.Overview.DeviceList",
+      "InternetGatewayDevice.WEB_GUI.Network.NR-LTE.ConnectStatus",
+      "InternetGatewayDevice.WEB_GUI.Overview.WiFiStatus"
     ];
     var res = await Request().getACSNode(parameterNames, sn);
     if (sx) {
@@ -118,13 +127,19 @@ class _TopoState extends State<Topo> {
       var jsonObj = jsonDecode(res);
       if (!mounted) return;
       setState(() {
+        _simStatus = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
+            ["Network"]["NR-LTE"]["ConnectStatus"]["_value"];
+        var wiFiStatus = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
+            ["Overview"]["WiFiStatus"];
+        _wifiStatus4 = wiFiStatus["1"]["Enable"]["_value"];
+        _wifiStatus5 = wiFiStatus["2"]["Enable"]["_value"];
+
         onlineCount = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
             ["Overview"]["DeviceList"]!;
         List<String> onlineCountName = [];
         onlineCount.forEach((key, value) {
           if (value is Map && value.containsKey('DeviceName')) {
             onlineCountName.add(value['DeviceName']['_value']);
-            printInfo(info: 'deviceNames$deviceNames');
           }
         });
         deviceNames = onlineCountName;
@@ -228,7 +243,6 @@ class _TopoState extends State<Topo> {
                     SizedBox(
                       height: 100.w,
                       width: 100.w,
-                      // margin: const EdgeInsets.only(top: 20, bottom: 5),
                       child: ClipOval(
                           child: Image.asset("assets/images/Internet.png",
                               fit: BoxFit.cover)),
@@ -259,7 +273,21 @@ class _TopoState extends State<Topo> {
                                 dashedHeight: 2.w,
                                 color: const Color(0xFF2F5AF5),
                               ))),
-                      if (_wanStatus == '0' && _simStatus == '0')
+                      if (_wanStatus == '0' &&
+                          _simStatus == 'disconnected' &&
+                          loginController.login.state == 'cloud')
+                        Positioned(
+                          top: 25.w,
+                          left: 0.5.sw - 26.w,
+                          child: Icon(
+                            Icons.close,
+                            color: const Color.fromARGB(255, 206, 47, 47),
+                            size: 32.w,
+                          ),
+                        ),
+                      if (_wanStatus == '0' &&
+                          _simStatus == '0' &&
+                          loginController.login.state == 'local')
                         Positioned(
                           top: 25.w,
                           left: 0.5.sw - 26.w,
@@ -345,69 +373,94 @@ class _TopoState extends State<Topo> {
                     ),
                   ),
                 ),
-                Center(
-                  child: Container(
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ),
-                      height: 96.w,
-                      width: MediaQuery.of(context).size.width - 74,
-                      child: Column(
-                        children: [
-                          Center(
-                            child: Stack(
-                                // clipBehavior: Clip.antiAlias,
-                                children: [
-                                  SizedBox(
-                                    height: 96.w,
-                                  ),
-                                  Center(
-                                    child: Container(
-                                        height: 16.w,
-                                        width: 16.w,
-                                        decoration: BoxDecoration(
-                                          color: const Color(0xFF2F5AF5),
-                                          borderRadius:
-                                              BorderRadius.circular(8.w),
-                                        )),
-                                  ),
-                                  Center(
-                                    child: Container(
-                                        height: 40.w,
-                                        width: 16.w,
-                                        margin: EdgeInsets.only(top: 16.w),
-                                        child: XFDashedLine(
-                                          axis: Axis.vertical,
-                                          count: 8,
-                                          dashedWidth: 2.w,
-                                          dashedHeight: 2.w,
-                                          color: const Color(0xFF2F5AF5),
-                                        )),
-                                  ),
-                                  Positioned(
-                                    top: 56.w,
-                                    left: 12.w,
-                                    child: DottedBorder(
-                                      borderType: BorderType.RRect,
-                                      radius: const Radius.circular(100),
-                                      color: const Color(0xFF2F5AF5),
-                                      dashPattern: const [2, 2],
-                                      strokeWidth: 2,
+                SizedBox(
+                  child: Center(
+                    child: Container(
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                        ),
+                        height: 96.w,
+                        width: MediaQuery.of(context).size.width - 74,
+                        child: Column(
+                          children: [
+                            Center(
+                              child: Stack(
+                                  // clipBehavior: Clip.antiAlias,
+                                  children: [
+                                    SizedBox(
+                                      height: 96.w,
+                                    ),
+                                    Center(
                                       child: Container(
-                                        height: 60.w,
-
-                                        color: const Color.fromARGB(
-                                            0, 255, 255, 255),
-                                        width: 576.w,
-
-                                        // color: Colors.black26,
+                                          height: 16.w,
+                                          width: 16.w,
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFF2F5AF5),
+                                            borderRadius:
+                                                BorderRadius.circular(8.w),
+                                          )),
+                                    ),
+                                    Center(
+                                      child: Container(
+                                          height: 40.w,
+                                          width: 16.w,
+                                          margin: EdgeInsets.only(top: 16.w),
+                                          child: XFDashedLine(
+                                            axis: Axis.vertical,
+                                            count: 8,
+                                            dashedWidth: 2.w,
+                                            dashedHeight: 2.w,
+                                            color: const Color(0xFF2F5AF5),
+                                          )),
+                                    ),
+                                    Positioned(
+                                      top: 56.w,
+                                      left: 12.w,
+                                      child: DottedBorder(
+                                        borderType: BorderType.RRect,
+                                        radius: const Radius.circular(100),
+                                        color: const Color(0xFF2F5AF5),
+                                        dashPattern: const [2, 2],
+                                        strokeWidth: 2,
+                                        child: Container(
+                                          height: 60.w,
+                                          color: const Color.fromARGB(
+                                              0, 255, 255, 255),
+                                          width: 576.w,
+                                          // color: Colors.black26,
+                                        ),
                                       ),
                                     ),
-                                  )
-                                ]),
-                          ),
-                        ],
-                      )),
+                                    if (_wifiStatus4 == false &&
+                                        _wifiStatus5 == false &&
+                                        loginController.login.state == 'cloud')
+                                      Positioned(
+                                        top: 25.w,
+                                        left: 0.41.sw - 26.w,
+                                        child: Icon(
+                                          Icons.close,
+                                          color: const Color.fromARGB(
+                                              255, 206, 47, 47),
+                                          size: 32.w,
+                                        ),
+                                      ),
+                                    if (_wifiStatus == '0' &&
+                                        loginController.login.state == 'local')
+                                      Positioned(
+                                        top: 25.w,
+                                        left: 0.41.sw - 26.w,
+                                        child: Icon(
+                                          Icons.close,
+                                          color: const Color.fromARGB(
+                                              255, 206, 47, 47),
+                                          size: 32.w,
+                                        ),
+                                      )
+                                  ]),
+                            ),
+                          ],
+                        )),
+                  ),
                 ),
                 if (onlineCount.isNotEmpty &&
                     loginController.login.state == 'cloud' &&

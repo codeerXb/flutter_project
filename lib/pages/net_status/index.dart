@@ -198,7 +198,6 @@ class _NetStatusState extends State<NetStatus> {
   ///  获取  云端
   getTROnlineCount() async {
     printInfo(info: 'sn在这里有值吗-------$sn');
-
     var parameterNames = [
       "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.ProductModel",
       "InternetGatewayDevice.WEB_GUI.Overview.DeviceList",
@@ -325,7 +324,6 @@ class _NetStatusState extends State<NetStatus> {
     };
     try {
       var response = await XHttp.get('/data.html', netStatus);
-      printInfo(info: 'response-----$response');
       // 以 { 或者 [ 开头的
       RegExp exp = RegExp('^[{[]');
       if (!exp.hasMatch(response) && mounted) {
@@ -434,7 +432,6 @@ class _NetStatusState extends State<NetStatus> {
               : '${_usedFlow.toStringAsFixed(2).toString().split('.')[1].substring(0, 1)}MB';
         });
       }
-      printInfo(info: '_usedFlow$_usedFlow');
       return _usedFlow;
     } catch (e) {
       debugPrint('获取流量信息错误：${e.toString()}');

@@ -21,71 +21,25 @@ class _SplashPageState extends State<SplashPage> {
   static const duration = Duration(seconds: 2);
   final LoginController loginController = Get.put(LoginController());
 
-  void appLogin(pwd) {
-    debugPrint('登录密码：$pwd');
-    Map<String, dynamic> data = {
-      'username': 'superadmin',
-      'password': 'admin', //utf8.decode(base64Decode(pwd))
-    };
-    XHttp.get('/action/appLogin', data).then((res) {
-      try {
-        debugPrint("+++++++++++++");
-        var d = json.decode(res.toString());
-        debugPrint('登录成功${d['token']}');
-        loginController.setSession(d['sessionid']);
-        sharedAddAndUpdate("session", String, d['sessionid']);
-        loginController.setToken(d['token']);
-        sharedAddAndUpdate("token", String, d['token']);
-        // debugPrint(d);
-      } on FormatException catch (e) {
-        debugPrint('登录错误1$e');
-        Get.offNamed("/get_equipment");
-      }
-    }).catchError((onError) {
-      Get.offNamed("/get_equipment");
-      debugPrint('登录错误2${onError.toString()}');
-    });
-  }
-
   @override
   void initState() {
     super.initState();
-    String password = '';
 
-    Timer? timer = Timer.periodic(const Duration(minutes: 0), (timer) {});
-
-    ///查询本地保存的登录信息
+    /// 查询本地保存的云登录信息
     sharedGetData("user_token", String).then((data) {
       printInfo(info: 'USER TOKEN${data.toString()}');
       if (data != null) {
-        // 看是否存储了设备的sn和密码
+        // 是否存储了设备sn
         sharedGetData('deviceSn', String).then((sn) {
           if (sn != null) {
             debugPrint('设备sn号$sn');
-            sharedGetData(sn.toString(), String).then((value) {
-              debugPrint('设备登录：$value');
-              if (value != null) {
-                // 存储了，开启定时器登录
-                password = value.toString();
-                appLogin(password);
-
-                timer = Timer.periodic(const Duration(minutes: 5), (timer) {
-                  debugPrint('登录当前时间${DateTime.now()}');
-                  appLogin(password);
-                });
-              } else {
-                // 未存储，取消定时器，跳转到搜索设备页面
-                timer?.cancel();
-                timer = null;
-                Future.delayed(duration, () => Get.offNamed("/get_equipment"));
-              }
-            });
             Future.delayed(duration, () => Get.offNamed("/home"));
           } else {
             Future.delayed(duration, () => Get.offNamed("/get_equipment"));
           }
         });
       } else {
+        // 没有信息则为登录过云端账号，返回云端登录页
         Future.delayed(duration, () => Get.offNamed("/user_login"));
       }
     });

@@ -39,13 +39,58 @@ class _WlanSetState extends State<WlanSet> {
       wifi5gChannel: "auto",
       wifi5gTxpower: "24");
   //频段 id 1 ,0 启用Enable 0,1
-  String pdShowVal = '2.4GHz';
+  String bandShowVal = '2.4GHz';
   channelList channelLists = channelList();
   wifiSsidTable wifiSsidTableLists = wifiSsidTable();
   wifi5GSsidTable wifi5GSsidTableLists = wifi5GSsidTable();
-  // 0:2.4g,1:5g
-  int pdVal = 0;
+  // 频段的索引值（0:2.4g,1:5g）
+  int bandIndex = 0;
+
   //模式
+  // 2.4g
+  // 传值
+  List<String> modeVal = ['11ng', '11axg', '11g', '11b'];
+  // 选项显示
+  List<String> modeOpt = [
+    '802.11n/g',
+    '802.11axg',
+    '802.11g Only',
+    '802.11b Only'
+  ];
+  // 5g
+  // 传值
+  List<String> modeVal5g = ['11ac', '11axa', '11na', '11a'];
+  // 选项显示
+  List<String> modeValOpt = [
+    '802.11ac',
+    '802.11axa',
+    '802.11n/a',
+    '802.11a Only'
+  ];
+  // 2.4g索引值
+  int modeIndex = 0;
+  // 5g索引值
+  int modeIndex5g = 0;
+
+  // 带宽
+  int bandWidthIndex = 0;
+  int bandWidthIndex5g = 0;
+  // 2.4g传值和选项显示名称相同
+  List<String> bandWidthVal = ['20MHz', '40+MHz', '40-MHz'];
+  // 5g选项显示
+  List<String> bandWidthOpt5g = [
+    '20MHz',
+    '20/40 MHz',
+    '20/40/80 MHz',
+  ];
+  // 5g传值的内容
+  List<String> bandWidthVal5g = [
+    '20MHz',
+    '40MHz',
+    '80MHz',
+  ];
+
+  // Channel 通道的选项和值
   List<String> wifi5gCountryChannelList = [
     'auto',
     "36",
@@ -108,74 +153,57 @@ class _WlanSetState extends State<WlanSet> {
     "12",
     "13"
   ];
-  List<String> wifiModeV = ['11ng', '11axg', '11g', '11b'];
-  List<String> wifi5gModeV = ['11ac', '11axa', '11na', '11a'];
-  List<String> wifiMode = [
-    '802.11n/g',
-    '802.11axg',
-    '802.11g Only',
-    '802.11b Only'
-  ];
-  List<String> wifi5gMode = [
-    '802.11ac',
-    '802.11axa',
-    '802.11n/a',
-    '802.11a Only'
-  ];
-  int msVal = 0;
-  int msVal5 = 0;
-  //带宽
-  int kdVal = 0;
-  int kdVal5 = 0;
-  List<String> wifiChannelBandwidth = ['20MHz', '40+MHz', '40-MHz'];
-  List<String> wifiChannelBandwidth5 = [
-    '20 MHz',
-    '20/40 MHz',
-    '20/40/80 MHz',
-  ];
-  List<String> wifiChannelBandwidth5V = [
-    '20MHz',
-    '40MHz',
-    '80MHz',
-  ];
-  List<String> wpaOptions = [
+
+  // security
+  // 显示的选项
+  List<String> securityOpt = [
     'WPA2-PSK',
     'WPA-PSK&WPA2-PSK',
     S.current.emptyNORecommend
   ];
-  List<String> wpaOptionsV = ['psk2', 'psk-mixed', 'none'];
-  List<String> wpajmOptions = [
+  // 对应的value
+  List<String> securityVal = ['psk2', 'psk-mixed', 'none'];
+  //安全 security
+  String securityShowVal = 'WPA2-PSK';
+  int securityIndex = 0;
+  int securityIndex5g = 0;
+
+  // wpa encryption
+  // 显示的选项
+  List<String> encryptionOpt = [
     S.current.aesRecommend,
     'TKIP',
     'TKIP&AES',
   ];
-  List<String> wpajmOptionsV = [
+  // 对应的value
+  List<String> encryptionVal = [
     'aes',
     'tkip',
     'tkip+aes',
   ];
-  //信道
-  String xtShowVal = 'Auto';
-  int xtVal = 0;
-  int xtVal5 = 0;
-  //密码
+  //WPA加密 wpa encryption
+  String encryptionShowVal = S.current.aesRecommend;
+  int encryptionIndex = 0;
+  int encryptionIndex5g = 0;
+
+  // 信道
+  String channelShowVal = 'Auto';
+  int channelIndex = 0;
+  int channelIndex5g = 0;
+
+  // 密码
   bool passwordValShow = true;
-  //发射功率
-  String fsShowVal = '100%';
+
+  // 发射功率
+  String txPowerShowVal = '100%';
+  // 发射功率对应到节点数据
   List<String> wifiTxpower = ['20', '17', '14'];
   List<String> wifi5gTxpower = ['24', '21', '18'];
+  // 选择的索引值
+  int txPowerIndex = 0;
+  int txPowerIndex5g = 0;
 
-  int fsVal = 0;
-  int fsVal5 = 0;
-  //安全
-  String aqShowVal = 'WPA2-PSK';
-  int aqVal = 0;
-  int aqVal5 = 0;
-  //WPA加密
-  String wpaShowVal = S.current.aesRecommend;
-  int wpaVal = 0;
-  int wpaVal5 = 0;
-  //check
+  // check
   bool isCheck = true;
   bool isCheck5 = true;
   bool apisCheck = true;
@@ -193,29 +221,32 @@ class _WlanSetState extends State<WlanSet> {
   @override
   void initState() {
     super.initState();
-    sharedGetData('deviceSn', String).then(((res) {
-      printInfo(info: 'deviceSn$res');
-      setState(() {
-        sn = res.toString();
-        //状态为local 请求本地  状态为cloud  请求云端
-        printInfo(info: 'state--${loginController.login.state}');
-        if (mounted) {
-          if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
-            // 云端请求赋值
-            get24gList();
-          }
-          if (loginController.login.state == 'local') {
-            // 本地请求赋值
-            getList();
-            getWiFiSsidTable();
-            getWiFi5GSsidTable();
-          }
+    sharedGetData('deviceSn', String).then((value) async {
+      sn = value.toString();
+      //状态为local 请求本地  状态为cloud  请求云端
+      if (mounted) {
+        setState(() {
+          _isLoading = true;
+        });
+        if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
+          // 云端请求赋值
+          await get24gList();
         }
-      });
-    }));
+        if (loginController.login.state == 'local') {
+          // 本地请求赋值
+          await getList();
+          await getWiFiSsidTable();
+          await getWiFi5GSsidTable();
+        }
+
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    });
   }
 
-  // 云端获取接口
+  /// 云端获取接口
   // 2.4g
   Future get24gList() async {
     Object? sn = await sharedGetData('deviceSn', String);
@@ -253,13 +284,13 @@ class _WlanSetState extends State<WlanSet> {
     // PASSWORD
     // 暂无PASSWORD
     setState(() {
-      pdVal = 0;
+      bandIndex = 0;
       isCheck = enable;
-      msVal = wifiModeV.indexOf(mode);
-      kdVal = wifiChannelBandwidth.indexOf(bandwidth);
-      xtVal = kdVal == 0
+      modeIndex = modeVal.indexOf(mode);
+      bandWidthIndex = bandWidthVal.indexOf(bandwidth);
+      channelIndex = bandWidthIndex == 0
           ? wifiCountryChannelListHT20.indexOf(channel)
-          : kdVal == 1
+          : bandWidthIndex == 1
               ? wifiCountryChannelListHT40j.indexOf(channel)
               : wifiCountryChannelListHT40.indexOf(channel);
       // fsVal = txPower;
@@ -268,8 +299,12 @@ class _WlanSetState extends State<WlanSet> {
       max.text = maxText.toString();
       ssidisCheck = hideBroadcast;
       apisCheck = isolation;
-      aqVal = wpaOptionsV.indexOf(sercurity);
-      wpaVal = wpajmOptionsV.indexOf(wpaEncyption);
+      securityIndex = securityVal.indexOf(sercurity);
+      encryptionIndex = encryptionVal.indexOf(wpaEncyption);
+      if (securityIndex < 0 || encryptionIndex < 0) {
+        securityIndex = 0;
+        encryptionIndex = 0;
+      }
     });
   }
 
@@ -310,53 +345,134 @@ class _WlanSetState extends State<WlanSet> {
     // PASSWORD
     // 暂无PASSWORD
     setState(() {
-      pdVal = 1;
+      bandIndex = 1;
       isCheck5 = enable;
-      msVal5 = wifi5gModeV.indexOf(mode);
-      kdVal5 = wifiChannelBandwidth5V.indexOf(bandwidth);
-      xtVal5 = wifi5gCountryChannelList.indexOf(channel);
-      // fsVal = txPower;
+      modeIndex5g = modeVal5g.indexOf(mode);
+      bandWidthIndex5g = bandWidthVal5g.indexOf(bandwidth);
+      channelIndex5g = wifi5gCountryChannelList.indexOf(channel);
+      // fsVal5 = txPower;
 
       ssid5.text = ssidText;
       max5.text = maxText.toString();
       ssidisCheck5 = hideBroadcast;
       apisCheck5 = isolation;
-      aqVal5 = wpaOptionsV.indexOf(sercurity);
-      wpaVal5 = wpajmOptionsV.indexOf(wpaEncyption);
+      securityIndex5g = securityVal.indexOf(sercurity);
+      encryptionIndex5g = encryptionVal.indexOf(wpaEncyption);
     });
   }
 
-  //提交
-  void setData() async {
-    if ((pdVal == 0 && isCheck)) {
+  // 保存配置
+  Future setList() async {
+    Object? sn = await sharedGetData('deviceSn', String);
+    // 定义前缀,2.4g pdVal为0 5g 为1
+    String prefix =
+        'InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.${bandIndex + 1}';
+    var res = await Request().setACSNode([
+      // [node,value,string]
+      [
+        '$prefix.Band',
+        ['2.4GHz', '5GHz'][bandIndex],
+        'xsd:string'
+      ],
+      [
+        '$prefix.Enable',
+        bandIndex == 0 ? isCheck.toString() : isCheck5.toString(),
+        'xsd:boolean'
+      ],
+      [
+        '$prefix.Mode',
+        bandIndex == 0 ? modeVal[modeIndex] : modeVal5g[modeIndex5g],
+        'xsd:string'
+      ],
+      [
+        '$prefix.ChannelBandwidth',
+        bandIndex == 0
+            ? bandWidthVal[bandWidthIndex]
+            : bandWidthVal5g[bandWidthIndex5g],
+        'xsd:string'
+      ],
+      [
+        '$prefix.Channel',
+        bandIndex == 0
+            ? bandWidthIndex == 0
+                ? wifiCountryChannelListHT20[channelIndex]
+                : bandWidthIndex == 1
+                    ? wifiCountryChannelListHT40j[channelIndex]
+                    : wifiCountryChannelListHT40[channelIndex]
+            : wifi5gCountryChannelList[channelIndex5g],
+        'xsd:string'
+      ],
+      // [
+      //   '$prefix.TxPower',
+      //   pdVal == 0
+      //       ? fsVal
+      //       : fsVal5,
+      //   'xsd:string'
+      // ],
+      [
+        '$prefix.SSIDProfile.1.SSID',
+        bandIndex == 0 ? ssid.text : ssid5.text,
+        'xsd:string'
+      ],
+      [
+        '$prefix.SSIDProfile.1.MaxNoOfDev',
+        bandIndex == 0 ? max.text : max5.text,
+        'xsd:unsignedInt'
+      ],
+      [
+        '$prefix.SSIDProfile.1.HideSSIDBroadcast',
+        bandIndex == 0 ? ssidisCheck.toString() : ssidisCheck5.toString(),
+        'xsd:boolean'
+      ],
+      [
+        '$prefix.SSIDProfile.1.APIsolation',
+        bandIndex == 0 ? apisCheck : apisCheck5,
+        'xsd:string'
+      ],
+      [
+        '$prefix.SSIDProfile.1.EncryptionMode',
+        bandIndex == 0
+            ? '${securityVal[securityIndex]}+${encryptionVal[encryptionIndex]}'
+            : '${securityVal[securityIndex5g]}+${encryptionVal[encryptionIndex5g]}',
+        'xsd:string'
+      ],
+    ], sn);
+    if (json.decode(res)['code'] == 200) {
+      ToastUtils.toast('Save success');
+    }
+  }
+
+  // 提交
+  Future setData() async {
+    if ((bandIndex == 0 && isCheck)) {
       ssid.text == '';
       ToastUtils.waring('SSID ${S.current.notEmpty}');
     }
-    if (pdVal == 1 && isCheck5) {
+    if (bandIndex == 1 && isCheck5) {
       ssid5.text == '';
       ToastUtils.waring('SSID ${S.current.notEmpty}');
     }
     String param;
-    if (pdVal == 1) {
+    if (bandIndex == 1) {
       if (isCheck5) {
-        if (msVal5 < 3) {
+        if (modeIndex5g < 3) {
           param =
-              '{"wifi5gEnable":"1","wifi5gMode":"${wifi5gModeV[msVal5]}","wifi5gHtmode":"${wifiChannelBandwidth5V[kdVal5]}","wifi5gChannel":"${wifi5gCountryChannelList[xtVal5]}","wifi5gTxpower":"${wifi5gTxpower[fsVal5]}"}';
+              '{"wifi5gEnable":"1","wifi5gMode":"${modeVal5g[modeIndex5g]}","wifi5gHtmode":"${bandWidthVal5g[bandWidthIndex5g]}","wifi5gChannel":"${wifi5gCountryChannelList[channelIndex5g]}","wifi5gTxpower":"${wifi5gTxpower[txPowerIndex5g]}"}';
         } else {
           param =
-              '{"wifi5gEnable":"1","wifi5gMode":"${wifi5gModeV[msVal5]}","wifi5gChannel":"${wifi5gCountryChannelList[xtVal5]}","wifi5gTxpower":"${wifi5gTxpower[fsVal5]}"}';
+              '{"wifi5gEnable":"1","wifi5gMode":"${modeVal5g[modeIndex5g]}","wifi5gChannel":"${wifi5gCountryChannelList[channelIndex5g]}","wifi5gTxpower":"${wifi5gTxpower[txPowerIndex5g]}"}';
         }
       } else {
         param = '{"wifi5gEnable": "0"}';
       }
     } else {
       if (isCheck) {
-        if (msVal < 2) {
+        if (modeIndex < 2) {
           param =
-              '{"wifiEnable":"1","wifiMode":"${wifiModeV[msVal]}","wifiHtmode":"${wifiChannelBandwidth[kdVal]}","wifiChannel":"${kdVal == 0 ? wifiCountryChannelListHT20[xtVal] : kdVal == 1 ? wifiCountryChannelListHT40j[xtVal] : wifiCountryChannelListHT40}","wifiTxpower":"${wifiTxpower[fsVal]}"}';
+              '{"wifiEnable":"1","wifiMode":"${modeVal[modeIndex]}","wifiHtmode":"${bandWidthVal[bandWidthIndex]}","wifiChannel":"${bandWidthIndex == 0 ? wifiCountryChannelListHT20[channelIndex] : bandWidthIndex == 1 ? wifiCountryChannelListHT40j[channelIndex] : wifiCountryChannelListHT40}","wifiTxpower":"${wifiTxpower[txPowerIndex]}"}';
         } else {
           param =
-              '{"wifiEnable":"1","wifiMode":"${wifiModeV[msVal]}",,"wifiChannel":"${kdVal == 0 ? wifiCountryChannelListHT20[xtVal] : kdVal == 1 ? wifiCountryChannelListHT40j[xtVal] : wifiCountryChannelListHT40}","wifiTxpower":"${wifiTxpower[fsVal]}"}';
+              '{"wifiEnable":"1","wifiMode":"${modeVal[modeIndex]}",,"wifiChannel":"${bandWidthIndex == 0 ? wifiCountryChannelListHT20[channelIndex] : bandWidthIndex == 1 ? wifiCountryChannelListHT40j[channelIndex] : wifiCountryChannelListHT40}","wifiTxpower":"${wifiTxpower[txPowerIndex]}"}';
         }
       } else {
         param = '{"wifiEnable": "0"}';
@@ -367,7 +483,7 @@ class _WlanSetState extends State<WlanSet> {
       var response = await XHttp.get('/data.html', data);
       var d = json.decode(response.toString());
       if (d['success'] == true) {
-        if ((pdVal == 0 && isCheck) || (pdVal == 1 && isCheck5)) {
+        if ((bandIndex == 0 && isCheck) || (bandIndex == 1 && isCheck5)) {
           setTab();
         }
       } else {
@@ -380,12 +496,12 @@ class _WlanSetState extends State<WlanSet> {
 
   void setTab() async {
     String param;
-    if (pdVal == 0) {
+    if (bandIndex == 0) {
       param =
-          '{"table":"WiFiSsidTable","value":[{"id":0,"Enable":"1","Ssid":"${ssid.text}","MaxClient":"${max.text}","SsidHide":"${ssidisCheck ? 1 : 0}","ApIsolate":"${apisCheck ? 1 : 0}","Encryption":"${wpaOptionsV[aqVal]}+${wpajmOptionsV[wpaVal]}","Key":"${password.text}"}]}';
+          '{"table":"WiFiSsidTable","value":[{"id":0,"Enable":"1","Ssid":"${ssid.text}","MaxClient":"${max.text}","SsidHide":"${ssidisCheck ? 1 : 0}","ApIsolate":"${apisCheck ? 1 : 0}","Encryption":"${securityVal[securityIndex]}+${encryptionVal[encryptionIndex]}","Key":"${password.text}"}]}';
     } else {
       param =
-          '{"table":"WiFi5GSsidTable","value":[{"id":0,"Enable":"1","Ssid":"${ssid5.text}","MaxClient":"${max5.text}","SsidHide":"${ssidisCheck5 ? 1 : 0}","ApIsolate":"${apisCheck5 ? 1 : 0}","Encryption":"${wpaOptionsV[aqVal5]}+${wpajmOptionsV[wpaVal5]}","Key":"${password5.text}"}]}';
+          '{"table":"WiFi5GSsidTable","value":[{"id":0,"Enable":"1","Ssid":"${ssid5.text}","MaxClient":"${max5.text}","SsidHide":"${ssidisCheck5 ? 1 : 0}","ApIsolate":"${apisCheck5 ? 1 : 0}","Encryption":"${securityVal[securityIndex5g]}+${encryptionVal[encryptionIndex5g]}","Key":"${password5.text}"}]}';
     }
     Map<String, dynamic> data = {'method': 'tab_set', 'param': param};
     try {
@@ -428,34 +544,32 @@ class _WlanSetState extends State<WlanSet> {
   void updateState() {
     //SSID
     // wifiModeV.indexOf(wlanData.wifiMode.toString());
-    if (!wifiModeV.contains(wlanData.wifiMode.toString())) {
+    if (!modeVal.contains(wlanData.wifiMode.toString())) {
       return;
     }
-    msVal = wifiModeV.indexOf(wlanData.wifiMode.toString());
-    msVal5 = wifi5gModeV.indexOf(wlanData.wifi5gMode.toString());
-    kdVal = wifiChannelBandwidth.indexOf(wlanData.wifiHtmode.toString());
-    kdVal5 = wifiChannelBandwidth5V.indexOf(wlanData.wifi5gHtmode.toString());
-    fsVal = wifiTxpower.indexOf(wlanData.wifiTxpower.toString());
-    fsVal5 = wifi5gTxpower.indexOf(wlanData.wifi5gTxpower.toString());
+    modeIndex = modeVal.indexOf(wlanData.wifiMode.toString());
+    modeIndex5g = modeVal5g.indexOf(wlanData.wifi5gMode.toString());
+    bandWidthIndex = bandWidthVal.indexOf(wlanData.wifiHtmode.toString());
+    bandWidthIndex5g = bandWidthVal5g.indexOf(wlanData.wifi5gHtmode.toString());
+    txPowerIndex = wifiTxpower.indexOf(wlanData.wifiTxpower.toString());
+    txPowerIndex5g = wifi5gTxpower.indexOf(wlanData.wifi5gTxpower.toString());
 
     // wlanData.wifiMode.
     if (wlanData.wifiHtmode.toString() == '20MHz') {
-      xtVal =
+      channelIndex =
           wifiCountryChannelListHT20.indexOf(wlanData.wifiChannel.toString());
     } else if (wlanData.wifiHtmode.toString() == '40+MHz') {
-      xtVal =
+      channelIndex =
           wifiCountryChannelListHT40j.indexOf(wlanData.wifiChannel.toString());
     } else if (wlanData.wifiHtmode.toString() == '40-MHz') {
-      xtVal =
+      channelIndex =
           wifiCountryChannelListHT40.indexOf(wlanData.wifiChannel.toString());
     }
 
-    xtVal5 =
+    channelIndex5g =
         wifi5gCountryChannelList.indexOf(wlanData.wifi5gChannel.toString());
     isCheck = wlanData.wifiEnable == '1';
     isCheck5 = wlanData.wifi5gEnable == '1';
-
-    printInfo(info: 'wlanData$wlanData');
   }
 
 // 读取Channel
@@ -465,7 +579,7 @@ class _WlanSetState extends State<WlanSet> {
     }
   }
 
-  void getList() async {
+  Future getList() async {
     Map<String, dynamic> data = {
       'method': 'obj_get',
       'param':
@@ -480,8 +594,6 @@ class _WlanSetState extends State<WlanSet> {
     }
     setState(() {
       channelLists = channelList.fromJson(d);
-      debugPrint("+++++++++++++++$channelLists");
-
       addChannelList(
           wifi5gCountryChannelList, channelLists.wifi5gCountryChannelList);
       addChannelList(
@@ -495,7 +607,7 @@ class _WlanSetState extends State<WlanSet> {
   }
 
 //读取WiFiSsidTable
-  void getWiFiSsidTable() async {
+  Future getWiFiSsidTable() async {
     Map<String, dynamic> data = {
       'method': 'tab_dump',
       'param': '["WiFiSsidTable"]',
@@ -510,11 +622,12 @@ class _WlanSetState extends State<WlanSet> {
         password.text = wifiSsidTableLists.wiFiSsidTable![0].key.toString();
         var encryption =
             wifiSsidTableLists.wiFiSsidTable![0].encryption.toString();
-        print(encryption.toString());
         if (encryption != 'none') {
           encryption.split('+');
-          wpaVal = wpajmOptionsV.indexOf(encryption.split('+')[1].toString());
-          aqVal = wpaOptionsV.indexOf(encryption.split('+')[0].toString());
+          encryptionIndex =
+              encryptionVal.indexOf(encryption.split('+')[1].toString());
+          securityIndex =
+              securityVal.indexOf(encryption.split('+')[0].toString());
         }
         ssidisCheck =
             wifiSsidTableLists.wiFiSsidTable![0].ssidHide.toString() == '1';
@@ -528,7 +641,7 @@ class _WlanSetState extends State<WlanSet> {
   }
 
 //读取WiFi5GSsidTable
-  void getWiFi5GSsidTable() async {
+  Future getWiFi5GSsidTable() async {
     Map<String, dynamic> data = {
       'method': 'tab_dump',
       'param': '["WiFi5GSsidTable"]',
@@ -542,8 +655,10 @@ class _WlanSetState extends State<WlanSet> {
             wifi5GSsidTableLists.wiFi5GSsidTable![0].encryption.toString();
         if (encryption != 'none') {
           encryption.split('+');
-          wpaVal5 = wpajmOptionsV.indexOf(encryption.split('+')[1].toString());
-          aqVal5 = wpaOptionsV.indexOf(encryption.split('+')[0].toString());
+          encryptionIndex5g =
+              encryptionVal.indexOf(encryption.split('+')[1].toString());
+          securityIndex5g =
+              securityVal.indexOf(encryption.split('+')[0].toString());
         }
         ssid5.text = wifi5GSsidTableLists.wiFi5GSsidTable![0].ssid.toString();
         ssidisCheck5 =
@@ -570,10 +685,65 @@ class _WlanSetState extends State<WlanSet> {
     FocusScope.of(context).requestFocus(blankNode);
   }
 
+  bool _isLoading = false;
+  Future<void> _saveData() async {
+    setState(() {
+      _isLoading = true;
+    });
+    closeKeyboard(context);
+    if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
+      // 云端请求赋值
+      try {
+        await setList();
+      } catch (e) {
+        debugPrint('云端请求出错：${e.toString()}');
+        Get.back();
+      }
+    }
+    if (loginController.login.state == 'local') {
+      // 本地请求赋值
+      await setData();
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: customAppbar(context: context, title: S.of(context).wlanSet),
+        appBar: customAppbar(
+            context: context,
+            title: S.of(context).wlanSet,
+            actions: <Widget>[
+              Container(
+                margin: EdgeInsets.all(20.w),
+                child: OutlinedButton(
+                  onPressed: _isLoading ? null : _saveData,
+                  child: Row(
+                    children: [
+                      if (_isLoading)
+                        const SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                          ),
+                        ),
+                      if (!_isLoading)
+                        Text(
+                          S.current.save,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: _isLoading ? Colors.grey : null,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ]),
         body: GestureDetector(
           onTap: () => closeKeyboard(context),
           behavior: HitTestBehavior.opaque,
@@ -597,17 +767,21 @@ class _WlanSetState extends State<WlanSet> {
                             var result = CommonPicker.showPicker(
                               context: context,
                               options: ['2.4GHz', '5GHz'],
-                              value: pdVal,
+                              value: bandIndex,
                             );
                             result?.then((selectedValue) {
-                              if (pdVal != selectedValue &&
+                              if (bandIndex != selectedValue &&
                                   selectedValue != null) {
                                 setState(() {
-                                  pdVal = selectedValue;
-                                  if (selectedValue == 0) {
-                                    get24gList();
-                                  } else if (selectedValue == 1) {
-                                    get5gList();
+                                  bandIndex = selectedValue;
+                                  if (loginController.login.state == 'cloud' &&
+                                      sn.isNotEmpty) {
+                                    // 云端请求赋值
+                                    if (selectedValue == 0) {
+                                      get24gList();
+                                    } else if (selectedValue == 1) {
+                                      get5gList();
+                                    }
                                   }
                                 });
                               }
@@ -626,7 +800,7 @@ class _WlanSetState extends State<WlanSet> {
                                 Row(
                                   children: [
                                     Text(
-                                      ['2.4GHz', '5GHz'][pdVal],
+                                      ['2.4GHz', '5GHz'][bandIndex],
                                       style: TextStyle(
                                           color: const Color.fromARGB(
                                               255, 5, 0, 0),
@@ -658,10 +832,10 @@ class _WlanSetState extends State<WlanSet> {
                               Row(
                                 children: [
                                   Switch(
-                                    value: pdVal == 0 ? isCheck : isCheck5,
+                                    value: bandIndex == 0 ? isCheck : isCheck5,
                                     onChanged: (newVal) {
                                       setState(() {
-                                        if (pdVal == 0) {
+                                        if (bandIndex == 0) {
                                           isCheck = newVal;
                                         } else {
                                           isCheck5 = newVal;
@@ -676,29 +850,29 @@ class _WlanSetState extends State<WlanSet> {
                         ),
 
                         //模式
-                        if (pdVal == 0 ? isCheck : isCheck5)
+                        if (bandIndex == 0 ? isCheck : isCheck5)
                           GestureDetector(
                             onTap: () {
                               closeKeyboard(context);
                               var result = CommonPicker.showPicker(
                                 context: context,
-                                options: pdVal == 0 ? wifiMode : wifi5gMode,
-                                value: pdVal == 0 ? msVal : msVal5,
+                                options: bandIndex == 0 ? modeOpt : modeValOpt,
+                                value: bandIndex == 0 ? modeIndex : modeIndex5g,
                               );
                               result?.then((selectedValue) => {
-                                    if (msVal != selectedValue &&
+                                    if (modeIndex != selectedValue &&
                                         selectedValue != null)
                                       {
                                         setState(() => {
-                                              if (pdVal == 0)
+                                              if (bandIndex == 0)
                                                 {
-                                                  msVal = selectedValue,
-                                                  kdVal = 0
+                                                  modeIndex = selectedValue,
+                                                  bandWidthIndex = 0
                                                 }
                                               else
                                                 {
-                                                  msVal5 = selectedValue,
-                                                  kdVal5 = 0
+                                                  modeIndex5g = selectedValue,
+                                                  bandWidthIndex5g = 0
                                                 }
                                             })
                                       }
@@ -717,9 +891,9 @@ class _WlanSetState extends State<WlanSet> {
                                   Row(
                                     children: [
                                       Text(
-                                          pdVal == 0
-                                              ? wifiMode[msVal]
-                                              : wifi5gMode[msVal5],
+                                          bandIndex == 0
+                                              ? modeOpt[modeIndex]
+                                              : modeValOpt[modeIndex5g],
                                           style: TextStyle(
                                               color: const Color.fromARGB(
                                                   255, 5, 0, 0),
@@ -737,33 +911,37 @@ class _WlanSetState extends State<WlanSet> {
                             ),
                           ),
                         //带宽
-                        if (pdVal == 0
-                            ? isCheck && (msVal < 2)
-                            : isCheck5 && msVal5 != 3)
+                        if (bandIndex == 0
+                            ? isCheck && (modeIndex < 2)
+                            : isCheck5 && modeIndex5g != 3)
                           GestureDetector(
                             onTap: () {
                               closeKeyboard(context);
                               var result = CommonPicker.showPicker(
                                 context: context,
-                                options: pdVal == 0
-                                    ? wifiChannelBandwidth
-                                    : wifiChannelBandwidth5,
-                                value: pdVal == 0 ? kdVal : kdVal5,
+                                options: bandIndex == 0
+                                    ? bandWidthVal
+                                    : bandWidthOpt5g,
+                                value: bandIndex == 0
+                                    ? bandWidthIndex
+                                    : bandWidthIndex5g,
                               );
                               result?.then((selectedValue) => {
-                                    if (kdVal != selectedValue &&
+                                    if (bandWidthIndex != selectedValue &&
                                         selectedValue != null)
                                       {
                                         setState(() => {
-                                              if (pdVal == 0)
+                                              if (bandIndex == 0)
                                                 {
-                                                  kdVal = selectedValue,
-                                                  xtVal = 0
+                                                  bandWidthIndex =
+                                                      selectedValue,
+                                                  channelIndex = 0
                                                 }
                                               else
                                                 {
-                                                  kdVal5 = selectedValue,
-                                                  xtVal5 = 0
+                                                  bandWidthIndex5g =
+                                                      selectedValue,
+                                                  channelIndex5g = 0
                                                 }
                                             })
                                       }
@@ -782,9 +960,10 @@ class _WlanSetState extends State<WlanSet> {
                                   Row(
                                     children: [
                                       Text(
-                                          pdVal == 0
-                                              ? wifiChannelBandwidth[kdVal]
-                                              : wifiChannelBandwidth5[kdVal5],
+                                          bandIndex == 0
+                                              ? bandWidthVal[bandWidthIndex]
+                                              : bandWidthOpt5g[
+                                                  bandWidthIndex5g],
                                           style: TextStyle(
                                               color: const Color.fromARGB(
                                                   255, 5, 0, 0),
@@ -802,31 +981,33 @@ class _WlanSetState extends State<WlanSet> {
                             ),
                           ),
                         //信道
-                        if (pdVal == 0 ? isCheck : isCheck5)
+                        if (bandIndex == 0 ? isCheck : isCheck5)
                           GestureDetector(
                             onTap: () {
                               closeKeyboard(context);
                               var result = CommonPicker.showPicker(
                                 context: context,
-                                options: pdVal == 1
+                                options: bandIndex == 1
                                     ? wifi5gCountryChannelList
-                                    : kdVal == 0
+                                    : bandWidthIndex == 0
                                         ? wifiCountryChannelListHT20
-                                        : kdVal == 1
+                                        : bandWidthIndex == 1
                                             ? wifiCountryChannelListHT40j
                                             : wifiCountryChannelListHT40,
-                                value: pdVal == 0 ? xtVal : xtVal5,
+                                value: bandIndex == 0
+                                    ? channelIndex
+                                    : channelIndex5g,
                               );
                               result?.then((selectedValue) => {
-                                    if (xtVal != selectedValue &&
+                                    if (channelIndex != selectedValue &&
                                         selectedValue != null)
                                       {
                                         setState(() => {
-                                              xtVal = selectedValue,
-                                              if (pdVal == 1)
-                                                {xtVal5 = selectedValue}
+                                              channelIndex = selectedValue,
+                                              if (bandIndex == 1)
+                                                {channelIndex5g = selectedValue}
                                               else
-                                                {xtVal = selectedValue}
+                                                {channelIndex = selectedValue}
                                             })
                                       }
                                   });
@@ -844,16 +1025,17 @@ class _WlanSetState extends State<WlanSet> {
                                   Row(
                                     children: [
                                       Text(
-                                          pdVal == 1
-                                              ? wifi5gCountryChannelList[xtVal5]
-                                              : kdVal == 0
+                                          bandIndex == 1
+                                              ? wifi5gCountryChannelList[
+                                                  channelIndex5g]
+                                              : bandWidthIndex == 0
                                                   ? wifiCountryChannelListHT20[
-                                                      xtVal]
-                                                  : kdVal == 1
+                                                      channelIndex]
+                                                  : bandWidthIndex == 1
                                                       ? wifiCountryChannelListHT40j[
-                                                          xtVal]
+                                                          channelIndex]
                                                       : wifiCountryChannelListHT40[
-                                                          xtVal],
+                                                          channelIndex],
                                           style: TextStyle(
                                               color: const Color.fromARGB(
                                                   255, 5, 0, 0),
@@ -871,7 +1053,7 @@ class _WlanSetState extends State<WlanSet> {
                             ),
                           ),
                         //发射功率
-                        if (pdVal == 0 ? isCheck : isCheck5)
+                        if (bandIndex == 0 ? isCheck : isCheck5)
                           GestureDetector(
                             onTap: () {
                               closeKeyboard(context);
@@ -882,20 +1064,23 @@ class _WlanSetState extends State<WlanSet> {
                                   '50%',
                                   '20%',
                                 ],
-                                value: pdVal == 0 ? fsVal : fsVal5,
+                                value: bandIndex == 0
+                                    ? txPowerIndex
+                                    : txPowerIndex5g,
                               );
                               result?.then((selectedValue) => {
-                                    if (fsVal != selectedValue &&
+                                    if (txPowerIndex != selectedValue &&
                                         selectedValue != null)
                                       {
                                         setState(() => {
-                                              if (pdVal == 0)
+                                              if (bandIndex == 0)
                                                 {
-                                                  fsVal = selectedValue,
+                                                  txPowerIndex = selectedValue,
                                                 }
                                               else
                                                 {
-                                                  fsVal5 = selectedValue,
+                                                  txPowerIndex5g =
+                                                      selectedValue,
                                                 }
                                             })
                                       }
@@ -918,7 +1103,9 @@ class _WlanSetState extends State<WlanSet> {
                                             '100%',
                                             '50%',
                                             '20%',
-                                          ][pdVal == 0 ? fsVal : fsVal5],
+                                          ][bandIndex == 0
+                                              ? txPowerIndex
+                                              : txPowerIndex5g],
                                           style: TextStyle(
                                               color: const Color.fromARGB(
                                                   255, 5, 0, 0),
@@ -939,9 +1126,9 @@ class _WlanSetState extends State<WlanSet> {
                     ),
                   ),
                   //配置
-                  if (pdVal == 0 ? isCheck : isCheck5)
+                  if (bandIndex == 0 ? isCheck : isCheck5)
                     TitleWidger(title: S.of(context).Configuration),
-                  if (pdVal == 0 ? isCheck : isCheck5)
+                  if (bandIndex == 0 ? isCheck : isCheck5)
                     InfoBox(
                         boxCotainer: Column(
                       children: [
@@ -957,7 +1144,7 @@ class _WlanSetState extends State<WlanSet> {
                               SizedBox(
                                 width: 250.w,
                                 child: TextFormField(
-                                  controller: pdVal == 0 ? ssid : ssid5,
+                                  controller: bandIndex == 0 ? ssid : ssid5,
                                   textAlign: TextAlign.right,
                                   style: TextStyle(
                                     fontSize: 26.sp,
@@ -996,7 +1183,7 @@ class _WlanSetState extends State<WlanSet> {
                                     )
                                   ],
                                   textAlign: TextAlign.right,
-                                  controller: pdVal == 0 ? max : max5,
+                                  controller: bandIndex == 0 ? max : max5,
                                   style: TextStyle(
                                       fontSize: 26.sp,
                                       color: const Color(0xff051220)),
@@ -1024,11 +1211,12 @@ class _WlanSetState extends State<WlanSet> {
                               Row(
                                 children: [
                                   Switch(
-                                    value:
-                                        pdVal == 0 ? ssidisCheck : ssidisCheck5,
+                                    value: bandIndex == 0
+                                        ? ssidisCheck
+                                        : ssidisCheck5,
                                     onChanged: (newVal) {
                                       setState(() {
-                                        if (pdVal == 0) {
+                                        if (bandIndex == 0) {
                                           ssidisCheck = newVal;
                                         } else {
                                           ssidisCheck5 = newVal;
@@ -1053,10 +1241,11 @@ class _WlanSetState extends State<WlanSet> {
                               Row(
                                 children: [
                                   Switch(
-                                    value: pdVal == 0 ? apisCheck : apisCheck5,
+                                    value:
+                                        bandIndex == 0 ? apisCheck : apisCheck5,
                                     onChanged: (newVal) {
                                       setState(() {
-                                        if (pdVal == 0) {
+                                        if (bandIndex == 0) {
                                           apisCheck = newVal;
                                         } else {
                                           apisCheck5 = newVal;
@@ -1075,21 +1264,23 @@ class _WlanSetState extends State<WlanSet> {
                             closeKeyboard(context);
                             var result = CommonPicker.showPicker(
                               context: context,
-                              options: wpaOptions,
-                              value: pdVal == 0 ? aqVal : aqVal5,
+                              options: securityOpt,
+                              value: bandIndex == 0
+                                  ? securityIndex
+                                  : securityIndex5g,
                             );
                             result?.then((selectedValue) => {
-                                  if (aqVal != selectedValue &&
+                                  if (securityIndex != selectedValue &&
                                       selectedValue != null)
                                     {
                                       setState(() => {
-                                            if (pdVal == 0)
+                                            if (bandIndex == 0)
                                               {
-                                                aqVal = selectedValue,
+                                                securityIndex = selectedValue,
                                               }
                                             else
                                               {
-                                                aqVal5 = selectedValue,
+                                                securityIndex5g = selectedValue,
                                               }
                                           })
                                     }
@@ -1107,9 +1298,9 @@ class _WlanSetState extends State<WlanSet> {
                                 Row(
                                   children: [
                                     Text(
-                                        pdVal == 0
-                                            ? wpaOptions[aqVal]
-                                            : wpaOptions[aqVal5],
+                                        bandIndex == 0
+                                            ? securityOpt[securityIndex]
+                                            : securityOpt[securityIndex5g],
                                         style: TextStyle(
                                             color: const Color.fromARGB(
                                                 255, 5, 0, 0),
@@ -1126,28 +1317,33 @@ class _WlanSetState extends State<WlanSet> {
                             ),
                           ),
                         ),
-                        if (aqVal != 2)
-                          //WPA加密
+                        if ((bandIndex == 0 && securityIndex != 2) ||
+                            (bandIndex == 1 && securityIndex5g != 2))
+                          // WPA加密
                           GestureDetector(
                             onTap: () {
                               closeKeyboard(context);
                               var result = CommonPicker.showPicker(
                                 context: context,
-                                options: wpajmOptions,
-                                value: pdVal == 0 ? wpaVal : wpaVal5,
+                                options: encryptionOpt,
+                                value: bandIndex == 0
+                                    ? encryptionIndex
+                                    : encryptionIndex5g,
                               );
                               result?.then((selectedValue) => {
-                                    if (wpaVal != selectedValue &&
+                                    if (encryptionIndex != selectedValue &&
                                         selectedValue != null)
                                       {
                                         setState(() => {
-                                              if (pdVal == 0)
+                                              if (bandIndex == 0)
                                                 {
-                                                  wpaVal = selectedValue,
+                                                  encryptionIndex =
+                                                      selectedValue,
                                                 }
                                               else
                                                 {
-                                                  wpaVal5 = selectedValue,
+                                                  encryptionIndex5g =
+                                                      selectedValue,
                                                 }
                                             })
                                       }
@@ -1166,9 +1362,10 @@ class _WlanSetState extends State<WlanSet> {
                                   Row(
                                     children: [
                                       Text(
-                                          pdVal == 0
-                                              ? wpajmOptions[wpaVal]
-                                              : wpajmOptions[wpaVal5],
+                                          bandIndex == 0
+                                              ? encryptionOpt[encryptionIndex]
+                                              : encryptionOpt[
+                                                  encryptionIndex5g],
                                           style: TextStyle(
                                               color: const Color.fromARGB(
                                                   255, 5, 0, 0),
@@ -1185,7 +1382,8 @@ class _WlanSetState extends State<WlanSet> {
                               ),
                             ),
                           ),
-                        if (aqVal != 2)
+                        if ((bandIndex == 0 && securityIndex != 2) ||
+                            (bandIndex == 1 && securityIndex5g != 2))
                           //密码
                           BottomLine(
                             rowtem: Row(
@@ -1204,7 +1402,7 @@ class _WlanSetState extends State<WlanSet> {
                                     obscureText: passwordValShow,
                                     textAlign: TextAlign.right,
                                     controller:
-                                        pdVal == 0 ? password : password5,
+                                        bandIndex == 0 ? password : password5,
                                     style: TextStyle(
                                         fontSize: 26.sp,
                                         color: const Color(0xff051220)),
@@ -1233,24 +1431,6 @@ class _WlanSetState extends State<WlanSet> {
                           ),
                       ],
                     )),
-                  Padding(
-                      padding: EdgeInsets.only(top: 10.w, bottom: 50.w),
-                      child: Center(
-                          child: SizedBox(
-                        height: 70.sp,
-                        width: 680.sp,
-                        child: ElevatedButton(
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(
-                                  const Color.fromARGB(255, 48, 118, 250))),
-                          onPressed: setData,
-                          child: Text(
-                            S.current.save,
-                            style: TextStyle(fontSize: 36.sp),
-                          ),
-                        ),
-                      )))
-                  //提交
                 ],
               ),
             ),

@@ -27,7 +27,7 @@ class EquipmentDatas {
 
 class OnlineDeviceTable {
   int? id;
-  String? leaseTime;
+  dynamic leaseTime;
   String? iP;
   String? mac;
   String? hostName;

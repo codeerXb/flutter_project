@@ -37,6 +37,8 @@ class _TopoState extends State<Topo> {
   @override
   void initState() {
     super.initState();
+    getTopoData(false);
+
     sharedGetData('deviceSn', String).then(((res) {
       printInfo(info: 'deviceSn$res');
       setState(() {
@@ -127,13 +129,14 @@ class _TopoState extends State<Topo> {
       var jsonObj = jsonDecode(res);
       if (!mounted) return;
       setState(() {
+        // 获取网络链接状态
         _simStatus = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
             ["Network"]["NR-LTE"]["ConnectStatus"]["_value"];
         var wiFiStatus = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
             ["Overview"]["WiFiStatus"];
         _wifiStatus4 = wiFiStatus["1"]["Enable"]["_value"];
         _wifiStatus5 = wiFiStatus["2"]["Enable"]["_value"];
-
+        // Topo 列表
         onlineCount = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
             ["Overview"]["DeviceList"]!;
         List<String> onlineCountName = [];
@@ -274,29 +277,20 @@ class _TopoState extends State<Topo> {
                                 color: const Color(0xFF2F5AF5),
                               ))),
                       if (_wanStatus == '0' &&
-                          _simStatus == 'disconnected' &&
-                          loginController.login.state == 'cloud')
-                        Positioned(
-                          top: 25.w,
-                          left: 0.5.sw - 26.w,
+                              _simStatus == 'disconnected' &&
+                              loginController.login.state == 'cloud' ||
+                          _wanStatus == '0' &&
+                              _simStatus == '0' &&
+                              loginController.login.state == 'local')
+                        Center(
+                            child: Padding(
+                          padding: EdgeInsets.only(top: 25.w),
                           child: Icon(
                             Icons.close,
                             color: const Color.fromARGB(255, 206, 47, 47),
                             size: 32.w,
                           ),
-                        ),
-                      if (_wanStatus == '0' &&
-                          _simStatus == '0' &&
-                          loginController.login.state == 'local')
-                        Positioned(
-                          top: 25.w,
-                          left: 0.5.sw - 26.w,
-                          child: Icon(
-                            Icons.close,
-                            color: const Color.fromARGB(255, 206, 47, 47),
-                            size: 32.w,
-                          ),
-                        )
+                        )),
                     ])
                   ],
                 ),
@@ -432,30 +426,23 @@ class _TopoState extends State<Topo> {
                                       ),
                                     ),
                                     if (_wifiStatus4 == false &&
-                                        _wifiStatus5 == false &&
-                                        loginController.login.state == 'cloud')
-                                      Positioned(
-                                        top: 25.w,
-                                        left: 0.41.sw - 26.w,
-                                        child: Icon(
-                                          Icons.close,
-                                          color: const Color.fromARGB(
-                                              255, 206, 47, 47),
-                                          size: 32.w,
+                                            _wifiStatus5 == false &&
+                                            loginController.login.state ==
+                                                'cloud' ||
+                                        _wifiStatus == '0' &&
+                                            loginController.login.state ==
+                                                'local')
+                                      Center(
+                                        child: Padding(
+                                          padding: EdgeInsets.only(top: 15.w),
+                                          child: Icon(
+                                            Icons.close,
+                                            color: const Color.fromARGB(
+                                                255, 206, 47, 47),
+                                            size: 32.w,
+                                          ),
                                         ),
                                       ),
-                                    if (_wifiStatus == '0' &&
-                                        loginController.login.state == 'local')
-                                      Positioned(
-                                        top: 25.w,
-                                        left: 0.41.sw - 26.w,
-                                        child: Icon(
-                                          Icons.close,
-                                          color: const Color.fromARGB(
-                                              255, 206, 47, 47),
-                                          size: 32.w,
-                                        ),
-                                      )
                                   ]),
                             ),
                           ],
@@ -476,19 +463,10 @@ class _TopoState extends State<Topo> {
                             title: e,
                             isNative: false,
                             isShow: true,
-                            topoData: e,
+                            topoData: onlineCount,
                           ),
                         )
                         .toList(),
-                  ),
-                if (onlineCount.isEmpty &&
-                    loginController.login.state == 'cloud' &&
-                    sn.isNotEmpty)
-                  Center(
-                    child: Container(
-                        margin: EdgeInsets.only(top: 100.sp),
-                        height: 200.w,
-                        child: Text(S.of(context).NoDeviceConnected)),
                   ),
                 if (topoData.onlineDeviceTable!.isNotEmpty &&
                     loginController.login.state == 'local')
@@ -508,14 +486,17 @@ class _TopoState extends State<Topo> {
                         )
                         .toList(),
                   ),
-                if (!topoData.onlineDeviceTable!.isNotEmpty &&
-                    loginController.login.state == 'local')
+                if (onlineCount.isEmpty &&
+                        loginController.login.state == 'cloud' &&
+                        sn.isNotEmpty ||
+                    !topoData.onlineDeviceTable!.isNotEmpty &&
+                        loginController.login.state == 'local')
                   Center(
                     child: Container(
                         margin: EdgeInsets.only(top: 100.sp),
                         height: 200.w,
                         child: Text(S.of(context).NoDeviceConnected)),
-                  )
+                  ),
               ],
             ),
           ),

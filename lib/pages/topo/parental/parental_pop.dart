@@ -7,24 +7,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/pages/topo/model/equipment_datas.dart';
+import 'package:flutter_template/core/http/http.dart';
+import 'package:flutter_template/core/utils/toast.dart';
+import 'package:flutter_template/core/widget/custom_app_bar.dart';
+import 'package:flutter_template/generated/l10n.dart';
+import 'package:flutter_template/pages/topo/model/access_datas.dart';
 import 'package:get/get.dart';
 
-import '../../core/http/http.dart';
-import '../../core/utils/toast.dart';
-import '../../core/widget/custom_app_bar.dart';
-import '../../generated/l10n.dart';
-import 'model/access_datas.dart';
-
-class ParentalUpdate extends StatefulWidget {
-  const ParentalUpdate({super.key});
+class ParentalPop extends StatefulWidget {
+  const ParentalPop({super.key});
 
   @override
-  State<ParentalUpdate> createState() => _ParentalUpdateState();
+  State<ParentalPop> createState() => _ParentalPopState();
 }
 
-class _ParentalUpdateState extends State<ParentalUpdate> {
+class _ParentalPopState extends State<ParentalPop> {
   OnlineDeviceTable data = OnlineDeviceTable(mac: '');
-  FwParentControlTable dataList = FwParentControlTable();
+
 // 提交
   AccessDatas restart = AccessDatas();
 
@@ -33,6 +32,13 @@ class _ParentalUpdateState extends State<ParentalUpdate> {
 
 //工作日
   List arr = [];
+  String b = '';
+  String c = '';
+  String d = '';
+  String e = '';
+  String f = '';
+  String g = '';
+  String h = '';
   List arrList = [];
   List arrListEng = [];
   String tranfer = '';
@@ -51,28 +57,16 @@ class _ParentalUpdateState extends State<ParentalUpdate> {
   String startTim = '';
   String startTimeH = '';
   String startTimeM = '';
-  String startTimDate = '';
 
 // 结束时间
   String stopTim = '';
   String stopTimeH = '';
   String stopTimeM = '';
-  String stopTimDate = '';
 
-  // 传给showpicker组件
-  // 开始时间
-  Time _timeStart = Time(hour: 0, minute: 0);
-  void onTimeStartChanged(Time newTime) {
+  Time _time = Time(hour: 11, minute: 30);
+  void onTimeChanged(Time newTime) {
     setState(() {
-      _timeStart = newTime;
-    });
-  }
-
-  // 结束时间
-  Time _timeEnd = Time(hour: 0, minute: 0);
-  void onTimeEndChanged(Time newTime) {
-    setState(() {
-      _timeEnd = newTime;
+      _time = newTime;
     });
   }
 
@@ -82,51 +76,24 @@ class _ParentalUpdateState extends State<ParentalUpdate> {
   List<Widget> temList = [];
 
 // 名称  设备
-  String id = '';
-  String name = '';
-  String equipmentName = '';
-
+  String hostN = '';
+  String mac = '';
   @override
   void initState() {
     super.initState();
     setState(() {
-      data = Get.arguments['data'];
-      dataList = Get.arguments['dataList'];
+      data = Get.arguments;
     });
-    id = dataList.id.toString();
-    arrList = dataList.weekdays.toString().split(',');
-    for (var i in arrList) {
-      arrListEng.add(i
-          .toString()
-          .replaceAll('周日', 'Sun')
-          .replaceAll('周一', 'Mon')
-          .replaceAll('周二', 'Tue')
-          .replaceAll('周三', 'Wed')
-          .replaceAll('周四', 'Thu')
-          .replaceAll('周五', 'Fri')
-          .replaceAll('周六', 'Sat'));
-    }
-    startTimDate = dataList.timeStart.toString();
-    startTimeH = startTimDate.split(':')[0];
-    startTimeM = startTimDate.split(':')[1];
-    stopTimDate = dataList.timeStop.toString();
-    stopTimeH = stopTimDate.split(':')[0];
-    stopTimeM = stopTimDate.split(':')[1];
-    name = dataList.name.toString();
-    equipmentName = dataList.host.toString();
-    setState(() {
-      _timeStart =
-          Time(hour: int.parse(startTimeH), minute: int.parse(startTimeM));
-      _timeEnd = Time(hour: int.parse(stopTimeH), minute: int.parse(stopTimeM));
-    });
+    hostN = data.hostName.toString();
+    mac = data.mac.toString();
   }
 
-// 家长控制 修改
+// 家长控制 提交
   void getAccessData() {
     Map<String, dynamic> data = {
-      'method': 'tab_set',
+      'method': 'tab_add',
       'param':
-          '{"table":"FwParentControlTable","value":[{"id":$id,"Name":"$name","Weekdays":"${arrListEng.join(',')}","TimeStart":"$startTimeH:$startTimeM","TimeStop":"$stopTimeH:$stopTimeM","Host":"$equipmentName","Target":"DROP"}]}'
+          '{"table":"FwParentControlTable","value":{"Name":"$hostN","Weekdays":"${arrListEng.join()}","TimeStart":"$startTimeH:$startTimeM","TimeStop":"$startTimeH:$startTimeM","Host":"$mac","Target":"DROP"}}',
     };
     XHttp.get('/data.html', data).then((res) {
       try {
@@ -134,10 +101,10 @@ class _ParentalUpdateState extends State<ParentalUpdate> {
         setState(() {
           restart = AccessDatas.fromJson(d);
           if (restart.success == true) {
-            ToastUtils.toast(S.current.modification + S.current.success);
+            ToastUtils.toast(S.current.save + S.current.success);
             Get.back();
           } else {
-            ToastUtils.toast(S.current.modification + S.current.error);
+            ToastUtils.toast(S.current.save + S.current.error);
           }
         });
       } on FormatException catch (e) {
@@ -170,12 +137,12 @@ class _ParentalUpdateState extends State<ParentalUpdate> {
                     BottomLine(
                         rowtem: RowContainer(
                       leftText: S.current.name,
-                      righText: name,
+                      righText: data.hostName.toString(),
                     )),
                     BottomLine(
                         rowtem: RowContainer(
                       leftText: S.current.equipment,
-                      righText: equipmentName,
+                      righText: data.mac.toString(),
                     )),
                     GestureDetector(
                       onTap: () {
@@ -230,8 +197,8 @@ class _ParentalUpdateState extends State<ParentalUpdate> {
                         Navigator.of(context).push(
                           showPicker(
                             context: context,
-                            value: _timeStart,
-                            onChange: onTimeStartChanged,
+                            value: _time,
+                            onChange: onTimeChanged,
                             minuteInterval: TimePickerInterval.FIVE,
                             // Optional onChange to receive value as DateTime
                             onChangeDateTime: (DateTime dateTime) {
@@ -252,7 +219,7 @@ class _ParentalUpdateState extends State<ParentalUpdate> {
                                 children: [
                                   Text(
                                       (startTimeH == '' && startTimeM == ''
-                                          ? startTimDate
+                                          ? ''
                                           : ('$startTimeH:$startTimeM')),
                                       style: TextStyle(fontSize: 28.sp)),
                                   Icon(
@@ -271,8 +238,8 @@ class _ParentalUpdateState extends State<ParentalUpdate> {
                         Navigator.of(context).push(
                           showPicker(
                             context: context,
-                            value: _timeEnd,
-                            onChange: onTimeEndChanged,
+                            value: _time,
+                            onChange: onTimeChanged,
                             minuteInterval: TimePickerInterval.FIVE,
                             // Optional onChange to receive value as DateTime
                             onChangeDateTime: (DateTime dateTime) {
@@ -293,7 +260,7 @@ class _ParentalUpdateState extends State<ParentalUpdate> {
                                 children: [
                                   Text(
                                       (stopTimeH == '' && stopTimeM == ''
-                                          ? stopTimDate
+                                          ? ''
                                           : ('$stopTimeH:$stopTimeM')),
                                       style: TextStyle(fontSize: 28.sp)),
                                   Icon(
@@ -439,34 +406,33 @@ class _ParentalUpdateState extends State<ParentalUpdate> {
                         .toList();
                     if (arr[0] == '1') {
                       arrList.add('周日,');
-                      arrListEng.add('Sun');
+                      arrListEng.add('Sun,');
                     }
                     if (arr[1] == '1') {
                       arrList.add('周一,');
-                      arrListEng.add('Mon');
+                      arrListEng.add('Mon,');
                     }
                     if (arr[2] == '1') {
                       arrList.add('周二,');
-                      arrListEng.add('Tue');
+                      arrListEng.add('Tue,');
                     }
                     if (arr[3] == '1') {
                       arrList.add('周三,');
-                      arrListEng.add('Wed');
+                      arrListEng.add('Wed,');
                     }
                     if (arr[4] == '1') {
                       arrList.add('周四,');
-                      arrListEng.add('Thu');
+                      arrListEng.add('Thu,');
                     }
                     if (arr[5] == '1') {
                       arrList.add('周五,');
-                      arrListEng.add('Fri');
+                      arrListEng.add('Fri,');
                     }
                     if (arr[6] == '1') {
                       arrList.add(S.current.Sat);
                       arrListEng.add('Sat');
                     }
                   }
-                  printInfo(info: arrList.toString());
                 });
               },
               child: Container(

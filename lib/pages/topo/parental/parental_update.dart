@@ -1,30 +1,27 @@
 import 'dart:convert';
 
 import 'package:day_night_time_picker/day_night_time_picker.dart';
-import 'package:day_night_time_picker/lib/constants.dart';
-import 'package:day_night_time_picker/lib/daynight_timepicker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/core/http/http.dart';
+import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
+import 'package:flutter_template/core/widget/custom_app_bar.dart';
+import 'package:flutter_template/generated/l10n.dart';
+import 'package:flutter_template/pages/topo/model/access_datas.dart';
 import 'package:flutter_template/pages/topo/model/equipment_datas.dart';
 import 'package:get/get.dart';
 
-import '../../core/http/http.dart';
-import '../../core/utils/toast.dart';
-import '../../core/widget/custom_app_bar.dart';
-import '../../generated/l10n.dart';
-import 'model/access_datas.dart';
-
-class ParentalPop extends StatefulWidget {
-  const ParentalPop({super.key});
+class ParentalUpdate extends StatefulWidget {
+  const ParentalUpdate({super.key});
 
   @override
-  State<ParentalPop> createState() => _ParentalPopState();
+  State<ParentalUpdate> createState() => _ParentalUpdateState();
 }
 
-class _ParentalPopState extends State<ParentalPop> {
+class _ParentalUpdateState extends State<ParentalUpdate> {
   OnlineDeviceTable data = OnlineDeviceTable(mac: '');
-
+  FwParentControlTable dataList = FwParentControlTable();
 // 提交
   AccessDatas restart = AccessDatas();
 
@@ -33,13 +30,6 @@ class _ParentalPopState extends State<ParentalPop> {
 
 //工作日
   List arr = [];
-  String b = '';
-  String c = '';
-  String d = '';
-  String e = '';
-  String f = '';
-  String g = '';
-  String h = '';
   List arrList = [];
   List arrListEng = [];
   String tranfer = '';
@@ -58,16 +48,28 @@ class _ParentalPopState extends State<ParentalPop> {
   String startTim = '';
   String startTimeH = '';
   String startTimeM = '';
+  String startTimDate = '';
 
 // 结束时间
   String stopTim = '';
   String stopTimeH = '';
   String stopTimeM = '';
+  String stopTimDate = '';
 
-  Time _time = Time(hour: 11, minute: 30);
-  void onTimeChanged(Time newTime) {
+  // 传给showpicker组件
+  // 开始时间
+  Time _timeStart = Time(hour: 0, minute: 0);
+  void onTimeStartChanged(Time newTime) {
     setState(() {
-      _time = newTime;
+      _timeStart = newTime;
+    });
+  }
+
+  // 结束时间
+  Time _timeEnd = Time(hour: 0, minute: 0);
+  void onTimeEndChanged(Time newTime) {
+    setState(() {
+      _timeEnd = newTime;
     });
   }
 
@@ -77,24 +79,51 @@ class _ParentalPopState extends State<ParentalPop> {
   List<Widget> temList = [];
 
 // 名称  设备
-  String hostN = '';
-  String mac = '';
+  String id = '';
+  String name = '';
+  String equipmentName = '';
+
   @override
   void initState() {
     super.initState();
     setState(() {
-      data = Get.arguments;
+      data = Get.arguments['data'];
+      dataList = Get.arguments['dataList'];
     });
-    hostN = data.hostName.toString();
-    mac = data.mac.toString();
+    id = dataList.id.toString();
+    arrList = dataList.weekdays.toString().split(',');
+    for (var i in arrList) {
+      arrListEng.add(i
+          .toString()
+          .replaceAll('周日', 'Sun')
+          .replaceAll('周一', 'Mon')
+          .replaceAll('周二', 'Tue')
+          .replaceAll('周三', 'Wed')
+          .replaceAll('周四', 'Thu')
+          .replaceAll('周五', 'Fri')
+          .replaceAll('周六', 'Sat'));
+    }
+    startTimDate = dataList.timeStart.toString();
+    startTimeH = startTimDate.split(':')[0];
+    startTimeM = startTimDate.split(':')[1];
+    stopTimDate = dataList.timeStop.toString();
+    stopTimeH = stopTimDate.split(':')[0];
+    stopTimeM = stopTimDate.split(':')[1];
+    name = dataList.name.toString();
+    equipmentName = dataList.host.toString();
+    setState(() {
+      _timeStart =
+          Time(hour: int.parse(startTimeH), minute: int.parse(startTimeM));
+      _timeEnd = Time(hour: int.parse(stopTimeH), minute: int.parse(stopTimeM));
+    });
   }
 
-// 家长控制 提交
+// 家长控制 修改
   void getAccessData() {
     Map<String, dynamic> data = {
-      'method': 'tab_add',
+      'method': 'tab_set',
       'param':
-          '{"table":"FwParentControlTable","value":{"Name":"$hostN","Weekdays":"${arrListEng.join()}","TimeStart":"$startTimeH:$startTimeM","TimeStop":"$startTimeH:$startTimeM","Host":"$mac","Target":"DROP"}}',
+          '{"table":"FwParentControlTable","value":[{"id":$id,"Name":"$name","Weekdays":"${arrListEng.join(',')}","TimeStart":"$startTimeH:$startTimeM","TimeStop":"$stopTimeH:$stopTimeM","Host":"$equipmentName","Target":"DROP"}]}'
     };
     XHttp.get('/data.html', data).then((res) {
       try {
@@ -102,10 +131,10 @@ class _ParentalPopState extends State<ParentalPop> {
         setState(() {
           restart = AccessDatas.fromJson(d);
           if (restart.success == true) {
-            ToastUtils.toast(S.current.save + S.current.success);
+            ToastUtils.toast(S.current.modification + S.current.success);
             Get.back();
           } else {
-            ToastUtils.toast(S.current.save + S.current.error);
+            ToastUtils.toast(S.current.modification + S.current.error);
           }
         });
       } on FormatException catch (e) {
@@ -138,12 +167,12 @@ class _ParentalPopState extends State<ParentalPop> {
                     BottomLine(
                         rowtem: RowContainer(
                       leftText: S.current.name,
-                      righText: data.hostName.toString(),
+                      righText: name,
                     )),
                     BottomLine(
                         rowtem: RowContainer(
                       leftText: S.current.equipment,
-                      righText: data.mac.toString(),
+                      righText: equipmentName,
                     )),
                     GestureDetector(
                       onTap: () {
@@ -198,8 +227,8 @@ class _ParentalPopState extends State<ParentalPop> {
                         Navigator.of(context).push(
                           showPicker(
                             context: context,
-                            value: _time,
-                            onChange: onTimeChanged,
+                            value: _timeStart,
+                            onChange: onTimeStartChanged,
                             minuteInterval: TimePickerInterval.FIVE,
                             // Optional onChange to receive value as DateTime
                             onChangeDateTime: (DateTime dateTime) {
@@ -220,7 +249,7 @@ class _ParentalPopState extends State<ParentalPop> {
                                 children: [
                                   Text(
                                       (startTimeH == '' && startTimeM == ''
-                                          ? ''
+                                          ? startTimDate
                                           : ('$startTimeH:$startTimeM')),
                                       style: TextStyle(fontSize: 28.sp)),
                                   Icon(
@@ -239,8 +268,8 @@ class _ParentalPopState extends State<ParentalPop> {
                         Navigator.of(context).push(
                           showPicker(
                             context: context,
-                            value: _time,
-                            onChange: onTimeChanged,
+                            value: _timeEnd,
+                            onChange: onTimeEndChanged,
                             minuteInterval: TimePickerInterval.FIVE,
                             // Optional onChange to receive value as DateTime
                             onChangeDateTime: (DateTime dateTime) {
@@ -261,7 +290,7 @@ class _ParentalPopState extends State<ParentalPop> {
                                 children: [
                                   Text(
                                       (stopTimeH == '' && stopTimeM == ''
-                                          ? ''
+                                          ? stopTimDate
                                           : ('$stopTimeH:$stopTimeM')),
                                       style: TextStyle(fontSize: 28.sp)),
                                   Icon(
@@ -407,33 +436,34 @@ class _ParentalPopState extends State<ParentalPop> {
                         .toList();
                     if (arr[0] == '1') {
                       arrList.add('周日,');
-                      arrListEng.add('Sun,');
+                      arrListEng.add('Sun');
                     }
                     if (arr[1] == '1') {
                       arrList.add('周一,');
-                      arrListEng.add('Mon,');
+                      arrListEng.add('Mon');
                     }
                     if (arr[2] == '1') {
                       arrList.add('周二,');
-                      arrListEng.add('Tue,');
+                      arrListEng.add('Tue');
                     }
                     if (arr[3] == '1') {
                       arrList.add('周三,');
-                      arrListEng.add('Wed,');
+                      arrListEng.add('Wed');
                     }
                     if (arr[4] == '1') {
                       arrList.add('周四,');
-                      arrListEng.add('Thu,');
+                      arrListEng.add('Thu');
                     }
                     if (arr[5] == '1') {
                       arrList.add('周五,');
-                      arrListEng.add('Fri,');
+                      arrListEng.add('Fri');
                     }
                     if (arr[6] == '1') {
                       arrList.add(S.current.Sat);
                       arrListEng.add('Sat');
                     }
                   }
+                  printInfo(info: arrList.toString());
                 });
               },
               child: Container(

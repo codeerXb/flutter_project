@@ -7,10 +7,10 @@ import 'package:flutter_template/core/widget/custom_app_bar.dart';
 import 'package:flutter_template/core/widget/left_slide_actions.dart';
 import 'package:flutter_template/pages/topo/model/equipment_datas.dart';
 import 'package:get/get.dart';
-import '../../core/http/http.dart';
-import '../../core/utils/toast.dart';
-import '../../generated/l10n.dart';
-import 'model/access_datas.dart';
+import 'package:flutter_template/core/http/http.dart';
+import 'package:flutter_template/core/utils/toast.dart';
+import 'package:flutter_template/generated/l10n.dart';
+import 'package:flutter_template/pages/topo/model/access_datas.dart';
 
 class ParentalControl extends StatefulWidget {
   const ParentalControl({super.key});
@@ -58,9 +58,9 @@ class _ParentalControlState extends State<ParentalControl> {
         setState(() {
           restart = AccessDatas.fromJson(d);
           if (restart.success == true) {
-            ToastUtils.toast(S.current.save+S.current.success);
+            ToastUtils.toast(S.current.save + S.current.success);
           } else {
-            ToastUtils.toast(S.current.save+S.current.error);
+            ToastUtils.toast(S.current.save + S.current.error);
           }
         });
       } on FormatException catch (e) {
@@ -153,10 +153,10 @@ class _ParentalControlState extends State<ParentalControl> {
         setState(() {
           restart = AccessDatas.fromJson(d);
           if (restart.success == true) {
-            ToastUtils.toast(S.current.delete+S.current.success);
+            ToastUtils.toast(S.current.delete + S.current.success);
             getAccessList();
           } else {
-            ToastUtils.toast(S.current.delete+S.current.error);
+            ToastUtils.toast(S.current.delete + S.current.error);
           }
         });
       } on FormatException catch (e) {
@@ -172,7 +172,7 @@ class _ParentalControlState extends State<ParentalControl> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppbar(context: context, title:S.current.parentalControl),
+      appBar: customAppbar(context: context, title: S.current.parentalControl),
       body: SafeArea(
           child: Container(
         padding: const EdgeInsets.all(10.0),
@@ -184,25 +184,24 @@ class _ParentalControlState extends State<ParentalControl> {
           ),
           InfoBox(
             boxCotainer: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-               TitleWidger(title:S.current.parentalControl),
-             
-              Switch(
-                value: isCheck,
-                onChanged: (newVal) {
-                  setState(() {
-                    isCheck = newVal;
-                    if (isCheck == true) {
-                      checkVal = 1;
-                    } else {
-                      checkVal = 0;
-                    }
-                    getAccessOpen();
-                  });
-                },
-              ),
-            ]),
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TitleWidger(title: S.current.parentalControl),
+                  Switch(
+                    value: isCheck,
+                    onChanged: (newVal) {
+                      setState(() {
+                        isCheck = newVal;
+                        if (isCheck == true) {
+                          checkVal = 1;
+                        } else {
+                          checkVal = 0;
+                        }
+                        getAccessOpen();
+                      });
+                    },
+                  ),
+                ]),
           ),
           // 列表
           if (accessList.fwParentControlTable!.isNotEmpty)
@@ -331,7 +330,7 @@ class _ParentalControlState extends State<ParentalControl> {
               padding: EdgeInsets.all(10.sp),
             ),
             Text(
-                '${accessList.fwParentControlTable![index].timeStart!}'+S.current.to+'${accessList.fwParentControlTable![index].timeStop!}'+S.current.access,
+                '${accessList.fwParentControlTable![index].timeStart!}${S.current.to}${accessList.fwParentControlTable![index].timeStop!}${S.current.access}',
                 style: TextStyle(
                     color: const Color.fromARGB(255, 5, 0, 0),
                     fontSize: ScreenUtil().setWidth(30.0))),
@@ -358,7 +357,7 @@ class _ParentalControlState extends State<ParentalControl> {
         width: 60,
         color: const Color(0xFFF20101),
         alignment: Alignment.center,
-        child:  Text(
+        child: Text(
           S.current.delete,
           style: const TextStyle(
             fontSize: 16,
@@ -485,7 +484,7 @@ class _ParentalControlState extends State<ParentalControl> {
         width: 60,
         color: Colors.green,
         alignment: Alignment.center,
-        child:  Text(
+        child: Text(
           S.current.modification,
           style: const TextStyle(
             fontSize: 16,

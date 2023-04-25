@@ -58,9 +58,9 @@ import 'package:flutter_template/pages/setting/system_settings.dart';
 import 'package:flutter_template/pages/system_settings/maintain_settings.dart';
 import 'package:flutter_template/pages/system_settings/account_security.dart';
 import 'package:flutter_template/pages/toolbar/index.dart';
-import 'package:flutter_template/pages/topo/parental_control.dart';
-import 'package:flutter_template/pages/topo/parental_pop.dart';
-import 'package:flutter_template/pages/topo/parental_update.dart';
+import 'package:flutter_template/pages/topo/parental/parental_control.dart';
+import 'package:flutter_template/pages/topo/parental/parental_pop.dart';
+import 'package:flutter_template/pages/topo/parental/parental_update.dart';
 
 /// 路由
 class GlobalRouter {

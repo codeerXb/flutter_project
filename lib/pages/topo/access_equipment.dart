@@ -84,6 +84,7 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                 Padding(
                   padding: EdgeInsets.only(top: 10.sp),
                 ),
+                // 家长
                 InfoBox(
                   boxCotainer: SizedBox(
                     child: GestureDetector(
@@ -109,6 +110,7 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                     ),
                   ),
                 ),
+                // 游戏
                 InfoBox(
                   boxCotainer: SizedBox(
                     child: GestureDetector(
@@ -135,6 +137,7 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                     ),
                   ),
                 ),
+                // AI
                 InfoBox(
                   boxCotainer: SizedBox(
                     child: GestureDetector(

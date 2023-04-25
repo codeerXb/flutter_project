@@ -28,7 +28,7 @@ class WlanSet extends StatefulWidget {
 
 class _WlanSetState extends State<WlanSet> {
   wlanDatas wlanData = wlanDatas(
-      wifiEnable: "1",
+      wifiEnable: "0",
       wifiMode: "11axg",
       wifiHtmode: "--",
       wifiChannel: "auto",
@@ -192,7 +192,7 @@ class _WlanSetState extends State<WlanSet> {
   int channelIndex5g = 0;
 
   // 密码
-  bool passwordValShow = true;
+  bool passwordValHidden = true;
 
   // 发射功率
   String txPowerShowVal = '100%';
@@ -204,12 +204,12 @@ class _WlanSetState extends State<WlanSet> {
   int txPowerIndex5g = 0;
 
   // check
-  bool isCheck = true;
-  bool isCheck5 = true;
-  bool apisCheck = true;
-  bool apisCheck5 = true;
-  bool ssidisCheck5 = true;
-  bool ssidisCheck = true;
+  bool isCheck = false;
+  bool isCheck5 = false;
+  bool apisCheck = false;
+  bool apisCheck5 = false;
+  bool ssidisCheck5 = false;
+  bool ssidisCheck = false;
   final TextEditingController ssid = TextEditingController();
   final TextEditingController ssid5 = TextEditingController();
   final TextEditingController max = TextEditingController();
@@ -228,6 +228,7 @@ class _WlanSetState extends State<WlanSet> {
         setState(() {
           _isLoading = true;
         });
+
         if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
           // 云端请求赋值
           await get24gList();
@@ -1399,7 +1400,7 @@ class _WlanSetState extends State<WlanSet> {
                                   width: 250.w,
                                   child: TextFormField(
                                     autovalidateMode: AutovalidateMode.always,
-                                    obscureText: passwordValShow,
+                                    obscureText: passwordValHidden,
                                     textAlign: TextAlign.right,
                                     controller:
                                         bandIndex == 0 ? password : password5,
@@ -1410,11 +1411,11 @@ class _WlanSetState extends State<WlanSet> {
                                       suffixIcon: IconButton(
                                           onPressed: () {
                                             setState(() {
-                                              passwordValShow =
-                                                  !passwordValShow;
+                                              passwordValHidden =
+                                                  !passwordValHidden;
                                             });
                                           },
-                                          icon: Icon(!passwordValShow
+                                          icon: Icon(!passwordValHidden
                                               ? Icons.visibility
                                               : Icons.visibility_off)),
                                       hintText: S.current.enter +

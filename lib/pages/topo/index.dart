@@ -37,8 +37,6 @@ class _TopoState extends State<Topo> {
   @override
   void initState() {
     super.initState();
-    getTopoData(false);
-
     sharedGetData('deviceSn', String).then(((res) {
       printInfo(info: 'deviceSn$res');
       setState(() {
@@ -137,15 +135,48 @@ class _TopoState extends State<Topo> {
         _wifiStatus4 = wiFiStatus["1"]["Enable"]["_value"];
         _wifiStatus5 = wiFiStatus["2"]["Enable"]["_value"];
         // Topo 列表
-        onlineCount = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
-            ["Overview"]["DeviceList"]!;
-        List<String> onlineCountName = [];
-        onlineCount.forEach((key, value) {
-          if (value is Map && value.containsKey('DeviceName')) {
-            onlineCountName.add(value['DeviceName']['_value']);
-          }
-        });
-        deviceNames = onlineCountName;
+        printInfo(
+            info:
+                'onlineCount${jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Overview"]}');
+        printInfo(
+            info:
+                'onlineCount${jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Overview"]}');
+        onlineCount = json.decode(
+            jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Overview"]);
+
+        printInfo(info: 'onlineCount$onlineCount');
+
+        // 将 onlineCount 解析为 Map 类型的对象
+// Map<String, dynamic> onlineCount = json.decode('{"onlineCount": {"1": {"DeviceName": {"_value": "android-fa3dc490b530a29"}, "IPAddress": {"_value": "192.168.1.135"}, "LeaseTime": {"_value": "39982"}, "MACAddress": {"_value": "00:11:11:11:11:81"}, "Type": {"_value": "WI-FI.DHCP"}}, "2": {"DeviceName": {"_value": "DESKTOP-3JJGI54"}, "IPAddress": {"_value": "192.168.1.184"}, "LeaseTime": {"_value": "37119"}, "MACAddress": {"_value": "1C:69:7A:CE:B5:7C"}, "Type": {"_value": "LAN.DHCP"}}}}');
+
+        // // 创建 OnlineDeviceTable 列表
+        // List<Map<String, dynamic>> onlineDeviceTable = [];
+        // onlineCount['onlineCount'].forEach((key, value) {
+        //   Map<String, dynamic> device = {
+        //     'id': int.parse(key) - 1,
+        //     'LeaseTime': int.parse(value['LeaseTime']['_value']),
+        //     'IP': value['IPAddress']['_value'],
+        //     'MAC': value['MACAddress']['_value'],
+        //     'HostName': value['DeviceName']['_value'],
+        //     'Type': value['Type']['_value'],
+        //   };
+        //   onlineDeviceTable.add(device);
+        // });
+
+        // // 创建 D 对象
+        // Map<String, dynamic> D = {
+        //   'OnlineDeviceTable': onlineDeviceTable,
+        //   'max': 255,
+        // };
+        // printInfo(info: 'd$D');
+
+        // List<String> onlineCountName = [];
+        // onlineCount.forEach((key, value) {
+        //   if (value is Map && value.containsKey('DeviceName')) {
+        //     onlineCountName.add(value['DeviceName']['_value']);
+        //   }
+        // });
+        // deviceNames = onlineCountName;
       });
     } catch (e) {
       debugPrint('获取信息失败：${e.toString()}');

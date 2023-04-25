@@ -24,7 +24,7 @@ class Equipment extends StatefulWidget {
 class _MyWidgetState extends State<Equipment> {
   final LoginController loginController = Get.put(LoginController());
   final ToolbarController toolbarController = Get.put(ToolbarController());
-  bool isExistLocalDevice = false;
+  bool isExistCloudDevice = false;
   List appList = [];
   EquipmentData equipmentData = EquipmentData();
   @override
@@ -69,20 +69,25 @@ class _MyWidgetState extends State<Equipment> {
         }
         return;
       } else {
-        appList = d['data'];
-        if (d['data'] != []) {
-          setState(() {
-            appList = d['data'].map((text) => (text)).toList();
-          });
-          getEquipmentData(d['data'].map((text) => (text)).toList());
-        }
+        // appList = d['data'];
+
+        // if (d['data'] != []) {
+        //   setState(() {
+        //     appList = d['data'].map((text) => (text)).toList();
+        //   });
+        //   getEquipmentData(d['data'].map((text) => (text)).toList());
+        // }
+        setState(() {
+          appList = d['data'];
+        });
+        getEquipmentData(d['data']);
       }
     }).catchError((onError) {
       debugPrint(onError.toString());
     });
   }
 
-  void getEquipmentData(appList) {
+  void getEquipmentData(list) {
     Map<String, dynamic> data = {
       'method': 'obj_get',
       'param':
@@ -92,33 +97,31 @@ class _MyWidgetState extends State<Equipment> {
     XHttp.get('/pub/pub_data.html', data).then((res) {
       try {
         var d = json.decode(res.toString());
-        if (equipmentData.systemVersionSn == null ||
-            equipmentData.systemVersionSn !=
-                EquipmentData.fromJson(d).systemVersionSn) {
-          setState(() {
-            equipmentData = EquipmentData.fromJson(d);
-          });
-        }
+        // if (equipmentData.systemVersionSn == null ||
+        //     equipmentData.systemVersionSn !=
+        //         EquipmentData.fromJson(d).systemVersionSn) {
         setState(() {
-          if (equipmentData.systemVersionSn != null || appList.isNotEmpty) {
-            int left = 0;
-            int right = appList.length - 1;
-            while (left <= right) {
-              int mid = (left + right) ~/ 2;
-              String dev = 'deviceSn';
-              String devvalue = equipmentData.systemVersionSn.toString();
-              var value = appList[mid][dev];
-              if (value == devvalue) {
-                isExistLocalDevice = true;
-                return;
-              } else if (value.compareTo(devvalue) < 0) {
-                left = mid + 1;
-              } else {
-                right = mid - 1;
-              }
-            }
+          equipmentData = EquipmentData.fromJson(d);
+          if (list.isNotEmpty) {
+            // int left = 0;
+            // int right = list.length - 1;
+            // while (left <= right) {
+            //   int mid = (left + right) ~/ 2;
+            //   String dev = 'deviceSn';
+            //   String devvalue = equipmentData.systemVersionSn.toString();
+            //   var value = list[mid][dev];
+            //   if (value == devvalue) {
+            //     isExistCloudDevice = true;
+            //     return;
+            //   } else if (value.compareTo(devvalue) < 0) {
+            //     left = mid + 1;
+            //   } else {
+            //     right = mid - 1;
+            //   }
+            // }
           }
         });
+        // }
       } on FormatException catch (e) {
         setState(() {
           equipmentData = EquipmentData(
@@ -222,7 +225,7 @@ class _MyWidgetState extends State<Equipment> {
                     ],
                   ),
                 ),
-                if (!isExistLocalDevice &&
+                if (!isExistCloudDevice &&
                     equipmentData.systemProductModel != null)
                   Card(
                     elevation: 5, //设置卡片阴影的深度

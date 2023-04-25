@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
@@ -5,6 +7,10 @@ import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 // ignore: library_prefixes
 import 'package:get/get.dart' as GetX;
+import 'package:get/get_core/src/get_main.dart';
+
+import '../../generated/l10n.dart';
+import '../utils/toast.dart';
 
 /// 拦截器
 class HttpAppInterceptors extends InterceptorsWrapper {
@@ -37,14 +43,19 @@ class HttpAppInterceptors extends InterceptorsWrapper {
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    String isSn = loginController.isSn.value;
-    String password = '';
-    if (isSn != '') {
-      password = loginController.sn[isSn.toString()];
+    // 登录过期处理
+    if (jsonDecode(jsonEncode(response.data))["code"] == 900) {
+      ToastUtils.error(S.current.tokenExpired);
+      Get.offNamed("/user_login");
+      sharedDeleteData('user_phone');
+      sharedDeleteData('user_token');
+      debugPrint('清除用户信息');
     }
     debugPrint("\n================== 云平台响应数据==========================");
     debugPrint("code = ${response.statusCode}");
     debugPrint("data = ${response.data}");
+    debugPrint(
+        "data_code = ${json.decode(json.encode(response.data))},type = ${json.decode(json.encode(response.data))['code'].runtimeType}");
 
     return super.onResponse(response, handler);
   }

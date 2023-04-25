@@ -27,6 +27,7 @@
   "noDevice": "未发现设备",
   "rescan": "重新扫描",
   "UntyingEqui": "解绑设备",
+  "unbindError":"解绑失败",
   "wlanSet": "WLAN设置",
   "visitorNet": "访客网络",
   "majorSet": "专业设置",

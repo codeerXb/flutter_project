@@ -277,7 +277,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "nogameAcceleration": MessageLookupByLibrary.simpleMessage(
             " Do not subscribe to game acceleration yet, Please go to subscription service to subscribe"),
         "notEmpty": MessageLookupByLibrary.simpleMessage("Not Empty!"),
-        "notEnable": MessageLookupByLibrary.simpleMessage("Not Enable"),
+        "notEnable": MessageLookupByLibrary.simpleMessage("Disabled"),
         "notstart": MessageLookupByLibrary.simpleMessage("Not Started"),
         "oldPassowld": MessageLookupByLibrary.simpleMessage("Old Password"),
         "online": MessageLookupByLibrary.simpleMessage("Online Course"),
@@ -333,6 +333,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "traffic": MessageLookupByLibrary.simpleMessage("Traffic"),
         "trafficPackage": MessageLookupByLibrary.simpleMessage("Data Plan"),
         "type": MessageLookupByLibrary.simpleMessage("Type"),
+        "unbindError": MessageLookupByLibrary.simpleMessage("Unbind Error"),
         "unblockdevice": MessageLookupByLibrary.simpleMessage(
             "Confirm to unbind the current device"),
         "unlock": MessageLookupByLibrary.simpleMessage("S Unlock"),

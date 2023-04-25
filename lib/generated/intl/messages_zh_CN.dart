@@ -267,6 +267,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "traffic": MessageLookupByLibrary.simpleMessage("套餐"),
         "trafficPackage": MessageLookupByLibrary.simpleMessage("流量套餐"),
         "type": MessageLookupByLibrary.simpleMessage("类型"),
+        "unbindError": MessageLookupByLibrary.simpleMessage("解绑失败"),
         "unblockdevice": MessageLookupByLibrary.simpleMessage("确定解除对当前设备"),
         "unlock": MessageLookupByLibrary.simpleMessage("s后解锁"),
         "ununited": MessageLookupByLibrary.simpleMessage("未连接"),

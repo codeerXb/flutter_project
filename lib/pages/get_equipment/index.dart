@@ -69,25 +69,19 @@ class _MyWidgetState extends State<Equipment> {
         }
         return;
       } else {
-        // appList = d['data'];
-
-        // if (d['data'] != []) {
-        //   setState(() {
-        //     appList = d['data'].map((text) => (text)).toList();
-        //   });
-        //   getEquipmentData(d['data'].map((text) => (text)).toList());
-        // }
         setState(() {
           appList = d['data'];
         });
-        getEquipmentData(d['data']);
+        if (d['data'].isNotEmpty) {
+          getEquipmentData(d['data']);
+        }
       }
     }).catchError((onError) {
       debugPrint(onError.toString());
     });
   }
 
-  void getEquipmentData(list) {
+  void getEquipmentData(List<dynamic> list) {
     Map<String, dynamic> data = {
       'method': 'obj_get',
       'param':
@@ -102,25 +96,24 @@ class _MyWidgetState extends State<Equipment> {
         //         EquipmentData.fromJson(d).systemVersionSn) {
         setState(() {
           equipmentData = EquipmentData.fromJson(d);
-          if (list.isNotEmpty) {
-            // int left = 0;
-            // int right = list.length - 1;
-            // while (left <= right) {
-            //   int mid = (left + right) ~/ 2;
-            //   String dev = 'deviceSn';
-            //   String devvalue = equipmentData.systemVersionSn.toString();
-            //   var value = list[mid][dev];
-            //   if (value == devvalue) {
-            //     isExistCloudDevice = true;
-            //     return;
-            //   } else if (value.compareTo(devvalue) < 0) {
-            //     left = mid + 1;
-            //   } else {
-            //     right = mid - 1;
-            //   }
-            // }
-          }
         });
+        for (var app in list) {
+          String deviceSnKey = 'deviceSn';
+          String systemVersionSnValue =
+              equipmentData.systemVersionSn.toString();
+          var deviceSnValue = app[deviceSnKey];
+          printInfo(
+              info:
+                  'isExistCloudDevice===$isExistCloudDevice$deviceSnValue$systemVersionSnValue');
+          if (deviceSnValue == systemVersionSnValue) {
+            setState(() {
+              isExistCloudDevice = true;
+            });
+            return;
+          } else {
+            continue;
+          }
+        }
         // }
       } on FormatException catch (e) {
         setState(() {

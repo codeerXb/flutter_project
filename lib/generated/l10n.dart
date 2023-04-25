@@ -320,6 +320,16 @@ class S {
     );
   }
 
+  /// `Unbind Error`
+  String get unbindError {
+    return Intl.message(
+      'Unbind Error',
+      name: 'unbindError',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `WLAN Setting`
   String get wlanSet {
     return Intl.message(
@@ -710,10 +720,10 @@ class S {
     );
   }
 
-  /// `Not Enable`
+  /// `Disabled`
   String get notEnable {
     return Intl.message(
-      'Not Enable',
+      'Disabled',
       name: 'notEnable',
       desc: '',
       args: [],

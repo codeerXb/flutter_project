@@ -36,17 +36,11 @@ class _MyWidgetState extends State<Equipment> {
       }
       return;
     });
-    sharedGetData("user_token", String).then((data) {
-      loginController.setUserToken(data);
-    });
     loginController.setLoading(true);
   }
 
   //  查询绑定设备 App
   void getqueryingBoundDevices() {
-    sharedGetData("user_token", String).then((data) {
-      loginController.setUserToken(data);
-    });
     App.get('/platform/appCustomer/queryCustomerCpe').then((res) {
       if (res == null || res.toString().isEmpty) {
         throw Exception('Response is empty.');

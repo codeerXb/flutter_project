@@ -263,13 +263,11 @@ class _UserLoginState extends State<UserLogin> {
                                 ToastUtils.error(d['message']);
                                 return;
                               } else {
-                                loginController
-                                    .setUserToken(d['data']['token']);
                                 sharedGetData(
                                         loginController.isSn.value.toString(),
                                         String)
                                     .then((value) {
-                                  print('云平台登录，设备密码:$value');
+                                  debugPrint('云平台登录，设备密码:$value');
                                   if (value != null) {
                                     Get.offAllNamed("/home");
                                     toolbarController.setPageIndex(0);

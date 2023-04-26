@@ -40,20 +40,22 @@ class HttpAppInterceptors extends InterceptorsWrapper {
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    debugPrint(
-        "responseData = ${response.data} type = ${response.data.runtimeType} code = ${response.data["code"]}");
-    // 登录过期处理
-    if (response.data["code"] == 900) {
-      ToastUtils.error(S.current.tokenExpired);
-      Get.offNamed("/user_login");
-      sharedDeleteData('user_phone');
-      sharedDeleteData('user_token');
-      debugPrint('清除用户信息');
-    }
     debugPrint("\n================== 云平台响应数据==========================");
     debugPrint("code = ${response.statusCode}");
     debugPrint("data = ${response.data}");
 
+    Map<String, dynamic> responseData = json.decode(response.data);
+    if (responseData.containsKey("code")) {
+      int code = responseData["code"];
+      if (code == 900) {
+        // 处理登录过期的情况
+        ToastUtils.error(S.current.tokenExpired);
+        Get.offNamed("/user_login");
+        sharedDeleteData('user_phone');
+        sharedDeleteData('user_token');
+        debugPrint('清除用户信息');
+      }
+    }
     return super.onResponse(response, handler);
   }
 

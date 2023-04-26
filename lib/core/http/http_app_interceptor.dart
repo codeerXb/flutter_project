@@ -12,23 +12,6 @@ import 'package:get/get_core/src/get_main.dart';
 import '../../generated/l10n.dart';
 import '../utils/toast.dart';
 
-// 创建一个code的model
-class CodeModel {
-  int? code;
-
-  CodeModel({this.code});
-
-  CodeModel.fromJson(Map<String, dynamic> json) {
-    code = json['code'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['code'] = code;
-    return data;
-  }
-}
-
 /// 拦截器
 class HttpAppInterceptors extends InterceptorsWrapper {
   final LoginController loginController = GetX.Get.put(LoginController());
@@ -57,8 +40,10 @@ class HttpAppInterceptors extends InterceptorsWrapper {
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
+    debugPrint(
+        "responseData = ${response.data} type = ${response.data.runtimeType} code = ${response.data["code"]}");
     // 登录过期处理
-    if (CodeModel.fromJson(jsonDecode(response.data.toString())).code == 900) {
+    if (response.data["code"] == 900) {
       ToastUtils.error(S.current.tokenExpired);
       Get.offNamed("/user_login");
       sharedDeleteData('user_phone');

@@ -96,7 +96,7 @@ class _NetStatusState extends State<NetStatus> {
         }
       ];
   String sn = '';
-  String dowUnit = 'Kbps';
+  String downUnit = 'Kbps';
   String upUnit = 'Kbps';
 
   Timer? timer;
@@ -259,14 +259,15 @@ class _NetStatusState extends State<NetStatus> {
         if (downKb >= 1000 * 1000) {
           // gb/s
           downKb = double.parse((downKb / 1000 / 1000).toStringAsFixed(2));
-          dowUnit = 'Gbps';
+          downUnit = 'Gbps';
         } else if (downKb >= 1000) {
           // mb/s
           downKb = double.parse((downKb / 1000).toStringAsFixed(2));
-          dowUnit = 'Mbps';
+          downUnit = 'Mbps';
         }
         downKb = double.parse(downKb.toStringAsFixed(2));
-        dowUnit = 'Kbps';
+        downUnit = 'Kbps';
+        printInfo(info: 'time:${DateTime.now()}--down:$downKb$downUnit');
 
         upKb = (_upRate * 8) / 1000;
         if (upKb >= 1000 * 1000) {
@@ -360,14 +361,14 @@ class _NetStatusState extends State<NetStatus> {
           if (downKb >= 1000 * 1000) {
             // gb/s
             downKb = double.parse((downKb / 1000 / 1000).toStringAsFixed(2));
-            dowUnit = 'Gbps';
+            downUnit = 'Gbps';
           } else if (downKb >= 1000) {
             // mb/s
             downKb = double.parse((downKb / 1000).toStringAsFixed(2));
-            dowUnit = 'Mbps';
+            downUnit = 'Mbps';
           }
           downKb = double.parse(downKb.toStringAsFixed(2));
-          dowUnit = 'Kbps';
+          downUnit = 'Kbps';
 
           upKb = (_upRate * 8) / 1000;
           if (upKb >= 1000 * 1000) {
@@ -717,7 +718,7 @@ class _NetStatusState extends State<NetStatus> {
                             child: Column(
                               children: [
                                 Text(
-                                  '$downKb$dowUnit',
+                                  '$downKb$downUnit',
                                   style: TextStyle(
                                       fontSize: 30.sp,
                                       color: const Color(0xff051220)),

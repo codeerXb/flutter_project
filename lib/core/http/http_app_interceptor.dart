@@ -1,16 +1,13 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
+import 'package:flutter_template/core/utils/toast.dart';
+import 'package:flutter_template/generated/l10n.dart';
 
 import 'package:flutter_template/pages/login/login_controller.dart';
 // ignore: library_prefixes
 import 'package:get/get.dart' as GetX;
 import 'package:get/get_core/src/get_main.dart';
-
-import '../../generated/l10n.dart';
-import '../utils/toast.dart';
 
 /// 拦截器
 class HttpAppInterceptors extends InterceptorsWrapper {

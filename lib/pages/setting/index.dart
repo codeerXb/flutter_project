@@ -282,9 +282,12 @@ class _SettingState extends State<Setting> {
                               toolbarController.setPageIndex(0);
                               return;
                             } else {
-                              ToastUtils.error(d['message']);
+                              ToastUtils.error(S.current.unbindError);
                             }
                           }).catchError((err) {
+                            printError(
+                                info:
+                                    '${S.current.contimeout}${err.toString()}');
                             ToastUtils.error(S.current.contimeout);
                           });
                         },

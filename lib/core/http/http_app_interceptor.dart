@@ -12,6 +12,23 @@ import 'package:get/get_core/src/get_main.dart';
 import '../../generated/l10n.dart';
 import '../utils/toast.dart';
 
+// 创建一个code的model
+class codeModel {
+  int? code;
+
+  codeModel({this.code});
+
+  codeModel.fromJson(Map<String, dynamic> json) {
+    code = json['code'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['code'] = code;
+    return data;
+  }
+}
+
 /// 拦截器
 class HttpAppInterceptors extends InterceptorsWrapper {
   final LoginController loginController = GetX.Get.put(LoginController());
@@ -44,7 +61,7 @@ class HttpAppInterceptors extends InterceptorsWrapper {
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     // 登录过期处理
-    if (jsonDecode(jsonEncode(response.data))["code"] == 900) {
+    if (codeModel.fromJson(jsonDecode(response.data.toString())).code == 900) {
       ToastUtils.error(S.current.tokenExpired);
       Get.offNamed("/user_login");
       sharedDeleteData('user_phone');
@@ -54,8 +71,6 @@ class HttpAppInterceptors extends InterceptorsWrapper {
     debugPrint("\n================== 云平台响应数据==========================");
     debugPrint("code = ${response.statusCode}");
     debugPrint("data = ${response.data}");
-    debugPrint(
-        "data_code = ${json.decode(json.encode(response.data))},type = ${json.decode(json.encode(response.data))['code'].runtimeType}");
 
     return super.onResponse(response, handler);
   }

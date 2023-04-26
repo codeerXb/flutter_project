@@ -85,7 +85,7 @@ class _UserCardState extends State<UserCard> {
                   Get.offNamed("/user_login");
                   sharedDeleteData('user_phone');
                   sharedDeleteData('user_token');
-                  debugPrint('清楚用户信息');
+                  debugPrint('清除用户信息');
                 },
                 background: _userPhone != 'null'
                     ? const Color.fromARGB(255, 255, 0, 0)

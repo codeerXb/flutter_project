@@ -13,7 +13,6 @@ import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:flutter_template/pages/net_status/model/net_connect_status.dart';
 import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
 import 'package:flutter_template/pages/topo/model/equipment_datas.dart';
-import 'package:flutter_template/pages/topo/topo_cloud.dart';
 import 'package:flutter_template/pages/topo/topo_item.dart';
 import 'package:get/get.dart';
 
@@ -31,9 +30,9 @@ class _TopoState extends State<Topo> {
   EquipmentDatas topoData = EquipmentDatas(onlineDeviceTable: [], max: null);
   final LoginController loginController = Get.put(LoginController());
   String sn = '';
-  Map<dynamic, dynamic> onlineCount = {};
+  Map<String, dynamic> onlineCount = {};
   List<String> deviceNames = [];
-
+  // Map<String, dynamic> deviceList = {};
   @override
   void initState() {
     super.initState();
@@ -135,48 +134,28 @@ class _TopoState extends State<Topo> {
         _wifiStatus4 = wiFiStatus["1"]["Enable"]["_value"];
         _wifiStatus5 = wiFiStatus["2"]["Enable"]["_value"];
         // Topo 列表
-        printInfo(
-            info:
-                'onlineCount${jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Overview"]}');
-        printInfo(
-            info:
-                'onlineCount${jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Overview"]}');
-        onlineCount = json.decode(
-            jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Overview"]);
+        onlineCount = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
+            ["Overview"]["DeviceList"]!;
+        List<OnlineDeviceTable>? onlineDeviceTable = [];
+        int id = 0;
+        onlineCount.forEach((key, value) {
+          if (value is Map<String, dynamic>) {
+            OnlineDeviceTable device = OnlineDeviceTable.fromJson({
+              'id': id,
+              'LeaseTime': int.parse(value['LeaseTime']['_value']),
+              'IP': value['IPAddress']['_value'],
+              'MAC': value['MACAddress']['_value'],
+              'hostName': value['DeviceName']['_value'],
+              'Type': value['Type']['_value'],
+            });
+            onlineDeviceTable.add(device);
+            id++;
+          }
+        });
+        topoData =
+            EquipmentDatas(onlineDeviceTable: onlineDeviceTable, max: 255);
 
-        printInfo(info: 'onlineCount$onlineCount');
-
-        // 将 onlineCount 解析为 Map 类型的对象
-// Map<String, dynamic> onlineCount = json.decode('{"onlineCount": {"1": {"DeviceName": {"_value": "android-fa3dc490b530a29"}, "IPAddress": {"_value": "192.168.1.135"}, "LeaseTime": {"_value": "39982"}, "MACAddress": {"_value": "00:11:11:11:11:81"}, "Type": {"_value": "WI-FI.DHCP"}}, "2": {"DeviceName": {"_value": "DESKTOP-3JJGI54"}, "IPAddress": {"_value": "192.168.1.184"}, "LeaseTime": {"_value": "37119"}, "MACAddress": {"_value": "1C:69:7A:CE:B5:7C"}, "Type": {"_value": "LAN.DHCP"}}}}');
-
-        // // 创建 OnlineDeviceTable 列表
-        // List<Map<String, dynamic>> onlineDeviceTable = [];
-        // onlineCount['onlineCount'].forEach((key, value) {
-        //   Map<String, dynamic> device = {
-        //     'id': int.parse(key) - 1,
-        //     'LeaseTime': int.parse(value['LeaseTime']['_value']),
-        //     'IP': value['IPAddress']['_value'],
-        //     'MAC': value['MACAddress']['_value'],
-        //     'HostName': value['DeviceName']['_value'],
-        //     'Type': value['Type']['_value'],
-        //   };
-        //   onlineDeviceTable.add(device);
-        // });
-
-        // // 创建 D 对象
-        // Map<String, dynamic> D = {
-        //   'OnlineDeviceTable': onlineDeviceTable,
-        //   'max': 255,
-        // };
-        // printInfo(info: 'd$D');
-
-        // List<String> onlineCountName = [];
-        // onlineCount.forEach((key, value) {
-        //   if (value is Map && value.containsKey('DeviceName')) {
-        //     onlineCountName.add(value['DeviceName']['_value']);
-        //   }
-        // });
-        // deviceNames = onlineCountName;
+        printInfo(info: "topoData$topoData");
       });
     } catch (e) {
       debugPrint('获取信息失败：${e.toString()}');
@@ -480,27 +459,7 @@ class _TopoState extends State<Topo> {
                         )),
                   ),
                 ),
-                if (onlineCount.isNotEmpty &&
-                    loginController.login.state == 'cloud' &&
-                    sn.isNotEmpty)
-                  GridView.count(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    crossAxisCount: 4,
-                    childAspectRatio: 1.0,
-                    children: deviceNames
-                        .map(
-                          (e) => TopoCloud(
-                            title: e,
-                            isNative: false,
-                            isShow: true,
-                            topoData: onlineCount,
-                          ),
-                        )
-                        .toList(),
-                  ),
-                if (topoData.onlineDeviceTable!.isNotEmpty &&
-                    loginController.login.state == 'local')
+                if (topoData.onlineDeviceTable!.isNotEmpty)
                   GridView.count(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
@@ -509,7 +468,7 @@ class _TopoState extends State<Topo> {
                     children: topoData.onlineDeviceTable!
                         .map(
                           (e) => TopoItem(
-                            title: e.hostName!,
+                            title: e.toString(),
                             isNative: false,
                             isShow: true,
                             topoData: e,
@@ -517,11 +476,7 @@ class _TopoState extends State<Topo> {
                         )
                         .toList(),
                   ),
-                if (onlineCount.isEmpty &&
-                        loginController.login.state == 'cloud' &&
-                        sn.isNotEmpty ||
-                    !topoData.onlineDeviceTable!.isNotEmpty &&
-                        loginController.login.state == 'local')
+                if (!topoData.onlineDeviceTable!.isNotEmpty)
                   Center(
                     child: Container(
                         margin: EdgeInsets.only(top: 100.sp),

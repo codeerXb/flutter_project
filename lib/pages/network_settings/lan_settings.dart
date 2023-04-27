@@ -83,21 +83,24 @@ class _LanSettingsState extends State<LanSettings> {
   @override
   void initState() {
     super.initState();
-    sharedGetData('deviceSn', String).then(((res) {
-      printInfo(info: 'deviceSn$res');
-      setState(() {
-        sn = res.toString();
-        //状态为local 请求本地  状态为cloud  请求云端
-        printInfo(info: 'state--${loginController.login.state}');
-        if (mounted) {
-          if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
-            getTRLanData();
-          }
-          if (loginController.login.state == 'local') {
-            getLanSettingData();
-          }
+    sharedGetData('deviceSn', String).then(((res) async {
+      sn = res.toString();
+      if (mounted) {
+        setState(() {
+          _isLoading = true;
+        });
+        if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
+          // 云端请求赋值
+          await getTRLanData();
         }
-      });
+        if (loginController.login.state == 'local') {
+          // 本地请求赋值
+          getLanSettingData();
+        }
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }));
 
     lanTimeController.addListener(() {
@@ -397,17 +400,76 @@ class _LanSettingsState extends State<LanSettings> {
     Get.offAllNamed("/get_equipment");
   }
 
+  bool _isLoading = false;
+  Future<void> _saveData() async {
+    setState(() {
+      _isLoading = true;
+    });
+    closeKeyboard(context);
+    if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
+      // 云端请求赋值
+      try {
+        await setTRLanData();
+      } catch (e) {
+        debugPrint('云端请求出错：${e.toString()}');
+        Get.back();
+      }
+    }
+    if (loginController.login.state == 'local') {
+      // 本地请求赋值
+      if (isCheckVal == '1') {
+        getLanSettingSubmit();
+      } else {
+        getLanSetting();
+      }
+    }
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppbar(context: context, title: S.of(context).lanSettings),
+      appBar: customAppbar(
+          context: context,
+          title: S.of(context).lanSettings,
+          actions: <Widget>[
+            Container(
+              margin: EdgeInsets.all(20.w),
+              child: OutlinedButton(
+                onPressed: _isLoading ? null : _saveData,
+                child: Row(
+                  children: [
+                    if (_isLoading)
+                      const SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                        ),
+                      ),
+                    if (!_isLoading)
+                      Text(
+                        S.current.save,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: _isLoading ? Colors.grey : null,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ]),
       body: SingleChildScrollView(
         child: InkWell(
           onTap: () => closeKeyboard(context),
           child: Container(
             decoration:
                 const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
-            // height: 1400.w,
+            height: 1400.w,
             child: Column(
               children: [
                 Row(children: [
@@ -601,37 +663,6 @@ class _LanSettingsState extends State<LanSettings> {
                     ),
                   ]),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(top: 10.w),
-                  child: Center(
-                      child: SizedBox(
-                    height: 70.sp,
-                    width: 710.sp,
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(
-                              const Color.fromARGB(255, 48, 118, 250))),
-                      onPressed: () {
-                        if (mounted) {
-                          if (loginController.login.state == 'cloud' &&
-                              sn.isNotEmpty) {
-                            setTRLanData();
-                          } else if (loginController.login.state == 'local') {
-                            if (isCheckVal == '1') {
-                              getLanSettingSubmit();
-                            } else {
-                              getLanSetting();
-                            }
-                          }
-                        }
-                      },
-                      child: Text(
-                        S.of(context).save,
-                        style: TextStyle(fontSize: 36.sp),
-                      ),
-                    ),
-                  )),
-                )
               ],
             ),
           ),

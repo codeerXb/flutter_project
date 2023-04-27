@@ -141,6 +141,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "cancel": MessageLookupByLibrary.simpleMessage("取消"),
         "check": MessageLookupByLibrary.simpleMessage("请检查网络是否连接"),
         "checkNet": MessageLookupByLibrary.simpleMessage("退出登录失败，请检查网络！"),
+        "clear": MessageLookupByLibrary.simpleMessage("清除"),
         "clearCache": MessageLookupByLibrary.simpleMessage("清除缓存"),
         "clickFactory":
             MessageLookupByLibrary.simpleMessage("点击 恢复出厂 按钮进行恢复出厂操作"),

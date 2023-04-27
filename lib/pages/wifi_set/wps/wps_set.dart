@@ -50,26 +50,61 @@ class _WpsSetState extends State<WpsSet> {
   void initState() {
     super.initState();
     sharedGetData('deviceSn', String).then(((res) {
-      printInfo(info: 'deviceSn$res');
-      setState(() {
-        sn = res.toString();
-        //状态为local 请求本地  状态为cloud  请求云端
-        printInfo(info: 'state--${loginController.login.state}');
-        if (mounted) {
-          if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
-            getTRWpsData();
-          }
-          if (loginController.login.state == 'local') {
-            getData();
-          }
+      sn = res.toString();
+      if (mounted) {
+        setState(() {
+          _isLoading = true;
+        });
+        if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
+          getTRWpsData();
         }
-      });
+        if (loginController.login.state == 'local') {
+          getData();
+          handleSave();
+        }
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }));
+  }
+
+  // 提交
+  bool _isLoading = false;
+  Future<void> _saveData() async {
+    setState(() {
+      _isLoading = true;
+    });
+    closeKeyboard(context);
+    if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
+      if (showVal == '2.4GHz') {
+        await setTRWpsData();
+      } else {
+        await setTRWpsData2();
+      }
+    }
+    if (loginController.login.state == 'local') {
+      handleSave();
+      //选择PBC
+      if (isCheck && modeShowVal == 'PBC') {
+        savePbc('{"${paramKey}Mode": "$modeShowVal"}');
+      }
+      //选择Client PIN
+      if (isCheck && modeShowVal == 'Client PIN') {
+        showVal == '2.4GHz'
+            ? savePbc(
+                '{ "${paramKey}Mode": "client",  "wifiWpsClientPin": "${pinVal.text}"}')
+            : savePbc(
+                '{ "${paramKey}Mode": "client",  "wifi5gWpsClientPin": "${pinVal.text}"}');
+      }
+    }
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   // 获取 云端   2.4G
   getTRWpsData() async {
-    printInfo(info: 'sn在这里有值吗-------$sn');
     var parameterNames = [
       "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.1.WPS"
     ];
@@ -92,7 +127,6 @@ class _WpsSetState extends State<WpsSet> {
 
   // 获取 云端  5G
   getTRWpsData2() async {
-    printInfo(info: 'sn在这里有值吗-------$sn');
     var parameterNames = [
       "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.2.WPS"
     ];
@@ -242,7 +276,35 @@ class _WpsSetState extends State<WpsSet> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: customAppbar(context: context, title: 'WPS'),
+        appBar: customAppbar(context: context, title: 'WPS', actions: <Widget>[
+          Container(
+            margin: EdgeInsets.all(20.w),
+            child: OutlinedButton(
+              onPressed: _isLoading ? null : _saveData,
+              child: Row(
+                children: [
+                  if (_isLoading)
+                    const SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                      ),
+                    ),
+                  if (!_isLoading)
+                    Text(
+                      S.current.save,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: _isLoading ? Colors.grey : null,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ]),
         body: GestureDetector(
           onTap: () => closeKeyboard(context),
           behavior: HitTestBehavior.opaque,
@@ -425,51 +487,51 @@ class _WpsSetState extends State<WpsSet> {
                       ),
                     ],
                   )),
-                  //提交
-                  Padding(
-                    padding: EdgeInsets.only(top: 10.w),
-                    child: Center(
-                        child: SizedBox(
-                      height: 70.sp,
-                      width: 680.sp,
-                      child: ElevatedButton(
-                        style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
-                                const Color.fromARGB(255, 48, 118, 250))),
-                        onPressed: () {
-                          printInfo(info: 'showVal$showVal');
-                          if (mounted) {
-                            if (loginController.login.state == 'cloud' &&
-                                sn.isNotEmpty) {
-                              if (showVal == '2.4G') {
-                                setTRWpsData();
-                              } else {
-                                setTRWpsData2();
-                              }
-                            } else if (loginController.login.state == 'local') {
-                              handleSave();
-                              //选择PBC
-                              if (isCheck && modeShowVal == 'PBC') {
-                                savePbc('{"${paramKey}Mode": "$modeShowVal"}');
-                              }
-                              //选择Client PIN
-                              if (isCheck && modeShowVal == 'Client PIN') {
-                                showVal == '2.4GHz'
-                                    ? savePbc(
-                                        '{ "${paramKey}Mode": "client",  "wifiWpsClientPin": "${pinVal.text}"}')
-                                    : savePbc(
-                                        '{ "${paramKey}Mode": "client",  "wifi5gWpsClientPin": "${pinVal.text}"}');
-                              }
-                            }
-                          }
-                        },
-                        child: Text(
-                          S.of(context).save,
-                          style: TextStyle(fontSize: 36.sp),
-                        ),
-                      ),
-                    )),
-                  )
+                  // //提交
+                  // Padding(
+                  //   padding: EdgeInsets.only(top: 10.w),
+                  //   child: Center(
+                  //       child: SizedBox(
+                  //     height: 70.sp,
+                  //     width: 680.sp,
+                  //     child: ElevatedButton(
+                  //       style: ButtonStyle(
+                  //           backgroundColor: MaterialStateProperty.all(
+                  //               const Color.fromARGB(255, 48, 118, 250))),
+                  //       onPressed: () {
+                  //         printInfo(info: 'showVal$showVal');
+                  // if (mounted) {
+                  //   if (loginController.login.state == 'cloud' &&
+                  //       sn.isNotEmpty) {
+                  //     if (showVal == '2.4G') {
+                  //       setTRWpsData();
+                  //     } else {
+                  //       setTRWpsData2();
+                  //     }
+                  //   } else if (loginController.login.state == 'local') {
+                  //     handleSave();
+                  //     //选择PBC
+                  //     if (isCheck && modeShowVal == 'PBC') {
+                  //       savePbc('{"${paramKey}Mode": "$modeShowVal"}');
+                  //     }
+                  //     //选择Client PIN
+                  //     if (isCheck && modeShowVal == 'Client PIN') {
+                  //       showVal == '2.4GHz'
+                  //           ? savePbc(
+                  //               '{ "${paramKey}Mode": "client",  "wifiWpsClientPin": "${pinVal.text}"}')
+                  //           : savePbc(
+                  //               '{ "${paramKey}Mode": "client",  "wifi5gWpsClientPin": "${pinVal.text}"}');
+                  //     }
+                  //   }
+                  // }
+                  // },
+                  //       child: Text(
+                  //         S.of(context).save,
+                  //         style: TextStyle(fontSize: 36.sp),
+                  //       ),
+                  //     ),
+                  //   )),
+                  // )
                 ],
               ),
             ),

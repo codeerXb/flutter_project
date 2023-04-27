@@ -133,6 +133,7 @@ class _TopoState extends State<Topo> {
             ["Overview"]["WiFiStatus"];
         _wifiStatus4 = wiFiStatus["1"]["Enable"]["_value"];
         _wifiStatus5 = wiFiStatus["2"]["Enable"]["_value"];
+        _wanStatus = '1';
         // Topo 列表
         onlineCount = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
             ["Overview"]["DeviceList"]!;

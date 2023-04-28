@@ -191,7 +191,61 @@ class _NetSetState extends State<NetSet> {
       _isLoading = true;
     });
     closeKeyboard(context);
-
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+              title: Text(S.current.hint),
+              content: Text(S.of(context).isGoOn),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(S.current.cancel),
+                  onPressed: () {
+                    //取消
+                    Navigator.pop(context, 'Cancle');
+                  },
+                ),
+                TextButton(
+                    child: Text(S.current.confirm),
+                    onPressed: () {
+                      //确定
+                      Navigator.pop(context, "Ok");
+                      Navigator.push(context, DialogRouter(LoadingDialog()));
+                      //动态ip
+                      if (showVal == S.current.DynamicIP) {
+                        //isCheck选中不携带 优先级
+                        //不携带 优先级 {"ethernetConnectMode":"dhcp","ethernetMtu":"1500","ethernetConnectOnly":"1","ethernetDetectServer":"0"}
+                        // 携带 优先级 {"ethernetConnectMode":"dhcp","ethernetMtu":"1500","ethernetConnectOnly":"0","ethernetConnectPriority":"0","ethernetDetectServer":"1"}
+                        isCheck
+                            ? handleSave(
+                                '{"ethernetConnectMode":"dhcp","ethernetMtu":"${mtu.text}","ethernetConnectOnly":"1","ethernetDetectServer":"${server.text}"}')
+                            : handleSave(
+                                '{"ethernetConnectMode":"dhcp","ethernetMtu":"${mtu.text}","ethernetConnectOnly":"0","ethernetConnectPriority":"${priorityVal == S.current.Ethernet ? '0' : '1'}","ethernetDetectServer":"${server.text}"}');
+                      }
+                      //静态ip
+                      else if (showVal == S.current.staticIP) {
+                        //isCheck选中不携带 优先级
+                        //不携带 优先级 {"ethernetConnectMode":"static","ethernetIp":"172.16.20.224","ethernetMask":"255.255.255.0","ethernetDefaultGateway":"172.16.20.253","ethernetPrimaryDns":"114.114.114.114","ethernetSecondaryDns":"8.8.8.8","ethernetMtu":"1500","ethernetConnectOnly":"1","ethernetDetectServer":"0"}
+                        // 携带 优先级{"ethernetConnectMode":"static","ethernetIp":"172.16.20.224","ethernetMask":"255.255.255.0","ethernetDefaultGateway":"172.16.20.253","ethernetPrimaryDns":"114.114.114.114","ethernetSecondaryDns":"8.8.8.8","ethernetMtu":"1500","ethernetConnectOnly":"0","ethernetConnectPriority":"1","ethernetDetectServer":"0"}
+                        isCheck
+                            ? handleSave(
+                                '{"ethernetConnectMode":"static","ethernetIp":"${fDNSVal1.text}.${fDNSVal2.text}.${fDNSVal3.text}.${fDNSVal4.text}","ethernetMask":"${zwVal1.text}.${zwVal2.text}.${zwVal3.text}.${zwVal4.text}","ethernetDefaultGateway":"${ipVal1.text}.${ipVal2.text}.${ipVal3.text}.${ipVal4.text}","ethernetPrimaryDns":"${mrwgVal1.text}.${mrwgVal2.text}.${mrwgVal3.text}.${mrwgVal4.text}","ethernetSecondaryDns":"${zdnsVal1.text}.${zdnsVal2.text}.${zdnsVal3.text}.${zdnsVal4.text}","ethernetMtu":"${mtu.text}","ethernetConnectOnly":"1","ethernetDetectServer":"${server.text}"}')
+                            : handleSave(
+                                '{"ethernetConnectMode":"static","ethernetIp":"${fDNSVal1.text}.${fDNSVal2.text}.${fDNSVal3.text}.${fDNSVal4.text}","ethernetMask":"${zwVal1.text}.${zwVal2.text}.${zwVal3.text}.${zwVal4.text}","ethernetDefaultGateway":"${ipVal1.text}.${ipVal2.text}.${ipVal3.text}.${ipVal4.text}","ethernetPrimaryDns":"${mrwgVal1.text}.${mrwgVal2.text}.${mrwgVal3.text}.${mrwgVal4.text}","ethernetSecondaryDns":"${zdnsVal1.text}.${zdnsVal2.text}.${zdnsVal3.text}.${zdnsVal4.text}","ethernetMtu":"${mtu.text}","ethernetConnectOnly":"0","ethernetConnectPriority":"${priorityVal == S.current.Ethernet ? '0' : '1'}","ethernetDetectServer":"${server.text}"}');
+                      }
+                      // 仅LAN
+                      else {
+                        debugPrint(S.current.LANOnly);
+                        //{"ethernetConnectMode":"lanonly","ethernetConnectOnly":"0","ethernetConnectPriority":"1"}
+                        handleSave({
+                          "ethernetConnectMode": "lanonly",
+                          "ethernetConnectOnly":
+                              priorityVal == S.current.Ethernet ? '0' : '1'
+                        });
+                      }
+                    })
+              ]);
+        });
     setState(() {
       _isLoading = false;
     });
@@ -567,89 +621,6 @@ class _NetSetState extends State<NetSet> {
                       ),
                     ],
                   )),
-                  //提交
-                  Padding(
-                    padding: EdgeInsets.only(top: 10.w),
-                    child: Center(
-                        child: SizedBox(
-                      height: 70.sp,
-                      width: 680.sp,
-                      child: ElevatedButton(
-                        style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
-                                const Color.fromARGB(255, 48, 118, 250))),
-                        onPressed: () {
-                          //对话框
-                          showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                    title: Text(S.current.hint),
-                                    content: Text(S.of(context).isGoOn),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        child: Text(S.current.cancel),
-                                        onPressed: () {
-                                          //取消
-                                          Navigator.pop(context, 'Cancle');
-                                        },
-                                      ),
-                                      TextButton(
-                                          child: Text(S.current.confirm),
-                                          onPressed: () {
-                                            //确定
-                                            Navigator.pop(context, "Ok");
-                                            Navigator.push(context,
-                                                DialogRouter(LoadingDialog()));
-                                            //动态ip
-                                            if (showVal ==
-                                                S.current.DynamicIP) {
-                                              //isCheck选中不携带 优先级
-                                              //不携带 优先级 {"ethernetConnectMode":"dhcp","ethernetMtu":"1500","ethernetConnectOnly":"1","ethernetDetectServer":"0"}
-                                              // 携带 优先级 {"ethernetConnectMode":"dhcp","ethernetMtu":"1500","ethernetConnectOnly":"0","ethernetConnectPriority":"0","ethernetDetectServer":"1"}
-                                              isCheck
-                                                  ? handleSave(
-                                                      '{"ethernetConnectMode":"dhcp","ethernetMtu":"${mtu.text}","ethernetConnectOnly":"1","ethernetDetectServer":"${server.text}"}')
-                                                  : handleSave(
-                                                      '{"ethernetConnectMode":"dhcp","ethernetMtu":"${mtu.text}","ethernetConnectOnly":"0","ethernetConnectPriority":"${priorityVal == S.current.Ethernet ? '0' : '1'}","ethernetDetectServer":"${server.text}"}');
-                                            }
-                                            //静态ip
-                                            else if (showVal ==
-                                                S.current.staticIP) {
-                                              //isCheck选中不携带 优先级
-                                              //不携带 优先级 {"ethernetConnectMode":"static","ethernetIp":"172.16.20.224","ethernetMask":"255.255.255.0","ethernetDefaultGateway":"172.16.20.253","ethernetPrimaryDns":"114.114.114.114","ethernetSecondaryDns":"8.8.8.8","ethernetMtu":"1500","ethernetConnectOnly":"1","ethernetDetectServer":"0"}
-                                              // 携带 优先级{"ethernetConnectMode":"static","ethernetIp":"172.16.20.224","ethernetMask":"255.255.255.0","ethernetDefaultGateway":"172.16.20.253","ethernetPrimaryDns":"114.114.114.114","ethernetSecondaryDns":"8.8.8.8","ethernetMtu":"1500","ethernetConnectOnly":"0","ethernetConnectPriority":"1","ethernetDetectServer":"0"}
-                                              isCheck
-                                                  ? handleSave(
-                                                      '{"ethernetConnectMode":"static","ethernetIp":"${fDNSVal1.text}.${fDNSVal2.text}.${fDNSVal3.text}.${fDNSVal4.text}","ethernetMask":"${zwVal1.text}.${zwVal2.text}.${zwVal3.text}.${zwVal4.text}","ethernetDefaultGateway":"${ipVal1.text}.${ipVal2.text}.${ipVal3.text}.${ipVal4.text}","ethernetPrimaryDns":"${mrwgVal1.text}.${mrwgVal2.text}.${mrwgVal3.text}.${mrwgVal4.text}","ethernetSecondaryDns":"${zdnsVal1.text}.${zdnsVal2.text}.${zdnsVal3.text}.${zdnsVal4.text}","ethernetMtu":"${mtu.text}","ethernetConnectOnly":"1","ethernetDetectServer":"${server.text}"}')
-                                                  : handleSave(
-                                                      '{"ethernetConnectMode":"static","ethernetIp":"${fDNSVal1.text}.${fDNSVal2.text}.${fDNSVal3.text}.${fDNSVal4.text}","ethernetMask":"${zwVal1.text}.${zwVal2.text}.${zwVal3.text}.${zwVal4.text}","ethernetDefaultGateway":"${ipVal1.text}.${ipVal2.text}.${ipVal3.text}.${ipVal4.text}","ethernetPrimaryDns":"${mrwgVal1.text}.${mrwgVal2.text}.${mrwgVal3.text}.${mrwgVal4.text}","ethernetSecondaryDns":"${zdnsVal1.text}.${zdnsVal2.text}.${zdnsVal3.text}.${zdnsVal4.text}","ethernetMtu":"${mtu.text}","ethernetConnectOnly":"0","ethernetConnectPriority":"${priorityVal == S.current.Ethernet ? '0' : '1'}","ethernetDetectServer":"${server.text}"}');
-                                            }
-                                            // 仅LAN
-                                            else {
-                                              debugPrint(S.current.LANOnly);
-                                              //{"ethernetConnectMode":"lanonly","ethernetConnectOnly":"0","ethernetConnectPriority":"1"}
-                                              handleSave({
-                                                "ethernetConnectMode":
-                                                    "lanonly",
-                                                "ethernetConnectOnly":
-                                                    priorityVal ==
-                                                            S.current.Ethernet
-                                                        ? '0'
-                                                        : '1'
-                                              });
-                                            }
-                                          })
-                                    ]);
-                              });
-                        },
-                        child: Text(
-                          S.of(context).save,
-                          style: TextStyle(fontSize: 36.sp),
-                        ),
-                      ),
-                    )),
-                  ),
                 ],
               ),
             ),

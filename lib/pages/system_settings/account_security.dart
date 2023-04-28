@@ -105,11 +105,17 @@ class _AccountSecurityState extends State<AccountSecurity> {
       ],
     ];
     var res = await Request().setACSNode(parameterNames, sn);
-    printInfo(info: '----$res');
     try {
       var jsonObj = jsonDecode(res);
       printInfo(info: '````$jsonObj');
-      setState(() {});
+      setState(() {
+        if (jsonObj["code"] == 200) {
+          ToastUtils.toast(S.current.success);
+          Get.back();
+        } else {
+          ToastUtils.toast(S.current.error);
+        }
+      });
     } catch (e) {
       debugPrint('获取信息失败：${e.toString()}');
     }
@@ -175,10 +181,66 @@ class _AccountSecurityState extends State<AccountSecurity> {
     Get.offAllNamed("/get_equipment");
   }
 
+  late bool _isLoading = false;
+  // 提交
+  Future<void> _saveData() async {
+    setState(() {
+      _isLoading = true;
+    });
+    closeKeyboard(context);
+    if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
+      // 云端请求赋值
+      try {
+        await setTRWanData();
+      } catch (e) {
+        debugPrint('云端请求出错：${e.toString()}');
+      }
+    }
+    if (loginController.login.state == 'local') {
+      // 本地请求赋值
+      getAccountSetting();
+    }
+    setState(() {
+      _isLoading = false;
+    });
+    // }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppbar(context: context, title: S.current.accountSecurity),
+      appBar: customAppbar(
+          context: context,
+          title: S.current.accountSecurity,
+          actions: <Widget>[
+            Container(
+              margin: EdgeInsets.all(20.w),
+              child: OutlinedButton(
+                onPressed: _isLoading ? null : _saveData,
+                child: Row(
+                  children: [
+                    if (_isLoading)
+                      const SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                        ),
+                      ),
+                    if (!_isLoading)
+                      Text(
+                        S.current.save,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: _isLoading ? Colors.grey : null,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ]),
       body: InkWell(
         onTap: () => closeKeyboard(context),
         child: SingleChildScrollView(
@@ -217,28 +279,28 @@ class _AccountSecurityState extends State<AccountSecurity> {
                     ),
 
                     /// 提交
-                    Padding(
-                        padding: EdgeInsets.only(top: 15.w),
-                        child: Center(
-                            child: SizedBox(
-                          height: 70.sp,
-                          width: 680.sp,
-                          child: ElevatedButton(
-                            style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all(
-                                    const Color.fromARGB(255, 48, 118, 250))),
-                            onPressed: () {
-                              if ((_formKey.currentState as FormState)
-                                  .validate()) {
-                                onSubmit();
-                              }
-                            },
-                            child: Text(
-                              S.of(context).save,
-                              style: TextStyle(fontSize: 36.sp),
-                            ),
-                          ),
-                        )))
+                    // Padding(
+                    //     padding: EdgeInsets.only(top: 15.w),
+                    //     child: Center(
+                    //         child: SizedBox(
+                    //       height: 70.sp,
+                    //       width: 680.sp,
+                    //       child: ElevatedButton(
+                    //         style: ButtonStyle(
+                    //             backgroundColor: MaterialStateProperty.all(
+                    //                 const Color.fromARGB(255, 48, 118, 250))),
+                    //         onPressed: () {
+                    //           if ((_formKey.currentState as FormState)
+                    //               .validate()) {
+                    //             onSubmit();
+                    //           }
+                    //         },
+                    //         child: Text(
+                    //           S.of(context).save,
+                    //           style: TextStyle(fontSize: 36.sp),
+                    //         ),
+                    //       ),
+                    //     )))
                   ],
                 ),
               )),

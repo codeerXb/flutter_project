@@ -254,7 +254,7 @@ class _MyWidgetState extends State<Equipment> {
                               //   } else {
                               loginController.setSn(
                                   equipmentData.systemVersionSn, '');
-                              loginController.setState('local');
+                              loginController.setState('cloud');
                               printInfo(
                                   info:
                                       'state--${loginController.login.state}');

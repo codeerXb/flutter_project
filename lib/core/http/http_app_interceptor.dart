@@ -42,18 +42,21 @@ class HttpAppInterceptors extends InterceptorsWrapper {
     debugPrint("\n================== 云平台响应数据==========================");
     debugPrint("code = ${response.statusCode}");
     debugPrint("data = ${response.data}");
-
-    Map<String, dynamic> responseData = json.decode(response.data);
-    if (responseData.containsKey("code")) {
-      int code = responseData["code"];
-      if (code == 900) {
-        // 处理登录过期的情况
-        ToastUtils.error(S.current.tokenExpired);
-        Get.offNamed("/user_login");
-        sharedDeleteData('user_phone');
-        sharedDeleteData('user_token');
-        debugPrint('清除用户信息');
+    try {
+      Map<String, dynamic> responseData = json.decode(response.data);
+      if (responseData.containsKey("code")) {
+        int code = responseData["code"];
+        if (code == 900) {
+          // 处理登录过期的情况
+          ToastUtils.error(S.current.tokenExpired);
+          Get.offNamed("/user_login");
+          sharedDeleteData('user_phone');
+          sharedDeleteData('user_token');
+          debugPrint('清除用户信息');
+        }
       }
+    } catch (e) {
+      printError(info: e.toString());
     }
     return super.onResponse(response, handler);
   }

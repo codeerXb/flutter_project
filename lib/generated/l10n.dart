@@ -50,6 +50,26 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `NetWork Error`
+  String get netError {
+    return Intl.message(
+      'NetWork Error',
+      name: 'netError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Retry`
+  String get retry {
+    return Intl.message(
+      'Retry',
+      name: 'retry',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Auto`
   String get autoLang {
     return Intl.message(

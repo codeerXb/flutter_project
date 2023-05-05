@@ -485,7 +485,7 @@ class _NetStatusState extends State<NetStatus> {
         image: DecorationImage(
             alignment: Alignment.topCenter,
             image: AssetImage(
-              'assets/images/picture_home.png',
+              'assets/images/picture_home_bg.png',
             ),
             fit: BoxFit.fitWidth),
       ),
@@ -505,6 +505,7 @@ class _NetStatusState extends State<NetStatus> {
               child: Row(
                 children: [
                   Text(name.toString()),
+                  Padding(padding: EdgeInsets.only(right: 20.w)),
                   FaIcon(
                     FontAwesomeIcons.chevronDown,
                     size: 30.w,
@@ -521,8 +522,7 @@ class _NetStatusState extends State<NetStatus> {
           behavior: HitTestBehavior.opaque,
           child: Container(
             padding: EdgeInsets.only(left: 30.w, right: 30.0.w),
-            decoration:
-                const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
+            decoration: const BoxDecoration(color: Color(0xFFF0F0F0)),
             height: 1000,
             child: Stack(
               children: [
@@ -537,16 +537,20 @@ class _NetStatusState extends State<NetStatus> {
                   padding: EdgeInsets.only(top: 20.w),
                   child: ListView(
                     children: [
+                      const Center(
+                          child: Text(
+                        'Mapping out your Wi-Fi Coverage',
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      )),
                       // //热力图
                       Container(
                         height: 600.w,
                         margin: EdgeInsets.only(bottom: 20.w),
                         decoration: BoxDecoration(
-                          color: Colors.white,
                           borderRadius: BorderRadius.circular(18.w),
                         ),
                         child: Image.asset(
-                          'assets/images/state.png',
+                          'assets/images/signalcover.jpg',
                         ),
                       ),
                       //网络环境

@@ -1,4 +1,6 @@
 {
+  "netError": "NetWork Error",
+  "retry": "Retry",
   "autoLang": "Auto",
   "tokenExpired": "Login has expired",
   "addDevice": "Add Device",

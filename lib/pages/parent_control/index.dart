@@ -391,16 +391,20 @@ class _ParentState extends State<Parent> {
 
 //头部标题
 class TopCard extends StatelessWidget {
+  const TopCard({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return const Card(
+      clipBehavior: Clip.hardEdge,
       elevation: 5, //设置卡片阴影的深度
-      shape: const RoundedRectangleBorder(
+      shape: RoundedRectangleBorder(
         //设置卡片圆角
-        borderRadius: BorderRadius.all(Radius.circular(10)),
+        borderRadius: BorderRadius.all(Radius.circular(20)),
       ),
-      child: const Image(
-        image: AssetImage('assets/images/title.png'),
+      child: Image(
+        image: AssetImage('assets/images/title.jpg'),
+        fit: BoxFit.fill,
       ),
       // Column(
       //   children: [
@@ -650,8 +654,8 @@ class SizedBoxs extends StatelessWidget {
                       children: [
                         ConstrainedBox(
                             constraints: BoxConstraints(maxWidth: 150.w),
-                            child:
-                                const FittedBox(child: Text('Website Blocklist'))),
+                            child: const FittedBox(
+                                child: Text('Website Blocklist'))),
                         Text(
                           '2 allowed',
                           style:

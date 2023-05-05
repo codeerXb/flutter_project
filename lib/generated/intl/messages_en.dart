@@ -262,6 +262,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "mustSuccess": MessageLookupByLibrary.simpleMessage(
             "The restart date must be selected"),
         "name": MessageLookupByLibrary.simpleMessage("Name"),
+        "netError": MessageLookupByLibrary.simpleMessage("NetWork Error"),
         "netSet": MessageLookupByLibrary.simpleMessage("NetWork"),
         "netSpeed": MessageLookupByLibrary.simpleMessage("Net Speed Test"),
         "netTopo": MessageLookupByLibrary.simpleMessage("Net Topo"),
@@ -306,6 +307,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "rescan": MessageLookupByLibrary.simpleMessage("Rescan"),
         "reset": MessageLookupByLibrary.simpleMessage("Reset"),
         "restart": MessageLookupByLibrary.simpleMessage("Restart..."),
+        "retry": MessageLookupByLibrary.simpleMessage("Retry"),
         "save": MessageLookupByLibrary.simpleMessage("Save"),
         "second": MessageLookupByLibrary.simpleMessage("Second"),
         "server": MessageLookupByLibrary.simpleMessage("Server"),

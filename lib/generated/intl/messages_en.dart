@@ -176,6 +176,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Please check if the network is connected"),
         "checkNet": MessageLookupByLibrary.simpleMessage(
             "Logout login failed, Please check the network!"),
+        "clear": MessageLookupByLibrary.simpleMessage("Clear"),
         "clearCache": MessageLookupByLibrary.simpleMessage("Clear Cache"),
         "clickFactory": MessageLookupByLibrary.simpleMessage(
             "Please click factory reset to restore device to its factory settings"),

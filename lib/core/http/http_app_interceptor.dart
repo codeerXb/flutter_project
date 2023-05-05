@@ -58,6 +58,7 @@ class HttpAppInterceptors extends InterceptorsWrapper {
     } catch (e) {
       printError(info: e.toString());
     }
+
     return super.onResponse(response, handler);
   }
 

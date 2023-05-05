@@ -6,7 +6,6 @@ import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/generated/l10n.dart';
 import 'package:get/get.dart';
 import '../../core/widget/common_box.dart';
-import '../../core/widget/common_widget.dart';
 import '../../core/widget/custom_app_bar.dart';
 
 /// 清除缓存
@@ -35,10 +34,54 @@ class _ClearCacheState extends State<ClearCache> {
     super.dispose();
   }
 
+  bool _isLoading = false;
+  Future<void> _saveData() async {
+    setState(() {
+      _isLoading = true;
+    });
+    CacheUtils.clearApplicationCache();
+    ToastUtils.success(S.current.CacheCleared);
+    Get.back();
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppbar(context: context, title: S.current.clearCache),
+      appBar: customAppbar(
+          context: context,
+          title: S.current.clearCache,
+          actions: <Widget>[
+            Container(
+              margin: EdgeInsets.all(20.w),
+              child: OutlinedButton(
+                onPressed: _isLoading ? null : _saveData,
+                child: Row(
+                  children: [
+                    if (_isLoading)
+                      const SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                        ),
+                      ),
+                    if (!_isLoading)
+                      Text(
+                        S.of(context).clear,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: _isLoading ? Colors.grey : null,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ]),
       body: SingleChildScrollView(
         child: Container(
           decoration:
@@ -60,36 +103,6 @@ class _ClearCacheState extends State<ClearCache> {
                   )),
                 ],
               )),
-
-              /// 清除缓存按钮
-              Padding(
-                  padding: EdgeInsets.only(top: 15.w),
-                  child: Center(
-                      child: SizedBox(
-                    height: 70.sp,
-                    width: 680.sp,
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(
-                              const Color.fromARGB(255, 48, 118, 250))),
-                      onPressed: () {
-                        CacheUtils.clearApplicationCache();
-                        ToastUtils.success( S.current.CacheCleared);
-                        Get.back();
-                      },
-                      child: Text(
-                       S.of(context).clearCache,
-                        style: TextStyle(fontSize: 36.sp),
-                      ),
-                    ),
-                  )))
-              // CommonWidget.buttonWidget(
-              //     title: '清除缓存',
-              //     callBack: () {
-              //       CacheUtils.clearApplicationCache();
-              //       ToastUtils.success("缓存已清空");
-              //       Get.back();
-              //     }),
             ],
           ),
         ),

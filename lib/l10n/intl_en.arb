@@ -1,6 +1,7 @@
 {
   "netError": "NetWork Error",
   "retry": "Retry",
+  "clear": "Clear",
   "autoLang": "Auto",
   "tokenExpired": "Login has expired",
   "addDevice": "Add Device",
@@ -28,7 +29,7 @@
   "noDevice": "Device not found",
   "rescan": "Rescan",
   "UntyingEqui": "Unbind Device",
-  "unbindError":"Unbind Error",
+  "unbindError": "Unbind Error",
   "wlanSet": "WLAN Setting",
   "visitorNet": "Guest Network",
   "majorSet": "Professional",

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -7,6 +9,7 @@ import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_picker.dart';
+import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:flutter_template/pages/wifi_set/wlan/wlan_datas.dart';
 import 'package:flutter_template/pages/wifi_set/wlan/channel_list.dart';
 import 'package:get/get.dart';
@@ -222,6 +225,7 @@ class _WlanSetState extends State<WlanSet> {
   void initState() {
     super.initState();
     sharedGetData('deviceSn', String).then((value) async {
+      Navigator.push(context, DialogRouter(LoadingDialog()));
       sn = value.toString();
       //状态为local 请求本地  状态为cloud  请求云端
       if (mounted) {
@@ -239,7 +243,7 @@ class _WlanSetState extends State<WlanSet> {
           await getWiFiSsidTable();
           await getWiFi5GSsidTable();
         }
-
+        Navigator.pop(context);
         setState(() {
           _isLoading = false;
         });
@@ -688,6 +692,7 @@ class _WlanSetState extends State<WlanSet> {
 
   bool _isLoading = false;
   Future<void> _saveData() async {
+    Navigator.push(context, DialogRouter(LoadingDialog()));
     setState(() {
       _isLoading = true;
     });
@@ -705,6 +710,7 @@ class _WlanSetState extends State<WlanSet> {
       // 本地请求赋值
       await setData();
     }
+    Navigator.pop(context);
     setState(() {
       _isLoading = false;
     });

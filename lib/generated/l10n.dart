@@ -70,6 +70,16 @@ class S {
     );
   }
 
+  /// `Clear`
+  String get clear {
+    return Intl.message(
+      'Clear',
+      name: 'clear',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Auto`
   String get autoLang {
     return Intl.message(

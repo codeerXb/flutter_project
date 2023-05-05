@@ -33,7 +33,7 @@ class _NetSetState extends State<NetSet> {
       //检测服务器
       ethernetDetectServer: '');
   //连接模式
-  String showVal =  S.current.DynamicIP;
+  String showVal = S.current.DynamicIP;
   int val = 0;
   //优先级
   String priorityVal = S.current.Ethernet;
@@ -96,13 +96,13 @@ class _NetSetState extends State<NetSet> {
     };
     XHttp.get('/data.html', data).then((res) {
       try {
-        ToastUtils.toast( S.current.success);
+        ToastUtils.toast(S.current.success);
       } on FormatException catch (e) {
         print(e);
       }
     }).catchError((onError) {
       debugPrint('失败：${onError.toString()}');
-      ToastUtils.toast( S.current.error);
+      ToastUtils.toast(S.current.error);
     });
   }
 
@@ -121,7 +121,7 @@ class _NetSetState extends State<NetSet> {
         //连接模式
         switch (netdata.ethernetConnectMode.toString()) {
           case 'dhcp':
-            showVal =  S.current.DynamicIP;
+            showVal = S.current.DynamicIP;
             break;
           case 'static':
             showVal = S.current.staticIP;
@@ -135,9 +135,10 @@ class _NetSetState extends State<NetSet> {
         //仅以太网
         isCheck = netdata.ethernetConnectOnly.toString() == '1' ? true : false;
         //优先级 == '1' 4g
-        priorityVal =
-            netdata.ethernetConnectPriority.toString() == '1' ? '4G/5G' :  S.current.Ethernet;
-        priorityIndex = [ S.current.Ethernet, '4G/5G'].indexOf(priorityVal);
+        priorityVal = netdata.ethernetConnectPriority.toString() == '1'
+            ? '4G/5G'
+            : S.current.Ethernet;
+        priorityIndex = [S.current.Ethernet, '4G/5G'].indexOf(priorityVal);
         //mtu
         mtu.text = netdata.ethernetMtu.toString();
         //检测服务器
@@ -184,10 +185,108 @@ class _NetSetState extends State<NetSet> {
     }
   }
 
+  bool _isLoading = false;
+  Future<void> _saveData() async {
+    setState(() {
+      _isLoading = true;
+    });
+    closeKeyboard(context);
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+              title: Text(S.current.hint),
+              content: Text(S.of(context).isGoOn),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(S.current.cancel),
+                  onPressed: () {
+                    //取消
+                    Navigator.pop(context, 'Cancle');
+                  },
+                ),
+                TextButton(
+                    child: Text(S.current.confirm),
+                    onPressed: () {
+                      //确定
+                      Navigator.pop(context, "Ok");
+                      Navigator.push(context, DialogRouter(LoadingDialog()));
+                      //动态ip
+                      if (showVal == S.current.DynamicIP) {
+                        //isCheck选中不携带 优先级
+                        //不携带 优先级 {"ethernetConnectMode":"dhcp","ethernetMtu":"1500","ethernetConnectOnly":"1","ethernetDetectServer":"0"}
+                        // 携带 优先级 {"ethernetConnectMode":"dhcp","ethernetMtu":"1500","ethernetConnectOnly":"0","ethernetConnectPriority":"0","ethernetDetectServer":"1"}
+                        isCheck
+                            ? handleSave(
+                                '{"ethernetConnectMode":"dhcp","ethernetMtu":"${mtu.text}","ethernetConnectOnly":"1","ethernetDetectServer":"${server.text}"}')
+                            : handleSave(
+                                '{"ethernetConnectMode":"dhcp","ethernetMtu":"${mtu.text}","ethernetConnectOnly":"0","ethernetConnectPriority":"${priorityVal == S.current.Ethernet ? '0' : '1'}","ethernetDetectServer":"${server.text}"}');
+                      }
+                      //静态ip
+                      else if (showVal == S.current.staticIP) {
+                        //isCheck选中不携带 优先级
+                        //不携带 优先级 {"ethernetConnectMode":"static","ethernetIp":"172.16.20.224","ethernetMask":"255.255.255.0","ethernetDefaultGateway":"172.16.20.253","ethernetPrimaryDns":"114.114.114.114","ethernetSecondaryDns":"8.8.8.8","ethernetMtu":"1500","ethernetConnectOnly":"1","ethernetDetectServer":"0"}
+                        // 携带 优先级{"ethernetConnectMode":"static","ethernetIp":"172.16.20.224","ethernetMask":"255.255.255.0","ethernetDefaultGateway":"172.16.20.253","ethernetPrimaryDns":"114.114.114.114","ethernetSecondaryDns":"8.8.8.8","ethernetMtu":"1500","ethernetConnectOnly":"0","ethernetConnectPriority":"1","ethernetDetectServer":"0"}
+                        isCheck
+                            ? handleSave(
+                                '{"ethernetConnectMode":"static","ethernetIp":"${fDNSVal1.text}.${fDNSVal2.text}.${fDNSVal3.text}.${fDNSVal4.text}","ethernetMask":"${zwVal1.text}.${zwVal2.text}.${zwVal3.text}.${zwVal4.text}","ethernetDefaultGateway":"${ipVal1.text}.${ipVal2.text}.${ipVal3.text}.${ipVal4.text}","ethernetPrimaryDns":"${mrwgVal1.text}.${mrwgVal2.text}.${mrwgVal3.text}.${mrwgVal4.text}","ethernetSecondaryDns":"${zdnsVal1.text}.${zdnsVal2.text}.${zdnsVal3.text}.${zdnsVal4.text}","ethernetMtu":"${mtu.text}","ethernetConnectOnly":"1","ethernetDetectServer":"${server.text}"}')
+                            : handleSave(
+                                '{"ethernetConnectMode":"static","ethernetIp":"${fDNSVal1.text}.${fDNSVal2.text}.${fDNSVal3.text}.${fDNSVal4.text}","ethernetMask":"${zwVal1.text}.${zwVal2.text}.${zwVal3.text}.${zwVal4.text}","ethernetDefaultGateway":"${ipVal1.text}.${ipVal2.text}.${ipVal3.text}.${ipVal4.text}","ethernetPrimaryDns":"${mrwgVal1.text}.${mrwgVal2.text}.${mrwgVal3.text}.${mrwgVal4.text}","ethernetSecondaryDns":"${zdnsVal1.text}.${zdnsVal2.text}.${zdnsVal3.text}.${zdnsVal4.text}","ethernetMtu":"${mtu.text}","ethernetConnectOnly":"0","ethernetConnectPriority":"${priorityVal == S.current.Ethernet ? '0' : '1'}","ethernetDetectServer":"${server.text}"}');
+                      }
+                      // 仅LAN
+                      else {
+                        debugPrint(S.current.LANOnly);
+                        //{"ethernetConnectMode":"lanonly","ethernetConnectOnly":"0","ethernetConnectPriority":"1"}
+                        handleSave({
+                          "ethernetConnectMode": "lanonly",
+                          "ethernetConnectOnly":
+                              priorityVal == S.current.Ethernet ? '0' : '1'
+                        });
+                      }
+                      Navigator.pop(context);
+                    })
+              ]);
+        });
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
   @override
-  Widget build(BuildContext context) {return Scaffold(
+  Widget build(BuildContext context) {
+    return Scaffold(
         appBar: customAppbar(
-            context: context, title: S.of(context).EthernetSettings),
+            context: context,
+            title: S.of(context).EthernetSettings,
+            actions: <Widget>[
+              Container(
+                margin: EdgeInsets.all(20.w),
+                child: OutlinedButton(
+                  onPressed: _isLoading ? null : _saveData,
+                  child: Row(
+                    children: [
+                      if (_isLoading)
+                        const SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                          ),
+                        ),
+                      if (!_isLoading)
+                        Text(
+                          S.current.save,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: _isLoading ? Colors.grey : null,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ]),
         body: GestureDetector(
           onTap: () => closeKeyboard(context),
           behavior: HitTestBehavior.opaque,
@@ -209,7 +308,11 @@ class _NetSetState extends State<NetSet> {
                           closeKeyboard(context);
                           var result = CommonPicker.showPicker(
                             context: context,
-                            options: [ S.current.DynamicIP, S.current.staticIP, S.current.LANOnly],
+                            options: [
+                              S.current.DynamicIP,
+                              S.current.staticIP,
+                              S.current.LANOnly
+                            ],
                             value: val,
                           );
                           result?.then((selectedValue) => {
@@ -218,8 +321,11 @@ class _NetSetState extends State<NetSet> {
                                   {
                                     setState(() => {
                                           val = selectedValue,
-                                          showVal =
-                                              [ S.current.DynamicIP, S.current.staticIP, S.current.LANOnly][val],
+                                          showVal = [
+                                            S.current.DynamicIP,
+                                            S.current.staticIP,
+                                            S.current.LANOnly
+                                          ][val],
                                         })
                                   }
                               });
@@ -285,7 +391,7 @@ class _NetSetState extends State<NetSet> {
                             closeKeyboard(context);
                             var result = CommonPicker.showPicker(
                               context: context,
-                              options: [ S.current.Ethernet, '4G/5G'],
+                              options: [S.current.Ethernet, '4G/5G'],
                               value: priorityIndex,
                             );
                             result?.then((selectedValue) => {
@@ -294,8 +400,10 @@ class _NetSetState extends State<NetSet> {
                                     {
                                       setState(() => {
                                             priorityIndex = selectedValue,
-                                            priorityVal =
-                                                [ S.current.Ethernet, '4G/5G'][priorityIndex],
+                                            priorityVal = [
+                                              S.current.Ethernet,
+                                              '4G/5G'
+                                            ][priorityIndex],
                                           })
                                     }
                                 });
@@ -514,86 +622,6 @@ class _NetSetState extends State<NetSet> {
                       ),
                     ],
                   )),
-                  //提交
-                  Padding(
-                    padding: EdgeInsets.only(top: 10.w),
-                    child: Center(
-                        child: SizedBox(
-                      height: 70.sp,
-                      width: 680.sp,
-                      child: ElevatedButton(
-                        style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
-                                const Color.fromARGB(255, 48, 118, 250))),
-                        onPressed: () {
-                          //对话框
-                          showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                    title:  Text(S.current.hint),
-                                    content:  Text(S.of(context).isGoOn),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        child:  Text(S.current.cancel),
-                                        onPressed: () {
-                                          //取消
-                                          Navigator.pop(context, 'Cancle');
-                                        },
-                                      ),
-                                      TextButton(
-                                          child:  Text(S.current.confirm),
-                                          onPressed: () {
-                                            //确定
-                                            Navigator.pop(context, "Ok");
-                                            Navigator.push(context,
-                                                DialogRouter(LoadingDialog()));
-                                            //动态ip
-                                            if (showVal ==  S.current.DynamicIP) {
-                                              //isCheck选中不携带 优先级
-                                              //不携带 优先级 {"ethernetConnectMode":"dhcp","ethernetMtu":"1500","ethernetConnectOnly":"1","ethernetDetectServer":"0"}
-                                              // 携带 优先级 {"ethernetConnectMode":"dhcp","ethernetMtu":"1500","ethernetConnectOnly":"0","ethernetConnectPriority":"0","ethernetDetectServer":"1"}
-                                              isCheck
-                                                  ? handleSave(
-                                                      '{"ethernetConnectMode":"dhcp","ethernetMtu":"${mtu.text}","ethernetConnectOnly":"1","ethernetDetectServer":"${server.text}"}')
-                                                  : handleSave(
-                                                      '{"ethernetConnectMode":"dhcp","ethernetMtu":"${mtu.text}","ethernetConnectOnly":"0","ethernetConnectPriority":"${priorityVal ==  S.current.Ethernet ? '0' : '1'}","ethernetDetectServer":"${server.text}"}');
-                                            }
-                                            //静态ip
-                                            else if (showVal == S.current.staticIP) {
-                                              //isCheck选中不携带 优先级
-                                              //不携带 优先级 {"ethernetConnectMode":"static","ethernetIp":"172.16.20.224","ethernetMask":"255.255.255.0","ethernetDefaultGateway":"172.16.20.253","ethernetPrimaryDns":"114.114.114.114","ethernetSecondaryDns":"8.8.8.8","ethernetMtu":"1500","ethernetConnectOnly":"1","ethernetDetectServer":"0"}
-                                              // 携带 优先级{"ethernetConnectMode":"static","ethernetIp":"172.16.20.224","ethernetMask":"255.255.255.0","ethernetDefaultGateway":"172.16.20.253","ethernetPrimaryDns":"114.114.114.114","ethernetSecondaryDns":"8.8.8.8","ethernetMtu":"1500","ethernetConnectOnly":"0","ethernetConnectPriority":"1","ethernetDetectServer":"0"}
-                                              isCheck
-                                                  ? handleSave(
-                                                      '{"ethernetConnectMode":"static","ethernetIp":"${fDNSVal1.text}.${fDNSVal2.text}.${fDNSVal3.text}.${fDNSVal4.text}","ethernetMask":"${zwVal1.text}.${zwVal2.text}.${zwVal3.text}.${zwVal4.text}","ethernetDefaultGateway":"${ipVal1.text}.${ipVal2.text}.${ipVal3.text}.${ipVal4.text}","ethernetPrimaryDns":"${mrwgVal1.text}.${mrwgVal2.text}.${mrwgVal3.text}.${mrwgVal4.text}","ethernetSecondaryDns":"${zdnsVal1.text}.${zdnsVal2.text}.${zdnsVal3.text}.${zdnsVal4.text}","ethernetMtu":"${mtu.text}","ethernetConnectOnly":"1","ethernetDetectServer":"${server.text}"}')
-                                                  : handleSave(
-                                                      '{"ethernetConnectMode":"static","ethernetIp":"${fDNSVal1.text}.${fDNSVal2.text}.${fDNSVal3.text}.${fDNSVal4.text}","ethernetMask":"${zwVal1.text}.${zwVal2.text}.${zwVal3.text}.${zwVal4.text}","ethernetDefaultGateway":"${ipVal1.text}.${ipVal2.text}.${ipVal3.text}.${ipVal4.text}","ethernetPrimaryDns":"${mrwgVal1.text}.${mrwgVal2.text}.${mrwgVal3.text}.${mrwgVal4.text}","ethernetSecondaryDns":"${zdnsVal1.text}.${zdnsVal2.text}.${zdnsVal3.text}.${zdnsVal4.text}","ethernetMtu":"${mtu.text}","ethernetConnectOnly":"0","ethernetConnectPriority":"${priorityVal ==  S.current.Ethernet ? '0' : '1'}","ethernetDetectServer":"${server.text}"}');
-                                            }
-                                            // 仅LAN
-                                            else {
-                                              debugPrint(S.current.LANOnly);
-                                              //{"ethernetConnectMode":"lanonly","ethernetConnectOnly":"0","ethernetConnectPriority":"1"}
-                                              handleSave({
-                                                "ethernetConnectMode":
-                                                    "lanonly",
-                                                "ethernetConnectOnly":
-                                                    priorityVal ==  S.current.Ethernet
-                                                        ? '0'
-                                                        : '1'
-                                              });
-                                            }
-                                          })
-                                    ]);
-                              });
-                        },
-                        child: Text(
-                          S.of(context).save,
-                          style: TextStyle(fontSize: 36.sp),
-                        ),
-                      ),
-                    )),
-                  ),
                 ],
               ),
             ),

@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/request/request.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
+import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:flutter_template/generated/l10n.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:flutter_template/pages/net_status/model/flow_statistics.dart';
@@ -197,6 +198,7 @@ class _NetStatusState extends State<NetStatus> {
 
   ///  获取  云端
   getTROnlineCount() async {
+    // Navigator.push(context, DialogRouter(LoadingDialog()));
     printInfo(info: 'sn在这里有值吗-------$sn');
     var parameterNames = [
       "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.ProductModel",
@@ -285,6 +287,7 @@ class _NetStatusState extends State<NetStatus> {
     } catch (e) {
       debugPrint('获取信息失败：${e.toString()}');
     }
+    // Navigator.pop(context);
   }
 
   /// 获取设备列表并更新在线数量  本地

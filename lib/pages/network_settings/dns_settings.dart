@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/request/request.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
+import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
 import '../../../core/widget/custom_app_bar.dart';
@@ -51,21 +52,25 @@ class _DnsSettingsState extends State<DnsSettings> {
   @override
   void initState() {
     super.initState();
-    sharedGetData('deviceSn', String).then(((res) {
-      printInfo(info: 'deviceSn$res');
-      setState(() {
-        sn = res.toString();
-        //状态为local 请求本地  状态为cloud  请求云端
-        printInfo(info: 'state--${loginController.login.state}');
-        if (mounted) {
-          if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
-            getTRDnsData();
-          }
-          if (loginController.login.state == 'local') {
-            getDnsData();
-          }
+    sharedGetData('deviceSn', String).then(((res) async {
+      sn = res.toString();
+      //状态为local 请求本地  状态为cloud  请求云端
+      if (mounted) {
+        setState(() {
+          _isLoading = true;
+        });
+        if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
+          // 云端请求赋值
+          await getTRDnsData();
         }
-      });
+        if (loginController.login.state == 'local') {
+          // 本地请求赋值
+          getDnsData();
+        }
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }));
 
     dsnMain.addListener(() {
@@ -103,17 +108,6 @@ class _DnsSettingsState extends State<DnsSettings> {
       debugPrint(
           '1测试${dsnAssist.text}.${dsnAssist1.text}.${dsnAssist2.text}.${dsnAssist3.text}');
     });
-    // if (dsnMain.text == '' &&
-    //     dsnMain1.text == '' &&
-    //     dsnMain2.text == '' &&
-    //     dsnMain3.text == '') {
-    //   primary = '{"lteManualDns1":"","lteManualDns2":""}';
-    //   debugPrint('----11---$primary');
-    // } else {
-    //   primary =
-    //       '{"lteManualDns1":"${dsnMain.text}.${dsnMain1.text}.${dsnMain2.text}.${dsnMain3.text}","lteManualDns2":"${dsnAssist.text}.${dsnAssist1.text}.${dsnAssist2.text}.${dsnAssist3.text}"}';
-    //   debugPrint('----22---$primary');
-    // }
   }
 
   // 点击空白  关闭键盘 时传的一个对象
@@ -126,6 +120,7 @@ class _DnsSettingsState extends State<DnsSettings> {
 
   // 获取 云端
   getTRDnsData() async {
+    Navigator.push(context, DialogRouter(LoadingDialog()));
     printInfo(info: 'sn在这里有值吗-------$sn');
     var parameterNames = [
       "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.DNSServers",
@@ -165,6 +160,7 @@ class _DnsSettingsState extends State<DnsSettings> {
     } catch (e) {
       debugPrint('获取信息失败：${e.toString()}');
     }
+    Navigator.pop(context);
   }
 
 // 设置 云端
@@ -286,134 +282,167 @@ class _DnsSettingsState extends State<DnsSettings> {
     });
   }
 
+  bool _isLoading = false;
+  Future<void> _saveData() async {
+    Navigator.push(context, DialogRouter(LoadingDialog()));
+    setState(() {
+      _isLoading = true;
+    });
+    closeKeyboard(context);
+    if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
+      // 云端请求赋值
+      try {
+        await setTRDnsData();
+      } catch (e) {
+        debugPrint('云端请求出错：${e.toString()}');
+        Get.back();
+      }
+    }
+    if (loginController.login.state == 'local') {
+      // 本地请求赋值
+      if (dsnMain.text == '' &&
+          dsnMain1.text == '' &&
+          dsnMain2.text == '' &&
+          dsnMain3.text == '' &&
+          dsnAssist.text == '' &&
+          dsnAssist1.text == '' &&
+          dsnAssist2.text == '' &&
+          dsnAssist3.text == '') {
+        getRadioData();
+      } else {
+        getRadioSettingData();
+      }
+    }
+    Navigator.pop(context);
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar:
-            customAppbar(context: context, title: S.of(context).dnsSettings),
-        body: SingleChildScrollView(
-          child: InkWell(
-            onTap: () => closeKeyboard(context),
-            child: Container(
-              decoration:
-                  const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
-              // height: 1400.w,
-              child: Column(
-                children: [
-                  Row(children: [
-                    const Icon(Icons.priority_high, color: Colors.red),
-                    Flexible(
-                      child: Text(
-                        S.of(context).dnsStatic,
-                        style: TextStyle(fontSize: 24.sp, color: Colors.red),
-                      ),
-                    ),
-                  ]),
-                  Padding(padding: EdgeInsets.only(top: 20.sp)),
-                  InfoBox(
-                    boxCotainer: Column(children: [
-                      BottomLine(
-                        rowtem: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            ConstrainedBox(
-                                constraints: BoxConstraints(
-                                  maxWidth: 160.w,
-                                ),
-                                child: FittedBox(
-                                  child: Text(
-                                    S.of(context).PrimaryDNS,
-                                    softWrap: false,
-                                  ),
-                                )),
-                            Row(
-                              children: [
-                                OtpInput(dsnMain, false),
-                                const Text('.'),
-                                OtpInput(dsnMain1, false),
-                                const Text('.'),
-                                OtpInput(dsnMain2, false),
-                                const Text('.'),
-                                OtpInput(dsnMain3, false),
-                              ],
-                            )
-                          ],
+        appBar: customAppbar(
+            context: context,
+            title: S.of(context).dnsSettings,
+            actions: <Widget>[
+              Container(
+                margin: EdgeInsets.all(20.w),
+                child: OutlinedButton(
+                  onPressed: _isLoading ? null : _saveData,
+                  child: Row(
+                    children: [
+                      if (_isLoading)
+                        const SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                          ),
                         ),
-                      ),
-                      // Padding(padding: EdgeInsets.only(top: 30.sp)),
-                      Container(
-                        height: 90.w,
-                        padding: EdgeInsets.only(bottom: 6.w),
-                        margin: EdgeInsets.only(bottom: 6.w),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            ConstrainedBox(
-                                constraints: BoxConstraints(
-                                  maxWidth: 160.w,
-                                ),
-                                child: FittedBox(
-                                  child: Text(
-                                    S.of(context).SecondaryDNS,
-                                    softWrap: false,
-                                  ),
-                                )),
-                            Row(
-                              children: [
-                                OtpInput(dsnAssist, false),
-                                const Text('.'),
-                                OtpInput(dsnAssist1, false),
-                                const Text('.'),
-                                OtpInput(dsnAssist2, false),
-                                const Text('.'),
-                                OtpInput(dsnAssist3, false),
-                              ],
-                            )
-                          ],
+                      if (!_isLoading)
+                        Text(
+                          S.current.save,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: _isLoading ? Colors.grey : null,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ]),
+        body: Container(
+          decoration:
+              const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
+          height: 1400.w,
+          child: SingleChildScrollView(
+            child: InkWell(
+              onTap: () => closeKeyboard(context),
+              child: Container(
+                decoration: const BoxDecoration(
+                    color: Color.fromRGBO(240, 240, 240, 1)),
+                // height: 1400.w,
+                child: Column(
+                  children: [
+                    Row(children: [
+                      const Icon(Icons.priority_high, color: Colors.red),
+                      Flexible(
+                        child: Text(
+                          S.of(context).dnsStatic,
+                          style: TextStyle(fontSize: 24.sp, color: Colors.red),
                         ),
                       ),
                     ]),
-                  ),
-                  Padding(
-                      padding: EdgeInsets.only(top: 10.w),
-                      child: Center(
-                        child: SizedBox(
-                          height: 70.sp,
-                          width: 680.sp,
-                          child: ElevatedButton(
-                            style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all(
-                                    const Color.fromARGB(255, 48, 118, 250))),
-                            onPressed: () {
-                              if (mounted) {
-                                if (loginController.login.state == 'cloud' &&
-                                    sn.isNotEmpty) {
-                                  setTRDnsData();
-                                } else if (loginController.login.state ==
-                                    'local') {
-                                  if (dsnMain.text == '' &&
-                                      dsnMain1.text == '' &&
-                                      dsnMain2.text == '' &&
-                                      dsnMain3.text == '' &&
-                                      dsnAssist.text == '' &&
-                                      dsnAssist1.text == '' &&
-                                      dsnAssist2.text == '' &&
-                                      dsnAssist3.text == '') {
-                                    getRadioData();
-                                  } else {
-                                    getRadioSettingData();
-                                  }
-                                }
-                              }
-                            },
-                            child: Text(
-                              S.of(context).save,
-                              style: TextStyle(fontSize: 36.sp),
-                            ),
+                    Padding(padding: EdgeInsets.only(top: 20.sp)),
+                    InfoBox(
+                      boxCotainer: Column(children: [
+                        BottomLine(
+                          rowtem: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    maxWidth: 160.w,
+                                  ),
+                                  child: FittedBox(
+                                    child: Text(
+                                      S.of(context).PrimaryDNS,
+                                      softWrap: false,
+                                    ),
+                                  )),
+                              Row(
+                                children: [
+                                  OtpInput(dsnMain, false),
+                                  const Text('.'),
+                                  OtpInput(dsnMain1, false),
+                                  const Text('.'),
+                                  OtpInput(dsnMain2, false),
+                                  const Text('.'),
+                                  OtpInput(dsnMain3, false),
+                                ],
+                              )
+                            ],
                           ),
                         ),
-                      ))
-                ],
+                        // Padding(padding: EdgeInsets.only(top: 30.sp)),
+                        Container(
+                          height: 90.w,
+                          padding: EdgeInsets.only(bottom: 6.w),
+                          margin: EdgeInsets.only(bottom: 6.w),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    maxWidth: 160.w,
+                                  ),
+                                  child: FittedBox(
+                                    child: Text(
+                                      S.of(context).SecondaryDNS,
+                                      softWrap: false,
+                                    ),
+                                  )),
+                              Row(
+                                children: [
+                                  OtpInput(dsnAssist, false),
+                                  const Text('.'),
+                                  OtpInput(dsnAssist1, false),
+                                  const Text('.'),
+                                  OtpInput(dsnAssist2, false),
+                                  const Text('.'),
+                                  OtpInput(dsnAssist3, false),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      ]),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

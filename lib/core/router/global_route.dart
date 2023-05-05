@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_template/pages/Ethernet/net/net_set.dart';
-import 'package:flutter_template/pages/get_equipment/index.dart';
+import 'package:flutter_template/pages/equInfo/get_equipment/index.dart';
 import 'package:flutter_template/pages/odu/index.dart';
 import 'package:flutter_template/pages/parent_control/Internet_access/index.dart';
 import 'package:flutter_template/pages/parent_control/Internet_usage/index.dart';

@@ -8,6 +8,7 @@ import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_picker.dart';
+import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:flutter_template/pages/wifi_set/major/major_datas.dart';
 import 'package:get/get.dart';
@@ -57,6 +58,7 @@ class _MajorSetState extends State<MajorSet> {
   bool _isLoading = false;
   // 提交
   Future<void> _saveData() async {
+    Navigator.push(context, DialogRouter(LoadingDialog()));
     setState(() {
       _isLoading = true;
     });
@@ -73,6 +75,7 @@ class _MajorSetState extends State<MajorSet> {
       // 本地请求赋值
       handleSave();
     }
+    Navigator.pop(context);
     setState(() {
       _isLoading = false;
     });
@@ -98,6 +101,7 @@ class _MajorSetState extends State<MajorSet> {
 
   // 获取 云端
   getTRDate() async {
+    Navigator.push(context, DialogRouter(LoadingDialog()));
     printInfo(info: 'sn在这里有值吗-------$sn');
     var parameterNames = [
       "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.CountryCode",
@@ -144,6 +148,7 @@ class _MajorSetState extends State<MajorSet> {
     } catch (e) {
       debugPrint('获取信息失败：${e.toString()}');
     }
+    Navigator.pop(context);
   }
 
 // 设置 云端

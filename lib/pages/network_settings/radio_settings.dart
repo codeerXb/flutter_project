@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/request/request.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
+import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
 import '../../../core/widget/custom_app_bar.dart';
@@ -71,6 +72,7 @@ class _RadioSettingsState extends State<RadioSettings> {
 
   // 获取 云端
   getTRRadioGData() async {
+    Navigator.push(context, DialogRouter(LoadingDialog()));
     printInfo(info: 'sn在这里有值吗-------$sn');
     var parameterNames = [
       "InternetGatewayDevice.WEB_GUI.Network.NR-LTE.ConnectMethod",
@@ -185,6 +187,7 @@ class _RadioSettingsState extends State<RadioSettings> {
     } catch (e) {
       debugPrint('获取信息失败：${e.toString()}');
     }
+    Navigator.pop(context);
   }
 
 // 设置 云端

@@ -8,6 +8,7 @@ import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_picker.dart';
+import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:flutter_template/pages/wifi_set/wps/wps_datas.dart';
 import 'package:get/get.dart';
@@ -72,6 +73,7 @@ class _WpsSetState extends State<WpsSet> {
   // 提交
   bool _isLoading = false;
   Future<void> _saveData() async {
+    Navigator.push(context, DialogRouter(LoadingDialog()));
     setState(() {
       _isLoading = true;
     });
@@ -98,6 +100,7 @@ class _WpsSetState extends State<WpsSet> {
                 '{ "${paramKey}Mode": "client",  "wifi5gWpsClientPin": "${pinVal.text}"}');
       }
     }
+    Navigator.pop(context);
     setState(() {
       _isLoading = false;
     });
@@ -105,6 +108,7 @@ class _WpsSetState extends State<WpsSet> {
 
   // 获取 云端   2.4G
   getTRWpsData() async {
+    Navigator.push(context, DialogRouter(LoadingDialog()));
     var parameterNames = [
       "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.1.WPS"
     ];
@@ -123,10 +127,12 @@ class _WpsSetState extends State<WpsSet> {
     } catch (e) {
       debugPrint('获取信息失败：${e.toString()}');
     }
+    Navigator.pop(context);
   }
 
   // 获取 云端  5G
   getTRWpsData2() async {
+    Navigator.push(context, DialogRouter(LoadingDialog()));
     var parameterNames = [
       "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.2.WPS"
     ];
@@ -144,6 +150,7 @@ class _WpsSetState extends State<WpsSet> {
     } catch (e) {
       debugPrint('获取信息失败：${e.toString()}');
     }
+    Navigator.pop(context);
   }
 
 // 设置 云端   2.4G

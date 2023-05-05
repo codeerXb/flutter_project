@@ -6,6 +6,7 @@ import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/request/request.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
+import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:flutter_template/pages/equInfo/equinfo_datas.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
@@ -93,6 +94,7 @@ class _EquInfoState extends State<EquInfo> {
 
 // 云端
   getTREquinfoDatas() async {
+    Navigator.push(context, DialogRouter(LoadingDialog()));
     printInfo(info: 'sn在这里有值吗-------$sn');
     var parameterNames = [
       "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.ProductModel",
@@ -139,6 +141,7 @@ class _EquInfoState extends State<EquInfo> {
     } catch (e) {
       debugPrint('获取设备信息失败：${e.toString()}');
     }
+    Navigator.pop(context);
   }
 
   @override

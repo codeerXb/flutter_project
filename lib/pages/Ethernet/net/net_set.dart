@@ -243,6 +243,7 @@ class _NetSetState extends State<NetSet> {
                               priorityVal == S.current.Ethernet ? '0' : '1'
                         });
                       }
+                      Navigator.pop(context);
                     })
               ]);
         });

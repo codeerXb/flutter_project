@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/config/base_config.dart';
 import 'package:flutter_template/core/http/http_app.dart';
 import 'package:flutter_template/core/request/request.dart';
+import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
 import '../../../core/widget/custom_app_bar.dart';
@@ -145,6 +146,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
 
   // 获取 云端
   getTRAcquireData() async {
+    Navigator.push(context, DialogRouter(LoadingDialog()));
     printInfo(info: 'sn在这里有值吗-------$sn');
     var parameterNames = [
       "InternetGatewayDevice.WEB_GUI.ScheduleReboot.Enable",
@@ -263,6 +265,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
     } catch (e) {
       debugPrint('获取信息失败：${e.toString()}');
     }
+    Navigator.pop(context);
   }
 
   // 设置 云端

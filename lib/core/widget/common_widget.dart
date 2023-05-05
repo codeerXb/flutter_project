@@ -689,14 +689,15 @@ class LoadingDialog extends Dialog {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children:  <Widget>[
+                children: const <Widget>[
                   CircularProgressIndicator(),
                   Padding(
-                    padding: const EdgeInsets.only(
+                    padding: EdgeInsets.only(
                       top: 20.0,
                     ),
+                    //S.current.restart
                     child: Text(
-                      S.current.restart,
+                      'loading',
                       style: TextStyle(fontSize: 16.0),
                     ),
                   ),

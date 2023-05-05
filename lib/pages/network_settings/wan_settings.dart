@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/request/request.dart';
+import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:flutter_template/pages/network_settings/model/wan_data.dart';
 import 'package:get/get.dart';
@@ -56,6 +57,7 @@ class _WanSettingsState extends State<WanSettings> {
 
   // 获取 云端
   getTRWanVal() async {
+    Navigator.push(context, DialogRouter(LoadingDialog()));
     printInfo(info: 'sn在这里有值吗-------$sn');
     var parameterNames = [
       "InternetGatewayDevice.WEB_GUI.Network.WANSettings.NetworkMode",
@@ -85,6 +87,7 @@ class _WanSettingsState extends State<WanSettings> {
     } catch (e) {
       debugPrint('获取信息失败：${e.toString()}');
     }
+    Navigator.pop(context);
   }
 
 // 设置 云端

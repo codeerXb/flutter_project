@@ -20,7 +20,7 @@ class Visitor6 extends StatefulWidget {
 }
 
 class _Visitor6State extends State<Visitor6> {
- vis5gDatas data_5g = vis5gDatas();
+  Vis5gDatas data_5g = Vis5gDatas();
   WiFi5GSsidTable currentData = WiFi5GSsidTable(
     ssid: '',
   );
@@ -68,7 +68,7 @@ class _Visitor6State extends State<Visitor6> {
       var response = await XHttp.get('/data.html', data);
       var d = json.decode(response.toString());
       setState(() {
-        data_5g = vis5gDatas.fromJson(d);
+        data_5g = Vis5gDatas.fromJson(d);
         currentData = data_5g.wiFi5GSsidTable![3];
         //是否允许访问内网 0不启用
         networkCheck =
@@ -125,22 +125,21 @@ class _Visitor6State extends State<Visitor6> {
     };
     XHttp.get('/data.html', data).then((res) {
       try {
-        ToastUtils.toast( S.current.success);
+        ToastUtils.toast(S.current.success);
       } on FormatException catch (e) {
         print(e);
       }
     }).catchError((onError) {
       debugPrint('失败：${onError.toString()}');
-      ToastUtils.toast( S.current.error);
+      ToastUtils.toast(S.current.error);
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: customAppbar(context: context, title: 'guest6'),
-             body: GestureDetector(
+        body: GestureDetector(
           onTap: () => closeKeyboard(context),
           behavior: HitTestBehavior.opaque,
           child: Container(
@@ -151,7 +150,7 @@ class _Visitor6State extends State<Visitor6> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                   TitleWidger(title: S.of(context).Settings),
+                  TitleWidger(title: S.of(context).Settings),
                   InfoBox(
                       boxCotainer: Column(
                     children: [
@@ -368,7 +367,11 @@ class _Visitor6State extends State<Visitor6> {
                           closeKeyboard(context);
                           var result = CommonPicker.showPicker(
                             context: context,
-                            options: [S.current.aesRecommend, 'TKIP', 'TKIP&AES'],
+                            options: [
+                              S.current.aesRecommend,
+                              'TKIP',
+                              'TKIP&AES'
+                            ],
                             value: wpaIndex,
                           );
                           result?.then((selectedValue) => {
@@ -447,7 +450,7 @@ class _Visitor6State extends State<Visitor6> {
                                       icon: Icon(!passwordValShow
                                           ? Icons.visibility
                                           : Icons.visibility_off)),
-                                  hintText:S.current.ASCII,
+                                  hintText: S.current.ASCII,
                                   hintStyle: TextStyle(
                                       fontSize: 26.sp,
                                       color: const Color(0xff737A83)),

@@ -66,9 +66,7 @@ class _MyWidgetState extends State<Equipment> {
         setState(() {
           appList = d['data'];
         });
-        if (d['data'].isNotEmpty) {
-          getEquipmentData(d['data']);
-        }
+        getEquipmentData(d['data']);
       }
     }).catchError((onError) {
       debugPrint(onError.toString());
@@ -91,21 +89,23 @@ class _MyWidgetState extends State<Equipment> {
         setState(() {
           equipmentData = EquipmentData.fromJson(d);
         });
-        for (var app in list) {
-          String deviceSnKey = 'deviceSn';
-          String systemVersionSnValue =
-              equipmentData.systemVersionSn.toString();
-          var deviceSnValue = app[deviceSnKey];
-          printInfo(
-              info:
-                  'isExistCloudDevice===$isExistCloudDevice$deviceSnValue$systemVersionSnValue');
-          if (deviceSnValue == systemVersionSnValue) {
-            setState(() {
-              isExistCloudDevice = true;
-            });
-            return;
-          } else {
-            continue;
+        if (list.isNotEmpty) {
+          for (var app in list) {
+            String deviceSnKey = 'deviceSn';
+            String systemVersionSnValue =
+                equipmentData.systemVersionSn.toString();
+            var deviceSnValue = app[deviceSnKey];
+            printInfo(
+                info:
+                    'isExistCloudDevice===$isExistCloudDevice$deviceSnValue$systemVersionSnValue');
+            if (deviceSnValue == systemVersionSnValue) {
+              setState(() {
+                isExistCloudDevice = true;
+              });
+              return;
+            } else {
+              continue;
+            }
           }
         }
         // }

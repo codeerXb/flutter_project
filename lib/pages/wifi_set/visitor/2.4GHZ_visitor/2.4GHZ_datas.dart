@@ -1,10 +1,10 @@
-class vis2gDatas {
+class Vis2gDatas {
   List<WiFiSsidTable>? wiFiSsidTable;
   int? max;
 
-  vis2gDatas({this.wiFiSsidTable, this.max});
+  Vis2gDatas({this.wiFiSsidTable, this.max});
 
-  vis2gDatas.fromJson(Map<String, dynamic> json) {
+  Vis2gDatas.fromJson(Map<String, dynamic> json) {
     if (json['WiFiSsidTable'] != null) {
       wiFiSsidTable = <WiFiSsidTable>[];
       json['WiFiSsidTable'].forEach((v) {
@@ -17,8 +17,7 @@ class vis2gDatas {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     if (wiFiSsidTable != null) {
-      data['WiFiSsidTable'] =
-          wiFiSsidTable!.map((v) => v.toJson()).toList();
+      data['WiFiSsidTable'] = wiFiSsidTable!.map((v) => v.toJson()).toList();
     }
     data['max'] = max;
     return data;

@@ -1,4 +1,6 @@
 {
+  "netError": "网络异常",
+  "retry": "重新加载",
   "clear": "清除",
   "autoLang": "跟随系统",
   "tokenExpired": "登录已过期",

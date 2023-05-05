@@ -1,10 +1,10 @@
-class vis5gDatas {
+class Vis5gDatas {
   List<dynamic>? wiFi5GSsidTable;
   int? max;
 
-  vis5gDatas({this.wiFi5GSsidTable, this.max});
+  Vis5gDatas({this.wiFi5GSsidTable, this.max});
 
-  vis5gDatas.fromJson(Map<String, dynamic> json) {
+  Vis5gDatas.fromJson(Map<String, dynamic> json) {
     if (json['WiFi5GSsidTable'] != null) {
       wiFi5GSsidTable = <WiFi5GSsidTable>[];
       json['WiFi5GSsidTable'].forEach((v) {

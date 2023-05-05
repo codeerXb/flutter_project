@@ -18,7 +18,7 @@ class Visitor3 extends StatefulWidget {
 }
 
 class _Visitor3State extends State<Visitor3> {
-  vis2gDatas data_2g = vis2gDatas();
+  Vis2gDatas data_2g = Vis2gDatas();
   final TextEditingController ssidVal = TextEditingController();
   final TextEditingController maxVal = TextEditingController();
   final TextEditingController password = TextEditingController();
@@ -65,7 +65,7 @@ class _Visitor3State extends State<Visitor3> {
       var response = await XHttp.get('/data.html', data);
       var d = json.decode(response.toString());
       setState(() {
-        data_2g = vis2gDatas.fromJson(d);
+        data_2g = Vis2gDatas.fromJson(d);
         currentData = data_2g.wiFiSsidTable![3];
         //是否允许访问内网 0不启用
         networkCheck =
@@ -122,13 +122,13 @@ class _Visitor3State extends State<Visitor3> {
     };
     XHttp.get('/data.html', data).then((res) {
       try {
-        ToastUtils.toast( S.current.success);
+        ToastUtils.toast(S.current.success);
       } on FormatException catch (e) {
         print(e);
       }
     }).catchError((onError) {
       debugPrint('失败：${onError.toString()}');
-      ToastUtils.toast( S.current.error);
+      ToastUtils.toast(S.current.error);
     });
   }
 
@@ -147,7 +147,7 @@ class _Visitor3State extends State<Visitor3> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                   TitleWidger(title: S.of(context).Settings),
+                  TitleWidger(title: S.of(context).Settings),
                   InfoBox(
                       boxCotainer: Column(
                     children: [
@@ -364,7 +364,11 @@ class _Visitor3State extends State<Visitor3> {
                           closeKeyboard(context);
                           var result = CommonPicker.showPicker(
                             context: context,
-                            options: [S.current.aesRecommend, 'TKIP', 'TKIP&AES'],
+                            options: [
+                              S.current.aesRecommend,
+                              'TKIP',
+                              'TKIP&AES'
+                            ],
                             value: wpaIndex,
                           );
                           result?.then((selectedValue) => {
@@ -443,7 +447,7 @@ class _Visitor3State extends State<Visitor3> {
                                       icon: Icon(!passwordValShow
                                           ? Icons.visibility
                                           : Icons.visibility_off)),
-                                  hintText:S.current.ASCII,
+                                  hintText: S.current.ASCII,
                                   hintStyle: TextStyle(
                                       fontSize: 26.sp,
                                       color: const Color(0xff737A83)),
@@ -472,7 +476,7 @@ class _Visitor3State extends State<Visitor3> {
                                 '{"table":"WiFiSsidTable","value":[{"id":3,"AllowAccessIntranet":"${networkCheck ? "1" : "0"}","Ssid":"${ssidVal.text}","MaxClient":"${maxVal.text}","SsidHide":"${showSsid ? "1" : "0"}","ApIsolate":"${apVAl ? "1" : "0"}","Encryption":"$safeVal+$wpaVal","ShowPasswd":"0","Key":"${password.text}"}]}');
                           },
                           child: Text(
-                             S.of(context).save,
+                            S.of(context).save,
                             style: TextStyle(fontSize: 30.sp),
                           ),
                         ),

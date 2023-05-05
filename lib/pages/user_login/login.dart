@@ -283,7 +283,12 @@ class _UserLoginState extends State<UserLogin> {
                               }
                             }).catchError((err) {
                               debugPrint('响应------>$err');
-                              //相应超超时
+                              // 响应超时
+                              if (err is DioError &&
+                                  err.type == DioErrorType.connectTimeout) {
+                                debugPrint('timeout');
+                                ToastUtils.error(S.current.contimeout);
+                              }
                               if (err['code'] == DioErrorType.connectTimeout) {
                                 debugPrint('timeout');
                                 ToastUtils.error(S.current.contimeout);

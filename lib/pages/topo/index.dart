@@ -146,7 +146,7 @@ class _TopoState extends State<Topo> {
               'LeaseTime': int.parse(value['LeaseTime']['_value']),
               'IP': value['IPAddress']['_value'],
               'MAC': value['MACAddress']['_value'],
-              'hostName': value['DeviceName']['_value'],
+              'HostName': value['DeviceName']['_value'],
               'Type': value['Type']['_value'],
             });
             onlineDeviceTable.add(device);
@@ -155,8 +155,6 @@ class _TopoState extends State<Topo> {
         });
         topoData =
             EquipmentDatas(onlineDeviceTable: onlineDeviceTable, max: 255);
-
-        printInfo(info: "topoData$topoData");
       });
     } catch (e) {
       debugPrint('获取信息失败：${e.toString()}');
@@ -469,7 +467,7 @@ class _TopoState extends State<Topo> {
                     children: topoData.onlineDeviceTable!
                         .map(
                           (e) => TopoItem(
-                            title: e.toString(),
+                            title: e.hostName.toString(),
                             isNative: false,
                             isShow: true,
                             topoData: e,

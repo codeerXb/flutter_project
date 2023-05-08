@@ -18,10 +18,10 @@ class _SocialState extends State<Social> {
           decoration:
               const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
           height: 1400.w,
-          child: SingleChildScrollView(
+          child: const SingleChildScrollView(
             child: Image(
-                  image: AssetImage('assets/images/social.png'),
-                ),
+              image: AssetImage('assets/images/parentcontrol_social.jpg'),
+            ),
           ),
         ));
   }

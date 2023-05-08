@@ -20,7 +20,7 @@ class _InstalledState extends State<Installed> {
           height: 1400.w,
           child: const SingleChildScrollView(
             child: Image(
-              image: AssetImage('assets/images/Installed.png'),
+              image: AssetImage('assets/images/parental_control-install.jpg'),
             ),
           ),
         ));

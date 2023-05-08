@@ -18,11 +18,11 @@ class _VideoState extends State<Video> {
           decoration:
               const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
           height: 1400.w,
-          child: SingleChildScrollView(
+          child: const SingleChildScrollView(
             // Image.asset('assets/images/parentalControl/Video.jpg')
             child: Image(
-                  image: AssetImage('assets/images/video.png'),
-                ),
+              image: AssetImage('assets/images/parental_control-video.jpg'),
+            ),
           ),
         ));
   }

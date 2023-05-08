@@ -73,9 +73,11 @@ class _VisitorNetState extends State<VisitorNet> {
           ['WEB_GUI']['WiFi']['WLANSettings']['1']['SSIDProfile'];
       var prefix5g = jsonDecode(res)['data']['InternetGatewayDevice']['WEB_GUI']
           ['WiFi']['WLANSettings']['2']['SSIDProfile'];
+      printInfo(info: '----prefix$prefix24g,$prefix5g');
+
       setState(() {
-        data_2g.wiFiSsidTable![0].enable =
-            prefix24g['1']['Enable']['_value'] ? '1' : '0';
+        // data_2g.wiFiSsidTable![0].enable =
+        //     prefix24g['1']['Enable']['_value'] ? '1' : '0';
         data_2g.wiFiSsidTable![1].enable =
             prefix24g['2']['Enable']['_value'] ? '1' : '0';
         data_2g.wiFiSsidTable![2].enable =
@@ -83,8 +85,8 @@ class _VisitorNetState extends State<VisitorNet> {
         data_2g.wiFiSsidTable![3].enable =
             prefix24g['4']['Enable']['_value'] ? '1' : '0';
 
-        data_5g.wiFi5GSsidTable![0].enable =
-            prefix5g['1']['Enable']['_value'] ? '1' : '0';
+        // data_5g.wiFi5GSsidTable![0].enable =
+        //     prefix5g['1']['Enable']['_value'] ? '1' : '0';
         data_5g.wiFi5GSsidTable![1].enable =
             prefix5g['2']['Enable']['_value'] ? '1' : '0';
         data_5g.wiFi5GSsidTable![2].enable =
@@ -149,6 +151,24 @@ class _VisitorNetState extends State<VisitorNet> {
     });
   }
 
+  String prefix = 'InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.';
+// 设置 云端
+  setData(params) async {
+    Object? sn = await sharedGetData('deviceSn', String);
+    try {
+      var res = await Request().setACSNode([
+        params,
+      ], sn);
+      printInfo(info: '----$res');
+
+      if (json.decode(res)['code'] == 200) {
+        ToastUtils.toast('Save success');
+      }
+    } catch (e) {
+      printError(info: e.toString());
+    }
+  }
+
   Future getData() async {
     var value = await sharedGetData('deviceSn', String);
     sn = value.toString();
@@ -209,14 +229,24 @@ class _VisitorNetState extends State<VisitorNet> {
                             setState(() {
                               if (data_2g.wiFiSsidTable![1].enable == '1') {
                                 data_2g.wiFiSsidTable![1].enable = '0';
-                                //移除
-                                handleSave(
-                                    '{"table":"WiFiSsidTable","value":[{"id":1,"Enable":"0"}]}');
+                                //移除 云
+                                setData([
+                                  '${prefix}1.SSIDProfile.2.Enable',
+                                  false,
+                                  'xsd:boolean'
+                                ]);
+                                // handleSave(
+                                //     '{"table":"WiFiSsidTable","value":[{"id":1,"Enable":"0"}]}');
                               } else {
                                 data_2g.wiFiSsidTable![1].enable = '1';
                                 //启用
-                                handleSave(
-                                    '{"table":"WiFiSsidTable","value":[{"id":1,"Enable":"1"}]}');
+                                setData([
+                                  '${prefix}1.SSIDProfile.2.Enable',
+                                  true,
+                                  'xsd:boolean'
+                                ]);
+                                // handleSave(
+                                //     '{"table":"WiFiSsidTable","value":[{"id":1,"Enable":"1"}]}');
                               }
                             });
                           },
@@ -242,13 +272,23 @@ class _VisitorNetState extends State<VisitorNet> {
                             setState(() {
                               if (data_2g.wiFiSsidTable![2].enable == '1') {
                                 //移除
-                                handleSave(
-                                    '{"table":"WiFiSsidTable","value":[{"id":2,"Enable":"0"}]}');
+                                setData([
+                                  '${prefix}1.SSIDProfile.3.Enable',
+                                  false,
+                                  'xsd:boolean'
+                                ]);
+                                // handleSave(
+                                //     '{"table":"WiFiSsidTable","value":[{"id":2,"Enable":"0"}]}');
                                 data_2g.wiFiSsidTable![2].enable = '0';
                               } else {
                                 //启用
-                                handleSave(
-                                    '{"table":"WiFiSsidTable","value":[{"id":2,"Enable":"1"}]}');
+                                setData([
+                                  '${prefix}1.SSIDProfile.3.Enable',
+                                  true,
+                                  'xsd:boolean'
+                                ]);
+                                // handleSave(
+                                //     '{"table":"WiFiSsidTable","value":[{"id":2,"Enable":"1"}]}');
                                 data_2g.wiFiSsidTable![2].enable = '1';
                               }
                             });
@@ -275,13 +315,23 @@ class _VisitorNetState extends State<VisitorNet> {
                             setState(() {
                               if (data_2g.wiFiSsidTable![3].enable == '1') {
                                 //移除
-                                handleSave(
-                                    '{"table":"WiFiSsidTable","value":[{"id":3,"Enable":"0"}]}');
+                                setData([
+                                  '${prefix}1.SSIDProfile.4.Enable',
+                                  false,
+                                  'xsd:boolean'
+                                ]);
+                                // handleSave(
+                                //     '{"table":"WiFiSsidTable","value":[{"id":3,"Enable":"0"}]}');
                                 data_2g.wiFiSsidTable![3].enable = '0';
                               } else {
                                 //启用
-                                handleSave(
-                                    '{"table":"WiFiSsidTable","value":[{"id":3,"Enable":"1"}]}');
+                                setData([
+                                  '${prefix}1.SSIDProfile.4.Enable',
+                                  true,
+                                  'xsd:boolean'
+                                ]);
+                                // handleSave(
+                                //     '{"table":"WiFiSsidTable","value":[{"id":3,"Enable":"1"}]}');
                                 data_2g.wiFiSsidTable![3].enable = '1';
                               }
                             });
@@ -311,13 +361,23 @@ class _VisitorNetState extends State<VisitorNet> {
                             setState(() {
                               if (data_5g.wiFi5GSsidTable![1].enable == '1') {
                                 //移除
-                                handleSave(
-                                    '{"table":"WiFi5GSsidTable","value":[{"id":1,"Enable":"0"}]}');
+                                setData([
+                                  '${prefix}2.SSIDProfile.2.Enable',
+                                  false,
+                                  'xsd:boolean'
+                                ]);
+                                // handleSave(
+                                //     '{"table":"WiFi5GSsidTable","value":[{"id":1,"Enable":"0"}]}');
                                 data_5g.wiFi5GSsidTable![1].enable = '0';
                               } else {
                                 //启用
-                                handleSave(
-                                    '{"table":"WiFi5GSsidTable","value":[{"id":1,"Enable":"1"}]}');
+                                setData([
+                                  '${prefix}2.SSIDProfile.2.Enable',
+                                  true,
+                                  'xsd:boolean'
+                                ]);
+                                // handleSave(
+                                //     '{"table":"WiFi5GSsidTable","value":[{"id":1,"Enable":"1"}]}');
                                 data_5g.wiFi5GSsidTable![1].enable = '1';
                               }
                             });
@@ -344,13 +404,23 @@ class _VisitorNetState extends State<VisitorNet> {
                             setState(() {
                               if (data_5g.wiFi5GSsidTable![2].enable == '1') {
                                 //移除
-                                handleSave(
-                                    '{"table":"WiFi5GSsidTable","value":[{"id":2,"Enable":"0"}]}');
+                                setData([
+                                  '${prefix}2.SSIDProfile.3.Enable',
+                                  false,
+                                  'xsd:boolean'
+                                ]);
+                                // handleSave(
+                                //     '{"table":"WiFi5GSsidTable","value":[{"id":2,"Enable":"0"}]}');
                                 data_5g.wiFi5GSsidTable![2].enable = '0';
                               } else {
                                 //启用
-                                handleSave(
-                                    '{"table":"WiFi5GSsidTable","value":[{"id":2,"Enable":"1"}]}');
+                                setData([
+                                  '${prefix}2.SSIDProfile.3.Enable',
+                                  true,
+                                  'xsd:boolean'
+                                ]);
+                                // handleSave(
+                                //     '{"table":"WiFi5GSsidTable","value":[{"id":2,"Enable":"1"}]}');
                                 data_5g.wiFi5GSsidTable![2].enable = '1';
                               }
                             });
@@ -377,13 +447,23 @@ class _VisitorNetState extends State<VisitorNet> {
                             setState(() {
                               if (data_5g.wiFi5GSsidTable![3].enable == '1') {
                                 //移除
-                                handleSave(
-                                    '{"table":"WiFi5GSsidTable","value":[{"id":3,"Enable":"0"}]}');
+                                setData([
+                                  '${prefix}2.SSIDProfile.4.Enable',
+                                  false,
+                                  'xsd:boolean'
+                                ]);
+                                // handleSave(
+                                //     '{"table":"WiFi5GSsidTable","value":[{"id":3,"Enable":"0"}]}');
                                 data_5g.wiFi5GSsidTable![3].enable = '0';
                               } else {
                                 //启用
-                                handleSave(
-                                    '{"table":"WiFi5GSsidTable","value":[{"id":3,"Enable":"1"}]}');
+                                setData([
+                                  '${prefix}2.SSIDProfile.4.Enable',
+                                  true,
+                                  'xsd:boolean'
+                                ]);
+                                // handleSave(
+                                //     '{"table":"WiFi5GSsidTable","value":[{"id":3,"Enable":"1"}]}');
                                 data_5g.wiFi5GSsidTable![3].enable = '1';
                               }
                             });

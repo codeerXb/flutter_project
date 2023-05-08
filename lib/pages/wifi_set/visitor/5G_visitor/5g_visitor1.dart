@@ -6,6 +6,7 @@ import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/request/request.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
+import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:flutter_template/core/widget/custom_app_bar.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:flutter_template/pages/wifi_set/visitor/2.4GHZ_visitor/2.4GHZ_datas.dart';
@@ -131,7 +132,7 @@ class _Visitor4State extends State<Visitor4> {
       var res = await Request().getACSNode(parameterNames, sn);
       var data = jsonDecode(res)['data']['InternetGatewayDevice']['WEB_GUI']
           ['WiFi']['WLANSettings']['2']['SSIDProfile']['2'];
-      
+
       setState(() {
         //是否允许访问内网
         networkCheck = data['AccessToIntranet']['_value'];
@@ -233,10 +234,89 @@ class _Visitor4State extends State<Visitor4> {
     getData();
   }
 
+// 设置 云端
+  setData() async {
+    Object? sn = await sharedGetData('deviceSn', String);
+    String prefix =
+        'InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.2.SSIDProfile.2.';
+    try {
+      var res = await Request().setACSNode([
+        ['${prefix}AccessToIntranet', networkCheck, 'xsd:boolean'],
+        ['${prefix}SSID', ssidVal.text, 'xsd:string'],
+        ['${prefix}MaxNoOfDev', maxVal.text, 'xsd:unsignedInt'],
+        ['${prefix}HideSSIDBroadcast', showSsid, 'xsd:boolean'],
+        ['${prefix}APIsolation', apVAl, 'xsd:boolean'],
+        ['${prefix}EncryptionMode', '$safeVal+$wpaVal', 'xsd:string'],
+      ], sn);
+      printInfo(info: '----$res');
+
+      if (json.decode(res)['code'] == 200) {
+        ToastUtils.toast('Save success');
+      }
+    } catch (e) {
+      printError(info: e.toString());
+    }
+  }
+
+// 提交
+  Future<void> _saveData() async {
+    Navigator.push(context, DialogRouter(LoadingDialog()));
+    setState(() {
+      loading = true;
+    });
+    if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
+      // 云端请求赋值
+      try {
+        setData();
+      } catch (e) {
+        debugPrint('云端请求出错：${e.toString()}');
+        Get.back();
+      }
+    }
+    if (loginController.login.state == 'local') {
+      // 本地请求赋值
+      handleSave(
+          '{"table":"WiFi5GSsidTable","value":[{"id":1,"AllowAccessIntranet":"${networkCheck ? "1" : "0"}","Ssid":"${ssidVal.text}","MaxClient":"${maxVal.text}","SsidHide":"${showSsid ? "1" : "0"}","ApIsolate":"${apVAl ? "1" : "0"}","Encryption":"$safeVal+$wpaVal","ShowPasswd":"0","Key":"${password.text}"}]}');
+    }
+    Navigator.pop(context);
+    setState(() {
+      loading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: customAppbar(context: context, title: 'guest4'),
+        appBar:
+            customAppbar(context: context, title: 'guest4', actions: <Widget>[
+          Container(
+            margin: EdgeInsets.all(20.w),
+            child: OutlinedButton(
+              onPressed: loading ? null : _saveData,
+              child: Row(
+                children: [
+                  if (loading)
+                    const SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                      ),
+                    ),
+                  if (!loading)
+                    Text(
+                      S.current.save,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: loading ? Colors.grey : null,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        ]),
         body: loading
             ? const Center(child: CircularProgressIndicator())
             : GestureDetector(
@@ -584,29 +664,29 @@ class _Visitor4State extends State<Visitor4> {
                           ],
                         )),
                         //提交
-                        Padding(
-                          padding: EdgeInsets.only(top: 10.w),
-                          child: Center(
-                            child: SizedBox(
-                              height: 70.sp,
-                              width: 680.sp,
-                              child: ElevatedButton(
-                                style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all(
-                                        const Color.fromARGB(
-                                            255, 48, 118, 250))),
-                                onPressed: () {
-                                  handleSave(
-                                      '{"table":"WiFi5GSsidTable","value":[{"id":1,"AllowAccessIntranet":"${networkCheck ? "1" : "0"}","Ssid":"${ssidVal.text}","MaxClient":"${maxVal.text}","SsidHide":"${showSsid ? "1" : "0"}","ApIsolate":"${apVAl ? "1" : "0"}","Encryption":"$safeVal+$wpaVal","ShowPasswd":"0","Key":"${password.text}"}]}');
-                                },
-                                child: Text(
-                                  S.of(context).save,
-                                  style: TextStyle(fontSize: 30.sp),
-                                ),
-                              ),
-                            ),
-                          ),
-                        )
+                        // Padding(
+                        //   padding: EdgeInsets.only(top: 10.w),
+                        //   child: Center(
+                        //     child: SizedBox(
+                        //       height: 70.sp,
+                        //       width: 680.sp,
+                        //       child: ElevatedButton(
+                        //         style: ButtonStyle(
+                        //             backgroundColor: MaterialStateProperty.all(
+                        //                 const Color.fromARGB(
+                        //                     255, 48, 118, 250))),
+                        //         onPressed: () {
+                        //           handleSave(
+                        //               '{"table":"WiFi5GSsidTable","value":[{"id":1,"AllowAccessIntranet":"${networkCheck ? "1" : "0"}","Ssid":"${ssidVal.text}","MaxClient":"${maxVal.text}","SsidHide":"${showSsid ? "1" : "0"}","ApIsolate":"${apVAl ? "1" : "0"}","Encryption":"$safeVal+$wpaVal","ShowPasswd":"0","Key":"${password.text}"}]}');
+                        //         },
+                        //         child: Text(
+                        //           S.of(context).save,
+                        //           style: TextStyle(fontSize: 30.sp),
+                        //         ),
+                        //       ),
+                        //     ),
+                        //   ),
+                        // )
                       ],
                     ),
                   ),

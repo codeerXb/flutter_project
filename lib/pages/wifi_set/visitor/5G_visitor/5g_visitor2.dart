@@ -664,29 +664,29 @@ class _Visitor5State extends State<Visitor5> {
                           ],
                         )),
                         //提交
-                        Padding(
-                          padding: EdgeInsets.only(top: 10.w),
-                          child: Center(
-                            child: SizedBox(
-                              height: 70.sp,
-                              width: 680.sp,
-                              child: ElevatedButton(
-                                style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all(
-                                        const Color.fromARGB(
-                                            255, 48, 118, 250))),
-                                onPressed: () {
-                                  handleSave(
-                                      '{"table":"WiFi5GSsidTable","value":[{"id":2,"AllowAccessIntranet":"${networkCheck ? "1" : "0"}","Ssid":"${ssidVal.text}","MaxClient":"${maxVal.text}","SsidHide":"${showSsid ? "1" : "0"}","ApIsolate":"${apVAl ? "1" : "0"}","Encryption":"$safeVal+$wpaVal","ShowPasswd":"0","Key":"${password.text}"}]}');
-                                },
-                                child: Text(
-                                  S.of(context).save,
-                                  style: TextStyle(fontSize: 30.sp),
-                                ),
-                              ),
-                            ),
-                          ),
-                        )
+                        // Padding(
+                        //   padding: EdgeInsets.only(top: 10.w),
+                        //   child: Center(
+                        //     child: SizedBox(
+                        //       height: 70.sp,
+                        //       width: 680.sp,
+                        //       child: ElevatedButton(
+                        //         style: ButtonStyle(
+                        //             backgroundColor: MaterialStateProperty.all(
+                        //                 const Color.fromARGB(
+                        //                     255, 48, 118, 250))),
+                        //         onPressed: () {
+                        //           handleSave(
+                        //               '{"table":"WiFi5GSsidTable","value":[{"id":2,"AllowAccessIntranet":"${networkCheck ? "1" : "0"}","Ssid":"${ssidVal.text}","MaxClient":"${maxVal.text}","SsidHide":"${showSsid ? "1" : "0"}","ApIsolate":"${apVAl ? "1" : "0"}","Encryption":"$safeVal+$wpaVal","ShowPasswd":"0","Key":"${password.text}"}]}');
+                        //         },
+                        //         child: Text(
+                        //           S.of(context).save,
+                        //           style: TextStyle(fontSize: 30.sp),
+                        //         ),
+                        //       ),
+                        //     ),
+                        //   ),
+                        // )
                       ],
                     ),
                   ),

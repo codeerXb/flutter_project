@@ -253,6 +253,7 @@ class _UserLoginState extends State<UserLogin> {
                               "account": phone.text,
                               "password": AESUtil.generateAES(password.text),
                             };
+                            // 根据输入的用户名密码登录云平台
                             dio
                                 .post(
                                     '${BaseConfig.cloudBaseUrl}/platform/appCustomer/login',
@@ -263,16 +264,13 @@ class _UserLoginState extends State<UserLogin> {
                                 ToastUtils.error(d['message']);
                                 return;
                               } else {
-                                sharedGetData(
-                                        loginController.isSn.value.toString(),
-                                        String)
-                                    .then((value) {
-                                  debugPrint('云平台登录，设备密码:$value');
-                                  if (value != null) {
-                                    Get.offAllNamed("/home");
-                                    toolbarController.setPageIndex(0);
+                                // 是否存储了设备sn
+                                sharedGetData('deviceSn', String).then((sn) {
+                                  if (sn != null) {
+                                    debugPrint('设备sn号$sn');
+                                    Get.offNamed("/home");
                                   } else {
-                                    Get.offAllNamed("/get_equipment");
+                                    Get.offNamed("/get_equipment");
                                   }
                                 });
                                 //存储用户信息

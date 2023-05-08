@@ -108,6 +108,8 @@ class _SettingState extends State<Setting> {
                   // const Divider(),
 
                   // 添加设备
+                  test(),
+                  // 添加设备
                   addEquipments(),
 
                   //解绑
@@ -184,6 +186,17 @@ class _SettingState extends State<Setting> {
     );
   }
 
+// 添加设备
+  Widget test() {
+    return CommonWidget.simpleWidgetWithMine(
+        title: "网络测试",
+        icon: const Icon(Icons.add_circle_outline,
+            color: Color.fromARGB(255, 61, 103, 243)),
+        callBack: () {
+          Get.toNamed("/get_test");
+        });
+  }
+
   // 添加设备
   Widget addEquipments() {
     return CommonWidget.simpleWidgetWithMine(
@@ -191,7 +204,7 @@ class _SettingState extends State<Setting> {
         icon: const Icon(Icons.add_circle_outline,
             color: Color.fromARGB(255, 61, 103, 243)),
         callBack: () {
-          Get.toNamed("/get_equipment");
+          Get.toNamed("/add_equipment");
         });
   }
 

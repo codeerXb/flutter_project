@@ -204,22 +204,26 @@ class _Visitor1State extends State<Visitor1> {
 
 // 设置 云端
   setData() async {
-    // var parameterNames = [
-    //   [
-    //     "table.value",
-    //     '"WiFiSsidTable"',
-    //     "xsd:string",
-    //   ]
-    // ];
-    // var res = await Request().setACSNode(parameterNames, sn);
-    // printInfo(info: '----$res');
-    // try {
-    //   var jsonObj = jsonDecode(res);
-    //   printInfo(info: '````$jsonObj');
-    //   setState(() {});
-    // } catch (e) {
-    //   debugPrint('获取信息失败：${e.toString()}');
-    // }
+    Object? sn = await sharedGetData('deviceSn', String);
+    String prefix =
+        'InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.1.SSIDProfile.2.';
+    try {
+      var res = await Request().setACSNode([
+        ['${prefix}AccessToIntranet', networkCheck, 'xsd:boolean'],
+        ['${prefix}SSID', ssidVal.text, 'xsd:string'],
+        ['${prefix}MaxNoOfDev', maxVal.text, 'xsd:unsignedInt'],
+        ['${prefix}HideSSIDBroadcast', showSsid, 'xsd:boolean'],
+        ['${prefix}APIsolation', apVAl, 'xsd:boolean'],
+        ['${prefix}EncryptionMode', '$safeVal+$wpaVal', 'xsd:string'],
+      ], sn);
+      printInfo(info: '----$res');
+
+      if (json.decode(res)['code'] == 200) {
+        ToastUtils.toast('Save success');
+      }
+    } catch (e) {
+      printError(info: e.toString());
+    }
   }
 
   // 提交

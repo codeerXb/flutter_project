@@ -38,7 +38,12 @@ class _NetTypeState extends State<NetType> {
     getNetType();
   }
 
+  bool loading = false;
+
   void getNetType() async {
+    setState(() {
+      loading = true;
+    });
     Map<String, dynamic> data = {
       'method': 'obj_get',
       'param':
@@ -57,6 +62,9 @@ class _NetTypeState extends State<NetType> {
     } catch (e) {
       debugPrint('获取以太网状态失败：$e.toString()');
     }
+    setState(() {
+      loading = false;
+    });
   }
 
   @override
@@ -64,86 +72,105 @@ class _NetTypeState extends State<NetType> {
     return Scaffold(
       appBar:
           customAppbar(context: context, title: S.of(context).EthernetStatus),
-      body: SingleChildScrollView(
-        child: Container(
-          decoration:
-              const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
-          height: 1400.w,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              //1系统信息
-              TitleWidger(title: S.of(context).status),
-              InfoBox(
-                boxCotainer: Column(
+      body: loading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: Container(
+                decoration: const BoxDecoration(
+                    color: Color.fromRGBO(240, 240, 240, 1)),
+                height: 1400.w,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    BottomLine(
-                        rowtem: RowContainer(
-                      leftText: S.of(context).connectionMode,
-                      righText:
-                          NetTypeData.ethernetConnectMode.toString() == 'dhcp'
-                              ? S.current.DynamicIP
-                              : S.current.staticIP,
-                    )),
-                    BottomLine(
-                        rowtem: RowContainer(
-                      leftText: S.of(context).linkStatus,
-                      righText:
-                          NetTypeData.ethernetConnectionStatus.toString() == '1'
-                              ? S.current.Connected
-                              : S.current.ununited,
-                    )),
-                    BottomLine(
-                        rowtem: RowContainer(
-                      leftText: S.of(context).connectStatus,
-                      righText: NetTypeData.ethernetLinkStatus.toString() == '1'
-                          ? S.current.Connected
-                          : S.current.ununited,
-                    )),
-                    BottomLine(
-                        rowtem: RowContainer(
-                      leftText: S.of(context).OnlineTime,
-                      righText: day.toString() +
-                          S.of(context).date +
-                          hour.toString() +
-                          S.of(context).hour +
-                          min.toString() +
-                          S.of(context).minute,
-                    )),
-                    BottomLine(
-                        rowtem: RowContainer(
-                      leftText: S.of(context).IPAddress,
-                      righText: NetTypeData.ethernetConnectionIp.toString(),
-                    )),
-                    BottomLine(
-                        rowtem: RowContainer(
-                      leftText: S.of(context).SubnetMask,
-                      righText: NetTypeData.ethernetConnectionMask.toString(),
-                    )),
-                    BottomLine(
-                        rowtem: RowContainer(
-                      leftText: S.of(context).DefaultGateway,
-                      righText:
-                          NetTypeData.ethernetConnectionGateway.toString(),
-                    )),
-                    BottomLine(
-                        rowtem: RowContainer(
-                      leftText: S.of(context).PrimaryDNS,
-                      righText: NetTypeData.ethernetConnectionDns1.toString(),
-                    )),
-                    BottomLine(
-                      rowtem: RowContainer(
-                        leftText: S.of(context).SecondaryDNS,
-                        righText: NetTypeData.ethernetConnectionDns2.toString(),
+                    //1系统信息
+                    TitleWidger(title: S.of(context).status),
+                    InfoBox(
+                      boxCotainer: Column(
+                        children: [
+                          BottomLine(
+                              rowtem: RowContainer(
+                            leftText: S.of(context).connectionMode,
+                            righText:
+                                NetTypeData.ethernetConnectMode.toString() ==
+                                        'dhcp'
+                                    ? S.current.staticIP
+                                    : S.current.DynamicIP,
+                          )),
+                          BottomLine(
+                              rowtem: RowContainer(
+                            leftText: S.of(context).linkStatus,
+                            righText: NetTypeData.ethernetConnectionStatus
+                                        .toString() ==
+                                    '1'
+                                ? S.current.Connected
+                                : '-',
+                          )),
+                          BottomLine(
+                              rowtem: RowContainer(
+                            leftText: S.of(context).connectStatus,
+                            righText:
+                                NetTypeData.ethernetLinkStatus.toString() == '1'
+                                    ? S.current.Connected
+                                    : '-',
+                          )),
+                          BottomLine(
+                              rowtem: RowContainer(
+                            leftText: S.of(context).OnlineTime,
+                            righText: day != 0
+                                ? day.toString() +
+                                    S.of(context).date +
+                                    hour.toString() +
+                                    S.of(context).hour +
+                                    min.toString() +
+                                    S.of(context).minute
+                                : '-',
+                          )),
+                          BottomLine(
+                              rowtem: RowContainer(
+                            leftText: S.of(context).IPAddress,
+                            righText: NetTypeData.ethernetConnectionIp == ''
+                                ? '-'
+                                : NetTypeData.ethernetConnectionIp.toString(),
+                          )),
+                          BottomLine(
+                              rowtem: RowContainer(
+                            leftText: S.of(context).SubnetMask,
+                            righText: NetTypeData.ethernetConnectionMask == ''
+                                ? '-'
+                                : NetTypeData.ethernetConnectionMask.toString(),
+                          )),
+                          BottomLine(
+                              rowtem: RowContainer(
+                            leftText: S.of(context).DefaultGateway,
+                            righText:
+                                NetTypeData.ethernetConnectionGateway == ''
+                                    ? '-'
+                                    : NetTypeData.ethernetConnectionGateway
+                                        .toString(),
+                          )),
+                          BottomLine(
+                              rowtem: RowContainer(
+                            leftText: S.of(context).PrimaryDNS,
+                            righText: NetTypeData.ethernetConnectionDns1 == ''
+                                ? '-'
+                                : NetTypeData.ethernetConnectionDns1.toString(),
+                          )),
+                          BottomLine(
+                            rowtem: RowContainer(
+                              leftText: S.of(context).SecondaryDNS,
+                              righText: NetTypeData.ethernetConnectionDns2 == ''
+                                  ? '-'
+                                  : NetTypeData.ethernetConnectionDns2
+                                      .toString(),
+                            ),
+                          )
+                        ],
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }

@@ -461,7 +461,7 @@ class SizedBoxs extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Games'),
+                        const Text('Games'),
                         Text(
                           '135 allowed',
                           style:

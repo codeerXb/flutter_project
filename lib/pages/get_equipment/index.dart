@@ -8,7 +8,7 @@ import 'package:flutter_template/core/http/http_app.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/generated/l10n.dart';
-import 'package:flutter_template/pages/equInfo/get_equipment/water_ripple_painter.dart';
+import 'package:flutter_template/pages/get_equipment/water_ripple_painter.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:flutter_template/pages/login/model/equipment_data.dart';
 import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
@@ -239,21 +239,6 @@ class _MyWidgetState extends State<Equipment> {
                               loginController.setEquipment('systemVersionSn',
                                   equipmentData.systemVersionSn);
                               childKey.currentState!.controllerStop();
-                              // sharedGetData(
-                              //         equipmentData.systemVersionSn.toString(),
-                              //         String)
-                              //     .then((data) {
-                              //   printInfo(info: 'data是啥$data');
-                              //   if (data != null) {
-                              //     appLogin(data, equipmentData.systemVersionSn,
-                              //         equipmentData.systemProductModel);
-                              //     loginController.setSn(
-                              //         equipmentData.systemVersionSn, data);
-                              //     sharedAddAndUpdate('sn', String,
-                              //         equipmentData.systemVersionSn.toString());
-                              //   } else {
-                              loginController.setSn(
-                                  equipmentData.systemVersionSn, '');
                               loginController.setState('cloud');
                               printInfo(
                                   info:

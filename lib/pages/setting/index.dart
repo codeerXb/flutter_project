@@ -204,7 +204,7 @@ class _SettingState extends State<Setting> {
         icon: const Icon(Icons.add_circle_outline,
             color: Color.fromARGB(255, 61, 103, 243)),
         callBack: () {
-          Get.toNamed("/get_equipment");
+          Get.toNamed("/add_equipment");
         });
   }
 

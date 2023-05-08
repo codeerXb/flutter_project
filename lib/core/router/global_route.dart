@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_template/pages/Ethernet/net/net_set.dart';
 import 'package:flutter_template/pages/equInfo/get_equipment/index.dart';
+import 'package:flutter_template/pages/get_test/index.dart';
 import 'package:flutter_template/pages/odu/index.dart';
 import 'package:flutter_template/pages/parent_control/Internet_access/index.dart';
 import 'package:flutter_template/pages/parent_control/Internet_usage/index.dart';
@@ -250,6 +251,10 @@ class GlobalRouter {
     // 更改语言
     '/language_change': (BuildContext context, {Object? args}) =>
         const LanguageChange(),
+    // 更改语言
+    '/get_test': (BuildContext context, {Object? args}) => const NetworkPage(
+          key: Key('null'),
+        ),
   };
 
   static GlobalRouter? _singleton;

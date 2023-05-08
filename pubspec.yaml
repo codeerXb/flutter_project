@@ -85,6 +85,8 @@ dependencies:
   # AES加密
   encrypt: ^5.0.1
   day_night_time_picker: ^1.2.0
+  #网络监测
+  connectivity: ^3.0.6
 dev_dependencies:
   flutter_test:
     sdk: flutter

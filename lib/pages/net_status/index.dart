@@ -54,10 +54,10 @@ class _NetStatusState extends State<NetStatus> {
   String _simStatus = '0';
 
   // 定义套餐类型
-  int _comboType = 0;
+  final int _comboType = 0;
   // 定义套餐总量
   // 定义显示套餐状况
-  String _comboLabel = S.current.Notset;
+  final String _comboLabel = S.current.Notset;
   // 套餐周期
   List<String> comboCycleLabel = [
     S.current.day,
@@ -599,84 +599,84 @@ class _NetStatusState extends State<NetStatus> {
                         ],
                       )),
                       //流量套餐
-                      WhiteCard(
-                          boxCotainer: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              children: [
-                                Text(
-                                  '$usedFlowInt.$usedFlowDecimals',
-                                  style: TextStyle(
-                                      fontSize: 30.sp,
-                                      color: const Color(0xff051220)),
-                                ),
-                                Text(
-                                  S.of(context).used,
-                                  style: TextStyle(
-                                    fontSize: 28.sp,
-                                    color: Colors.black54,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          ElevatedButton(
-                            style: ButtonStyle(
-                              shape: MaterialStateProperty.all(
-                                  const CircleBorder()),
-                              minimumSize: MaterialStateProperty.all<Size>(
-                                  Size(100.w, 100.w)),
-                            ),
-                            onPressed: () {
-                              Get.toNamed('/net_server_settings')
-                                  ?.then((value) {
-                                setState(() {
-                                  _comboLabel = value['type'] == 0
-                                      ? '${value['contain']}GB/${comboCycleLabel[value['cycle']]}'
-                                      : '${value['contain']}h/${comboCycleLabel[value['cycle']]}';
-                                  _comboType = value['type'];
-                                });
-                              });
-                            },
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  S.of(context).traffic,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(fontSize: 20.sp),
-                                ),
-                                Text(
-                                  S.of(context).sets,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(fontSize: 20.sp),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: Column(
-                              children: [
-                                Text(
-                                  '5 GB / ${S.current.month}',
-                                  style: TextStyle(
-                                      fontSize: 30.sp,
-                                      color: const Color(0xff051220)),
-                                ),
-                                Text(
-                                  S.of(context).trafficPackage,
-                                  style: TextStyle(
-                                    fontSize: 24.sp,
-                                    color: Colors.black54,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      )),
+                      // WhiteCard(
+                      //     boxCotainer: Row(
+                      //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      //   children: [
+                      //     Expanded(
+                      //       child: Column(
+                      //         children: [
+                      //           Text(
+                      //             '$usedFlowInt.$usedFlowDecimals',
+                      //             style: TextStyle(
+                      //                 fontSize: 30.sp,
+                      //                 color: const Color(0xff051220)),
+                      //           ),
+                      //           Text(
+                      //             S.of(context).used,
+                      //             style: TextStyle(
+                      //               fontSize: 28.sp,
+                      //               color: Colors.black54,
+                      //             ),
+                      //           ),
+                      //         ],
+                      //       ),
+                      //     ),
+                      //     ElevatedButton(
+                      //       style: ButtonStyle(
+                      //         shape: MaterialStateProperty.all(
+                      //             const CircleBorder()),
+                      //         minimumSize: MaterialStateProperty.all<Size>(
+                      //             Size(100.w, 100.w)),
+                      //       ),
+                      //       onPressed: () {
+                      //         Get.toNamed('/net_server_settings')
+                      //             ?.then((value) {
+                      //           setState(() {
+                      //             _comboLabel = value['type'] == 0
+                      //                 ? '${value['contain']}GB/${comboCycleLabel[value['cycle']]}'
+                      //                 : '${value['contain']}h/${comboCycleLabel[value['cycle']]}';
+                      //             _comboType = value['type'];
+                      //           });
+                      //         });
+                      //       },
+                      //       child: Column(
+                      //         mainAxisAlignment: MainAxisAlignment.center,
+                      //         children: [
+                      //           Text(
+                      //             S.of(context).traffic,
+                      //             textAlign: TextAlign.center,
+                      //             style: TextStyle(fontSize: 20.sp),
+                      //           ),
+                      //           Text(
+                      //             S.of(context).sets,
+                      //             textAlign: TextAlign.center,
+                      //             style: TextStyle(fontSize: 20.sp),
+                      //           ),
+                      //         ],
+                      //       ),
+                      //     ),
+                      //     Expanded(
+                      //       child: Column(
+                      //         children: [
+                      //           Text(
+                      //             '5 GB / ${S.current.month}',
+                      //             style: TextStyle(
+                      //                 fontSize: 30.sp,
+                      //                 color: const Color(0xff051220)),
+                      //           ),
+                      //           Text(
+                      //             S.of(context).trafficPackage,
+                      //             style: TextStyle(
+                      //               fontSize: 24.sp,
+                      //               color: Colors.black54,
+                      //             ),
+                      //           ),
+                      //         ],
+                      //       ),
+                      //     ),
+                      //   ],
+                      // )),
                       //上传速率
                       WhiteCard(
                           boxCotainer: Row(

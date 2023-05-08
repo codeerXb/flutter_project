@@ -481,6 +481,34 @@ class _NetStatusState extends State<NetStatus> {
     return content;
   }
 
+  bool _isVisible = false;
+  List<String> _options = [
+    'SRS621-a',
+    'SRS621-b',
+    'SRS621-c',
+  ];
+  String _selectedOption = 'SRS621-a';
+
+// @override
+// Widget build(BuildContext context) {
+//   return Container(
+//     child: DropdownButton(
+//       value: _selectedOption,
+//       items: _options.map((option) {
+//         return DropdownMenuItem(
+//           value: option,
+//           child: Text(option),
+//         );
+//       }).toList(),
+//       onChanged: (value) {
+//         setState(() {
+//           _selectedOption = value;
+//         });
+//       },
+//     ),
+//   );
+// }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -505,17 +533,60 @@ class _NetStatusState extends State<NetStatus> {
             //下拉icon
             child: SizedBox(
               width: 1.sw,
-              child: Row(
-                children: [
-                  Text(name.toString()),
-                  Padding(padding: EdgeInsets.only(right: 20.w)),
-                  FaIcon(
-                    FontAwesomeIcons.chevronDown,
-                    size: 30.w,
-                  )
-                ],
+              child: DropdownButton(
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 36.sp,
+                ),
+                dropdownColor: Colors.black.withAlpha(180), // 设置下拉框的背景颜色
+                underline: Container(), //去除下划线
+                value: _selectedOption,
+                icon: const Icon(
+                  FontAwesomeIcons.chevronDown,
+                  size: 0,
+                ),
+                iconEnabledColor: Colors.white,
+                items: _options.map((option) {
+                  bool isSelected = option == _selectedOption;
+                  return DropdownMenuItem(
+                    value: option,
+                    child: Row(
+                      children: [
+                        Text(option),
+                        if (isSelected)
+                          Transform.translate(
+                            offset: Offset(16.w, 0), //箭头距离左边间距
+                            child: Icon(
+                              FontAwesomeIcons.chevronDown,
+                              size: 30.w,
+                              color: Colors.white,
+                            ),
+                          ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _selectedOption = value.toString();
+                  });
+                },
               ),
             ),
+
+            // SizedBox(
+            //   width: 1.sw,
+            //   child: Row(
+            //     children: [
+            //       Text(name.toString()),
+            //       Padding(padding: EdgeInsets.only(right: 20.w)),
+            //       FaIcon(
+            //      FontAwesomeIcons.chevronRight,
+            //         size: 30.w,
+            //       )
+            //     ],
+            //   ),
+            // ),
           ),
           backgroundColor: Colors.transparent,
         ),
@@ -540,9 +611,22 @@ class _NetStatusState extends State<NetStatus> {
                   padding: EdgeInsets.only(top: 20.w),
                   child: ListView(
                     children: [
+                      // SizedBox(
+                      //   width: 1.sw,
+                      //   child: Row(
+                      //     children: [
+                      //       FaIcon(
+                      //         FontAwesomeIcons.chevronRight,
+                      //         size: 30.w,
+                      //       ),
+                      //       Text(name.toString()),
+                      //       Padding(padding: EdgeInsets.only(right: 20.w)),
+                      //     ],
+                      //   ),
+                      // ),
                       const Center(
                           child: Text(
-                        'Mapping out your Wi-Fi Coverage',
+                        'Mapping out your Wi-Fi Coverage ',
                         style: TextStyle(fontWeight: FontWeight.w600),
                       )),
                       // //热力图

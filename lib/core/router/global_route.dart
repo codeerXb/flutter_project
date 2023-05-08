@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_template/pages/Ethernet/net/net_set.dart';
-import 'package:flutter_template/pages/equInfo/get_equipment/index.dart';
+import 'package:flutter_template/pages/get_equipment/index.dart';
 import 'package:flutter_template/pages/odu/index.dart';
 import 'package:flutter_template/pages/parent_control/Internet_access/index.dart';
 import 'package:flutter_template/pages/parent_control/Internet_usage/index.dart';
@@ -61,6 +61,7 @@ import 'package:flutter_template/pages/toolbar/index.dart';
 import 'package:flutter_template/pages/topo/parental/parental_control.dart';
 import 'package:flutter_template/pages/topo/parental/parental_pop.dart';
 import 'package:flutter_template/pages/topo/parental/parental_update.dart';
+import 'package:flutter_template/pages/add_equipment/index.dart';
 
 /// 路由
 class GlobalRouter {
@@ -250,6 +251,9 @@ class GlobalRouter {
     // 更改语言
     '/language_change': (BuildContext context, {Object? args}) =>
         const LanguageChange(),
+    // 添加设备
+    '/add_equipment': (BuildContext context, {Object? args}) =>
+        const AddEquipment(),
   };
 
   static GlobalRouter? _singleton;

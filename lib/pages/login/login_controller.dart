@@ -40,9 +40,6 @@ class LoginController extends GetxController {
   void setSn(key, password) {
     sn[key] = password;
     isSn.value = key;
-    // sn.update(key, (val) => password);
-    print('----------------------');
-    print(sn.toString());
   }
 }
 

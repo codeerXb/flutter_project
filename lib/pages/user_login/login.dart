@@ -269,6 +269,7 @@ class _UserLoginState extends State<UserLogin> {
                                   if (sn != null) {
                                     debugPrint('设备sn号$sn');
                                     Get.offNamed("/home");
+                                    toolbarController.setPageIndex(0);
                                   } else {
                                     Get.offNamed("/get_equipment");
                                   }

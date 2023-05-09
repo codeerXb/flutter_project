@@ -18,10 +18,10 @@ class _PaymentState extends State<Payment> {
           decoration:
               const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
           height: 1400.w,
-          child: SingleChildScrollView(
-            child:Image(
-                  image: AssetImage('assets/images/payment.png'),
-                ),
+          child: const SingleChildScrollView(
+            child: Image(
+              image: AssetImage('assets/images/parental_control-payment.jpg'),
+            ),
           ),
         ));
   }

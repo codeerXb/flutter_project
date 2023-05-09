@@ -106,8 +106,13 @@ class _NetSetState extends State<NetSet> {
     });
   }
 
+  bool loading = false;
+
   //读取
   void getData() async {
+    setState(() {
+      loading = true;
+    });
     Map<String, dynamic> data = {
       'method': 'obj_get',
       'param':
@@ -183,6 +188,9 @@ class _NetSetState extends State<NetSet> {
     } catch (e) {
       debugPrint('获取以太网设置失败：$e.toString()');
     }
+    setState(() {
+      loading = false;
+    });
   }
 
   bool _isLoading = false;
@@ -287,345 +295,363 @@ class _NetSetState extends State<NetSet> {
                 ),
               ),
             ]),
-        body: GestureDetector(
-          onTap: () => closeKeyboard(context),
-          behavior: HitTestBehavior.opaque,
-          child: Container(
-            decoration:
-                const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
-            height: 2000.h,
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  TitleWidger(title: S.of(context).Settings),
-                  InfoBox(
-                      boxCotainer: Column(
-                    children: [
-                      //连接模式
-                      GestureDetector(
-                        onTap: () {
-                          closeKeyboard(context);
-                          var result = CommonPicker.showPicker(
-                            context: context,
-                            options: [
-                              S.current.DynamicIP,
-                              S.current.staticIP,
-                              S.current.LANOnly
-                            ],
-                            value: val,
-                          );
-                          result?.then((selectedValue) => {
-                                if (val != selectedValue &&
-                                    selectedValue != null)
-                                  {
-                                    setState(() => {
-                                          val = selectedValue,
-                                          showVal = [
-                                            S.current.DynamicIP,
-                                            S.current.staticIP,
-                                            S.current.LANOnly
-                                          ][val],
-                                        })
-                                  }
-                              });
-                        },
-                        child: BottomLine(
-                          rowtem: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(S.of(context).connectionMode,
-                                  style: TextStyle(
-                                      color: const Color.fromARGB(255, 5, 0, 0),
-                                      fontSize: 28.sp)),
-                              Row(
-                                children: [
-                                  Text(showVal,
-                                      style: const TextStyle(
-                                          color: Color.fromARGB(255, 5, 0, 0),
-                                          fontSize: 14)),
-                                  Icon(
-                                    Icons.arrow_forward_ios_outlined,
-                                    color:
-                                        const Color.fromRGBO(144, 147, 153, 1),
-                                    size: 30.w,
-                                  )
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      //仅以太网
-                      Offstage(
-                        offstage: showVal == S.current.LANOnly,
-                        child: BottomLine(
-                          rowtem: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(S.of(context).EthernetOnly,
-                                  style: TextStyle(
-                                      color: const Color.fromARGB(255, 5, 0, 0),
-                                      fontSize: 28.sp)),
-                              Row(
-                                children: [
-                                  Switch(
-                                    value: isCheck,
-                                    onChanged: (newVal) {
-                                      setState(() {
-                                        isCheck = newVal;
-                                      });
-                                    },
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      //优先级
-                      Offstage(
-                        offstage: isCheck || showVal == S.current.LANOnly,
-                        child: GestureDetector(
-                          onTap: () {
-                            closeKeyboard(context);
-                            var result = CommonPicker.showPicker(
-                              context: context,
-                              options: [S.current.Ethernet, '4G/5G'],
-                              value: priorityIndex,
-                            );
-                            result?.then((selectedValue) => {
-                                  if (priorityIndex != selectedValue &&
-                                      selectedValue != null)
-                                    {
-                                      setState(() => {
-                                            priorityIndex = selectedValue,
-                                            priorityVal = [
-                                              S.current.Ethernet,
-                                              '4G/5G'
-                                            ][priorityIndex],
-                                          })
-                                    }
-                                });
-                          },
-                          child: BottomLine(
-                            rowtem: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(S.of(context).priority,
-                                    style: TextStyle(
-                                        color:
-                                            const Color.fromARGB(255, 5, 0, 0),
-                                        fontSize: 28.sp)),
-                                Row(
+        body: loading
+            ? const Center(child: CircularProgressIndicator())
+            : GestureDetector(
+                onTap: () => closeKeyboard(context),
+                behavior: HitTestBehavior.opaque,
+                child: Container(
+                  decoration: const BoxDecoration(
+                      color: Color.fromRGBO(240, 240, 240, 1)),
+                  height: 2000.h,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        TitleWidger(title: S.of(context).Settings),
+                        InfoBox(
+                            boxCotainer: Column(
+                          children: [
+                            //连接模式
+                            GestureDetector(
+                              onTap: () {
+                                closeKeyboard(context);
+                                var result = CommonPicker.showPicker(
+                                  context: context,
+                                  options: [
+                                    S.current.DynamicIP,
+                                    S.current.staticIP,
+                                    S.current.LANOnly
+                                  ],
+                                  value: val,
+                                );
+                                result?.then((selectedValue) => {
+                                      if (val != selectedValue &&
+                                          selectedValue != null)
+                                        {
+                                          setState(() => {
+                                                val = selectedValue,
+                                                showVal = [
+                                                  S.current.DynamicIP,
+                                                  S.current.staticIP,
+                                                  S.current.LANOnly
+                                                ][val],
+                                              })
+                                        }
+                                    });
+                              },
+                              child: BottomLine(
+                                rowtem: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(priorityVal,
-                                        style: const TextStyle(
-                                            color: Color.fromARGB(255, 5, 0, 0),
-                                            fontSize: 14)),
-                                    Icon(
-                                      Icons.arrow_forward_ios_outlined,
-                                      color: const Color.fromRGBO(
-                                          144, 147, 153, 1),
-                                      size: 30.w,
+                                    Text(S.of(context).connectionMode,
+                                        style: TextStyle(
+                                            color: const Color.fromARGB(
+                                                255, 5, 0, 0),
+                                            fontSize: 28.sp)),
+                                    Row(
+                                      children: [
+                                        Text(showVal,
+                                            style: const TextStyle(
+                                                color: Color.fromARGB(
+                                                    255, 5, 0, 0),
+                                                fontSize: 14)),
+                                        Icon(
+                                          Icons.arrow_forward_ios_outlined,
+                                          color: const Color.fromRGBO(
+                                              144, 147, 153, 1),
+                                          size: 30.w,
+                                        )
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            //仅以太网
+                            Offstage(
+                              offstage: showVal == S.current.LANOnly,
+                              child: BottomLine(
+                                rowtem: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(S.of(context).EthernetOnly,
+                                        style: TextStyle(
+                                            color: const Color.fromARGB(
+                                                255, 5, 0, 0),
+                                            fontSize: 28.sp)),
+                                    Row(
+                                      children: [
+                                        Switch(
+                                          value: isCheck,
+                                          onChanged: (newVal) {
+                                            setState(() {
+                                              isCheck = newVal;
+                                            });
+                                          },
+                                        ),
+                                      ],
                                     )
                                   ],
                                 ),
-                              ],
+                              ),
                             ),
-                          ),
-                        ),
-                      ),
-                      //------------------------------------------
-                      //IP地址 ethernetIp
-                      Offstage(
-                        offstage: showVal != S.current.staticIP,
-                        child: BottomLine(
-                          rowtem: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Text(
-                                S.of(context).IPAddress,
-                              ),
-                              OtpInput(ipVal1, false),
-                              const Text('.'),
-                              OtpInput(ipVal2, false),
-                              const Text('.'),
-                              OtpInput(ipVal3, false),
-                              const Text('.'),
-                              OtpInput(ipVal4, false),
-                              const Text(
-                                '*',
-                                style: TextStyle(color: Colors.red),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      //子网掩码 ethernetMask
-                      Offstage(
-                        offstage: showVal != S.current.staticIP,
-                        child: BottomLine(
-                          rowtem: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Text(S.of(context).SubnetMask),
-                              OtpInput(zwVal1, false),
-                              const Text('.'),
-                              OtpInput(zwVal2, false),
-                              const Text('.'),
-                              OtpInput(zwVal3, false),
-                              const Text('.'),
-                              OtpInput(zwVal4, false),
-                              const Text(
-                                '*',
-                                style: TextStyle(color: Colors.red),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      //默认网关 ethernetDefaultGateway
-                      Offstage(
-                        offstage: showVal != S.current.staticIP,
-                        child: BottomLine(
-                          rowtem: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Text(S.of(context).DefaultGateway),
-                              OtpInput(mrwgVal1, false),
-                              const Text('.'),
-                              OtpInput(mrwgVal2, false),
-                              const Text('.'),
-                              OtpInput(mrwgVal3, false),
-                              const Text('.'),
-                              OtpInput(mrwgVal4, false),
-                              const Text(
-                                '*',
-                                style: TextStyle(color: Colors.red),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      //主DNS ethernetPrimaryDns
-                      Offstage(
-                        offstage: showVal != S.current.staticIP,
-                        child: BottomLine(
-                          rowtem: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Text(S.of(context).PrimaryDNS),
-                              OtpInput(zdnsVal1, false),
-                              const Text('.'),
-                              OtpInput(zdnsVal2, false),
-                              const Text('.'),
-                              OtpInput(zdnsVal3, false),
-                              const Text('.'),
-                              OtpInput(zdnsVal4, false),
-                              const Text(
-                                '*',
-                                style: TextStyle(color: Colors.red),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      //辅DNS ethernetSecondaryDns
-                      Offstage(
-                        offstage: showVal != S.current.staticIP,
-                        child: BottomLine(
-                          rowtem: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Text(S.of(context).SecondaryDNS),
-                              OtpInput(fDNSVal1, false),
-                              const Text('.'),
-                              OtpInput(fDNSVal2, false),
-                              const Text('.'),
-                              OtpInput(fDNSVal3, false),
-                              const Text('.'),
-                              OtpInput(fDNSVal4, false),
-                              const Text(
-                                '*',
-                                style: TextStyle(color: Colors.red),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      //------------------------------------------
-                      //MTU
-                      Offstage(
-                        offstage: showVal == S.current.LANOnly,
-                        child: BottomLine(
-                          rowtem: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('MTU',
-                                  style: TextStyle(
-                                      color: const Color.fromARGB(255, 5, 0, 0),
-                                      fontSize: 28.sp)),
-                              SizedBox(
-                                width: 400.w,
-                                child: TextFormField(
-                                  textAlign: TextAlign.right,
-                                  keyboardType: TextInputType.number,
-                                  controller: mtu,
-                                  style: TextStyle(
-                                      fontSize: 26.sp,
-                                      color: const Color(0xff051220)),
-                                  decoration: InputDecoration(
-                                    hintText: "576~1500",
-                                    hintStyle: TextStyle(
-                                        fontSize: 26.sp,
-                                        color: const Color(0xff737A83)),
-                                    border: InputBorder.none,
+                            //优先级
+                            Offstage(
+                              offstage: isCheck || showVal == S.current.LANOnly,
+                              child: GestureDetector(
+                                onTap: () {
+                                  closeKeyboard(context);
+                                  var result = CommonPicker.showPicker(
+                                    context: context,
+                                    options: [S.current.Ethernet, '4G/5G'],
+                                    value: priorityIndex,
+                                  );
+                                  result?.then((selectedValue) => {
+                                        if (priorityIndex != selectedValue &&
+                                            selectedValue != null)
+                                          {
+                                            setState(() => {
+                                                  priorityIndex = selectedValue,
+                                                  priorityVal = [
+                                                    S.current.Ethernet,
+                                                    '4G/5G'
+                                                  ][priorityIndex],
+                                                })
+                                          }
+                                      });
+                                },
+                                child: BottomLine(
+                                  rowtem: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(S.of(context).priority,
+                                          style: TextStyle(
+                                              color: const Color.fromARGB(
+                                                  255, 5, 0, 0),
+                                              fontSize: 28.sp)),
+                                      Row(
+                                        children: [
+                                          Text(priorityVal,
+                                              style: const TextStyle(
+                                                  color: Color.fromARGB(
+                                                      255, 5, 0, 0),
+                                                  fontSize: 14)),
+                                          Icon(
+                                            Icons.arrow_forward_ios_outlined,
+                                            color: const Color.fromRGBO(
+                                                144, 147, 153, 1),
+                                            size: 30.w,
+                                          )
+                                        ],
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      //检测服务器
-                      Offstage(
-                        offstage: showVal == S.current.LANOnly,
-                        child: BottomLine(
-                          rowtem: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(S.of(context).Detect,
-                                  style: TextStyle(
-                                      color: const Color.fromARGB(255, 5, 0, 0),
-                                      fontSize: 28.sp)),
-                              SizedBox(
-                                width: 420.w,
-                                child: TextFormField(
-                                  textAlign: TextAlign.right,
-                                  controller: server,
-                                  style: TextStyle(
-                                      fontSize: 26.sp,
-                                      color: const Color(0xff051220)),
-                                  decoration: InputDecoration(
-                                    hintText: S.current.detectionServer,
-                                    hintStyle: TextStyle(
-                                        fontSize: 26.sp,
-                                        color: const Color(0xff737A83)),
-                                    border: InputBorder.none,
-                                  ),
+                            ),
+                            //------------------------------------------
+                            //IP地址 ethernetIp
+                            Offstage(
+                              offstage: showVal != S.current.staticIP,
+                              child: BottomLine(
+                                rowtem: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Text(
+                                      S.of(context).IPAddress,
+                                    ),
+                                    OtpInput(ipVal1, false),
+                                    const Text('.'),
+                                    OtpInput(ipVal2, false),
+                                    const Text('.'),
+                                    OtpInput(ipVal3, false),
+                                    const Text('.'),
+                                    OtpInput(ipVal4, false),
+                                    const Text(
+                                      '*',
+                                      style: TextStyle(color: Colors.red),
+                                    )
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  )),
-                ],
-              ),
-            ),
-          ),
-        ));
+                            ),
+                            //子网掩码 ethernetMask
+                            Offstage(
+                              offstage: showVal != S.current.staticIP,
+                              child: BottomLine(
+                                rowtem: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Text(S.of(context).SubnetMask),
+                                    OtpInput(zwVal1, false),
+                                    const Text('.'),
+                                    OtpInput(zwVal2, false),
+                                    const Text('.'),
+                                    OtpInput(zwVal3, false),
+                                    const Text('.'),
+                                    OtpInput(zwVal4, false),
+                                    const Text(
+                                      '*',
+                                      style: TextStyle(color: Colors.red),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                            //默认网关 ethernetDefaultGateway
+                            Offstage(
+                              offstage: showVal != S.current.staticIP,
+                              child: BottomLine(
+                                rowtem: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Text(S.of(context).DefaultGateway),
+                                    OtpInput(mrwgVal1, false),
+                                    const Text('.'),
+                                    OtpInput(mrwgVal2, false),
+                                    const Text('.'),
+                                    OtpInput(mrwgVal3, false),
+                                    const Text('.'),
+                                    OtpInput(mrwgVal4, false),
+                                    const Text(
+                                      '*',
+                                      style: TextStyle(color: Colors.red),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                            //主DNS ethernetPrimaryDns
+                            Offstage(
+                              offstage: showVal != S.current.staticIP,
+                              child: BottomLine(
+                                rowtem: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Text(S.of(context).PrimaryDNS),
+                                    OtpInput(zdnsVal1, false),
+                                    const Text('.'),
+                                    OtpInput(zdnsVal2, false),
+                                    const Text('.'),
+                                    OtpInput(zdnsVal3, false),
+                                    const Text('.'),
+                                    OtpInput(zdnsVal4, false),
+                                    const Text(
+                                      '*',
+                                      style: TextStyle(color: Colors.red),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                            //辅DNS ethernetSecondaryDns
+                            Offstage(
+                              offstage: showVal != S.current.staticIP,
+                              child: BottomLine(
+                                rowtem: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Text(S.of(context).SecondaryDNS),
+                                    OtpInput(fDNSVal1, false),
+                                    const Text('.'),
+                                    OtpInput(fDNSVal2, false),
+                                    const Text('.'),
+                                    OtpInput(fDNSVal3, false),
+                                    const Text('.'),
+                                    OtpInput(fDNSVal4, false),
+                                    const Text(
+                                      '*',
+                                      style: TextStyle(color: Colors.red),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                            //------------------------------------------
+                            //MTU
+                            Offstage(
+                              offstage: showVal == S.current.LANOnly,
+                              child: BottomLine(
+                                rowtem: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text('MTU',
+                                        style: TextStyle(
+                                            color: const Color.fromARGB(
+                                                255, 5, 0, 0),
+                                            fontSize: 28.sp)),
+                                    SizedBox(
+                                      width: 400.w,
+                                      child: TextFormField(
+                                        textAlign: TextAlign.right,
+                                        keyboardType: TextInputType.number,
+                                        controller: mtu,
+                                        style: TextStyle(
+                                            fontSize: 26.sp,
+                                            color: const Color(0xff051220)),
+                                        decoration: InputDecoration(
+                                          hintText: "576~1500",
+                                          hintStyle: TextStyle(
+                                              fontSize: 26.sp,
+                                              color: const Color(0xff737A83)),
+                                          border: InputBorder.none,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            //检测服务器
+                            Offstage(
+                              offstage: showVal == S.current.LANOnly,
+                              child: BottomLine(
+                                rowtem: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(S.of(context).Detect,
+                                        style: TextStyle(
+                                            color: const Color.fromARGB(
+                                                255, 5, 0, 0),
+                                            fontSize: 28.sp)),
+                                    SizedBox(
+                                      width: 420.w,
+                                      child: TextFormField(
+                                        textAlign: TextAlign.right,
+                                        controller: server,
+                                        style: TextStyle(
+                                            fontSize: 26.sp,
+                                            color: const Color(0xff051220)),
+                                        decoration: InputDecoration(
+                                          hintText: S.current.detectionServer,
+                                          hintStyle: TextStyle(
+                                              fontSize: 26.sp,
+                                              color: const Color(0xff737A83)),
+                                          border: InputBorder.none,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        )),
+                      ],
+                    ),
+                  ),
+                ),
+              ));
   }
 }

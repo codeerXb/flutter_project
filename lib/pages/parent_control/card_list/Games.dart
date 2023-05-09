@@ -30,9 +30,9 @@ class _GamesState extends State<Games> {
               decoration:
                   const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
               height: 1500.w,
-              child: Column(children:  [
+              child: Column(children: const [
                 Image(
-                  image: AssetImage('assets/images/games.png'),
+                  image: AssetImage('assets/images/games.jpg'),
                 ),
               ]),
             ),

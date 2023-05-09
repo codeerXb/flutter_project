@@ -199,6 +199,7 @@ class _WlanSetState extends State<WlanSet> {
 
   // 发射功率
   String txPowerShowVal = '100%';
+  String txPower5gShowVal = '100%';
   // 发射功率对应到节点数据
   List<String> wifiTxpower = ['20', '17', '14'];
   List<String> wifi5gTxpower = ['24', '21', '18'];
@@ -298,8 +299,13 @@ class _WlanSetState extends State<WlanSet> {
           : bandWidthIndex == 1
               ? wifiCountryChannelListHT40j.indexOf(channel)
               : wifiCountryChannelListHT40.indexOf(channel);
-      // fsVal = txPower;
-
+      if (txPower == wifiTxpower[0]) {
+        txPowerIndex = 0;
+      } else if (txPower == wifiTxpower[1]) {
+        txPowerIndex = 1;
+      } else {
+        txPowerIndex = 2;
+      }
       ssid.text = ssidText;
       max.text = maxText.toString();
       ssidisCheck = hideBroadcast;
@@ -356,6 +362,13 @@ class _WlanSetState extends State<WlanSet> {
       bandWidthIndex5g = bandWidthVal5g.indexOf(bandwidth);
       channelIndex5g = wifi5gCountryChannelList.indexOf(channel);
       // fsVal5 = txPower;
+      if (txPower == wifi5gTxpower[0]) {
+        txPowerIndex5g = 0;
+      } else if (txPower == wifi5gTxpower[1]) {
+        txPowerIndex5g = 1;
+      } else {
+        txPowerIndex5g = 2;
+      }
 
       ssid5.text = ssidText;
       max5.text = maxText.toString();
@@ -407,13 +420,11 @@ class _WlanSetState extends State<WlanSet> {
             : wifi5gCountryChannelList[channelIndex5g],
         'xsd:string'
       ],
-      // [
-      //   '$prefix.TxPower',
-      //   pdVal == 0
-      //       ? fsVal
-      //       : fsVal5,
-      //   'xsd:string'
-      // ],
+      [
+        '$prefix.TxPower',
+        bandIndex == 0 ? txPowerShowVal : txPower5gShowVal,
+        'xsd:string'
+      ],
       [
         '$prefix.SSIDProfile.1.SSID',
         bandIndex == 0 ? ssid.text : ssid5.text,
@@ -1083,11 +1094,41 @@ class _WlanSetState extends State<WlanSet> {
                                               if (bandIndex == 0)
                                                 {
                                                   txPowerIndex = selectedValue,
+                                                  if (selectedValue == 0)
+                                                    {
+                                                      txPowerShowVal =
+                                                          wifiTxpower[0],
+                                                    }
+                                                  else if (selectedValue == 1)
+                                                    {
+                                                      txPowerShowVal =
+                                                          wifiTxpower[1],
+                                                    }
+                                                  else
+                                                    {
+                                                      txPowerShowVal =
+                                                          wifiTxpower[2],
+                                                    }
                                                 }
                                               else
                                                 {
                                                   txPowerIndex5g =
                                                       selectedValue,
+                                                  if (selectedValue == 0)
+                                                    {
+                                                      txPower5gShowVal =
+                                                          wifiTxpower[0],
+                                                    }
+                                                  else if (selectedValue == 1)
+                                                    {
+                                                      txPower5gShowVal =
+                                                          wifiTxpower[1],
+                                                    }
+                                                  else
+                                                    {
+                                                      txPower5gShowVal =
+                                                          wifiTxpower[2],
+                                                    }
                                                 }
                                             })
                                       }

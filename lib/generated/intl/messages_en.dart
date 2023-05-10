@@ -47,11 +47,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "Connected": MessageLookupByLibrary.simpleMessage("Connected"),
         "DLFrequency": MessageLookupByLibrary.simpleMessage("DL Frequency"),
         "DLVelocity": MessageLookupByLibrary.simpleMessage("Down"),
+        "DNS2Server": MessageLookupByLibrary.simpleMessage(
+            "Preferred DNS server (optional)"),
+        "DNSServer":
+            MessageLookupByLibrary.simpleMessage("Preferred DNS server"),
         "DateReboot":
             MessageLookupByLibrary.simpleMessage("Restart start time"),
         "DefaultGateway":
             MessageLookupByLibrary.simpleMessage("Default Gateway"),
         "Detect": MessageLookupByLibrary.simpleMessage("Detect Server"),
+        "Devicelogin": MessageLookupByLibrary.simpleMessage("Device Login"),
         "DiscoveryEqu":
             MessageLookupByLibrary.simpleMessage("Looking for your Wi-Fi"),
         "DynamicIP": MessageLookupByLibrary.simpleMessage("Dynamic IP"),
@@ -78,6 +83,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Hardware Version"),
         "HideSSIDBroadcast":
             MessageLookupByLibrary.simpleMessage("Hide SSID broadcast"),
+        "IPAcquisition": MessageLookupByLibrary.simpleMessage(
+            "Automatic dial-up and IP acquisition"),
         "IPAddress": MessageLookupByLibrary.simpleMessage("IP Address"),
         "Insearch": MessageLookupByLibrary.simpleMessage("Searching"),
         "Intest": MessageLookupByLibrary.simpleMessage("Self Checking"),
@@ -85,13 +92,17 @@ class MessageLookup extends MessageLookupByLibrary {
         "LeaseTime": MessageLookupByLibrary.simpleMessage("Lease Time"),
         "MACAddress": MessageLookupByLibrary.simpleMessage("MAC Address"),
         "Manual": MessageLookupByLibrary.simpleMessage("Manual"),
+        "ManuallyIP": MessageLookupByLibrary.simpleMessage(
+            "Manually configure IP address, subnet mask, gateway, and DNS"),
         "Maximum":
             MessageLookupByLibrary.simpleMessage("Maximum number of devices"),
         "MaximumRange": MessageLookupByLibrary.simpleMessage("1-64"),
         "Mode": MessageLookupByLibrary.simpleMessage("Mode"),
+        "NetworkConfig": MessageLookupByLibrary.simpleMessage("Network Config"),
         "NetworkIndex":
             MessageLookupByLibrary.simpleMessage("Visitor network index"),
         "NetworkMode": MessageLookupByLibrary.simpleMessage("Network Mode"),
+        "Next": MessageLookupByLibrary.simpleMessage("Next Step"),
         "NoDeviceConnected":
             MessageLookupByLibrary.simpleMessage("No device is connected"),
         "Notset": MessageLookupByLibrary.simpleMessage("Not Set"),
@@ -106,6 +117,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "The password must be a combination of 8 to 16 digits and characters."),
         "Password": MessageLookupByLibrary.simpleMessage("Password"),
         "Poland": MessageLookupByLibrary.simpleMessage("Poland"),
+        "Previous": MessageLookupByLibrary.simpleMessage("Previous Step"),
         "PrimaryDNS": MessageLookupByLibrary.simpleMessage("Primary DNS"),
         "ProductModel": MessageLookupByLibrary.simpleMessage("Product Model"),
         "Reboot": MessageLookupByLibrary.simpleMessage("Reboot"),
@@ -169,6 +181,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "aivideo": MessageLookupByLibrary.simpleMessage("AI video"),
         "ascii32": MessageLookupByLibrary.simpleMessage("1~32 ASCII Character"),
         "autoLang": MessageLookupByLibrary.simpleMessage("Auto"),
+        "autoip":
+            MessageLookupByLibrary.simpleMessage("Automatic IP retrieval"),
         "band": MessageLookupByLibrary.simpleMessage("Bind Device"),
         "binding": MessageLookupByLibrary.simpleMessage("Binding?"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
@@ -232,6 +246,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "hour": MessageLookupByLibrary.simpleMessage("H"),
         "improveSecurity": MessageLookupByLibrary.simpleMessage(
             "Change passwords periodically to improve security"),
+        "interentMode":
+            MessageLookupByLibrary.simpleMessage("Select Internet access mode"),
         "isGoOn": MessageLookupByLibrary.simpleMessage(
             "The device will restart after submission. Do you want to continue?"),
         "lanHostSettings":
@@ -250,6 +266,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Please set the login password"),
         "loginSuccess":
             MessageLookupByLibrary.simpleMessage("login Successfully"),
+        "macAddress":
+            MessageLookupByLibrary.simpleMessage("Use MAC address cloning"),
         "maintainSettings": MessageLookupByLibrary.simpleMessage("Maintenance"),
         "majorSet": MessageLookupByLibrary.simpleMessage("Professional"),
         "maxValue": MessageLookupByLibrary.simpleMessage("Max Value"),

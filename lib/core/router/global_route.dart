@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_template/pages/Ethernet/net/net_set.dart';
 import 'package:flutter_template/pages/get_test/index.dart';
 import 'package:flutter_template/pages/get_equipment/index.dart';
+import 'package:flutter_template/pages/netMode/netMode.dart';
 import 'package:flutter_template/pages/odu/index.dart';
 import 'package:flutter_template/pages/parent_control/Internet_access/index.dart';
 import 'package:flutter_template/pages/parent_control/Internet_usage/index.dart';
@@ -71,6 +72,9 @@ class GlobalRouter {
   /// pushName到对应的路由，因为Toolbar是单例模式，所以只会创建一个
   /// pushName之后，在ToolBar，initState中获取当前的路由，实现切换页面
   static final _routes = {
+    /// 选择上网方式
+    '/NetMode': (BuildContext context, {Object? args}) => const NetMode(),
+
     /// 过渡页面
     '/': (BuildContext context, {Object? args}) => const SplashPage(),
 

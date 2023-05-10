@@ -258,5 +258,17 @@
   "game": "游戏加速",
   "line": "在线",
   "more": "查看更多",
+  "NetworkConfig": "网络配置",
+  "interentMode": "选择上网方式",
+  "Devicelogin": "设备登录",
+  "autoip": "自动获取ip",
+  "IPAcquisition": "自动拨号,获取ip",
+  "ManuallyIP": "手动设置ip地址,掩码,网关和DNS",
+  "Next": "下一步",
+  "Previous": "上一步",
+  "DNSServer": "首选DNS服务器",
+  "DNS2Server": "备用DNS服务器(选填)",
+  "macAddress": "使用MAC地址克隆",
   "a": "111"
+
 }

@@ -259,5 +259,17 @@
   "game": "Game Booster",
   "line": "Online",
   "more": "View More",
+  "NetworkConfig": "Network Config",
+  "interentMode": "Select Internet access mode",
+  "Devicelogin": "Device Login",
+  "autoip": "Automatic IP retrieval",
+  "IPAcquisition": "Automatic dial-up and IP acquisition",
+  "ManuallyIP": "Manually configure IP address, subnet mask, gateway, and DNS",
+  "Next": "Next Step",
+  "Previous": "Previous Step",
+  "DNSServer": "Preferred DNS server",
+  "DNS2Server": "Preferred DNS server (optional)",
+  "macAddress": "Use MAC address cloning",
+ 
   "a": "111"
 }

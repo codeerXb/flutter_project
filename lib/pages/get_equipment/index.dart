@@ -243,7 +243,7 @@ class _MyWidgetState extends State<Equipment> {
                               printInfo(
                                   info:
                                       'state--${loginController.login.state}');
-                              Get.offNamed("/loginPage", arguments: {
+                              Get.offNamed("/NetMode", arguments: {
                                 "sn": equipmentData.systemVersionSn,
                                 "vn": equipmentData.systemProductModel
                               });

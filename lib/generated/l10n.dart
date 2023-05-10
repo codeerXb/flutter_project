@@ -2650,6 +2650,116 @@ class S {
     );
   }
 
+  /// `Network Config`
+  String get NetworkConfig {
+    return Intl.message(
+      'Network Config',
+      name: 'NetworkConfig',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select Internet access mode`
+  String get interentMode {
+    return Intl.message(
+      'Select Internet access mode',
+      name: 'interentMode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Device Login`
+  String get Devicelogin {
+    return Intl.message(
+      'Device Login',
+      name: 'Devicelogin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Automatic IP retrieval`
+  String get autoip {
+    return Intl.message(
+      'Automatic IP retrieval',
+      name: 'autoip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Automatic dial-up and IP acquisition`
+  String get IPAcquisition {
+    return Intl.message(
+      'Automatic dial-up and IP acquisition',
+      name: 'IPAcquisition',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Manually configure IP address, subnet mask, gateway, and DNS`
+  String get ManuallyIP {
+    return Intl.message(
+      'Manually configure IP address, subnet mask, gateway, and DNS',
+      name: 'ManuallyIP',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Next Step`
+  String get Next {
+    return Intl.message(
+      'Next Step',
+      name: 'Next',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Previous Step`
+  String get Previous {
+    return Intl.message(
+      'Previous Step',
+      name: 'Previous',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Preferred DNS server`
+  String get DNSServer {
+    return Intl.message(
+      'Preferred DNS server',
+      name: 'DNSServer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Preferred DNS server (optional)`
+  String get DNS2Server {
+    return Intl.message(
+      'Preferred DNS server (optional)',
+      name: 'DNS2Server',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Use MAC address cloning`
+  String get macAddress {
+    return Intl.message(
+      'Use MAC address cloning',
+      name: 'macAddress',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `111`
   String get a {
     return Intl.message(

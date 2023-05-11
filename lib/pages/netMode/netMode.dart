@@ -225,7 +225,7 @@ class _NetModeState extends State<NetMode> {
                       bottom: BorderSide(color: Color(0XFF302F4F), width: 0.0)),
                 ),
                 child: SizedBox(
-                  width: 1.sw - 104.w,
+                  width: 1.sw - 200.w,
                   child: TextFormField(
                       initialValue: _account,
                       style: TextStyle(
@@ -276,7 +276,7 @@ class _NetModeState extends State<NetMode> {
                       bottom: BorderSide(color: Color(0XFF302F4F), width: 0.0)),
                 ),
                 child: SizedBox(
-                  width: 1.sw - 104.w,
+                  width: 1.sw - 200.w,
                   child: TextFormField(
                       initialValue: _password,
                       style: TextStyle(
@@ -355,7 +355,6 @@ class _NetModeState extends State<NetMode> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: Colors.white,
         centerTitle: true,
@@ -375,13 +374,13 @@ class _NetModeState extends State<NetMode> {
               color: Colors.black,
             )),
       ),
-      body: InkWell(
+      body: GestureDetector(
         onTap: () => closeKeyboard(context),
+        behavior: HitTestBehavior.opaque,
         child: Container(
           decoration: const BoxDecoration(
             color: Color.fromRGBO(240, 240, 240, 1),
           ),
-          height: 1400.w,
           child: Stepper(
             // type: StepperType.horizontal, //横向
             currentStep: currentStep, //当前步骤的索引
@@ -421,14 +420,18 @@ class _NetModeState extends State<NetMode> {
                   if (currentStep != 0) // 第一步时不显示上一步
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          fixedSize: const Size(200, 30)),
+                          fixedSize: const Size(200, 30),
+                          backgroundColor:
+                              const Color.fromARGB(255, 30, 104, 233)),
                       onPressed: controlsDetails.onStepCancel,
                       child: Text(S.of(context).Previous),
                     ),
                   if (currentStep != 2) // 最后一步时不显示下一步
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          fixedSize: const Size(200, 30)),
+                          fixedSize: const Size(200, 30),
+                          backgroundColor:
+                              const Color.fromARGB(255, 30, 104, 233)),
                       onPressed: controlsDetails.onStepContinue,
                       child: Text(S.of(context).Next),
                     ),
@@ -693,41 +696,40 @@ class _NetModeState extends State<NetMode> {
               // 3 设备登录
               Step(
                 title: Text(S.of(context).Devicelogin),
-                content: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: <Widget>[
-                      /// logo
-                      Container(
-                        margin: EdgeInsets.only(bottom: 70.w),
-                        child: Image.asset(
-                          'assets/images/logo.png',
-                        ),
-                      ),
-                      Text(
-                        S.current.Administratorlogin,
-                        style: TextStyle(fontSize: 48.sp),
-                      ),
-                      Padding(padding: EdgeInsets.only(top: 10.w)),
-                      Text(
-                        '${S.of(context).currentDeive} $sn',
-                        style: TextStyle(
-                            fontSize: 28.sp, color: const Color(0xFF373543)),
-                      ),
+                content: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Form(
+                      key: _formKey,
+                      child: Column(
+                        children: <Widget>[
+                          Text(
+                            S.current.Administratorlogin,
+                            style: TextStyle(fontSize: 48.sp),
+                          ),
+                          Padding(padding: EdgeInsets.only(top: 10.w)),
+                          Text(
+                            '${S.of(context).currentDeive} $sn',
+                            style: TextStyle(
+                                fontSize: 28.sp,
+                                color: const Color(0xFF373543)),
+                          ),
 
-                      /// 账号
-                      buildAccountTextField(),
-                      Padding(padding: EdgeInsets.only(top: 20.w)),
+                          /// 账号
+                          buildAccountTextField(),
+                          Padding(padding: EdgeInsets.only(top: 20.w)),
 
-                      /// 密码
-                      buildPasswordTextField(),
-                      Padding(padding: EdgeInsets.only(top: 20.w)),
+                          /// 密码
+                          buildPasswordTextField(),
+                          Padding(padding: EdgeInsets.only(top: 20.w)),
 
-                      /// 登录
-                      buildLoginButton(),
-                      Padding(padding: EdgeInsets.only(top: 20.w)),
-                    ],
-                  ),
+                          /// 登录
+                          buildLoginButton(),
+                          Padding(padding: EdgeInsets.only(top: 20.w)),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
                 isActive: currentStep == 2,
               ),

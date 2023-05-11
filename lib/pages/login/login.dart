@@ -89,7 +89,11 @@ class _LoginState extends State<Login> {
 
             debugPrint('本地登录响应------>$d');
             if (d['code'] != 200) {
-              ToastUtils.error(S.current.check);
+              if (d['code'] == 500) {
+                ToastUtils.error(S.current.deviceBinded);
+              } else {
+                ToastUtils.error(S.current.check);
+              }
               return;
             } else {
               ToastUtils.toast(d['message']);
@@ -192,32 +196,26 @@ class _LoginState extends State<Login> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(S.current.account,
-              style:
-                  TextStyle(fontSize: 32.sp, color: const Color(0xff737A83))),
           Container(
-            height: 90.w,
-            padding: EdgeInsets.only(left: 40.w),
-            margin: EdgeInsets.only(top: 24.w),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.w),
-                color: const Color(0xffEEEFF2),
-                border: Border.all(color: _accountBorderColor, width: 1.w)),
+            padding: EdgeInsets.only(top: 34.h),
+            decoration: const BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(color: Color(0XFF302F4F), width: 0.0)),
+            ),
             child: TextFormField(
                 initialValue: _account,
                 style:
                     TextStyle(fontSize: 32.sp, color: const Color(0xff051220)),
                 decoration: InputDecoration(
+                  icon: const Icon(Icons.perm_identity),
                   // 表单提示信息
-                  hintText: S.current.accountEnter,
+                  hintText: S.current.passwordLabel,
                   hintStyle: TextStyle(
                       fontSize: 32.sp, color: const Color(0xff737A83)),
                   // 取消自带的下边框
                   border: InputBorder.none,
                 ),
-                onSaved: (String? value) => {
-                      _account = value!,
-                    },
+                onSaved: (String? value) => _account = value!,
                 onChanged: (String value) => _account = value,
                 onTap: () {
                   setState(() {
@@ -357,7 +355,7 @@ class _LoginState extends State<Login> {
           elevation: 0,
           leading: IconButton(
               onPressed: () {
-                Get.offNamed("/get_equipment");
+                Get.offNamed("/add_equipment");
               },
               icon: const Icon(
                 Icons.arrow_back_ios,
@@ -406,7 +404,7 @@ class _LoginState extends State<Login> {
                   ),
 
                   /// 账号
-                  // buildAccountTextField(),
+                  buildAccountTextField(),
                   Padding(padding: EdgeInsets.only(top: 112.w)),
 
                   /// 密码

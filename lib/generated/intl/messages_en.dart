@@ -218,6 +218,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "detectionServer":
             MessageLookupByLibrary.simpleMessage("Input detection server"),
         "device": MessageLookupByLibrary.simpleMessage("Devices"),
+        "deviceBinded": MessageLookupByLibrary.simpleMessage(
+            "Binding CPE failed: The CPE device has already been bound."),
         "deviceInfo":
             MessageLookupByLibrary.simpleMessage("Device Information"),
         "dnsSettings": MessageLookupByLibrary.simpleMessage("DNS Settings"),

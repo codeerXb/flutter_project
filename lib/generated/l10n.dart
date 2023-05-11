@@ -50,6 +50,16 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `Binding CPE failed: The CPE device has already been bound.`
+  String get deviceBinded {
+    return Intl.message(
+      'Binding CPE failed: The CPE device has already been bound.',
+      name: 'deviceBinded',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `NetWork Error`
   String get netError {
     return Intl.message(

@@ -174,6 +174,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "delete": MessageLookupByLibrary.simpleMessage("删除"),
         "detectionServer": MessageLookupByLibrary.simpleMessage("输入检测服务器"),
         "device": MessageLookupByLibrary.simpleMessage("接入设备"),
+        "deviceBinded":
+            MessageLookupByLibrary.simpleMessage("绑定CPE失败: 该CPE设备已被绑定"),
         "deviceInfo": MessageLookupByLibrary.simpleMessage("设备信息"),
         "dnsSettings": MessageLookupByLibrary.simpleMessage("DNS设置"),
         "dnsStatic": MessageLookupByLibrary.simpleMessage(

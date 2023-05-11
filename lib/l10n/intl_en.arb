@@ -1,4 +1,5 @@
 {
+  "deviceBinded": "Binding CPE failed: The CPE device has already been bound.",
   "netError": "NetWork Error",
   "retry": "Retry",
   "clear": "Clear",

@@ -108,7 +108,7 @@ class _MyAppState extends State<MyApp> {
                   locale.toString().split('_')[1]);
             },
             key: navigatorKey,
-            title: 'smawave',
+            title: 'router',
             // 不显示debug标签
             debugShowCheckedModeBanner: false,
             initialRoute: '/',

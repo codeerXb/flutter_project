@@ -490,7 +490,7 @@ class _NetStatusState extends State<NetStatus> {
   bool _isVisible = false;
   //设备下拉
   List optionsList = [];
-  String currentDevice = 'SRS621-a';
+  String currentDevice = '';
   List deviceList = [];
 
   //  查询绑定设备 App
@@ -561,12 +561,7 @@ class _NetStatusState extends State<NetStatus> {
           elevation: 0,
           title: InkWell(
             overlayColor: const MaterialStatePropertyAll(Colors.transparent),
-            onTap: () {
-              setState(() {
-                isShowList = !isShowList;
-              });
-            },
-            //下拉icon
+            // 下拉icon
             child: SizedBox(
               width: 1.sw,
               child: DropdownButton(
@@ -577,28 +572,28 @@ class _NetStatusState extends State<NetStatus> {
                 dropdownColor: Colors.black.withAlpha(180), // 设置下拉框的背景颜色
                 underline: Container(), //去除下划线
                 value: currentDevice,
-                icon: Icon(
-                  FontAwesomeIcons.chevronDown,
-                  size: 0.w,
-                  color: Colors.white,
-                ),
+                // icon: Icon(
+                //   FontAwesomeIcons.chevronDown,
+                //   size: 30.w,
+                //   color: Colors.white,
+                // ),
                 iconEnabledColor: Colors.white,
                 items: optionsList.map((option) {
-                  bool isSelected = option == currentDevice;
+                  // bool isSelected = option == currentDevice;
                   return DropdownMenuItem(
                     value: option,
                     child: Row(
                       children: [
                         Text(option),
-                        if (isSelected)
-                          Transform.translate(
-                            offset: Offset(16.w, 0), //箭头距离左边间距
-                            child: Icon(
-                              FontAwesomeIcons.chevronLeft,
-                              size: 30.w,
-                              color: Colors.white,
-                            ),
-                          ),
+                        // if (isSelected)
+                        //   Transform.translate(
+                        //     offset: Offset(16.w, 0), //箭头距离左边间距
+                        //     child: Icon(
+                        //       FontAwesomeIcons.chevronLeft,
+                        //       size: 30.w,
+                        //       color: Colors.white,
+                        //     ),
+                        //   ),
                       ],
                     ),
                   );
@@ -623,7 +618,11 @@ class _NetStatusState extends State<NetStatus> {
                     loading = false;
                   });
                 },
-                onTap: (() {}),
+                onTap: (() {
+                  setState(() {
+                    isShowList = !isShowList;
+                  });
+                }),
               ),
             ),
           ),
@@ -670,18 +669,36 @@ class _NetStatusState extends State<NetStatus> {
                               'Mapping out your Wi-Fi Coverage ',
                               style: TextStyle(fontWeight: FontWeight.w600),
                             )),
-                            // //热力图
+                            // 热力图
                             Container(
                               height: 600.w,
                               margin: EdgeInsets.only(bottom: 20.w),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(18.w),
                               ),
-                              child: Image.asset(
-                                'assets/images/signalcover.jpg',
+                              child: Stack(
+                                children: [
+                                  Image.asset(
+                                    'assets/images/signalcover.jpg',
+                                  ),
+                                  Positioned(
+                                    bottom: 45.w,
+                                    right: 10.w,
+                                    child: InkWell(
+                                      onTap: () {
+                                        Get.offNamed('/signal_cover');
+                                      },
+                                      child: const Icon(
+                                        Icons.edit,
+                                        color: Color.fromARGB(255, 39, 61, 255),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            //网络环境
+
+                            // 网络环境
                             WhiteCard(
                                 boxCotainer: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,

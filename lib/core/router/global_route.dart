@@ -64,6 +64,8 @@ import 'package:flutter_template/pages/topo/parental/parental_control.dart';
 import 'package:flutter_template/pages/topo/parental/parental_pop.dart';
 import 'package:flutter_template/pages/topo/parental/parental_update.dart';
 import 'package:flutter_template/pages/add_equipment/index.dart';
+import 'package:flutter_template/pages/signal_cover/index.dart';
+import 'package:flutter_template/pages/signal_cover/testSignalStrength.dart';
 
 /// 路由
 class GlobalRouter {
@@ -263,6 +265,11 @@ class GlobalRouter {
     // 添加设备
     '/add_equipment': (BuildContext context, {Object? args}) =>
         const AddEquipment(),
+    // 编辑房间户型
+    '/signal_cover': (BuildContext context, {Object? args}) => const MyApp(),
+    // 测试信号强度
+    '/test_signal': (BuildContext context, {Object? args}) =>
+        const TestSignal(),
   };
 
   static GlobalRouter? _singleton;

@@ -85,8 +85,13 @@ dependencies:
   # AES加密
   encrypt: ^5.0.1
   day_night_time_picker: ^1.2.0
+  wifi_info_plugin_plus: ^2.0.2
   #网络监测
   connectivity: ^3.0.6
+  # 震动的插件
+  vibration: ^1.7.7
+  # 获取mac地址
+  mac_address: ^1.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

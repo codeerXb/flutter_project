@@ -493,8 +493,8 @@ class _NetStatusState extends State<NetStatus> {
   // home page loading
   bool loadingDevice = false;
   //设备下拉
-  late List optionsList = [];
-  late String currentDevice;
+  List optionsList = [];
+  String currentDevice = '';
   List deviceList = [];
 
   //  查询绑定设备 App
@@ -505,7 +505,7 @@ class _NetStatusState extends State<NetStatus> {
         throw Exception('Response is empty.');
       }
       var d = json.decode(json.encode(res));
-      printInfo(info: 'dddddddddd$d');
+      printInfo(info: '查询的绑定设备$d');
       if (d['code'] != 200) {
         // 9999：用户令牌不能为空
         // 9998：平台登录标识不能为空
@@ -527,21 +527,22 @@ class _NetStatusState extends State<NetStatus> {
           // [{id: 1, deviceSn: RS621A00211700113, type: SRS621-a},
           //{id: 2, deviceSn: 1245, type: SRS821-k}]
           deviceList = d['data'];
+          var options = [];
           d['data'].forEach((item) {
-            optionsList.add(item['type'].toString());
+            options.add(item['type'].toString());
           });
-
-          // 读取当前
-          sharedGetData('deviceSn', String).then(((res) {
-            setState(() {
-              d['data'].forEach((item) {
-                if (item['deviceSn'] == res) {
-                  currentDevice = item['type'];
-                }
-              });
-            });
-          }));
+          optionsList = options;
         });
+        // 读取当前
+        sharedGetData('deviceSn', String).then(((res) {
+          setState(() {
+            d['data'].forEach((item) {
+              if (item['deviceSn'] == res) {
+                currentDevice = item['type'];
+              }
+            });
+          });
+        }));
       }
     }).catchError((onError) {
       debugPrint(onError.toString());

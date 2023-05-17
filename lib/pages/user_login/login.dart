@@ -289,15 +289,13 @@ class _UserLoginState extends State<UserLogin> {
                                 _isLoading = false;
                               });
                             }).catchError((err) {
-                              debugPrint('响应------>$err');
+                              debugPrint('请求云平台登录接口报错：$err');
                               setState(() {
                                 _isLoading = false;
                               });
                               // 响应超时
                               if ((err is DioError &&
-                                      err.type ==
-                                          DioErrorType.connectTimeout) ||
-                                  err['code'] == DioErrorType.connectTimeout) {
+                                  err.type == DioErrorType.connectTimeout)) {
                                 debugPrint('timeout');
                                 ToastUtils.error(S.current.contimeout);
                               } else {

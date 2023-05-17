@@ -33,7 +33,7 @@ class _MyWidgetState extends State<AddEquipment> {
     super.initState();
     Future.delayed(const Duration(milliseconds: 2000), () {
       if (mounted) {
-        getEquipmentData([]);
+        getqueryingBoundDevices();
       }
       return;
     });
@@ -50,9 +50,6 @@ class _MyWidgetState extends State<AddEquipment> {
     XHttp.get('/pub/pub_data.html', data).then((res) {
       try {
         var d = json.decode(res.toString());
-        // if (equipmentData.systemVersionSn == null ||
-        //     equipmentData.systemVersionSn !=
-        //         EquipmentData.fromJson(d).systemVersionSn) {
         setState(() {
           equipmentData = EquipmentData.fromJson(d);
         });
@@ -62,9 +59,7 @@ class _MyWidgetState extends State<AddEquipment> {
             String systemVersionSnValue =
                 equipmentData.systemVersionSn.toString();
             var deviceSnValue = app[deviceSnKey];
-            printInfo(
-                info:
-                    'isExistCloudDevice===$isExistCloudDevice$deviceSnValue$systemVersionSnValue');
+
             if (deviceSnValue == systemVersionSnValue) {
               setState(() {
                 isExistCloudDevice = true;
@@ -94,6 +89,37 @@ class _MyWidgetState extends State<AddEquipment> {
               systemVersionSn: '');
         });
       }
+      debugPrint(onError.toString());
+    });
+  }
+
+  //  查询绑定设备 App
+  void getqueryingBoundDevices() {
+    App.get('/platform/appCustomer/queryCustomerCpe').then((res) {
+      if (res == null || res.toString().isEmpty) {
+        throw Exception('Response is empty.');
+      }
+      var d = json.decode(json.encode(res));
+      if (d['code'] != 200) {
+        // 9999：用户令牌不能为空
+        // 9998：平台登录标识不能为空
+        // 900：用户令牌过期或非法
+        // 9997：平台登录标识非法
+        if (d['code'] == 9999 ||
+            d['code'] == 9998 ||
+            d['code'] == 9997 ||
+            d['code'] == 900) {
+          ToastUtils.error(S.of(context).tokenExpired);
+          sharedDeleteData('user_token');
+          Get.offAllNamed('/user_login');
+        } else {
+          ToastUtils.error(S.of(context).failed);
+        }
+        return;
+      } else {
+        getEquipmentData(d['data']);
+      }
+    }).catchError((onError) {
       debugPrint(onError.toString());
     });
   }
@@ -209,58 +235,6 @@ class _MyWidgetState extends State<AddEquipment> {
                       ],
                     ),
                   ),
-                if (appList.isNotEmpty)
-                  SizedBox(
-                    height: 400.w,
-                    child: ListView.builder(
-                      itemCount: appList.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Card(
-                          elevation: 5, //设置卡片阴影的深度
-                          shape: const RoundedRectangleBorder(
-                            //设置卡片圆角
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
-                          margin: const EdgeInsets.all(10), //设置卡片外边距
-                          child: Column(
-                            children: [
-                              ListTile(
-                                leading: Image.asset("assets/images/router.png",
-                                    fit: BoxFit.fitWidth,
-                                    height: 60,
-                                    width: 40),
-                                title: Text(appList[index]['type'].toString()),
-                                subtitle: Text(
-                                  'SN ${appList[index]['deviceSn'].toString()}',
-                                  style: TextStyle(fontSize: 18.sp),
-                                ),
-                                trailing: TextButton(
-                                  onPressed: () {
-                                    //底部导航回到第一页
-                                    toolbarController.setPageIndex(0);
-                                    loginController.setUserEquipment('deviceSn',
-                                        appList[index]['deviceSn'].toString());
-                                    sharedAddAndUpdate("deviceSn", String,
-                                        appList[index]['deviceSn'].toString());
-                                    loginController.setState('cloud');
-                                    printInfo(
-                                        info:
-                                            'state--${loginController.login.state}');
-                                    Get.offNamed("/home", arguments: {
-                                      "sn":
-                                          appList[index]['deviceSn'].toString(),
-                                      "vn": appList[index]['type'].toString()
-                                    });
-                                  },
-                                  child: Text(S.of(context).conDev),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  )
               ]),
         ));
   }

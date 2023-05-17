@@ -26,6 +26,7 @@ final GlobalKey _formKey = GlobalKey<FormState>();
 class _UserLoginState extends State<UserLogin> {
   final LoginController loginController = Get.put(LoginController());
   bool passwordValShow = true;
+  bool _isLoading = false;
   var dio = Dio(BaseOptions(
     connectTimeout: 2000,
   ));
@@ -117,7 +118,7 @@ class _UserLoginState extends State<UserLogin> {
                               decoration: const BoxDecoration(
                                 border: Border(
                                     bottom: BorderSide(
-                                        color: Color(0XFF302F4F), width: 0.0)),
+                                        color: Color(0XFF302F4F), width: 1)),
                               ),
                               child: SizedBox(
                                 width: 1.sw - 104.w,
@@ -166,7 +167,7 @@ class _UserLoginState extends State<UserLogin> {
                               decoration: const BoxDecoration(
                                 border: Border(
                                     bottom: BorderSide(
-                                        color: Color(0XFF302F4F), width: 0.0)),
+                                        color: Color(0XFF302F4F), width: 1)),
                               ),
                               child: SizedBox(
                                 width: 1.sw - 104.w,
@@ -249,6 +250,9 @@ class _UserLoginState extends State<UserLogin> {
                         ),
                         onPressed: () {
                           if ((_formKey.currentState as FormState).validate()) {
+                            setState(() {
+                              _isLoading = true;
+                            });
                             Map<String, dynamic> data = {
                               "account": phone.text,
                               "password": AESUtil.generateAES(password.text),
@@ -281,8 +285,14 @@ class _UserLoginState extends State<UserLogin> {
                                 sharedAddAndUpdate("user_phone", String,
                                     (d['data']['account']));
                               }
+                              setState(() {
+                                _isLoading = false;
+                              });
                             }).catchError((err) {
                               debugPrint('响应------>$err');
+                              setState(() {
+                                _isLoading = false;
+                              });
                               // 响应超时
                               if ((err is DioError &&
                                       err.type ==
@@ -298,11 +308,20 @@ class _UserLoginState extends State<UserLogin> {
                             return;
                           }
                         },
-                        child: Text(
-                          S.of(context).userLogin,
-                          style: TextStyle(
-                              fontSize: 32.sp, color: const Color(0xffffffff)),
-                        ),
+                        child: _isLoading
+                            ? const Center(
+                                child: SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(),
+                                ),
+                              )
+                            : Text(
+                                S.of(context).userLogin,
+                                style: TextStyle(
+                                    fontSize: 32.sp,
+                                    color: const Color(0xffffffff)),
+                              ),
                       ),
                     ),
                   ],

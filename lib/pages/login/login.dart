@@ -299,6 +299,8 @@ class _LoginState extends State<Login> {
     );
   }
 
+  bool _isLoading = false;
+
   ///登录按钮
   SizedBox buildLoginButton() {
     return SizedBox(
@@ -315,14 +317,32 @@ class _LoginState extends State<Login> {
         onPressed: () {
           printInfo(info: '登陆了');
           if ((_formKey.currentState as FormState).validate()) {
+            setState(() {
+              _isLoading = true;
+            });
             onSubmit(context);
             appLogin();
+
+            Future.delayed(const Duration(milliseconds: 1000), () {
+              setState(() {
+                _isLoading = false;
+              });
+            });
           }
         },
-        child: Text(
-          S.of(context).login,
-          style: TextStyle(fontSize: 32.sp, color: const Color(0xffffffff)),
-        ),
+        child: _isLoading
+            ? const Center(
+                child: SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(),
+                ),
+              )
+            : Text(
+                S.of(context).login,
+                style:
+                    TextStyle(fontSize: 32.sp, color: const Color(0xffffffff)),
+              ),
       ),
       // CommonWidget.buttonWidget(
       //     title:S.of(context).login,
@@ -405,11 +425,11 @@ class _LoginState extends State<Login> {
 
                   /// 账号
                   buildAccountTextField(),
-                  Padding(padding: EdgeInsets.only(top: 112.w)),
+                  // Padding(padding: EdgeInsets.only(top: 112.w)),
 
                   /// 密码
                   buildPasswordTextField(),
-                  Padding(padding: EdgeInsets.only(top: 192.w)),
+                  Padding(padding: EdgeInsets.only(top: 102.w)),
 
                   /// 登录
                   buildLoginButton(),

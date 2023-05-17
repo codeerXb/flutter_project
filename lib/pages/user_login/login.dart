@@ -140,9 +140,14 @@ class _UserLoginState extends State<UserLogin> {
                                     border: InputBorder.none,
                                   ),
                                   validator: (value) {
-                                    RegExp reg = RegExp(
-                                        r'^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$');
-                                    if (!reg.hasMatch(value!)) {
+                                    // RegExp reg = RegExp(
+                                    //     r'^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$');
+                                    // if (!reg.hasMatch(value!)) {
+                                    //   return S.of(context).phoneError;
+                                    // } else {
+                                    //   return null;
+                                    // }
+                                    if (value == '') {
                                       return S.of(context).phoneError;
                                     } else {
                                       return null;
@@ -269,6 +274,7 @@ class _UserLoginState extends State<UserLogin> {
                                 debugPrint("$d");
                                 return;
                               } else {
+                                debugPrint('用户$data');
                                 // 是否存储了设备sn
                                 sharedGetData('deviceSn', String).then((sn) {
                                   if (sn != null) {
@@ -285,14 +291,9 @@ class _UserLoginState extends State<UserLogin> {
                                 sharedAddAndUpdate("user_phone", String,
                                     (d['data']['account']));
                               }
-                              setState(() {
-                                _isLoading = false;
-                              });
                             }).catchError((err) {
                               debugPrint('请求云平台登录接口报错：$err');
-                              setState(() {
-                                _isLoading = false;
-                              });
+
                               // 响应超时
                               if ((err is DioError &&
                                   err.type == DioErrorType.connectTimeout)) {
@@ -301,6 +302,10 @@ class _UserLoginState extends State<UserLogin> {
                               } else {
                                 ToastUtils.error(S.current.loginFailed);
                               }
+                            }).whenComplete(() {
+                              setState(() {
+                                _isLoading = false;
+                              });
                             });
                           } else {
                             return;

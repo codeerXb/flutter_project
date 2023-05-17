@@ -220,10 +220,10 @@ class S {
     );
   }
 
-  /// `The phone number is wrong`
+  /// `Please input email or phone number`
   String get phoneError {
     return Intl.message(
-      'The phone number is wrong',
+      'Please input email or phone number',
       name: 'phoneError',
       desc: '',
       args: [],
@@ -2520,10 +2520,10 @@ class S {
     );
   }
 
-  /// `Wi-Fi Converage`
+  /// `Wi-Fi Coverage`
   String get Environment {
     return Intl.message(
-      'Wi-Fi Converage',
+      'Wi-Fi Coverage',
       name: 'Environment',
       desc: '',
       args: [],

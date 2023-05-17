@@ -66,7 +66,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Enable reboot scheduler"),
         "EnableScheduler":
             MessageLookupByLibrary.simpleMessage("Date to reboot"),
-        "Environment": MessageLookupByLibrary.simpleMessage("Wi-Fi Converage"),
+        "Environment": MessageLookupByLibrary.simpleMessage("Wi-Fi Coverage"),
         "Ethernet": MessageLookupByLibrary.simpleMessage("Ethernet"),
         "EthernetOnly": MessageLookupByLibrary.simpleMessage("Ethernet Only"),
         "EthernetSettings":
@@ -318,8 +318,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "The password cannot be empty"),
         "passwordLabel":
             MessageLookupByLibrary.simpleMessage("Enter your password"),
-        "phoneError":
-            MessageLookupByLibrary.simpleMessage("The phone number is wrong"),
+        "phoneError": MessageLookupByLibrary.simpleMessage(
+            "Please input email or phone number"),
         "phoneLabel": MessageLookupByLibrary.simpleMessage(
             "Enter your mobile phone nubmer"),
         "priority": MessageLookupByLibrary.simpleMessage("Priority"),

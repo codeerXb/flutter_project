@@ -14,7 +14,6 @@ import 'package:flutter_template/pages/setting/about_us.dart';
 import 'package:flutter_template/pages/setting/clear_cache.dart';
 import 'package:flutter_template/pages/equInfo/equ_info.dart';
 import 'package:flutter_template/pages/setting/contact_customer.dart';
-import 'package:flutter_template/pages/setting/file_upload_download.dart';
 import 'package:flutter_template/pages/Ethernet/net_type.dart';
 import 'package:flutter_template/pages/setting/language_change.dart';
 import 'package:flutter_template/pages/setting/user_detail.dart';
@@ -129,10 +128,6 @@ class GlobalRouter {
 
     /// 图表demo
     '/chart_demo': (BuildContext context, {Object? args}) => const ChartDemo(),
-
-    /// 文件上传与下载
-    '/file_upload_download': (BuildContext context, {Object? args}) =>
-        const FileUploadDownload(),
 
     ///通讯录详情
     '/address_book_detail': (BuildContext context, {Object? args}) =>

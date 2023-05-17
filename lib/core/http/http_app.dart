@@ -14,8 +14,8 @@ class App {
   ///网络请求配置
   static final Dio appdio = Dio(BaseOptions(
     baseUrl: BaseConfig.cloudBaseUrl,
-    connectTimeout: 5000,
-    receiveTimeout: 3000,
+    connectTimeout: 10000,
+    receiveTimeout: 10000,
     // headers: BaseConfig.header,
   ));
 

@@ -953,15 +953,42 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                         backgroundColor: MaterialStateProperty.all(
                             const Color.fromARGB(255, 48, 118, 250))),
                     onPressed: () {
-                      if (mounted) {
-                        if (loginController.login.state == 'cloud' &&
-                            sn.isNotEmpty) {
-                          getReBootData();
-                        }
-                        if (loginController.login.state == 'local') {
-                          getmaintaData();
-                        }
-                      }
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                                title: Text(S.current.hint),
+                                content: Text(S.of(context).isGoOn),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: Text(S.current.cancel),
+                                    onPressed: () {
+                                      //取消
+                                      Navigator.pop(context, 'Cancle');
+                                    },
+                                  ),
+                                  TextButton(
+                                      child: Text(S.current.confirm),
+                                      onPressed: () {
+                                        //确定
+                                        Navigator.pop(context, "Ok");
+                                        Navigator.push(context,
+                                            DialogRouter(LoadingDialog()));
+                                        if (mounted) {
+                                          if (loginController.login.state ==
+                                                  'cloud' &&
+                                              sn.isNotEmpty) {
+                                            getReBootData();
+                                          }
+                                          if (loginController.login.state ==
+                                              'local') {
+                                            getmaintaData();
+                                          }
+                                        }
+                                        Navigator.pop(context);
+                                      })
+                                ]);
+                          });
                     },
                     child: Text(S.current.Reboot),
                   ),
@@ -990,15 +1017,42 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                         backgroundColor: MaterialStateProperty.all(
                             const Color.fromARGB(255, 48, 118, 250))),
                     onPressed: () {
-                      if (mounted) {
-                        if (loginController.login.state == 'cloud' &&
-                            sn.isNotEmpty) {
-                          getfactoryResetData();
-                        }
-                        if (loginController.login.state == 'local') {
-                          getfactoryReset();
-                        }
-                      }
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                                title: Text(S.current.hint),
+                                content: Text(S.of(context).isGoOn),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: Text(S.current.cancel),
+                                    onPressed: () {
+                                      //取消
+                                      Navigator.pop(context, 'Cancle');
+                                    },
+                                  ),
+                                  TextButton(
+                                      child: Text(S.current.confirm),
+                                      onPressed: () {
+                                        //确定
+                                        Navigator.pop(context, "Ok");
+                                        Navigator.push(context,
+                                            DialogRouter(LoadingDialog()));
+                                        if (mounted) {
+                                          if (loginController.login.state ==
+                                                  'cloud' &&
+                                              sn.isNotEmpty) {
+                                            getfactoryResetData();
+                                          }
+                                          if (loginController.login.state ==
+                                              'local') {
+                                            getfactoryReset();
+                                          }
+                                        }
+                                        Navigator.pop(context);
+                                      })
+                                ]);
+                          });
                     },
                     child: Text(S.current.FactoryReset),
                   ),

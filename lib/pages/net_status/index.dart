@@ -666,7 +666,7 @@ class _NetStatusState extends State<NetStatus> {
                             // ),
                             const Center(
                                 child: Text(
-                              'Mapping out your Wi-Fi Coverage ',
+                              'Mapping out your Wi-Fi Coverage',
                               style: TextStyle(fontWeight: FontWeight.w600),
                             )),
                             // 热力图

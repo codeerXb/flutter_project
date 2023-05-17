@@ -4,7 +4,9 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/config/base_config.dart';
 import 'package:flutter_template/core/http/http.dart';
+import 'package:flutter_template/core/http/http_app.dart';
 import 'package:flutter_template/core/request/request.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/utils/toast.dart';
@@ -42,19 +44,22 @@ class _TopoState extends State<Topo> {
         sn = res.toString();
         //状态为local 请求本地  状态为cloud  请求云端
         printInfo(info: 'state--${loginController.login.state}');
-        if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
-          if (mounted) {
-            getTRTopoData(false);
-          }
+        if (mounted) {
+          editName();
         }
-        if (loginController.login.state == 'local') {
-          if (mounted) {
-            // 获取设备列表并更新在线数量
-            getTopoData(false);
-            //获取网络链接状态
-            updateStatus();
-          }
-        }
+        // if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
+        //   if (mounted) {
+        //     getTRTopoData(false);
+        //   }
+        // }
+        // if (loginController.login.state == 'local') {
+        //   if (mounted) {
+        //     // 获取设备列表并更新在线数量
+        //     getTopoData(false);
+        //     //获取网络链接状态
+        //     updateStatus();
+        //   }
+        // }
       });
     }));
   }
@@ -153,6 +158,7 @@ class _TopoState extends State<Topo> {
             id++;
           }
         });
+        print('onlineDeviceTable$onlineDeviceTable');
         topoData =
             EquipmentDatas(onlineDeviceTable: onlineDeviceTable, max: 255);
       });
@@ -177,6 +183,7 @@ class _TopoState extends State<Topo> {
         printInfo(info: 'd$d');
         setState(() {
           topoData = EquipmentDatas.fromJson(d);
+          print('本地设备列表${EquipmentDatas.fromJson(d)}');
         });
       } on FormatException catch (e) {
         setState(() {
@@ -189,6 +196,40 @@ class _TopoState extends State<Topo> {
       // ToastUtils.toast('获取在线设备失败');
       debugPrint('获取在线设备失败：${onError.toString()}');
     });
+  }
+
+  //终端设备列表
+  editName() async {
+    Map<String, dynamic> form = {'sn': sn, "type": "getDevicesTable"};
+    var res = await App.post(
+        '${BaseConfig.cloudBaseUrl}/cpeMqtt/getDevicesTable',
+        data: form);
+
+    var d = json.decode(res.toString());
+    if (d['code'] != 200) {
+    } else {
+      setState(() {
+        List<OnlineDeviceTable>? onlineDeviceTable = [];
+        int id = 0;
+
+        d['data']['wifiDevices'].addAll(d['data']['lanDevices']);
+        d['data']['wifiDevices'].forEach((item) {
+          OnlineDeviceTable device = OnlineDeviceTable.fromJson({
+            'id': id,
+            'LeaseTime': '1',
+            'Type': item['connection'],
+            'HostName': item['name'],
+            'IP': item['IPAddress'],
+            'MAC': item['MACAddress']
+          });
+          onlineDeviceTable.add(device);
+          id++;
+        });
+        topoData =
+            EquipmentDatas(onlineDeviceTable: onlineDeviceTable, max: 255);
+        ToastUtils.toast(S.current.success);
+      });
+    }
   }
 
   @override
@@ -225,12 +266,13 @@ class _TopoState extends State<Topo> {
                   onPressed: () {
                     //刷新
                     if (mounted) {
-                      if (loginController.login.state == 'cloud' &&
-                          sn.isNotEmpty) {
-                        getTRTopoData(true);
-                      } else if (loginController.login.state == 'local') {
-                        getTopoData(true);
-                      }
+                      editName();
+                      // if (loginController.login.state == 'cloud' &&
+                      //     sn.isNotEmpty) {
+                      //   getTRTopoData(true);
+                      // } else if (loginController.login.state == 'local') {
+                      //   getTopoData(true);
+                      // }
                     }
                   },
                   icon: const Icon(

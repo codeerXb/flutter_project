@@ -271,6 +271,7 @@
   "DNSServer": "Preferred DNS server",
   "DNS2Server": "Preferred DNS server (optional)",
   "macAddress": "Use MAC address cloning",
- 
+  "pleaseEnter": "Please enter the content",
+  "ModifyRemarks": "Modify remarks",
   "a": "111"
 }

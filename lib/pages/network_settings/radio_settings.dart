@@ -121,7 +121,6 @@ class _RadioSettingsState extends State<RadioSettings> {
                 radioState5["NR-ARFCN"]["_value"] == ''
             ? radioState4["EARFCN"]["_value"]
             : radioState5["NR-ARFCN"]["_value"];
-        printInfo(info: '222224$gsc');
         dlfre = radioState5["NR_Frequency"]["_value"] == '--' ||
                 radioState5["NR_Frequency"]["_value"] == ''
             ? radioState4["Frequency"]["_value"]

@@ -260,73 +260,79 @@ class _WlanSetState extends State<WlanSet> {
     setState(() {
       _isLoading = true;
     });
-    Object? sn = await sharedGetData('deviceSn', String);
-    List<String> parameterNames = [
-      'InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.1'
-    ];
-    var res = await Request().getACSNode(parameterNames, sn.toString());
-    var list = json.decode(res)['data']['InternetGatewayDevice']['WEB_GUI']
-        ['WiFi']['WLANSettings']['1'];
-    // WLAN Enable
-    bool enable = list['Enable']['_value'];
-    // Mode
-    String mode = list['Mode']['_value'];
-    // Bandwidth
-    String bandwidth = list['ChannelBandwidth']['_value'];
-    // Channel
-    String channel = list['Channel']['_value'];
-    // TX Power
-    String txPower = list['TxPower']['_value'];
-    // SSID
-    String ssidText = list['SSIDProfile']['1']['SSID']['_value'];
-    // MAX
-    int maxText = list['SSIDProfile']['1']['MaxNoOfDev']['_value'];
-    // HIDE BROADCAST
-    bool hideBroadcast =
-        list['SSIDProfile']['1']['HideSSIDBroadcast']['_value'];
-    // AP Isolation
-    bool isolation = list['SSIDProfile']['1']['APIsolation']['_value'];
-    // encryptionmode
-    var encyptionmode = list['SSIDProfile']['1']['EncryptionMode']['_value'];
-    // SERCURITY
-    String sercurity = encyptionmode.split('+')[0];
-    // WPA ENCYPITON
-    String wpaEncyption = encyptionmode.split('+').skip(1).join('+');
-    // PASSWORD
-    String wpaKey = list['SSIDProfile']['1']['WPAKey']['_value'];
-    setState(() {
-      bandIndex = 0;
-      isCheck = enable;
-      modeIndex = modeVal.indexOf(mode);
-      bandWidthIndex = bandWidthVal.indexOf(bandwidth);
-      channelIndex = bandWidthIndex == 0
-          ? wifiCountryChannelListHT20.indexOf(channel)
-          : bandWidthIndex == 1
-              ? wifiCountryChannelListHT40j.indexOf(channel)
-              : wifiCountryChannelListHT40.indexOf(channel);
-      if (txPower == wifiTxpower[0]) {
-        txPowerIndex = 0;
-      } else if (txPower == wifiTxpower[1]) {
-        txPowerIndex = 1;
-      } else {
-        txPowerIndex = 2;
-      }
-      ssid.text = ssidText;
-      max.text = maxText.toString();
-      ssidisCheck = hideBroadcast;
-      apisCheck = isolation;
-      securityIndex = securityVal.indexOf(sercurity);
-      encryptionIndex = encryptionVal.indexOf(wpaEncyption);
-      if (securityIndex < 0 || encryptionIndex < 0) {
-        securityIndex = 0;
-        encryptionIndex = 0;
-      }
-      password.text = wpaKey;
-    });
-
-    setState(() {
-      _isLoading = false;
-    });
+    try {
+      Object? sn = await sharedGetData('deviceSn', String);
+      List<String> parameterNames = [
+        'InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.1'
+      ];
+      var res = await Request().getACSNode(parameterNames, sn.toString());
+      var list = json.decode(res)['data']['InternetGatewayDevice']['WEB_GUI']
+          ['WiFi']['WLANSettings']['1'];
+      // WLAN Enable
+      bool enable = list['Enable']['_value'];
+      // Mode
+      String mode = list['Mode']['_value'];
+      // Bandwidth
+      String bandwidth = list['ChannelBandwidth']['_value'];
+      // Channel
+      String channel = list['Channel']['_value'];
+      // TX Power
+      String txPower = list['TxPower']['_value'];
+      // SSID
+      String ssidText = list['SSIDProfile']['1']['SSID']['_value'];
+      // MAX
+      int maxText = list['SSIDProfile']['1']['MaxNoOfDev']['_value'];
+      // HIDE BROADCAST
+      bool hideBroadcast =
+          list['SSIDProfile']['1']['HideSSIDBroadcast']['_value'];
+      // AP Isolation
+      bool isolation = list['SSIDProfile']['1']['APIsolation']['_value'];
+      // encryptionmode
+      var encyptionmode = list['SSIDProfile']['1']['EncryptionMode']['_value'];
+      // SERCURITY
+      String sercurity = encyptionmode.split('+')[0];
+      // WPA ENCYPITON
+      String wpaEncyption = encyptionmode.split('+').skip(1).join('+');
+      // PASSWORD
+      String wpaKey = list['SSIDProfile']['1']['WPAKey']['_value'];
+      setState(() {
+        bandIndex = 0;
+        isCheck = enable;
+        modeIndex = modeVal.indexOf(mode);
+        bandWidthIndex = bandWidthVal.indexOf(bandwidth);
+        channelIndex = bandWidthIndex == 0
+            ? wifiCountryChannelListHT20.indexOf(channel)
+            : bandWidthIndex == 1
+                ? wifiCountryChannelListHT40j.indexOf(channel)
+                : wifiCountryChannelListHT40.indexOf(channel);
+        if (txPower == wifiTxpower[0]) {
+          txPowerIndex = 0;
+        } else if (txPower == wifiTxpower[1]) {
+          txPowerIndex = 1;
+        } else {
+          txPowerIndex = 2;
+        }
+        ssid.text = ssidText;
+        max.text = maxText.toString();
+        ssidisCheck = hideBroadcast;
+        apisCheck = isolation;
+        securityIndex = securityVal.indexOf(sercurity);
+        encryptionIndex = encryptionVal.indexOf(wpaEncyption);
+        if (securityIndex < 0 || encryptionIndex < 0) {
+          securityIndex = 0;
+          encryptionIndex = 0;
+        }
+        password.text = wpaKey;
+      });
+    } catch (err) {
+      debugPrint('get2.4G ERROR: $err');
+      ToastUtils.error('Request Failed');
+      Get.back();
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   // 5g
@@ -334,68 +340,74 @@ class _WlanSetState extends State<WlanSet> {
     setState(() {
       _isLoading = true;
     });
-    Object? sn = await sharedGetData('deviceSn', String);
-    List<String> parameterNames = [
-      'InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.2'
-    ];
-    var res = await Request().getACSNode(parameterNames, sn.toString());
-    var list = json.decode(res)['data']['InternetGatewayDevice']['WEB_GUI']
-        ['WiFi']['WLANSettings']['2'];
-    // WLAN Enable
-    bool enable = list['Enable']['_value'];
-    // Mode
-    String mode = list['Mode']['_value'];
-    // Bandwidth
-    String bandwidth = list['ChannelBandwidth']['_value'];
-    // Channel
-    String channel = list['Channel']['_value'];
-    // TX Power
-    String txPower = list['TxPower']['_value'];
-    // SSID
-    String ssidText = list['SSIDProfile']['1']['SSID']['_value'];
-    // MAX
-    int maxText = list['SSIDProfile']['1']['MaxNoOfDev']['_value'];
-    // HIDE BROADCAST
-    bool hideBroadcast =
-        list['SSIDProfile']['1']['HideSSIDBroadcast']['_value'];
-    // AP Isolation
-    bool isolation = list['SSIDProfile']['1']['APIsolation']['_value'];
-    // encryptionmode
-    var encyptionmode = list['SSIDProfile']['1']['EncryptionMode']['_value'];
-    // SERCURITY
-    String sercurity = encyptionmode.split('+')[0];
-    // WPA ENCYPITON
-    String wpaEncyption = encyptionmode.split('+').skip(1).join('+');
-    // PASSWORD
-    String wpaKey = list['SSIDProfile']['1']['WPAKey']['_value'];
+    try {
+      Object? sn = await sharedGetData('deviceSn', String);
+      List<String> parameterNames = [
+        'InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.2'
+      ];
+      var res = await Request().getACSNode(parameterNames, sn.toString());
+      var list = json.decode(res)['data']['InternetGatewayDevice']['WEB_GUI']
+          ['WiFi']['WLANSettings']['2'];
+      // WLAN Enable
+      bool enable = list['Enable']['_value'];
+      // Mode
+      String mode = list['Mode']['_value'];
+      // Bandwidth
+      String bandwidth = list['ChannelBandwidth']['_value'];
+      // Channel
+      String channel = list['Channel']['_value'];
+      // TX Power
+      String txPower = list['TxPower']['_value'];
+      // SSID
+      String ssidText = list['SSIDProfile']['1']['SSID']['_value'];
+      // MAX
+      int maxText = list['SSIDProfile']['1']['MaxNoOfDev']['_value'];
+      // HIDE BROADCAST
+      bool hideBroadcast =
+          list['SSIDProfile']['1']['HideSSIDBroadcast']['_value'];
+      // AP Isolation
+      bool isolation = list['SSIDProfile']['1']['APIsolation']['_value'];
+      // encryptionmode
+      var encyptionmode = list['SSIDProfile']['1']['EncryptionMode']['_value'];
+      // SERCURITY
+      String sercurity = encyptionmode.split('+')[0];
+      // WPA ENCYPITON
+      String wpaEncyption = encyptionmode.split('+').skip(1).join('+');
+      // PASSWORD
+      String wpaKey = list['SSIDProfile']['1']['WPAKey']['_value'];
 
-    setState(() {
-      bandIndex = 1;
-      isCheck5 = enable;
-      modeIndex5g = modeVal5g.indexOf(mode);
-      bandWidthIndex5g = bandWidthVal5g.indexOf(bandwidth);
-      channelIndex5g = wifi5gCountryChannelList.indexOf(channel);
-      // fsVal5 = txPower;
-      if (txPower == wifi5gTxpower[0]) {
-        txPowerIndex5g = 0;
-      } else if (txPower == wifi5gTxpower[1]) {
-        txPowerIndex5g = 1;
-      } else {
-        txPowerIndex5g = 2;
-      }
+      setState(() {
+        bandIndex = 1;
+        isCheck5 = enable;
+        modeIndex5g = modeVal5g.indexOf(mode);
+        bandWidthIndex5g = bandWidthVal5g.indexOf(bandwidth);
+        channelIndex5g = wifi5gCountryChannelList.indexOf(channel);
+        // fsVal5 = txPower;
+        if (txPower == wifi5gTxpower[0]) {
+          txPowerIndex5g = 0;
+        } else if (txPower == wifi5gTxpower[1]) {
+          txPowerIndex5g = 1;
+        } else {
+          txPowerIndex5g = 2;
+        }
 
-      ssid5.text = ssidText;
-      max5.text = maxText.toString();
-      ssidisCheck5 = hideBroadcast;
-      apisCheck5 = isolation;
-      securityIndex5g = securityVal.indexOf(sercurity);
-      encryptionIndex5g = encryptionVal.indexOf(wpaEncyption);
-      password5.text = wpaKey;
-    });
-
-    setState(() {
-      _isLoading = false;
-    });
+        ssid5.text = ssidText;
+        max5.text = maxText.toString();
+        ssidisCheck5 = hideBroadcast;
+        apisCheck5 = isolation;
+        securityIndex5g = securityVal.indexOf(sercurity);
+        encryptionIndex5g = encryptionVal.indexOf(wpaEncyption);
+        password5.text = wpaKey;
+      });
+    } catch (err) {
+      debugPrint('get5G ERROR: $err');
+      ToastUtils.error('Request Failed');
+      Get.back();
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   // 保存配置

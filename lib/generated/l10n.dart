@@ -270,10 +270,10 @@ class S {
     );
   }
 
-  /// `Verification code Error`
+  /// `Verification code error`
   String get verficationCodeError {
     return Intl.message(
-      'Verification code Error',
+      'Verification code error',
       name: 'verficationCodeError',
       desc: '',
       args: [],
@@ -290,10 +290,10 @@ class S {
     );
   }
 
-  /// `login Successfully`
+  /// `Login Success`
   String get loginSuccess {
     return Intl.message(
-      'login Successfully',
+      'Login Success',
       name: 'loginSuccess',
       desc: '',
       args: [],
@@ -1160,10 +1160,10 @@ class S {
     );
   }
 
-  /// `Current Deive`
+  /// `Current Device`
   String get currentDeive {
     return Intl.message(
-      'Current Deive',
+      'Current Device',
       name: 'currentDeive',
       desc: '',
       args: [],
@@ -1220,10 +1220,10 @@ class S {
     );
   }
 
-  /// `None(not recommended)`
+  /// `None(Not Recommended)`
   String get emptyNORecommend {
     return Intl.message(
-      'None(not recommended)',
+      'None(Not Recommended)',
       name: 'emptyNORecommend',
       desc: '',
       args: [],

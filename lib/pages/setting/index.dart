@@ -107,7 +107,6 @@ class _SettingState extends State<Setting> {
                   // fileUplodAndDownload(),
                   // const Divider(),
 
-
                   // 网络测试
                   // test(),
                   // 添加设备
@@ -119,7 +118,7 @@ class _SettingState extends State<Setting> {
                   // subService(),
 
                   /// Wi-Fi设置
-                  const TitleWidger(title: 'Wi-Fl'),
+                  const TitleWidger(title: 'Wi-Fi'),
 
                   /// WLAN设置
                   wlanSet(),

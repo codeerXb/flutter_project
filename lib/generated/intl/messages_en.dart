@@ -208,7 +208,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "contimeout":
             MessageLookupByLibrary.simpleMessage("Connection Timeout"),
         "cpeManagementPlatform": MessageLookupByLibrary.simpleMessage(""),
-        "currentDeive": MessageLookupByLibrary.simpleMessage("Current Deive"),
+        "currentDeive": MessageLookupByLibrary.simpleMessage("Current Device"),
         "currentOrientation":
             MessageLookupByLibrary.simpleMessage("Current orientation"),
         "currentValue": MessageLookupByLibrary.simpleMessage("current Value"),
@@ -228,7 +228,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Static DNS has the highest priority, VPN DNS follows it and LTE DNS has the lowest priority. If you want to restore the VPN/LTE DNS, please clear the two DNS configuration and submit"),
         "down": MessageLookupByLibrary.simpleMessage("Down"),
         "emptyNORecommend":
-            MessageLookupByLibrary.simpleMessage("None(not recommended)"),
+            MessageLookupByLibrary.simpleMessage("None(Not Recommended)"),
         "endIPAddress": MessageLookupByLibrary.simpleMessage("End iP address"),
         "enter": MessageLookupByLibrary.simpleMessage("Enter"),
         "equipment": MessageLookupByLibrary.simpleMessage("Equipment"),
@@ -268,8 +268,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "loginFailed": MessageLookupByLibrary.simpleMessage("Login Failed"),
         "loginPassword": MessageLookupByLibrary.simpleMessage(
             "Please set the login password"),
-        "loginSuccess":
-            MessageLookupByLibrary.simpleMessage("login Successfully"),
+        "loginSuccess": MessageLookupByLibrary.simpleMessage("Login Success"),
         "macAddress":
             MessageLookupByLibrary.simpleMessage("Use MAC address cloning"),
         "maintainSettings": MessageLookupByLibrary.simpleMessage("Maintenance"),
@@ -372,7 +371,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "verficationCode":
             MessageLookupByLibrary.simpleMessage(" Enter verification code"),
         "verficationCodeError":
-            MessageLookupByLibrary.simpleMessage("Verification code Error"),
+            MessageLookupByLibrary.simpleMessage("Verification code error"),
         "versionInfo":
             MessageLookupByLibrary.simpleMessage("Version Information"),
         "versionUpdating":

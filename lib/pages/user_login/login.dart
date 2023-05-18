@@ -124,7 +124,7 @@ class _UserLoginState extends State<UserLogin> {
                                 width: 1.sw - 104.w,
                                 child: TextFormField(
                                   controller: phone,
-                                  keyboardType: TextInputType.number,
+                                  keyboardType: TextInputType.text,
                                   // initialValue: _password,
                                   style: TextStyle(
                                       fontSize: 32.sp,

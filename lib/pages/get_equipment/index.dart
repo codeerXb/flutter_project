@@ -152,6 +152,29 @@ class _MyWidgetState extends State<Equipment> {
           ),
           elevation: 0,
           backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: SizedBox(
+                width: 80,
+                child: GestureDetector(
+                  onTap: () {
+                    Get.offNamed("/user_login");
+                    sharedDeleteData('user_phone');
+                    sharedDeleteData('user_token');
+                    sharedDeleteData('deviceSn');
+                    debugPrint('清除用户信息');
+                  },
+                  child: Column(children: [
+                    const Icon(Icons.power_settings_new, color: Colors.red),
+                    Text(S.current.logOut,
+                        style:
+                            const TextStyle(color: Colors.red, fontSize: 11)),
+                  ]),
+                ),
+              ),
+            ),
+          ],
         ),
         body: Obx(
           () => ListView(

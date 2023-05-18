@@ -107,7 +107,8 @@ class _SettingState extends State<Setting> {
                   // fileUplodAndDownload(),
                   // const Divider(),
 
-                  // 添加设备
+
+                  // 网络测试
                   // test(),
                   // 添加设备
                   addEquipments(),
@@ -186,7 +187,7 @@ class _SettingState extends State<Setting> {
     );
   }
 
-// // 添加设备
+// // 网络测试
 //   Widget test() {
 //     return CommonWidget.simpleWidgetWithMine(
 //         title: "网络测试",

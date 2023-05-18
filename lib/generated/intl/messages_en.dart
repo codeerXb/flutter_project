@@ -98,6 +98,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Maximum number of devices"),
         "MaximumRange": MessageLookupByLibrary.simpleMessage("1-64"),
         "Mode": MessageLookupByLibrary.simpleMessage("Mode"),
+        "ModifyRemarks": MessageLookupByLibrary.simpleMessage("Modify remarks"),
         "NetworkConfig": MessageLookupByLibrary.simpleMessage("Network Config"),
         "NetworkIndex":
             MessageLookupByLibrary.simpleMessage("Visitor network index"),
@@ -322,6 +323,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Please input email or phone number"),
         "phoneLabel": MessageLookupByLibrary.simpleMessage(
             "Enter your mobile phone nubmer"),
+        "pleaseEnter":
+            MessageLookupByLibrary.simpleMessage("Please enter the content"),
         "priority": MessageLookupByLibrary.simpleMessage("Priority"),
         "privacyPolicy": MessageLookupByLibrary.simpleMessage("privacy Policy"),
         "radioSettings": MessageLookupByLibrary.simpleMessage("Radio Settings"),

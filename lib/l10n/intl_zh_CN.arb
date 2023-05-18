@@ -271,6 +271,8 @@
   "DNSServer": "首选DNS服务器",
   "DNS2Server": "备用DNS服务器(选填)",
   "macAddress": "使用MAC地址克隆",
+  "pleaseEnter": "请输入内容",
+  "ModifyRemarks": "修改备注",
   "a": "111"
 
 }

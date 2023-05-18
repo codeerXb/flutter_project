@@ -649,7 +649,25 @@ class _NetStatusState extends State<NetStatus> {
                         height: 1000,
                         child: Stack(
                           children: [
-                            // 头部下拉widget
+                            // SizedBox(
+                            //   width: 1.sw,
+                            //   child: Row(
+                            //     children: [
+                            //       FaIcon(
+                            //         FontAwesomeIcons.chevronRight,
+                            //         size: 30.w,
+                            //       ),
+                            //       Text(name.toString()),
+                            //       Padding(padding: EdgeInsets.only(right: 20.w)),
+                            //     ],
+                            //   ),
+                            // ),
+                            const Center(
+                                child: Text(
+                              'Mapping out your Wi-Fi Coverage',
+                              style: TextStyle(fontWeight: FontWeight.w600),
+                            )),
+                            // 热力图
                             Container(
                               width: 1.sw,
                               height: 200.h,

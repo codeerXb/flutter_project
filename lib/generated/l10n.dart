@@ -2780,6 +2780,26 @@ class S {
     );
   }
 
+  /// `Please enter the content`
+  String get pleaseEnter {
+    return Intl.message(
+      'Please enter the content',
+      name: 'pleaseEnter',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Modify remarks`
+  String get ModifyRemarks {
+    return Intl.message(
+      'Modify remarks',
+      name: 'ModifyRemarks',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `111`
   String get a {
     return Intl.message(

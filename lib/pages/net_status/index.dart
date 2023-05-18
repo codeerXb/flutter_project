@@ -565,6 +565,8 @@ class _NetStatusState extends State<NetStatus> {
             child: Scaffold(
               appBar: AppBar(
                 elevation: 0,
+                // 不自动添加返回键
+                automaticallyImplyLeading: false,
                 title: InkWell(
                   overlayColor:
                       const MaterialStatePropertyAll(Colors.transparent),

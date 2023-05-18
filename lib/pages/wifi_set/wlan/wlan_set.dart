@@ -83,8 +83,8 @@ class _WlanSetState extends State<WlanSet> {
   // 5g选项显示
   List<String> bandWidthOpt5g = [
     '20MHz',
-    '20/40 MHz',
-    '20/40/80 MHz',
+    '20/40MHz',
+    '20/40/80MHz',
   ];
   // 5g传值的内容
   List<String> bandWidthVal5g = [
@@ -198,10 +198,12 @@ class _WlanSetState extends State<WlanSet> {
   bool passwordValHidden = true;
 
   // 发射功率
-  String txPowerShowVal = '100%';
-  String txPower5gShowVal = '100%';
+  String txPowerShowVal = '20';
+  String txPower5gShowVal = '24';
   // 发射功率对应到节点数据
+  // 2.4g发射功率对应关系
   List<String> wifiTxpower = ['20', '17', '14'];
+  // 5g发射功率对应关系
   List<String> wifi5gTxpower = ['24', '21', '18'];
   // 选择的索引值
   int txPowerIndex = 0;
@@ -255,6 +257,9 @@ class _WlanSetState extends State<WlanSet> {
   /// 云端获取接口
   // 2.4g
   Future get24gList() async {
+    setState(() {
+      _isLoading = true;
+    });
     Object? sn = await sharedGetData('deviceSn', String);
     List<String> parameterNames = [
       'InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.1'
@@ -288,7 +293,7 @@ class _WlanSetState extends State<WlanSet> {
     // WPA ENCYPITON
     String wpaEncyption = encyptionmode.split('+').skip(1).join('+');
     // PASSWORD
-    // 暂无PASSWORD
+    String wpaKey = list['SSIDProfile']['1']['WPAKey']['_value'];
     setState(() {
       bandIndex = 0;
       isCheck = enable;
@@ -316,11 +321,19 @@ class _WlanSetState extends State<WlanSet> {
         securityIndex = 0;
         encryptionIndex = 0;
       }
+      password.text = wpaKey;
+    });
+
+    setState(() {
+      _isLoading = false;
     });
   }
 
   // 5g
   Future get5gList() async {
+    setState(() {
+      _isLoading = true;
+    });
     Object? sn = await sharedGetData('deviceSn', String);
     List<String> parameterNames = [
       'InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.2'
@@ -354,7 +367,8 @@ class _WlanSetState extends State<WlanSet> {
     // WPA ENCYPITON
     String wpaEncyption = encyptionmode.split('+').skip(1).join('+');
     // PASSWORD
-    // 暂无PASSWORD
+    String wpaKey = list['SSIDProfile']['1']['WPAKey']['_value'];
+
     setState(() {
       bandIndex = 1;
       isCheck5 = enable;
@@ -376,6 +390,11 @@ class _WlanSetState extends State<WlanSet> {
       apisCheck5 = isolation;
       securityIndex5g = securityVal.indexOf(sercurity);
       encryptionIndex5g = encryptionVal.indexOf(wpaEncyption);
+      password5.text = wpaKey;
+    });
+
+    setState(() {
+      _isLoading = false;
     });
   }
 
@@ -387,11 +406,6 @@ class _WlanSetState extends State<WlanSet> {
         'InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.${bandIndex + 1}';
     var res = await Request().setACSNode([
       // [node,value,string]
-      [
-        '$prefix.Band',
-        ['2.4GHz', '5GHz'][bandIndex],
-        'xsd:string'
-      ],
       [
         '$prefix.Enable',
         bandIndex == 0 ? isCheck.toString() : isCheck5.toString(),
@@ -452,9 +466,16 @@ class _WlanSetState extends State<WlanSet> {
             : '${securityVal[securityIndex5g]}+${encryptionVal[encryptionIndex5g]}',
         'xsd:string'
       ],
+      [
+        '$prefix.SSIDProfile.1.WPAKey',
+        bandIndex == 0 ? password.text : password5.text,
+        'xsd:string'
+      ],
     ], sn);
     if (json.decode(res)['code'] == 200) {
-      ToastUtils.toast('Save success');
+      ToastUtils.toast('Save Success');
+    } else {
+      ToastUtils.error('Save Failed');
     }
   }
 
@@ -624,6 +645,9 @@ class _WlanSetState extends State<WlanSet> {
 
 //读取WiFiSsidTable
   Future getWiFiSsidTable() async {
+    setState(() {
+      _isLoading = true;
+    });
     Map<String, dynamic> data = {
       'method': 'tab_dump',
       'param': '["WiFiSsidTable"]',
@@ -653,11 +677,18 @@ class _WlanSetState extends State<WlanSet> {
       });
     } catch (e) {
       debugPrint('获取wps设置失败:$e.toString()');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
 //读取WiFi5GSsidTable
   Future getWiFi5GSsidTable() async {
+    setState(() {
+      _isLoading = true;
+    });
     Map<String, dynamic> data = {
       'method': 'tab_dump',
       'param': '["WiFi5GSsidTable"]',
@@ -690,6 +721,10 @@ class _WlanSetState extends State<WlanSet> {
       });
     } catch (e) {
       debugPrint('设置失败:$e.toString()');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -944,26 +979,22 @@ class _WlanSetState extends State<WlanSet> {
                                     ? bandWidthIndex
                                     : bandWidthIndex5g,
                               );
-                              result?.then((selectedValue) => {
-                                    if (bandWidthIndex != selectedValue &&
-                                        selectedValue != null)
-                                      {
-                                        setState(() => {
-                                              if (bandIndex == 0)
-                                                {
-                                                  bandWidthIndex =
-                                                      selectedValue,
-                                                  channelIndex = 0
-                                                }
-                                              else
-                                                {
-                                                  bandWidthIndex5g =
-                                                      selectedValue,
-                                                  channelIndex5g = 0
-                                                }
-                                            })
-                                      }
-                                  });
+                              result?.then((selectedValue) {
+                                if (selectedValue != null) {
+                                  setState(() => {
+                                        if (bandIndex == 0)
+                                          {
+                                            bandWidthIndex = selectedValue,
+                                            channelIndex = 0
+                                          }
+                                        else
+                                          {
+                                            bandWidthIndex5g = selectedValue,
+                                            channelIndex5g = 0
+                                          }
+                                      });
+                                }
+                              });
                             },
                             child: BottomLine(
                               rowtem: Row(
@@ -1087,8 +1118,7 @@ class _WlanSetState extends State<WlanSet> {
                                     : txPowerIndex5g,
                               );
                               result?.then((selectedValue) => {
-                                    if (txPowerIndex != selectedValue &&
-                                        selectedValue != null)
+                                    if (selectedValue != null)
                                       {
                                         setState(() => {
                                               if (bandIndex == 0)

@@ -210,6 +210,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "locked": MessageLookupByLibrary.simpleMessage("已锁定，"),
         "logOut": MessageLookupByLibrary.simpleMessage("退出登录"),
         "login": MessageLookupByLibrary.simpleMessage("登录"),
+        "loginFailed": MessageLookupByLibrary.simpleMessage("登录失败"),
         "loginPassword": MessageLookupByLibrary.simpleMessage("请设置登陆密码"),
         "loginSuccess": MessageLookupByLibrary.simpleMessage("登录成功"),
         "macAddress": MessageLookupByLibrary.simpleMessage("使用MAC地址克隆"),

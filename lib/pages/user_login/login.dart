@@ -265,7 +265,8 @@ class _UserLoginState extends State<UserLogin> {
                                 .then((res) {
                               var d = json.decode(res.toString());
                               if (d['code'] != 200) {
-                                ToastUtils.error(d['message']);
+                                ToastUtils.error("$d{['message']}");
+                                debugPrint("$d");
                                 return;
                               } else {
                                 // 是否存储了设备sn
@@ -288,19 +289,17 @@ class _UserLoginState extends State<UserLogin> {
                                 _isLoading = false;
                               });
                             }).catchError((err) {
-                              debugPrint('响应------>$err');
+                              debugPrint('请求云平台登录接口报错：$err');
                               setState(() {
                                 _isLoading = false;
                               });
                               // 响应超时
-                              if (err is DioError &&
-                                  err.type == DioErrorType.connectTimeout) {
+                              if ((err is DioError &&
+                                  err.type == DioErrorType.connectTimeout)) {
                                 debugPrint('timeout');
                                 ToastUtils.error(S.current.contimeout);
-                              }
-                              if (err['code'] == DioErrorType.connectTimeout) {
-                                debugPrint('timeout');
-                                ToastUtils.error(S.current.contimeout);
+                              } else {
+                                ToastUtils.error(S.current.loginFailed);
                               }
                             });
                           } else {

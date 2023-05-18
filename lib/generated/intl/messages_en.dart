@@ -265,6 +265,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "locked": MessageLookupByLibrary.simpleMessage("locked"),
         "logOut": MessageLookupByLibrary.simpleMessage("Log Out"),
         "login": MessageLookupByLibrary.simpleMessage("Login"),
+        "loginFailed": MessageLookupByLibrary.simpleMessage("Login Failed"),
         "loginPassword": MessageLookupByLibrary.simpleMessage(
             "Please set the login password"),
         "loginSuccess":

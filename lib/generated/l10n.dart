@@ -210,10 +210,10 @@ class S {
     );
   }
 
-  /// `Enter your mobile phone nubmer`
+  /// `Enter your email or phone nubmer`
   String get phoneLabel {
     return Intl.message(
-      'Enter your mobile phone nubmer',
+      'Enter your email or phone nubmer',
       name: 'phoneLabel',
       desc: '',
       args: [],
@@ -225,6 +225,16 @@ class S {
     return Intl.message(
       'Please input email or phone number',
       name: 'phoneError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please input correct email or phone number`
+  String get accountIncorrect {
+    return Intl.message(
+      'Please input correct email or phone number',
+      name: 'accountIncorrect',
       desc: '',
       args: [],
     );

@@ -174,6 +174,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("The account cannot be empty"),
         "accountEnter": MessageLookupByLibrary.simpleMessage(
             "Please enter the account number"),
+        "accountIncorrect": MessageLookupByLibrary.simpleMessage(
+            "Please input correct email or phone number"),
         "accountSecurity": MessageLookupByLibrary.simpleMessage("Account"),
         "addDevice": MessageLookupByLibrary.simpleMessage("Add Device"),
         "advancedSet":
@@ -321,7 +323,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "phoneError": MessageLookupByLibrary.simpleMessage(
             "Please input email or phone number"),
         "phoneLabel": MessageLookupByLibrary.simpleMessage(
-            "Enter your mobile phone nubmer"),
+            "Enter your email or phone nubmer"),
         "pleaseEnter":
             MessageLookupByLibrary.simpleMessage("Please enter the content"),
         "priority": MessageLookupByLibrary.simpleMessage("Priority"),

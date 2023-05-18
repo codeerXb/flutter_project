@@ -88,16 +88,6 @@ class _NetStatusState extends State<NetStatus> {
 
   // 下拉列表
   bool isShowList = false;
-  List<Map<String, dynamic>> get serviceList => [
-        {
-          'label': name,
-          'sn': '12123213',
-        },
-        {
-          'label': 'test',
-          'sn': '12123213',
-        }
-      ];
   String sn = '';
   String downUnit = 'Kbps';
   String upUnit = 'Kbps';
@@ -449,45 +439,6 @@ class _NetStatusState extends State<NetStatus> {
     return _usedFlow;
   }
 
-// 下拉列表
-  Widget buildGrid() {
-    List<Widget> tiles = []; //先建一个数组用于存放循环生成的widget
-    Widget content; //单独一个widget组件，用于返回需要生成的内容widget
-    for (var item in serviceList) {
-      tiles.add(Container(
-        padding: EdgeInsets.only(left: 20.w, top: 20.w, bottom: 20.w),
-        child: InkWell(
-          onTap: () {},
-          child: Row(children: <Widget>[
-            if (item['label'] == name.toString())
-              Padding(
-                padding: EdgeInsets.only(right: 16.sp),
-                child: FaIcon(
-                  FontAwesomeIcons.chevronRight,
-                  size: 30.w,
-                  color: Colors.white,
-                ),
-              ),
-            Text(
-              item['label'],
-              style: TextStyle(color: Colors.white, fontSize: 30.sp),
-            ),
-          ]),
-        ),
-      ));
-    }
-    content = Container(
-      color: const Color.fromARGB(153, 31, 31, 31),
-      width: 1.sw,
-      child: Column(
-          children: tiles //重点在这里，因为用编辑器写Column生成的children后面会跟一个<Widget>[]，
-          //此时如果我们直接把生成的tiles放在<Widget>[]中是会报一个类型不匹配的错误，把<Widget>[]删了就可以了
-          ),
-    );
-    return content;
-  }
-
-  bool _isVisible = false;
   // body loading
   bool loading = false;
   // home page loading
@@ -499,7 +450,9 @@ class _NetStatusState extends State<NetStatus> {
 
   //  查询绑定设备 App
   void getqueryingBoundDevices() {
-    loadingDevice = true;
+    setState(() {
+      loadingDevice = true;
+    });
     App.get('/platform/appCustomer/queryCustomerCpe').then((res) {
       if (res == null || res.toString().isEmpty) {
         throw Exception('Response is empty.');
@@ -546,7 +499,11 @@ class _NetStatusState extends State<NetStatus> {
       }
     }).catchError((onError) {
       debugPrint(onError.toString());
-    }).whenComplete(() => loadingDevice = false);
+    }).whenComplete(() {
+      setState(() {
+        loadingDevice = false;
+      });
+    });
   }
 
   @override
@@ -675,7 +632,6 @@ class _NetStatusState extends State<NetStatus> {
                               height: 200.h,
                               color: Colors.transparent,
                             ),
-                            // if (isShowList) Positioned(top: 10.w, child: buildGrid()),
                             Padding(
                               padding: EdgeInsets.only(top: 20.w),
                               child: ListView(

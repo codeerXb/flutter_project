@@ -138,34 +138,33 @@ class _UserRegisterState extends State<UserRegister> {
                               child: SizedBox(
                                 width: 1.sw - 104.w,
                                 child: TextFormField(
-                                    keyboardType: TextInputType.number,
-                                    style: TextStyle(
+                                  keyboardType: TextInputType.text,
+                                  style: TextStyle(
+                                      fontSize: 32.sp,
+                                      color: const Color(0xff051220)),
+                                  decoration: InputDecoration(
+                                    icon: const Icon(Icons.perm_identity),
+                                    // 表单提示信息
+                                    hintText: S.of(context).phoneLabel,
+                                    hintStyle: TextStyle(
                                         fontSize: 32.sp,
-                                        color: const Color(0xff051220)),
-                                    decoration: InputDecoration(
-                                      icon: const Icon(Icons.perm_identity),
-                                      // 表单提示信息
-                                      hintText: S.of(context).phoneLabel,
-                                      hintStyle: TextStyle(
-                                          fontSize: 32.sp,
-                                          color: const Color(0xff737A83)),
-                                      // 取消自带的下边框
-                                      border: InputBorder.none,
-                                    ),
-                                    validator: (value) {
-                                      RegExp reg = RegExp(
-                                          r'^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$');
-                                      if (!reg.hasMatch(value!)) {
-                                        return S.of(context).phoneError;
-                                      } else {
-                                        return null;
-                                      }
-                                    },
-                                    onChanged: (String value) =>
-                                        _phoneVal = value,
-                                    inputFormatters: [
-                                      LengthLimitingTextInputFormatter(11),
-                                    ]),
+                                        color: const Color(0xff737A83)),
+                                    // 取消自带的下边框
+                                    border: InputBorder.none,
+                                  ),
+                                  validator: (value) {
+                                    if (value == '') {
+                                      return S.of(context).phoneError;
+                                    } else {
+                                      return null;
+                                    }
+                                  },
+                                  onChanged: (String value) =>
+                                      _phoneVal = value,
+                                  // inputFormatters: [
+                                  //   LengthLimitingTextInputFormatter(11),
+                                  // ],
+                                ),
                               ),
                             ),
                           ],
@@ -313,9 +312,10 @@ class _UserRegisterState extends State<UserRegister> {
                             // 获取验证码
                             TextButton(
                                 onPressed: (() {
-                                  RegExp reg = RegExp(
-                                      r'^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$');
-                                  if (!reg.hasMatch(_phoneVal!)) {
+                                  // RegExp reg = RegExp(
+                                  //     r'^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$');
+                                  if (iscode) return;
+                                  if (_phoneVal == '') {
                                     ToastUtils.toast(S.of(context).phoneError);
                                   } else {
                                     //发请求
@@ -325,29 +325,34 @@ class _UserRegisterState extends State<UserRegister> {
                                         .then((res) {
                                       var d = json.decode(res.toString());
                                       debugPrint('响应------>$d');
-                                      d['code'] == 200
-                                          ? ToastUtils.toast(
-                                              S.of(context).success)
-                                          : ToastUtils.toast(d['message']);
-                                      if (codeNum == 60) {
-                                        //倒计时60s
-                                        setState(() {
-                                          iscode = true;
-                                        });
-
-                                        timer = Timer.periodic(
-                                            const Duration(seconds: 1), (time) {
+                                      if (d['code'] == 200) {
+                                        ToastUtils.toast(S.of(context).success);
+                                        if (codeNum == 60) {
+                                          //倒计时60s
                                           setState(() {
-                                            codeNum--;
+                                            iscode = true;
                                           });
-                                          if (codeNum <= 1) {
-                                            timer.cancel();
+
+                                          timer = Timer.periodic(
+                                              const Duration(seconds: 1),
+                                              (time) {
                                             setState(() {
-                                              codeNum = 60;
-                                              iscode = false;
+                                              codeNum--;
                                             });
-                                          }
-                                        });
+                                            if (codeNum <= 1) {
+                                              timer.cancel();
+                                              setState(() {
+                                                codeNum = 60;
+                                                iscode = false;
+                                              });
+                                            }
+                                          });
+                                        }
+                                      } else {
+                                        if (d['code'] == 500) {
+                                          ToastUtils.toast(
+                                              S.current.accountIncorrect);
+                                        }
                                       }
                                     }).catchError((err) {
                                       debugPrint('响应------>$err');

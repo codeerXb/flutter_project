@@ -254,9 +254,8 @@ class GlobalRouter {
     '/language_change': (BuildContext context, {Object? args}) =>
         const LanguageChange(),
     // 网络测试
-    '/get_test': (BuildContext context, {Object? args}) => const NetworkPage(
-          key: Key(''),
-        ),
+    '/get_test': (BuildContext context, {Object? args}) =>
+        GlobalNetworkDialog(),
     // 添加设备
     '/add_equipment': (BuildContext context, {Object? args}) =>
         const AddEquipment(),

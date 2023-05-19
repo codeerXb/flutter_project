@@ -7,7 +7,12 @@ class BaseConfig {
   // static const baseUrl = "https://www.smawavelogin.com";
   static const baseUrl = "https://192.168.1.1";
   // static const baseUrl = "https://172.16.20.144";
+  // 开发版本后台
   static const cloudBaseUrl = "http://172.16.110.51:8095";
+  // 测试版本后台
+  // static const cloudBaseUrl = "http://172.16.110.5:18095";
+  // 公网地址
+  // static const cloudBaseUrl = "http://222.71.171.172:18095";
 
   /// 版本更新路径
   static const updateUrl = "$baseUrl/";

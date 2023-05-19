@@ -284,6 +284,7 @@ class _MyAppState extends State<MyApp> {
                                   ),
                                   name: roomName,
                                   floor: curFloor,
+                                  isSelected: false,
                                 );
 
                                 // 将方块数据添加到列表中
@@ -385,7 +386,7 @@ class GridPainter extends CustomPainter {
       ..color = const Color.fromARGB(255, 196, 196, 196)
       ..style = PaintingStyle.stroke;
     final paintBlack = Paint()
-      ..color = const Color.fromARGB(115, 102, 102, 102)
+      ..color = const Color.fromARGB(255, 151, 151, 151)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
 
@@ -484,6 +485,28 @@ class _GridWidgetState extends State<GridWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final rectWidgets = <Widget>[];
+    for (final rectData in widget.rects) {
+      if (widget.curFloor == rectData.floor) {
+        rectWidgets.add(
+          Positioned(
+            left: offsetX,
+            top: offsetY,
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  rectData.isSelected = !rectData.isSelected;
+                });
+              },
+              child: CustomPaint(
+                // size: Size(maxWidth, maxHeight),
+                painter: RectsPainter(rectData),
+              ),
+            ),
+          ),
+        );
+      }
+    }
     return GestureDetector(
       onPanUpdate: (details) {
         setState(() {
@@ -503,6 +526,7 @@ class _GridWidgetState extends State<GridWidget> {
       },
       child: Stack(
         children: [
+          // 画布
           Positioned(
             left: offsetX,
             top: offsetY,
@@ -519,14 +543,8 @@ class _GridWidgetState extends State<GridWidget> {
             ),
           ),
           // 绘制矩形
-          Positioned(
-            left: offsetX,
-            top: offsetY,
-            child: CustomPaint(
-              size: Size(maxWidth, maxHeight),
-              painter: RectsPainter(widget.rects, widget.curFloor),
-            ),
-          ),
+          ...rectWidgets,
+          // 复位操作按钮
           Positioned(
             bottom: 0,
             child: ElevatedButton(
@@ -550,46 +568,52 @@ class _GridWidgetState extends State<GridWidget> {
 }
 
 class RectsPainter extends CustomPainter {
-  final List<RectData> rects;
-  final String curFloor;
+  final RectData rectData;
 
-  RectsPainter(this.rects, this.curFloor);
+  RectsPainter(this.rectData);
 
   @override
   void paint(Canvas canvas, Size size) {
-    for (final rectData in rects) {
-      if (curFloor == rectData.floor) {
-        final rect = rectData.rect;
-        final paint = Paint()
-          ..color = Colors.blue
-          ..strokeWidth = 2
-          ..style = PaintingStyle.stroke;
-        canvas.drawRect(rect, paint);
+    final rect = rectData.rect;
+    final isSelected = rectData.isSelected;
+    final paint = Paint()
+      ..color = isSelected
+          ? Color.fromARGB(255, 0, 89, 255)
+          : Color.fromARGB(255, 0, 0, 0)
+      ..strokeWidth = 2
+      ..style = PaintingStyle.stroke;
+    canvas.drawRect(rect, paint);
 
-        final textPainter = TextPainter(
-          text: TextSpan(
-            text: rectData.name,
-            style: const TextStyle(color: Colors.black, fontSize: 16),
-          ),
-          textDirection: TextDirection.ltr,
-        );
-        textPainter.layout();
-        textPainter.paint(
-          canvas,
-          Offset(rect.left, rect.top),
-        );
-      }
-    }
+    final textPainter = TextPainter(
+      text: TextSpan(
+        text: rectData.name,
+        style: const TextStyle(color: Colors.black, fontSize: 11),
+      ),
+      textDirection: TextDirection.ltr,
+    );
+    textPainter.layout(maxWidth: rect.width / 4 * 3);
+    final textOffset = Offset(
+      rect.left + (rect.width - textPainter.width) / 2,
+      rect.top + (rect.height - textPainter.height) / 2,
+    );
+    textPainter.paint(canvas, textOffset);
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
+  }
 }
 
 class RectData {
   Rect rect;
   final String name;
   String floor;
+  bool isSelected;
 
-  RectData({required this.rect, required this.name, required this.floor});
+  RectData(
+      {required this.rect,
+      required this.name,
+      required this.floor,
+      required this.isSelected});
 }

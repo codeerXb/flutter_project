@@ -85,6 +85,7 @@ class _UserCardState extends State<UserCard> {
                   Get.offNamed("/user_login");
                   sharedDeleteData('user_phone');
                   sharedDeleteData('user_token');
+                  sharedDeleteData('deviceSn');
                   debugPrint('清除用户信息');
                 },
                 background: _userPhone != 'null'

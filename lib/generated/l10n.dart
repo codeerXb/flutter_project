@@ -150,11 +150,21 @@ class S {
     );
   }
 
-  /// `Please check if the network is connected`
-  String get check {
+  /// `Unkown Error`
+  String get unkownFail {
     return Intl.message(
-      'Please check if the network is connected',
-      name: 'check',
+      'Unkown Error',
+      name: 'unkownFail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Request Failed`
+  String get requestFailed {
+    return Intl.message(
+      'Request Failed',
+      name: 'requestFailed',
       desc: '',
       args: [],
     );
@@ -2805,6 +2815,16 @@ class S {
     return Intl.message(
       'Modify remarks',
       name: 'ModifyRemarks',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Make sure the router is connected to the power supply and the WAN port is plugged in with an Ethernet cable`
+  String get SureRouterConnected {
+    return Intl.message(
+      'Make sure the router is connected to the power supply and the WAN port is plugged in with an Ethernet cable',
+      name: 'SureRouterConnected',
       desc: '',
       args: [],
     );

@@ -79,49 +79,55 @@ class _LoginState extends State<Login> {
       // 以 { 或者 [ 开头的
       RegExp exp = RegExp(r'^[{[]');
       if (res != null && exp.hasMatch(res)) {
-        var d = json.decode(res.toString());
-        printInfo(info: '登录返回$d');
-        if (d['code'] == 200) {
+        var localLoginRes = json.decode(res.toString());
+        printInfo(info: '登录返回$localLoginRes');
+        if (localLoginRes['code'] == 200) {
           App.post(
                   '${BaseConfig.cloudBaseUrl}/platform/appCustomer/bindingCpe?deviceSn=$sn')
               .then((res) {
-            var d = json.decode(res.toString());
+            var bindDevRes = json.decode(res.toString());
 
-            debugPrint('本地登录响应------>$d');
-            if (d['code'] != 200) {
-              if (d['code'] == 500) {
+            debugPrint('云平台绑定响应------>$bindDevRes');
+            if (bindDevRes['code'] != 200) {
+              // 绑定失败提示
+              if (bindDevRes['code'] == 500) {
                 ToastUtils.error(S.current.deviceBinded);
               } else {
-                ToastUtils.error(S.current.check);
+                ToastUtils.error(S.current.unkownFail);
               }
               return;
             } else {
-              ToastUtils.toast(d['message']);
+              ToastUtils.toast(S.current.success);
               loginController.setUserEquipment('deviceSn', sn);
               sharedAddAndUpdate("deviceSn", String, sn);
-              timer = Timer.periodic(const Duration(minutes: 5), (timer) {
-                debugPrint('登录当前时间${DateTime.now()}');
-                // 再次请求登录
-                login(_password.trim());
-              });
+              // timer = Timer.periodic(const Duration(minutes: 5), (timer) {
+              //   debugPrint('登录当前时间${DateTime.now()}');
+              //   // 再次请求登录
+              //   login(_password.trim());
+              // });
               Get.offNamed("/home", arguments: {"sn": sn, "vn": vn});
             }
           }).catchError((err) {
             timer?.cancel();
             timer = null;
-            debugPrint('响应------>$err');
-            //相应超超时
+            debugPrint('云平台绑定错误响应------>$err');
+            // 响应超时
             if (err['code'] == DioErrorType.connectTimeout) {
               debugPrint('timeout');
               ToastUtils.error(S.current.contimeout);
             }
           });
-          loginController.setToken(d['token']);
-          loginController.setSession(d['sessionid']);
+          loginController.setToken(localLoginRes['token']);
+          loginController.setSession(localLoginRes['sessionid']);
           sharedAddAndUpdate(
-              sn.toString(), String, base64Encode(utf8.encode(_password)));
-          sharedAddAndUpdate("token", String, d['token']);
-          sharedAddAndUpdate("session", String, d['sessionid']);
+            sn.toString(),
+            String,
+            base64Encode(
+              utf8.encode(_password),
+            ),
+          );
+          sharedAddAndUpdate("token", String, localLoginRes['token']);
+          sharedAddAndUpdate("session", String, localLoginRes['sessionid']);
         }
       }
     }).catchError((err) {
@@ -130,6 +136,10 @@ class _LoginState extends State<Login> {
       if (err.response != null) {
         var resjson = json.decode(err.response.toString());
         var errRes = ExceptionLogin.fromJson(resjson);
+        if (err['code'] == DioErrorType.connectTimeout) {
+          debugPrint('timeout');
+          ToastUtils.error(S.current.contimeout);
+        }
 
         /// 顶部弹出
         // Get.snackbar("", "",

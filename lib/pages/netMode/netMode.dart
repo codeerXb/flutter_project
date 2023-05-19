@@ -139,8 +139,17 @@ class _NetModeState extends State<NetMode> {
           });
           loginController.setToken(d['token']);
           loginController.setSession(d['sessionid']);
+          String userInfo = jsonEncode({
+            "user": _account,
+            "pwd": base64Encode(
+              utf8.encode(_password),
+            )
+          });
           sharedAddAndUpdate(
-              sn.toString(), String, base64Encode(utf8.encode(_password)));
+            sn.toString(),
+            String,
+            userInfo,
+          );
           sharedAddAndUpdate("token", String, d['token']);
           sharedAddAndUpdate("session", String, d['sessionid']);
         }
@@ -336,14 +345,6 @@ class _NetModeState extends State<NetMode> {
           style: TextStyle(fontSize: 32.sp, color: const Color(0xffffffff)),
         ),
       ),
-      // CommonWidget.buttonWidget(
-      //     title:S.of(context).login,
-      //     padding: EdgeInsets.only(left: 0, top: 32.w, bottom: 30.w, right: 0),
-      //     callBack: () {
-      //       if ((_formKey.currentState as FormState).validate()) {
-      //         onSubmit(context);
-      //       }
-      //     }),
     );
   }
 
@@ -831,7 +832,9 @@ class _NetModeState extends State<NetMode> {
                           children: [
                             Text('确保路由器连接电源并于WAN口插入网线'),
                             Image.asset("assets/images/sureWan.png",
-                              fit: BoxFit.fitWidth, height: 600.w, width: 600.w),
+                                fit: BoxFit.fitWidth,
+                                height: 600.w,
+                                width: 600.w),
                           ],
                         ),
                       )

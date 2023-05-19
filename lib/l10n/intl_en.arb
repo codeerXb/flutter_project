@@ -42,7 +42,7 @@
   "versionInfo": "Version Information",
   "lanStatus": "LAN Status",
   "Ethernet": "Ethernet",
-  "EthernetStatus": "Ethernet Status",
+  "EthernetStatus": "WAN Status",
   "EthernetSettings": "Ethernet Settings",
   "netSet": "NetWork",
   "wanSettings": "WAN Settings",

@@ -43,7 +43,7 @@
   "versionInfo": "版本信息",
   "lanStatus": "LAN口状态",
   "Ethernet": "以太网",
-  "EthernetStatus": "以太网状态",
+  "EthernetStatus": "WAN口状态",
   "EthernetSettings": "以太网设置",
   "netSet": "网络设置",
   "wanSettings": "WAN设置",

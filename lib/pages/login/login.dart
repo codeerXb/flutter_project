@@ -118,8 +118,17 @@ class _LoginState extends State<Login> {
           });
           loginController.setToken(d['token']);
           loginController.setSession(d['sessionid']);
+          String userInfo = jsonEncode({
+            "user": _account,
+            "pwd": base64Encode(
+              utf8.encode(_password),
+            )
+          });
           sharedAddAndUpdate(
-              sn.toString(), String, base64Encode(utf8.encode(_password)));
+            sn.toString(),
+            String,
+            userInfo,
+          );
           sharedAddAndUpdate("token", String, d['token']);
           sharedAddAndUpdate("session", String, d['sessionid']);
         }

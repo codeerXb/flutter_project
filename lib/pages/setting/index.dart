@@ -147,16 +147,15 @@ class _SettingState extends State<Setting> {
                   /// 登录管理
                   accountSecurity(),
                   // const Divider(),
-                  TitleWidger(title: S.of(context).Ethernet),
-
-                  /// 以太网状态
-                  feedback(),
 
                   ///以太网设置
-                  netSet(),
+                  // netSet(),
                   // const Divider(),
 
                   TitleWidger(title: S.of(context).netSet),
+
+                  /// 以太网状态
+                  feedback(),
 
                   /// WAN设置
                   wanSettings(),

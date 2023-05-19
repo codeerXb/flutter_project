@@ -275,6 +275,11 @@ class _LanSettingsState extends State<LanSettings> {
     var res = await Request().setACSNode(parameterNames, sn);
     try {
       var jsonObj = jsonDecode(res);
+      if (jsonObj['code'] == 200) {
+        ToastUtils.toast('success');
+      } else {
+        ToastUtils.error('Task Failed');
+      }
       printInfo(info: '````$jsonObj');
       setState(() {});
     } catch (e) {
@@ -356,7 +361,7 @@ class _LanSettingsState extends State<LanSettings> {
           }
         });
       } on FormatException catch (e) {
-        print(e);
+        debugPrint(e.toString());
         ToastUtils.toast(S.current.error);
       }
     }).catchError((onError) {
@@ -427,10 +432,10 @@ class _LanSettingsState extends State<LanSettings> {
         getLanSetting();
       }
     }
-    Navigator.pop(context);
     setState(() {
       _isLoading = false;
     });
+    Navigator.pop(context);
   }
 
   @override

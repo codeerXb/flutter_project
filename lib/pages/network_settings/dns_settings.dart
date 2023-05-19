@@ -167,19 +167,30 @@ class _DnsSettingsState extends State<DnsSettings> {
   setTRDnsData() async {
     var parameterNames = [
       [
-        "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.DNSServers",
-        '${dsnMain.text}.${dsnMain1.text}.${dsnMain2.text}.${dsnMain3.text},${dsnAssist.text}.${dsnAssist1.text}.${dsnAssist2.text}.${dsnAssist3.text}',
+        "InternetGatewayDevice.DNS.Client.Server.1.DNSServer",
+        '${dsnMain.text}.${dsnMain1.text}.${dsnMain2.text}.${dsnMain3.text}',
         type
-      ]
+      ],
+      [
+        "InternetGatewayDevice.DNS.Client.Server.2.DNSServer",
+        '${dsnAssist.text}.${dsnAssist1.text}.${dsnAssist2.text}.${dsnAssist3.text}',
+        type
+      ],
     ];
-    var res = await Request().setACSNode(parameterNames, sn);
-    printInfo(info: '----$res');
     try {
+      var res = await Request().setACSNode(parameterNames, sn);
       var jsonObj = jsonDecode(res);
-      printInfo(info: '````$jsonObj');
+      printInfo(info: 'DNS:$jsonObj');
+      if (jsonObj['code'] == 200) {
+        ToastUtils.toast(S.current.success);
+      } else {
+        ToastUtils.error('Request Failed');
+      }
       setState(() {});
     } catch (e) {
       debugPrint('获取信息失败：${e.toString()}');
+      ToastUtils.error('Request Failed');
+      Get.back();
     }
   }
 
@@ -291,12 +302,7 @@ class _DnsSettingsState extends State<DnsSettings> {
     closeKeyboard(context);
     if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
       // 云端请求赋值
-      try {
-        await setTRDnsData();
-      } catch (e) {
-        debugPrint('云端请求出错：${e.toString()}');
-        Get.back();
-      }
+      await setTRDnsData();
     }
     if (loginController.login.state == 'local') {
       // 本地请求赋值

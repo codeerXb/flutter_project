@@ -488,13 +488,24 @@ class _NetStatusState extends State<NetStatus> {
         });
         // 读取当前
         sharedGetData('deviceSn', String).then(((res) {
-          setState(() {
-            d['data'].forEach((item) {
-              if (item['deviceSn'] == res) {
-                currentDevice = item['type'];
+          if (res != '') {
+            setState(() {
+              d['data'].forEach((item) {
+                if (item['deviceSn'] == res) {
+                  currentDevice = item['type'];
+                }
+              });
+              if (currentDevice == '') {
+                Get.offNamed('/get_equipment');
+                sharedDeleteData('deviceSn');
+                ToastUtils.error('Current device unbind');
               }
             });
-          });
+          } else {
+            Get.offNamed('/get_equipment');
+            sharedDeleteData('deviceSn');
+            ToastUtils.error('Current device unbind');
+          }
         }));
       }
     }).catchError((onError) {
@@ -551,15 +562,6 @@ class _NetStatusState extends State<NetStatus> {
                           child: Row(
                             children: [
                               Text(option),
-                              // if (isSelected)
-                              //   Transform.translate(
-                              //     offset: Offset(16.w, 0), //箭头距离左边间距
-                              //     child: Icon(
-                              //       FontAwesomeIcons.chevronLeft,
-                              //       size: 30.w,
-                              //       color: Colors.white,
-                              //     ),
-                              //   ),
                             ],
                           ),
                         );
@@ -574,6 +576,7 @@ class _NetStatusState extends State<NetStatus> {
                               deviceSn = item['deviceSn'];
                             }
                           }
+                          // 为了更新新的设备
                           Get.offNamed("/get_equipment");
                           Get.offNamed("/home");
                           loginController.setUserEquipment(
@@ -586,8 +589,10 @@ class _NetStatusState extends State<NetStatus> {
                         });
                       },
                       onTap: (() {
-                        setState(() {
-                          isShowList = !isShowList;
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          setState(() {
+                            isShowList = !isShowList;
+                          });
                         });
                       }),
                     ),

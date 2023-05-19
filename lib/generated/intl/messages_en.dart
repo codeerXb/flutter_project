@@ -147,6 +147,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Statistics by flow"),
         "SubnetMask": MessageLookupByLibrary.simpleMessage("Subnet Mask"),
         "Sun": MessageLookupByLibrary.simpleMessage("Sun"),
+        "SureRouterConnected": MessageLookupByLibrary.simpleMessage(
+            "Make sure the router is connected to the power supply and the WAN port is plugged in with an Ethernet cable"),
         "SystemSettings": MessageLookupByLibrary.simpleMessage("System"),
         "Thu": MessageLookupByLibrary.simpleMessage("Thu"),
         "TimeLengthStatistics":
@@ -189,8 +191,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "band": MessageLookupByLibrary.simpleMessage("Bind Device"),
         "binding": MessageLookupByLibrary.simpleMessage("Binding?"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
-        "check": MessageLookupByLibrary.simpleMessage(
-            "Please check if the network is connected"),
         "checkNet": MessageLookupByLibrary.simpleMessage(
             "Logout login failed, Please check the network!"),
         "clear": MessageLookupByLibrary.simpleMessage("Clear"),
@@ -330,6 +330,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "privacyPolicy": MessageLookupByLibrary.simpleMessage("privacy Policy"),
         "radioSettings": MessageLookupByLibrary.simpleMessage("Radio Settings"),
         "register": MessageLookupByLibrary.simpleMessage("Register"),
+        "requestFailed": MessageLookupByLibrary.simpleMessage("Request Failed"),
         "rescan": MessageLookupByLibrary.simpleMessage("Rescan"),
         "reset": MessageLookupByLibrary.simpleMessage("Reset"),
         "restart": MessageLookupByLibrary.simpleMessage("Restart..."),
@@ -364,6 +365,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "unbindError": MessageLookupByLibrary.simpleMessage("Unbind Error"),
         "unblockdevice": MessageLookupByLibrary.simpleMessage(
             "Confirm to unbind the current device"),
+        "unkownFail": MessageLookupByLibrary.simpleMessage("Unkown Error"),
         "unlock": MessageLookupByLibrary.simpleMessage("S Unlock"),
         "ununited": MessageLookupByLibrary.simpleMessage("ununited"),
         "up": MessageLookupByLibrary.simpleMessage("Up"),

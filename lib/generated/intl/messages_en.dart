@@ -71,8 +71,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "EthernetOnly": MessageLookupByLibrary.simpleMessage("Ethernet Only"),
         "EthernetSettings":
             MessageLookupByLibrary.simpleMessage("Ethernet Settings"),
-        "EthernetStatus":
-            MessageLookupByLibrary.simpleMessage("Ethernet Status"),
+        "EthernetStatus": MessageLookupByLibrary.simpleMessage("WAN Status"),
         "FactoryReset": MessageLookupByLibrary.simpleMessage("Factory Reset"),
         "FollowerSystem":
             MessageLookupByLibrary.simpleMessage("Follower System"),
@@ -287,7 +286,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "The restart date must be selected"),
         "name": MessageLookupByLibrary.simpleMessage("Name"),
         "netError": MessageLookupByLibrary.simpleMessage("NetWork Error"),
-        "netSet": MessageLookupByLibrary.simpleMessage("NetWork"),
+        "netSet": MessageLookupByLibrary.simpleMessage("Network"),
         "netSpeed": MessageLookupByLibrary.simpleMessage("Net Speed Test"),
         "netTopo": MessageLookupByLibrary.simpleMessage("Net Topo"),
         "networkError": MessageLookupByLibrary.simpleMessage("Network Anomaly"),

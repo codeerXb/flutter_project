@@ -45,7 +45,7 @@
   "Ethernet": "Ethernet",
   "EthernetStatus": "WAN Status",
   "EthernetSettings": "Ethernet Settings",
-  "netSet": "NetWork",
+  "netSet": "Network",
   "wanSettings": "WAN Settings",
   "dnsSettings": "DNS Settings",
   "radioSettings": "Radio Settings",

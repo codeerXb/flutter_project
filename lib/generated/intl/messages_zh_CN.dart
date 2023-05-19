@@ -58,7 +58,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Ethernet": MessageLookupByLibrary.simpleMessage("以太网"),
         "EthernetOnly": MessageLookupByLibrary.simpleMessage("仅以太网"),
         "EthernetSettings": MessageLookupByLibrary.simpleMessage("以太网设置"),
-        "EthernetStatus": MessageLookupByLibrary.simpleMessage("以太网状态"),
+        "EthernetStatus": MessageLookupByLibrary.simpleMessage("WAN口状态"),
         "FactoryReset": MessageLookupByLibrary.simpleMessage("恢复出厂"),
         "FollowerSystem": MessageLookupByLibrary.simpleMessage("跟随系统"),
         "France": MessageLookupByLibrary.simpleMessage("法国"),

@@ -490,10 +490,10 @@ class S {
     );
   }
 
-  /// `Ethernet Status`
+  /// `WAN Status`
   String get EthernetStatus {
     return Intl.message(
-      'Ethernet Status',
+      'WAN Status',
       name: 'EthernetStatus',
       desc: '',
       args: [],
@@ -510,10 +510,10 @@ class S {
     );
   }
 
-  /// `NetWork`
+  /// `Network`
   String get netSet {
     return Intl.message(
-      'NetWork',
+      'Network',
       name: 'netSet',
       desc: '',
       args: [],

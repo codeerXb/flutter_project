@@ -46,6 +46,7 @@ class _TopoState extends State<Topo> {
         printInfo(info: 'state--${loginController.login.state}');
         if (mounted) {
           editName();
+          getTREquinfoDatas();
         }
         // if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
         //   if (mounted) {
@@ -232,6 +233,30 @@ class _TopoState extends State<Topo> {
     }
   }
 
+//1连接
+  var ConnectStatus = '';
+// 云端
+  getTREquinfoDatas() async {
+    printInfo(info: 'sn在这里有值吗-------$sn');
+    if (sn == '') {
+      var value = await sharedGetData('deviceSn', String);
+      sn = value.toString();
+    }
+    try {
+      var parameterNames = [
+        "InternetGatewayDevice.WEB_GUI.Ethernet.Status.ConnectStatus",
+      ];
+      var res = await Request().getACSNode(parameterNames, sn);
+      Map<String, dynamic> d = jsonDecode(res);
+      setState(() {
+        ConnectStatus = d['data']['InternetGatewayDevice']['WEB_GUI']
+            ['Ethernet']['Status']['ConnectStatus']['_value'];
+      });
+    } catch (e) {
+      debugPrint('获取设备信息失败：${e.toString()}');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     bool MESH = true;
@@ -327,12 +352,13 @@ class _TopoState extends State<Topo> {
                                 dashedHeight: 2.w,
                                 color: const Color(0xFF2F5AF5),
                               ))),
-                      if (_wanStatus == '0' &&
-                              _simStatus == 'disconnected' &&
-                              loginController.login.state == 'cloud' ||
-                          _wanStatus == '0' &&
-                              _simStatus == '0' &&
-                              loginController.login.state == 'local')
+                      // if (_wanStatus == '0' &&
+                      //         _simStatus == 'disconnected' &&
+                      //         loginController.login.state == 'cloud' ||
+                      //     _wanStatus == '0' &&
+                      //         _simStatus == '0' &&
+                      //         loginController.login.state == 'local')
+                      if (ConnectStatus == '0')
                         Center(
                             child: Padding(
                           padding: EdgeInsets.only(top: 25.w),
@@ -485,14 +511,15 @@ class _TopoState extends State<Topo> {
                                                 'local')
                                       Center(
                                         child: Padding(
-                                          padding: EdgeInsets.only(top: 15.w),
-                                          child: Icon(
-                                            Icons.close,
-                                            color: const Color.fromARGB(
-                                                255, 206, 47, 47),
-                                            size: 32.w,
-                                          ),
-                                        ),
+                                            padding: EdgeInsets.only(top: 15.w),
+                                            child: const Text('')
+                                            // Icon(
+                                            //   Icons.close,
+                                            //   color: const Color.fromARGB(
+                                            //       255, 206, 47, 47),
+                                            //   size: 32.w,
+                                            // ),
+                                            ),
                                       ),
                                   ]),
                             ),

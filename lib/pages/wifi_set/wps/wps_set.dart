@@ -410,7 +410,7 @@ class _WpsSetState extends State<WpsSet> {
                       ),
                       //模式
                       Offstage(
-                        offstage: !isCheck,
+                        offstage: true,
                         child: GestureDetector(
                           onTap: () {
                             closeKeyboard(context);

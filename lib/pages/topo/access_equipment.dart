@@ -202,18 +202,7 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                       )),
                       BottomLine(
                         rowtem: RowContainer(
-                          leftText: S.current.LeaseTime,
-                          righText: day.toString() +
-                              S.of(context).date +
-                              hour.toString() +
-                              S.of(context).hour +
-                              min.toString() +
-                              S.of(context).minute,
-                        ),
-                      ),
-                      BottomLine(
-                        rowtem: RowContainer(
-                          leftText: S.current.type,
+                          leftText: S.current.connectionMode,
                           righText: data.type.toString(),
                         ),
                       ),

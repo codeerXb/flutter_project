@@ -347,8 +347,59 @@ class _NetModeState extends State<NetMode> {
     );
   }
 
+  //以太网状态1连接
+  String linkStatus = '1';
+  bool loading = false;
+
+  //读取以太网状态
+  void getNetType() async {
+    setState(() {
+      loading = true;
+    });
+    Map<String, dynamic> data = {
+      'method': 'obj_get',
+      'param': '["ethernetLinkStatus"]',
+    };
+    try {
+      var response = await XHttp.get('/data.html', data);
+      var d = json.decode(response.toString());
+      setState(() {
+        linkStatus = d['ethernetLinkStatus'];
+      });
+    } catch (e) {
+      debugPrint('获取以太网状态失败：$e.toString()');
+    }
+    setState(() {
+      loading = false;
+    });
+  }
+
+  //保存
+  void handleSave(params) async {
+    Map<String, dynamic> data = {
+      'method': 'obj_set',
+      'param': params,
+    };
+    XHttp.get('/data.html', data).then((res) {
+      try {
+        ToastUtils.toast(S.current.success);
+      } on FormatException catch (e) {
+        print(e);
+      }
+    }).catchError((onError) {
+      debugPrint('失败：${onError.toString()}');
+      ToastUtils.toast(S.current.error);
+    });
+  }
+
   @override
   void initState() {
+    getNetType();
+    ipValue.text = '172.16.11.207';
+    sMValue.text = '255.255.255.0';
+    gatewayValue.text = '172.16.11.253';
+    dNSValue.text = '172.16.100.254';
+    dNS2Value.text = '114.114.114.114';
     super.initState();
   }
 
@@ -374,369 +425,420 @@ class _NetModeState extends State<NetMode> {
               color: Colors.black,
             )),
       ),
-      body: GestureDetector(
-        onTap: () => closeKeyboard(context),
-        behavior: HitTestBehavior.opaque,
-        child: Container(
-          decoration: const BoxDecoration(
-            color: Color.fromRGBO(240, 240, 240, 1),
-          ),
-          child: Stepper(
-            // type: StepperType.horizontal, //横向
-            currentStep: currentStep, //当前步骤的索引
-            //当用户点击步骤时调用的回调函数
-            onStepTapped: (value) {},
-            //下一步 回调
-            onStepContinue: () {
-              setState(() {
-                if (currentStep < 2) {
-                  // 如果第一步选择的自动获取 调到第三个
-                  if (_selectedIndex == 0) {
-                    currentStep += 2;
-                  } else {
-                    currentStep += 1;
-                  }
-                }
-              });
-            },
-            //上一步 回调
-            onStepCancel: () {
-              setState(() {
-                if (currentStep > 0) {
-                  // 如果第一步同上
-                  if (_selectedIndex == 0) {
-                    currentStep -= 2;
-                  } else {
-                    currentStep -= 1;
-                  }
-                }
-              });
-            },
-            controlsBuilder:
-                (BuildContext context, ControlsDetails controlsDetails) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  if (currentStep != 0) // 第一步时不显示上一步
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          fixedSize: const Size(200, 30),
-                          backgroundColor:
-                              const Color.fromARGB(255, 30, 104, 233)),
-                      onPressed: controlsDetails.onStepCancel,
-                      child: Text(S.of(context).Previous),
-                    ),
-                  if (currentStep != 2) // 最后一步时不显示下一步
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          fixedSize: const Size(200, 30),
-                          backgroundColor:
-                              const Color.fromARGB(255, 30, 104, 233)),
-                      onPressed: controlsDetails.onStepContinue,
-                      child: Text(S.of(context).Next),
-                    ),
-                ],
-              );
-            },
-            //步骤列表
-            steps: [
-              // 1 选择上网方式
-              Step(
-                title: Text(S.of(context).interentMode),
-                content: Column(
+      body: loading
+          ? const Center(child: CircularProgressIndicator())
+          : GestureDetector(
+              onTap: () => closeKeyboard(context),
+              behavior: HitTestBehavior.opaque,
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Color.fromRGBO(240, 240, 240, 1),
+                ),
+                height: 2000.h,
+                child: Stack(
                   children: [
-                    GestureDetector(
-                      onTap: () => _selectIndex(0),
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16.0),
-                        ),
-                        child: Column(
-                          children: [
-                            ListTile(
-                              title: Text(S.of(context).autoip),
-                              subtitle: Text(S.of(context).IPAcquisition),
-                              trailing: Icon(
-                                Icons.album,
-                                color: _selectedIndex == 0 ? Colors.blue : null,
-                              ),
-                            ),
-                            // Image.asset(
-                            //   'assets/images/butterfly.png',
-                            //   width: 200.0,
-                            //   height: 200.0,
-                            // ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () => _selectIndex(1),
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16.0),
-                        ),
-                        child: Column(
-                          children: [
-                            ListTile(
-                              title: Text(S.of(context).staticIP),
-                              subtitle: Text(S.of(context).ManuallyIP),
-                              trailing: Icon(
-                                Icons.album,
-                                color: _selectedIndex == 1 ? Colors.blue : null,
-                              ),
-                            ),
-                            // Image.asset(
-                            //   'assets/images/butterfly.png',
-                            //   width: 200.0,
-                            //   height: 200.0,
-                            // ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                isActive: currentStep == 0,
-              ),
-              // 2 网络配置
-              Step(
-                title: Text(
-                  S.of(context).NetworkConfig,
-                ),
-                content: InfoBox(
-                  boxCotainer: Column(
-                    children: [
-                      // ip地址
-                      Column(
-                        children: [
-                          Row(
-                            children: [
-                              Text(S.of(context).IPAddress,
-                                  style: TextStyle(
-                                      color: const Color.fromARGB(255, 5, 0, 0),
-                                      fontSize: 28.sp)),
-                            ],
-                          ),
-                          BottomLine(
-                              rowtem: Row(
-                            children: [
-                              SizedBox(
-                                width: 400.w,
-                                child: TextFormField(
-                                  keyboardType: TextInputType.number,
-                                  controller: ipValue,
-                                  style: TextStyle(
-                                      fontSize: 26.sp,
-                                      color: const Color(0xff051220)),
-                                  decoration: InputDecoration(
-                                    hintText: S.of(context).enter,
-                                    hintStyle: TextStyle(
-                                        fontSize: 26.sp,
-                                        color: const Color(0xff737A83)),
-                                    border: InputBorder.none,
-                                  ),
+                    if (linkStatus == '1')
+                      Stepper(
+                        // type: StepperType.horizontal, //横向
+                        currentStep: currentStep, //当前步骤的索引
+                        //当用户点击步骤时调用的回调函数
+                        onStepTapped: (value) {},
+                        //下一步 回调
+                        onStepContinue: () {
+                          setState(() {
+                            if (currentStep < 2) {
+                              // 如果第一步选择的自动获取
+                              if (_selectedIndex == 0) {
+                                //第1步选择自动获取时的下一步
+                                handleSave(
+                                    ' {"ethernetConnectMode":"dhcp","ethernetMtu":"1500","ethernetConnectOnly":"1","ethernetDetectServer":"0"}');
+                                currentStep += 2;
+                              } else {
+                                currentStep += 1;
+                                if (currentStep == 2) {
+                                  //选择静态ip 第2步的下一步
+                                  handleSave(
+                                      '{"ethernetConnectMode":"static","ethernetIp":"${ipValue.text}","ethernetMask":"${sMValue.text}","ethernetDefaultGateway":"${gatewayValue.text}","ethernetPrimaryDns":"${dNSValue.text}","ethernetSecondaryDns":"${dNS2Value.text}","ethernetMtu":"1500","ethernetConnectOnly":"1","ethernetDetectServer":"0"}');
+                                }
+                              }
+                            }
+                          });
+                        },
+                        //上一步 回调
+                        onStepCancel: () {
+                          setState(() {
+                            if (currentStep > 0) {
+                              // 如果第一步同上
+                              if (_selectedIndex == 0) {
+                                currentStep -= 2;
+                              } else {
+                                currentStep -= 1;
+                              }
+                            }
+                          });
+                        },
+                        controlsBuilder: (BuildContext context,
+                            ControlsDetails controlsDetails) {
+                          return Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              if (currentStep != 0) // 第一步时不显示上一步
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      fixedSize: const Size(200, 30),
+                                      backgroundColor: const Color.fromARGB(
+                                          255, 30, 104, 233)),
+                                  onPressed: controlsDetails.onStepCancel,
+                                  child: Text(S.of(context).Previous),
                                 ),
-                              ),
-                            ],
-                          ))
-                        ],
-                      ),
-                      // 子网掩码
-                      Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(S.of(context).SubnetMask,
-                                  style: TextStyle(
-                                      color: const Color.fromARGB(255, 5, 0, 0),
-                                      fontSize: 28.sp)),
-                            ],
-                          ),
-                          BottomLine(
-                              rowtem: Row(
-                            children: [
-                              SizedBox(
-                                width: 400.w,
-                                child: TextFormField(
-                                  keyboardType: TextInputType.number,
-                                  controller: sMValue,
-                                  style: TextStyle(
-                                      fontSize: 26.sp,
-                                      color: const Color(0xff051220)),
-                                  decoration: InputDecoration(
-                                    hintText: S.of(context).enter,
-                                    hintStyle: TextStyle(
-                                        fontSize: 26.sp,
-                                        color: const Color(0xff737A83)),
-                                    border: InputBorder.none,
-                                  ),
+                              if (currentStep != 2) // 最后一步时不显示下一步
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      fixedSize: const Size(200, 30),
+                                      backgroundColor: const Color.fromARGB(
+                                          255, 30, 104, 233)),
+                                  onPressed: controlsDetails.onStepContinue,
+                                  child: Text(S.of(context).Next),
                                 ),
-                              ),
                             ],
-                          ))
-                        ],
-                      ),
-                      // 默认网关
-                      Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(S.of(context).DefaultGateway,
-                                  style: TextStyle(
-                                      color: const Color.fromARGB(255, 5, 0, 0),
-                                      fontSize: 28.sp)),
-                            ],
-                          ),
-                          BottomLine(
-                              rowtem: Row(
-                            children: [
-                              SizedBox(
-                                width: 400.w,
-                                child: TextFormField(
-                                  keyboardType: TextInputType.number,
-                                  controller: gatewayValue,
-                                  style: TextStyle(
-                                      fontSize: 26.sp,
-                                      color: const Color(0xff051220)),
-                                  decoration: InputDecoration(
-                                    hintText: S.of(context).enter,
-                                    hintStyle: TextStyle(
-                                        fontSize: 26.sp,
-                                        color: const Color(0xff737A83)),
-                                    border: InputBorder.none,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ))
-                        ],
-                      ),
-
-                      // 首选DNS服务器
-                      Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(S.of(context).DNSServer,
-                                  style: TextStyle(
-                                      color: const Color.fromARGB(255, 5, 0, 0),
-                                      fontSize: 28.sp)),
-                            ],
-                          ),
-                          BottomLine(
-                              rowtem: Row(
-                            children: [
-                              SizedBox(
-                                width: 400.w,
-                                child: TextFormField(
-                                  keyboardType: TextInputType.number,
-                                  controller: dNSValue,
-                                  style: TextStyle(
-                                      fontSize: 26.sp,
-                                      color: const Color(0xff051220)),
-                                  decoration: InputDecoration(
-                                    hintText: S.of(context).enter,
-                                    hintStyle: TextStyle(
-                                        fontSize: 26.sp,
-                                        color: const Color(0xff737A83)),
-                                    border: InputBorder.none,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ))
-                        ],
-                      ),
-                      // 备用DNS服务器(选填)
-                      Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(S.of(context).DNS2Server,
-                                  style: TextStyle(
-                                      color: const Color.fromARGB(255, 5, 0, 0),
-                                      fontSize: 28.sp)),
-                            ],
-                          ),
-                          BottomLine(
-                            rowtem: Row(
+                          );
+                        },
+                        //步骤列表
+                        steps: [
+                          // 1 选择上网方式
+                          Step(
+                            title: Text(S.of(context).interentMode),
+                            content: Column(
                               children: [
-                                SizedBox(
-                                  width: 400.w,
-                                  child: TextFormField(
-                                    keyboardType: TextInputType.number,
-                                    controller: dNS2Value,
-                                    style: TextStyle(
-                                        fontSize: 26.sp,
-                                        color: const Color(0xff051220)),
-                                    decoration: InputDecoration(
-                                      hintText: S.of(context).enter,
-                                      hintStyle: TextStyle(
-                                          fontSize: 26.sp,
-                                          color: const Color(0xff737A83)),
-                                      border: InputBorder.none,
+                                GestureDetector(
+                                  onTap: () => _selectIndex(0),
+                                  child: Card(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16.0),
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        ListTile(
+                                          title: Text(S.of(context).autoip),
+                                          subtitle:
+                                              Text(S.of(context).IPAcquisition),
+                                          trailing: Icon(
+                                            Icons.album,
+                                            color: _selectedIndex == 0
+                                                ? Colors.blue
+                                                : null,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () => {_selectIndex(1)},
+                                  child: Card(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16.0),
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        ListTile(
+                                          title: Text(S.of(context).staticIP),
+                                          subtitle:
+                                              Text(S.of(context).ManuallyIP),
+                                          trailing: Icon(
+                                            Icons.album,
+                                            color: _selectedIndex == 1
+                                                ? Colors.blue
+                                                : null,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
                               ],
                             ),
-                          )
+                            isActive: currentStep == 0,
+                          ),
+                          // 2 网络配置
+                          Step(
+                            title: Text(
+                              S.of(context).NetworkConfig,
+                            ),
+                            content: InfoBox(
+                              boxCotainer: Column(
+                                children: [
+                                  // ip地址
+                                  Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text(S.of(context).IPAddress,
+                                              style: TextStyle(
+                                                  color: const Color.fromARGB(
+                                                      255, 5, 0, 0),
+                                                  fontSize: 28.sp)),
+                                        ],
+                                      ),
+                                      BottomLine(
+                                          rowtem: Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 400.w,
+                                            child: TextFormField(
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              controller: ipValue,
+                                              style: TextStyle(
+                                                  fontSize: 26.sp,
+                                                  color:
+                                                      const Color(0xff051220)),
+                                              decoration: InputDecoration(
+                                                hintText: S.of(context).enter,
+                                                hintStyle: TextStyle(
+                                                    fontSize: 26.sp,
+                                                    color: const Color(
+                                                        0xff737A83)),
+                                                border: InputBorder.none,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ))
+                                    ],
+                                  ),
+                                  // 子网掩码
+                                  Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(S.of(context).SubnetMask,
+                                              style: TextStyle(
+                                                  color: const Color.fromARGB(
+                                                      255, 5, 0, 0),
+                                                  fontSize: 28.sp)),
+                                        ],
+                                      ),
+                                      BottomLine(
+                                          rowtem: Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 400.w,
+                                            child: TextFormField(
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              controller: sMValue,
+                                              style: TextStyle(
+                                                  fontSize: 26.sp,
+                                                  color:
+                                                      const Color(0xff051220)),
+                                              decoration: InputDecoration(
+                                                hintText: S.of(context).enter,
+                                                hintStyle: TextStyle(
+                                                    fontSize: 26.sp,
+                                                    color: const Color(
+                                                        0xff737A83)),
+                                                border: InputBorder.none,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ))
+                                    ],
+                                  ),
+                                  // 默认网关
+                                  Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(S.of(context).DefaultGateway,
+                                              style: TextStyle(
+                                                  color: const Color.fromARGB(
+                                                      255, 5, 0, 0),
+                                                  fontSize: 28.sp)),
+                                        ],
+                                      ),
+                                      BottomLine(
+                                          rowtem: Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 400.w,
+                                            child: TextFormField(
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              controller: gatewayValue,
+                                              style: TextStyle(
+                                                  fontSize: 26.sp,
+                                                  color:
+                                                      const Color(0xff051220)),
+                                              decoration: InputDecoration(
+                                                hintText: S.of(context).enter,
+                                                hintStyle: TextStyle(
+                                                    fontSize: 26.sp,
+                                                    color: const Color(
+                                                        0xff737A83)),
+                                                border: InputBorder.none,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ))
+                                    ],
+                                  ),
+
+                                  // 首选DNS服务器
+                                  Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(S.of(context).DNSServer,
+                                              style: TextStyle(
+                                                  color: const Color.fromARGB(
+                                                      255, 5, 0, 0),
+                                                  fontSize: 28.sp)),
+                                        ],
+                                      ),
+                                      BottomLine(
+                                          rowtem: Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 400.w,
+                                            child: TextFormField(
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              controller: dNSValue,
+                                              style: TextStyle(
+                                                  fontSize: 26.sp,
+                                                  color:
+                                                      const Color(0xff051220)),
+                                              decoration: InputDecoration(
+                                                hintText: S.of(context).enter,
+                                                hintStyle: TextStyle(
+                                                    fontSize: 26.sp,
+                                                    color: const Color(
+                                                        0xff737A83)),
+                                                border: InputBorder.none,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ))
+                                    ],
+                                  ),
+                                  // 备用DNS服务器(选填)
+                                  Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(S.of(context).DNS2Server,
+                                              style: TextStyle(
+                                                  color: const Color.fromARGB(
+                                                      255, 5, 0, 0),
+                                                  fontSize: 28.sp)),
+                                        ],
+                                      ),
+                                      BottomLine(
+                                        rowtem: Row(
+                                          children: [
+                                            SizedBox(
+                                              width: 400.w,
+                                              child: TextFormField(
+                                                keyboardType:
+                                                    TextInputType.number,
+                                                controller: dNS2Value,
+                                                style: TextStyle(
+                                                    fontSize: 26.sp,
+                                                    color: const Color(
+                                                        0xff051220)),
+                                                decoration: InputDecoration(
+                                                  hintText: S.of(context).enter,
+                                                  hintStyle: TextStyle(
+                                                      fontSize: 26.sp,
+                                                      color: const Color(
+                                                          0xff737A83)),
+                                                  border: InputBorder.none,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            isActive: currentStep == 1,
+                          ),
+                          // 3 设备登录
+                          Step(
+                            title: Text(S.of(context).Devicelogin),
+                            content: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Form(
+                                  key: _formKey,
+                                  child: Column(
+                                    children: <Widget>[
+                                      Text(
+                                        S.current.Administratorlogin,
+                                        style: TextStyle(fontSize: 48.sp),
+                                      ),
+                                      Padding(
+                                          padding: EdgeInsets.only(top: 10.w)),
+                                      Text(
+                                        '${S.of(context).currentDeive} $sn',
+                                        style: TextStyle(
+                                            fontSize: 28.sp,
+                                            color: const Color(0xFF373543)),
+                                      ),
+
+                                      /// 账号
+                                      buildAccountTextField(),
+                                      Padding(
+                                          padding: EdgeInsets.only(top: 20.w)),
+
+                                      /// 密码
+                                      buildPasswordTextField(),
+                                      Padding(
+                                          padding: EdgeInsets.only(top: 20.w)),
+
+                                      /// 登录
+                                      buildLoginButton(),
+                                      Padding(
+                                          padding: EdgeInsets.only(top: 20.w)),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            isActive: currentStep == 2,
+                          ),
                         ],
                       ),
-                    ],
-                  ),
-                ),
-                isActive: currentStep == 1,
-              ),
-              // 3 设备登录
-              Step(
-                title: Text(S.of(context).Devicelogin),
-                content: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Form(
-                      key: _formKey,
-                      child: Column(
-                        children: <Widget>[
-                          Text(
-                            S.current.Administratorlogin,
-                            style: TextStyle(fontSize: 48.sp),
-                          ),
-                          Padding(padding: EdgeInsets.only(top: 10.w)),
-                          Text(
-                            '${S.of(context).currentDeive} $sn',
-                            style: TextStyle(
-                                fontSize: 28.sp,
-                                color: const Color(0xFF373543)),
-                          ),
-
-                          /// 账号
-                          buildAccountTextField(),
-                          Padding(padding: EdgeInsets.only(top: 20.w)),
-
-                          /// 密码
-                          buildPasswordTextField(),
-                          Padding(padding: EdgeInsets.only(top: 20.w)),
-
-                          /// 登录
-                          buildLoginButton(),
-                          Padding(padding: EdgeInsets.only(top: 20.w)),
-                        ],
-                      ),
-                    ),
+                    if (linkStatus == '2')
+                      Container(
+                        width: double.infinity,
+                        child: Column(
+                          children: [
+                            Text('确保路由器连接电源并于WAN口插入网线'),
+                            Image.asset("assets/images/sureWan.png",
+                              fit: BoxFit.fitWidth, height: 600.w, width: 600.w),
+                          ],
+                        ),
+                      )
                   ],
                 ),
-                isActive: currentStep == 2,
               ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }

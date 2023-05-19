@@ -274,5 +274,6 @@
   "macAddress": "Use MAC address cloning",
   "pleaseEnter": "Please enter the content",
   "ModifyRemarks": "Modify remarks",
+  "SureRouterConnected": "Make sure the router is connected to the power supply and the WAN port is plugged in with an Ethernet cable",
   "a": "111"
 }

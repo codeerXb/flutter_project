@@ -80,71 +80,71 @@ class _SystemSettingsState extends State<SystemSettings> {
               InfoBox(
                 boxCotainer: Column(children: [
                   //版本更新
-                  GestureDetector(
-                    onTap: () {
-                      debugPrint('版本更新');
-                    },
-                    child: BottomLine(
-                      rowtem: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(S.current.versionUpdating,
-                              style: TextStyle(
-                                  color: const Color.fromARGB(255, 5, 0, 0),
-                                  fontSize: 28.sp)),
-                          Icon(
-                            Icons.arrow_forward_ios_outlined,
-                            color: const Color.fromRGBO(144, 147, 153, 1),
-                            size: 30.w,
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     debugPrint('版本更新');
+                  //   },
+                  //   child: BottomLine(
+                  //     rowtem: Row(
+                  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //       children: [
+                  //         Text(S.current.versionUpdating,
+                  //             style: TextStyle(
+                  //                 color: const Color.fromARGB(255, 5, 0, 0),
+                  //                 fontSize: 28.sp)),
+                  //         Icon(
+                  //           Icons.arrow_forward_ios_outlined,
+                  //           color: const Color.fromRGBO(144, 147, 153, 1),
+                  //           size: 30.w,
+                  //         )
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
                   //隐私政策
-                  GestureDetector(
-                    onTap: () {
-                      debugPrint('隐私政策');
-                    },
-                    child: BottomLine(
-                      rowtem: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(S.current.privacyPolicy,
-                              style: TextStyle(
-                                  color: const Color.fromARGB(255, 5, 0, 0),
-                                  fontSize: 28.sp)),
-                          Icon(
-                            Icons.arrow_forward_ios_outlined,
-                            color: const Color.fromRGBO(144, 147, 153, 1),
-                            size: 30.w,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     debugPrint('隐私政策');
+                  //   },
+                  //   child: BottomLine(
+                  //     rowtem: Row(
+                  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //       children: [
+                  //         Text(S.current.privacyPolicy,
+                  //             style: TextStyle(
+                  //                 color: const Color.fromARGB(255, 5, 0, 0),
+                  //                 fontSize: 28.sp)),
+                  //         Icon(
+                  //           Icons.arrow_forward_ios_outlined,
+                  //           color: const Color.fromRGBO(144, 147, 153, 1),
+                  //           size: 30.w,
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
                   //用户协议
-                  GestureDetector(
-                    onTap: () {
-                      debugPrint('用户协议');
-                    },
-                    child: BottomLine(
-                      rowtem: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(S.current.userAgreement,
-                              style: TextStyle(
-                                  color: const Color.fromARGB(255, 5, 0, 0),
-                                  fontSize: 28.sp)),
-                          Icon(
-                            Icons.arrow_forward_ios_outlined,
-                            color: const Color.fromRGBO(144, 147, 153, 1),
-                            size: 30.w,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     debugPrint('用户协议');
+                  //   },
+                  //   child: BottomLine(
+                  //     rowtem: Row(
+                  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //       children: [
+                  //         Text(S.current.userAgreement,
+                  //             style: TextStyle(
+                  //                 color: const Color.fromARGB(255, 5, 0, 0),
+                  //                 fontSize: 28.sp)),
+                  //         Icon(
+                  //           Icons.arrow_forward_ios_outlined,
+                  //           color: const Color.fromRGBO(144, 147, 153, 1),
+                  //           size: 30.w,
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
                   //选择语言
                   GestureDetector(
                     onTap: () {

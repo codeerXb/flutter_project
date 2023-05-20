@@ -234,8 +234,11 @@ class _LanSettingsState extends State<LanSettings> {
       });
     } catch (e) {
       debugPrint('获取信息失败：${e.toString()}');
+    } finally {
+      setState(() {
+        Navigator.pop(context);
+      });
     }
-    Navigator.pop(context);
   }
 
 // 设置 云端
@@ -355,7 +358,6 @@ class _LanSettingsState extends State<LanSettings> {
           lanSet = LanSetRec.fromJson(d);
           if (lanSet.success == true) {
             ToastUtils.toast(S.current.success);
-            loginout();
           } else {
             ToastUtils.toast(S.current.error);
           }
@@ -384,7 +386,6 @@ class _LanSettingsState extends State<LanSettings> {
         setState(() {
           lanSetDis = LanSetRec.fromJson(d);
           if (lanSetDis.success == true) {
-            loginout();
             ToastUtils.toast(S.current.success);
           } else {
             ToastUtils.toast(S.current.error);
@@ -400,15 +401,35 @@ class _LanSettingsState extends State<LanSettings> {
     });
   }
 
-  void loginout() {
-    // 这里还需要调用后台接口的方法
-
-    sharedDeleteData("loginInfo");
-    sharedClearData();
-    Get.offAllNamed("/get_equipment");
+  bool _isLoading = false;
+  void warningReboot(Function save) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Warning'),
+          content: const Text(
+              'It is a warning action, because device will reboot. Confirm to save it?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Save'),
+              onPressed: () {
+                save();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
-  bool _isLoading = false;
   Future<void> _saveData() async {
     Navigator.push(context, DialogRouter(LoadingDialog()));
     setState(() {
@@ -417,12 +438,7 @@ class _LanSettingsState extends State<LanSettings> {
     closeKeyboard(context);
     if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
       // 云端请求赋值
-      try {
-        await setTRLanData();
-      } catch (e) {
-        debugPrint('云端请求出错：${e.toString()}');
-        Get.back();
-      }
+      await setTRLanData();
     }
     if (loginController.login.state == 'local') {
       // 本地请求赋值
@@ -434,8 +450,9 @@ class _LanSettingsState extends State<LanSettings> {
     }
     setState(() {
       _isLoading = false;
+      Navigator.pop(context);
     });
-    Navigator.pop(context);
+    return;
   }
 
   @override
@@ -448,7 +465,7 @@ class _LanSettingsState extends State<LanSettings> {
             Container(
               margin: EdgeInsets.all(20.w),
               child: OutlinedButton(
-                onPressed: _isLoading ? null : _saveData,
+                onPressed: () => warningReboot(_saveData),
                 child: Row(
                   children: [
                     if (_isLoading)

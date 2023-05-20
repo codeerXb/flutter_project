@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:convert';
 
+import 'package:css_filter/css_filter.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,10 +17,11 @@ import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:flutter_template/pages/net_status/model/net_connect_status.dart';
 import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
 import 'package:flutter_template/pages/topo/model/equipment_datas.dart';
-import 'package:flutter_template/pages/topo/topo_item.dart';
 import 'package:get/get.dart';
 
 import '../../generated/l10n.dart';
+
+typedef void OnItemPressed(bool result);
 
 //网络拓扑
 class Topo extends StatefulWidget {
@@ -34,7 +37,12 @@ class _TopoState extends State<Topo> {
   String sn = '';
   Map<String, dynamic> onlineCount = {};
   List<String> deviceNames = [];
-  // Map<String, dynamic> deviceList = {};
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -228,7 +236,7 @@ class _TopoState extends State<Topo> {
         });
         topoData =
             EquipmentDatas(onlineDeviceTable: onlineDeviceTable, max: 255);
-        ToastUtils.toast(S.current.success);
+        // ToastUtils.toast(S.current.success);
       });
     }
   }
@@ -255,6 +263,15 @@ class _TopoState extends State<Topo> {
     } catch (e) {
       debugPrint('获取设备信息失败：${e.toString()}');
     }
+  }
+
+  void handleItemPressed(bool result) {
+    // Do something with topoData...
+    if (result == true) {
+      editName();
+    }
+    print('--------');
+    print(result);
   }
 
   @override
@@ -292,12 +309,6 @@ class _TopoState extends State<Topo> {
                     //刷新
                     if (mounted) {
                       editName();
-                      // if (loginController.login.state == 'cloud' &&
-                      //     sn.isNotEmpty) {
-                      //   getTRTopoData(true);
-                      // } else if (loginController.login.state == 'local') {
-                      //   getTopoData(true);
-                      // }
                     }
                   },
                   icon: const Icon(
@@ -535,7 +546,8 @@ class _TopoState extends State<Topo> {
                     childAspectRatio: 1.0,
                     children: topoData.onlineDeviceTable!
                         .map(
-                          (e) => TopoItem(
+                          (e) => TopoItems(
+                            onItemPressed: handleItemPressed,
                             title: e.hostName.toString(),
                             isNative: false,
                             isShow: true,
@@ -558,4 +570,106 @@ class _TopoState extends State<Topo> {
       ],
     );
   }
+}
+
+class TopoItems extends StatefulWidget {
+  final String title;
+  final bool isShow;
+  final bool isNative;
+  final OnlineDeviceTable? topoData;
+  final OnItemPressed onItemPressed;
+
+  const TopoItems(
+      {Key? key,
+      required this.title,
+      required this.isShow,
+      required this.isNative,
+      required this.onItemPressed,
+      this.topoData})
+      : super(key: key);
+
+  @override
+  State<TopoItems> createState() => _TopoItemsState();
+}
+
+class _TopoItemsState extends State<TopoItems> {
+  _TopoState topo = _TopoState();
+
+  // int value = 0;
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        if (widget.topoData!.mac == 'B4:4C:3B:9E:46:3D') {
+          Get.toNamed("/video_play");
+        } else {
+          Get.toNamed("/access_equipment", arguments: widget.topoData)
+              ?.then((value) {
+            if (value) {
+              widget.onItemPressed(value);
+            }
+          });
+        }
+      },
+      child: Column(
+        children: [
+          Stack(
+            children: [
+              CSSFilter.apply(
+                value: CSSFilterMatrix().opacity(!widget.isShow ? 0.3 : 1),
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: Color.fromARGB(25, 47, 90, 245),
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                  clipBehavior: Clip.hardEdge,
+                  height: 120.w,
+                  width: 120.w,
+                  margin: const EdgeInsets.all(5),
+                  child: Image.asset(
+                    widget.topoData!.mac == 'B4:4C:3B:9E:46:3D'
+                        ? 'assets/images/camera.png'
+                        : 'assets/images/slices.png',
+                    // fit: BoxFit.cover,
+                    width: 70.w,
+                    height: 80.w,
+                  ),
+                ),
+              ),
+              if (widget.isNative)
+                Positioned(
+                  right: 5,
+                  top: 5,
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: Color.fromARGB(255, 168, 168, 168),
+                      borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(10),
+                          bottomLeft: Radius.circular(10)),
+                    ),
+                    height: 16,
+                    width: 30,
+                    padding: const EdgeInsets.only(left: 2),
+                    child: Text(
+                      S.current.local,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 22.sp),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          Flexible(
+            child: Text(
+              widget.title,
+              style: TextStyle(fontSize: 22.sp),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          // const Text('datdadada'),
+        ],
+      ),
+    );
+  }
+
 }

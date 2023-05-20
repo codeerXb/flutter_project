@@ -11,6 +11,7 @@ class TopoItem extends StatefulWidget {
   final bool isShow;
   final bool isNative;
   final OnlineDeviceTable? topoData;
+  
   const TopoItem(
       {Key? key,
       required this.title,
@@ -32,17 +33,9 @@ class _TopoItemState extends State<TopoItem> {
         if (widget.topoData!.mac == 'B4:4C:3B:9E:46:3D') {
           Get.toNamed("/video_play");
         } else {
-          Get.toNamed("/access_equipment", arguments: widget.topoData);
+          Get.toNamed("/access_equipment", arguments: widget.topoData)
+              ?.then((value) => getFn());
         }
-        // var result = CommonPicker.showPicker(
-        //   context: context,
-        //   options: ['高楼层', '中楼层', '低楼层'],
-        //   value: value,
-        // );
-        // result?.then((selectedValue) => {
-        //       if (value != selectedValue && selectedValue != null)
-        //         {setState(() => value = selectedValue!)}
-        //     });
       },
       child: Column(
         children: [
@@ -103,5 +96,9 @@ class _TopoItemState extends State<TopoItem> {
         ],
       ),
     );
+  }
+
+  getFn() {
+    print('123');
   }
 }

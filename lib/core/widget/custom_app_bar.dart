@@ -15,7 +15,7 @@ AppBar customAppbar(
     List<Widget>? actions,
     Color titleColor = const Color.fromRGBO(76, 76, 76, 1),
     Color backgroundColor = Colors.white,
-    Object? result}) {
+    dynamic result}) {
   return AppBar(
     centerTitle: true,
     title: Text(

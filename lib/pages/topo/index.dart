@@ -278,8 +278,6 @@ class _TopoState extends State<Topo> {
     if (result == true) {
       editName();
     }
-    print('--------');
-    print(result);
   }
 
   @override

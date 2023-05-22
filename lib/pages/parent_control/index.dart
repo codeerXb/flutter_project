@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/pages/parent_control/swip_card.dart';
 import 'package:get/get.dart';
 import '../../core/widget/custom_app_bar.dart';
 import '../net_status/index.dart';
@@ -30,7 +31,7 @@ class _ParentState extends State<Parent> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                TopCard(),
+                const Swipcard(),
 
                 Padding(padding: EdgeInsets.only(top: 20.w)),
                 //Internet usage today
@@ -104,7 +105,7 @@ class _ParentState extends State<Parent> {
                               child: Column(
                                 children: [
                                   const Text(
-                                    'Left',
+                                    'Time Left',
                                     style: TextStyle(color: Colors.black45),
                                   ),
                                   Text(
@@ -143,9 +144,15 @@ class _ParentState extends State<Parent> {
                                         const Color.fromRGBO(144, 147, 153, 1),
                                     size: 40.w,
                                   ),
-                                  const Text(
-                                    'Disconnect',
-                                    style: TextStyle(color: Colors.black87),
+                                  ConstrainedBox(
+                                    constraints:
+                                        BoxConstraints(maxWidth: 150.w),
+                                    child: const FittedBox(
+                                      child: Text(
+                                        'Disconnect Internet',
+                                        style: TextStyle(color: Colors.black87),
+                                      ),
+                                    ),
                                   ),
                                   Icon(
                                     Icons.arrow_drop_down_outlined,
@@ -175,7 +182,7 @@ class _ParentState extends State<Parent> {
                                     size: 40.w,
                                   ),
                                   const Text(
-                                    'No Limits',
+                                    'No Time Limit',
                                     style: TextStyle(color: Colors.black87),
                                   ),
                                 ],
@@ -201,7 +208,7 @@ class _ParentState extends State<Parent> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             //left
-                            const Text('Internet access time management'),
+                            const Text('Internet access time scheduling'),
                             //right
                             GestureDetector(
                               onTap: () {
@@ -389,44 +396,6 @@ class _ParentState extends State<Parent> {
   }
 }
 
-//头部标题
-class TopCard extends StatelessWidget {
-  const TopCard({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Card(
-      clipBehavior: Clip.hardEdge,
-      elevation: 5, //设置卡片阴影的深度
-      shape: RoundedRectangleBorder(
-        //设置卡片圆角
-        borderRadius: BorderRadius.all(Radius.circular(20)),
-      ),
-      child: Image(
-        image: AssetImage('assets/images/title.jpg'),
-        fit: BoxFit.fill,
-      ),
-      // Column(
-      //   children: [
-      //     ListTile(
-      //       // contentPadding: EdgeInsets.only(
-      //       //     top: 20.w, bottom: 20.w, left: 40.w, right: 40.w),
-      //       //图片
-      //       leading: ClipOval(
-      //           child: Image.asset('assets/images/phone.png',
-      //               fit: BoxFit.fitWidth, height: 50, width: 50)),
-      //       //中间文字
-      //       title: Text('Unknown equipment-0FC1'),
-      //       //title下方显示的内容
-      //       subtitle: Text('Offline'),
-      //       //标题后显示的widget
-      //     ),
-      //   ],
-      // ),
-    );
-  }
-}
-
 //卡片
 class SizedBoxs extends StatelessWidget {
   @override
@@ -499,7 +468,10 @@ class SizedBoxs extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Video'),
+                        ConstrainedBox(
+                            constraints: BoxConstraints(maxWidth: 150.w),
+                            child: const FittedBox(
+                                child: Text('Video Streaming'))),
                         Text(
                           '26 allowed',
                           style:
@@ -578,7 +550,10 @@ class SizedBoxs extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('Payment'),
+                        ConstrainedBox(
+                            constraints: BoxConstraints(maxWidth: 150.w),
+                            child: const FittedBox(
+                                child: Text('Payment Service'))),
                         Text(
                           '4 allowed',
                           style:

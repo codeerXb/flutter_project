@@ -207,13 +207,21 @@ class _TopoState extends State<Topo> {
     });
   }
 
+  bool loading = true;
+
   //终端设备列表
   editName() async {
+    setState(() {
+      loading = true;
+    });
+
     Map<String, dynamic> form = {'sn': sn, "type": "getDevicesTable"};
     var res = await App.post(
         '${BaseConfig.cloudBaseUrl}/cpeMqtt/getDevicesTable',
         data: form);
-
+    setState(() {
+      loading = false;
+    });
     var d = json.decode(res.toString());
     if (d['code'] != 200) {
     } else {
@@ -538,31 +546,45 @@ class _TopoState extends State<Topo> {
                         )),
                   ),
                 ),
-                if (topoData.onlineDeviceTable!.isNotEmpty)
-                  GridView.count(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    crossAxisCount: 4,
-                    childAspectRatio: 1.0,
-                    children: topoData.onlineDeviceTable!
-                        .map(
-                          (e) => TopoItems(
-                            onItemPressed: handleItemPressed,
-                            title: e.hostName.toString(),
-                            isNative: false,
-                            isShow: true,
-                            topoData: e,
-                          ),
-                        )
-                        .toList(),
-                  ),
-                if (!topoData.onlineDeviceTable!.isNotEmpty)
-                  Center(
-                    child: Container(
-                        margin: EdgeInsets.only(top: 100.sp),
-                        height: 200.w,
-                        child: Text(S.of(context).NoDeviceConnected)),
-                  ),
+                loading
+                    ? const Center(child: CircularProgressIndicator())
+                    : Column(
+                        children: [
+                          if (topoData.onlineDeviceTable!.isNotEmpty)
+                            GridView.count(
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              crossAxisCount: 4,
+                              childAspectRatio: 1.0,
+                              children: topoData.onlineDeviceTable!
+                                  .map(
+                                    (e) => TopoItems(
+                                      onItemPressed: handleItemPressed,
+                                      title: e.hostName.toString(),
+                                      isNative: false,
+                                      isShow: true,
+                                      topoData: e,
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
+                          // NoDevice
+                          if (!topoData.onlineDeviceTable!.isNotEmpty)
+                            Center(
+                              child: Container(
+                                  margin: EdgeInsets.only(top: 100.sp),
+                                  height: 200.w,
+                                  child: Text(S.of(context).NoDeviceConnected)),
+                            ),
+                        ],
+                      ),
+                // if (!topoData.onlineDeviceTable!.isNotEmpty)
+                // Center(
+                //   child: Container(
+                //       margin: EdgeInsets.only(top: 100.sp),
+                //       height: 200.w,
+                //       child: Text(S.of(context).NoDeviceConnected)),
+                // ),
               ],
             ),
           ),
@@ -671,5 +693,4 @@ class _TopoItemsState extends State<TopoItems> {
       ),
     );
   }
-
 }

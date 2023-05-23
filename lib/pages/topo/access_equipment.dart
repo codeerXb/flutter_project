@@ -55,8 +55,7 @@ class _AccessEquipmentState extends State<AccessEquipment> {
       'mac': mac,
       'nickname': nickname,
     };
-    var res = await App.post('${BaseConfig.cloudBaseUrl}/platform/cpeNick/nick',
-        data: form);
+    var res = await App.post('/platform/cpeNick/nick', data: form);
 
     var d = json.decode(res.toString());
     if (d['code'] != 200) {

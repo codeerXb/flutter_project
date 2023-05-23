@@ -262,9 +262,7 @@ class _WlanSetState extends State<WlanSet> {
       'sn': sn,
       'type': 'getWifiCountryChannelList',
     };
-    var res = await App.post(
-        '${BaseConfig.cloudBaseUrl}/cpeMqtt/getWifiCountryChannelList',
-        data: data);
+    var res = await App.post('/cpeMqtt/getWifiCountryChannelList', data: data);
     var d = json.decode(res.toString());
     if (d['code'] != 200) {
       ToastUtils.error(d['message']);

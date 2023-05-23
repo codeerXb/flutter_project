@@ -82,9 +82,7 @@ class _LoginState extends State<Login> {
         var localLoginRes = json.decode(res.toString());
         printInfo(info: '登录返回$localLoginRes');
         if (localLoginRes['code'] == 200) {
-          App.post(
-                  '${BaseConfig.cloudBaseUrl}/platform/appCustomer/bindingCpe?deviceSn=$sn')
-              .then((res) {
+          App.post('/platform/appCustomer/bindingCpe?deviceSn=$sn').then((res) {
             var bindDevRes = json.decode(res.toString());
 
             debugPrint('云平台绑定响应------>$bindDevRes');
@@ -119,7 +117,7 @@ class _LoginState extends State<Login> {
           });
           loginController.setToken(localLoginRes['token']);
           loginController.setSession(localLoginRes['sessionid']);
-            String userInfo = jsonEncode({
+          String userInfo = jsonEncode({
             "user": _account,
             "pwd": base64Encode(
               utf8.encode(_password),

@@ -107,9 +107,7 @@ class _NetModeState extends State<NetMode> {
         var localLoginRes = json.decode(res.toString());
         printInfo(info: '登录返回$localLoginRes');
         if (localLoginRes['code'] == 200) {
-          App.post(
-                  '${BaseConfig.cloudBaseUrl}/platform/appCustomer/bindingCpe?deviceSn=$sn')
-              .then((res) {
+          App.post('/platform/appCustomer/bindingCpe?deviceSn=$sn').then((res) {
             var bindDevRes = json.decode(res.toString());
 
             debugPrint('云平台绑定响应------>$bindDevRes');
@@ -144,7 +142,7 @@ class _NetModeState extends State<NetMode> {
           });
           loginController.setToken(localLoginRes['token']);
           loginController.setSession(localLoginRes['sessionid']);
-             String userInfo = jsonEncode({
+          String userInfo = jsonEncode({
             "user": _account,
             "pwd": base64Encode(
               utf8.encode(_password),
@@ -155,7 +153,7 @@ class _NetModeState extends State<NetMode> {
             String,
             userInfo,
           );
-            sharedAddAndUpdate("token", String, localLoginRes['token']);
+          sharedAddAndUpdate("token", String, localLoginRes['token']);
           sharedAddAndUpdate("session", String, localLoginRes['sessionid']);
         }
       }
@@ -841,7 +839,9 @@ class _NetModeState extends State<NetMode> {
                           children: [
                             Text('确保路由器连接电源并于WAN口插入网线'),
                             Image.asset("assets/images/sureWan.png",
-                              fit: BoxFit.fitWidth, height: 600.w, width: 600.w),
+                                fit: BoxFit.fitWidth,
+                                height: 600.w,
+                                width: 600.w),
                           ],
                         ),
                       )

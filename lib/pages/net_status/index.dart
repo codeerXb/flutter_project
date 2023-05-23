@@ -230,28 +230,28 @@ class _NetStatusState extends State<NetStatus> {
         name = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Overview"]
             ['VersionInfo']['ProductModel']['_value'];
         // 已用流量
-        var flowTable = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
-            ["Overview"]["ThroughputStatisticsList"];
-        double flowTableVal =
-            double.parse(flowTable["1"]["ReceivedTotal"]["_value"]!) +
-                double.parse(flowTable["1"]["SentTotal"]["_value"]!) +
-                double.parse(flowTable["2"]["ReceivedTotal"]["_value"]!) +
-                double.parse(flowTable["2"]["SentTotal"]["_value"]!) +
-                double.parse(flowTable["3"]["ReceivedTotal"]["_value"]!) +
-                double.parse(flowTable["3"]["SentTotal"]["_value"]!) +
-                double.parse(flowTable["4"]["ReceivedTotal"]["_value"]!) +
-                double.parse(flowTable["4"]["SentTotal"]["_value"]!);
-        _usedFlow = flowTableVal / 1048576;
+        // var flowTable = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
+        //     ["Overview"]["ThroughputStatisticsList"];
+        // double flowTableVal =
+        //     double.parse(flowTable["1"]["ReceivedTotal"]["_value"]!) +
+        //         double.parse(flowTable["1"]["SentTotal"]["_value"]!) +
+        //         double.parse(flowTable["2"]["ReceivedTotal"]["_value"]!) +
+        //         double.parse(flowTable["2"]["SentTotal"]["_value"]!) +
+        //         double.parse(flowTable["3"]["ReceivedTotal"]["_value"]!) +
+        //         double.parse(flowTable["3"]["SentTotal"]["_value"]!) +
+        //         double.parse(flowTable["4"]["ReceivedTotal"]["_value"]!) +
+        //         double.parse(flowTable["4"]["SentTotal"]["_value"]!);
+        // _usedFlow = flowTableVal / 1048576;
 
-        /// 舍弃当前变量的小数部分，结果为 33。返回值为 int 类型。
-        usedFlowInt = (_usedFlow >= 1024)
-            ? (_usedFlow / 1024).truncate()
-            : _usedFlow.truncate();
+        // /// 舍弃当前变量的小数部分，结果为 33。返回值为 int 类型。
+        // usedFlowInt = (_usedFlow >= 1024)
+        //     ? (_usedFlow / 1024).truncate()
+        //     : _usedFlow.truncate();
 
-        /// 获取小数部分，通过.分割，返回值为String类型
-        usedFlowDecimals = (_usedFlow >= 1024)
-            ? '${(_usedFlow / 1024).toStringAsFixed(2).toString().split('.')[1].substring(0, 2)}GB'
-            : '${_usedFlow.toStringAsFixed(2).toString().split('.')[1].substring(0, 1)}MB';
+        // /// 获取小数部分，通过.分割，返回值为String类型
+        // usedFlowDecimals = (_usedFlow >= 1024)
+        //     ? '${(_usedFlow / 1024).toStringAsFixed(2).toString().split('.')[1].substring(0, 2)}GB'
+        //     : '${_usedFlow.toStringAsFixed(2).toString().split('.')[1].substring(0, 1)}MB';
 
         // 上下行速率
         var flow = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]

@@ -93,9 +93,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
 
   // 重启 云端
   void getReBootData() {
-    App.post(
-            '${BaseConfig.cloudBaseUrl}/platform/tr069/rebootDevice?deviceId=$sn')
-        .then((res) {
+    App.post('/platform/tr069/rebootDevice?deviceId=$sn').then((res) {
       var d = json.decode(res.toString());
       debugPrint('响应------>$d');
       if (d['code'] == 200) {
@@ -445,9 +443,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
 
   // 恢复出厂 云端
   void getfactoryResetData() {
-    App.post(
-            '${BaseConfig.cloudBaseUrl}/platform/tr069/factoryReset?deviceId=$sn')
-        .then((res) {
+    App.post('/platform/tr069/factoryReset?deviceId=$sn').then((res) {
       var d = json.decode(res.toString());
       debugPrint('响应------>$d');
       if (d['code'] == 200) {

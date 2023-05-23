@@ -19,9 +19,9 @@ class _BlocklistState extends State<Blocklist> {
   @override
   void initState() {
     super.initState();
-    // for (int i = 1; i <= _itemNum; i++) {
-    //   _itemTextList.add(i.toString());
-    // }
+    for (int i = 1; i <= _itemNum; i++) {
+      _itemTextList.add(i.toString());
+    }
   }
 
   @override
@@ -147,7 +147,38 @@ class _BlocklistState extends State<Blocklist> {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
-                        return CustomDialog();
+                        return AlertDialog(
+                          title: const Text('Add'),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              TextField(
+                                decoration: const InputDecoration(
+                                  labelText: 'URL',
+                                  hintText: 'https://example.com',
+                                ),
+                                onChanged: (value) {
+                                  url = value;
+                                },
+                              ),
+                            ],
+                          ),
+                          actions: <Widget>[
+                            TextButton(
+                              child: Text(S.current.cancel),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                            ElevatedButton(
+                              child: Text(S.current.confirm),
+                              onPressed: () {
+                                // 在这里处理确定按钮的逻辑
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        );
                       },
                     );
                     // Get.toNamed("/parental_pop", arguments: data)
@@ -231,6 +262,7 @@ class _BlocklistState extends State<Blocklist> {
     );
   }
 
+  // 删除
   _openAvatarBottomSheet() {
     showModalBottomSheet(
         context: context,
@@ -255,9 +287,9 @@ class _BlocklistState extends State<Blocklist> {
                               topRight: Radius.circular(30.w))),
                       height: 80.w,
                       alignment: Alignment.center,
-                      child: const Text(
-                        '提示',
-                        style: TextStyle(fontWeight: FontWeight.w700),
+                      child: Text(
+                        S.current.hint,
+                        style: const TextStyle(fontWeight: FontWeight.w700),
                       ),
                     ),
                   ),
@@ -266,7 +298,7 @@ class _BlocklistState extends State<Blocklist> {
                       height: 60.w,
                       alignment: Alignment.topLeft,
                       child: Text(
-                        '删除后将无法看到该条记录,请谨慎操作',
+                        S.current.delPro,
                         style:
                             TextStyle(color: Colors.black45, fontSize: 22.sp),
                       ),
@@ -293,7 +325,7 @@ class _BlocklistState extends State<Blocklist> {
                                   bottomLeft: Radius.circular(30.w))),
                           alignment: Alignment.center,
                           child: Text(
-                            '取消',
+                            S.current.cancel,
                             style: TextStyle(
                                 fontSize: 22.sp, fontWeight: FontWeight.w600),
                           ),
@@ -317,7 +349,7 @@ class _BlocklistState extends State<Blocklist> {
                                   bottomRight: Radius.circular(30.w))),
                           alignment: Alignment.center,
                           child: Text(
-                            '确定',
+                            S.current.confirm,
                             style: TextStyle(
                                 fontSize: 22.sp, fontWeight: FontWeight.w600),
                           ),
@@ -332,14 +364,48 @@ class _BlocklistState extends State<Blocklist> {
         });
   }
 
+  String url = '';
+  // 修改
   Widget _buildChangeBtn(final int index) {
     return GestureDetector(
       onTap: () {
-        // Get.toNamed("/parental_update", arguments: {
-        //   'data': data,
-        //   'dataList': accessList.fwParentControlTable![index]
-        // })?.then((value) => getAccessList());
-        setState(() {});
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Edit'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  TextField(
+                    decoration: const InputDecoration(
+                      labelText: 'URL',
+                      hintText: 'https://example.com',
+                    ),
+                    onChanged: (value) {
+                      url = value;
+                    },
+                  ),
+                ],
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(S.current.cancel),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                ElevatedButton(
+                  child: Text(S.current.confirm),
+                  onPressed: () {
+                    // 在这里处理确定按钮的逻辑
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
       },
       child: Container(
         width: 60,
@@ -359,72 +425,55 @@ class _BlocklistState extends State<Blocklist> {
   }
 }
 
-class InfoBox extends StatelessWidget {
-  final Widget boxCotainer;
+// add 弹窗
+// class AddUrl extends StatefulWidget {
+//   @override
+//   AddUrlState createState() => AddUrlState();
+// }
 
-  const InfoBox({super.key, required this.boxCotainer});
+// class AddUrlState extends State<AddUrl> {
+//   final TextEditingController _urlController = TextEditingController();
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        padding: EdgeInsets.all(8.0.w),
-        margin: EdgeInsets.only(bottom: 20.w, left: 30.w, right: 30.w),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(18.w),
-        ),
-        child: boxCotainer);
-  }
-}
+//   @override
+//   void dispose() {
+//     _urlController.dispose();
+//     super.dispose();
+//   }
 
-class CustomDialog extends StatefulWidget {
-  @override
-  _CustomDialogState createState() => _CustomDialogState();
-}
-
-class _CustomDialogState extends State<CustomDialog> {
-  final TextEditingController _urlController = TextEditingController();
-
-  @override
-  void dispose() {
-    _urlController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-      title: const Text('Custom Dialog'),
-      content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: _urlController,
-              decoration: const InputDecoration(
-                labelText: 'URL',
-                hintText: 'https://example.com',
-              ),
-            ),
-          ],
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: const Text('Close'),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            String url = _urlController.text;
-            // Do something with the URL
-            Navigator.pop(context);
-          },
-          child: const Text('OK'),
-        ),
-      ],
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return AlertDialog(
+//       title: const Text('Add'),
+//       content: SingleChildScrollView(
+//         child: Column(
+//           mainAxisSize: MainAxisSize.min,
+//           children: [
+//             TextField(
+//               controller: _urlController,
+//               decoration: const InputDecoration(
+//                 labelText: 'URL',
+//                 hintText: 'https://example.com',
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//       actions: [
+//         TextButton(
+//           onPressed: () {
+//             Navigator.pop(context);
+//           },
+//           child: Text(S.current.cancel),
+//         ),
+//         ElevatedButton(
+//           onPressed: () {
+//             String url = _urlController.text;
+//             // Do something with the URL
+//             Navigator.pop(context);
+//           },
+//           child: Text(S.current.confirm),
+//         ),
+//       ],
+//     );
+//   }
+// }

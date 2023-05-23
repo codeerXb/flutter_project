@@ -1,4 +1,5 @@
 {
+  "delPro": "After deletion, this record will no longer be visible. Please proceed with caution.",
   "loginFailed": "Login Failed",
   "deviceBinded": "Binding CPE failed: The CPE device has already been bound.",
   "netError": "NetWork Error",

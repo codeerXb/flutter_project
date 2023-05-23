@@ -1,4 +1,5 @@
 {
+  "wifiMapping": "Wi-Fi覆盖图",
   "loginFailed": "登录失败",
   "deviceBinded": "绑定CPE失败: 该CPE设备已被绑定",
   "netError": "网络异常",

@@ -261,8 +261,31 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                     child: GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: () {
-                        ToastUtils.toast(S.current.nogameAcceleration);
+                        // ToastUtils.toast(S.current.nogameAcceleration);
                         // Get.toNamed("/parental_control", arguments: data);
+                        Get.snackbar(
+                          'Warning',
+                          S.current.nogameAcceleration,
+                          snackPosition: SnackPosition.TOP,
+                          duration: const Duration(seconds: 10),
+                          backgroundColor:
+                              const Color.fromARGB(132, 63, 63, 63),
+                          colorText: Colors.white,
+                          margin: const EdgeInsets.all(10),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 15),
+                          borderRadius: 10,
+                          animationDuration: const Duration(milliseconds: 200),
+                          mainButton: TextButton(
+                            onPressed: () {
+                              Get.back();
+                            },
+                            child: const Icon(
+                              Icons.close,
+                              color: Colors.red,
+                            ),
+                          ),
+                        );
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -289,8 +312,32 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                     child: GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: () {
-                        ToastUtils.toast(S.current.noaivideo);
+                        // ToastUtils.toast(S.current.noaivideo);
                         // Get.toNamed("/parental_control", arguments: data);
+                        Get.snackbar(
+                          'Warning',
+                          S.current.noaivideo,
+                          isDismissible: true,
+                          snackPosition: SnackPosition.TOP,
+                          duration: const Duration(seconds: 10),
+                          backgroundColor:
+                              const Color.fromARGB(132, 63, 63, 63),
+                          colorText: Colors.white,
+                          margin: const EdgeInsets.all(10),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 15),
+                          borderRadius: 10,
+                          animationDuration: const Duration(milliseconds: 200),
+                          mainButton: TextButton(
+                            onPressed: () {
+                              Get.back();
+                            },
+                            child: const Icon(
+                              Icons.close,
+                              color: Colors.red,
+                            ),
+                          ),
+                        );
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

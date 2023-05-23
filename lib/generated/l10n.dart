@@ -50,6 +50,16 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `Wi-Fi Mapping`
+  String get wifiMapping {
+    return Intl.message(
+      'Wi-Fi Mapping',
+      name: 'wifiMapping',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Login Failed`
   String get loginFailed {
     return Intl.message(
@@ -610,20 +620,20 @@ class S {
     );
   }
 
-  /// `State`
+  /// `Network Status`
   String get state {
     return Intl.message(
-      'State',
+      'Network Status',
       name: 'state',
       desc: '',
       args: [],
     );
   }
 
-  /// `Net Topo`
+  /// `Home Network`
   String get netTopo {
     return Intl.message(
-      'Net Topo',
+      'Home Network',
       name: 'netTopo',
       desc: '',
       args: [],
@@ -2430,20 +2440,20 @@ class S {
     );
   }
 
-  /// ` Do not subscribe to game acceleration yet, Please go to subscription service to subscribe`
+  /// ` Please subscribe to plan`
   String get nogameAcceleration {
     return Intl.message(
-      ' Do not subscribe to game acceleration yet, Please go to subscription service to subscribe',
+      ' Please subscribe to plan',
       name: 'nogameAcceleration',
       desc: '',
       args: [],
     );
   }
 
-  /// `Do not subscribe to AI Videos tet, Please go to the subscription service to subscribe`
+  /// `Please subscribe to plan`
   String get noaivideo {
     return Intl.message(
-      'Do not subscribe to AI Videos tet, Please go to the subscription service to subscribe',
+      'Please subscribe to plan',
       name: 'noaivideo',
       desc: '',
       args: [],

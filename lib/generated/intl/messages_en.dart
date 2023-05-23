@@ -288,7 +288,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "netError": MessageLookupByLibrary.simpleMessage("NetWork Error"),
         "netSet": MessageLookupByLibrary.simpleMessage("Network"),
         "netSpeed": MessageLookupByLibrary.simpleMessage("Net Speed Test"),
-        "netTopo": MessageLookupByLibrary.simpleMessage("Net Topo"),
+        "netTopo": MessageLookupByLibrary.simpleMessage("Home Network"),
         "networkError": MessageLookupByLibrary.simpleMessage("Network Anomaly"),
         "newOldError": MessageLookupByLibrary.simpleMessage(
             "The new password is different from the confirmed password"),
@@ -296,10 +296,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "noData": MessageLookupByLibrary.simpleMessage("No Data"),
         "noDevice": MessageLookupByLibrary.simpleMessage("Device not found"),
         "noLogin": MessageLookupByLibrary.simpleMessage("Please login"),
-        "noaivideo": MessageLookupByLibrary.simpleMessage(
-            "Do not subscribe to AI Videos tet, Please go to the subscription service to subscribe"),
-        "nogameAcceleration": MessageLookupByLibrary.simpleMessage(
-            " Do not subscribe to game acceleration yet, Please go to subscription service to subscribe"),
+        "noaivideo":
+            MessageLookupByLibrary.simpleMessage("Please subscribe to plan"),
+        "nogameAcceleration":
+            MessageLookupByLibrary.simpleMessage(" Please subscribe to plan"),
         "notEmpty": MessageLookupByLibrary.simpleMessage("Not Empty!"),
         "notEnable": MessageLookupByLibrary.simpleMessage("Disabled"),
         "notstart": MessageLookupByLibrary.simpleMessage("Not Started"),
@@ -343,7 +343,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "startIPAddress":
             MessageLookupByLibrary.simpleMessage("Start iP address"),
         "startSearch": MessageLookupByLibrary.simpleMessage("To Search"),
-        "state": MessageLookupByLibrary.simpleMessage("State"),
+        "state": MessageLookupByLibrary.simpleMessage("Network Status"),
         "staticIP": MessageLookupByLibrary.simpleMessage("StaticIP"),
         "status": MessageLookupByLibrary.simpleMessage("Status"),
         "stopSerch": MessageLookupByLibrary.simpleMessage("Abort Search"),
@@ -381,6 +381,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Version Updating"),
         "visitorNet": MessageLookupByLibrary.simpleMessage("Guest Network"),
         "wanSettings": MessageLookupByLibrary.simpleMessage("WAN Settings"),
+        "wifiMapping": MessageLookupByLibrary.simpleMessage("Wi-Fi Mapping"),
         "wlanSet": MessageLookupByLibrary.simpleMessage("WLAN Setting"),
         "workday": MessageLookupByLibrary.simpleMessage("Workday"),
         "wpsSet": MessageLookupByLibrary.simpleMessage("WPS"),

@@ -46,7 +46,7 @@ class HttpAppInterceptors extends InterceptorsWrapper {
       Map<String, dynamic> responseData = json.decode(response.data);
       if (responseData.containsKey("code")) {
         int code = responseData["code"];
-        if (code == 900) {
+        if (code == 900 || code == 9999) {
           // 处理登录过期的情况
           ToastUtils.error(S.current.tokenExpired);
           Get.offNamed("/user_login");

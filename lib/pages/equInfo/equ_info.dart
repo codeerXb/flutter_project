@@ -92,9 +92,13 @@ class _EquInfoState extends State<EquInfo> {
     }
   }
 
+  bool loading = false;
+
 // 云端
   getTREquinfoDatas() async {
-    Navigator.push(context, DialogRouter(LoadingDialog()));
+    setState(() {
+      loading = true;
+    });
     printInfo(info: 'sn在这里有值吗-------$sn');
     var parameterNames = [
       "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.ProductModel",
@@ -113,6 +117,7 @@ class _EquInfoState extends State<EquInfo> {
     try {
       Map<String, dynamic> d = jsonDecode(res);
       setState(() {
+        loading = false;
         ipAddressValue = d['data']['InternetGatewayDevice']['WEB_GUI']
             ['Overview']['LANStatus']['IPAddress']['_value'];
         macAddressValue = d["data"]["InternetGatewayDevice"]["WEB_GUI"]
@@ -139,130 +144,134 @@ class _EquInfoState extends State<EquInfo> {
             ["Overview"]["VersionInfo"]["UBOOTVersion"]["_value"];
       });
     } catch (e) {
+        loading = false;
       debugPrint('获取设备信息失败：${e.toString()}');
     }
-    Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: customAppbar(context: context, title: S.of(context).deviceInfo),
-        body: Container(
-          decoration:
-              const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
-          height: 1400.w,
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                //1系统信息
-                TitleWidger(title: S.of(context).systemInfo),
-                InfoBox(
-                  boxCotainer: RowContainer(
-                    leftText: S.of(context).RunningTime,
-                    righText: day.toString() +
-                        S.of(context).date +
-                        hour.toString() +
-                        S.of(context).hour +
-                        min.toString() +
-                        S.of(context).minute,
-                  ),
-                ),
-                //2版本信息
-                TitleWidger(title: S.of(context).versionInfo),
-                InfoBox(
-                  boxCotainer: Column(
+        body: loading
+            ? const Center(child: CircularProgressIndicator())
+            : Container(
+                decoration: const BoxDecoration(
+                    color: Color.fromRGBO(240, 240, 240, 1)),
+                height: 1400.w,
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      BottomLine(
-                          rowtem: RowContainer(
-                        leftText: S.of(context).ProductModel,
-                        righText: productModelValue.isNotEmpty
-                            ? productModelValue
-                            : equinfoData.systemProductModel.toString(),
-                      )),
-                      BottomLine(
-                          rowtem: RowContainer(
-                        leftText: S.of(context).HardwareVersion,
-                        righText: hardVersionValue.isNotEmpty
-                            ? hardVersionValue
-                            : equinfoData.systemVersionHw.toString(),
-                      )),
-                      BottomLine(
-                          rowtem: RowContainer(
-                        leftText: S.of(context).SoftwareVersion,
-                        righText: softwareVersionValue.isNotEmpty
-                            ? softwareVersionValue
-                            : equinfoData.systemVersionRunning.toString(),
-                      )),
-                      BottomLine(
-                          rowtem: RowContainer(
-                        leftText: S.of(context).UBOOTVersion,
-                        righText: ubootVersionValue.isNotEmpty
-                            ? ubootVersionValue
-                            : equinfoData.systemVersionUboot.toString(),
-                      )),
-                      BottomLine(
-                          rowtem: RowContainer(
-                        leftText: S.of(context).SerialNumber,
-                        righText: serialNumberValue.isNotEmpty
-                            ? serialNumberValue
-                            : equinfoData.systemVersionSn.toString(),
-                      )),
-                      BottomLine(
-                          rowtem: RowContainer(
-                        leftText: 'IMEI',
-                        righText: imeiValue.isNotEmpty
-                            ? imeiValue
-                            : equinfoData.lteImei.toString(),
-                      )),
-                      Container(
-                        padding: EdgeInsets.only(top: 20.w),
-                        child: RowContainer(
-                          leftText: 'IMSI',
-                          righText: equinfoData.lteImsi == null
-                              ? equinfoData.lteImsi.toString()
-                              : '- -',
+                      //1系统信息
+                      TitleWidger(title: S.of(context).systemInfo),
+                      InfoBox(
+                        boxCotainer: RowContainer(
+                          leftText: S.of(context).RunningTime,
+                          righText: day.toString() +
+                              S.of(context).date +
+                              hour.toString() +
+                              S.of(context).hour +
+                              min.toString() +
+                              S.of(context).minute,
                         ),
-                      )
-                    ],
-                  ),
-                ),
+                      ),
+                      //2版本信息
+                      TitleWidger(title: S.of(context).versionInfo),
+                      InfoBox(
+                        boxCotainer: Column(
+                          children: [
+                            BottomLine(
+                                rowtem: RowContainer(
+                              leftText: S.of(context).ProductModel,
+                              righText: productModelValue.isNotEmpty
+                                  ? productModelValue
+                                  : equinfoData.systemProductModel.toString(),
+                            )),
+                            BottomLine(
+                                rowtem: RowContainer(
+                              leftText: S.of(context).HardwareVersion,
+                              righText: hardVersionValue.isNotEmpty
+                                  ? hardVersionValue
+                                  : equinfoData.systemVersionHw.toString(),
+                            )),
+                            BottomLine(
+                                rowtem: RowContainer(
+                              leftText: S.of(context).SoftwareVersion,
+                              righText: softwareVersionValue.isNotEmpty
+                                  ? softwareVersionValue
+                                  : equinfoData.systemVersionRunning.toString(),
+                            )),
+                            BottomLine(
+                                rowtem: RowContainer(
+                              leftText: S.of(context).UBOOTVersion,
+                              righText: ubootVersionValue.isNotEmpty
+                                  ? ubootVersionValue
+                                  : equinfoData.systemVersionUboot.toString(),
+                            )),
+                            BottomLine(
+                                rowtem: RowContainer(
+                              leftText: S.of(context).SerialNumber,
+                              righText: serialNumberValue.isNotEmpty
+                                  ? serialNumberValue
+                                  : equinfoData.systemVersionSn.toString(),
+                            )),
+                            BottomLine(
+                                rowtem: RowContainer(
+                              leftText: 'IMEI',
+                              righText: imeiValue.isNotEmpty
+                                  ? imeiValue
+                                  : equinfoData.lteImei.toString(),
+                            )),
+                            Container(
+                              padding: EdgeInsets.only(top: 20.w),
+                              child: RowContainer(
+                                leftText: 'IMSI',
+                                righText: equinfoData.lteImsi == null
+                                    ? equinfoData.lteImsi.toString()
+                                    : '- -',
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
 
-                //3.0LAN口状态
-                TitleWidger(title: S.of(context).lanStatus),
-                InfoBox(
-                  boxCotainer: Column(
-                    children: [
-                      BottomLine(
-                          rowtem: RowContainer(
-                        leftText: S.of(context).MACAddress,
-                        righText: macAddressValue.isNotEmpty
-                            ? macAddressValue
-                            : equinfoData.networkLanSettingsMac.toString(),
-                      )),
-                      BottomLine(
-                          rowtem: RowContainer(
-                        leftText: S.of(context).IPAddress,
-                        righText: ipAddressValue.isNotEmpty
-                            ? ipAddressValue
-                            : equinfoData.networkLanSettingIp.toString(),
-                      )),
-                      Container(
-                        padding: EdgeInsets.only(top: 20.w),
-                        child: RowContainer(
-                          leftText: S.of(context).SubnetMask,
-                          righText: subnetMaskValue.isNotEmpty
-                              ? subnetMaskValue
-                              : equinfoData.networkLanSettingMask.toString(),
+                      //3.0LAN口状态
+                      TitleWidger(title: S.of(context).lanStatus),
+                      InfoBox(
+                        boxCotainer: Column(
+                          children: [
+                            BottomLine(
+                                rowtem: RowContainer(
+                              leftText: S.of(context).MACAddress,
+                              righText: macAddressValue.isNotEmpty
+                                  ? macAddressValue
+                                  : equinfoData.networkLanSettingsMac
+                                      .toString(),
+                            )),
+                            BottomLine(
+                                rowtem: RowContainer(
+                              leftText: S.of(context).IPAddress,
+                              righText: ipAddressValue.isNotEmpty
+                                  ? ipAddressValue
+                                  : equinfoData.networkLanSettingIp.toString(),
+                            )),
+                            Container(
+                              padding: EdgeInsets.only(top: 20.w),
+                              child: RowContainer(
+                                leftText: S.of(context).SubnetMask,
+                                righText: subnetMaskValue.isNotEmpty
+                                    ? subnetMaskValue
+                                    : equinfoData.networkLanSettingMask
+                                        .toString(),
+                              ),
+                            )
+                          ],
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
-              ],
-            ),
-          ),
-        ));
+              ));
   }
 }

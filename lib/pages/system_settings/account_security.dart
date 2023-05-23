@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_template/core/request/request.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
 import '../../core/http/http.dart';
@@ -185,7 +184,7 @@ class _AccountSecurityState extends State<AccountSecurity> {
   late bool _isLoading = false;
   // 提交
   Future<void> _saveData() async {
-    Navigator.push(context, DialogRouter(LoadingDialog()));
+  
     setState(() {
       _isLoading = true;
     });
@@ -202,7 +201,6 @@ class _AccountSecurityState extends State<AccountSecurity> {
       // 本地请求赋值
       getAccountSetting();
     }
-    Navigator.pop(context);
     setState(() {
       _isLoading = false;
     });

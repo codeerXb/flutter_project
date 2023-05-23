@@ -192,6 +192,9 @@ class _NetStatusState extends State<NetStatus> {
     }
   }
 
+//1连接
+  var ConnectStatus = '';
+
   ///  获取  云端
   getTROnlineCount() async {
     // Navigator.push(context, DialogRouter(LoadingDialog()));
@@ -201,13 +204,16 @@ class _NetStatusState extends State<NetStatus> {
       "InternetGatewayDevice.WEB_GUI.Overview.DeviceList",
       "InternetGatewayDevice.WEB_GUI.Overview.ThroughputStatisticsList",
       "InternetGatewayDevice.WEB_GUI.Overview.WANStatus.DLRateCurrent",
-      "InternetGatewayDevice.WEB_GUI.Overview.WANStatus.ULRateCurrent"
+      "InternetGatewayDevice.WEB_GUI.Overview.WANStatus.ULRateCurrent",
+      "InternetGatewayDevice.WEB_GUI.Ethernet.Status.ConnectStatus",
     ];
     var res = await Request().getACSNode(parameterNames, sn);
     try {
       var jsonObj = jsonDecode(res);
       if (!mounted) return;
       setState(() {
+        ConnectStatus = jsonObj['data']['InternetGatewayDevice']['WEB_GUI']
+            ['Ethernet']['Status']['ConnectStatus']['_value'];
         // 列表数量
         Map<String, dynamic> flowTableName = jsonObj["data"]
             ["InternetGatewayDevice"]["WEB_GUI"]["Overview"]["DeviceList"];
@@ -665,7 +671,9 @@ class _NetStatusState extends State<NetStatus> {
                                         MainAxisAlignment.spaceAround,
                                     children: [
                                       Text(
-                                        S.current.Connected,
+                                        ConnectStatus == '1'
+                                            ? S.current.Connected
+                                            : S.current.ununited,
                                         style: TextStyle(
                                             fontSize: 30.sp,
                                             color: const Color(0xff051220)),
@@ -686,22 +694,27 @@ class _NetStatusState extends State<NetStatus> {
                                           ),
                                         ],
                                       ),
-                                      ElevatedButton(
-                                        onPressed: () {},
-                                        style: ButtonStyle(
-                                          shape: MaterialStateProperty.all(
-                                              const CircleBorder()),
-                                        ),
-                                        child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: const [
-                                              Icon(
-                                                Icons.rocket,
-                                                size: 32,
-                                              )
-                                            ]),
+                                      const Icon(
+                                        Icons.thumb_up,
+                                        size: 32,
+                                        color: Colors.blue,
                                       )
+                                      // ElevatedButton(
+                                      //   onPressed: () {},
+                                      //   style: ButtonStyle(
+                                      //     shape: MaterialStateProperty.all(
+                                      //         const CircleBorder()),
+                                      //   ),
+                                      //   child: Column(
+                                      //       mainAxisAlignment:
+                                      //           MainAxisAlignment.center,
+                                      //       children: const [
+                                      //         Icon(
+                                      //           Icons.thumb_up,
+                                      //           size: 32,
+                                      //         )
+                                      //       ]),
+                                      // )
                                     ],
                                   )),
                                   //流量套餐

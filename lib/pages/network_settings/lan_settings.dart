@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/request/request.dart';
-import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
 import '../../../core/widget/custom_app_bar.dart';
@@ -68,6 +67,8 @@ class _LanSettingsState extends State<LanSettings> {
   void closeKeyboard(BuildContext context) {
     FocusScope.of(context).requestFocus(blankNode);
   }
+
+  bool loading = false;
 
   double comboContain = -1;
 
@@ -160,7 +161,9 @@ class _LanSettingsState extends State<LanSettings> {
 
 // 获取 云端
   getTRLanData() async {
-    Navigator.push(context, DialogRouter(LoadingDialog()));
+    setState(() {
+      loading = true;
+    });
     printInfo(info: 'sn在这里有值吗-------$sn');
     var parameterNames = [
       "InternetGatewayDevice.WEB_GUI.Network.LANSettings.LANHost.IPAddress",
@@ -236,7 +239,7 @@ class _LanSettingsState extends State<LanSettings> {
       debugPrint('获取信息失败：${e.toString()}');
     } finally {
       setState(() {
-        Navigator.pop(context);
+        loading = false;
       });
     }
   }
@@ -431,7 +434,6 @@ class _LanSettingsState extends State<LanSettings> {
   }
 
   Future<void> _saveData() async {
-    Navigator.push(context, DialogRouter(LoadingDialog()));
     setState(() {
       _isLoading = true;
     });
@@ -490,211 +492,222 @@ class _LanSettingsState extends State<LanSettings> {
               ),
             ),
           ]),
-      body: SingleChildScrollView(
-        child: InkWell(
-          onTap: () => closeKeyboard(context),
-          child: Container(
-            decoration:
-                const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
-            height: 1400.w,
-            child: Column(
-              children: [
-                Row(children: [
-                  TitleWidger(title: S.of(context).lanHostSettings),
-                ]),
-                InfoBox(
-                  boxCotainer: Column(children: [
-                    BottomLine(
-                      rowtem: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          ConstrainedBox(
-                              constraints: BoxConstraints(maxWidth: 160.w),
-                              child: FittedBox(
-                                  child: Text(S.of(context).IPAddress))),
-                          Row(
-                            children: [
-                              OtpInput(address, false),
-                              const Text('.'),
-                              OtpInput(address1, false),
-                              const Text('.'),
-                              OtpInput(address2, false),
-                              const Text('.'),
-                              OtpInput(address3, false),
-                              const Text(
-                                '*',
-                                style: TextStyle(color: Colors.red),
-                              )
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                    Container(
-                      height: 90.w,
-                      padding: EdgeInsets.only(bottom: 6.w),
-                      margin: EdgeInsets.only(bottom: 6.w),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          ConstrainedBox(
-                              constraints: BoxConstraints(maxWidth: 160.w),
-                              child: FittedBox(
-                                  child: Text(S.of(context).SubnetMask))),
-                          Row(
-                            children: [
-                              DisInput(subnetMask, false),
-                              const Text('.'),
-                              DisInput(subnetMask1, false),
-                              const Text('.'),
-                              DisInput(subnetMask2, false),
-                              const Text('.'),
-                              OtpInput(subnetMask3, false),
-                              const Text(
-                                '*',
-                                style: TextStyle(color: Colors.red),
-                              )
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  ]),
-                ),
-                Row(children: [
-                  TitleWidger(title: 'DHCP ${S.of(context).Settings}'),
-                ]),
-                InfoBox(
-                  boxCotainer: Column(children: [
-                    BottomLine(
-                      rowtem: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            ConstrainedBox(
-                                constraints: BoxConstraints(maxWidth: 160.w),
-                                child: FittedBox(
-                                    child:
-                                        Text('DHCP ${S.of(context).server}'))),
-                            Switch(
-                              value: isCheck,
-                              onChanged: (newVal) {
-                                setState(() {
-                                  isCheck = newVal;
-                                  if (isCheck == true) {
-                                    isCheckVal = '1';
-                                  } else {
-                                    isCheckVal = '0';
-                                  }
-                                });
-                              },
-                            ),
-                          ]),
-                    ),
-                    BottomLine(
-                      rowtem: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          ConstrainedBox(
-                              constraints: BoxConstraints(maxWidth: 160.w),
-                              child: FittedBox(
-                                  child: Text(S.of(context).startIPAddress))),
-                          Row(
-                            children: [
-                              DisInput(address, false),
-                              const Text('.'),
-                              DisInput(address1, false),
-                              const Text('.'),
-                              DisInput(address2, false),
-                              const Text('.'),
-                              Offstage(
-                                offstage: isCheck == false,
-                                child: OtpInput(start, false),
-                              ),
-                              Offstage(
-                                offstage: isCheck == true,
-                                child: DisInput(start, false),
-                              ),
-                              const Text(
-                                '*',
-                                style: TextStyle(color: Colors.red),
-                              )
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                    BottomLine(
-                      rowtem: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          ConstrainedBox(
-                              constraints: BoxConstraints(maxWidth: 160.w),
-                              child: FittedBox(
-                                  child: Text(S.of(context).endIPAddress))),
-                          Row(
-                            children: [
-                              DisInput(address, false),
-                              const Text('.'),
-                              DisInput(address1, false),
-                              const Text('.'),
-                              DisInput(address2, false),
-                              const Text('.'),
-                              Offstage(
-                                offstage: isCheck == false,
-                                child: OtpInput(end, false),
-                              ),
-                              Offstage(
-                                offstage: isCheck == true,
-                                child: DisInput(end, false),
-                              ),
-                              const Text(
-                                '*',
-                                style: TextStyle(color: Colors.red),
-                              )
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                    Padding(padding: EdgeInsets.only(top: 40.sp)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        ConstrainedBox(
-                            constraints: BoxConstraints(maxWidth: 160.w),
-                            child: FittedBox(
-                                child: Text(S.of(context).LeaseTime))),
-                        SizedBox(
-                          width: 400.sp,
-                          child: TextFormField(
-                            textAlign: TextAlign.right,
-                            controller: lanTimeController,
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                              labelText: "${S.of(context).minutes}(2/m~1440/m)",
-                              border: const OutlineInputBorder(),
-                              enabled: isCheckVal == '1' ? true : false,
-                              filled: isCheckVal == '1'
-                                  ? false
-                                  : true, //一定加入个属性不然不生效
-                              fillColor:
-                                  const Color.fromARGB(255, 243, 240, 240),
+      body: loading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: InkWell(
+                onTap: () => closeKeyboard(context),
+                child: Container(
+                  decoration: const BoxDecoration(
+                      color: Color.fromRGBO(240, 240, 240, 1)),
+                  height: 1400.w,
+                  child: Column(
+                    children: [
+                      Row(children: [
+                        TitleWidger(title: S.of(context).lanHostSettings),
+                      ]),
+                      InfoBox(
+                        boxCotainer: Column(children: [
+                          BottomLine(
+                            rowtem: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                ConstrainedBox(
+                                    constraints:
+                                        BoxConstraints(maxWidth: 160.w),
+                                    child: FittedBox(
+                                        child: Text(S.of(context).IPAddress))),
+                                Row(
+                                  children: [
+                                    OtpInput(address, false),
+                                    const Text('.'),
+                                    OtpInput(address1, false),
+                                    const Text('.'),
+                                    OtpInput(address2, false),
+                                    const Text('.'),
+                                    OtpInput(address3, false),
+                                    const Text(
+                                      '*',
+                                      style: TextStyle(color: Colors.red),
+                                    )
+                                  ],
+                                )
+                              ],
                             ),
                           ),
-                        ),
-                        const Text(
-                          '*',
-                          style: TextStyle(color: Colors.red),
-                        )
-                      ],
-                    ),
-                  ]),
+                          Container(
+                            height: 90.w,
+                            padding: EdgeInsets.only(bottom: 6.w),
+                            margin: EdgeInsets.only(bottom: 6.w),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                ConstrainedBox(
+                                    constraints:
+                                        BoxConstraints(maxWidth: 160.w),
+                                    child: FittedBox(
+                                        child: Text(S.of(context).SubnetMask))),
+                                Row(
+                                  children: [
+                                    DisInput(subnetMask, false),
+                                    const Text('.'),
+                                    DisInput(subnetMask1, false),
+                                    const Text('.'),
+                                    DisInput(subnetMask2, false),
+                                    const Text('.'),
+                                    OtpInput(subnetMask3, false),
+                                    const Text(
+                                      '*',
+                                      style: TextStyle(color: Colors.red),
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                        ]),
+                      ),
+                      Row(children: [
+                        TitleWidger(title: 'DHCP ${S.of(context).Settings}'),
+                      ]),
+                      InfoBox(
+                        boxCotainer: Column(children: [
+                          BottomLine(
+                            rowtem: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  ConstrainedBox(
+                                      constraints:
+                                          BoxConstraints(maxWidth: 160.w),
+                                      child: FittedBox(
+                                          child: Text(
+                                              'DHCP ${S.of(context).server}'))),
+                                  Switch(
+                                    value: isCheck,
+                                    onChanged: (newVal) {
+                                      setState(() {
+                                        isCheck = newVal;
+                                        if (isCheck == true) {
+                                          isCheckVal = '1';
+                                        } else {
+                                          isCheckVal = '0';
+                                        }
+                                      });
+                                    },
+                                  ),
+                                ]),
+                          ),
+                          BottomLine(
+                            rowtem: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                ConstrainedBox(
+                                    constraints:
+                                        BoxConstraints(maxWidth: 160.w),
+                                    child: FittedBox(
+                                        child: Text(
+                                            S.of(context).startIPAddress))),
+                                Row(
+                                  children: [
+                                    DisInput(address, false),
+                                    const Text('.'),
+                                    DisInput(address1, false),
+                                    const Text('.'),
+                                    DisInput(address2, false),
+                                    const Text('.'),
+                                    Offstage(
+                                      offstage: isCheck == false,
+                                      child: OtpInput(start, false),
+                                    ),
+                                    Offstage(
+                                      offstage: isCheck == true,
+                                      child: DisInput(start, false),
+                                    ),
+                                    const Text(
+                                      '*',
+                                      style: TextStyle(color: Colors.red),
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                          BottomLine(
+                            rowtem: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                ConstrainedBox(
+                                    constraints:
+                                        BoxConstraints(maxWidth: 160.w),
+                                    child: FittedBox(
+                                        child:
+                                            Text(S.of(context).endIPAddress))),
+                                Row(
+                                  children: [
+                                    DisInput(address, false),
+                                    const Text('.'),
+                                    DisInput(address1, false),
+                                    const Text('.'),
+                                    DisInput(address2, false),
+                                    const Text('.'),
+                                    Offstage(
+                                      offstage: isCheck == false,
+                                      child: OtpInput(end, false),
+                                    ),
+                                    Offstage(
+                                      offstage: isCheck == true,
+                                      child: DisInput(end, false),
+                                    ),
+                                    const Text(
+                                      '*',
+                                      style: TextStyle(color: Colors.red),
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                          Padding(padding: EdgeInsets.only(top: 40.sp)),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              ConstrainedBox(
+                                  constraints: BoxConstraints(maxWidth: 160.w),
+                                  child: FittedBox(
+                                      child: Text(S.of(context).LeaseTime))),
+                              SizedBox(
+                                width: 400.sp,
+                                child: TextFormField(
+                                  textAlign: TextAlign.right,
+                                  controller: lanTimeController,
+                                  keyboardType: TextInputType.number,
+                                  decoration: InputDecoration(
+                                    labelText:
+                                        "${S.of(context).minutes}(2/m~1440/m)",
+                                    border: const OutlineInputBorder(),
+                                    enabled: isCheckVal == '1' ? true : false,
+                                    filled: isCheckVal == '1'
+                                        ? false
+                                        : true, //一定加入个属性不然不生效
+                                    fillColor: const Color.fromARGB(
+                                        255, 243, 240, 240),
+                                  ),
+                                ),
+                              ),
+                              const Text(
+                                '*',
+                                style: TextStyle(color: Colors.red),
+                              )
+                            ],
+                          ),
+                        ]),
+                      ),
+                    ],
+                  ),
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
-      ),
     );
   }
 }

@@ -222,7 +222,7 @@ class _NetSetState extends State<NetSet> {
                     onPressed: () {
                       //确定
                       Navigator.pop(context, "Ok");
-                      Navigator.push(context, DialogRouter(LoadingDialog()));
+                    
                       //动态ip
                       if (showVal == S.current.DynamicIP) {
                         //isCheck选中不携带 优先级

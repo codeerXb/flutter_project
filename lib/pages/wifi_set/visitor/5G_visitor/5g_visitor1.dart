@@ -6,10 +6,8 @@ import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/request/request.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
-import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:flutter_template/core/widget/custom_app_bar.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
-import 'package:flutter_template/pages/wifi_set/visitor/2.4GHZ_visitor/2.4GHZ_datas.dart';
 import 'package:flutter_template/pages/wifi_set/visitor/5G_visitor/5GHZ_datas.dart';
 import 'package:get/get.dart';
 import '../../../../core/utils/toast.dart';
@@ -260,7 +258,7 @@ class _Visitor4State extends State<Visitor4> {
 
 // 提交
   Future<void> _saveData() async {
-    Navigator.push(context, DialogRouter(LoadingDialog()));
+  
     setState(() {
       loading = true;
     });
@@ -278,7 +276,6 @@ class _Visitor4State extends State<Visitor4> {
       handleSave(
           '{"table":"WiFi5GSsidTable","value":[{"id":1,"AllowAccessIntranet":"${networkCheck ? "1" : "0"}","Ssid":"${ssidVal.text}","MaxClient":"${maxVal.text}","SsidHide":"${showSsid ? "1" : "0"}","ApIsolate":"${apVAl ? "1" : "0"}","Encryption":"$safeVal+$wpaVal","ShowPasswd":"0","Key":"${password.text}"}]}');
     }
-    Navigator.pop(context);
     setState(() {
       loading = false;
     });

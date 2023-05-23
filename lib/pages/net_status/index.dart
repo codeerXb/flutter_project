@@ -202,7 +202,7 @@ class _NetStatusState extends State<NetStatus> {
     var parameterNames = [
       "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.ProductModel",
       "InternetGatewayDevice.WEB_GUI.Overview.DeviceList",
-      "InternetGatewayDevice.WEB_GUI.Overview.ThroughputStatisticsList",
+      // "InternetGatewayDevice.WEB_GUI.Overview.ThroughputStatisticsList",
       "InternetGatewayDevice.WEB_GUI.Overview.WANStatus.DLRateCurrent",
       "InternetGatewayDevice.WEB_GUI.Overview.WANStatus.ULRateCurrent",
       "InternetGatewayDevice.WEB_GUI.Ethernet.Status.ConnectStatus",
@@ -628,41 +628,41 @@ class _NetStatusState extends State<NetStatus> {
                               padding: EdgeInsets.only(top: 20.w),
                               child: ListView(
                                 children: [
-                                  const Center(
-                                      child: Text(
-                                    'Mapping out your Wi-Fi Coverage',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.w600),
-                                  )),
+                                  // const Center(
+                                  //     child: Text(
+                                  //   'Mapping out your Wi-Fi Coverage',
+                                  //   style:
+                                  //       TextStyle(fontWeight: FontWeight.w600),
+                                  // )),
                                   // 热力图
-                                  Container(
-                                    height: 600.w,
-                                    margin: EdgeInsets.only(bottom: 20.w),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(18.w),
-                                    ),
-                                    child: Stack(
-                                      children: [
-                                        Image.asset(
-                                          'assets/images/signalcover.jpg',
-                                        ),
-                                        Positioned(
-                                          bottom: 45.w,
-                                          right: 10.w,
-                                          child: InkWell(
-                                            onTap: () {
-                                              Get.offNamed('/signal_cover');
-                                            },
-                                            child: const Icon(
-                                              Icons.edit,
-                                              color: Color.fromARGB(
-                                                  255, 39, 61, 255),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                                  // Container(
+                                  //   height: 600.w,
+                                  //   margin: EdgeInsets.only(bottom: 20.w),
+                                  //   decoration: BoxDecoration(
+                                  //     borderRadius: BorderRadius.circular(18.w),
+                                  //   ),
+                                  //   child: Stack(
+                                  //     children: [
+                                  //       Image.asset(
+                                  //         'assets/images/signalcover.jpg',
+                                  //       ),
+                                  //       Positioned(
+                                  //         bottom: 45.w,
+                                  //         right: 10.w,
+                                  //         child: InkWell(
+                                  //           onTap: () {
+                                  //             Get.offNamed('/signal_cover');
+                                  //           },
+                                  //           child: const Icon(
+                                  //             Icons.edit,
+                                  //             color: Color.fromARGB(
+                                  //                 255, 39, 61, 255),
+                                  //           ),
+                                  //         ),
+                                  //       ),
+                                  //     ],
+                                  //   ),
+                                  // ),
 
                                   // 网络环境
                                   WhiteCard(

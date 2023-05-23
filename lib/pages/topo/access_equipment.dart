@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/config/base_config.dart';
 import 'package:flutter_template/core/http/http_app.dart';
@@ -74,119 +73,124 @@ class _AccessEquipmentState extends State<AccessEquipment> {
   final ToolbarController toolbarController = Get.put(ToolbarController());
 
   final TextEditingController editTitleVal = TextEditingController();
+
+  editDeviceName() {
+    //底部弹出Container
+    showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: () async {
+            Navigator.pop(context);
+            editTitleVal.text = Title;
+            return false;
+          },
+          child: SingleChildScrollView(
+            child: Container(
+              padding: EdgeInsets.only(
+                left: 40.w,
+                right: 40.w,
+                //将在输入框底部添加一个填充，以确保输入框不会被键盘遮挡。
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+              ),
+              child: Column(
+                children: [
+                  Padding(padding: EdgeInsets.only(top: 30.w)),
+
+                  //title
+                  Text(
+                    S.current.ModifyRemarks,
+                    style: TextStyle(fontSize: 46.sp),
+                  ),
+                  Padding(padding: EdgeInsets.only(top: 46.w)),
+
+                  //输入框
+                  TextField(
+                    autofocus: true,
+                    controller: editTitleVal,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.only(left: 20.w),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      hintText: S.current.pleaseEnter,
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () {
+                          // 清空输入框中的内容
+                          editTitleVal.clear();
+                        },
+                      ),
+                    ),
+                  ),
+
+                  Padding(padding: EdgeInsets.only(top: 20.w)),
+                  //btn
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      //取消
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            editTitleVal.text = Title;
+                          });
+                          Navigator.pop(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: Size(300.w, 70.w),
+                        ),
+                        child: Text(S.current.cancel),
+                      ),
+                      //确定
+                      ElevatedButton(
+                        onPressed: () {
+                          if (editTitleVal.text.isNotEmpty) {
+                            editName(
+                                sn, data.mac.toString(), editTitleVal.text);
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: Size(300.w, 70.w),
+                        ),
+                        child: Text(S.current.confirm),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: customAppbar(
-          context: context,
-          title: Title,
-          actions: [
-            //编辑title icon
-            InkWell(
-              onTap: () {
-                //底部弹出Container
-                showModalBottomSheet(
-                  isScrollControlled: true,
-                  context: context,
-                  builder: (BuildContext context) {
-                    return WillPopScope(
-                      onWillPop: () async {
-                        Navigator.pop(context);
-                        editTitleVal.text = Title;
-                        return false;
-                      },
-                      child: SingleChildScrollView(
-                        child: Container(
-                          padding: EdgeInsets.only(
-                            left: 40.w,
-                            right: 40.w,
-                            //将在输入框底部添加一个填充，以确保输入框不会被键盘遮挡。
-                            bottom: MediaQuery.of(context).viewInsets.bottom,
-                          ),
-                          child: Column(
-                            children: [
-                              Padding(padding: EdgeInsets.only(top: 30.w)),
-
-                              //title
-                              Text(
-                                S.current.ModifyRemarks,
-                                style: TextStyle(fontSize: 46.sp),
-                              ),
-                              Padding(padding: EdgeInsets.only(top: 46.w)),
-
-                              //输入框
-                              TextField(
-                                autofocus: true,
-                                controller: editTitleVal,
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.only(left: 20.w),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  hintText: S.current.pleaseEnter,
-                                  suffixIcon: IconButton(
-                                    icon: const Icon(Icons.clear),
-                                    onPressed: () {
-                                      // 清空输入框中的内容
-                                      editTitleVal.clear();
-                                    },
-                                  ),
-                                ),
-                              ),
-
-                              Padding(padding: EdgeInsets.only(top: 20.w)),
-                              //btn
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  //取消
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        editTitleVal.text = Title;
-                                      });
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text(S.current.cancel),
-                                    style: ElevatedButton.styleFrom(
-                                      minimumSize: Size(300.w, 70.w),
-                                    ),
-                                  ),
-                                  //确定
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      if (editTitleVal.text.isNotEmpty) {
-                                        editName(sn, data.mac.toString(),
-                                            editTitleVal.text);
-                                      }
-                                    },
-                                    child: Text(S.current.confirm),
-                                    style: ElevatedButton.styleFrom(
-                                      minimumSize: Size(300.w, 70.w),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: Icon(
-                  Icons.edit_note_outlined,
-                  color: const Color.fromRGBO(144, 147, 153, 1),
-                  size: 70.w,
-                ),
+        context: context,
+        title: Title,
+        actions: [
+          //编辑title icon
+          InkWell(
+            onTap: () {
+              editDeviceName();
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: Icon(
+                Icons.edit_note_outlined,
+                color: const Color.fromRGBO(144, 147, 153, 1),
+                size: 70.w,
               ),
-            )
-          ],
-          result: true),
+            ),
+          )
+        ],
+        result: true,
+      ),
       body: SingleChildScrollView(
         child: Container(
             height: 1400.w,
@@ -229,23 +233,24 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                     child: GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: () {
-                        Get.toNamed("/parental_control", arguments: data);
+                        Get.toNamed("/parent", arguments: data);
                       },
                       child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(S.current.parentalControl,
-                                style: TextStyle(fontSize: 30.sp)),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.arrow_forward_ios_outlined,
-                                  color: const Color.fromRGBO(144, 147, 153, 1),
-                                  size: 30.w,
-                                )
-                              ],
-                            ),
-                          ]),
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(S.current.parentalControl,
+                              style: TextStyle(fontSize: 30.sp)),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.arrow_forward_ios_outlined,
+                                color: const Color.fromRGBO(144, 147, 153, 1),
+                                size: 30.w,
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -255,24 +260,48 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                     child: GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: () {
-                        ToastUtils.toast(S.current.nogameAcceleration);
+                        // ToastUtils.toast(S.current.nogameAcceleration);
                         // Get.toNamed("/parental_control", arguments: data);
+                        Get.snackbar(
+                          'Warning',
+                          S.current.nogameAcceleration,
+                          snackPosition: SnackPosition.TOP,
+                          duration: const Duration(seconds: 10),
+                          backgroundColor:
+                              const Color.fromARGB(132, 63, 63, 63),
+                          colorText: Colors.white,
+                          margin: const EdgeInsets.all(10),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 15),
+                          borderRadius: 10,
+                          animationDuration: const Duration(milliseconds: 200),
+                          mainButton: TextButton(
+                            onPressed: () {
+                              Get.back();
+                            },
+                            child: const Icon(
+                              Icons.close,
+                              color: Colors.red,
+                            ),
+                          ),
+                        );
                       },
                       child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(S.current.gameAcceleration,
-                                style: TextStyle(fontSize: 30.sp)),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.arrow_forward_ios_outlined,
-                                  color: const Color.fromRGBO(144, 147, 153, 1),
-                                  size: 30.w,
-                                )
-                              ],
-                            ),
-                          ]),
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(S.current.gameAcceleration,
+                              style: TextStyle(fontSize: 30.sp)),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.arrow_forward_ios_outlined,
+                                color: const Color.fromRGBO(144, 147, 153, 1),
+                                size: 30.w,
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -282,24 +311,49 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                     child: GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: () {
-                        ToastUtils.toast(S.current.noaivideo);
+                        // ToastUtils.toast(S.current.noaivideo);
                         // Get.toNamed("/parental_control", arguments: data);
+                        Get.snackbar(
+                          'Warning',
+                          S.current.noaivideo,
+                          isDismissible: true,
+                          snackPosition: SnackPosition.TOP,
+                          duration: const Duration(seconds: 10),
+                          backgroundColor:
+                              const Color.fromARGB(132, 63, 63, 63),
+                          colorText: Colors.white,
+                          margin: const EdgeInsets.all(10),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 15),
+                          borderRadius: 10,
+                          animationDuration: const Duration(milliseconds: 200),
+                          mainButton: TextButton(
+                            onPressed: () {
+                              Get.back();
+                            },
+                            child: const Icon(
+                              Icons.close,
+                              color: Colors.red,
+                            ),
+                          ),
+                        );
                       },
                       child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(S.current.aivideo,
-                                style: TextStyle(fontSize: 30.sp)),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.arrow_forward_ios_outlined,
-                                  color: const Color.fromRGBO(144, 147, 153, 1),
-                                  size: 30.w,
-                                )
-                              ],
-                            ),
-                          ]),
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(S.current.aivideo,
+                              style: TextStyle(fontSize: 30.sp)),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.arrow_forward_ios_outlined,
+                                color: const Color.fromRGBO(144, 147, 153, 1),
+                                size: 30.w,
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

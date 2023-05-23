@@ -216,9 +216,7 @@ class _TopoState extends State<Topo> {
     });
 
     Map<String, dynamic> form = {'sn': sn, "type": "getDevicesTable"};
-    var res = await App.post(
-        '${BaseConfig.cloudBaseUrl}/cpeMqtt/getDevicesTable',
-        data: form);
+    var res = await App.post('/cpeMqtt/getDevicesTable', data: form);
     setState(() {
       loading = false;
     });

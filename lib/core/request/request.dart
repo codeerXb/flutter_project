@@ -28,28 +28,22 @@ class Request {
   }
 
   //获取云端数据
-  getACSNode(parameterNames, sn) async {
+  Future getACSNode(parameterNames, sn) async {
     Map<String, dynamic> data = {
       'deviceId': sn,
       'name': 'getParameterValues',
       'parameterNames': parameterNames
     };
-    var res = await App.post(
-        '${BaseConfig.cloudBaseUrl}/platform/tr069/getParameterValues',
-        data: data);
-    return res;
+    return await App.post('/platform/tr069/getParameterValues', data: data);
   }
 
   //设置云端数据
-  setACSNode(parameterNames, sn) async {
+  Future setACSNode(parameterNames, sn) async {
     Map<String, dynamic> data = {
       'deviceId': sn,
       'name': 'setParameterValues',
       'parameterValues': parameterNames
     };
-    var res = await App.post(
-        '${BaseConfig.cloudBaseUrl}/platform/tr069/setParameterValues',
-        data: data);
-    return res;
+    return await App.post('/platform/tr069/setParameterValues', data: data);
   }
 }

@@ -43,10 +43,21 @@ class HttpAppInterceptors extends InterceptorsWrapper {
     debugPrint("code = ${response.statusCode}");
     debugPrint("data = ${response.data}");
     try {
-      Map<String, dynamic> responseData = json.decode(response.data);
+      final Map<String, dynamic> responseData;
+      if (response.data is String) {
+        responseData = json.decode(response.data) as Map<String, dynamic>;
+      } else {
+        responseData = response.data as Map<String, dynamic>;
+      }
+
       if (responseData.containsKey("code")) {
         int code = responseData["code"];
-        if (code == 900 || code == 9999) {
+
+        // 9999：用户令牌不能为空
+        // 9998：平台登录标识不能为空
+        // 900：用户令牌过期或非法
+        // 9997：平台登录标识非法
+        if (code == 9998 || code == 9997 || code == 900 || code == 9999) {
           // 处理登录过期的情况
           ToastUtils.error(S.current.tokenExpired);
           Get.offNamed("/user_login");

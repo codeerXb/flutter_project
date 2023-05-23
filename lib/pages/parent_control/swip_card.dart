@@ -32,8 +32,7 @@ class _SwipcardState extends State<Swipcard> {
       loading = true;
       sn = res.toString();
     });
-    var response = await App.post(
-        '${BaseConfig.cloudBaseUrl}/cpeMqtt/getDevicesTable',
+    var response = await App.post('/cpeMqtt/getDevicesTable',
         data: {'sn': sn, "type": "getDevicesTable"});
     setState(() {
       loading = false;
@@ -63,8 +62,7 @@ class _SwipcardState extends State<Swipcard> {
       'mac': mac,
       'nickname': nickname,
     };
-    var res = await App.post('${BaseConfig.cloudBaseUrl}/platform/cpeNick/nick',
-        data: form);
+    var res = await App.post('/platform/cpeNick/nick', data: form);
     var d = json.decode(res.toString());
     if (d['code'] != 200) {
       ToastUtils.error(d['message']);

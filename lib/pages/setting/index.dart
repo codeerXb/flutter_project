@@ -284,7 +284,7 @@ class _SettingState extends State<Setting> {
                       InkWell(
                         onTap: () {
                           App.post(
-                                  '${BaseConfig.cloudBaseUrl}/platform/appCustomer/unBoundCpe?deviceSn=$sn')
+                                  '/platform/appCustomer/unBoundCpe?deviceSn=$sn')
                               .then((res) {
                             var d = json.decode(res.toString());
                             debugPrint('响应------>$d');

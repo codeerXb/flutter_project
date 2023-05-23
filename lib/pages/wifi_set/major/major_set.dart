@@ -38,9 +38,6 @@ class _MajorSetState extends State<MajorSet> {
     sharedGetData('deviceSn', String).then(((res) async {
       sn = res.toString();
       if (mounted) {
-        setState(() {
-          _isLoading = true;
-        });
         if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
           getTRDate();
         }
@@ -48,9 +45,6 @@ class _MajorSetState extends State<MajorSet> {
           getData();
           handleSave();
         }
-        setState(() {
-          _isLoading = false;
-        });
       }
     }));
   }
@@ -58,7 +52,6 @@ class _MajorSetState extends State<MajorSet> {
   bool _isLoading = false;
   // 提交
   Future<void> _saveData() async {
-    Navigator.push(context, DialogRouter(LoadingDialog()));
     setState(() {
       _isLoading = true;
     });
@@ -75,7 +68,6 @@ class _MajorSetState extends State<MajorSet> {
       // 本地请求赋值
       handleSave();
     }
-    Navigator.pop(context);
     setState(() {
       _isLoading = false;
     });
@@ -101,7 +93,9 @@ class _MajorSetState extends State<MajorSet> {
 
   // 获取 云端
   getTRDate() async {
-    Navigator.push(context, DialogRouter(LoadingDialog()));
+    setState(() {
+      _isLoading = true;
+    });
     printInfo(info: 'sn在这里有值吗-------$sn');
     var parameterNames = [
       "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.CountryCode",
@@ -147,8 +141,11 @@ class _MajorSetState extends State<MajorSet> {
       });
     } catch (e) {
       debugPrint('获取信息失败：${e.toString()}');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
-    Navigator.pop(context);
   }
 
 // 设置 云端
@@ -215,128 +212,102 @@ class _MajorSetState extends State<MajorSet> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: customAppbar(
-            context: context,
-            title: S.of(context).majorSet,
-            actions: <Widget>[
-              Container(
-                margin: EdgeInsets.all(20.w),
-                child: OutlinedButton(
-                  onPressed: _isLoading ? null : _saveData,
-                  child: Row(
+        appBar: customAppbar(context: context, title: S.of(context).majorSet),
+        body: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : Container(
+                decoration: const BoxDecoration(
+                    color: Color.fromRGBO(240, 240, 240, 1)),
+                height: 1000,
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      if (_isLoading)
-                        const SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
+                      TitleWidger(title: S.of(context).majorSet),
+                      InfoBox(
+                          boxCotainer: Column(
+                        children: [
+                          //地区
+                          GestureDetector(
+                            onTap: () {
+                              var result = CommonPicker.showPicker(
+                                context: context,
+                                options: [
+                                  S.current.China,
+                                  S.current.France,
+                                  S.current.Russia,
+                                  S.current.UnitedStates,
+                                  S.current.Singapore,
+                                  S.current.Australia,
+                                  S.current.Chile,
+                                  S.current.Poland
+                                ],
+                                value: index,
+                              );
+                              result?.then((selectedValue) => {
+                                    if (index != selectedValue &&
+                                        selectedValue != null)
+                                      {
+                                        setState(() => {
+                                              index = selectedValue,
+                                              showVal = [
+                                                S.current.China,
+                                                S.current.France,
+                                                S.current.Russia,
+                                                S.current.UnitedStates,
+                                                S.current.Singapore,
+                                                S.current.Australia,
+                                                S.current.Chile,
+                                                S.current.Poland
+                                              ][index],
+                                              val = [
+                                                'CN',
+                                                'FR',
+                                                'RU',
+                                                'US',
+                                                'SG',
+                                                'AU',
+                                                'CL',
+                                                'PL'
+                                              ][index],
+                                            })
+                                      }
+                                  });
+                            },
+                            child: BottomLine(
+                              rowtem: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(S.of(context).Region,
+                                      style: TextStyle(
+                                          color: const Color.fromARGB(
+                                              255, 5, 0, 0),
+                                          fontSize: 28.sp)),
+                                  Row(
+                                    children: [
+                                      Text(showVal,
+                                          style: TextStyle(
+                                              color: const Color.fromARGB(
+                                                  255, 5, 0, 0),
+                                              fontSize: 28.sp)),
+                                      Icon(
+                                        Icons.arrow_forward_ios_outlined,
+                                        color: const Color.fromRGBO(
+                                            144, 147, 153, 1),
+                                        size: 30.w,
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
-                        ),
-                      if (!_isLoading)
-                        Text(
-                          S.current.save,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: _isLoading ? Colors.grey : null,
-                          ),
-                        ),
+                        ],
+                      )),
                     ],
                   ),
                 ),
-              ),
-            ]),
-        body: Container(
-          decoration:
-              const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
-          height: 1000,
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                TitleWidger(title: S.of(context).majorSet),
-                InfoBox(
-                    boxCotainer: Column(
-                  children: [
-                    //地区
-                    GestureDetector(
-                      onTap: () {
-                        var result = CommonPicker.showPicker(
-                          context: context,
-                          options: [
-                            S.current.China,
-                            S.current.France,
-                            S.current.Russia,
-                            S.current.UnitedStates,
-                            S.current.Singapore,
-                            S.current.Australia,
-                            S.current.Chile,
-                            S.current.Poland
-                          ],
-                          value: index,
-                        );
-                        result?.then((selectedValue) => {
-                              if (index != selectedValue &&
-                                  selectedValue != null)
-                                {
-                                  setState(() => {
-                                        index = selectedValue,
-                                        showVal = [
-                                          S.current.China,
-                                          S.current.France,
-                                          S.current.Russia,
-                                          S.current.UnitedStates,
-                                          S.current.Singapore,
-                                          S.current.Australia,
-                                          S.current.Chile,
-                                          S.current.Poland
-                                        ][index],
-                                        val = [
-                                          'CN',
-                                          'FR',
-                                          'RU',
-                                          'US',
-                                          'SG',
-                                          'AU',
-                                          'CL',
-                                          'PL'
-                                        ][index],
-                                      })
-                                }
-                            });
-                      },
-                      child: BottomLine(
-                        rowtem: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(S.of(context).Region,
-                                style: TextStyle(
-                                    color: const Color.fromARGB(255, 5, 0, 0),
-                                    fontSize: 28.sp)),
-                            Row(
-                              children: [
-                                Text(showVal,
-                                    style: TextStyle(
-                                        color:
-                                            const Color.fromARGB(255, 5, 0, 0),
-                                        fontSize: 28.sp)),
-                                Icon(
-                                  Icons.arrow_forward_ios_outlined,
-                                  color: const Color.fromRGBO(144, 147, 153, 1),
-                                  size: 30.w,
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                )),
-              ],
-            ),
-          ),
-        ));
+              ));
   }
 }

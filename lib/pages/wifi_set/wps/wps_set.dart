@@ -8,7 +8,6 @@ import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_picker.dart';
-import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:flutter_template/pages/wifi_set/wps/wps_datas.dart';
 import 'package:get/get.dart';
@@ -53,9 +52,7 @@ class _WpsSetState extends State<WpsSet> {
     sharedGetData('deviceSn', String).then(((res) {
       sn = res.toString();
       if (mounted) {
-        setState(() {
-          _isLoading = true;
-        });
+       
         if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
           getTRWpsData();
         }
@@ -63,9 +60,6 @@ class _WpsSetState extends State<WpsSet> {
           getData();
           handleSave();
         }
-        setState(() {
-          _isLoading = false;
-        });
       }
     }));
   }
@@ -73,7 +67,6 @@ class _WpsSetState extends State<WpsSet> {
   // 提交
   bool _isLoading = false;
   Future<void> _saveData() async {
-    Navigator.push(context, DialogRouter(LoadingDialog()));
     setState(() {
       _isLoading = true;
     });
@@ -100,15 +93,18 @@ class _WpsSetState extends State<WpsSet> {
                 '{ "${paramKey}Mode": "client",  "wifi5gWpsClientPin": "${pinVal.text}"}');
       }
     }
-    Navigator.pop(context);
     setState(() {
       _isLoading = false;
     });
   }
 
+  bool loading = false;
   // 获取 云端   2.4G
   getTRWpsData() async {
-    Navigator.push(context, DialogRouter(LoadingDialog()));
+    setState(() {
+      _isLoading = true;
+      loading = true;
+    });
     var parameterNames = [
       "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.1.WPS"
     ];
@@ -126,13 +122,20 @@ class _WpsSetState extends State<WpsSet> {
       });
     } catch (e) {
       debugPrint('获取信息失败：${e.toString()}');
+    } finally {
+      setState(() {
+        _isLoading = false;
+        loading = false;
+      });
     }
-    Navigator.pop(context);
   }
 
   // 获取 云端  5G
   getTRWpsData2() async {
-    Navigator.push(context, DialogRouter(LoadingDialog()));
+    setState(() {
+      _isLoading = true;
+      loading = true;
+    });
     var parameterNames = [
       "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.2.WPS"
     ];
@@ -149,8 +152,13 @@ class _WpsSetState extends State<WpsSet> {
       });
     } catch (e) {
       debugPrint('获取信息失败：${e.toString()}');
+    } finally {
+      setState(() {
+        loading = false;
+      _isLoading = false;
+
+      });
     }
-    Navigator.pop(context);
   }
 
 // 设置 云端   2.4G
@@ -312,237 +320,251 @@ class _WpsSetState extends State<WpsSet> {
             ),
           ),
         ]),
-        body: GestureDetector(
-          onTap: () => closeKeyboard(context),
-          behavior: HitTestBehavior.opaque,
-          child: Container(
-            decoration:
-                const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
-            height: 1000,
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  TitleWidger(title: S.of(context).Settings),
-                  InfoBox(
-                      boxCotainer: Column(
-                    children: [
-                      //频段
-                      GestureDetector(
-                        onTap: () {
-                          closeKeyboard(context);
-                          var result = CommonPicker.showPicker(
-                            context: context,
-                            options: ['2.4GHz', '5GHz'],
-                            value: val,
-                          );
-                          result?.then((selectedValue) => {
-                                if (val != selectedValue &&
-                                    selectedValue != null)
-                                  {
-                                    setState(() => {
-                                          val = selectedValue,
-                                          showVal = ['2.4GHz', '5GHz'][val],
-                                          printInfo(info: 'showVal$showVal'),
-                                          if (showVal == '2.4GHz')
-                                            {getTRWpsData()}
-                                          else
-                                            {getTRWpsData2()},
-                                          //提交时改变key
-                                          paramKey = val == 0
-                                              ? 'wifiWps'
-                                              : 'wifi5gWps',
-                                        })
-                                  }
-                              });
-                        },
-                        child: BottomLine(
-                          rowtem: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(S.of(context).Band,
-                                  style: TextStyle(
-                                      color: const Color.fromARGB(255, 5, 0, 0),
-                                      fontSize: 28.sp)),
-                              Row(
-                                children: [
-                                  Text(showVal,
-                                      style: TextStyle(
-                                          color: const Color.fromARGB(
-                                              255, 5, 0, 0),
-                                          fontSize: 28.sp)),
-                                  Icon(
-                                    Icons.arrow_forward_ios_outlined,
-                                    color:
-                                        const Color.fromRGBO(144, 147, 153, 1),
-                                    size: 30.w,
-                                  )
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      //WPS
-                      BottomLine(
-                        rowtem: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        body: loading
+            ? const Center(child: CircularProgressIndicator())
+            : GestureDetector(
+                onTap: () => closeKeyboard(context),
+                behavior: HitTestBehavior.opaque,
+                child: Container(
+                  decoration: const BoxDecoration(
+                      color: Color.fromRGBO(240, 240, 240, 1)),
+                  height: 1000,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        TitleWidger(title: S.of(context).Settings),
+                        InfoBox(
+                            boxCotainer: Column(
                           children: [
-                            Text('WPS',
-                                style: TextStyle(
-                                    color: const Color.fromARGB(255, 5, 0, 0),
-                                    fontSize: 28.sp)),
-                            Row(
-                              children: [
-                                Switch(
-                                  value: isCheck,
-                                  onChanged: (newVal) {
-                                    setState(() {
-                                      isCheck = newVal;
-                                      wpsVal = newVal == false ? '0' : '1';
+                            //频段
+                            GestureDetector(
+                              onTap: () {
+                                closeKeyboard(context);
+                                var result = CommonPicker.showPicker(
+                                  context: context,
+                                  options: ['2.4GHz', '5GHz'],
+                                  value: val,
+                                );
+                                result?.then((selectedValue) => {
+                                      if (val != selectedValue &&
+                                          selectedValue != null)
+                                        {
+                                          setState(() => {
+                                                val = selectedValue,
+                                                showVal =
+                                                    ['2.4GHz', '5GHz'][val],
+                                                printInfo(
+                                                    info: 'showVal$showVal'),
+                                                if (showVal == '2.4GHz')
+                                                  {getTRWpsData()}
+                                                else
+                                                  {getTRWpsData2()},
+                                                //提交时改变key
+                                                paramKey = val == 0
+                                                    ? 'wifiWps'
+                                                    : 'wifi5gWps',
+                                              })
+                                        }
                                     });
-                                  },
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
-                      //模式
-                      Offstage(
-                        offstage: true,
-                        child: GestureDetector(
-                          onTap: () {
-                            closeKeyboard(context);
-                            var result = CommonPicker.showPicker(
-                              context: context,
-                              options: ['PBC', 'Client PIN'],
-                              value: modeVal,
-                            );
-                            result?.then((selectedValue) => {
-                                  if (modeVal != selectedValue &&
-                                      selectedValue != null)
-                                    {
-                                      setState(() => {
-                                            modeVal = selectedValue,
-                                            modeShowVal =
-                                                ['PBC', 'Client PIN'][modeVal]
-                                          })
-                                    }
-                                });
-                          },
-                          child: BottomLine(
-                            rowtem: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(S.of(context).Mode,
-                                    style: TextStyle(
-                                        color:
-                                            const Color.fromARGB(255, 5, 0, 0),
-                                        fontSize: 28.sp)),
-                                Row(
+                              },
+                              child: BottomLine(
+                                rowtem: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(modeShowVal,
+                                    Text(S.of(context).Band,
                                         style: TextStyle(
                                             color: const Color.fromARGB(
                                                 255, 5, 0, 0),
                                             fontSize: 28.sp)),
-                                    Icon(
-                                      Icons.arrow_forward_ios_outlined,
-                                      color: const Color.fromRGBO(
-                                          144, 147, 153, 1),
-                                      size: 30.w,
-                                    )
+                                    Row(
+                                      children: [
+                                        Text(showVal,
+                                            style: TextStyle(
+                                                color: const Color.fromARGB(
+                                                    255, 5, 0, 0),
+                                                fontSize: 28.sp)),
+                                        Icon(
+                                          Icons.arrow_forward_ios_outlined,
+                                          color: const Color.fromRGBO(
+                                              144, 147, 153, 1),
+                                          size: 30.w,
+                                        )
+                                      ],
+                                    ),
                                   ],
                                 ),
-                              ],
+                              ),
                             ),
-                          ),
-                        ),
-                      ),
-                      //客户 PIN
-                      Offstage(
-                        offstage: modeShowVal == 'PBC' || !isCheck,
-                        child: BottomLine(
-                          rowtem: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(S.of(context).ClientPIN,
-                                  style: TextStyle(
-                                      color: const Color.fromARGB(255, 5, 0, 0),
-                                      fontSize: 28.sp)),
-                              SizedBox(
-                                width: 100.w,
-                                child: TextFormField(
-                                  textAlign: TextAlign.right,
-                                  keyboardType: TextInputType.number,
-                                  controller: pinVal,
-                                  style: TextStyle(
-                                      fontSize: 26.sp,
-                                      color: const Color(0xff051220)),
-                                  decoration: InputDecoration(
-                                    hintStyle: TextStyle(
-                                        fontSize: 26.sp,
-                                        color: const Color(0xff737A83)),
-                                    border: InputBorder.none,
+                            //WPS
+                            BottomLine(
+                              rowtem: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('WPS',
+                                      style: TextStyle(
+                                          color: const Color.fromARGB(
+                                              255, 5, 0, 0),
+                                          fontSize: 28.sp)),
+                                  Row(
+                                    children: [
+                                      Switch(
+                                        value: isCheck,
+                                        onChanged: (newVal) {
+                                          setState(() {
+                                            isCheck = newVal;
+                                            wpsVal =
+                                                newVal == false ? '0' : '1';
+                                          });
+                                        },
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                            //模式
+                            Offstage(
+                              offstage: true,
+                              child: GestureDetector(
+                                onTap: () {
+                                  closeKeyboard(context);
+                                  var result = CommonPicker.showPicker(
+                                    context: context,
+                                    options: ['PBC', 'Client PIN'],
+                                    value: modeVal,
+                                  );
+                                  result?.then((selectedValue) => {
+                                        if (modeVal != selectedValue &&
+                                            selectedValue != null)
+                                          {
+                                            setState(() => {
+                                                  modeVal = selectedValue,
+                                                  modeShowVal = [
+                                                    'PBC',
+                                                    'Client PIN'
+                                                  ][modeVal]
+                                                })
+                                          }
+                                      });
+                                },
+                                child: BottomLine(
+                                  rowtem: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(S.of(context).Mode,
+                                          style: TextStyle(
+                                              color: const Color.fromARGB(
+                                                  255, 5, 0, 0),
+                                              fontSize: 28.sp)),
+                                      Row(
+                                        children: [
+                                          Text(modeShowVal,
+                                              style: TextStyle(
+                                                  color: const Color.fromARGB(
+                                                      255, 5, 0, 0),
+                                                  fontSize: 28.sp)),
+                                          Icon(
+                                            Icons.arrow_forward_ios_outlined,
+                                            color: const Color.fromRGBO(
+                                                144, 147, 153, 1),
+                                            size: 30.w,
+                                          )
+                                        ],
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  )),
-                  // //提交
-                  // Padding(
-                  //   padding: EdgeInsets.only(top: 10.w),
-                  //   child: Center(
-                  //       child: SizedBox(
-                  //     height: 70.sp,
-                  //     width: 680.sp,
-                  //     child: ElevatedButton(
-                  //       style: ButtonStyle(
-                  //           backgroundColor: MaterialStateProperty.all(
-                  //               const Color.fromARGB(255, 48, 118, 250))),
-                  //       onPressed: () {
-                  //         printInfo(info: 'showVal$showVal');
-                  // if (mounted) {
-                  //   if (loginController.login.state == 'cloud' &&
-                  //       sn.isNotEmpty) {
-                  //     if (showVal == '2.4G') {
-                  //       setTRWpsData();
-                  //     } else {
-                  //       setTRWpsData2();
-                  //     }
-                  //   } else if (loginController.login.state == 'local') {
-                  //     handleSave();
-                  //     //选择PBC
-                  //     if (isCheck && modeShowVal == 'PBC') {
-                  //       savePbc('{"${paramKey}Mode": "$modeShowVal"}');
-                  //     }
-                  //     //选择Client PIN
-                  //     if (isCheck && modeShowVal == 'Client PIN') {
-                  //       showVal == '2.4GHz'
-                  //           ? savePbc(
-                  //               '{ "${paramKey}Mode": "client",  "wifiWpsClientPin": "${pinVal.text}"}')
-                  //           : savePbc(
-                  //               '{ "${paramKey}Mode": "client",  "wifi5gWpsClientPin": "${pinVal.text}"}');
-                  //     }
-                  //   }
-                  // }
-                  // },
-                  //       child: Text(
-                  //         S.of(context).save,
-                  //         style: TextStyle(fontSize: 36.sp),
-                  //       ),
-                  //     ),
-                  //   )),
-                  // )
-                ],
-              ),
-            ),
-          ),
-        ));
+                            ),
+                            //客户 PIN
+                            Offstage(
+                              offstage: modeShowVal == 'PBC' || !isCheck,
+                              child: BottomLine(
+                                rowtem: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(S.of(context).ClientPIN,
+                                        style: TextStyle(
+                                            color: const Color.fromARGB(
+                                                255, 5, 0, 0),
+                                            fontSize: 28.sp)),
+                                    SizedBox(
+                                      width: 100.w,
+                                      child: TextFormField(
+                                        textAlign: TextAlign.right,
+                                        keyboardType: TextInputType.number,
+                                        controller: pinVal,
+                                        style: TextStyle(
+                                            fontSize: 26.sp,
+                                            color: const Color(0xff051220)),
+                                        decoration: InputDecoration(
+                                          hintStyle: TextStyle(
+                                              fontSize: 26.sp,
+                                              color: const Color(0xff737A83)),
+                                          border: InputBorder.none,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        )),
+                        // //提交
+                        // Padding(
+                        //   padding: EdgeInsets.only(top: 10.w),
+                        //   child: Center(
+                        //       child: SizedBox(
+                        //     height: 70.sp,
+                        //     width: 680.sp,
+                        //     child: ElevatedButton(
+                        //       style: ButtonStyle(
+                        //           backgroundColor: MaterialStateProperty.all(
+                        //               const Color.fromARGB(255, 48, 118, 250))),
+                        //       onPressed: () {
+                        //         printInfo(info: 'showVal$showVal');
+                        // if (mounted) {
+                        //   if (loginController.login.state == 'cloud' &&
+                        //       sn.isNotEmpty) {
+                        //     if (showVal == '2.4G') {
+                        //       setTRWpsData();
+                        //     } else {
+                        //       setTRWpsData2();
+                        //     }
+                        //   } else if (loginController.login.state == 'local') {
+                        //     handleSave();
+                        //     //选择PBC
+                        //     if (isCheck && modeShowVal == 'PBC') {
+                        //       savePbc('{"${paramKey}Mode": "$modeShowVal"}');
+                        //     }
+                        //     //选择Client PIN
+                        //     if (isCheck && modeShowVal == 'Client PIN') {
+                        //       showVal == '2.4GHz'
+                        //           ? savePbc(
+                        //               '{ "${paramKey}Mode": "client",  "wifiWpsClientPin": "${pinVal.text}"}')
+                        //           : savePbc(
+                        //               '{ "${paramKey}Mode": "client",  "wifi5gWpsClientPin": "${pinVal.text}"}');
+                        //     }
+                        //   }
+                        // }
+                        // },
+                        //       child: Text(
+                        //         S.of(context).save,
+                        //         style: TextStyle(fontSize: 36.sp),
+                        //       ),
+                        //     ),
+                        //   )),
+                        // )
+                      ],
+                    ),
+                  ),
+                ),
+              ));
   }
 }

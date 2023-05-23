@@ -142,9 +142,13 @@ class _MaintainSettingsState extends State<MaintainSettings> {
     Get.offAllNamed("/get_equipment");
   }
 
+  bool loading = false;
+
   // 获取 云端
   getTRAcquireData() async {
-    Navigator.push(context, DialogRouter(LoadingDialog()));
+    setState(() {
+      loading = true;
+    });
     printInfo(info: 'sn在这里有值吗-------$sn');
     var parameterNames = [
       "InternetGatewayDevice.WEB_GUI.ScheduleReboot.Enable",
@@ -262,8 +266,11 @@ class _MaintainSettingsState extends State<MaintainSettings> {
       });
     } catch (e) {
       debugPrint('获取信息失败：${e.toString()}');
+    } finally {
+      setState(() {
+        loading = false;
+      });
     }
-    Navigator.pop(context);
   }
 
   // 设置 云端
@@ -632,432 +639,449 @@ class _MaintainSettingsState extends State<MaintainSettings> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: customAppbar(context: context, title: S.current.maintainSettings),
-      body: SingleChildScrollView(
-        child: Container(
-          decoration:
-              const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
-          height: 1400.w,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              TitleWidger(title: S.current.RebootScheduler),
-              InfoBox(
-                  boxCotainer: Column(children: [
-                // 开启冲重定时
-                BottomLine(
-                  rowtem: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(S.current.EnableRebootScheduler),
-                      Switch(
-                        value: isCheck,
-                        onChanged: (newVal) {
-                          setState(() {
-                            isCheck = newVal;
-                            if (isCheck == true) {
-                              checkVal = 1;
-                            } else {
-                              checkVal = 0;
-                            }
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                // 重启日期
-                Offstage(
-                  offstage: !isCheck,
-                  child: GestureDetector(
-                    onTap: () {
-                      // 勾选框的状态
-                      if (arrList.contains(S.of(context).Sun)) {
-                        checkboxList[0]['value'] = true;
-                      }
-                      if (arrList.contains(S.of(context).mon)) {
-                        checkboxList[1]['value'] = true;
-                      }
-                      if (arrList.contains(S.current.Tue)) {
-                        checkboxList[2]['value'] = true;
-                      }
-                      if (arrList.contains(S.current.Wed)) {
-                        checkboxList[3]['value'] = true;
-                      }
-                      if (arrList.contains(S.current.Thu)) {
-                        checkboxList[4]['value'] = true;
-                      }
-                      if (arrList.contains(S.current.fri)) {
-                        checkboxList[5]['value'] = true;
-                      }
-                      if (arrList.contains(S.current.Sat)) {
-                        checkboxList[6]['value'] = true;
-                      }
-                      showBottomSheet();
-                    },
-                    child: BottomLine(
-                      rowtem: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(S.of(context).EnableScheduler,
-                                style: TextStyle(fontSize: 30.sp)),
-                            Row(
-                              children: [
-                                Text(arrList.join(),
-                                    style: TextStyle(fontSize: 30.sp)),
-                                Icon(
-                                  Icons.arrow_forward_ios_outlined,
-                                  color: const Color.fromRGBO(144, 147, 153, 1),
-                                  size: 30.w,
-                                )
-                              ],
-                            ),
-                          ]),
-                    ),
-                  ),
-                ),
-                // 开始时间
-                Offstage(
-                  offstage: !isCheck,
-                  child: GestureDetector(
-                    onTap: () {
-                      var result = CommonPicker.showPicker(
-                        context: context,
-                        options: [
-                          '0',
-                          '1',
-                          '2',
-                          '3',
-                          '4',
-                          '5',
-                          '6',
-                          '7',
-                          '8',
-                          '9',
-                          '10',
-                          '11',
-                          '12',
-                          '13',
-                          '14',
-                          '15',
-                          '16',
-                          '17',
-                          '18',
-                          '19',
-                          '20',
-                          '21',
-                          '22',
-                          '23',
-                        ],
-                        value: startVal,
-                      );
-                      result?.then((selectedValue) => {
-                            if (startVal != selectedValue &&
-                                selectedValue != null)
-                              {
-                                setState(() => {
-                                      startVal = selectedValue,
-                                      startShowVal = [
-                                        '0',
-                                        '1',
-                                        '2',
-                                        '3',
-                                        '4',
-                                        '5',
-                                        '6',
-                                        '7',
-                                        '8',
-                                        '9',
-                                        '10',
-                                        '11',
-                                        '12',
-                                        '13',
-                                        '14',
-                                        '15',
-                                        '16',
-                                        '17',
-                                        '18',
-                                        '19',
-                                        '20',
-                                        '21',
-                                        '22',
-                                        '23',
-                                      ][startVal],
-                                    })
-                              }
-                          });
-                    },
-                    child: BottomLine(
-                      rowtem: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(S.of(context).DateReboot,
-                                style: TextStyle(fontSize: 30.sp)),
-                            Row(
-                              children: [
-                                Text(startShowVal,
-                                    style: TextStyle(fontSize: 30.sp)),
-                                Icon(
-                                  Icons.arrow_forward_ios_outlined,
-                                  color: const Color.fromRGBO(144, 147, 153, 1),
-                                  size: 30.w,
-                                )
-                              ],
-                            ),
-                          ]),
-                    ),
-                  ),
-                ),
-                // 结束时间
-                Offstage(
-                  offstage: !isCheck,
-                  child: GestureDetector(
-                    onTap: () {
-                      var result = CommonPicker.showPicker(
-                        context: context,
-                        options: [
-                          '0',
-                          '1',
-                          '2',
-                          '3',
-                          '4',
-                          '5',
-                          '6',
-                          '7',
-                          '8',
-                          '9',
-                          '10',
-                          '11',
-                          '12',
-                          '13',
-                          '14',
-                          '15',
-                          '16',
-                          '17',
-                          '18',
-                          '19',
-                          '20',
-                          '21',
-                          '22',
-                          '23',
-                        ],
-                        value: endVal,
-                      );
-                      result?.then((selectedValue) => {
-                            if (endVal != selectedValue &&
-                                selectedValue != null)
-                              {
-                                setState(() => {
-                                      endVal = selectedValue,
-                                      endShowVal = [
-                                        '0',
-                                        '1',
-                                        '2',
-                                        '3',
-                                        '4',
-                                        '5',
-                                        '6',
-                                        '7',
-                                        '8',
-                                        '9',
-                                        '10',
-                                        '11',
-                                        '12',
-                                        '13',
-                                        '14',
-                                        '15',
-                                        '16',
-                                        '17',
-                                        '18',
-                                        '19',
-                                        '20',
-                                        '21',
-                                        '22',
-                                        '23',
-                                      ][endVal],
-                                    })
-                              }
-                          });
-                    },
-                    child: BottomLine(
-                      rowtem: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(S.of(context).TimeReboot,
-                                style: TextStyle(fontSize: 30.sp)),
-                            Row(
-                              children: [
-                                Text(endShowVal,
-                                    style: TextStyle(fontSize: 30.sp)),
-                                Icon(
-                                  Icons.arrow_forward_ios_outlined,
-                                  color: const Color.fromRGBO(144, 147, 153, 1),
-                                  size: 30.w,
-                                )
-                              ],
-                            ),
-                          ]),
-                    ),
-                  ),
-                )
-              ])),
-              Center(
-                child: SizedBox(
-                  height: 70.sp,
-                  width: 680.sp,
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(
-                            const Color.fromARGB(255, 48, 118, 250))),
-                    onPressed: () {
-                      if (tranfer == '0;0;0;0;0;0;0' && isCheck == true) {
-                        ToastUtils.toast(S.current.mustSuccess);
-                      } else {
-                        if (mounted) {
-                          if (loginController.login.state == 'cloud' &&
-                              sn.isNotEmpty) {
-                            setTRAcquireData();
-                          } else if (loginController.login.state == 'local') {
-                            getTrestsetData();
-                          }
-                        }
-                      }
-                    },
-                    child: Text(S.of(context).save),
-                  ),
-                ),
-              ),
-              Padding(padding: EdgeInsets.only(top: 10.sp)),
-              TitleWidger(title: S.current.Reboot),
-              InfoBox(
-                boxCotainer: BottomLine(
-                  rowtem: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        S.current.clickReboot,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Center(
-                child: SizedBox(
-                  height: 70.sp,
-                  width: 680.sp,
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(
-                            const Color.fromARGB(255, 48, 118, 250))),
-                    onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                                title: Text(S.current.hint),
-                                content: Text(S.of(context).isGoOn),
-                                actions: <Widget>[
-                                  TextButton(
-                                    child: Text(S.current.cancel),
-                                    onPressed: () {
-                                      //取消
-                                      Navigator.pop(context, 'Cancle');
-                                    },
-                                  ),
-                                  TextButton(
-                                      child: Text(S.current.confirm),
-                                      onPressed: () {
-                                        //确定
-                                        Navigator.pop(context, "Ok");
-                                        Navigator.push(context,
-                                            DialogRouter(LoadingDialog()));
-                                        if (mounted) {
-                                          if (loginController.login.state ==
-                                                  'cloud' &&
-                                              sn.isNotEmpty) {
-                                            getReBootData();
-                                          }
-                                          if (loginController.login.state ==
-                                              'local') {
-                                            getmaintaData();
-                                          }
-                                        }
-                                        Navigator.pop(context);
-                                      })
-                                ]);
-                          });
-                    },
-                    child: Text(S.current.Reboot),
-                  ),
-                ),
-              ),
-              Padding(padding: EdgeInsets.only(top: 10.sp)),
-              TitleWidger(title: S.current.FactoryReset),
-              InfoBox(
-                boxCotainer: Column(
+      body: loading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: Container(
+                decoration: const BoxDecoration(
+                    color: Color.fromRGBO(240, 240, 240, 1)),
+                height: 1400.w,
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    BottomLine(
-                      rowtem: Text(
-                        S.current.clickFactory,
+                    TitleWidger(title: S.current.RebootScheduler),
+                    InfoBox(
+                        boxCotainer: Column(children: [
+                      // 开启冲重定时
+                      BottomLine(
+                        rowtem: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(S.current.EnableRebootScheduler),
+                            Switch(
+                              value: isCheck,
+                              onChanged: (newVal) {
+                                setState(() {
+                                  isCheck = newVal;
+                                  if (isCheck == true) {
+                                    checkVal = 1;
+                                  } else {
+                                    checkVal = 0;
+                                  }
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      // 重启日期
+                      Offstage(
+                        offstage: !isCheck,
+                        child: GestureDetector(
+                          onTap: () {
+                            // 勾选框的状态
+                            if (arrList.contains(S.of(context).Sun)) {
+                              checkboxList[0]['value'] = true;
+                            }
+                            if (arrList.contains(S.of(context).mon)) {
+                              checkboxList[1]['value'] = true;
+                            }
+                            if (arrList.contains(S.current.Tue)) {
+                              checkboxList[2]['value'] = true;
+                            }
+                            if (arrList.contains(S.current.Wed)) {
+                              checkboxList[3]['value'] = true;
+                            }
+                            if (arrList.contains(S.current.Thu)) {
+                              checkboxList[4]['value'] = true;
+                            }
+                            if (arrList.contains(S.current.fri)) {
+                              checkboxList[5]['value'] = true;
+                            }
+                            if (arrList.contains(S.current.Sat)) {
+                              checkboxList[6]['value'] = true;
+                            }
+                            showBottomSheet();
+                          },
+                          child: BottomLine(
+                            rowtem: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(S.of(context).EnableScheduler,
+                                      style: TextStyle(fontSize: 30.sp)),
+                                  Row(
+                                    children: [
+                                      Text(arrList.join(),
+                                          style: TextStyle(fontSize: 30.sp)),
+                                      Icon(
+                                        Icons.arrow_forward_ios_outlined,
+                                        color: const Color.fromRGBO(
+                                            144, 147, 153, 1),
+                                        size: 30.w,
+                                      )
+                                    ],
+                                  ),
+                                ]),
+                          ),
+                        ),
+                      ),
+                      // 开始时间
+                      Offstage(
+                        offstage: !isCheck,
+                        child: GestureDetector(
+                          onTap: () {
+                            var result = CommonPicker.showPicker(
+                              context: context,
+                              options: [
+                                '0',
+                                '1',
+                                '2',
+                                '3',
+                                '4',
+                                '5',
+                                '6',
+                                '7',
+                                '8',
+                                '9',
+                                '10',
+                                '11',
+                                '12',
+                                '13',
+                                '14',
+                                '15',
+                                '16',
+                                '17',
+                                '18',
+                                '19',
+                                '20',
+                                '21',
+                                '22',
+                                '23',
+                              ],
+                              value: startVal,
+                            );
+                            result?.then((selectedValue) => {
+                                  if (startVal != selectedValue &&
+                                      selectedValue != null)
+                                    {
+                                      setState(() => {
+                                            startVal = selectedValue,
+                                            startShowVal = [
+                                              '0',
+                                              '1',
+                                              '2',
+                                              '3',
+                                              '4',
+                                              '5',
+                                              '6',
+                                              '7',
+                                              '8',
+                                              '9',
+                                              '10',
+                                              '11',
+                                              '12',
+                                              '13',
+                                              '14',
+                                              '15',
+                                              '16',
+                                              '17',
+                                              '18',
+                                              '19',
+                                              '20',
+                                              '21',
+                                              '22',
+                                              '23',
+                                            ][startVal],
+                                          })
+                                    }
+                                });
+                          },
+                          child: BottomLine(
+                            rowtem: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(S.of(context).DateReboot,
+                                      style: TextStyle(fontSize: 30.sp)),
+                                  Row(
+                                    children: [
+                                      Text(startShowVal,
+                                          style: TextStyle(fontSize: 30.sp)),
+                                      Icon(
+                                        Icons.arrow_forward_ios_outlined,
+                                        color: const Color.fromRGBO(
+                                            144, 147, 153, 1),
+                                        size: 30.w,
+                                      )
+                                    ],
+                                  ),
+                                ]),
+                          ),
+                        ),
+                      ),
+                      // 结束时间
+                      Offstage(
+                        offstage: !isCheck,
+                        child: GestureDetector(
+                          onTap: () {
+                            var result = CommonPicker.showPicker(
+                              context: context,
+                              options: [
+                                '0',
+                                '1',
+                                '2',
+                                '3',
+                                '4',
+                                '5',
+                                '6',
+                                '7',
+                                '8',
+                                '9',
+                                '10',
+                                '11',
+                                '12',
+                                '13',
+                                '14',
+                                '15',
+                                '16',
+                                '17',
+                                '18',
+                                '19',
+                                '20',
+                                '21',
+                                '22',
+                                '23',
+                              ],
+                              value: endVal,
+                            );
+                            result?.then((selectedValue) => {
+                                  if (endVal != selectedValue &&
+                                      selectedValue != null)
+                                    {
+                                      setState(() => {
+                                            endVal = selectedValue,
+                                            endShowVal = [
+                                              '0',
+                                              '1',
+                                              '2',
+                                              '3',
+                                              '4',
+                                              '5',
+                                              '6',
+                                              '7',
+                                              '8',
+                                              '9',
+                                              '10',
+                                              '11',
+                                              '12',
+                                              '13',
+                                              '14',
+                                              '15',
+                                              '16',
+                                              '17',
+                                              '18',
+                                              '19',
+                                              '20',
+                                              '21',
+                                              '22',
+                                              '23',
+                                            ][endVal],
+                                          })
+                                    }
+                                });
+                          },
+                          child: BottomLine(
+                            rowtem: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(S.of(context).TimeReboot,
+                                      style: TextStyle(fontSize: 30.sp)),
+                                  Row(
+                                    children: [
+                                      Text(endShowVal,
+                                          style: TextStyle(fontSize: 30.sp)),
+                                      Icon(
+                                        Icons.arrow_forward_ios_outlined,
+                                        color: const Color.fromRGBO(
+                                            144, 147, 153, 1),
+                                        size: 30.w,
+                                      )
+                                    ],
+                                  ),
+                                ]),
+                          ),
+                        ),
+                      )
+                    ])),
+                    Center(
+                      child: SizedBox(
+                        height: 70.sp,
+                        width: 680.sp,
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(
+                                  const Color.fromARGB(255, 48, 118, 250))),
+                          onPressed: () {
+                            if (tranfer == '0;0;0;0;0;0;0' && isCheck == true) {
+                              ToastUtils.toast(S.current.mustSuccess);
+                            } else {
+                              if (mounted) {
+                                if (loginController.login.state == 'cloud' &&
+                                    sn.isNotEmpty) {
+                                  setTRAcquireData();
+                                } else if (loginController.login.state ==
+                                    'local') {
+                                  getTrestsetData();
+                                }
+                              }
+                            }
+                          },
+                          child: Text(S.of(context).save),
+                        ),
+                      ),
+                    ),
+                    Padding(padding: EdgeInsets.only(top: 10.sp)),
+                    TitleWidger(title: S.current.Reboot),
+                    InfoBox(
+                      boxCotainer: BottomLine(
+                        rowtem: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              S.current.clickReboot,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Center(
+                      child: SizedBox(
+                        height: 70.sp,
+                        width: 680.sp,
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(
+                                  const Color.fromARGB(255, 48, 118, 250))),
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                      title: Text(S.current.hint),
+                                      content: Text(S.of(context).isGoOn),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          child: Text(S.current.cancel),
+                                          onPressed: () {
+                                            //取消
+                                            Navigator.pop(context, 'Cancle');
+                                          },
+                                        ),
+                                        TextButton(
+                                            child: Text(S.current.confirm),
+                                            onPressed: () {
+                                              //确定
+                                              Navigator.pop(context, "Ok");
+                                              Navigator.push(
+                                                  context,
+                                                  DialogRouter(
+                                                      LoadingDialog()));
+                                              if (mounted) {
+                                                if (loginController
+                                                            .login.state ==
+                                                        'cloud' &&
+                                                    sn.isNotEmpty) {
+                                                  getReBootData();
+                                                }
+                                                if (loginController
+                                                        .login.state ==
+                                                    'local') {
+                                                  getmaintaData();
+                                                }
+                                              }
+                                              Navigator.pop(context);
+                                            })
+                                      ]);
+                                });
+                          },
+                          child: Text(S.current.Reboot),
+                        ),
+                      ),
+                    ),
+                    Padding(padding: EdgeInsets.only(top: 10.sp)),
+                    TitleWidger(title: S.current.FactoryReset),
+                    InfoBox(
+                      boxCotainer: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          BottomLine(
+                            rowtem: Text(
+                              S.current.clickFactory,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Center(
+                      child: SizedBox(
+                        height: 70.sp,
+                        width: 680.sp,
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(
+                                  const Color.fromARGB(255, 48, 118, 250))),
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                      title: Text(S.current.hint),
+                                      content: Text(S.of(context).isGoOn),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          child: Text(S.current.cancel),
+                                          onPressed: () {
+                                            //取消
+                                            Navigator.pop(context, 'Cancle');
+                                          },
+                                        ),
+                                        TextButton(
+                                            child: Text(S.current.confirm),
+                                            onPressed: () {
+                                              //确定
+                                              Navigator.pop(context, "Ok");
+                                              Navigator.push(
+                                                  context,
+                                                  DialogRouter(
+                                                      LoadingDialog()));
+                                              if (mounted) {
+                                                if (loginController
+                                                            .login.state ==
+                                                        'cloud' &&
+                                                    sn.isNotEmpty) {
+                                                  getfactoryResetData();
+                                                }
+                                                if (loginController
+                                                        .login.state ==
+                                                    'local') {
+                                                  getfactoryReset();
+                                                }
+                                              }
+                                              Navigator.pop(context);
+                                            })
+                                      ]);
+                                });
+                          },
+                          child: Text(S.current.FactoryReset),
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
-              Center(
-                child: SizedBox(
-                  height: 70.sp,
-                  width: 680.sp,
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(
-                            const Color.fromARGB(255, 48, 118, 250))),
-                    onPressed: () {
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                                title: Text(S.current.hint),
-                                content: Text(S.of(context).isGoOn),
-                                actions: <Widget>[
-                                  TextButton(
-                                    child: Text(S.current.cancel),
-                                    onPressed: () {
-                                      //取消
-                                      Navigator.pop(context, 'Cancle');
-                                    },
-                                  ),
-                                  TextButton(
-                                      child: Text(S.current.confirm),
-                                      onPressed: () {
-                                        //确定
-                                        Navigator.pop(context, "Ok");
-                                        Navigator.push(context,
-                                            DialogRouter(LoadingDialog()));
-                                        if (mounted) {
-                                          if (loginController.login.state ==
-                                                  'cloud' &&
-                                              sn.isNotEmpty) {
-                                            getfactoryResetData();
-                                          }
-                                          if (loginController.login.state ==
-                                              'local') {
-                                            getfactoryReset();
-                                          }
-                                        }
-                                        Navigator.pop(context);
-                                      })
-                                ]);
-                          });
-                    },
-                    child: Text(S.current.FactoryReset),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 }

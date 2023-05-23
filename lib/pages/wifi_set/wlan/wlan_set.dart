@@ -10,7 +10,6 @@ import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_picker.dart';
-import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:flutter_template/pages/wifi_set/wlan/wlan_datas.dart';
 import 'package:flutter_template/pages/wifi_set/wlan/channel_list.dart';
 import 'package:get/get.dart';
@@ -32,6 +31,8 @@ class WlanSet extends StatefulWidget {
 }
 
 class _WlanSetState extends State<WlanSet> {
+  bool loading = false;
+
   wlanDatas wlanData = wlanDatas(
       wifiEnable: "0",
       wifiMode: "11axg",
@@ -230,7 +231,6 @@ class _WlanSetState extends State<WlanSet> {
   void initState() {
     super.initState();
     sharedGetData('deviceSn', String).then((value) async {
-      Navigator.push(context, DialogRouter(LoadingDialog()));
       sn = value.toString();
       //状态为local 请求本地  状态为cloud  请求云端
       if (mounted) {
@@ -249,7 +249,6 @@ class _WlanSetState extends State<WlanSet> {
           await getWiFiSsidTable();
           await getWiFi5GSsidTable();
         }
-        Navigator.pop(context);
         setState(() {
           _isLoading = false;
         });
@@ -297,6 +296,7 @@ class _WlanSetState extends State<WlanSet> {
   // 2.4g
   Future get24gList() async {
     setState(() {
+      loading = true;
       _isLoading = true;
     });
     try {
@@ -369,6 +369,8 @@ class _WlanSetState extends State<WlanSet> {
       Get.back();
     } finally {
       setState(() {
+        loading = false;
+
         _isLoading = false;
       });
     }
@@ -377,6 +379,8 @@ class _WlanSetState extends State<WlanSet> {
   // 5g
   Future get5gList() async {
     setState(() {
+      loading = true;
+
       _isLoading = true;
     });
     try {
@@ -444,6 +448,7 @@ class _WlanSetState extends State<WlanSet> {
       Get.back();
     } finally {
       setState(() {
+        loading = false;
         _isLoading = false;
       });
     }
@@ -789,7 +794,6 @@ class _WlanSetState extends State<WlanSet> {
 
   bool _isLoading = false;
   Future<void> _saveData() async {
-    Navigator.push(context, DialogRouter(LoadingDialog()));
     setState(() {
       _isLoading = true;
     });
@@ -807,7 +811,6 @@ class _WlanSetState extends State<WlanSet> {
       // 本地请求赋值
       await setData();
     }
-    Navigator.pop(context);
     setState(() {
       _isLoading = false;
     });
@@ -848,722 +851,769 @@ class _WlanSetState extends State<WlanSet> {
                 ),
               ),
             ]),
-        body: GestureDetector(
-          onTap: () => closeKeyboard(context),
-          behavior: HitTestBehavior.opaque,
-          child: Container(
-            decoration:
-                const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
-            height: 2000.w,
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  //一般设置
-                  TitleWidger(title: S.of(context).General),
-                  InfoBox(
-                    boxCotainer: Column(
+        body: loading
+            ? const Center(child: CircularProgressIndicator())
+            : GestureDetector(
+                onTap: () => closeKeyboard(context),
+                behavior: HitTestBehavior.opaque,
+                child: Container(
+                  decoration: const BoxDecoration(
+                      color: Color.fromRGBO(240, 240, 240, 1)),
+                  height: 2000.w,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        //频段
-                        GestureDetector(
-                          onTap: () {
-                            closeKeyboard(context);
-                            var result = CommonPicker.showPicker(
-                              context: context,
-                              options: ['2.4GHz', '5GHz'],
-                              value: bandIndex,
-                            );
-                            result?.then((selectedValue) {
-                              if (bandIndex != selectedValue &&
-                                  selectedValue != null) {
-                                setState(() {
-                                  bandIndex = selectedValue;
-                                  if (loginController.login.state == 'cloud' &&
-                                      sn.isNotEmpty) {
-                                    // 云端请求赋值
-                                    if (selectedValue == 0) {
-                                      get24gList();
-                                    } else if (selectedValue == 1) {
-                                      get5gList();
+                        //一般设置
+                        TitleWidger(title: S.of(context).General),
+                        InfoBox(
+                          boxCotainer: Column(
+                            children: [
+                              //频段
+                              GestureDetector(
+                                onTap: () {
+                                  closeKeyboard(context);
+                                  var result = CommonPicker.showPicker(
+                                    context: context,
+                                    options: ['2.4GHz', '5GHz'],
+                                    value: bandIndex,
+                                  );
+                                  result?.then((selectedValue) {
+                                    if (bandIndex != selectedValue &&
+                                        selectedValue != null) {
+                                      setState(() {
+                                        bandIndex = selectedValue;
+                                        if (loginController.login.state ==
+                                                'cloud' &&
+                                            sn.isNotEmpty) {
+                                          // 云端请求赋值
+                                          if (selectedValue == 0) {
+                                            get24gList();
+                                          } else if (selectedValue == 1) {
+                                            get5gList();
+                                          }
+                                        }
+                                      });
                                     }
-                                  }
-                                });
-                              }
-                            });
-                          },
-                          child: BottomLine(
-                            rowtem: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  S.of(context).Band,
-                                  style: TextStyle(
-                                      color: const Color.fromARGB(255, 5, 0, 0),
-                                      fontSize: 28.sp),
+                                  });
+                                },
+                                child: BottomLine(
+                                  rowtem: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        S.of(context).Band,
+                                        style: TextStyle(
+                                            color: const Color.fromARGB(
+                                                255, 5, 0, 0),
+                                            fontSize: 28.sp),
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            ['2.4GHz', '5GHz'][bandIndex],
+                                            style: TextStyle(
+                                                color: const Color.fromARGB(
+                                                    255, 5, 0, 0),
+                                                fontSize: 28.sp),
+                                          ),
+                                          Icon(
+                                            Icons.arrow_forward_ios_outlined,
+                                            color: const Color.fromRGBO(
+                                                144, 147, 153, 1),
+                                            size: 30.w,
+                                          )
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                Row(
+                              ),
+                              //WLAN
+                              BottomLine(
+                                rowtem: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      ['2.4GHz', '5GHz'][bandIndex],
+                                      'WLAN',
                                       style: TextStyle(
                                           color: const Color.fromARGB(
                                               255, 5, 0, 0),
                                           fontSize: 28.sp),
                                     ),
-                                    Icon(
-                                      Icons.arrow_forward_ios_outlined,
-                                      color: const Color.fromRGBO(
-                                          144, 147, 153, 1),
-                                      size: 30.w,
+                                    Row(
+                                      children: [
+                                        Switch(
+                                          value: bandIndex == 0
+                                              ? isCheck
+                                              : isCheck5,
+                                          onChanged: (newVal) {
+                                            setState(() {
+                                              if (bandIndex == 0) {
+                                                isCheck = newVal;
+                                              } else {
+                                                isCheck5 = newVal;
+                                              }
+                                            });
+                                          },
+                                        ),
+                                      ],
                                     )
                                   ],
                                 ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        //WLAN
-                        BottomLine(
-                          rowtem: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'WLAN',
-                                style: TextStyle(
-                                    color: const Color.fromARGB(255, 5, 0, 0),
-                                    fontSize: 28.sp),
                               ),
-                              Row(
-                                children: [
-                                  Switch(
-                                    value: bandIndex == 0 ? isCheck : isCheck5,
-                                    onChanged: (newVal) {
-                                      setState(() {
-                                        if (bandIndex == 0) {
-                                          isCheck = newVal;
-                                        } else {
-                                          isCheck5 = newVal;
-                                        }
-                                      });
-                                    },
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
 
-                        //模式
-                        if (bandIndex == 0 ? isCheck : isCheck5)
-                          GestureDetector(
-                            onTap: () {
-                              closeKeyboard(context);
-                              var result = CommonPicker.showPicker(
-                                context: context,
-                                options: bandIndex == 0 ? modeOpt : modeValOpt,
-                                value: bandIndex == 0 ? modeIndex : modeIndex5g,
-                              );
-                              result?.then((selectedValue) => {
-                                    if (modeIndex != selectedValue &&
-                                        selectedValue != null)
-                                      {
-                                        setState(() => {
-                                              if (bandIndex == 0)
-                                                {
-                                                  modeIndex = selectedValue,
-                                                  bandWidthIndex = 0
-                                                }
-                                              else
-                                                {
-                                                  modeIndex5g = selectedValue,
-                                                  bandWidthIndex5g = 0
-                                                }
-                                            })
-                                      }
-                                  });
-                            },
-                            child: BottomLine(
-                              rowtem: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(S.of(context).Mode,
-                                      style: TextStyle(
-                                          color: const Color.fromARGB(
-                                              255, 5, 0, 0),
-                                          fontSize: 28.sp)),
-                                  Row(
-                                    children: [
-                                      Text(
-                                          bandIndex == 0
-                                              ? modeOpt[modeIndex]
-                                              : modeValOpt[modeIndex5g],
-                                          style: TextStyle(
-                                              color: const Color.fromARGB(
-                                                  255, 5, 0, 0),
-                                              fontSize: 28.sp)),
-                                      Icon(
-                                        Icons.arrow_forward_ios_outlined,
-                                        color: const Color.fromRGBO(
-                                            144, 147, 153, 1),
-                                        size: 30.w,
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        //带宽
-                        if (bandIndex == 0
-                            ? isCheck && (modeIndex < 2)
-                            : isCheck5 && modeIndex5g != 3)
-                          GestureDetector(
-                            onTap: () {
-                              closeKeyboard(context);
-                              var result = CommonPicker.showPicker(
-                                context: context,
-                                options: bandIndex == 0
-                                    ? bandWidthVal
-                                    : bandWidthOpt5g,
-                                value: bandIndex == 0
-                                    ? bandWidthIndex
-                                    : bandWidthIndex5g,
-                              );
-                              result?.then((selectedValue) {
-                                if (selectedValue != null) {
-                                  setState(() => {
-                                        if (bandIndex == 0)
-                                          {
-                                            bandWidthIndex = selectedValue,
-                                            channelIndex = 0
-                                          }
-                                        else
-                                          {
-                                            bandWidthIndex5g = selectedValue,
-                                            channelIndex5g = 0
-                                          }
-                                      });
-                                }
-                              });
-                            },
-                            child: BottomLine(
-                              rowtem: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(S.of(context).Bandwidth,
-                                      style: TextStyle(
-                                          color: const Color.fromARGB(
-                                              255, 5, 0, 0),
-                                          fontSize: 28.sp)),
-                                  Row(
-                                    children: [
-                                      Text(
-                                          bandIndex == 0
-                                              ? bandWidthVal[bandWidthIndex]
-                                              : bandWidthOpt5g[
-                                                  bandWidthIndex5g],
-                                          style: TextStyle(
-                                              color: const Color.fromARGB(
-                                                  255, 5, 0, 0),
-                                              fontSize: 28.sp)),
-                                      Icon(
-                                        Icons.arrow_forward_ios_outlined,
-                                        color: const Color.fromRGBO(
-                                            144, 147, 153, 1),
-                                        size: 30.w,
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        //信道
-                        if (bandIndex == 0 ? isCheck : isCheck5)
-                          GestureDetector(
-                            onTap: () {
-                              closeKeyboard(context);
-                              var result = CommonPicker.showPicker(
-                                context: context,
-                                options: bandIndex == 1
-                                    ? wifi5gCountryChannelList
-                                    : bandWidthIndex == 0
-                                        ? wifiCountryChannelListHT20
-                                        : bandWidthIndex == 1
-                                            ? wifiCountryChannelListHT40j
-                                            : wifiCountryChannelListHT40,
-                                value: bandIndex == 0
-                                    ? channelIndex
-                                    : channelIndex5g,
-                              );
-                              result?.then((selectedValue) => {
-                                    if (channelIndex != selectedValue &&
-                                        selectedValue != null)
-                                      {
-                                        setState(() => {
-                                              channelIndex = selectedValue,
-                                              if (bandIndex == 1)
-                                                {channelIndex5g = selectedValue}
-                                              else
-                                                {channelIndex = selectedValue}
-                                            })
-                                      }
-                                  });
-                            },
-                            child: BottomLine(
-                              rowtem: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(S.of(context).Channel,
-                                      style: TextStyle(
-                                          color: const Color.fromARGB(
-                                              255, 5, 0, 0),
-                                          fontSize: 28.sp)),
-                                  Row(
-                                    children: [
-                                      Text(
-                                          bandIndex == 1
-                                              ? wifi5gCountryChannelList[
-                                                  channelIndex5g]
-                                              : bandWidthIndex == 0
-                                                  ? wifiCountryChannelListHT20[
-                                                      channelIndex]
-                                                  : bandWidthIndex == 1
-                                                      ? wifiCountryChannelListHT40j[
-                                                          channelIndex]
-                                                      : wifiCountryChannelListHT40[
-                                                          channelIndex],
-                                          style: TextStyle(
-                                              color: const Color.fromARGB(
-                                                  255, 5, 0, 0),
-                                              fontSize: 28.sp)),
-                                      Icon(
-                                        Icons.arrow_forward_ios_outlined,
-                                        color: const Color.fromRGBO(
-                                            144, 147, 153, 1),
-                                        size: 30.w,
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        //发射功率
-                        if (bandIndex == 0 ? isCheck : isCheck5)
-                          GestureDetector(
-                            onTap: () {
-                              closeKeyboard(context);
-                              var result = CommonPicker.showPicker(
-                                context: context,
-                                options: [
-                                  '100%',
-                                  '50%',
-                                  '20%',
-                                ],
-                                value: bandIndex == 0
-                                    ? txPowerIndex
-                                    : txPowerIndex5g,
-                              );
-                              result?.then((selectedValue) => {
-                                    if (selectedValue != null)
-                                      {
-                                        setState(() => {
-                                              if (bandIndex == 0)
-                                                {
-                                                  txPowerIndex = selectedValue,
-                                                  if (selectedValue == 0)
-                                                    {
-                                                      txPowerShowVal =
-                                                          wifiTxpower[0],
-                                                    }
-                                                  else if (selectedValue == 1)
-                                                    {
-                                                      txPowerShowVal =
-                                                          wifiTxpower[1],
-                                                    }
-                                                  else
-                                                    {
-                                                      txPowerShowVal =
-                                                          wifiTxpower[2],
-                                                    }
-                                                }
-                                              else
-                                                {
-                                                  txPowerIndex5g =
-                                                      selectedValue,
-                                                  if (selectedValue == 0)
-                                                    {
-                                                      txPower5gShowVal =
-                                                          wifiTxpower[0],
-                                                    }
-                                                  else if (selectedValue == 1)
-                                                    {
-                                                      txPower5gShowVal =
-                                                          wifiTxpower[1],
-                                                    }
-                                                  else
-                                                    {
-                                                      txPower5gShowVal =
-                                                          wifiTxpower[2],
-                                                    }
-                                                }
-                                            })
-                                      }
-                                  });
-                            },
-                            child: BottomLine(
-                              rowtem: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(S.of(context).TxPower,
-                                      style: TextStyle(
-                                          color: const Color.fromARGB(
-                                              255, 5, 0, 0),
-                                          fontSize: 28.sp)),
-                                  Row(
-                                    children: [
-                                      Text(
-                                          [
-                                            '100%',
-                                            '50%',
-                                            '20%',
-                                          ][bandIndex == 0
-                                              ? txPowerIndex
-                                              : txPowerIndex5g],
-                                          style: TextStyle(
-                                              color: const Color.fromARGB(
-                                                  255, 5, 0, 0),
-                                              fontSize: 28.sp)),
-                                      Icon(
-                                        Icons.arrow_forward_ios_outlined,
-                                        color: const Color.fromRGBO(
-                                            144, 147, 153, 1),
-                                        size: 30.w,
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                  //配置
-                  if (bandIndex == 0 ? isCheck : isCheck5)
-                    TitleWidger(title: S.of(context).Configuration),
-                  if (bandIndex == 0 ? isCheck : isCheck5)
-                    InfoBox(
-                        boxCotainer: Column(
-                      children: [
-                        //SSID
-                        BottomLine(
-                          rowtem: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('SSID',
-                                  style: TextStyle(
-                                      color: const Color.fromARGB(255, 5, 0, 0),
-                                      fontSize: 28.sp)),
-                              SizedBox(
-                                width: 250.w,
-                                child: TextFormField(
-                                  controller: bandIndex == 0 ? ssid : ssid5,
-                                  textAlign: TextAlign.right,
-                                  style: TextStyle(
-                                    fontSize: 26.sp,
-                                    color: const Color(0xff051220),
-                                  ),
-                                  decoration: InputDecoration(
-                                    hintText: "${S.current.enter}SSID",
-                                    hintStyle: TextStyle(
-                                      fontSize: 26.sp,
-                                      color: const Color(0xff737A83),
+                              //模式
+                              if (bandIndex == 0 ? isCheck : isCheck5)
+                                GestureDetector(
+                                  onTap: () {
+                                    closeKeyboard(context);
+                                    var result = CommonPicker.showPicker(
+                                      context: context,
+                                      options:
+                                          bandIndex == 0 ? modeOpt : modeValOpt,
+                                      value: bandIndex == 0
+                                          ? modeIndex
+                                          : modeIndex5g,
+                                    );
+                                    result?.then((selectedValue) => {
+                                          if (modeIndex != selectedValue &&
+                                              selectedValue != null)
+                                            {
+                                              setState(() => {
+                                                    if (bandIndex == 0)
+                                                      {
+                                                        modeIndex =
+                                                            selectedValue,
+                                                        bandWidthIndex = 0
+                                                      }
+                                                    else
+                                                      {
+                                                        modeIndex5g =
+                                                            selectedValue,
+                                                        bandWidthIndex5g = 0
+                                                      }
+                                                  })
+                                            }
+                                        });
+                                  },
+                                  child: BottomLine(
+                                    rowtem: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(S.of(context).Mode,
+                                            style: TextStyle(
+                                                color: const Color.fromARGB(
+                                                    255, 5, 0, 0),
+                                                fontSize: 28.sp)),
+                                        Row(
+                                          children: [
+                                            Text(
+                                                bandIndex == 0
+                                                    ? modeOpt[modeIndex]
+                                                    : modeValOpt[modeIndex5g],
+                                                style: TextStyle(
+                                                    color: const Color.fromARGB(
+                                                        255, 5, 0, 0),
+                                                    fontSize: 28.sp)),
+                                            Icon(
+                                              Icons.arrow_forward_ios_outlined,
+                                              color: const Color.fromRGBO(
+                                                  144, 147, 153, 1),
+                                              size: 30.w,
+                                            )
+                                          ],
+                                        ),
+                                      ],
                                     ),
-                                    border: InputBorder.none,
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        //最大设备数
-                        BottomLine(
-                          rowtem: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(S.of(context).Maximum,
-                                  style: TextStyle(
-                                      color: const Color.fromARGB(255, 5, 0, 0),
-                                      fontSize: 28.sp)),
-                              SizedBox(
-                                width: 250.w,
-                                child: TextFormField(
-                                  keyboardType: TextInputType.number,
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.allow(
-                                      RegExp(
-                                          r'^[1-6][0-4]$|^[1-9]$|^[1-5][0-9]$'),
-                                    )
-                                  ],
-                                  textAlign: TextAlign.right,
-                                  controller: bandIndex == 0 ? max : max5,
-                                  style: TextStyle(
-                                      fontSize: 26.sp,
-                                      color: const Color(0xff051220)),
-                                  decoration: InputDecoration(
-                                    hintText: S.of(context).MaximumRange,
-                                    hintStyle: TextStyle(
-                                        fontSize: 26.sp,
-                                        color: const Color(0xff737A83)),
-                                    border: InputBorder.none,
+                              //带宽
+                              if (bandIndex == 0
+                                  ? isCheck && (modeIndex < 2)
+                                  : isCheck5 && modeIndex5g != 3)
+                                GestureDetector(
+                                  onTap: () {
+                                    closeKeyboard(context);
+                                    var result = CommonPicker.showPicker(
+                                      context: context,
+                                      options: bandIndex == 0
+                                          ? bandWidthVal
+                                          : bandWidthOpt5g,
+                                      value: bandIndex == 0
+                                          ? bandWidthIndex
+                                          : bandWidthIndex5g,
+                                    );
+                                    result?.then((selectedValue) {
+                                      if (selectedValue != null) {
+                                        setState(() => {
+                                              if (bandIndex == 0)
+                                                {
+                                                  bandWidthIndex =
+                                                      selectedValue,
+                                                  channelIndex = 0
+                                                }
+                                              else
+                                                {
+                                                  bandWidthIndex5g =
+                                                      selectedValue,
+                                                  channelIndex5g = 0
+                                                }
+                                            });
+                                      }
+                                    });
+                                  },
+                                  child: BottomLine(
+                                    rowtem: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(S.of(context).Bandwidth,
+                                            style: TextStyle(
+                                                color: const Color.fromARGB(
+                                                    255, 5, 0, 0),
+                                                fontSize: 28.sp)),
+                                        Row(
+                                          children: [
+                                            Text(
+                                                bandIndex == 0
+                                                    ? bandWidthVal[
+                                                        bandWidthIndex]
+                                                    : bandWidthOpt5g[
+                                                        bandWidthIndex5g],
+                                                style: TextStyle(
+                                                    color: const Color.fromARGB(
+                                                        255, 5, 0, 0),
+                                                    fontSize: 28.sp)),
+                                            Icon(
+                                              Icons.arrow_forward_ios_outlined,
+                                              color: const Color.fromRGBO(
+                                                  144, 147, 153, 1),
+                                              size: 30.w,
+                                            )
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        //隐藏SSID网络
-                        BottomLine(
-                          rowtem: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(S.of(context).HideSSIDBroadcast,
-                                  style: TextStyle(
-                                      color: const Color.fromARGB(255, 5, 0, 0),
-                                      fontSize: 28.sp)),
-                              Row(
-                                children: [
-                                  Switch(
-                                    value: bandIndex == 0
-                                        ? ssidisCheck
-                                        : ssidisCheck5,
-                                    onChanged: (newVal) {
-                                      setState(() {
-                                        if (bandIndex == 0) {
-                                          ssidisCheck = newVal;
-                                        } else {
-                                          ssidisCheck5 = newVal;
-                                        }
-                                      });
-                                    },
+                              //信道
+                              if (bandIndex == 0 ? isCheck : isCheck5)
+                                GestureDetector(
+                                  onTap: () {
+                                    closeKeyboard(context);
+                                    var result = CommonPicker.showPicker(
+                                      context: context,
+                                      options: bandIndex == 1
+                                          ? wifi5gCountryChannelList
+                                          : bandWidthIndex == 0
+                                              ? wifiCountryChannelListHT20
+                                              : bandWidthIndex == 1
+                                                  ? wifiCountryChannelListHT40j
+                                                  : wifiCountryChannelListHT40,
+                                      value: bandIndex == 0
+                                          ? channelIndex
+                                          : channelIndex5g,
+                                    );
+                                    result?.then((selectedValue) => {
+                                          if (channelIndex != selectedValue &&
+                                              selectedValue != null)
+                                            {
+                                              setState(() => {
+                                                    channelIndex =
+                                                        selectedValue,
+                                                    if (bandIndex == 1)
+                                                      {
+                                                        channelIndex5g =
+                                                            selectedValue
+                                                      }
+                                                    else
+                                                      {
+                                                        channelIndex =
+                                                            selectedValue
+                                                      }
+                                                  })
+                                            }
+                                        });
+                                  },
+                                  child: BottomLine(
+                                    rowtem: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(S.of(context).Channel,
+                                            style: TextStyle(
+                                                color: const Color.fromARGB(
+                                                    255, 5, 0, 0),
+                                                fontSize: 28.sp)),
+                                        Row(
+                                          children: [
+                                            Text(
+                                                bandIndex == 1
+                                                    ? wifi5gCountryChannelList[
+                                                        channelIndex5g]
+                                                    : bandWidthIndex == 0
+                                                        ? wifiCountryChannelListHT20[
+                                                            channelIndex]
+                                                        : bandWidthIndex == 1
+                                                            ? wifiCountryChannelListHT40j[
+                                                                channelIndex]
+                                                            : wifiCountryChannelListHT40[
+                                                                channelIndex],
+                                                style: TextStyle(
+                                                    color: const Color.fromARGB(
+                                                        255, 5, 0, 0),
+                                                    fontSize: 28.sp)),
+                                            Icon(
+                                              Icons.arrow_forward_ios_outlined,
+                                              color: const Color.fromRGBO(
+                                                  144, 147, 153, 1),
+                                              size: 30.w,
+                                            )
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                        //AP隔离
-                        BottomLine(
-                          rowtem: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(S.of(context).APIsolation,
-                                  style: TextStyle(
-                                      color: const Color.fromARGB(255, 5, 0, 0),
-                                      fontSize: 28.sp)),
-                              Row(
-                                children: [
-                                  Switch(
-                                    value:
-                                        bandIndex == 0 ? apisCheck : apisCheck5,
-                                    onChanged: (newVal) {
-                                      setState(() {
-                                        if (bandIndex == 0) {
-                                          apisCheck = newVal;
-                                        } else {
-                                          apisCheck5 = newVal;
-                                        }
-                                      });
-                                    },
+                                ),
+                              //发射功率
+                              if (bandIndex == 0 ? isCheck : isCheck5)
+                                GestureDetector(
+                                  onTap: () {
+                                    closeKeyboard(context);
+                                    var result = CommonPicker.showPicker(
+                                      context: context,
+                                      options: [
+                                        '100%',
+                                        '50%',
+                                        '20%',
+                                      ],
+                                      value: bandIndex == 0
+                                          ? txPowerIndex
+                                          : txPowerIndex5g,
+                                    );
+                                    result?.then((selectedValue) => {
+                                          if (selectedValue != null)
+                                            {
+                                              setState(() => {
+                                                    if (bandIndex == 0)
+                                                      {
+                                                        txPowerIndex =
+                                                            selectedValue,
+                                                        if (selectedValue == 0)
+                                                          {
+                                                            txPowerShowVal =
+                                                                wifiTxpower[0],
+                                                          }
+                                                        else if (selectedValue ==
+                                                            1)
+                                                          {
+                                                            txPowerShowVal =
+                                                                wifiTxpower[1],
+                                                          }
+                                                        else
+                                                          {
+                                                            txPowerShowVal =
+                                                                wifiTxpower[2],
+                                                          }
+                                                      }
+                                                    else
+                                                      {
+                                                        txPowerIndex5g =
+                                                            selectedValue,
+                                                        if (selectedValue == 0)
+                                                          {
+                                                            txPower5gShowVal =
+                                                                wifiTxpower[0],
+                                                          }
+                                                        else if (selectedValue ==
+                                                            1)
+                                                          {
+                                                            txPower5gShowVal =
+                                                                wifiTxpower[1],
+                                                          }
+                                                        else
+                                                          {
+                                                            txPower5gShowVal =
+                                                                wifiTxpower[2],
+                                                          }
+                                                      }
+                                                  })
+                                            }
+                                        });
+                                  },
+                                  child: BottomLine(
+                                    rowtem: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(S.of(context).TxPower,
+                                            style: TextStyle(
+                                                color: const Color.fromARGB(
+                                                    255, 5, 0, 0),
+                                                fontSize: 28.sp)),
+                                        Row(
+                                          children: [
+                                            Text(
+                                                [
+                                                  '100%',
+                                                  '50%',
+                                                  '20%',
+                                                ][bandIndex == 0
+                                                    ? txPowerIndex
+                                                    : txPowerIndex5g],
+                                                style: TextStyle(
+                                                    color: const Color.fromARGB(
+                                                        255, 5, 0, 0),
+                                                    fontSize: 28.sp)),
+                                            Icon(
+                                              Icons.arrow_forward_ios_outlined,
+                                              color: const Color.fromRGBO(
+                                                  144, 147, 153, 1),
+                                              size: 30.w,
+                                            )
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ],
-                              )
+                                ),
                             ],
                           ),
                         ),
-                        //安全
-                        GestureDetector(
-                          onTap: () {
-                            closeKeyboard(context);
-                            var result = CommonPicker.showPicker(
-                              context: context,
-                              options: securityOpt,
-                              value: bandIndex == 0
-                                  ? securityIndex
-                                  : securityIndex5g,
-                            );
-                            result?.then((selectedValue) => {
-                                  if (securityIndex != selectedValue &&
-                                      selectedValue != null)
-                                    {
-                                      setState(() => {
-                                            if (bandIndex == 0)
-                                              {
-                                                securityIndex = selectedValue,
-                                              }
-                                            else
-                                              {
-                                                securityIndex5g = selectedValue,
-                                              }
-                                          })
-                                    }
-                                });
-                          },
-                          child: BottomLine(
-                            rowtem: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(S.of(context).Security,
-                                    style: TextStyle(
-                                        color:
-                                            const Color.fromARGB(255, 5, 0, 0),
-                                        fontSize: 28.sp)),
-                                Row(
+                        //配置
+                        if (bandIndex == 0 ? isCheck : isCheck5)
+                          TitleWidger(title: S.of(context).Configuration),
+                        if (bandIndex == 0 ? isCheck : isCheck5)
+                          InfoBox(
+                              boxCotainer: Column(
+                            children: [
+                              //SSID
+                              BottomLine(
+                                rowtem: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                        bandIndex == 0
-                                            ? securityOpt[securityIndex]
-                                            : securityOpt[securityIndex5g],
+                                    Text('SSID',
                                         style: TextStyle(
                                             color: const Color.fromARGB(
                                                 255, 5, 0, 0),
                                             fontSize: 28.sp)),
-                                    Icon(
-                                      Icons.arrow_forward_ios_outlined,
-                                      color: const Color.fromRGBO(
-                                          144, 147, 153, 1),
-                                      size: 30.w,
+                                    SizedBox(
+                                      width: 250.w,
+                                      child: TextFormField(
+                                        controller:
+                                            bandIndex == 0 ? ssid : ssid5,
+                                        textAlign: TextAlign.right,
+                                        style: TextStyle(
+                                          fontSize: 26.sp,
+                                          color: const Color(0xff051220),
+                                        ),
+                                        decoration: InputDecoration(
+                                          hintText: "${S.current.enter}SSID",
+                                          hintStyle: TextStyle(
+                                            fontSize: 26.sp,
+                                            color: const Color(0xff737A83),
+                                          ),
+                                          border: InputBorder.none,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              //最大设备数
+                              BottomLine(
+                                rowtem: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(S.of(context).Maximum,
+                                        style: TextStyle(
+                                            color: const Color.fromARGB(
+                                                255, 5, 0, 0),
+                                            fontSize: 28.sp)),
+                                    SizedBox(
+                                      width: 250.w,
+                                      child: TextFormField(
+                                        keyboardType: TextInputType.number,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.allow(
+                                            RegExp(
+                                                r'^[1-6][0-4]$|^[1-9]$|^[1-5][0-9]$'),
+                                          )
+                                        ],
+                                        textAlign: TextAlign.right,
+                                        controller: bandIndex == 0 ? max : max5,
+                                        style: TextStyle(
+                                            fontSize: 26.sp,
+                                            color: const Color(0xff051220)),
+                                        decoration: InputDecoration(
+                                          hintText: S.of(context).MaximumRange,
+                                          hintStyle: TextStyle(
+                                              fontSize: 26.sp,
+                                              color: const Color(0xff737A83)),
+                                          border: InputBorder.none,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              //隐藏SSID网络
+                              BottomLine(
+                                rowtem: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(S.of(context).HideSSIDBroadcast,
+                                        style: TextStyle(
+                                            color: const Color.fromARGB(
+                                                255, 5, 0, 0),
+                                            fontSize: 28.sp)),
+                                    Row(
+                                      children: [
+                                        Switch(
+                                          value: bandIndex == 0
+                                              ? ssidisCheck
+                                              : ssidisCheck5,
+                                          onChanged: (newVal) {
+                                            setState(() {
+                                              if (bandIndex == 0) {
+                                                ssidisCheck = newVal;
+                                              } else {
+                                                ssidisCheck5 = newVal;
+                                              }
+                                            });
+                                          },
+                                        ),
+                                      ],
                                     )
                                   ],
                                 ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        if ((bandIndex == 0 && securityIndex != 2) ||
-                            (bandIndex == 1 && securityIndex5g != 2))
-                          // WPA加密
-                          GestureDetector(
-                            onTap: () {
-                              closeKeyboard(context);
-                              var result = CommonPicker.showPicker(
-                                context: context,
-                                options: encryptionOpt,
-                                value: bandIndex == 0
-                                    ? encryptionIndex
-                                    : encryptionIndex5g,
-                              );
-                              result?.then((selectedValue) => {
-                                    if (encryptionIndex != selectedValue &&
-                                        selectedValue != null)
-                                      {
-                                        setState(() => {
-                                              if (bandIndex == 0)
-                                                {
-                                                  encryptionIndex =
-                                                      selectedValue,
-                                                }
-                                              else
-                                                {
-                                                  encryptionIndex5g =
-                                                      selectedValue,
-                                                }
-                                            })
-                                      }
-                                  });
-                            },
-                            child: BottomLine(
-                              rowtem: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(S.of(context).WPAEncry,
-                                      style: TextStyle(
-                                          color: const Color.fromARGB(
-                                              255, 5, 0, 0),
-                                          fontSize: 28.sp)),
-                                  Row(
+                              ),
+                              //AP隔离
+                              BottomLine(
+                                rowtem: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(S.of(context).APIsolation,
+                                        style: TextStyle(
+                                            color: const Color.fromARGB(
+                                                255, 5, 0, 0),
+                                            fontSize: 28.sp)),
+                                    Row(
+                                      children: [
+                                        Switch(
+                                          value: bandIndex == 0
+                                              ? apisCheck
+                                              : apisCheck5,
+                                          onChanged: (newVal) {
+                                            setState(() {
+                                              if (bandIndex == 0) {
+                                                apisCheck = newVal;
+                                              } else {
+                                                apisCheck5 = newVal;
+                                              }
+                                            });
+                                          },
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
+                              //安全
+                              GestureDetector(
+                                onTap: () {
+                                  closeKeyboard(context);
+                                  var result = CommonPicker.showPicker(
+                                    context: context,
+                                    options: securityOpt,
+                                    value: bandIndex == 0
+                                        ? securityIndex
+                                        : securityIndex5g,
+                                  );
+                                  result?.then((selectedValue) => {
+                                        if (securityIndex != selectedValue &&
+                                            selectedValue != null)
+                                          {
+                                            setState(() => {
+                                                  if (bandIndex == 0)
+                                                    {
+                                                      securityIndex =
+                                                          selectedValue,
+                                                    }
+                                                  else
+                                                    {
+                                                      securityIndex5g =
+                                                          selectedValue,
+                                                    }
+                                                })
+                                          }
+                                      });
+                                },
+                                child: BottomLine(
+                                  rowtem: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
-                                          bandIndex == 0
-                                              ? encryptionOpt[encryptionIndex]
-                                              : encryptionOpt[
-                                                  encryptionIndex5g],
+                                      Text(S.of(context).Security,
                                           style: TextStyle(
                                               color: const Color.fromARGB(
                                                   255, 5, 0, 0),
                                               fontSize: 28.sp)),
-                                      Icon(
-                                        Icons.arrow_forward_ios_outlined,
-                                        color: const Color.fromRGBO(
-                                            144, 147, 153, 1),
-                                        size: 30.w,
-                                      )
+                                      Row(
+                                        children: [
+                                          Text(
+                                              bandIndex == 0
+                                                  ? securityOpt[securityIndex]
+                                                  : securityOpt[
+                                                      securityIndex5g],
+                                              style: TextStyle(
+                                                  color: const Color.fromARGB(
+                                                      255, 5, 0, 0),
+                                                  fontSize: 28.sp)),
+                                          Icon(
+                                            Icons.arrow_forward_ios_outlined,
+                                            color: const Color.fromRGBO(
+                                                144, 147, 153, 1),
+                                            size: 30.w,
+                                          )
+                                        ],
+                                      ),
                                     ],
                                   ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        if ((bandIndex == 0 && securityIndex != 2) ||
-                            (bandIndex == 1 && securityIndex5g != 2))
-                          //密码
-                          BottomLine(
-                            rowtem: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  S.of(context).Password,
-                                  style: TextStyle(
-                                      color: const Color.fromARGB(255, 5, 0, 0),
-                                      fontSize: 28.sp),
                                 ),
-                                SizedBox(
-                                  width: 250.w,
-                                  child: TextFormField(
-                                    autovalidateMode: AutovalidateMode.always,
-                                    obscureText: passwordValHidden,
-                                    textAlign: TextAlign.right,
-                                    controller:
-                                        bandIndex == 0 ? password : password5,
-                                    style: TextStyle(
-                                        fontSize: 26.sp,
-                                        color: const Color(0xff051220)),
-                                    decoration: InputDecoration(
-                                      suffixIcon: IconButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              passwordValHidden =
-                                                  !passwordValHidden;
-                                            });
-                                          },
-                                          icon: Icon(!passwordValHidden
-                                              ? Icons.visibility
-                                              : Icons.visibility_off)),
-                                      hintText: S.current.enter +
-                                          S.current.newPassowld,
-                                      hintStyle: TextStyle(
-                                          fontSize: 26.sp,
-                                          color: const Color(0xff737A83)),
-                                      border: InputBorder.none,
+                              ),
+                              if ((bandIndex == 0 && securityIndex != 2) ||
+                                  (bandIndex == 1 && securityIndex5g != 2))
+                                // WPA加密
+                                GestureDetector(
+                                  onTap: () {
+                                    closeKeyboard(context);
+                                    var result = CommonPicker.showPicker(
+                                      context: context,
+                                      options: encryptionOpt,
+                                      value: bandIndex == 0
+                                          ? encryptionIndex
+                                          : encryptionIndex5g,
+                                    );
+                                    result?.then((selectedValue) => {
+                                          if (encryptionIndex !=
+                                                  selectedValue &&
+                                              selectedValue != null)
+                                            {
+                                              setState(() => {
+                                                    if (bandIndex == 0)
+                                                      {
+                                                        encryptionIndex =
+                                                            selectedValue,
+                                                      }
+                                                    else
+                                                      {
+                                                        encryptionIndex5g =
+                                                            selectedValue,
+                                                      }
+                                                  })
+                                            }
+                                        });
+                                  },
+                                  child: BottomLine(
+                                    rowtem: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(S.of(context).WPAEncry,
+                                            style: TextStyle(
+                                                color: const Color.fromARGB(
+                                                    255, 5, 0, 0),
+                                                fontSize: 28.sp)),
+                                        Row(
+                                          children: [
+                                            Text(
+                                                bandIndex == 0
+                                                    ? encryptionOpt[
+                                                        encryptionIndex]
+                                                    : encryptionOpt[
+                                                        encryptionIndex5g],
+                                                style: TextStyle(
+                                                    color: const Color.fromARGB(
+                                                        255, 5, 0, 0),
+                                                    fontSize: 28.sp)),
+                                            Icon(
+                                              Icons.arrow_forward_ios_outlined,
+                                              color: const Color.fromRGBO(
+                                                  144, 147, 153, 1),
+                                              size: 30.w,
+                                            )
+                                          ],
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
+                              if ((bandIndex == 0 && securityIndex != 2) ||
+                                  (bandIndex == 1 && securityIndex5g != 2))
+                                //密码
+                                BottomLine(
+                                  rowtem: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        S.of(context).Password,
+                                        style: TextStyle(
+                                            color: const Color.fromARGB(
+                                                255, 5, 0, 0),
+                                            fontSize: 28.sp),
+                                      ),
+                                      SizedBox(
+                                        width: 250.w,
+                                        child: TextFormField(
+                                          autovalidateMode:
+                                              AutovalidateMode.always,
+                                          obscureText: passwordValHidden,
+                                          textAlign: TextAlign.right,
+                                          controller: bandIndex == 0
+                                              ? password
+                                              : password5,
+                                          style: TextStyle(
+                                              fontSize: 26.sp,
+                                              color: const Color(0xff051220)),
+                                          decoration: InputDecoration(
+                                            suffixIcon: IconButton(
+                                                onPressed: () {
+                                                  setState(() {
+                                                    passwordValHidden =
+                                                        !passwordValHidden;
+                                                  });
+                                                },
+                                                icon: Icon(!passwordValHidden
+                                                    ? Icons.visibility
+                                                    : Icons.visibility_off)),
+                                            hintText: S.current.enter +
+                                                S.current.newPassowld,
+                                            hintStyle: TextStyle(
+                                                fontSize: 26.sp,
+                                                color: const Color(0xff737A83)),
+                                            border: InputBorder.none,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                            ],
+                          )),
                       ],
-                    )),
-                ],
-              ),
-            ),
-          ),
-        ));
+                    ),
+                  ),
+                ),
+              ));
   }
 }

@@ -50,6 +50,16 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `After deletion, this record will no longer be visible. Please proceed with caution.`
+  String get delPro {
+    return Intl.message(
+      'After deletion, this record will no longer be visible. Please proceed with caution.',
+      name: 'delPro',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Wi-Fi Mapping`
   String get wifiMapping {
     return Intl.message(

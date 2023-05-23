@@ -72,7 +72,7 @@ class _RadioSettingsState extends State<RadioSettings> {
 
   // 获取 云端
   getTRRadioGData() async {
-    Navigator.push(context, DialogRouter(LoadingDialog()));
+  
     printInfo(info: 'sn在这里有值吗-------$sn');
     var parameterNames = [
       "InternetGatewayDevice.WEB_GUI.Network.NR-LTE.ConnectMethod",

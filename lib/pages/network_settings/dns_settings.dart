@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/request/request.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
-import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
 import '../../../core/widget/custom_app_bar.dart';
@@ -118,9 +117,13 @@ class _DnsSettingsState extends State<DnsSettings> {
     FocusScope.of(context).requestFocus(blankNode);
   }
 
+  bool loading = false;
+
   // 获取 云端
   getTRDnsData() async {
-    Navigator.push(context, DialogRouter(LoadingDialog()));
+    setState(() {
+      loading = true;
+    });
     printInfo(info: 'sn在这里有值吗-------$sn');
     var parameterNames = [
       "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.DNSServers",
@@ -130,6 +133,7 @@ class _DnsSettingsState extends State<DnsSettings> {
       var jsonObj = jsonDecode(res);
       printInfo(info: '````$jsonObj');
       setState(() {
+        loading = false;
         type = jsonObj["data"]["InternetGatewayDevice"]["WANDevice"]["1"]
                 ["WANConnectionDevice"]["1"]["WANIPConnection"]["1"]
             ["DNSServers"]["_type"];
@@ -159,8 +163,10 @@ class _DnsSettingsState extends State<DnsSettings> {
       });
     } catch (e) {
       debugPrint('获取信息失败：${e.toString()}');
+      setState(() {
+        loading = false;
+      });
     }
-    Navigator.pop(context);
   }
 
 // 设置 云端
@@ -295,7 +301,6 @@ class _DnsSettingsState extends State<DnsSettings> {
 
   bool _isLoading = false;
   Future<void> _saveData() async {
-    Navigator.push(context, DialogRouter(LoadingDialog()));
     setState(() {
       _isLoading = true;
     });
@@ -319,7 +324,6 @@ class _DnsSettingsState extends State<DnsSettings> {
         getRadioSettingData();
       }
     }
-    Navigator.pop(context);
     setState(() {
       _isLoading = false;
     });
@@ -360,98 +364,103 @@ class _DnsSettingsState extends State<DnsSettings> {
                 ),
               ),
             ]),
-        body: Container(
-          decoration:
-              const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
-          height: 1400.w,
-          child: SingleChildScrollView(
-            child: InkWell(
-              onTap: () => closeKeyboard(context),
-              child: Container(
+        body: loading
+            ? const Center(child: CircularProgressIndicator())
+            : Container(
                 decoration: const BoxDecoration(
                     color: Color.fromRGBO(240, 240, 240, 1)),
-                // height: 1400.w,
-                child: Column(
-                  children: [
-                    Row(children: [
-                      const Icon(Icons.priority_high, color: Colors.red),
-                      Flexible(
-                        child: Text(
-                          S.of(context).dnsStatic,
-                          style: TextStyle(fontSize: 24.sp, color: Colors.red),
-                        ),
+                height: 1400.w,
+                child: SingleChildScrollView(
+                  child: InkWell(
+                    onTap: () => closeKeyboard(context),
+                    child: Container(
+                      decoration: const BoxDecoration(
+                          color: Color.fromRGBO(240, 240, 240, 1)),
+                      // height: 1400.w,
+                      child: Column(
+                        children: [
+                          Row(children: [
+                            const Icon(Icons.priority_high, color: Colors.red),
+                            Flexible(
+                              child: Text(
+                                S.of(context).dnsStatic,
+                                style: TextStyle(
+                                    fontSize: 24.sp, color: Colors.red),
+                              ),
+                            ),
+                          ]),
+                          Padding(padding: EdgeInsets.only(top: 20.sp)),
+                          InfoBox(
+                            boxCotainer: Column(children: [
+                              BottomLine(
+                                rowtem: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    ConstrainedBox(
+                                        constraints: BoxConstraints(
+                                          maxWidth: 160.w,
+                                        ),
+                                        child: FittedBox(
+                                          child: Text(
+                                            S.of(context).PrimaryDNS,
+                                            softWrap: false,
+                                          ),
+                                        )),
+                                    Row(
+                                      children: [
+                                        OtpInput(dsnMain, false),
+                                        const Text('.'),
+                                        OtpInput(dsnMain1, false),
+                                        const Text('.'),
+                                        OtpInput(dsnMain2, false),
+                                        const Text('.'),
+                                        OtpInput(dsnMain3, false),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
+                              // Padding(padding: EdgeInsets.only(top: 30.sp)),
+                              Container(
+                                height: 90.w,
+                                padding: EdgeInsets.only(bottom: 6.w),
+                                margin: EdgeInsets.only(bottom: 6.w),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    ConstrainedBox(
+                                        constraints: BoxConstraints(
+                                          maxWidth: 160.w,
+                                        ),
+                                        child: FittedBox(
+                                          child: Text(
+                                            S.of(context).SecondaryDNS,
+                                            softWrap: false,
+                                          ),
+                                        )),
+                                    Row(
+                                      children: [
+                                        OtpInput(dsnAssist, false),
+                                        const Text('.'),
+                                        OtpInput(dsnAssist1, false),
+                                        const Text('.'),
+                                        OtpInput(dsnAssist2, false),
+                                        const Text('.'),
+                                        OtpInput(dsnAssist3, false),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ]),
+                          ),
+                        ],
                       ),
-                    ]),
-                    Padding(padding: EdgeInsets.only(top: 20.sp)),
-                    InfoBox(
-                      boxCotainer: Column(children: [
-                        BottomLine(
-                          rowtem: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              ConstrainedBox(
-                                  constraints: BoxConstraints(
-                                    maxWidth: 160.w,
-                                  ),
-                                  child: FittedBox(
-                                    child: Text(
-                                      S.of(context).PrimaryDNS,
-                                      softWrap: false,
-                                    ),
-                                  )),
-                              Row(
-                                children: [
-                                  OtpInput(dsnMain, false),
-                                  const Text('.'),
-                                  OtpInput(dsnMain1, false),
-                                  const Text('.'),
-                                  OtpInput(dsnMain2, false),
-                                  const Text('.'),
-                                  OtpInput(dsnMain3, false),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                        // Padding(padding: EdgeInsets.only(top: 30.sp)),
-                        Container(
-                          height: 90.w,
-                          padding: EdgeInsets.only(bottom: 6.w),
-                          margin: EdgeInsets.only(bottom: 6.w),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              ConstrainedBox(
-                                  constraints: BoxConstraints(
-                                    maxWidth: 160.w,
-                                  ),
-                                  child: FittedBox(
-                                    child: Text(
-                                      S.of(context).SecondaryDNS,
-                                      softWrap: false,
-                                    ),
-                                  )),
-                              Row(
-                                children: [
-                                  OtpInput(dsnAssist, false),
-                                  const Text('.'),
-                                  OtpInput(dsnAssist1, false),
-                                  const Text('.'),
-                                  OtpInput(dsnAssist2, false),
-                                  const Text('.'),
-                                  OtpInput(dsnAssist3, false),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      ]),
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          ),
-        ));
+              ));
   }
 }

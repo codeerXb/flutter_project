@@ -46,24 +46,6 @@ class _ParentState extends State<Parent> {
     });
   }
 
-//重设名称
-  editName(String sn, String mac, String nickname) async {
-    Map<String, dynamic> form = {
-      'sn': sn,
-      'mac': mac,
-      'nickname': nickname,
-    };
-    var res = await App.post('${BaseConfig.cloudBaseUrl}/platform/cpeNick/nick',
-        data: form);
-    var d = json.decode(res.toString());
-    if (d['code'] != 200) {
-      ToastUtils.error(d['message']);
-    } else {
-      ToastUtils.success(d['message']);
-      Navigator.pop(context);
-    }
-  }
-
   @override
   void initState() {
     super.initState();
@@ -77,256 +59,29 @@ class _ParentState extends State<Parent> {
         body: loading
             ? const Center(child: CircularProgressIndicator())
             : Container(
-                padding: EdgeInsets.all(26.w),
+                padding: EdgeInsets.only(
+                    left: 26.0.w, top: 0, right: 26.0.w, bottom: 26.0.w),
                 decoration: const BoxDecoration(
                     color: Color.fromRGBO(240, 240, 240, 1)),
                 height: 1400.w,
-                child: Swiper(
-                  onIndexChanged: (int index) {
-                    print('index233$index');
-                  },
-                  itemCount: deviceList.length, // 轮播图数量
-                  itemBuilder: (BuildContext context, int index) {
-                    return SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          /// 顶部滑动卡片
-                          Card(
-                            clipBehavior: Clip.hardEdge,
-                            elevation: 5, //设置卡片阴影的深度
-                            shape: const RoundedRectangleBorder(
-                              //设置卡片圆角
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20)),
-                            ),
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.centerLeft,
-                                  end: Alignment.centerRight,
-                                  colors: [
-                                    Color.fromARGB(255, 200, 211, 246),
-                                    Color.fromARGB(255, 219, 224, 228),
-                                  ],
-                                ),
-                              ),
-                              child: ListTile(
-                                //图片
-                                leading: ClipOval(
-                                    child: Image.asset(
-                                        'assets/images/phone.png',
-                                        fit: BoxFit.fitWidth,
-                                        width: 110.w)),
-                                //中间文字
-                                title: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      width: 300.w,
-                                      child:
-                                          //显示的文字
-                                          Text(
-                                        deviceList[index]['name'],
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                      ),
-                                    ),
-                                    // 编辑
-                                    IconButton(
-                                      onPressed: () {
-                                        //底部弹出Container
-                                        showModalBottomSheet(
-                                          isScrollControlled: true,
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return WillPopScope(
-                                              onWillPop: () async {
-                                                Navigator.pop(context);
-                                                _editvalueList[index].text =
-                                                    deviceList[index]['name'];
-                                                return false;
-                                              },
-                                              child: SingleChildScrollView(
-                                                child: Container(
-                                                  padding: EdgeInsets.only(
-                                                    left: 40.w,
-                                                    right: 40.w,
-                                                    //将在输入框底部添加一个填充，以确保输入框不会被键盘遮挡。
-                                                    bottom:
-                                                        MediaQuery.of(context)
-                                                            .viewInsets
-                                                            .bottom,
-                                                  ),
-                                                  child: Column(
-                                                    children: [
-                                                      Padding(
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                                  top: 30.w)),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const SwiperCard(),
+                      Padding(padding: EdgeInsets.only(top: 20.w)),
+                      //今日网络使用情况
+                      InternetUsage(),
 
-                                                      //title
-                                                      Text(
-                                                        S.current.ModifyRemarks,
-                                                        style: TextStyle(
-                                                            fontSize: 46.sp),
-                                                      ),
-                                                      Padding(
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                                  top: 46.w)),
+                      Padding(padding: EdgeInsets.only(top: 20.w)),
 
-                                                      //输入框
-                                                      TextField(
-                                                        autofocus: true,
-                                                        controller:
-                                                            _editvalueList[
-                                                                index],
-                                                        decoration:
-                                                            InputDecoration(
-                                                          contentPadding:
-                                                              EdgeInsets.only(
-                                                                  left: 20.w),
-                                                          border:
-                                                              OutlineInputBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        10),
-                                                          ),
-                                                          hintText: S.current
-                                                              .pleaseEnter,
-                                                          suffixIcon:
-                                                              IconButton(
-                                                            icon: const Icon(
-                                                                Icons.clear),
-                                                            onPressed: () {
-                                                              // 清空输入框中的内容
-                                                              _editvalueList[
-                                                                      index]
-                                                                  .clear();
-                                                            },
-                                                          ),
-                                                        ),
-                                                        onChanged: (value) {
-                                                          setState(() {
-                                                            deviceList[index]
-                                                                    ['name'] =
-                                                                value;
-                                                          });
-                                                        },
-                                                      ),
+                      //6
+                      SixBoxs(),
 
-                                                      Padding(
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                                  top: 20.w)),
-                                                      //btn
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: [
-                                                          //取消
-                                                          ElevatedButton(
-                                                            onPressed: () {
-                                                              setState(() {
-                                                                _editvalueList[
-                                                                            index]
-                                                                        .text =
-                                                                    deviceList[
-                                                                            index]
-                                                                        [
-                                                                        'name'];
-                                                              });
-                                                              Navigator.pop(
-                                                                  context);
-                                                            },
-                                                            child: Text(S
-                                                                .current
-                                                                .cancel),
-                                                            style:
-                                                                ElevatedButton
-                                                                    .styleFrom(
-                                                              minimumSize: Size(
-                                                                  300.w, 70.w),
-                                                            ),
-                                                          ),
-                                                          //确定
-                                                          ElevatedButton(
-                                                            onPressed: () {
-                                                              if (_editvalueList[
-                                                                      index]
-                                                                  .text
-                                                                  .isNotEmpty) {
-                                                                isEditable =
-                                                                    false;
-                                                                editName(
-                                                                    sn,
-                                                                    deviceList[
-                                                                            index]
-                                                                        [
-                                                                        'MACAddress'],
-                                                                    deviceList[
-                                                                            index]
-                                                                        [
-                                                                        'name']);
-                                                              }
-                                                            },
-                                                            child: Text(S
-                                                                .current
-                                                                .confirm),
-                                                            style:
-                                                                ElevatedButton
-                                                                    .styleFrom(
-                                                              minimumSize: Size(
-                                                                  300.w, 70.w),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                        );
-                                        setState(() {
-                                          isEditable = true;
-                                        });
-                                      },
-                                      icon: const Icon(Icons.create),
-                                    )
-                                  ],
-                                ),
-
-                                //title下方显示的内容
-                                subtitle: Text(
-                                  deviceList[index]['connection'] == null
-                                      ? '-'
-                                      : deviceList[index]['connection'],
-                                ),
-                              ),
-                            ),
-                          ),
-
-                          Padding(padding: EdgeInsets.only(top: 20.w)),
-                          //今日网络使用情况
-                          InternetUsage(),
-
-                          Padding(padding: EdgeInsets.only(top: 20.w)),
-
-                          //6
-                          SixBoxs(),
-
-                          //允许上网时间
-                          const Scheduling()
-                        ],
-                      ),
-                    );
-                  },
-                  pagination: SwiperPagination(), // 显示分页器
+                      //允许上网时间
+                      const Scheduling()
+                    ],
+                  ),
                 )));
   }
 }
@@ -491,6 +246,222 @@ class InternetUsage extends StatelessWidget {
             )
           ],
         ));
+  }
+}
+
+//上方轮播图
+class SwiperCard extends StatefulWidget {
+  const SwiperCard({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _SwiperCardState();
+}
+
+class _SwiperCardState extends State<SwiperCard> {
+  //重设名称
+  editName(String sn, String mac, String nickname) async {
+    Map<String, dynamic> form = {
+      'sn': sn,
+      'mac': mac,
+      'nickname': nickname,
+    };
+    var res = await App.post('${BaseConfig.cloudBaseUrl}/platform/cpeNick/nick',
+        data: form);
+    var d = json.decode(res.toString());
+    if (d['code'] != 200) {
+      ToastUtils.error(d['message']);
+    } else {
+      ToastUtils.success(d['message']);
+      Navigator.pop(context);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: deviceList.length > 0 ? 240.w : 0.w,
+      child: Swiper(
+          onIndexChanged: (int index) {
+            print('index233$index');
+          },
+          itemCount: deviceList.length, // 轮播图数量
+          itemBuilder: (BuildContext context, int index) {
+            return Card(
+              clipBehavior: Clip.hardEdge,
+              elevation: 5, //设置卡片阴影的深度
+              shape: const RoundedRectangleBorder(
+                //设置卡片圆角
+                borderRadius: BorderRadius.all(Radius.circular(20)),
+              ),
+              child: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    colors: [
+                      Color.fromARGB(255, 200, 211, 246),
+                      Color.fromARGB(255, 219, 224, 228),
+                    ],
+                  ),
+                ),
+                child: ListTile(
+                  //图片
+                  leading: ClipOval(
+                      child: Image.asset('assets/images/phone.png',
+                          fit: BoxFit.fitWidth, width: 110.w)),
+                  //中间文字
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: 300.w,
+                        child:
+                            //显示的文字
+                            Text(
+                          deviceList[index]['name'],
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      ),
+                      // 编辑
+                      IconButton(
+                        onPressed: () {
+                          //底部弹出Container
+                          showModalBottomSheet(
+                            isScrollControlled: true,
+                            context: context,
+                            builder: (BuildContext context) {
+                              return WillPopScope(
+                                onWillPop: () async {
+                                  Navigator.pop(context);
+                                  _editvalueList[index].text =
+                                      deviceList[index]['name'];
+                                  return false;
+                                },
+                                child: SingleChildScrollView(
+                                  child: Container(
+                                    padding: EdgeInsets.only(
+                                      left: 40.w,
+                                      right: 40.w,
+                                      //将在输入框底部添加一个填充，以确保输入框不会被键盘遮挡。
+                                      bottom: MediaQuery.of(context)
+                                          .viewInsets
+                                          .bottom,
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                            padding:
+                                                EdgeInsets.only(top: 30.w)),
+
+                                        //title
+                                        Text(
+                                          S.current.ModifyRemarks,
+                                          style: TextStyle(fontSize: 46.sp),
+                                        ),
+                                        Padding(
+                                            padding:
+                                                EdgeInsets.only(top: 46.w)),
+
+                                        //输入框
+                                        TextField(
+                                          autofocus: true,
+                                          controller: _editvalueList[index],
+                                          decoration: InputDecoration(
+                                            contentPadding:
+                                                EdgeInsets.only(left: 20.w),
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            hintText: S.current.pleaseEnter,
+                                            suffixIcon: IconButton(
+                                              icon: const Icon(Icons.clear),
+                                              onPressed: () {
+                                                // 清空输入框中的内容
+                                                _editvalueList[index].clear();
+                                              },
+                                            ),
+                                          ),
+                                          onChanged: (value) {
+                                            setState(() {
+                                              deviceList[index]['name'] = value;
+                                            });
+                                          },
+                                        ),
+
+                                        Padding(
+                                            padding:
+                                                EdgeInsets.only(top: 20.w)),
+                                        //btn
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            //取消
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  _editvalueList[index].text =
+                                                      deviceList[index]['name'];
+                                                });
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text(S.current.cancel),
+                                              style: ElevatedButton.styleFrom(
+                                                minimumSize: Size(300.w, 70.w),
+                                              ),
+                                            ),
+                                            //确定
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                if (_editvalueList[index]
+                                                    .text
+                                                    .isNotEmpty) {
+                                                  isEditable = false;
+                                                  editName(
+                                                      sn,
+                                                      deviceList[index]
+                                                          ['MACAddress'],
+                                                      deviceList[index]
+                                                          ['name']);
+                                                }
+                                              },
+                                              child: Text(S.current.confirm),
+                                              style: ElevatedButton.styleFrom(
+                                                minimumSize: Size(300.w, 70.w),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                          setState(() {
+                            isEditable = true;
+                          });
+                        },
+                        icon: const Icon(Icons.create),
+                      )
+                    ],
+                  ),
+
+                  //title下方显示的内容
+                  subtitle: Text(
+                    deviceList[index]['connection'] == null
+                        ? '-'
+                        : deviceList[index]['connection'],
+                  ),
+                ),
+              ),
+            );
+          },
+          pagination: SwiperPagination()),
+    );
   }
 }
 
@@ -781,7 +752,7 @@ class _SchedulingState extends State<Scheduling> {
                 //right
                 GestureDetector(
                   onTap: () {
-                    Get.toNamed('/Internetaccess');
+                    Get.toNamed('/Internetaccess', arguments: {"sn": sn});
                   },
                   child: Row(
                     children: [
@@ -799,6 +770,7 @@ class _SchedulingState extends State<Scheduling> {
                 ),
               ],
             ),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -809,7 +781,7 @@ class _SchedulingState extends State<Scheduling> {
                     });
                   },
                   child: Text(
-                    'time period',
+                    'Time period',
                     style: TextStyle(
                         color: isFirst ? Colors.blue : Colors.black54),
                   ),
@@ -821,7 +793,7 @@ class _SchedulingState extends State<Scheduling> {
                     });
                   },
                   child: Text(
-                    'duration',
+                    'Duration',
                     style: TextStyle(
                         color: !isFirst ? Colors.blue : Colors.black54),
                   ),
@@ -835,92 +807,144 @@ class _SchedulingState extends State<Scheduling> {
             ),
 
             Row(
-              // scrollDirection: Axis.horizontal,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                //Sun
-                // TextButton(
-
-                //   onPressed: () {
-                //     setState(() {
-                //       date = 'Sun';
-                //     });
-                //   },
-                //   child: Text(
-                //     'Sun',
-                //     style: TextStyle(
-                //         color: date == 'Sun'
-                //             ? Colors.blue
-                //             : Colors.black54),
-                //   ),
-                // ),
                 //Mon
-                TextButton(
-                  style: ButtonStyle(
-                      fixedSize: MaterialStateProperty.all(const Size(10, 10))),
+                Expanded(
+                  child: TextButton(
+                    style: ButtonStyle(
+                        fixedSize:
+                            MaterialStateProperty.all(const Size(10, 10))),
+                    onPressed: () {
+                      setState(() {
+                        date = 'Mon';
+                      });
+                    },
+                    child: ConstrainedBox(
+                        constraints: BoxConstraints(maxWidth: 150.w),
+                        child: FittedBox(
+                          child: Text(
+                            'Mon',
+                            style: TextStyle(
+                                color: date == 'Mon'
+                                    ? Colors.blue
+                                    : Colors.black54),
+                          ),
+                        )),
+                  ),
+                ),
 
-                  // style: ButtonStyle(fixedSize:MaterialStateProperty.all(const Size.fromHeight(5)) ),
-                  onPressed: () {
-                    setState(() {
-                      date = 'Mon';
-                    });
-                  },
-                  child: Text(
-                    'Mon',
-                    style: TextStyle(
-                        color: date == 'Mon' ? Colors.blue : Colors.black54),
-                  ),
-                ),
                 //Tue
-                TextButton(
-                  onPressed: () {
-                    setState(() {
-                      date = 'Tue';
-                    });
-                  },
-                  child: Text(
-                    'Tue',
-                    style: TextStyle(
-                        color: date == 'Tue' ? Colors.blue : Colors.black54),
+                Expanded(
+                  child: TextButton(
+                    onPressed: () {
+                      setState(() {
+                        date = 'Tue';
+                      });
+                    },
+                    child: FittedBox(
+                      child: Text(
+                        'Tue',
+                        style: TextStyle(
+                            color:
+                                date == 'Tue' ? Colors.blue : Colors.black54),
+                      ),
+                    ),
                   ),
                 ),
+
                 //Wed
-                TextButton(
-                  onPressed: () {
-                    setState(() {
-                      date = 'Wed';
-                    });
-                  },
-                  child: Text(
-                    'Wed',
-                    style: TextStyle(
-                        color: date == 'Wed' ? Colors.blue : Colors.black54),
+                Expanded(
+                  child: TextButton(
+                    onPressed: () {
+                      setState(() {
+                        date = 'Wed';
+                      });
+                    },
+                    child: FittedBox(
+                      child: Text(
+                        'Wed',
+                        style: TextStyle(
+                            color:
+                                date == 'Wed' ? Colors.blue : Colors.black54),
+                      ),
+                    ),
                   ),
                 ),
+
                 //Thu
-                TextButton(
-                  onPressed: () {
-                    setState(() {
-                      date = 'Thu';
-                    });
-                  },
-                  child: Text(
-                    'Thu',
-                    style: TextStyle(
-                        color: date == 'Thu' ? Colors.blue : Colors.black54),
+                Expanded(
+                  child: TextButton(
+                    onPressed: () {
+                      setState(() {
+                        date = 'Thu';
+                      });
+                    },
+                    child: FittedBox(
+                      child: Text(
+                        'Thu',
+                        style: TextStyle(
+                            color:
+                                date == 'Thu' ? Colors.blue : Colors.black54),
+                      ),
+                    ),
                   ),
                 ),
+
                 // Fri
-                TextButton(
-                  onPressed: () {
-                    setState(() {
-                      date = 'Fri';
-                    });
-                  },
-                  child: Text(
-                    'Fri',
-                    style: TextStyle(
-                        color: date == 'Fri' ? Colors.blue : Colors.black54),
+                Expanded(
+                  child: TextButton(
+                    onPressed: () {
+                      setState(() {
+                        date = 'Fri';
+                      });
+                    },
+                    child: FittedBox(
+                      child: Text(
+                        'Fri',
+                        style: TextStyle(
+                            color:
+                                date == 'Fri' ? Colors.blue : Colors.black54),
+                      ),
+                    ),
+                  ),
+                ),
+
+                // Sat
+                Expanded(
+                  child: TextButton(
+                    onPressed: () {
+                      setState(() {
+                        date = 'Sat';
+                      });
+                    },
+                    child: FittedBox(
+                      child: Text(
+                        'Sat',
+                        style: TextStyle(
+                            color:
+                                date == 'Sat' ? Colors.blue : Colors.black54),
+                      ),
+                    ),
+                  ),
+                ),
+
+                // Sun
+                Expanded(
+                  child: TextButton(
+                    onPressed: () {
+                      setState(() {
+                        date = 'Sun';
+                      });
+                    },
+                    child: FittedBox(
+                      child: Text(
+                        'Sun',
+                        style: TextStyle(
+                            color:
+                                date == 'Sun' ? Colors.blue : Colors.black54),
+                      ),
+                    ),
                   ),
                 ),
               ],

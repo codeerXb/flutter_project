@@ -95,79 +95,81 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                         editTitleVal.text = Title;
                         return false;
                       },
-                      child: Container(
-                        height: 1100.w,
-                        padding: EdgeInsets.only(
-                          left: 40.w,
-                          right: 40.w,
-                          //将在输入框底部添加一个填充，以确保输入框不会被键盘遮挡。
-                          bottom: MediaQuery.of(context).viewInsets.bottom,
-                        ),
-                        child: Column(
-                          children: [
-                            Padding(padding: EdgeInsets.only(top: 30.w)),
+                      child: SingleChildScrollView(
+                        child: Container(
+                          padding: EdgeInsets.only(
+                            left: 40.w,
+                            right: 40.w,
+                            //将在输入框底部添加一个填充，以确保输入框不会被键盘遮挡。
+                            bottom: MediaQuery.of(context).viewInsets.bottom,
+                          ),
+                          child: Column(
+                            children: [
+                              Padding(padding: EdgeInsets.only(top: 30.w)),
 
-                            //title
-                            Text(
-                              S.current.ModifyRemarks,
-                              style: TextStyle(fontSize: 46.sp),
-                            ),
-                            Padding(padding: EdgeInsets.only(top: 46.w)),
+                              //title
+                              Text(
+                                S.current.ModifyRemarks,
+                                style: TextStyle(fontSize: 46.sp),
+                              ),
+                              Padding(padding: EdgeInsets.only(top: 46.w)),
 
-                            //输入框
-                            TextField(
-                              autofocus: true,
-                              controller: editTitleVal,
-                              decoration: InputDecoration(
-                                contentPadding: EdgeInsets.only(left: 20.w),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                hintText: S.current.pleaseEnter,
-                                suffixIcon: IconButton(
-                                  icon: const Icon(Icons.clear),
-                                  onPressed: () {
-                                    // 清空输入框中的内容
-                                    editTitleVal.clear();
-                                  },
+                              //输入框
+                              TextField(
+                                autofocus: true,
+                                controller: editTitleVal,
+                                decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.only(left: 20.w),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  hintText: S.current.pleaseEnter,
+                                  suffixIcon: IconButton(
+                                    icon: const Icon(Icons.clear),
+                                    onPressed: () {
+                                      // 清空输入框中的内容
+                                      editTitleVal.clear();
+                                    },
+                                  ),
                                 ),
                               ),
-                            ),
 
-                            Padding(padding: EdgeInsets.only(top: 20.w)),
-                            //btn
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                //取消
-                                ElevatedButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      editTitleVal.text = Title;
-                                    });
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text(S.current.cancel),
-                                  style: ElevatedButton.styleFrom(
-                                    minimumSize: Size(300.w, 70.w),
+                              Padding(padding: EdgeInsets.only(top: 20.w)),
+                              //btn
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  //取消
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        editTitleVal.text = Title;
+                                      });
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text(S.current.cancel),
+                                    style: ElevatedButton.styleFrom(
+                                      minimumSize: Size(300.w, 70.w),
+                                    ),
                                   ),
-                                ),
-                                //确定
-                                ElevatedButton(
-                                  onPressed: () {
-                                    if (editTitleVal.text.isNotEmpty) {
-                                      editName(sn, data.mac.toString(),
-                                          editTitleVal.text);
-                                    }
-                                  },
-                                  child: Text(S.current.confirm),
-                                  style: ElevatedButton.styleFrom(
-                                    minimumSize: Size(300.w, 70.w),
+                                  //确定
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      if (editTitleVal.text.isNotEmpty) {
+                                        editName(sn, data.mac.toString(),
+                                            editTitleVal.text);
+                                      }
+                                    },
+                                    child: Text(S.current.confirm),
+                                    style: ElevatedButton.styleFrom(
+                                      minimumSize: Size(300.w, 70.w),
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ],
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     );

@@ -170,6 +170,8 @@ class _SettingState extends State<Setting> {
                   lanSettings(),
                   // const Divider(),
 
+                  wifiMapping(),
+
                   /// 系统设置
                   systemSettings(),
 
@@ -619,6 +621,22 @@ class _SettingState extends State<Setting> {
         callBack: () {
           Get.toNamed("/lan_settings");
         });
+  }
+
+  /// Wi-Fi Mapping
+  Widget wifiMapping() {
+    return Container(
+      padding: EdgeInsets.only(top: 20.w),
+      child: CommonWidget.simpleWidgetWithMine(
+          title: S.of(context).wifiMapping,
+          icon: Image(
+              width: 58.w,
+              height: 58.w,
+              image: const AssetImage('assets/images/signal_cover.png')),
+          callBack: () {
+            Get.toNamed("/signal_cover");
+          }),
+    );
   }
 
   /// 以太网设置

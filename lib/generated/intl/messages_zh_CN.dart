@@ -308,6 +308,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "versionUpdating": MessageLookupByLibrary.simpleMessage("版本更新"),
         "visitorNet": MessageLookupByLibrary.simpleMessage("访客网络"),
         "wanSettings": MessageLookupByLibrary.simpleMessage("WAN设置"),
+        "wifiMapping": MessageLookupByLibrary.simpleMessage("Wi-Fi覆盖图"),
         "wlanSet": MessageLookupByLibrary.simpleMessage("WLAN设置"),
         "workday": MessageLookupByLibrary.simpleMessage("工作日"),
         "wpsSet": MessageLookupByLibrary.simpleMessage("WPS设置"),

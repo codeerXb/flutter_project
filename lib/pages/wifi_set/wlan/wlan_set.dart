@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/config/base_config.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
@@ -13,6 +14,7 @@ import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:flutter_template/pages/wifi_set/wlan/wlan_datas.dart';
 import 'package:flutter_template/pages/wifi_set/wlan/channel_list.dart';
 import 'package:get/get.dart';
+import '../../../core/http/http_app.dart';
 import '../../../core/utils/shared_preferences_util.dart';
 import '../../../core/widget/custom_app_bar.dart';
 import '../../../generated/l10n.dart';
@@ -239,6 +241,7 @@ class _WlanSetState extends State<WlanSet> {
         if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
           // 云端请求赋值
           await get24gList();
+          await getWifiCountryChannelList();
         }
         if (loginController.login.state == 'local') {
           // 本地请求赋值
@@ -252,6 +255,44 @@ class _WlanSetState extends State<WlanSet> {
         });
       }
     });
+  }
+
+  // 获取WIFI信道列表
+  getWifiCountryChannelList() async {
+    var data = {
+      'sn': sn,
+      'type': 'getWifiCountryChannelList',
+    };
+    var res = await App.post(
+        '${BaseConfig.cloudBaseUrl}/cpeMqtt/getWifiCountryChannelList',
+        data: data);
+    var d = json.decode(res.toString());
+    if (d['code'] != 200) {
+      ToastUtils.error(d['message']);
+    } else {
+      setState(() {
+        // 20
+        wifiCountryChannelListHT20 = [
+          "auto",
+          ...d['data']['wifiCountryChannelList_HT20'].split(';')
+        ];
+        // 40+
+        wifiCountryChannelListHT40j = [
+          "auto",
+          ...d['data']['wifiCountryChannelList_HT40+'].split(';')
+        ];
+        // 40-
+        wifiCountryChannelListHT40 = [
+          "auto",
+          ...d['data']['wifiCountryChannelList_HT40-'].split(';')
+        ];
+        // 5G
+        wifi5gCountryChannelList = [
+          "auto",
+          ...d['data']['wifi5gCountryChannelList'].split(';')
+        ];
+      });
+    }
   }
 
   /// 云端获取接口

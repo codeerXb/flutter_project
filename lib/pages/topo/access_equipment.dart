@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/config/base_config.dart';
 import 'package:flutter_template/core/http/http_app.dart';
@@ -234,7 +233,7 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                     child: GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: () {
-                        Get.toNamed("/parental_control", arguments: data);
+                        Get.toNamed("/parent", arguments: data);
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

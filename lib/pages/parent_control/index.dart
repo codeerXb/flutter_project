@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/pages/parent_control/arc_progress_bar.dart';
 import 'package:get/get.dart';
 import '../../core/widget/custom_app_bar.dart';
 import '../net_status/index.dart';
@@ -111,23 +112,23 @@ class InternetUsage extends StatelessWidget {
             //第一行
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
+              children: const [
                 //left
-                const Text('Internet usage today'),
+                Text('Internet usage today'),
                 //right
-                Row(
-                  children: [
-                    Text('More',
-                        style: TextStyle(
-                            color: const Color.fromRGBO(144, 147, 153, 1),
-                            fontSize: 30.sp)),
-                    Icon(
-                      Icons.arrow_forward_ios_outlined,
-                      color: const Color.fromRGBO(144, 147, 153, 1),
-                      size: 30.w,
-                    )
-                  ],
-                ),
+                // Row(
+                //   children: [
+                //     Text('More',
+                //         style: TextStyle(
+                //             color: const Color.fromRGBO(144, 147, 153, 1),
+                //             fontSize: 30.sp)),
+                //     Icon(
+                //       Icons.arrow_forward_ios_outlined,
+                //       color: const Color.fromRGBO(144, 147, 153, 1),
+                //       size: 30.w,
+                //     )
+                //   ],
+                // ),
               ],
             ),
             Padding(padding: EdgeInsets.only(top: 60.w)),
@@ -147,17 +148,17 @@ class InternetUsage extends StatelessWidget {
                   child: Column(
                     children: [
                       const Text(
-                        'Online',
+                        'Time Online',
                         style: TextStyle(color: Colors.black45),
                       ),
                       Text(
                         '0 min',
                         style: TextStyle(fontSize: 36.w, color: Colors.black87),
                       ),
-                      const Text(
-                        'Healthy Internet access',
-                        style: TextStyle(color: Colors.black45),
-                      )
+                      // const Text(
+                      //   'Healthy Internet access',
+                      //   style: TextStyle(color: Colors.black45),
+                      // )
                     ],
                   ),
                 ),
@@ -175,10 +176,10 @@ class InternetUsage extends StatelessWidget {
                         'Not Set',
                         style: TextStyle(fontSize: 36.w, color: Colors.black87),
                       ),
-                      const Text(
-                        'Add 10 min',
-                        style: TextStyle(color: Colors.black45),
-                      )
+                      // const Text(
+                      //   'Add 10 min',
+                      //   style: TextStyle(color: Colors.black45),
+                      // )
                     ],
                   ),
                 )
@@ -422,7 +423,11 @@ class _SwiperCardState extends State<SwiperCard> {
                                                   editName(
                                                       sn,
                                                       deviceList[index]
-                                                          ['MACAddress'],
+                                                              ['MACAddress']
+                                                          ? deviceList[index]
+                                                              ['MACAddress']
+                                                          : deviceList[index]
+                                                              ['MacAddress'],
                                                       deviceList[index]
                                                           ['name']);
                                                 }
@@ -659,7 +664,9 @@ class SixBoxs extends StatelessWidget {
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text('Installed'),
+                        ConstrainedBox(
+                            constraints: BoxConstraints(maxWidth: 150.w),
+                            child: const FittedBox(child: Text('APP Stores'))),
                         Text(
                           '8 allowed',
                           style:
@@ -781,7 +788,7 @@ class _SchedulingState extends State<Scheduling> {
                     });
                   },
                   child: Text(
-                    'Time period',
+                    'Time Period',
                     style: TextStyle(
                         color: isFirst ? Colors.blue : Colors.black54),
                   ),
@@ -800,11 +807,78 @@ class _SchedulingState extends State<Scheduling> {
                 )
               ],
             ),
-            Image(
-              image: isFirst
-                  ? AssetImage('assets/images/leftTime.png')
-                  : AssetImage('assets/images/Durationtime.png'),
-            ),
+            // Image(
+            //   image: isFirst
+            //       ? AssetImage('assets/images/leftTime.png')
+            //       : AssetImage('assets/images/Durationtime.png'),
+            // ),
+            // TODO 周期显示的图片
+            if (isFirst)
+              Container(
+                margin: EdgeInsets.zero,
+                color: const Color.fromARGB(255, 255, 255, 255),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Stack(
+                      alignment: AlignmentDirectional.center,
+                      children: [
+                        SizedBox(
+                          width: 390.w,
+                          height: 390.w,
+                          child: ArcProgresssBar(
+                              width: 1.sw, height: 1.sw, progress: 45),
+                        ),
+                        Column(
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(bottom: 14.sp),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Center(
+                      child: Container(
+                          margin: const EdgeInsets.only(right: 15, left: 15),
+                          padding: const EdgeInsets.only(top: 15, bottom: 15),
+                          width: 1.sw - 30,
+                          decoration: const BoxDecoration(
+                            // 背景色
+                            color: Color.fromARGB(255, 255, 255, 255),
+                            borderRadius: BorderRadius.all(Radius.circular(15)),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              // UploadSpeed(
+                              //   rate: widget.upRate,
+                              // ),
+                              // DownloadSpeed(
+                              //   rate: widget.downRate,
+                              // ),
+                              // OnlineCount(
+                              //   count: _onlineCount,
+                              // ),
+                            ],
+                          )),
+                    ),
+                    const Text('Internet Time',
+                        style: TextStyle(
+                            color: Color.fromARGB(255, 109, 109, 109),
+                            fontSize: 12)),
+                  ],
+                ),
+              ),
+            if (!isFirst)
+              const Image(
+                image: AssetImage('assets/images/Durationtime.png'),
+              ),
 
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,

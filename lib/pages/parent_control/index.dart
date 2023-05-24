@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/core/request/request.dart';
 import 'package:get/get.dart';
 import '../../core/widget/custom_app_bar.dart';
 import '../net_status/index.dart';
@@ -279,7 +280,7 @@ class _SwiperCardState extends State<SwiperCard> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: deviceList.length > 0 ? 240.w : 0.w,
+      height: deviceList.isNotEmpty ? 240.w : 0.w,
       child: Swiper(
           onIndexChanged: (int index) {
             print('index233$index');
@@ -407,10 +408,10 @@ class _SwiperCardState extends State<SwiperCard> {
                                                 });
                                                 Navigator.pop(context);
                                               },
-                                              child: Text(S.current.cancel),
                                               style: ElevatedButton.styleFrom(
                                                 minimumSize: Size(300.w, 70.w),
                                               ),
+                                              child: Text(S.current.cancel),
                                             ),
                                             //确定
                                             ElevatedButton(
@@ -427,10 +428,10 @@ class _SwiperCardState extends State<SwiperCard> {
                                                           ['name']);
                                                 }
                                               },
-                                              child: Text(S.current.confirm),
                                               style: ElevatedButton.styleFrom(
                                                 minimumSize: Size(300.w, 70.w),
                                               ),
+                                              child: Text(S.current.confirm),
                                             ),
                                           ],
                                         ),
@@ -452,21 +453,65 @@ class _SwiperCardState extends State<SwiperCard> {
 
                   //title下方显示的内容
                   subtitle: Text(
-                    deviceList[index]['connection'] == null
-                        ? '-'
-                        : deviceList[index]['connection'],
+                    deviceList[index]['connection'] ?? '-',
                   ),
                 ),
               ),
             );
           },
-          pagination: SwiperPagination()),
+          pagination: const SwiperPagination()),
     );
   }
 }
 
 //卡片
-class SixBoxs extends StatelessWidget {
+class SixBoxs extends StatefulWidget {
+  @override
+  SixBoxsState createState() => SixBoxsState();
+}
+
+class SixBoxsState extends State<SixBoxs> {
+  int urlListAmount = 0;
+
+// URL
+  getURLFilter() async {
+    var sn = await sharedGetData('deviceSn', String);
+    setState(() {
+      loading = true;
+      sn = sn.toString();
+    });
+    var parameterNames = [
+      "InternetGatewayDevice.WEB_GUI.Security.URLFilter",
+    ];
+    var response = await Request().getACSNode(parameterNames, sn);
+    try {
+      Map<String, dynamic> d = jsonDecode(response);
+      setState(() {
+        loading = false;
+        Map<String, dynamic> flowTableName = d['data']['InternetGatewayDevice']
+            ['WEB_GUI']['Security']['URLFilter']['List'];
+        urlListAmount = flowTableName.keys
+            .toList()
+            .where((element) {
+              var pattern = RegExp(r'[0-9]+');
+              var isMatch = pattern.hasMatch(element);
+              return isMatch;
+            })
+            .toList()
+            .length;
+      });
+    } catch (e) {
+      loading = false;
+      debugPrint('获取设备信息失败：${e.toString()}');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getURLFilter();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -802,8 +847,8 @@ class _SchedulingState extends State<Scheduling> {
             ),
             Image(
               image: isFirst
-                  ? AssetImage('assets/images/leftTime.png')
-                  : AssetImage('assets/images/Durationtime.png'),
+                  ? const AssetImage('assets/images/leftTime.png')
+                  : const AssetImage('assets/images/Durationtime.png'),
             ),
 
             Row(

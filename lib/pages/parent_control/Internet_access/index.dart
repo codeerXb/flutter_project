@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'package:day_night_time_picker/day_night_time_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/request/request.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:get/get.dart';
 import '../../../core/widget/custom_app_bar.dart';
+import '../../../generated/l10n.dart';
 
 dynamic sn = Get.arguments['sn'];
 bool loading = false;
@@ -20,6 +22,7 @@ class Internetaccess extends StatefulWidget {
 
 class _InternetaccessState extends State<Internetaccess> {
   List accessList = []; //家长控制列表
+  List keyList = []; //家长控制列表
   @override
   void initState() {
     super.initState();
@@ -54,11 +57,13 @@ class _InternetaccessState extends State<Internetaccess> {
         resList.remove('_timestamp');
         resList.remove('_writable');
         accessList = [];
+        keyList = [];
       });
 
       resList.forEach((key, value) {
         setState(() {
           accessList.add(value);
+          keyList.add(key);
         });
       });
       setState(() {
@@ -73,6 +78,8 @@ class _InternetaccessState extends State<Internetaccess> {
       });
     }
   }
+
+  final TextEditingController editTitleVal = TextEditingController();
 
   //选择日期
   String date = 'timePeriod';
@@ -156,7 +163,7 @@ class _InternetaccessState extends State<Internetaccess> {
                               //家长控制列表 遍历
                               SingleChildScrollView(
                                 child: SizedBox(
-                                  height: 4 * 190.w,
+                                  height: 600.h,
                                   child: ListView.builder(
                                       itemCount: accessList.length,
                                       itemBuilder:
@@ -170,17 +177,94 @@ class _InternetaccessState extends State<Internetaccess> {
                                                 Radius.circular(20)),
                                           ),
                                           child: ListTile(
-                                              title: Text(accessList[index]
-                                                              ['TimeStart']
-                                                          ['_value']
-                                                      .toString() +
-                                                  '-' +
-                                                  accessList[index]['TimeStop']
-                                                          ['_value']
-                                                      .toString()),
-                                              subtitle: Text(accessList[index]
-                                                      ['Weekdays']['_value']
-                                                  .toString())),
+                                            title: Text(accessList[index]
+                                                        ['TimeStart']['_value']
+                                                    .toString() +
+                                                '-' +
+                                                accessList[index]['TimeStop']
+                                                        ['_value']
+                                                    .toString()),
+                                            subtitle: Text(accessList[index]
+                                                    ['Weekdays']['_value']
+                                                .toString()),
+                                            trailing: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                IconButton(
+                                                  icon: Icon(Icons.edit),
+                                                  onPressed: () {
+                                                    showDialog(
+                                                      context: context,
+                                                      builder: (BuildContext
+                                                          context) {
+                                                        return MyDialog(
+                                                            week: accessList[
+                                                                        index][
+                                                                    'Weekdays']
+                                                                ['_value'],
+                                                            time: accessList[index]
+                                                                            ['TimeStart'][
+                                                                        '_value']
+                                                                    .toString() +
+                                                                '-' +
+                                                                accessList[index]
+                                                                            ['TimeStop'][
+                                                                        '_value']
+                                                                    .toString(),
+                                                            id: keyList[index],
+                                                            getACSNodeFn:
+                                                                getACSNodeFn,
+                                                            openLoading:
+                                                                openLoading);
+                                                      },
+                                                    );
+                                                    //输入框
+                                                    // TextField(
+                                                    //   autofocus: true,
+                                                    //   controller: editTitleVal,
+                                                    //   decoration:
+                                                    //       InputDecoration(
+                                                    //     contentPadding:
+                                                    //         EdgeInsets.only(
+                                                    //             left: 20.w),
+                                                    //     border:
+                                                    //         OutlineInputBorder(
+                                                    //       borderRadius:
+                                                    //           BorderRadius
+                                                    //               .circular(10),
+                                                    //     ),
+                                                    //     hintText: S.current
+                                                    //         .pleaseEnter,
+                                                    //     suffixIcon: IconButton(
+                                                    //       icon: const Icon(
+                                                    //           Icons.clear),
+                                                    //       onPressed: () {
+                                                    //         // 清空输入框中的内容
+                                                    //         editTitleVal
+                                                    //             .clear();
+                                                    //       },
+                                                    //     ),
+                                                    //   ),
+                                                    //   onChanged: (value) {
+                                                    //     setState(() {});
+                                                    //   },
+                                                    // );
+                                                  },
+                                                ),
+                                                IconButton(
+                                                  icon: Icon(Icons.delete),
+                                                  onPressed: () async {
+                                                    await Request()
+                                                        .addOrDeleteObject(
+                                                            "InternetGatewayDevice.WEB_GUI.ParentalControls.List.${keyList[index]}",
+                                                            sn,
+                                                            'deleteObject');
+                                                    getACSNodeFn();
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                          ),
                                         );
                                       }),
                                 ),
@@ -378,7 +462,17 @@ class _InternetaccessState extends State<Internetaccess> {
 class MyDialog extends StatefulWidget {
   final Function getACSNodeFn;
   final Function openLoading;
-  MyDialog({Key? key, required this.getACSNodeFn, required this.openLoading})
+  var id;
+  var time;
+  var week;
+
+  MyDialog(
+      {Key? key,
+      required this.getACSNodeFn,
+      required this.openLoading,
+      this.id = '',
+      this.week = '',
+      this.time = ''})
       : super(key: key);
 
   @override
@@ -399,15 +493,27 @@ class _MyDialogState extends State<MyDialog> {
   String stopTimeH = '';
   String stopTimeM = '';
   String lastKey = ''; //当前设置项
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.time != '') {
+      startTimeH = widget.time.split('-')[0].split(':')[0];
+      startTimeM = widget.time.split('-')[0].split(':')[1];
+      stopTimeH = widget.time.split('-')[1].split(':')[0];
+      stopTimeM = widget.time.split('-')[1].split(':')[1];
+      // _selectedDays.addAll(widget.week);
+      print(_selectedDays);
+    }
+  }
+
   //设置云端数据
   setData() async {
     Navigator.of(context).pop();
     widget.openLoading();
     //添加云端数据
     await Request().addOrDeleteObject(
-        "InternetGatewayDevice.WEB_GUI.ParentalControls.List",
-        sn,
-        'addObject');
+        "InternetGatewayDevice.WEB_GUI.ParentalControls.List", sn, 'addObject');
     //获取云端数据
     var res = await Request().getACSNode([
       "InternetGatewayDevice.WEB_GUI.ParentalControls",
@@ -573,6 +679,7 @@ class _MyDialogState extends State<MyDialog> {
         TextButton(
           onPressed: () {
             if (startTimeH.length == 0 || stopTimeH.length == 0) return;
+            
             setData();
           },
           child: Text('Confirm'),

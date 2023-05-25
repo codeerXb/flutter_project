@@ -851,6 +851,7 @@ class _SchedulingState extends State<Scheduling> {
         ),
         child: Column(
           children: [
+            
             //第一行
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -859,6 +860,7 @@ class _SchedulingState extends State<Scheduling> {
                 const Text('Internet access time scheduling'),
                 //right
                 GestureDetector(
+
                   onTap: () {
                     Get.toNamed('/Internetaccess', arguments: {"sn": sn});
                   },

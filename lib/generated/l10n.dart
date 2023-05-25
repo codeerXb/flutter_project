@@ -440,10 +440,10 @@ class S {
     );
   }
 
-  /// `Professional`
+  /// `Region`
   String get majorSet {
     return Intl.message(
-      'Professional',
+      'Region',
       name: 'majorSet',
       desc: '',
       args: [],
@@ -1910,30 +1910,30 @@ class S {
     );
   }
 
-  /// `Password error, number of attempts left:`
+  /// `Account or password incorrect, remaining input attempts:`
   String get passError {
     return Intl.message(
-      'Password error, number of attempts left:',
+      'Account or password incorrect, remaining input attempts:',
       name: 'passError',
       desc: '',
       args: [],
     );
   }
 
-  /// `locked`
+  /// `The device has been locked, it will be unlocked in `
   String get locked {
     return Intl.message(
-      'locked',
+      'The device has been locked, it will be unlocked in ',
       name: 'locked',
       desc: '',
       args: [],
     );
   }
 
-  /// `S Unlock`
+  /// `s`
   String get unlock {
     return Intl.message(
-      'S Unlock',
+      's',
       name: 'unlock',
       desc: '',
       args: [],
@@ -2830,10 +2830,10 @@ class S {
     );
   }
 
-  /// `Modify remarks`
+  /// `Device Name`
   String get ModifyRemarks {
     return Intl.message(
-      'Modify remarks',
+      'Device Name',
       name: 'ModifyRemarks',
       desc: '',
       args: [],

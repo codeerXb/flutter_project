@@ -39,36 +39,12 @@ class _LoginState extends State<Login> {
   Color _accountBorderColor = Colors.white;
   Color _passwordBorderColor = Colors.white;
   EquipmentData equipmentData = EquipmentData();
-
-  Timer? timer = Timer.periodic(const Duration(minutes: 0), (timer) {});
-
-  void login(pwd) {
-    debugPrint('登录密码：$pwd');
-    Map<String, dynamic> data = {
-      'username': 'superadmin',
-      'password': 'admin', //utf8.decode(base64Decode(pwd))
-    };
-    XHttp.get('/action/appLogin', data).then((res) {
-      try {
-        debugPrint("+++++++++++++");
-        var d = json.decode(res.toString());
-        debugPrint('登录成功${d['token']}');
-        loginController.setSession(d['sessionid']);
-        sharedAddAndUpdate("session", String, d['sessionid']);
-        loginController.setToken(d['token']);
-        sharedAddAndUpdate("token", String, d['token']);
-        // debugPrint(d);
-      } on FormatException catch (e) {
-        debugPrint('登录错误1$e');
-        Get.offNamed("/get_equipment");
-      }
-    }).catchError((onError) {
-      Get.offNamed("/get_equipment");
-      debugPrint('登录错误2${onError.toString()}');
-    });
-  }
+  bool _isLoading = false;
 
   void appLogin() {
+    setState(() {
+      _isLoading = true;
+    });
     Map<String, dynamic> data = {
       'username': _account.trim(),
       'password': _password.trim(),
@@ -98,16 +74,9 @@ class _LoginState extends State<Login> {
               ToastUtils.toast(S.current.success);
               loginController.setUserEquipment('deviceSn', sn);
               sharedAddAndUpdate("deviceSn", String, sn);
-              // timer = Timer.periodic(const Duration(minutes: 5), (timer) {
-              //   debugPrint('登录当前时间${DateTime.now()}');
-              //   // 再次请求登录
-              //   login(_password.trim());
-              // });
               Get.offNamed("/home", arguments: {"sn": sn, "vn": vn});
             }
           }).catchError((err) {
-            timer?.cancel();
-            timer = null;
             debugPrint('云平台绑定错误响应------>$err');
             // 响应超时
             if (err['code'] == DioErrorType.connectTimeout) {
@@ -133,15 +102,13 @@ class _LoginState extends State<Login> {
         }
       }
     }).catchError((err) {
-      timer?.cancel();
-      timer = null;
+      if (err.type == DioErrorType.connectTimeout) {
+        debugPrint('timeout');
+        ToastUtils.error(S.current.contimeout);
+      }
       if (err.response != null) {
         var resjson = json.decode(err.response.toString());
         var errRes = ExceptionLogin.fromJson(resjson);
-        if (err['code'] == DioErrorType.connectTimeout) {
-          debugPrint('timeout');
-          ToastUtils.error(S.current.contimeout);
-        }
 
         /// 顶部弹出
         // Get.snackbar("", "",
@@ -159,7 +126,6 @@ class _LoginState extends State<Login> {
         //     ),
         //     backgroundColor: const Color(0xfffff000));
         if (errRes.success == false) {
-          Get.offNamed('/loginPage');
           if (errRes.code == 201) {
             ToastUtils.toast(
                 '${S.current.passError}${5 - int.parse(errRes.webLoginFailedTimes.toString())}');
@@ -170,6 +136,10 @@ class _LoginState extends State<Login> {
         }
         debugPrint('登录失败：${errRes.code}');
       }
+    }).whenComplete(() {
+      setState(() {
+        _isLoading = false;
+      });
     });
   }
 
@@ -311,8 +281,6 @@ class _LoginState extends State<Login> {
     );
   }
 
-  bool _isLoading = false;
-
   ///登录按钮
   SizedBox buildLoginButton() {
     return SizedBox(
@@ -329,17 +297,8 @@ class _LoginState extends State<Login> {
         onPressed: () {
           printInfo(info: '登陆了');
           if ((_formKey.currentState as FormState).validate()) {
-            setState(() {
-              _isLoading = true;
-            });
             onSubmit(context);
             appLogin();
-
-            Future.delayed(const Duration(milliseconds: 1000), () {
-              setState(() {
-                _isLoading = false;
-              });
-            });
           }
         },
         child: _isLoading
@@ -356,14 +315,6 @@ class _LoginState extends State<Login> {
                     TextStyle(fontSize: 32.sp, color: const Color(0xffffffff)),
               ),
       ),
-      // CommonWidget.buttonWidget(
-      //     title:S.of(context).login,
-      //     padding: EdgeInsets.only(left: 0, top: 32.w, bottom: 30.w, right: 0),
-      //     callBack: () {
-      //       if ((_formKey.currentState as FormState).validate()) {
-      //         onSubmit(context);
-      //       }
-      //     }),
     );
   }
 
@@ -404,51 +355,61 @@ class _LoginState extends State<Login> {
         // ),
         body: InkWell(
           onTap: () => closeKeyboard(context),
-          child: Container(
-            height: 1.sh,
-            color: Colors.white,
-            padding: EdgeInsets.only(left: 52.w, top: 100.w, right: 52.w),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: <Widget>[
-                  /// logo
-                  Container(
-                    margin: EdgeInsets.only(bottom: 70.w),
-                    // width: 136.w,
-                    // height: 136.w,
-                    child: Image.asset(
-                      'assets/images/logo.png',
-                      // fit: BoxFit.fill,
+          child: Flex(
+            direction: Axis.vertical,
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Container(
+                    color: Colors.white,
+                    padding:
+                        EdgeInsets.only(left: 52.w, top: 100.w, right: 52.w),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        children: <Widget>[
+                          /// logo
+                          Container(
+                            margin: EdgeInsets.only(bottom: 70.w),
+                            // width: 136.w,
+                            // height: 136.w,
+                            child: Image.asset(
+                              'assets/images/logo.png',
+                              // fit: BoxFit.fill,
+                            ),
+                          ),
+                          // Padding(padding: EdgeInsets.only(top: 70.w)),
+                          Text(
+                            S.current.Administratorlogin,
+                            style: TextStyle(fontSize: 48.sp),
+                          ),
+                          Padding(padding: EdgeInsets.only(top: 10.w)),
+                          Text(
+                            // '${S.of(context).currentDeive} ${loginController.userEquipment['deviceSn']}',
+                            '${S.of(context).currentDeive} $sn',
+                            style: TextStyle(
+                                fontSize: 28.sp,
+                                color: const Color(0xFF373543)),
+                          ),
+
+                          /// 账号
+                          buildAccountTextField(),
+                          // Padding(padding: EdgeInsets.only(top: 112.w)),
+
+                          /// 密码
+                          buildPasswordTextField(),
+                          Padding(padding: EdgeInsets.only(top: 102.w)),
+
+                          /// 登录
+                          buildLoginButton(),
+                          Padding(padding: EdgeInsets.only(top: 20.w)),
+                        ],
+                      ),
                     ),
                   ),
-                  // Padding(padding: EdgeInsets.only(top: 70.w)),
-                  Text(
-                    S.current.Administratorlogin,
-                    style: TextStyle(fontSize: 48.sp),
-                  ),
-                  Padding(padding: EdgeInsets.only(top: 10.w)),
-                  Text(
-                    // '${S.of(context).currentDeive} ${loginController.userEquipment['deviceSn']}',
-                    '${S.of(context).currentDeive} $sn',
-                    style: TextStyle(
-                        fontSize: 28.sp, color: const Color(0xFF373543)),
-                  ),
-
-                  /// 账号
-                  buildAccountTextField(),
-                  // Padding(padding: EdgeInsets.only(top: 112.w)),
-
-                  /// 密码
-                  buildPasswordTextField(),
-                  Padding(padding: EdgeInsets.only(top: 102.w)),
-
-                  /// 登录
-                  buildLoginButton(),
-                  Padding(padding: EdgeInsets.only(top: 20.w)),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
         ));
   }

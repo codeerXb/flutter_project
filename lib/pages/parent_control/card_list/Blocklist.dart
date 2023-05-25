@@ -102,7 +102,6 @@ class _BlocklistState extends State<Blocklist> {
         'xsd:string'
       ],
     ];
-    printInfo(info: 'parameterNames$parameterNames');
     var res = await Request().setACSNode(parameterNames, sn);
     try {
       var jsonObj = jsonDecode(res);
@@ -112,7 +111,6 @@ class _BlocklistState extends State<Blocklist> {
       } else {
         ToastUtils.error('Task Failed');
       }
-      printInfo(info: '````$jsonObj');
       setState(() {});
     } catch (e) {
       debugPrint('获取信息失败：${e.toString()}');
@@ -155,10 +153,7 @@ class _BlocklistState extends State<Blocklist> {
           'xsd:string'
         ],
       ];
-      printInfo(info: 'parameterNames$parameterNames');
-      var res = await Request().setACSNode(parameterNames, sn);
-      printInfo(info: 'res$res');
-
+      await Request().setACSNode(parameterNames, sn);
       getURLFilter();
     } catch (e) {
       debugPrint('获取 失败：${e.toString()}');
@@ -203,7 +198,6 @@ class _BlocklistState extends State<Blocklist> {
         'xsd:boolean'
       ],
     ];
-    printInfo(info: 'parameterNames$parameterNames');
     var res = await Request().setACSNode(parameterNames, sn);
     try {
       var jsonObj = jsonDecode(res);
@@ -213,7 +207,6 @@ class _BlocklistState extends State<Blocklist> {
       } else {
         ToastUtils.error('Task Failed');
       }
-      printInfo(info: '````$jsonObj');
       setState(() {});
     } catch (e) {
       debugPrint('获取信息失败：${e.toString()}');
@@ -378,7 +371,6 @@ class _BlocklistState extends State<Blocklist> {
                                           ),
                                           onChanged: (value) {
                                             url = value;
-                                            printInfo(info: 'url$url');
                                           },
                                         ),
                                       ],
@@ -395,7 +387,6 @@ class _BlocklistState extends State<Blocklist> {
                                         onPressed: () {
                                           // 在这里处理确定按钮的逻辑
                                           if (checkURL(url)) {
-                                            printInfo(info: '11');
                                             getURLAdd();
                                             // URL格式正确
                                             Navigator.of(context).pop();

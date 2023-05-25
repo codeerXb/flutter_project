@@ -28,6 +28,8 @@ class _BlocklistState extends State<Blocklist> {
   String sn = '';
   int id = 0;
   String url = '';
+  final TextEditingController editUrlController = TextEditingController();
+
   // url 校验方法
   bool checkURL(String value) {
     RegExp regExp = RegExp(
@@ -58,6 +60,9 @@ class _BlocklistState extends State<Blocklist> {
         });
       }
     }));
+    editUrlController.addListener(() {
+      debugPrint('6测试${editUrlController.text}');
+    });
   }
 
   // 获取
@@ -258,7 +263,10 @@ class _BlocklistState extends State<Blocklist> {
                                 actionsWidth: 120,
                                 actions: [
                                   // 修改
-                                  _buildChangeBtn(index, _itemTextList),
+                                  _buildChangeBtn(
+                                      index,
+                                      jsonDecode(
+                                          _itemTextList[index])['value']),
                                   // 删除
                                   _buildDeleteBtn(index)
                                 ],
@@ -480,9 +488,10 @@ class _BlocklistState extends State<Blocklist> {
   }
 
   // 修改
-  Widget _buildChangeBtn(final int index, val) {
+  Widget _buildChangeBtn(final int index, String val) {
     return GestureDetector(
       onTap: () {
+        editUrlController.text = val;
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -492,9 +501,11 @@ class _BlocklistState extends State<Blocklist> {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   TextField(
+                    controller: editUrlController,
                     decoration: const InputDecoration(
                       labelText: 'URL',
-                      hintText: '', //${jsonDecode(val['value'])}
+                      // hintText: jsonDecode(
+                      //     val['value']), //${jsonDecode(val['value'])}
                     ),
                     onChanged: (value) {
                       url = value;

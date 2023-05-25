@@ -405,8 +405,9 @@ class _MyDialogState extends State<MyDialog> {
     widget.openLoading();
     //添加云端数据
     await Request().addOrDeleteObject(
-        'addObject', sn, "InternetGatewayDevice.WEB_GUI.ParentalControls.List");
-
+        "InternetGatewayDevice.WEB_GUI.ParentalControls.List",
+        sn,
+        'addObject');
     //获取云端数据
     var res = await Request().getACSNode([
       "InternetGatewayDevice.WEB_GUI.ParentalControls",

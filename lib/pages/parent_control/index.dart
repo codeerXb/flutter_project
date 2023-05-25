@@ -88,10 +88,12 @@ class _ParentState extends State<Parent> {
   }
 }
 
+List<Map<String, dynamic>> filteredData = [];
+
 //选中time period
 bool isFirst = true;
 //选择日期
-String date = 'Sun';
+String date = 'Mon';
 bool loading = true;
 String sn = '';
 bool isEditable = false; //是否编辑
@@ -784,6 +786,60 @@ class Scheduling extends StatefulWidget {
 }
 
 class _SchedulingState extends State<Scheduling> {
+  List accessList = []; //家长控制列表
+  //云端
+  getACSNodeFn() async {
+    setState(() {
+      loading = true;
+    });
+
+    try {
+      var parameterNames = [
+        "InternetGatewayDevice.WEB_GUI.ParentalControls",
+      ];
+      //获取云端数据
+      var res = await Request().getACSNode(parameterNames, sn);
+      Map<String, dynamic> d = jsonDecode(res);
+      var resList = d['data']['InternetGatewayDevice']['WEB_GUI']
+          ['ParentalControls']['List'];
+      setState(() {
+        resList.remove('_object');
+        resList.remove('_timestamp');
+        resList.remove('_writable');
+        accessList = [];
+        date = 'Mon';
+        filteredData = [];
+      });
+
+      resList.forEach((key, value) {
+        setState(() {
+          accessList.add(value);
+        });
+      });
+      for (var item in accessList) {
+        if (item['Weekdays']['_value'].contains('Mon')) {
+          filteredData.add({
+            'TimeStart': item['TimeStart']['_value'],
+            'TimeStop': item['TimeStop']['_value'],
+          });
+        }
+      }
+    } catch (e) {
+      // 处理异常
+    } finally {
+      setState(() {
+        loading = false;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getACSNodeFn();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -937,7 +993,17 @@ class _SchedulingState extends State<Scheduling> {
                     onPressed: () {
                       setState(() {
                         date = 'Mon';
+                        filteredData = [];
                       });
+                      for (var item in accessList) {
+                        if (item['Weekdays']['_value'].contains('Mon')) {
+                          filteredData.add({
+                            'TimeStart': item['TimeStart']['_value'],
+                            'TimeStop': item['TimeStop']['_value'],
+                          });
+                        }
+                      }
+                      print(filteredData);
                     },
                     child: ConstrainedBox(
                         constraints: BoxConstraints(maxWidth: 150.w),
@@ -958,8 +1024,19 @@ class _SchedulingState extends State<Scheduling> {
                   child: TextButton(
                     onPressed: () {
                       setState(() {
+                        filteredData = [];
                         date = 'Tue';
+                        filteredData = [];
                       });
+                      for (var item in accessList) {
+                        if (item['Weekdays']['_value'].contains('Tue')) {
+                          filteredData.add({
+                            'TimeStart': item['TimeStart']['_value'],
+                            'TimeStop': item['TimeStop']['_value'],
+                          });
+                        }
+                      }
+                      print(filteredData);
                     },
                     child: FittedBox(
                       child: Text(
@@ -978,7 +1055,17 @@ class _SchedulingState extends State<Scheduling> {
                     onPressed: () {
                       setState(() {
                         date = 'Wed';
+                        filteredData = [];
                       });
+                      for (var item in accessList) {
+                        if (item['Weekdays']['_value'].contains('Wed')) {
+                          filteredData.add({
+                            'TimeStart': item['TimeStart']['_value'],
+                            'TimeStop': item['TimeStop']['_value'],
+                          });
+                        }
+                      }
+                      print(filteredData);
                     },
                     child: FittedBox(
                       child: Text(
@@ -997,7 +1084,17 @@ class _SchedulingState extends State<Scheduling> {
                     onPressed: () {
                       setState(() {
                         date = 'Thu';
+                        filteredData = [];
                       });
+                      for (var item in accessList) {
+                        if (item['Weekdays']['_value'].contains('Thu')) {
+                          filteredData.add({
+                            'TimeStart': item['TimeStart']['_value'],
+                            'TimeStop': item['TimeStop']['_value'],
+                          });
+                        }
+                      }
+                      print(filteredData);
                     },
                     child: FittedBox(
                       child: Text(
@@ -1016,7 +1113,17 @@ class _SchedulingState extends State<Scheduling> {
                     onPressed: () {
                       setState(() {
                         date = 'Fri';
+                        filteredData = [];
                       });
+                      for (var item in accessList) {
+                        if (item['Weekdays']['_value'].contains('Fri')) {
+                          filteredData.add({
+                            'TimeStart': item['TimeStart']['_value'],
+                            'TimeStop': item['TimeStop']['_value'],
+                          });
+                        }
+                      }
+                      print(filteredData);
                     },
                     child: FittedBox(
                       child: Text(
@@ -1035,7 +1142,17 @@ class _SchedulingState extends State<Scheduling> {
                     onPressed: () {
                       setState(() {
                         date = 'Sat';
+                        filteredData = [];
                       });
+                      for (var item in accessList) {
+                        if (item['Weekdays']['_value'].contains('Sat')) {
+                          filteredData.add({
+                            'TimeStart': item['TimeStart']['_value'],
+                            'TimeStop': item['TimeStop']['_value'],
+                          });
+                        }
+                      }
+                      print(filteredData);
                     },
                     child: FittedBox(
                       child: Text(
@@ -1054,7 +1171,17 @@ class _SchedulingState extends State<Scheduling> {
                     onPressed: () {
                       setState(() {
                         date = 'Sun';
+                        filteredData = [];
                       });
+                      for (var item in accessList) {
+                        if (item['Weekdays']['_value'].contains('Sun')) {
+                          filteredData.add({
+                            'TimeStart': item['TimeStart']['_value'],
+                            'TimeStop': item['TimeStop']['_value'],
+                          });
+                        }
+                      }
+                      print(filteredData);
                     },
                     child: FittedBox(
                       child: Text(

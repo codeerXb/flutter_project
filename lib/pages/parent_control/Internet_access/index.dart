@@ -190,67 +190,67 @@ class _InternetaccessState extends State<Internetaccess> {
                                             trailing: Row(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
-                                                IconButton(
-                                                  icon: Icon(Icons.edit),
-                                                  onPressed: () {
-                                                    showDialog(
-                                                      context: context,
-                                                      builder: (BuildContext
-                                                          context) {
-                                                        return MyDialog(
-                                                            week: accessList[
-                                                                        index][
-                                                                    'Weekdays']
-                                                                ['_value'],
-                                                            time: accessList[index]
-                                                                            ['TimeStart'][
-                                                                        '_value']
-                                                                    .toString() +
-                                                                '-' +
-                                                                accessList[index]
-                                                                            ['TimeStop'][
-                                                                        '_value']
-                                                                    .toString(),
-                                                            id: keyList[index],
-                                                            getACSNodeFn:
-                                                                getACSNodeFn,
-                                                            openLoading:
-                                                                openLoading);
-                                                      },
-                                                    );
-                                                    //输入框
-                                                    // TextField(
-                                                    //   autofocus: true,
-                                                    //   controller: editTitleVal,
-                                                    //   decoration:
-                                                    //       InputDecoration(
-                                                    //     contentPadding:
-                                                    //         EdgeInsets.only(
-                                                    //             left: 20.w),
-                                                    //     border:
-                                                    //         OutlineInputBorder(
-                                                    //       borderRadius:
-                                                    //           BorderRadius
-                                                    //               .circular(10),
-                                                    //     ),
-                                                    //     hintText: S.current
-                                                    //         .pleaseEnter,
-                                                    //     suffixIcon: IconButton(
-                                                    //       icon: const Icon(
-                                                    //           Icons.clear),
-                                                    //       onPressed: () {
-                                                    //         // 清空输入框中的内容
-                                                    //         editTitleVal
-                                                    //             .clear();
-                                                    //       },
-                                                    //     ),
-                                                    //   ),
-                                                    //   onChanged: (value) {
-                                                    //     setState(() {});
-                                                    //   },
-                                                    // );
-                                                  },
-                                                ),
+                                                // IconButton(
+                                                //   icon: Icon(Icons.edit),
+                                                //   onPressed: () {
+                                                //     showDialog(
+                                                //       context: context,
+                                                //       builder: (BuildContext
+                                                //           context) {
+                                                //         return MyDialog(
+                                                //             week: accessList[
+                                                //                         index][
+                                                //                     'Weekdays']
+                                                //                 ['_value'],
+                                                //             time: accessList[index]
+                                                //                             ['TimeStart'][
+                                                //                         '_value']
+                                                //                     .toString() +
+                                                //                 '-' +
+                                                //                 accessList[index]
+                                                //                             ['TimeStop'][
+                                                //                         '_value']
+                                                //                     .toString(),
+                                                //             id: keyList[index],
+                                                //             getACSNodeFn:
+                                                //                 getACSNodeFn,
+                                                //             openLoading:
+                                                //                 openLoading);
+                                                //       },
+                                                //     );
+                                                //     //输入框
+                                                //     // TextField(
+                                                //     //   autofocus: true,
+                                                //     //   controller: editTitleVal,
+                                                //     //   decoration:
+                                                //     //       InputDecoration(
+                                                //     //     contentPadding:
+                                                //     //         EdgeInsets.only(
+                                                //     //             left: 20.w),
+                                                //     //     border:
+                                                //     //         OutlineInputBorder(
+                                                //     //       borderRadius:
+                                                //     //           BorderRadius
+                                                //     //               .circular(10),
+                                                //     //     ),
+                                                //     //     hintText: S.current
+                                                //     //         .pleaseEnter,
+                                                //     //     suffixIcon: IconButton(
+                                                //     //       icon: const Icon(
+                                                //     //           Icons.clear),
+                                                //     //       onPressed: () {
+                                                //     //         // 清空输入框中的内容
+                                                //     //         editTitleVal
+                                                //     //             .clear();
+                                                //     //       },
+                                                //     //     ),
+                                                //     //   ),
+                                                //     //   onChanged: (value) {
+                                                //     //     setState(() {});
+                                                //     //   },
+                                                //     // );
+                                                //   },
+                                                // ),
                                                 IconButton(
                                                   icon: Icon(Icons.delete),
                                                   onPressed: () async {
@@ -503,7 +503,8 @@ class _MyDialogState extends State<MyDialog> {
       stopTimeH = widget.time.split('-')[1].split(':')[0];
       stopTimeM = widget.time.split('-')[1].split(':')[1];
       // _selectedDays.addAll(widget.week);
-      print(_selectedDays);
+      print('widget.id');
+      print(widget.id);
     }
   }
 
@@ -511,9 +512,9 @@ class _MyDialogState extends State<MyDialog> {
   setData() async {
     Navigator.of(context).pop();
     widget.openLoading();
-    //添加云端数据
     await Request().addOrDeleteObject(
         "InternetGatewayDevice.WEB_GUI.ParentalControls.List", sn, 'addObject');
+
     //获取云端数据
     var res = await Request().getACSNode([
       "InternetGatewayDevice.WEB_GUI.ParentalControls",
@@ -525,11 +526,34 @@ class _MyDialogState extends State<MyDialog> {
     for (var key in list.keys) {
       lastKey = key;
     }
+
     String prefix =
         'InternetGatewayDevice.WEB_GUI.ParentalControls.List.$lastKey.';
+
     var parameterNames = [
       // ['${prefix}Device', '22:4C:35:D1:20:CA', 'xsd:string'],
       // ['${prefix}Name', 'HONOR_30-cd4d8ae98e5a0d4f', 'xsd:string'],
+      ['${prefix}TimeStart', '$startTimeH:$startTimeM', 'xsd:string'],
+      ['${prefix}TimeStop', '$stopTimeH:$stopTimeM', 'xsd:string'],
+      ['${prefix}Weekdays', '${_selectedDays.join(',')}', 'xsd:string'],
+    ];
+
+    //设置
+    await Request().setACSNode(parameterNames, sn);
+    Future.delayed(Duration(milliseconds: 500), () {
+      widget.getACSNodeFn();
+    });
+  }
+
+  //设置更新云端数据
+  upData() async {
+    Navigator.of(context).pop();
+    widget.openLoading();
+
+    String prefix =
+        'InternetGatewayDevice.WEB_GUI.ParentalControls.List.${widget.id}.';
+
+    var parameterNames = [
       ['${prefix}TimeStart', '$startTimeH:$startTimeM', 'xsd:string'],
       ['${prefix}TimeStop', '$stopTimeH:$stopTimeM', 'xsd:string'],
       ['${prefix}Weekdays', '${_selectedDays.join(',')}', 'xsd:string'],
@@ -679,8 +703,7 @@ class _MyDialogState extends State<MyDialog> {
         TextButton(
           onPressed: () {
             if (startTimeH.length == 0 || stopTimeH.length == 0) return;
-            
-            setData();
+              setData();
           },
           child: Text('Confirm'),
         ),

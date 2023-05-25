@@ -144,7 +144,7 @@ class _EquInfoState extends State<EquInfo> {
             ["Overview"]["VersionInfo"]["UBOOTVersion"]["_value"];
       });
     } catch (e) {
-        loading = false;
+      loading = false;
       debugPrint('获取设备信息失败：${e.toString()}');
     }
   }

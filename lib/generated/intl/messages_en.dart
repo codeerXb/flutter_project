@@ -97,7 +97,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Maximum number of devices"),
         "MaximumRange": MessageLookupByLibrary.simpleMessage("1-64"),
         "Mode": MessageLookupByLibrary.simpleMessage("Mode"),
-        "ModifyRemarks": MessageLookupByLibrary.simpleMessage("Modify remarks"),
+        "ModifyRemarks": MessageLookupByLibrary.simpleMessage("Device Name"),
         "NetworkConfig": MessageLookupByLibrary.simpleMessage("Network Config"),
         "NetworkIndex":
             MessageLookupByLibrary.simpleMessage("Visitor network index"),
@@ -181,8 +181,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "addDevice": MessageLookupByLibrary.simpleMessage("Add Device"),
         "advancedSet":
             MessageLookupByLibrary.simpleMessage("Advanced Settings"),
-        "aesRecommend": MessageLookupByLibrary.simpleMessage("AES(Recommend)"),
-        "aivideo": MessageLookupByLibrary.simpleMessage("AI video"),
+        "aesRecommend": MessageLookupByLibrary.simpleMessage("AES(Recommened)"),
+        "aivideo": MessageLookupByLibrary.simpleMessage("E-Learning"),
         "ascii32": MessageLookupByLibrary.simpleMessage("1~32 ASCII Character"),
         "autoLang": MessageLookupByLibrary.simpleMessage("Auto"),
         "autoip":
@@ -231,7 +231,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Static DNS has the highest priority, VPN DNS follows it and LTE DNS has the lowest priority. If you want to restore the VPN/LTE DNS, please clear the two DNS configuration and submit"),
         "down": MessageLookupByLibrary.simpleMessage("Down"),
         "emptyNORecommend":
-            MessageLookupByLibrary.simpleMessage("None(Not Recommended)"),
+            MessageLookupByLibrary.simpleMessage("None(Not Recommened)"),
         "endIPAddress": MessageLookupByLibrary.simpleMessage("End iP address"),
         "enter": MessageLookupByLibrary.simpleMessage("Enter"),
         "equipment": MessageLookupByLibrary.simpleMessage("Equipment"),
@@ -265,7 +265,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "linkStatus": MessageLookupByLibrary.simpleMessage("Link Status"),
         "list": MessageLookupByLibrary.simpleMessage("List of Bound Items"),
         "local": MessageLookupByLibrary.simpleMessage("Local"),
-        "locked": MessageLookupByLibrary.simpleMessage("locked"),
+        "locked": MessageLookupByLibrary.simpleMessage(
+            "The device has been locked, it will be unlocked in "),
         "logOut": MessageLookupByLibrary.simpleMessage("Log Out"),
         "login": MessageLookupByLibrary.simpleMessage("Login"),
         "loginFailed": MessageLookupByLibrary.simpleMessage("Login Failed"),
@@ -275,7 +276,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "macAddress":
             MessageLookupByLibrary.simpleMessage("Use MAC address cloning"),
         "maintainSettings": MessageLookupByLibrary.simpleMessage("Maintenance"),
-        "majorSet": MessageLookupByLibrary.simpleMessage("Professional"),
+        "majorSet": MessageLookupByLibrary.simpleMessage("Region"),
         "maxValue": MessageLookupByLibrary.simpleMessage("Max Value"),
         "minute": MessageLookupByLibrary.simpleMessage("M"),
         "minutes": MessageLookupByLibrary.simpleMessage("Minutes"),
@@ -306,13 +307,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "notEnable": MessageLookupByLibrary.simpleMessage("Disabled"),
         "notstart": MessageLookupByLibrary.simpleMessage("Not Started"),
         "oldPassowld": MessageLookupByLibrary.simpleMessage("Old Password"),
-        "online": MessageLookupByLibrary.simpleMessage("Online Course"),
+        "online": MessageLookupByLibrary.simpleMessage("E-Learning"),
         "options": MessageLookupByLibrary.simpleMessage("Options"),
         "parent": MessageLookupByLibrary.simpleMessage("Parental Control"),
         "parentalControl":
             MessageLookupByLibrary.simpleMessage("Parental Control"),
         "passError": MessageLookupByLibrary.simpleMessage(
-            "Password error, number of attempts left:"),
+            "Account or password incorrect, remaining input attempts:"),
         "passwordAgain":
             MessageLookupByLibrary.simpleMessage(" Enter your password again"),
         "passwordAgainError": MessageLookupByLibrary.simpleMessage(
@@ -367,8 +368,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "unblockdevice": MessageLookupByLibrary.simpleMessage(
             "Confirm to unbind the current device"),
         "unkownFail": MessageLookupByLibrary.simpleMessage("Unkown Error"),
-        "unlock": MessageLookupByLibrary.simpleMessage("S Unlock"),
-        "ununited": MessageLookupByLibrary.simpleMessage("ununited"),
+        "unlock": MessageLookupByLibrary.simpleMessage("s"),
+        "ununited": MessageLookupByLibrary.simpleMessage("Disconnected"),
         "up": MessageLookupByLibrary.simpleMessage("Up"),
         "used": MessageLookupByLibrary.simpleMessage("Used"),
         "userAgreement": MessageLookupByLibrary.simpleMessage("User Agreement"),

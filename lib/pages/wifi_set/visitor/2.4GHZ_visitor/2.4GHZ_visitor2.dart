@@ -39,11 +39,11 @@ class _Visitor2State extends State<Visitor2> {
   //AP隔离
   bool apVAl = false;
   //安全
-  String safeShowVal = 'WPA-psk&WPA2-PS';
+  String safeShowVal = 'WPA-PSK';
   int safeIndex = 0;
   String safeVal = 'psk-mixed';
   //wpa加密
-  String wpaShowVal = 'WPA-psk&WPA2-PS';
+  String wpaShowVal = S.current.aesRecommend;
   int wpaIndex = 0;
   String wpaVal = 'aes';
   //密码
@@ -258,7 +258,6 @@ class _Visitor2State extends State<Visitor2> {
 
 // 提交
   Future<void> _saveData() async {
-  
     setState(() {
       loading = true;
     });
@@ -332,24 +331,24 @@ class _Visitor2State extends State<Visitor2> {
                             boxCotainer: Column(
                           children: [
                             //访客网络索引
-                            BottomLine(
-                              rowtem: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(S.of(context).NetworkIndex,
-                                      style: TextStyle(
-                                          color: const Color.fromARGB(
-                                              255, 5, 0, 0),
-                                          fontSize: 28.sp)),
-                                  Text('2.4G_2',
-                                      style: TextStyle(
-                                          color: const Color.fromARGB(
-                                              255, 5, 0, 0),
-                                          fontSize: 28.sp)),
-                                ],
-                              ),
-                            ),
+                            // BottomLine(
+                            //   rowtem: Row(
+                            //     mainAxisAlignment:
+                            //         MainAxisAlignment.spaceBetween,
+                            //     children: [
+                            //       Text(S.of(context).NetworkIndex,
+                            //           style: TextStyle(
+                            //               color: const Color.fromARGB(
+                            //                   255, 5, 0, 0),
+                            //               fontSize: 28.sp)),
+                            //       Text('2.4G_2',
+                            //           style: TextStyle(
+                            //               color: const Color.fromARGB(
+                            //                   255, 5, 0, 0),
+                            //               fontSize: 28.sp)),
+                            //     ],
+                            //   ),
+                            // ),
                             //是否允许访问内网
                             BottomLine(
                               rowtem: Row(
@@ -466,31 +465,31 @@ class _Visitor2State extends State<Visitor2> {
                               ),
                             ),
                             //AP隔离
-                            BottomLine(
-                              rowtem: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(S.of(context).APIsolation,
-                                      style: TextStyle(
-                                          color: const Color.fromARGB(
-                                              255, 5, 0, 0),
-                                          fontSize: 28.sp)),
-                                  Row(
-                                    children: [
-                                      Switch(
-                                        value: apVAl,
-                                        onChanged: (newVal) {
-                                          setState(() {
-                                            apVAl = newVal;
-                                          });
-                                        },
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ),
+                            // BottomLine(
+                            //   rowtem: Row(
+                            //     mainAxisAlignment:
+                            //         MainAxisAlignment.spaceBetween,
+                            //     children: [
+                            //       Text(S.of(context).APIsolation,
+                            //           style: TextStyle(
+                            //               color: const Color.fromARGB(
+                            //                   255, 5, 0, 0),
+                            //               fontSize: 28.sp)),
+                            //       Row(
+                            //         children: [
+                            //           Switch(
+                            //             value: apVAl,
+                            //             onChanged: (newVal) {
+                            //               setState(() {
+                            //                 apVAl = newVal;
+                            //               });
+                            //             },
+                            //           ),
+                            //         ],
+                            //       )
+                            //     ],
+                            //   ),
+                            // ),
                             //安全
                             GestureDetector(
                               onTap: () {

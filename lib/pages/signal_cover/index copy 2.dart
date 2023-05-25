@@ -175,9 +175,9 @@ class MyPainter extends CustomPainter {
     canvas.drawRect(a, paint2);
     canvas.drawImage(aPattern, const Offset(-10, -20), selfPaint);
 
-    _box(canvas, paint3, '客厅', -100.0, -100.0, 200.0, 100.0);
-    _box(canvas, paint3, '厨房', -100.0, 0.0, 80.0, 120.0);
-    _box(canvas, paint3, '卧室', -20.0, 0.0, 120.0, 120.0);
+    _box(canvas, paint3, 'living room', -100.0, -100.0, 200.0, 100.0);
+    _box(canvas, paint3, 'chiken', -100.0, 0.0, 80.0, 120.0);
+    _box(canvas, paint3, 'bed room', -20.0, 0.0, 120.0, 120.0);
   }
 
   //在实际场景中正确利用此回调可以避免重绘开销，本示例我们简单的返回true

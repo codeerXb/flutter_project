@@ -440,10 +440,10 @@ class S {
     );
   }
 
-  /// `Professional`
+  /// `Region`
   String get majorSet {
     return Intl.message(
-      'Professional',
+      'Region',
       name: 'majorSet',
       desc: '',
       args: [],
@@ -1250,20 +1250,20 @@ class S {
     );
   }
 
-  /// `AES(Recommend)`
+  /// `AES(Recommened)`
   String get aesRecommend {
     return Intl.message(
-      'AES(Recommend)',
+      'AES(Recommened)',
       name: 'aesRecommend',
       desc: '',
       args: [],
     );
   }
 
-  /// `None(Not Recommended)`
+  /// `None(Not Recommened)`
   String get emptyNORecommend {
     return Intl.message(
-      'None(Not Recommended)',
+      'None(Not Recommened)',
       name: 'emptyNORecommend',
       desc: '',
       args: [],
@@ -1380,10 +1380,10 @@ class S {
     );
   }
 
-  /// `ununited`
+  /// `Disconnected`
   String get ununited {
     return Intl.message(
-      'ununited',
+      'Disconnected',
       name: 'ununited',
       desc: '',
       args: [],
@@ -1910,30 +1910,30 @@ class S {
     );
   }
 
-  /// `Password error, number of attempts left:`
+  /// `Account or password incorrect, remaining input attempts:`
   String get passError {
     return Intl.message(
-      'Password error, number of attempts left:',
+      'Account or password incorrect, remaining input attempts:',
       name: 'passError',
       desc: '',
       args: [],
     );
   }
 
-  /// `locked`
+  /// `The device has been locked, it will be unlocked in `
   String get locked {
     return Intl.message(
-      'locked',
+      'The device has been locked, it will be unlocked in ',
       name: 'locked',
       desc: '',
       args: [],
     );
   }
 
-  /// `S Unlock`
+  /// `s`
   String get unlock {
     return Intl.message(
-      'S Unlock',
+      's',
       name: 'unlock',
       desc: '',
       args: [],
@@ -2290,10 +2290,10 @@ class S {
     );
   }
 
-  /// `AI video`
+  /// `E-Learning`
   String get aivideo {
     return Intl.message(
-      'AI video',
+      'E-Learning',
       name: 'aivideo',
       desc: '',
       args: [],
@@ -2670,10 +2670,10 @@ class S {
     );
   }
 
-  /// `Online Course`
+  /// `E-Learning`
   String get online {
     return Intl.message(
-      'Online Course',
+      'E-Learning',
       name: 'online',
       desc: '',
       args: [],
@@ -2830,10 +2830,10 @@ class S {
     );
   }
 
-  /// `Modify remarks`
+  /// `Device Name`
   String get ModifyRemarks {
     return Intl.message(
-      'Modify remarks',
+      'Device Name',
       name: 'ModifyRemarks',
       desc: '',
       args: [],

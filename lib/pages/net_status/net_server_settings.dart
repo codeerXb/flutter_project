@@ -184,7 +184,7 @@ class _NetServerSettingsState extends State<NetServerSettings> {
                             inputFormatters: [
                               FilteringTextInputFormatter.allow(
                                   RegExp("[0-9.]")),
-                                  LengthLimitingTextInputFormatter(10)
+                              LengthLimitingTextInputFormatter(10)
                             ],
                             keyboardType: TextInputType.number,
                             // maxLength: 10,

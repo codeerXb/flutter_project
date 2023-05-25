@@ -29,7 +29,7 @@ class _GamesState extends State<Games> {
               padding: EdgeInsets.only(left: 30.w, right: 30.0.w),
               decoration:
                   const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
-              height: 1500.w,
+              height: 706,
               child: Column(children: const [
                 Image(
                   image: AssetImage('assets/images/games.jpg'),

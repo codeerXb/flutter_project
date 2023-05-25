@@ -346,64 +346,62 @@ class _WanSettingsState extends State<WanSettings> {
   void loginFn() async {
     setState(() {
       loading = true;
-        _isLoading=true;
-
+      _isLoading = true;
     });
-    var deviceSn = await sharedGetData('deviceSn', String);
-    setState(() {
-      sn = deviceSn.toString();
-    });
-    var res = await sharedGetData(sn, String);
-
-    var userInfo = jsonDecode(res.toString());
-    var user = userInfo["user"];
-    var pwd = utf8.decode(base64Decode(userInfo["pwd"]));
-
-    var response = await XHttp.get('/action/appLogin', {
-      'username': user,
-      'password': pwd,
-    });
-
-    var d = json.decode(response.toString());
-    loginController.setSession(d['sessionid']);
-    sharedAddAndUpdate("session", String, d['sessionid']);
-    loginController.setToken(d['token']);
-    sharedAddAndUpdate("token", String, d['token']);
-    // print('登录状态${d['code']}');
-    if (d['code'] == 200) {
-      getData();
-      getWanVal();
+    try {
+      var deviceSn = await sharedGetData('deviceSn', String);
       setState(() {
-        loading = false;
-        _isLoading=false;
-
+        sn = deviceSn.toString();
       });
-    } else if (d['code'] == DioErrorType.connectTimeout) {
-      //超时返回上一页
-      debugPrint('timeout');
-      Get.back();
-      ToastUtils.error(S.current.contimeout);
-      setState(() {
-        loading = false;
-        _isLoading=false;
+      var res = await sharedGetData(sn, String);
 
-      });
-    } else if (d['code'] == 201) {
-      //用户名或密码错误 去登录
-      ToastUtils.toast(
-          '${S.current.passError}${5 - int.parse(d.webLoginFailedTimes.toString())}');
+      var userInfo = jsonDecode(res.toString());
+      if (userInfo != null) {
+        var user = userInfo["user"];
+        var pwd = utf8.decode(base64Decode(userInfo["pwd"]));
+
+        var response = await XHttp.get('/action/appLogin', {
+          'username': user,
+          'password': pwd,
+        });
+        var d = json.decode(response.toString());
+        loginController.setSession(d['sessionid']);
+        sharedAddAndUpdate("session", String, d['sessionid']);
+        loginController.setToken(d['token']);
+        sharedAddAndUpdate("token", String, d['token']);
+        // print('登录状态${d['code']}');
+        if (d['code'] == 200) {
+          getData();
+          getWanVal();
+        } else if (d['code'] == 201) {
+          //用户名或密码错误 去登录
+          ToastUtils.toast(
+              '${S.current.passError}${5 - int.parse(d.webLoginFailedTimes.toString())}');
+          setState(() {
+            gotoLogin = true;
+          });
+        } else if (d['code'] == 202) {
+          ToastUtils.error(
+              '${S.current.locked}${d.webLoginRetryTimeout}${S.current.unlock}');
+          setState(() {
+            gotoLogin = true;
+          });
+        }
+      } else {
+        Get.snackbar('Warning', 'Use WAN setting after device login');
+        Get.toNamed("/wan_login", arguments: {"sn": sn});
+      }
+    } on DioError catch (err) {
+      if (err.type == DioErrorType.connectTimeout) {
+        //超时返回上一页
+        debugPrint('timeout');
+        Get.back();
+        ToastUtils.error(S.current.contimeout);
+      }
+    } finally {
       setState(() {
-        gotoLogin = true;
-        _isLoading=false;
         loading = false;
-      });
-    } else if (d['code'] == 202) {
-      ToastUtils.error(
-          '${S.current.locked}${d.webLoginRetryTimeout}${S.current.unlock}');
-      setState(() {
-        gotoLogin = true;
-        loading = false;
-        _isLoading=false;
+        _isLoading = false;
       });
     }
   }
@@ -897,7 +895,8 @@ class _WanSettingsState extends State<WanSettings> {
                           Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text('登录失败点击确认重新登录设备'),
+                              const Text(
+                                  'Login failed. Please log in again on the device.'),
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                     fixedSize: const Size(200, 30),

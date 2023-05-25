@@ -13,7 +13,7 @@ class _InstalledState extends State<Installed> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: customAppbar(context: context, title: 'Installed'),
+        appBar: customAppbar(context: context, title: 'App Stores'),
         body: Container(
           decoration:
               const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),

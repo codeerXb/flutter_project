@@ -232,10 +232,10 @@ class _TopoState extends State<Topo> {
           OnlineDeviceTable device = OnlineDeviceTable.fromJson({
             'id': id,
             'LeaseTime': '1',
-            'Type': item['connection'],
+            'Type': item['connection'] ?? 'LAN',
             'HostName': item['name'],
             'IP': item['IPAddress'],
-            'MAC': item['MACAddress']
+            'MAC': item['MACAddress'] ?? item['MacAddress']
           });
           onlineDeviceTable.add(device);
           id++;

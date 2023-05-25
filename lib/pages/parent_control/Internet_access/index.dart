@@ -80,7 +80,7 @@ class _InternetaccessState extends State<Internetaccess> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: customAppbar(
-            context: context, title: 'Internet access time managemen '),
+            context: context, title: 'Internet access time scheduling '),
         body: Container(
           padding: EdgeInsets.all(26.w),
           decoration:
@@ -100,7 +100,7 @@ class _InternetaccessState extends State<Internetaccess> {
                       });
                     },
                     child: Text(
-                      'time period',
+                      'Time Period',
                       style: TextStyle(
                           color: date == 'timePeriod'
                               ? Colors.blue
@@ -404,8 +404,8 @@ class _MyDialogState extends State<MyDialog> {
     Navigator.of(context).pop();
     widget.openLoading();
     //添加云端数据
-    await Request()
-        .addACSNode(sn, "InternetGatewayDevice.WEB_GUI.ParentalControls.List");
+    await Request().addOrDeleteObject(
+        'addObject', sn, "InternetGatewayDevice.WEB_GUI.ParentalControls.List");
 
     //获取云端数据
     var res = await Request().getACSNode([

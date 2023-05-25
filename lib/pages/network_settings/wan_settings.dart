@@ -346,64 +346,58 @@ class _WanSettingsState extends State<WanSettings> {
   void loginFn() async {
     setState(() {
       loading = true;
-        _isLoading=true;
-
+      _isLoading = true;
     });
-    var deviceSn = await sharedGetData('deviceSn', String);
-    setState(() {
-      sn = deviceSn.toString();
-    });
-    var res = await sharedGetData(sn, String);
-
-    var userInfo = jsonDecode(res.toString());
-    var user = userInfo["user"];
-    var pwd = utf8.decode(base64Decode(userInfo["pwd"]));
-
-    var response = await XHttp.get('/action/appLogin', {
-      'username': user,
-      'password': pwd,
-    });
-
-    var d = json.decode(response.toString());
-    loginController.setSession(d['sessionid']);
-    sharedAddAndUpdate("session", String, d['sessionid']);
-    loginController.setToken(d['token']);
-    sharedAddAndUpdate("token", String, d['token']);
-    // print('登录状态${d['code']}');
-    if (d['code'] == 200) {
-      getData();
-      getWanVal();
+    try {
+      var deviceSn = await sharedGetData('deviceSn', String);
       setState(() {
-        loading = false;
-        _isLoading=false;
-
+        sn = deviceSn.toString();
       });
-    } else if (d['code'] == DioErrorType.connectTimeout) {
-      //超时返回上一页
-      debugPrint('timeout');
-      Get.back();
-      ToastUtils.error(S.current.contimeout);
-      setState(() {
-        loading = false;
-        _isLoading=false;
+      var res = await sharedGetData(sn, String);
 
+      var userInfo = jsonDecode(res.toString());
+      var user = userInfo["user"];
+      var pwd = utf8.decode(base64Decode(userInfo["pwd"]));
+
+      var response = await XHttp.get('/action/appLogin', {
+        'username': user,
+        'password': pwd,
       });
-    } else if (d['code'] == 201) {
-      //用户名或密码错误 去登录
-      ToastUtils.toast(
-          '${S.current.passError}${5 - int.parse(d.webLoginFailedTimes.toString())}');
+
+      var d = json.decode(response.toString());
+      loginController.setSession(d['sessionid']);
+      sharedAddAndUpdate("session", String, d['sessionid']);
+      loginController.setToken(d['token']);
+      sharedAddAndUpdate("token", String, d['token']);
+      // print('登录状态${d['code']}');
+      if (d['code'] == 200) {
+        getData();
+        getWanVal();
+      } else if (d['code'] == 201) {
+        //用户名或密码错误 去登录
+        ToastUtils.toast(
+            '${S.current.passError}${5 - int.parse(d.webLoginFailedTimes.toString())}');
+        setState(() {
+          gotoLogin = true;
+        });
+      } else if (d['code'] == 202) {
+        ToastUtils.error(
+            '${S.current.locked}${d.webLoginRetryTimeout}${S.current.unlock}');
+        setState(() {
+          gotoLogin = true;
+        });
+      }
+    } on DioError catch (err) {
+      if (err.type == DioErrorType.connectTimeout) {
+        //超时返回上一页
+        debugPrint('timeout');
+        Get.back();
+        ToastUtils.error(S.current.contimeout);
+      }
+    } finally {
       setState(() {
-        gotoLogin = true;
-        _isLoading=false;
         loading = false;
-      });
-    } else if (d['code'] == 202) {
-      ToastUtils.error(
-          '${S.current.locked}${d.webLoginRetryTimeout}${S.current.unlock}');
-      setState(() {
-        gotoLogin = true;
-        loading = false;
-        _isLoading=false;
+        _isLoading = false;
       });
     }
   }

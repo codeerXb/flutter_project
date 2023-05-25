@@ -154,38 +154,34 @@ class _BlocklistState extends State<Blocklist> {
       body: loading
           ? const Center(child: CircularProgressIndicator())
           : SafeArea(
-              child: Container(
-              padding: const EdgeInsets.all(10.0),
-              decoration:
-                  const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(top: 10.sp),
-                    ),
-                    InfoBox(
-                      boxCotainer: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const TitleWidger(title: 'Enable'),
-                            Switch(
-                              value: isCheck,
-                              onChanged: (newVal) {
-                                setState(() {
-                                  isCheck = newVal;
+              child: Expanded(
+                child: Column(children: [
+                  Padding(
+                    padding: EdgeInsets.only(top: 10.sp),
+                  ),
+                  InfoBox(
+                    boxCotainer: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const TitleWidger(title: 'Enable'),
+                          Switch(
+                            value: isCheck,
+                            onChanged: (newVal) {
+                              setState(() {
+                                isCheck = newVal;
 
-                                  // getAccessOpen();
-                                });
-                              },
-                            ),
-                          ]),
-                    ),
-                    // 列表
-                    if (_itemTextList.isNotEmpty)
-                      Container(
+                                // getAccessOpen();
+                              });
+                            },
+                          ),
+                        ]),
+                  ),
+                  // 列表
+                  if (_itemTextList.isNotEmpty)
+                    SingleChildScrollView(
+                      child: Container(
                         padding: const EdgeInsets.all(5.0),
-                        height: 700.w,
+                        // height: 1.sh - 55,
                         child: ListView.separated(
                           scrollDirection: Axis.vertical,
                           padding: const EdgeInsets.fromLTRB(12, 20, 12, 30),
@@ -242,151 +238,143 @@ class _BlocklistState extends State<Blocklist> {
                           //shrinkWrap: true,
                         ),
                       ),
+                    ),
 
-                    if (!_itemTextList.isNotEmpty)
-                      Container(
-                        padding: const EdgeInsets.all(5.0),
-                        height: 890.w,
+                  if (!_itemTextList.isNotEmpty)
+                    Container(
+                      padding: const EdgeInsets.all(5.0),
+                      // height: 1.sh - 55,
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Icon(
+                              Icons.content_paste,
+                              size: 30,
+                            ),
+                            SizedBox(width: 10),
+                            Text('No URLs'),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                  // + 按钮
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Positioned(
+                      bottom: 100,
+                      child: SizedBox(
+                        width: 1.sw,
                         child: Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Icon(
-                                Icons.content_paste,
-                                size: 30,
-                              ),
-                              SizedBox(width: 10),
-                              Text('No URLs'),
-                            ],
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              fixedSize: MaterialStateProperty.all(
+                                  const Size(150, 35)),
+                              backgroundColor: MaterialStateProperty.all(
+                                  const Color(0xffffffff)), //背景颜色
+                              foregroundColor: MaterialStateProperty.all(
+                                  const Color(0xff5E6573)), //字体颜色
+                              overlayColor: MaterialStateProperty.all(
+                                  const Color(0xffffffff)), // 高亮色
+                              shadowColor: MaterialStateProperty.all(
+                                  const Color(0xffffffff)), //阴影颜色
+                              elevation: MaterialStateProperty.all(0), //阴影值
+                              textStyle: MaterialStateProperty.all(
+                                  const TextStyle(fontSize: 12)), //字体
+                              side: MaterialStateProperty.all(const BorderSide(
+                                  width: 1, color: Color(0xffCAD0DB))), //边框
+                              shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ), //圆角弧度
+                            ),
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text('Add'),
+                                    content: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        TextField(
+                                          decoration: const InputDecoration(
+                                            labelText: 'URL',
+                                            hintText: 'https://example.com',
+                                          ),
+                                          onChanged: (value) {
+                                            url = value;
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: Text(S.current.cancel),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      ElevatedButton(
+                                        child: Text(S.current.confirm),
+                                        onPressed: () {
+                                          // 在这里处理确定按钮的逻辑
+                                          Navigator.of(context).pop();
+                                          Future<void> executeRequests() async {
+                                            try {
+                                              // final result1 = await makeRequest1();
+                                              // final result2 =
+                                              //     await makeRequest2(result1);
+                                              // final result3 =
+                                              //     await makeRequest3(result2);
+                                              // final result4 =
+                                              //     await makeRequest4(result3);
+
+                                              // 处理请求结果
+                                              // handleResults(
+                                              //     result1, result2, result3, result4);
+                                            } catch (e) {
+                                              // 处理错误
+                                              // handleError(e);
+                                            }
+                                          }
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                            child: Text("Add",
+                                style: TextStyle(
+                                    fontSize: 30.sp, color: Colors.blue)),
                           ),
                         ),
                       ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 15.sp),
                     ),
-                    // + 按钮
-                    SizedBox(
-                      height: 160.w,
-                      child: Stack(
-                        children: [
-                          Positioned(
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 20, right: 20, bottom: 20),
-                              child: ElevatedButton(
-                                style: ButtonStyle(
-                                  fixedSize: MaterialStateProperty.all(
-                                      const Size(150, 35)),
-                                  backgroundColor: MaterialStateProperty.all(
-                                      const Color(0xffffffff)), //背景颜色
-                                  foregroundColor: MaterialStateProperty.all(
-                                      const Color(0xff5E6573)), //字体颜色
-                                  overlayColor: MaterialStateProperty.all(
-                                      const Color(0xffffffff)), // 高亮色
-                                  shadowColor: MaterialStateProperty.all(
-                                      const Color(0xffffffff)), //阴影颜色
-                                  elevation: MaterialStateProperty.all(0), //阴影值
-                                  textStyle: MaterialStateProperty.all(
-                                      const TextStyle(fontSize: 12)), //字体
-                                  side: MaterialStateProperty.all(
-                                      const BorderSide(
-                                          width: 1,
-                                          color: Color(0xffCAD0DB))), //边框
-                                  shape: MaterialStateProperty.all(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ), //圆角弧度
-                                ),
-                                onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: const Text('Add'),
-                                        content: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: <Widget>[
-                                            TextField(
-                                              decoration: const InputDecoration(
-                                                labelText: 'URL',
-                                                hintText: 'https://example.com',
-                                              ),
-                                              onChanged: (value) {
-                                                url = value;
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                        actions: <Widget>[
-                                          TextButton(
-                                            child: Text(S.current.cancel),
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                          ),
-                                          ElevatedButton(
-                                            child: Text(S.current.confirm),
-                                            onPressed: () {
-                                              // 在这里处理确定按钮的逻辑
-                                              Navigator.of(context).pop();
-                                              Future<void>
-                                                  executeRequests() async {
-                                                try {
-                                                  // final result1 = await makeRequest1();
-                                                  // final result2 =
-                                                  //     await makeRequest2(result1);
-                                                  // final result3 =
-                                                  //     await makeRequest3(result2);
-                                                  // final result4 =
-                                                  //     await makeRequest4(result3);
+                  ),
 
-                                                  // 处理请求结果
-                                                  // handleResults(
-                                                  //     result1, result2, result3, result4);
-                                                } catch (e) {
-                                                  // 处理错误
-                                                  // handleError(e);
-                                                }
-                                              }
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                },
-                                child: Text("Add",
-                                    style: TextStyle(
-                                        fontSize: 30.sp, color: Colors.blue)),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    // Positioned(
-                    //   left: 0,
-                    //   right: 0,
-                    //   bottom: 0,
-                    //   child: SizedBox(
-                    //     width: double.infinity,
-                    //     height: 150,
-                    //     child: Align(
-                    //       alignment: Alignment.bottomCenter,
-                    //       child: ElevatedButton(
-                    //         onPressed: () {},
-                    //         child: const Text('按钮'),
-                    //       ),
-                    //     ),
-                    //   ),
-                    // )
-                  ]),
-            )),
+                  // Positioned(
+                  //   left: 0,
+                  //   right: 0,
+                  //   bottom: 0,
+                  //   child: SizedBox(
+                  //     width: double.infinity,
+                  //     height: 150,
+                  //     child: Align(
+                  //       alignment: Alignment.bottomCenter,
+                  //       child: ElevatedButton(
+                  //         onPressed: () {},
+                  //         child: const Text('按钮'),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // )
+                ]),
+              ),
+            ),
     );
   }
 

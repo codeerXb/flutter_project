@@ -1,9 +1,46 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/core/http/http_app.dart';
+import 'package:flutter_template/core/utils/shared_preferences_util.dart';
+import 'package:flutter_template/core/utils/toast.dart';
 import 'package:get/get.dart';
+
+// 将接收的json转化成List<RectData>
+List<RectData> convertToRectDataList(List<dynamic> dataList) {
+  List<RectData> rectDataList = [];
+
+  for (var dataItem in dataList) {
+    final data = dataItem as Map<String, dynamic>;
+    RectData rectData = RectData(
+      name: data['name'],
+      floor: data['floor'],
+      isSelected: data['isSelected'],
+      offsetX: data['offsetX'],
+      offsetY: data['offsetY'],
+      left: data['left'],
+      top: data['top'],
+      width: data['width'],
+      height: data['height'],
+    );
+
+    rectDataList.add(rectData);
+  }
+
+  return rectDataList;
+}
 
 class RectController extends GetxController {
   List<RectData> rects = [];
+
+  void init() async {
+    var sn = await sharedGetData('deviceSn', String);
+    var res = await App.get('/platform/wifiJson/getOne/$sn');
+    debugPrint(res['wifiJson']['list'].toString());
+    rects = convertToRectDataList(res['wifiJson']['list']);
+    update();
+  }
 
   void addRect(RectData rect) {
     rects.add(rect);
@@ -104,6 +141,38 @@ class _MyAppState extends State<MyApp> {
     setState(() {});
   }
 
+  // saveLoading
+  bool saveLayoutLoading = false;
+  void onSaveLayout() async {
+    setState(() {
+      saveLayoutLoading = true;
+    });
+    try {
+      var sn = await sharedGetData("deviceSn", String);
+      debugPrint('devicesn: $sn');
+      // 实现保存户型图逻辑
+      await App.post('/platform/wifiJson/wifi', data: {
+        "sn": sn,
+        "wifiJson": {"list": _rectController.rects}
+      });
+      printInfo(
+          info:
+              '户型数据：${jsonEncode({"list": _rectController.rects}).toString()}');
+      Get.offNamed('/test_signal');
+    } catch (err) {
+      printError(info: err.toString());
+    } finally {
+      setState(() {
+        saveLayoutLoading = false;
+      });
+    }
+  }
+
+  // 重置户型图
+  void onResetRects() {
+    _rectController.init();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,16 +181,17 @@ class _MyAppState extends State<MyApp> {
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             // 返回按钮逻辑
-            Get.offNamed('/home');
+            Get.back();
           },
         ),
         title: const Text('Edit House Layout'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.save),
+            icon: saveLayoutLoading
+                ? const CircularProgressIndicator()
+                : const Icon(Icons.save),
             onPressed: () {
-              // 保存按钮逻辑
-              Get.offNamed('/test_signal');
+              saveLayoutLoading ? null : onSaveLayout();
             },
           ),
         ],
@@ -278,13 +348,16 @@ class _MyAppState extends State<MyApp> {
                               if (roomName.isNotEmpty) {
                                 // 创建一个方块数据对象
                                 final rectData = RectData(
-                                  rect: const Rect.fromLTWH(
-                                    1200, 1200, // 替换为你想要的方块的位置和大小
-                                    100, 100,
-                                  ),
+                                  left: 0,
+                                  top: 0,
+                                  width: 100,
+                                  height: 100,
                                   name: roomName,
                                   floor: curFloor,
                                   isSelected: false,
+                                  // 相对（0，0）的正向偏移
+                                  offsetX: 1200.0,
+                                  offsetY: 1200.0,
                                 );
 
                                 // 将方块数据添加到列表中
@@ -342,6 +415,7 @@ class _MyAppState extends State<MyApp> {
               child: ElevatedButton(
                 onPressed: () {
                   // 按钮点击逻辑
+                  onResetRects();
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
@@ -391,10 +465,8 @@ class GridPainter extends CustomPainter {
       ..strokeWidth = 1;
 
     // 计算网格绘制起始位置
-    final double startX =
-        centerOffset.dx - ((columnCount * cellSize) / 2) + offsetX;
-    final double startY =
-        centerOffset.dy - ((rowCount * cellSize) / 2) + offsetY;
+    final double startX = centerOffset.dx + offsetX;
+    final double startY = centerOffset.dy + offsetY;
 
     // 绘制垂直线
     for (int i = 0; i <= columnCount; i++) {
@@ -460,11 +532,11 @@ class _GridWidgetState extends State<GridWidget> {
   final int columnCount = 350;
   final double cellSize = 15.0;
 
-  Offset centerOffset = const Offset(2626, 2626);
+  Offset centerOffset = const Offset(0, 0);
   Offset lastOffset = Offset.zero;
 
-  double offsetX = -1000.0;
-  double offsetY = -1000.0;
+  double offsetX = -1200;
+  double offsetY = -1200;
   double maxWidth = 0.0;
   double maxHeight = 0.0;
 
@@ -476,13 +548,6 @@ class _GridWidgetState extends State<GridWidget> {
     maxHeight = rowCount * cellSize;
   }
 
-  void _updateRectPosition(int index, Offset delta) {
-    setState(() {
-      final rectData = widget.rects[index];
-      rectData.rect = rectData.rect.shift(delta);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final rectWidgets = <Widget>[];
@@ -490,16 +555,39 @@ class _GridWidgetState extends State<GridWidget> {
       if (widget.curFloor == rectData.floor) {
         rectWidgets.add(
           Positioned(
-            left: offsetX,
-            top: offsetY,
+            left: offsetX + rectData.offsetX,
+            top: offsetY + rectData.offsetY,
             child: GestureDetector(
+              // behavior: HitTestBehavior.opaque,
               onTap: () {
                 setState(() {
+                  // 将原有的所有的isSelected重置
+                  for (var rect in widget.rects) {
+                    rect.isSelected = false;
+                  }
+                  // 将现在点击的变为选中
                   rectData.isSelected = !rectData.isSelected;
+                  if (rectData.isSelected) {}
                 });
               },
+              onPanUpdate: (details) {
+                if (rectData.isSelected) {
+                  printInfo(info: '方块：${details.delta}');
+                  setState(() {
+                    rectData.offsetX += details.delta.dx;
+                    rectData.offsetY += details.delta.dy;
+                    printInfo(
+                        info: '方块位置：${rectData.offsetX},${rectData.offsetY}');
+                    // // 限制偏移范围
+                    // rectData.offsetX =
+                    //     rectData.offsetX.clamp(0, 2430 - rectData.rect.width);
+                    // rectData.offsetY =
+                    //     rectData.offsetX.clamp(0, 2305 - rectData.rect.height);
+                  });
+                }
+              },
               child: CustomPaint(
-                // size: Size(maxWidth, maxHeight),
+                size: const Size(100, 100),
                 painter: RectsPainter(rectData),
               ),
             ),
@@ -507,29 +595,37 @@ class _GridWidgetState extends State<GridWidget> {
         );
       }
     }
-    return GestureDetector(
-      onPanUpdate: (details) {
-        setState(() {
-          offsetX += details.delta.dx;
-          offsetY += details.delta.dy;
+    return Stack(
+      children: [
+        // 画布
+        Positioned(
+          left: offsetX,
+          top: offsetY,
+          child: GestureDetector(
+            onTap: () {
+              // 将原有的所有的isSelected重置
+              for (var rect in widget.rects) {
+                setState(() {
+                  rect.isSelected = false;
+                });
+              }
+            },
+            onPanUpdate: (details) {
+              setState(() {
+                offsetX += details.delta.dx;
+                offsetY += details.delta.dy;
 
-          // 限制偏移量范围
-          offsetX = offsetX.clamp(-2430, 0);
-          offsetY = offsetY.clamp(-2305, 0);
-          debugPrint('onPanUpdate: $offsetX,$offsetY');
+                // 限制偏移量范围
+                offsetX = offsetX.clamp(-2430, 0);
+                offsetY = offsetY.clamp(-2305, 0);
+                debugPrint('onPanUpdate: $offsetX,$offsetY');
 
-          // 更新每个矩形的位置
-          for (int i = 0; i < widget.rects.length; i++) {
-            _updateRectPosition(i, details.delta);
-          }
-        });
-      },
-      child: Stack(
-        children: [
-          // 画布
-          Positioned(
-            left: offsetX,
-            top: offsetY,
+                // // 更新每个矩形的位置
+                // for (int i = 0; i < widget.rects.length; i++) {
+                //   _updateRectPosition(i, details.delta);
+                // }
+              });
+            },
             child: CustomPaint(
               size: Size(maxWidth, maxHeight),
               painter: GridPainter(
@@ -542,27 +638,27 @@ class _GridWidgetState extends State<GridWidget> {
               ),
             ),
           ),
-          // 绘制矩形
-          ...rectWidgets,
-          // 复位操作按钮
-          Positioned(
-            bottom: 0,
-            child: ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  offsetX = -1000;
-                  offsetY = -1000;
-                });
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                foregroundColor: Colors.black,
-              ),
-              child: const Icon(Icons.settings_backup_restore),
+        ),
+        // 绘制矩形
+        ...rectWidgets,
+        // 复位操作按钮
+        Positioned(
+          bottom: 0,
+          child: ElevatedButton(
+            onPressed: () {
+              setState(() {
+                offsetX = -1200;
+                offsetY = -1200;
+              });
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
             ),
+            child: const Icon(Icons.settings_backup_restore),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -574,12 +670,13 @@ class RectsPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final rect = rectData.rect;
+    final rect = Rect.fromLTWH(
+        rectData.left, rectData.top, rectData.width, rectData.height);
     final isSelected = rectData.isSelected;
     final paint = Paint()
       ..color = isSelected
-          ? Color.fromARGB(255, 0, 89, 255)
-          : Color.fromARGB(255, 0, 0, 0)
+          ? const Color.fromARGB(255, 0, 89, 255)
+          : const Color.fromARGB(255, 0, 0, 0)
       ..strokeWidth = 2
       ..style = PaintingStyle.stroke;
     canvas.drawRect(rect, paint);
@@ -600,20 +697,44 @@ class RectsPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+  bool shouldRepaint(RectsPainter oldDelegate) {
     return true;
   }
 }
 
 class RectData {
-  Rect rect;
   final String name;
   String floor;
   bool isSelected;
+  double offsetX;
+  double offsetY;
+  double left;
+  double top;
+  double width;
+  double height;
 
-  RectData(
-      {required this.rect,
-      required this.name,
-      required this.floor,
-      required this.isSelected});
+  RectData({
+    required this.name,
+    required this.floor,
+    required this.isSelected,
+    required this.offsetX,
+    required this.offsetY,
+    required this.left,
+    required this.top,
+    required this.width,
+    required this.height,
+  });
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'left': left,
+      'top': top,
+      'width': width,
+      'height': height,
+      'floor': floor,
+      'isSelected': isSelected,
+      'offsetX': offsetX,
+      'offsetY': offsetY,
+    };
+  }
 }

@@ -181,8 +181,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "addDevice": MessageLookupByLibrary.simpleMessage("Add Device"),
         "advancedSet":
             MessageLookupByLibrary.simpleMessage("Advanced Settings"),
-        "aesRecommend": MessageLookupByLibrary.simpleMessage("AES(Recommend)"),
-        "aivideo": MessageLookupByLibrary.simpleMessage("AI video"),
+        "aesRecommend": MessageLookupByLibrary.simpleMessage("AES(Recommened)"),
+        "aivideo": MessageLookupByLibrary.simpleMessage("E-Learning"),
         "ascii32": MessageLookupByLibrary.simpleMessage("1~32 ASCII Character"),
         "autoLang": MessageLookupByLibrary.simpleMessage("Auto"),
         "autoip":
@@ -231,7 +231,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Static DNS has the highest priority, VPN DNS follows it and LTE DNS has the lowest priority. If you want to restore the VPN/LTE DNS, please clear the two DNS configuration and submit"),
         "down": MessageLookupByLibrary.simpleMessage("Down"),
         "emptyNORecommend":
-            MessageLookupByLibrary.simpleMessage("None(Not Recommended)"),
+            MessageLookupByLibrary.simpleMessage("None(Not Recommened)"),
         "endIPAddress": MessageLookupByLibrary.simpleMessage("End iP address"),
         "enter": MessageLookupByLibrary.simpleMessage("Enter"),
         "equipment": MessageLookupByLibrary.simpleMessage("Equipment"),
@@ -306,7 +306,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "notEnable": MessageLookupByLibrary.simpleMessage("Disabled"),
         "notstart": MessageLookupByLibrary.simpleMessage("Not Started"),
         "oldPassowld": MessageLookupByLibrary.simpleMessage("Old Password"),
-        "online": MessageLookupByLibrary.simpleMessage("Online Course"),
+        "online": MessageLookupByLibrary.simpleMessage("E-Learning"),
         "options": MessageLookupByLibrary.simpleMessage("Options"),
         "parent": MessageLookupByLibrary.simpleMessage("Parental Control"),
         "parentalControl":
@@ -368,7 +368,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Confirm to unbind the current device"),
         "unkownFail": MessageLookupByLibrary.simpleMessage("Unkown Error"),
         "unlock": MessageLookupByLibrary.simpleMessage("S Unlock"),
-        "ununited": MessageLookupByLibrary.simpleMessage("ununited"),
+        "ununited": MessageLookupByLibrary.simpleMessage("Disconnected"),
         "up": MessageLookupByLibrary.simpleMessage("Up"),
         "used": MessageLookupByLibrary.simpleMessage("Used"),
         "userAgreement": MessageLookupByLibrary.simpleMessage("User Agreement"),

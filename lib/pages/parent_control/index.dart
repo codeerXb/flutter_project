@@ -424,10 +424,8 @@ class _SwiperCardState extends State<SwiperCard> {
                                                   editName(
                                                       sn,
                                                       deviceList[index]
-                                                              ['MACAddress']
-                                                          ? deviceList[index]
-                                                              ['MACAddress']
-                                                          : deviceList[index]
+                                                              ['MACAddress'] ??
+                                                          deviceList[index]
                                                               ['MacAddress'],
                                                       deviceList[index]
                                                           ['name']);
@@ -458,7 +456,7 @@ class _SwiperCardState extends State<SwiperCard> {
 
                   //title下方显示的内容
                   subtitle: Text(
-                    deviceList[index]['connection'] ?? '-',
+                    deviceList[index]['connection'] ?? 'LAN',
                   ),
                 ),
               ),
@@ -633,7 +631,7 @@ class SixBoxsState extends State<SixBoxs> {
                             child:
                                 const FittedBox(child: Text('Social media'))),
                         Text(
-                          '2 allowed',
+                          '3 allowed',
                           style:
                               TextStyle(color: Colors.black54, fontSize: 25.sp),
                         ),
@@ -713,7 +711,7 @@ class SixBoxsState extends State<SixBoxs> {
                             constraints: BoxConstraints(maxWidth: 150.w),
                             child: const FittedBox(child: Text('APP Stores'))),
                         Text(
-                          '8 allowed',
+                          '2 allowed',
                           style:
                               TextStyle(color: Colors.black54, fontSize: 25.sp),
                         ),
@@ -753,7 +751,7 @@ class SixBoxsState extends State<SixBoxs> {
                             child: const FittedBox(
                                 child: Text('Website Blocklist'))),
                         Text(
-                          '2 allowed',
+                          '2 blocked',
                           style:
                               TextStyle(color: Colors.black54, fontSize: 25.sp),
                         ),

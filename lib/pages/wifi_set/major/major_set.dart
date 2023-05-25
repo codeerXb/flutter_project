@@ -109,8 +109,7 @@ class _MajorSetState extends State<MajorSet> {
             ["WLANSettings"]["CountryCode"]["_type"];
         var radioState = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
             ["WiFi"]["WLANSettings"]["CountryCode"]["_value"];
-        index = ['CN', 'FR', 'RU', 'US', 'SG', 'AU', 'CL', 'PL']
-            .indexOf(radioState);
+        index = ['US', 'FR', 'RU', 'SG', 'AU', 'CL', 'PL'].indexOf(radioState);
         //读取地区
         switch (radioState) {
           case 'CN':

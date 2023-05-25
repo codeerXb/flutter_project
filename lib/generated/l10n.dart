@@ -1250,20 +1250,20 @@ class S {
     );
   }
 
-  /// `AES(Recommend)`
+  /// `AES(Recommened)`
   String get aesRecommend {
     return Intl.message(
-      'AES(Recommend)',
+      'AES(Recommened)',
       name: 'aesRecommend',
       desc: '',
       args: [],
     );
   }
 
-  /// `None(Not Recommended)`
+  /// `None(Not Recommened)`
   String get emptyNORecommend {
     return Intl.message(
-      'None(Not Recommended)',
+      'None(Not Recommened)',
       name: 'emptyNORecommend',
       desc: '',
       args: [],
@@ -1380,10 +1380,10 @@ class S {
     );
   }
 
-  /// `ununited`
+  /// `Disconnected`
   String get ununited {
     return Intl.message(
-      'ununited',
+      'Disconnected',
       name: 'ununited',
       desc: '',
       args: [],
@@ -2290,10 +2290,10 @@ class S {
     );
   }
 
-  /// `AI video`
+  /// `E-Learning`
   String get aivideo {
     return Intl.message(
-      'AI video',
+      'E-Learning',
       name: 'aivideo',
       desc: '',
       args: [],
@@ -2670,10 +2670,10 @@ class S {
     );
   }
 
-  /// `Online Course`
+  /// `E-Learning`
   String get online {
     return Intl.message(
-      'Online Course',
+      'E-Learning',
       name: 'online',
       desc: '',
       args: [],

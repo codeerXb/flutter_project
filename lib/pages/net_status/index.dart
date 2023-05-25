@@ -97,11 +97,40 @@ class _NetStatusState extends State<NetStatus> {
   void initState() {
     super.initState();
 
+    sharedGetData('deviceSn', String).then(((res) {
+      printInfo(info: 'deviceSn$res');
+      setState(() {
+        sn = res.toString();
+        //状态为local 请求本地  状态为cloud  请求云端
+        printInfo(info: 'state--${loginController.login.state}');
+        if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
+          if (mounted) {
+            getBasicInfo();
+            getTROnlineCount(sn);
+          }
+        }
+        if (loginController.login.state == 'local') {
+          if (mounted) {
+            // 获取流量
+            getUsedFlow();
+            // 获取设备列表并更新在线数量
+            updateOnlineCount();
+            // 获取网络连接状态和上下行速率并更新
+            updateStatus();
+          }
+        }
+      });
+    }));
+
+    if (mounted) {
+      getqueryingBoundDevices();
+    }
+
     timer = Timer.periodic(const Duration(seconds: 2), (t) async {
       printInfo(info: 'state--${loginController.login.state}');
       if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
         if (mounted) {
-          getTROnlineCount();
+          getTROnlineCount(sn);
         }
       }
       if (loginController.login.state == 'local') {
@@ -162,49 +191,17 @@ class _NetStatusState extends State<NetStatus> {
     // }).catchError((e) {
     //   printError(info: 'error:$e');
     // });
-
-    sharedGetData('deviceSn', String).then(((res) {
-      printInfo(info: 'deviceSn$res');
-      setState(() {
-        sn = res.toString();
-        //状态为local 请求本地  状态为cloud  请求云端
-        printInfo(info: 'state--${loginController.login.state}');
-        if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
-          if (mounted) {
-            getTROnlineCount();
-          }
-        }
-        if (loginController.login.state == 'local') {
-          if (mounted) {
-            // 获取流量
-            getUsedFlow();
-            // 获取设备列表并更新在线数量
-            updateOnlineCount();
-            // 获取网络连接状态和上下行速率并更新
-            updateStatus();
-          }
-        }
-      });
-    }));
-
-    if (mounted) {
-      getqueryingBoundDevices();
-    }
   }
 
 //1连接
-  var ConnectStatus = '';
+  var connectStatus = '1';
 
-  ///  获取  云端
-  getTROnlineCount() async {
+  /// 获取云端基础信息
+  getBasicInfo() async {
     // Navigator.push(context, DialogRouter(LoadingDialog()));
     printInfo(info: 'sn在这里有值吗-------$sn');
     var parameterNames = [
       "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.ProductModel",
-      "InternetGatewayDevice.WEB_GUI.Overview.DeviceList",
-      // "InternetGatewayDevice.WEB_GUI.Overview.ThroughputStatisticsList",
-      "InternetGatewayDevice.WEB_GUI.Overview.WANStatus.DLRateCurrent",
-      "InternetGatewayDevice.WEB_GUI.Overview.WANStatus.ULRateCurrent",
       "InternetGatewayDevice.WEB_GUI.Ethernet.Status.ConnectStatus",
     ];
     var res = await Request().getACSNode(parameterNames, sn);
@@ -212,84 +209,91 @@ class _NetStatusState extends State<NetStatus> {
       var jsonObj = jsonDecode(res);
       if (!mounted) return;
       setState(() {
-        ConnectStatus = jsonObj['data']['InternetGatewayDevice']['WEB_GUI']
+        connectStatus = jsonObj['data']['InternetGatewayDevice']['WEB_GUI']
             ['Ethernet']['Status']['ConnectStatus']['_value'];
-        // 列表数量
-        Map<String, dynamic> flowTableName = jsonObj["data"]
-            ["InternetGatewayDevice"]["WEB_GUI"]["Overview"]["DeviceList"];
-        _onlineCount = flowTableName.keys
-            .toList()
-            .where((element) {
-              var pattern = RegExp(r'[0-9]+');
-              var isMatch = pattern.hasMatch(element);
-              return isMatch;
-            })
-            .toList()
-            .length;
+
         // 设定名字为产品类型
         name = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Overview"]
             ['VersionInfo']['ProductModel']['_value'];
-        // 已用流量
-        // var flowTable = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
-        //     ["Overview"]["ThroughputStatisticsList"];
-        // double flowTableVal =
-        //     double.parse(flowTable["1"]["ReceivedTotal"]["_value"]!) +
-        //         double.parse(flowTable["1"]["SentTotal"]["_value"]!) +
-        //         double.parse(flowTable["2"]["ReceivedTotal"]["_value"]!) +
-        //         double.parse(flowTable["2"]["SentTotal"]["_value"]!) +
-        //         double.parse(flowTable["3"]["ReceivedTotal"]["_value"]!) +
-        //         double.parse(flowTable["3"]["SentTotal"]["_value"]!) +
-        //         double.parse(flowTable["4"]["ReceivedTotal"]["_value"]!) +
-        //         double.parse(flowTable["4"]["SentTotal"]["_value"]!);
-        // _usedFlow = flowTableVal / 1048576;
-
-        // /// 舍弃当前变量的小数部分，结果为 33。返回值为 int 类型。
-        // usedFlowInt = (_usedFlow >= 1024)
-        //     ? (_usedFlow / 1024).truncate()
-        //     : _usedFlow.truncate();
-
-        // /// 获取小数部分，通过.分割，返回值为String类型
-        // usedFlowDecimals = (_usedFlow >= 1024)
-        //     ? '${(_usedFlow / 1024).toStringAsFixed(2).toString().split('.')[1].substring(0, 2)}GB'
-        //     : '${_usedFlow.toStringAsFixed(2).toString().split('.')[1].substring(0, 1)}MB';
-
-        // 上下行速率
-        var flow = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
-            ["Overview"]["WANStatus"];
-        _upRate = double.parse(flow["ULRateCurrent"]["_value"]);
-        _downRate = double.parse(flow["DLRateCurrent"]["_value"]);
-
-        downKb = (_downRate * 8) / 1000;
-        if (downKb >= 1000 * 1000) {
-          // gb/s
-          downKb = double.parse((downKb / 1000 / 1000).toStringAsFixed(2));
-          downUnit = 'Gbps';
-        } else if (downKb >= 1000) {
-          // mb/s
-          downKb = double.parse((downKb / 1000).toStringAsFixed(2));
-          downUnit = 'Mbps';
-        }
-        downKb = double.parse(downKb.toStringAsFixed(2));
-        downUnit = 'Kbps';
-        printInfo(info: 'time:${DateTime.now()}--down:$downKb$downUnit');
-
-        upKb = (_upRate * 8) / 1000;
-        if (upKb >= 1000 * 1000) {
-          // gb/s
-          upKb = double.parse((upKb / 1000 / 1000).toStringAsFixed(2));
-          upUnit = 'Gbps';
-        } else if (upKb >= 1000) {
-          // mb/s
-          upKb = double.parse((upKb / 1000).toStringAsFixed(2));
-          upUnit = 'Mbps';
-        }
-        upKb = double.parse(upKb.toStringAsFixed(2));
-        upUnit = 'Kbps';
       });
     } catch (e) {
       debugPrint('获取信息失败：${e.toString()}');
     }
-    // Navigator.pop(context);
+  }
+
+  ///  获取云端轮询信息
+  getTROnlineCount(sn) async {
+    // 已用流量
+    // var flowTable = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
+    //     ["Overview"]["ThroughputStatisticsList"];
+    // double flowTableVal =
+    //     double.parse(flowTable["1"]["ReceivedTotal"]["_value"]!) +
+    //         double.parse(flowTable["1"]["SentTotal"]["_value"]!) +
+    //         double.parse(flowTable["2"]["ReceivedTotal"]["_value"]!) +
+    //         double.parse(flowTable["2"]["SentTotal"]["_value"]!) +
+    //         double.parse(flowTable["3"]["ReceivedTotal"]["_value"]!) +
+    //         double.parse(flowTable["3"]["SentTotal"]["_value"]!) +
+    //         double.parse(flowTable["4"]["ReceivedTotal"]["_value"]!) +
+    //         double.parse(flowTable["4"]["SentTotal"]["_value"]!);
+    // _usedFlow = flowTableVal / 1048576;
+
+    // /// 舍弃当前变量的小数部分，结果为 33。返回值为 int 类型。
+    // usedFlowInt = (_usedFlow >= 1024)
+    //     ? (_usedFlow / 1024).truncate()
+    //     : _usedFlow.truncate();
+
+    // /// 获取小数部分，通过.分割，返回值为String类型
+    // usedFlowDecimals = (_usedFlow >= 1024)
+    //     ? '${(_usedFlow / 1024).toStringAsFixed(2).toString().split('.')[1].substring(0, 2)}GB'
+    //     : '${_usedFlow.toStringAsFixed(2).toString().split('.')[1].substring(0, 1)}MB';
+    try {
+      var updownRes = await App.get('/cpeMqtt/getCurrentInfo/$sn');
+
+      if (updownRes['code'] == 200 && mounted) {
+        setState(() {
+          // 上下行速率
+          _upRate = double.parse(updownRes['data']['ULRateCurrent'].toString());
+          _downRate =
+              double.parse(updownRes['data']['DLRateCurrent'].toString());
+
+          downKb = (_downRate * 8) / 1000;
+          if (downKb >= 1000 * 1000) {
+            // gb/s
+            downKb = double.parse((downKb / 1000 / 1000).toStringAsFixed(2));
+            downUnit = 'Gbps';
+          } else if (downKb >= 1000) {
+            // mb/s
+            downKb = double.parse((downKb / 1000).toStringAsFixed(2));
+            downUnit = 'Mbps';
+          }
+          downKb = double.parse(downKb.toStringAsFixed(2));
+          downUnit = 'Kbps';
+          printInfo(info: 'time:${DateTime.now()}--down:$downKb$downUnit');
+
+          upKb = (_upRate * 8) / 1000;
+          if (upKb >= 1000 * 1000) {
+            // gb/s
+            upKb = double.parse((upKb / 1000 / 1000).toStringAsFixed(2));
+            upUnit = 'Gbps';
+          } else if (upKb >= 1000) {
+            // mb/s
+            upKb = double.parse((upKb / 1000).toStringAsFixed(2));
+            upUnit = 'Mbps';
+          }
+          upKb = double.parse(upKb.toStringAsFixed(2));
+          upUnit = 'Kbps';
+          // 列表数量
+          _onlineCount =
+              int.parse(updownRes['data']['WifiDeviceNum'].toString()) +
+                  int.parse(updownRes['data']['LanDeviceNum'].toString());
+        });
+      }
+    } catch (err) {
+      printError(info: err.toString());
+      if (err is TimeoutException) {
+        ToastUtils.error(S.current.timeout);
+      }
+    }
   }
 
   /// 获取设备列表并更新在线数量  本地
@@ -635,34 +639,34 @@ class _NetStatusState extends State<NetStatus> {
                                   //       TextStyle(fontWeight: FontWeight.w600),
                                   // )),
                                   // 热力图
-                                  // Container(
-                                  //   height: 600.w,
-                                  //   margin: EdgeInsets.only(bottom: 20.w),
-                                  //   decoration: BoxDecoration(
-                                  //     borderRadius: BorderRadius.circular(18.w),
-                                  //   ),
-                                  //   child: Stack(
-                                  //     children: [
-                                  //       Image.asset(
-                                  //         'assets/images/signalcover.jpg',
-                                  //       ),
-                                  //       Positioned(
-                                  //         bottom: 45.w,
-                                  //         right: 10.w,
-                                  //         child: InkWell(
-                                  //           onTap: () {
-                                  //             Get.offNamed('/signal_cover');
-                                  //           },
-                                  //           child: const Icon(
-                                  //             Icons.edit,
-                                  //             color: Color.fromARGB(
-                                  //                 255, 39, 61, 255),
-                                  //           ),
-                                  //         ),
-                                  //       ),
-                                  //     ],
-                                  //   ),
-                                  // ),
+                                  Container(
+                                    height: 600.w,
+                                    margin: EdgeInsets.only(bottom: 20.w),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(18.w),
+                                    ),
+                                    child: Stack(
+                                      children: [
+                                        Image.asset(
+                                          'assets/images/signalcover.jpg',
+                                        ),
+                                        // Positioned(
+                                        //   bottom: 45.w,
+                                        //   right: 10.w,
+                                        //   child: InkWell(
+                                        //     onTap: () {
+                                        //       Get.offNamed('/signal_cover');
+                                        //     },
+                                        //     child: const Icon(
+                                        //       Icons.edit,
+                                        //       color: Color.fromARGB(
+                                        //           255, 39, 61, 255),
+                                        //     ),
+                                        // //   ),
+                                        // ),
+                                      ],
+                                    ),
+                                  ),
 
                                   // 网络环境
                                   WhiteCard(
@@ -671,7 +675,7 @@ class _NetStatusState extends State<NetStatus> {
                                         MainAxisAlignment.spaceAround,
                                     children: [
                                       Text(
-                                        ConnectStatus == '1'
+                                        connectStatus == '1'
                                             ? S.current.Connected
                                             : S.current.ununited,
                                         style: TextStyle(

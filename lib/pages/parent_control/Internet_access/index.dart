@@ -19,7 +19,7 @@ class _InternetaccessState extends State<Internetaccess> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: customAppbar(
-            context: context, title: 'Internet access time managemen '),
+            context: context, title: 'Internet access time scheduling '),
         body: Container(
           padding: EdgeInsets.all(26.w),
           decoration:
@@ -39,7 +39,7 @@ class _InternetaccessState extends State<Internetaccess> {
                       });
                     },
                     child: Text(
-                      'time period',
+                      'Time Period',
                       style: TextStyle(
                           color: date == 'timePeriod'
                               ? Colors.blue
@@ -64,142 +64,146 @@ class _InternetaccessState extends State<Internetaccess> {
                 ],
               ),
               if (date == 'timePeriod')
-                Image(image: AssetImage('assets/images/timePeriod.png')),
+                const Image(image: AssetImage('assets/images/timePeriod.png')),
               if (date == 'duration')
                 // Image(image: AssetImage('assets/images/duration.png')),
-                Container(
-                  margin: const EdgeInsets.only(bottom: 10),
-                  child: const Text(
-                    '  Set daily limits for how long your child can use the Internet. They can only use  Internet time during the specified time periods',
-                    style: TextStyle(
-                      color: Colors.grey,
+                Column(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 10),
+                      child: const Text(
+                        '  Set daily limits for how long your child can use the Internet. They can only use  Internet time during the specified time periods',
+                        style: TextStyle(
+                          color: Colors.grey,
+                        ),
+                      ),
                     ),
-                  ),
+                    InfoBox(
+                      boxCotainer: Column(children: [
+                        BottomLine(
+                            rowtem: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              children: const [Text('1h'), Text('Mon')],
+                            ),
+                            const Icon(Icons.keyboard_arrow_right_sharp)
+                          ],
+                        )),
+                        BottomLine(
+                            rowtem: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              children: const [
+                                Text('2h'),
+                                Text(
+                                  'Thu',
+                                  style: TextStyle(
+                                    color: Color(0xFF6c7481),
+                                  ),
+                                )
+                              ],
+                            ),
+                            const Icon(Icons.keyboard_arrow_right_sharp)
+                          ],
+                        )),
+                        BottomLine(
+                            rowtem: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              children: const [
+                                Text('5h'),
+                                Text(
+                                  'Wed',
+                                  style: TextStyle(
+                                    color: Color(0xFF6c7481),
+                                  ),
+                                )
+                              ],
+                            ),
+                            const Icon(Icons.keyboard_arrow_right_sharp)
+                          ],
+                        )),
+                        BottomLine(
+                            rowtem: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              children: const [
+                                Text(
+                                  '1h',
+                                  style: TextStyle(
+                                    color: Color(0xFF6c7481),
+                                  ),
+                                ),
+                                Text(
+                                  'Thu',
+                                )
+                              ],
+                            ),
+                            const Icon(Icons.keyboard_arrow_right_sharp)
+                          ],
+                        )),
+                        BottomLine(
+                            rowtem: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              children: const [
+                                Text('1h'),
+                                Text(
+                                  'Fri',
+                                  style: TextStyle(
+                                    color: Color(0xFF6c7481),
+                                  ),
+                                )
+                              ],
+                            ),
+                            const Icon(Icons.keyboard_arrow_right_sharp)
+                          ],
+                        )),
+                        BottomLine(
+                            rowtem: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              children: const [
+                                Text('1h'),
+                                Text(
+                                  'Sat',
+                                  style: TextStyle(
+                                    color: Color(0xFF6c7481),
+                                  ),
+                                )
+                              ],
+                            ),
+                            const Icon(Icons.keyboard_arrow_right_sharp)
+                          ],
+                        )),
+                        BottomLine(
+                            rowtem: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              children: const [
+                                Text('1h'),
+                                Text(
+                                  'Sun',
+                                  style: TextStyle(
+                                    color: Color(0xFF6c7481),
+                                  ),
+                                )
+                              ],
+                            ),
+                            const Icon(Icons.keyboard_arrow_right_sharp)
+                          ],
+                        )),
+                      ]),
+                    )
+                  ],
                 ),
-              InfoBox(
-                boxCotainer: Column(children: [
-                  BottomLine(
-                      rowtem: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        children: const [Text('1h'), Text('Mon')],
-                      ),
-                      const Icon(Icons.keyboard_arrow_right_sharp)
-                    ],
-                  )),
-                  BottomLine(
-                      rowtem: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        children: const [
-                          Text('2h'),
-                          Text(
-                            'Thu',
-                            style: TextStyle(
-                              color: Color(0xFF6c7481),
-                            ),
-                          )
-                        ],
-                      ),
-                      const Icon(Icons.keyboard_arrow_right_sharp)
-                    ],
-                  )),
-                  BottomLine(
-                      rowtem: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        children: const [
-                          Text('5h'),
-                          Text(
-                            'Wed',
-                            style: TextStyle(
-                              color: Color(0xFF6c7481),
-                            ),
-                          )
-                        ],
-                      ),
-                      const Icon(Icons.keyboard_arrow_right_sharp)
-                    ],
-                  )),
-                  BottomLine(
-                      rowtem: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        children: const [
-                          Text(
-                            '1h',
-                            style: TextStyle(
-                              color: Color(0xFF6c7481),
-                            ),
-                          ),
-                          Text(
-                            'Thu',
-                          )
-                        ],
-                      ),
-                      const Icon(Icons.keyboard_arrow_right_sharp)
-                    ],
-                  )),
-                  BottomLine(
-                      rowtem: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        children: const [
-                          Text('1h'),
-                          Text(
-                            'Fri',
-                            style: TextStyle(
-                              color: Color(0xFF6c7481),
-                            ),
-                          )
-                        ],
-                      ),
-                      const Icon(Icons.keyboard_arrow_right_sharp)
-                    ],
-                  )),
-                  BottomLine(
-                      rowtem: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        children: const [
-                          Text('1h'),
-                          Text(
-                            'Sat',
-                            style: TextStyle(
-                              color: Color(0xFF6c7481),
-                            ),
-                          )
-                        ],
-                      ),
-                      const Icon(Icons.keyboard_arrow_right_sharp)
-                    ],
-                  )),
-                  BottomLine(
-                      rowtem: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        children: const [
-                          Text('1h'),
-                          Text(
-                            'Sun',
-                            style: TextStyle(
-                              color: Color(0xFF6c7481),
-                            ),
-                          )
-                        ],
-                      ),
-                      const Icon(Icons.keyboard_arrow_right_sharp)
-                    ],
-                  )),
-                ]),
-              )
             ],
           )),
         ));

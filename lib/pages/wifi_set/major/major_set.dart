@@ -152,13 +152,20 @@ class _MajorSetState extends State<MajorSet> {
     var parameterNames = [
       ["InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.CountryCode", val, type]
     ];
-    var res = await Request().setACSNode(parameterNames, sn);
+    setState(() {
+      _isLoading = true;
+    });
     try {
+      var res = await Request().setACSNode(parameterNames, sn);
       var jsonObj = jsonDecode(res);
       printInfo(info: '````$jsonObj');
       setState(() {});
     } catch (e) {
       debugPrint('获取信息失败：${e.toString()}');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -173,7 +180,7 @@ class _MajorSetState extends State<MajorSet> {
       var d = json.decode(response.toString());
       setState(() {
         majorData = majorDatas.fromJson(d);
-        index = ['CN', 'FR', 'RU', 'US', 'SG', 'AU', 'CL', 'PL']
+        index = ['US', 'FR', 'RU', 'SG', 'AU', 'CL', 'PL']
             .indexOf(majorData.wifiRegionCountry.toString());
         //读取地区
         switch (majorData.wifiRegionCountry.toString()) {
@@ -211,7 +218,39 @@ class _MajorSetState extends State<MajorSet> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: customAppbar(context: context, title: S.of(context).majorSet),
+        appBar: customAppbar(
+          context: context,
+          title: S.of(context).majorSet,
+          actions: <Widget>[
+            Container(
+              margin: EdgeInsets.all(20.w),
+              child: OutlinedButton(
+                onPressed: _isLoading ? null : setTRData,
+                child: Row(
+                  children: [
+                    if (_isLoading)
+                      const SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                        ),
+                      ),
+                    if (!_isLoading)
+                      Text(
+                        S.current.save,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: _isLoading ? Colors.grey : null,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
         body: _isLoading
             ? const Center(child: CircularProgressIndicator())
             : Container(
@@ -232,10 +271,9 @@ class _MajorSetState extends State<MajorSet> {
                               var result = CommonPicker.showPicker(
                                 context: context,
                                 options: [
-                                  S.current.China,
+                                  S.current.UnitedStates,
                                   S.current.France,
                                   S.current.Russia,
-                                  S.current.UnitedStates,
                                   S.current.Singapore,
                                   S.current.Australia,
                                   S.current.Chile,
@@ -250,20 +288,18 @@ class _MajorSetState extends State<MajorSet> {
                                         setState(() => {
                                               index = selectedValue,
                                               showVal = [
-                                                S.current.China,
+                                                S.current.UnitedStates,
                                                 S.current.France,
                                                 S.current.Russia,
-                                                S.current.UnitedStates,
                                                 S.current.Singapore,
                                                 S.current.Australia,
                                                 S.current.Chile,
                                                 S.current.Poland
                                               ][index],
                                               val = [
-                                                'CN',
+                                                'US',
                                                 'FR',
                                                 'RU',
-                                                'US',
                                                 'SG',
                                                 'AU',
                                                 'CL',

@@ -600,7 +600,7 @@ class _MyDialogState extends State<MyDialog> {
                     "select the start time",
                   ),
                 ),
-                Text(startTimeH + ':' + startTimeM),
+                Text(startTimeH + ' ' + startTimeM),
               ],
             ),
             // end
@@ -614,56 +614,59 @@ class _MyDialogState extends State<MyDialog> {
                     "select the end time",
                   ),
                 ),
-                Text(stopTimeH + ':' + stopTimeM),
+                Text(stopTimeH + ' ' + stopTimeM),
               ],
             ),
 
             //日期
-            Column(
-              children: [
-                for (String day in [
-                  'Mon',
-                  'Tue',
-                  'Wed',
-                  'Thu',
-                  'Fri',
-                  'Sat',
-                  'Sun'
-                ])
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            if (_selectedDays.contains(day)) {
-                              _selectedDays.remove(day);
-                            } else {
-                              _selectedDays.add(day);
-                            }
-                          });
-                        },
-                        child: Row(
-                          children: [
-                            Checkbox(
-                              value: _selectedDays.contains(day),
-                              onChanged: (checked) {
-                                setState(() {
-                                  if (checked != null && checked) {
-                                    _selectedDays.add(day);
-                                  } else {
-                                    _selectedDays.remove(day);
-                                  }
-                                });
-                              },
-                            ),
-                            Text(day),
-                          ],
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  for (String day in [
+                    'Mon',
+                    'Tue',
+                    'Wed',
+                    'Thu',
+                    'Fri',
+                    'Sat',
+                    'Sun'
+                  ])
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              if (_selectedDays.contains(day)) {
+                                _selectedDays.remove(day);
+                              } else {
+                                _selectedDays.add(day);
+                              }
+                            });
+                          },
+                          child: Row(
+                            children: [
+                              Checkbox(
+                                value: _selectedDays.contains(day),
+                                onChanged: (checked) {
+                                  setState(() {
+                                    if (checked != null && checked) {
+                                      _selectedDays.add(day);
+                                    } else {
+                                      _selectedDays.remove(day);
+                                    }
+                                  });
+                                },
+                              ),
+                              Text(day, style: const TextStyle(fontSize: 10)),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-              ],
+                      ],
+                    ),
+                ],
+              ),
             )
           ],
         ),
@@ -679,7 +682,7 @@ class _MyDialogState extends State<MyDialog> {
         TextButton(
           onPressed: () {
             if (startTimeH.length == 0 || stopTimeH.length == 0) return;
-            
+
             setData();
           },
           child: Text('Confirm'),

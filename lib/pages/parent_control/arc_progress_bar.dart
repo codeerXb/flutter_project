@@ -11,7 +11,7 @@ class ArcProgresssBar extends StatelessWidget {
   final double height;
   final double min;
   final double max;
-  final double progress;
+  final List progress;
 
   const ArcProgresssBar({
     Key? key,
@@ -19,7 +19,7 @@ class ArcProgresssBar extends StatelessWidget {
     this.height = 200,
     this.min = 0,
     this.max = 120,
-    this.progress = 0,
+    required this.progress,
   }) : super(key: key);
 
   @override
@@ -34,15 +34,42 @@ class ArcProgresssBar extends StatelessWidget {
 class _ArcProgressBarPainter extends CustomPainter {
   final Paint _paint = Paint();
   double _strokeSize = 0;
-  num progress = 0;
+  List progress = [];
   num min;
   num max;
+
+  /// 转换成开始的格子索引和扫过格子数的List
+  /// @params {List} progress [{"TimeStart": "12:00","TimeStop":"13:00"}]
+  /// @return {List} [{'start': 1, 'duration': 7.5}] {开始的格子索引，扫过的格子数}
+  List transformProgressList(List progress) {
+    // 一小格为12min
+    int unit = 12;
+    List list = [];
+    for (var timeMap in progress) {
+      var startTime = timeMap['TimeStart'].split(':');
+      var endTime = timeMap['TimeStop'].split(':');
+      var start = Duration(
+          hours: int.parse(startTime[0]), minutes: int.parse(startTime[1]));
+      var end = Duration(
+          hours: int.parse(endTime[0]), minutes: int.parse(endTime[1]));
+      var difference = end - start;
+      var minutes = difference.inMinutes;
+      var startTotalMinutes =
+          int.parse(startTime[0]) * 60 + int.parse(startTime[1]);
+      if (startTotalMinutes <= 360 && startTotalMinutes >= 0) {
+        var startGap = (360 - startTotalMinutes) / unit;
+        list.add({'start': startGap, 'duration': minutes / unit});
+      } else if (startTotalMinutes < 1440 && startTotalMinutes > 360) {
+        var startGap = (1800 - startTotalMinutes) / unit;
+        list.add({'start': startGap, 'duration': minutes / unit});
+      }
+    }
+    return list;
+  }
 
   _ArcProgressBarPainter(double strokeSize, this.progress,
       {this.min = 0, this.max = 120}) {
     _strokeSize = strokeSize;
-    if (progress < min) progress = 0;
-    if (progress > max) progress = max;
     if (min <= 0) min = 0;
     if (max <= min) max = 120;
   }
@@ -63,32 +90,36 @@ class _ArcProgressBarPainter extends CustomPainter {
     _paint
       ..isAntiAlias = true
       ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round
+      ..strokeCap = StrokeCap.butt
       ..strokeWidth = _strokeSize;
 
-    if (progress <= 20) {
-      _paint.shader = LinearGradient(
-        colors: [Colors.pink.shade100, Colors.red.shade400],
-      ).createShader(rectOut);
-    } else {
-      _paint.shader = const LinearGradient(
-        begin: Alignment.bottomRight,
-        end: Alignment.topRight,
-        colors: [Color(0xFFE0E8FD), Color(0xFFE0E8FD)],
-      ).createShader(rectOut);
-    }
-    canvas.drawArc(rectOut, _toRadius(0),
-        progress * _toRadius(360 / (max - min)), false, _paint);
+    _paint.shader = const LinearGradient(
+      begin: Alignment.bottomRight,
+      end: Alignment.topRight,
+      colors: [Color(0xFFE0E8FD), Color(0xFFE0E8FD)],
+    ).createShader(rectOut);
+
+    canvas.drawArc(rectOut, _toRadius(0), _toRadius(360), false, _paint);
     // 绘制空白的外层圈
     _paint.shader =
         const SweepGradient(colors: [Color(0xFF2F5AF5), Color(0xFF2F5AF5)])
             .createShader(rectOut);
-    canvas.drawArc(
-        rectOut,
-        progress * _toRadius(360 / (max - min)),
-        _toRadius(360) - progress * _toRadius(360 / (max - min)),
-        false,
-        _paint);
+
+    for (var item in transformProgressList(progress)) {
+      canvas.drawArc(
+          rectOut,
+          _toRadius(360) - item['start'] * _toRadius(360 / (max - min)),
+          _toRadius(360) -
+              (120 - item['duration']) * _toRadius(360 / (max - min)),
+          false,
+          _paint);
+    }
+    // canvas.drawArc(
+    //     rectOut,
+    //     progress * _toRadius(360 / (max - min)),
+    //     _toRadius(360) - progress * _toRadius(360 / (max - min)),
+    //     false,
+    //     _paint);
     // 绘制白色大圆和色彩圈的空隙
     Rect rectOutGap = Rect.fromLTWH(0 + _strokeSize, 0 + _strokeSize,
         size.width - _strokeSize * 2, size.height - _strokeSize * 2);
@@ -172,17 +203,21 @@ class _ArcProgressBarPainter extends CustomPainter {
     final Paint paintProgress = Paint();
     paintProgress
       ..strokeWidth = 4.sp
-      ..strokeCap = StrokeCap.round;
+      ..strokeCap = StrokeCap.round
+      ..color = const Color(0xFFD8D8D8);
     canvas.save();
     canvas.translate(cx, cy);
     canvas.rotate(_toRadius(0));
     canvas.translate(-cx, -cy);
     for (int i = 0; i <= (max - min); i++) {
-      if (i <= progress) {
-        paintProgress.color = const Color(0xFFD8D8D8);
-      } else {
-        paintProgress.color = const Color(0xFF2F5AF5);
-      }
+      // for (var item in transformProgressList(progress)) {
+      // if (i >= 120 - item['start'] &&
+      //     i <= 120 - item['start'] + item['duration']) {
+      //   paintProgress.color = const Color(0xFF2F5AF5);
+      // } else {
+      paintProgress.color = const Color(0xFFD8D8D8);
+      // }
+      // }
       double evaDegree = i * _toRadius(360 / (max - min));
       double b = i % 10 == 0 ? 6.sp : 0;
       double x = cx + (radius + 12.sp) * Math.cos(evaDegree);
@@ -192,7 +227,7 @@ class _ArcProgressBarPainter extends CustomPainter {
       canvas.drawLine(Offset(x, y), Offset(x1, y1), paintProgress);
       if (i % 10 == 0 && i != 0) {
         const textStyle = TextStyle(
-          color: Color.fromARGB(255, 92, 92, 92),
+          color: Color.fromARGB(255, 105, 105, 105),
           fontSize: 12,
         );
         var textSpan = TextSpan(

@@ -175,7 +175,7 @@ class MyPainter extends CustomPainter {
     canvas.drawRect(a, paint2);
     canvas.drawImage(aPattern, const Offset(-10, -20), selfPaint);
 
-    _box(canvas, paint3, 'rest room', -100.0, -100.0, 200.0, 100.0);
+    _box(canvas, paint3, 'living room', -100.0, -100.0, 200.0, 100.0);
     _box(canvas, paint3, 'chiken', -100.0, 0.0, 80.0, 120.0);
     _box(canvas, paint3, 'bed room', -20.0, 0.0, 120.0, 120.0);
   }

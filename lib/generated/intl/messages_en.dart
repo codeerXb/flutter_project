@@ -97,7 +97,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Maximum number of devices"),
         "MaximumRange": MessageLookupByLibrary.simpleMessage("1-64"),
         "Mode": MessageLookupByLibrary.simpleMessage("Mode"),
-        "ModifyRemarks": MessageLookupByLibrary.simpleMessage("Modify remarks"),
+        "ModifyRemarks": MessageLookupByLibrary.simpleMessage("Device Name"),
         "NetworkConfig": MessageLookupByLibrary.simpleMessage("Network Config"),
         "NetworkIndex":
             MessageLookupByLibrary.simpleMessage("Visitor network index"),
@@ -265,7 +265,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "linkStatus": MessageLookupByLibrary.simpleMessage("Link Status"),
         "list": MessageLookupByLibrary.simpleMessage("List of Bound Items"),
         "local": MessageLookupByLibrary.simpleMessage("Local"),
-        "locked": MessageLookupByLibrary.simpleMessage("locked"),
+        "locked": MessageLookupByLibrary.simpleMessage(
+            "The device has been locked, it will be unlocked in "),
         "logOut": MessageLookupByLibrary.simpleMessage("Log Out"),
         "login": MessageLookupByLibrary.simpleMessage("Login"),
         "loginFailed": MessageLookupByLibrary.simpleMessage("Login Failed"),
@@ -275,7 +276,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "macAddress":
             MessageLookupByLibrary.simpleMessage("Use MAC address cloning"),
         "maintainSettings": MessageLookupByLibrary.simpleMessage("Maintenance"),
-        "majorSet": MessageLookupByLibrary.simpleMessage("Professional"),
+        "majorSet": MessageLookupByLibrary.simpleMessage("Region"),
         "maxValue": MessageLookupByLibrary.simpleMessage("Max Value"),
         "minute": MessageLookupByLibrary.simpleMessage("M"),
         "minutes": MessageLookupByLibrary.simpleMessage("Minutes"),
@@ -312,7 +313,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "parentalControl":
             MessageLookupByLibrary.simpleMessage("Parental Control"),
         "passError": MessageLookupByLibrary.simpleMessage(
-            "Password error, number of attempts left:"),
+            "Account or password incorrect, remaining input attempts:"),
         "passwordAgain":
             MessageLookupByLibrary.simpleMessage(" Enter your password again"),
         "passwordAgainError": MessageLookupByLibrary.simpleMessage(
@@ -367,7 +368,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "unblockdevice": MessageLookupByLibrary.simpleMessage(
             "Confirm to unbind the current device"),
         "unkownFail": MessageLookupByLibrary.simpleMessage("Unkown Error"),
-        "unlock": MessageLookupByLibrary.simpleMessage("S Unlock"),
+        "unlock": MessageLookupByLibrary.simpleMessage("s"),
         "ununited": MessageLookupByLibrary.simpleMessage("Disconnected"),
         "up": MessageLookupByLibrary.simpleMessage("Up"),
         "used": MessageLookupByLibrary.simpleMessage("Used"),

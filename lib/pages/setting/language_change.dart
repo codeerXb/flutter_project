@@ -101,7 +101,7 @@ class _LanguageChangeState extends State<LanguageChange> {
             children: <Widget>[
               _buildLanguageItem(S.current.autoLang, 'null'),
               // _buildLanguageItem("中文简体", "zh_CN"),
-              _buildLanguageItem("Spanish", "en_US"),
+              _buildLanguageItem("Spanish", "en_SP"),
               _buildLanguageItem("English", "en_US"),
             ],
           ),

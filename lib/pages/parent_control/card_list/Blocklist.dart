@@ -77,6 +77,7 @@ class _BlocklistState extends State<Blocklist> {
         loading = false;
         Map<String, dynamic> urlFilterList = d['data']['InternetGatewayDevice']
             ['WEB_GUI']['Security']['URLFilter']['List'];
+        _itemTextList = [];
         urlFilterList.forEach((key, value) {
           if (value is Map &&
               value['URL'] != null &&
@@ -85,8 +86,6 @@ class _BlocklistState extends State<Blocklist> {
                 .add('{"id": "$key", "value": "${value['URL']['_value']}"}');
           }
         });
-        printInfo(info: 'urlFilterList$urlFilterList');
-        printInfo(info: '_itemTextList$_itemTextList');
       });
     } catch (e) {
       loading = false;
@@ -110,7 +109,6 @@ class _BlocklistState extends State<Blocklist> {
       if (jsonObj['code'] == 200) {
         ToastUtils.toast('success');
         getURLFilter();
-        _itemTextList = [];
       } else {
         ToastUtils.error('Task Failed');
       }
@@ -126,7 +124,7 @@ class _BlocklistState extends State<Blocklist> {
     try {
       var sn = await sharedGetData('deviceSn', String);
       setState(() {
-        // loading = true;
+        loading = true;
         sn = sn.toString();
       });
       // 添加list
@@ -149,8 +147,7 @@ class _BlocklistState extends State<Blocklist> {
           cpeInfoIndex = item;
         }
       });
-
-      // 修改url
+      // 设置url
       var parameterNames = [
         [
           "InternetGatewayDevice.WEB_GUI.Security.URLFilter.List.$cpeInfoIndex.URL",
@@ -164,9 +161,12 @@ class _BlocklistState extends State<Blocklist> {
 
       getURLFilter();
     } catch (e) {
-      // loading = false;
-      debugPrint('获取设备信息失败：${e.toString()}');
-    } finally {}
+      debugPrint('获取 失败：${e.toString()}');
+    } finally {
+      setState(() {
+        loading = false;
+      });
+    }
   }
 
 // 删除
@@ -185,7 +185,6 @@ class _BlocklistState extends State<Blocklist> {
       if (jsonObj['code'] == 200) {
         ToastUtils.toast('success');
         getURLFilter();
-        _itemTextList = [];
       } else {
         ToastUtils.error('Task Failed');
       }
@@ -195,42 +194,29 @@ class _BlocklistState extends State<Blocklist> {
     }
   }
 
-  Future<void> executeRequests() async {
-    printInfo(info: '22');
-
+// 修改enable
+  editEnable() async {
+    var parameterNames = [
+      [
+        "InternetGatewayDevice.WEB_GUI.Security.URLFilter.Enable",
+        isCheck,
+        'xsd:boolean'
+      ],
+    ];
+    printInfo(info: 'parameterNames$parameterNames');
+    var res = await Request().setACSNode(parameterNames, sn);
     try {
-      printInfo(info: '33');
-      // var indexVal = jsonDecode(_itemTextList[index])['id'];
-      // printInfo(info: 'aa$indexVal');
-      // 设置
-      // setUrlData(indexVal, url);
-      var sn = await sharedGetData('deviceSn', String);
-      var objectName = "InternetGatewayDevice.WEB_GUI.Security.URLFilter.List";
-      var name = 'addObject';
-      final response1 = Request().addOrDeleteObject(objectName, sn, name);
-
-      //   await getURLAdd(
-      //{
-      // setState(() {
-      //   // loading = true;
-      //   sn = sn.toString();
-      // });
-
-      printInfo(info: '44');
-      printInfo(info: 'getURLAdd$response1');
-      // final response2 =
-      //     await getURLFilter();
-      // print(response2.body);
-      // final response3 =
-      //     await setUrlData(id, url);
-      // print(response3.body);
-      // final response4 =
-      //     await getURLFilter();
-      // print(response4.body);
-
+      var jsonObj = jsonDecode(res);
+      if (jsonObj['code'] == 200) {
+        ToastUtils.toast('success');
+        getURLFilter();
+      } else {
+        ToastUtils.error('Task Failed');
+      }
+      printInfo(info: '````$jsonObj');
+      setState(() {});
     } catch (e) {
-      // 处理错误
-      // handleError(e);
+      debugPrint('获取信息失败：${e.toString()}');
     }
   }
 
@@ -256,8 +242,7 @@ class _BlocklistState extends State<Blocklist> {
                             onChanged: (newVal) {
                               setState(() {
                                 isCheck = newVal;
-
-                                // getAccessOpen();
+                                editEnable();
                               });
                             },
                           ),
@@ -284,7 +269,7 @@ class _BlocklistState extends State<Blocklist> {
                                 actionsWidth: 120,
                                 actions: [
                                   // 修改
-                                  _buildChangeBtn(index),
+                                  _buildChangeBtn(index, _itemTextList),
                                   // 删除
                                   _buildDeleteBtn(index)
                                 ],
@@ -526,7 +511,7 @@ class _BlocklistState extends State<Blocklist> {
   }
 
   // 修改
-  Widget _buildChangeBtn(final int index) {
+  Widget _buildChangeBtn(final int index, val) {
     return GestureDetector(
       onTap: () {
         showDialog(
@@ -540,7 +525,7 @@ class _BlocklistState extends State<Blocklist> {
                   TextField(
                     decoration: const InputDecoration(
                       labelText: 'URL',
-                      hintText: 'https://example.com',
+                      hintText: '', //${jsonDecode(val['value'])}
                     ),
                     onChanged: (value) {
                       url = value;
@@ -628,56 +613,3 @@ class InfoBox extends StatelessWidget {
         child: boxCotainer);
   }
 }
-
-// add 弹窗
-// class AddUrl extends StatefulWidget {
-//   @override
-//   AddUrlState createState() => AddUrlState();
-// }
-
-// class AddUrlState extends State<AddUrl> {
-//   final TextEditingController _urlController = TextEditingController();
-
-//   @override
-//   void dispose() {
-//     _urlController.dispose();
-//     super.dispose();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return AlertDialog(
-//       title: const Text('Add'),
-//       content: SingleChildScrollView(
-//         child: Column(
-//           mainAxisSize: MainAxisSize.min,
-//           children: [
-//             TextField(
-//               controller: _urlController,
-//               decoration: const InputDecoration(
-//                 labelText: 'URL',
-//                 hintText: 'https://example.com',
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//       actions: [
-//         TextButton(
-//           onPressed: () {
-//             Navigator.pop(context);
-//           },
-//           child: Text(S.current.cancel),
-//         ),
-//         ElevatedButton(
-//           onPressed: () {
-//             String url = _urlController.text;
-//             // Do something with the URL
-//             Navigator.pop(context);
-//           },
-//           child: Text(S.current.confirm),
-//         ),
-//       ],
-//     );
-//   }
-// }

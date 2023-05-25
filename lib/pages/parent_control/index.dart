@@ -315,14 +315,15 @@ class _SwiperCardState extends State<SwiperCard> {
                   title: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      SizedBox(
-                        width: 300.w,
-                        child:
-                            //显示的文字
-                            Text(
-                          deviceList[index]['name'],
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
+                      Expanded(
+                        child: SizedBox(
+                          child:
+                              //显示的文字
+                              Text(
+                            deviceList[index]['name'],
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
                         ),
                       ),
                       // 编辑

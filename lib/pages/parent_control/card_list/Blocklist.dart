@@ -26,7 +26,9 @@ class _BlocklistState extends State<Blocklist> {
   bool loading = true;
   final LoginController loginController = Get.put(LoginController());
   String sn = '';
-
+  int id = 0;
+  String url = '';
+  // url 校验方法
   bool checkURL(String value) {
     RegExp regExp = RegExp(
       r"^((http|https|ftp)\://)?([a-zA-Z0-9\.\-]+(\:[a-zA-Z0-9\.&%\$\-]+)*@)?((25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9])\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[1-9]|0)\.(25[0-5]|2[0-4][0-9]|[0-1]{1}[0-9]{2}|[1-9]{1}[0-9]{1}|[0-9])|([a-zA-Z0-9\-\_]+\.)*[a-zA-Z0-9\-\_]+\.[a-zA-Z]{2,4})(\:[0-9]+)?(/[^/][a-zA-Z0-9\.\,\?\'\\/\\\+&%\$\=~_\@\-\s]*)*$",
@@ -58,7 +60,7 @@ class _BlocklistState extends State<Blocklist> {
     }));
   }
 
-// 获取
+  // 获取
   getURLFilter() async {
     var sn = await sharedGetData('deviceSn', String);
     setState(() {
@@ -119,32 +121,117 @@ class _BlocklistState extends State<Blocklist> {
     }
   }
 
-  void warningReboot(Function save) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Warning'),
-          content: const Text(
-              'It is a warning action, because device will reboot. Confirm to save it?'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text('Save'),
-              onPressed: () {
-                save();
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
+// 添加
+  getURLAdd() async {
+    try {
+      var sn = await sharedGetData('deviceSn', String);
+      setState(() {
+        // loading = true;
+        sn = sn.toString();
+      });
+      // 添加list
+      var objectName = "InternetGatewayDevice.WEB_GUI.Security.URLFilter.List";
+      var name = 'addObject';
+      await Request().addOrDeleteObject(objectName, sn, name);
+
+      // 获取list最新index
+      var idParameterNames = [
+        'InternetGatewayDevice.WEB_GUI.Security.URLFilter'
+      ];
+      var urlIdPonse = await Request().getACSNode(idParameterNames, sn);
+      var idjsonObj = jsonDecode(urlIdPonse);
+      var cpeInfoIndex = '';
+      var portsList = idjsonObj['data']['InternetGatewayDevice']['WEB_GUI']
+          ['Security']['URLFilter']['List'];
+      portsList.keys.forEach((item) {
+        // 识别数字属性
+        if (RegExp(r'[0-9]+').hasMatch(item)) {
+          cpeInfoIndex = item;
+        }
+      });
+
+      // 修改url
+      var parameterNames = [
+        [
+          "InternetGatewayDevice.WEB_GUI.Security.URLFilter.List.$cpeInfoIndex.URL",
+          url,
+          'xsd:string'
+        ],
+      ];
+      printInfo(info: 'parameterNames$parameterNames');
+      var res = await Request().setACSNode(parameterNames, sn);
+      printInfo(info: 'res$res');
+
+      getURLFilter();
+    } catch (e) {
+      // loading = false;
+      debugPrint('获取设备信息失败：${e.toString()}');
+    } finally {}
+  }
+
+// 删除
+  getURLDel() async {
+    var sn = await sharedGetData('deviceSn', String);
+    setState(() {
+      // loading = true;
+      sn = sn.toString();
+    });
+    var objectName =
+        "InternetGatewayDevice.WEB_GUI.Security.URLFilter.List.$id";
+    var name = 'deleteObject';
+    var response = await Request().addOrDeleteObject(objectName, sn, name);
+    try {
+      var jsonObj = jsonDecode(response);
+      if (jsonObj['code'] == 200) {
+        ToastUtils.toast('success');
+        getURLFilter();
+        _itemTextList = [];
+      } else {
+        ToastUtils.error('Task Failed');
+      }
+    } catch (e) {
+      // loading = false;
+      debugPrint('获取设备信息失败：${e.toString()}');
+    }
+  }
+
+  Future<void> executeRequests() async {
+    printInfo(info: '22');
+
+    try {
+      printInfo(info: '33');
+      // var indexVal = jsonDecode(_itemTextList[index])['id'];
+      // printInfo(info: 'aa$indexVal');
+      // 设置
+      // setUrlData(indexVal, url);
+      var sn = await sharedGetData('deviceSn', String);
+      var objectName = "InternetGatewayDevice.WEB_GUI.Security.URLFilter.List";
+      var name = 'addObject';
+      final response1 = Request().addOrDeleteObject(objectName, sn, name);
+
+      //   await getURLAdd(
+      //{
+      // setState(() {
+      //   // loading = true;
+      //   sn = sn.toString();
+      // });
+
+      printInfo(info: '44');
+      printInfo(info: 'getURLAdd$response1');
+      // final response2 =
+      //     await getURLFilter();
+      // print(response2.body);
+      // final response3 =
+      //     await setUrlData(id, url);
+      // print(response3.body);
+      // final response4 =
+      //     await getURLFilter();
+      // print(response4.body);
+
+    } catch (e) {
+      // 处理错误
+      // handleError(e);
+    }
   }
 
   @override
@@ -181,7 +268,7 @@ class _BlocklistState extends State<Blocklist> {
                     SingleChildScrollView(
                       child: Container(
                         padding: const EdgeInsets.all(5.0),
-                        // height: 1.sh - 55,
+                        height: 300,
                         child: ListView.separated(
                           scrollDirection: Axis.vertical,
                           padding: const EdgeInsets.fromLTRB(12, 20, 12, 30),
@@ -306,6 +393,7 @@ class _BlocklistState extends State<Blocklist> {
                                           ),
                                           onChanged: (value) {
                                             url = value;
+                                            printInfo(info: 'url$url');
                                           },
                                         ),
                                       ],
@@ -321,24 +409,32 @@ class _BlocklistState extends State<Blocklist> {
                                         child: Text(S.current.confirm),
                                         onPressed: () {
                                           // 在这里处理确定按钮的逻辑
-                                          Navigator.of(context).pop();
-                                          Future<void> executeRequests() async {
-                                            try {
-                                              // final result1 = await makeRequest1();
-                                              // final result2 =
-                                              //     await makeRequest2(result1);
-                                              // final result3 =
-                                              //     await makeRequest3(result2);
-                                              // final result4 =
-                                              //     await makeRequest4(result3);
-
-                                              // 处理请求结果
-                                              // handleResults(
-                                              //     result1, result2, result3, result4);
-                                            } catch (e) {
-                                              // 处理错误
-                                              // handleError(e);
-                                            }
+                                          if (checkURL(url)) {
+                                            printInfo(info: '11');
+                                            getURLAdd();
+                                            // URL格式正确
+                                            Navigator.of(context).pop();
+                                          } else {
+                                            // URL格式错误，弹出提示框
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  title: const Text('Error'),
+                                                  content:
+                                                      const Text('Invalid URL'),
+                                                  actions: <Widget>[
+                                                    TextButton(
+                                                      child: const Text('ok'),
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
                                           }
                                         },
                                       ),
@@ -355,29 +451,13 @@ class _BlocklistState extends State<Blocklist> {
                       ),
                     ),
                   ),
-
-                  // Positioned(
-                  //   left: 0,
-                  //   right: 0,
-                  //   bottom: 0,
-                  //   child: SizedBox(
-                  //     width: double.infinity,
-                  //     height: 150,
-                  //     child: Align(
-                  //       alignment: Alignment.bottomCenter,
-                  //       child: ElevatedButton(
-                  //         onPressed: () {},
-                  //         child: const Text('按钮'),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // )
                 ]),
               ),
             ),
     );
   }
 
+  // 每一项 item
   Widget _buildListItem(final int index) {
     return Container(
         height: 130.w,
@@ -419,12 +499,13 @@ class _BlocklistState extends State<Blocklist> {
         ));
   }
 
+  // 删除调用方法
   Widget _buildDeleteBtn(final int index) {
     return GestureDetector(
       onTap: () {
-        _openAvatarBottomSheet();
         setState(() {
-          // del = accessList.fwParentControlTable![index].id!;
+          id = int.parse(jsonDecode(_itemTextList[index])['id']);
+          getURLDel();
         });
       },
       child: Container(
@@ -444,109 +525,6 @@ class _BlocklistState extends State<Blocklist> {
     );
   }
 
-  // 删除
-  _openAvatarBottomSheet() {
-    showModalBottomSheet(
-        context: context,
-        backgroundColor: Colors.transparent,
-        builder: (BuildContext context) {
-          return Container(
-            height: 260.w,
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(30.w),
-                    topRight: Radius.circular(30.w))),
-            child: Padding(
-              padding: EdgeInsets.only(left: 30.w, right: 30.w, top: 10.w),
-              child: Column(
-                children: <Widget>[
-                  InkWell(
-                    child: Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(30.w),
-                              topRight: Radius.circular(30.w))),
-                      height: 80.w,
-                      alignment: Alignment.center,
-                      child: Text(
-                        S.current.hint,
-                        style: const TextStyle(fontWeight: FontWeight.w700),
-                      ),
-                    ),
-                  ),
-                  InkWell(
-                    child: Container(
-                      height: 60.w,
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        S.current.delPro,
-                        style:
-                            TextStyle(color: Colors.black45, fontSize: 22.sp),
-                      ),
-                    ),
-                  ),
-                  Padding(padding: EdgeInsets.only(top: 15.w)),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          Navigator.of(context).pop(true);
-                        },
-                        child: Container(
-                          width: 0.5.sw - 30.w,
-                          height: 60.w,
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.black12,
-                                width: 1,
-                              ),
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(30.w),
-                                  bottomLeft: Radius.circular(30.w))),
-                          alignment: Alignment.center,
-                          child: Text(
-                            S.current.cancel,
-                            style: TextStyle(
-                                fontSize: 22.sp, fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          Navigator.of(context).pop();
-                          // getAccessDel();
-                        },
-                        child: Container(
-                          height: 60.w,
-                          width: 0.5.sw - 30.w,
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.black12,
-                                width: 1,
-                              ),
-                              borderRadius: BorderRadius.only(
-                                  topRight: Radius.circular(30.w),
-                                  bottomRight: Radius.circular(30.w))),
-                          alignment: Alignment.center,
-                          child: Text(
-                            S.current.confirm,
-                            style: TextStyle(
-                                fontSize: 22.sp, fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
-  }
-
-  String url = '';
   // 修改
   Widget _buildChangeBtn(final int index) {
     return GestureDetector(
@@ -584,34 +562,8 @@ class _BlocklistState extends State<Blocklist> {
                     // 在这里处理确定按钮的逻辑
                     if (checkURL(url)) {
                       var indexVal = jsonDecode(_itemTextList[index])['id'];
-                      printInfo(info: 'aa$indexVal');
                       // 设置
                       setUrlData(indexVal, url);
-                      //async {
-                      //   var parameterNames = [
-                      //     [
-                      //       "InternetGatewayDevice.WEB_GUI.Security.URLFilter.List.$indexVal",
-                      //       url,
-                      //       'xsd:string'
-                      //     ],
-                      //   ];
-                      //   printInfo(info: 'parameterNames$parameterNames');
-                      // var res =
-                      //     await Request().setACSNode(parameterNames, sn);
-                      // try {
-                      //   var jsonObj = jsonDecode(res);
-                      //   if (jsonObj['code'] == 200) {
-                      //     ToastUtils.toast('success');
-                      //   } else {
-                      //     ToastUtils.error('Task Failed');
-                      //   }
-                      //   printInfo(info: '````$jsonObj');
-                      //   setState(() {});
-                      // } catch (e) {
-                      //   debugPrint('获取信息失败：${e.toString()}');
-                      // }
-                      // }
-
                       // URL格式正确
                       Navigator.of(context).pop();
                     } else {

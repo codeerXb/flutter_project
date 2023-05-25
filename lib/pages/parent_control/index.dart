@@ -502,6 +502,7 @@ class SixBoxsState extends State<SixBoxs> {
             })
             .toList()
             .length;
+        printInfo(info: 'urlListAmount$urlListAmount');
       });
     } catch (e) {
       loading = false;
@@ -751,7 +752,7 @@ class SixBoxsState extends State<SixBoxs> {
                             child: const FittedBox(
                                 child: Text('Website Blocklist'))),
                         Text(
-                          '2 blocked',
+                          '$urlListAmount blocked',
                           style:
                               TextStyle(color: Colors.black54, fontSize: 25.sp),
                         ),
@@ -879,7 +880,7 @@ class _SchedulingState extends State<Scheduling> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [],
+                                children: const [],
                               ),
                             ),
                           ],
@@ -898,7 +899,7 @@ class _SchedulingState extends State<Scheduling> {
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
+                            children: const [
                               // UploadSpeed(
                               //   rate: widget.upRate,
                               // ),

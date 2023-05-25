@@ -37,88 +37,77 @@ class _WanLoginState extends State<WanLogin> {
   Color _passwordBorderColor = Colors.white;
   EquipmentData equipmentData = EquipmentData();
 
-  Timer? timer = Timer.periodic(const Duration(minutes: 0), (timer) {});
-
-  void login(pwd) {
-    debugPrint('登录密码：$pwd');
-    Map<String, dynamic> data = {
-      'username': 'superadmin',
-      'password': 'admin', //utf8.decode(base64Decode(pwd))
-    };
-    XHttp.get('/action/appLogin', data).then((res) {
-      try {
-        debugPrint("+++++++++++++");
-        var d = json.decode(res.toString());
-        debugPrint('登录成功${d['token']}');
-        loginController.setSession(d['sessionid']);
-        sharedAddAndUpdate("session", String, d['sessionid']);
-        loginController.setToken(d['token']);
-        sharedAddAndUpdate("token", String, d['token']);
-        // debugPrint(d);
-      } on FormatException catch (e) {
-        debugPrint('登录错误1$e');
-        Get.offNamed("/get_equipment");
-      }
-    }).catchError((onError) {
-      Get.offNamed("/get_equipment");
-      debugPrint('登录错误2${onError.toString()}');
-    });
-  }
+  bool _isLoading = false;
 
   void appLogin() {
+    setState(() {
+      _isLoading = true;
+    });
     Map<String, dynamic> data = {
       'username': _account.trim(),
       'password': _password.trim(),
     };
-    XHttp.get('/action/appLogin', data).then((res) {
-      debugPrint('------登录------');
-      debugPrint(res);
-      // 以 { 或者 [ 开头的
-      RegExp exp = RegExp(r'^[{[]');
-      if (res != null && exp.hasMatch(res)) {
-        var localLoginRes = json.decode(res.toString());
-        printInfo(info: '登录返回$localLoginRes');
-        if (localLoginRes['code'] == 200) {
-          loginController.setToken(localLoginRes['token']);
-          loginController.setSession(localLoginRes['sessionid']);
-          String userInfo = jsonEncode({
-            "user": _account,
-            "pwd": base64Encode(
-              utf8.encode(_password),
-            )
-          });
-          sharedAddAndUpdate(
-            sn.toString(),
-            String,
-            userInfo,
-          );
-          sharedAddAndUpdate("token", String, localLoginRes['token']);
-          sharedAddAndUpdate("session", String, localLoginRes['sessionid']);
+    XHttp.get('/action/appLogin', data).then(
+      (res) {
+        debugPrint('------登录------');
+        debugPrint(res);
+        // 以 { 或者 [ 开头的
+        RegExp exp = RegExp(r'^[{[]');
+        if (res != null && exp.hasMatch(res)) {
+          var localLoginRes = json.decode(res.toString());
+          printInfo(info: '登录返回$localLoginRes');
+          if (localLoginRes['code'] == 200) {
+            loginController.setToken(localLoginRes['token']);
+            loginController.setSession(localLoginRes['sessionid']);
+            String userInfo = jsonEncode({
+              "user": _account,
+              "pwd": base64Encode(
+                utf8.encode(_password),
+              )
+            });
+            sharedAddAndUpdate(
+              sn.toString(),
+              String,
+              userInfo,
+            );
+            sharedAddAndUpdate("token", String, localLoginRes['token']);
+            sharedAddAndUpdate("session", String, localLoginRes['sessionid']);
+            Get.back();
+          }
         }
-      }
-    }).catchError((err) {
-      timer?.cancel();
-      timer = null;
-      if (err.response != null) {
-        var resjson = json.decode(err.response.toString());
-        var errRes = ExceptionLogin.fromJson(resjson);
-        if (err['code'] == DioErrorType.connectTimeout) {
+      },
+    ).catchError(
+      (err) {
+        if (err.type == DioErrorType.connectTimeout) {
           debugPrint('timeout');
           ToastUtils.error(S.current.contimeout);
         }
+        if (err.response != null) {
+          var resjson = json.decode(err.response.toString());
+          var errRes = ExceptionLogin.fromJson(resjson);
 
-        if (errRes.success == false) {
-          Get.offNamed('/loginPage');
-          if (errRes.code == 201) {
-            ToastUtils.toast(
-                '${S.current.passError}${5 - int.parse(errRes.webLoginFailedTimes.toString())}');
-          } else if (errRes.code == 202) {
-            ToastUtils.error(
-                '${S.current.locked}${errRes.webLoginRetryTimeout}${S.current.unlock}');
+          if (errRes.success == false) {
+            if (errRes.code == 201) {
+              Get.snackbar(
+                'Warnning',
+                '${S.current.passError}${5 - int.parse(errRes.webLoginFailedTimes.toString())}',
+              );
+              // ToastUtils.toast(
+              //     '${S.current.passError}${5 - int.parse(errRes.webLoginFailedTimes.toString())}');
+            } else if (errRes.code == 202) {
+              Get.snackbar('Warnning',
+                  '${S.current.locked}${errRes.webLoginRetryTimeout}${S.current.unlock}');
+              // ToastUtils.error(
+              //     '${S.current.locked}${errRes.webLoginRetryTimeout}${S.current.unlock}');
+            }
           }
+          debugPrint('登录失败：${errRes.code}');
         }
-        debugPrint('登录失败：${errRes.code}');
-      }
+      },
+    ).whenComplete(() {
+      setState(() {
+        _isLoading = false;
+      });
     });
   }
 
@@ -240,27 +229,12 @@ class _WanLoginState extends State<WanLogin> {
                       ]),
                 ),
               ),
-              // const Expanded(child: Text("")),
-              // IconButton(
-              //     iconSize: 30.w,
-              //     icon: Icon(
-              //       Icons.remove_red_eye,
-              //       color: _eyeColor,
-              //     ),
-              //     onPressed: () {
-              //       setState(() {
-              //         _eyeColor = _isObscure ? Colors.blue : Colors.grey;
-              //         _isObscure = !_isObscure;
-              //       });
-              //     })
             ],
           ),
         ],
       ),
     );
   }
-
-  bool _isLoading = false;
 
   ///登录按钮
   SizedBox buildLoginButton() {
@@ -278,17 +252,8 @@ class _WanLoginState extends State<WanLogin> {
         onPressed: () {
           printInfo(info: '登陆了');
           if ((_formKey.currentState as FormState).validate()) {
-            setState(() {
-              _isLoading = true;
-            });
             onSubmit(context);
             appLogin();
-
-            Future.delayed(const Duration(milliseconds: 1000), () {
-              setState(() {
-                _isLoading = false;
-              });
-            });
           }
         },
         child: _isLoading
@@ -328,7 +293,8 @@ class _WanLoginState extends State<WanLogin> {
           elevation: 0,
           leading: IconButton(
               onPressed: () {
-                Get.offNamed("/add_equipment");
+                Get.back();
+                Get.back();
               },
               icon: const Icon(
                 Icons.arrow_back_ios,
@@ -337,51 +303,61 @@ class _WanLoginState extends State<WanLogin> {
         ),
         body: InkWell(
           onTap: () => closeKeyboard(context),
-          child: Container(
-            height: 1.sh,
-            color: Colors.white,
-            padding: EdgeInsets.only(left: 52.w, top: 100.w, right: 52.w),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: <Widget>[
-                  /// logo
-                  Container(
-                    margin: EdgeInsets.only(bottom: 70.w),
-                    // width: 136.w,
-                    // height: 136.w,
-                    child: Image.asset(
-                      'assets/images/logo.png',
-                      // fit: BoxFit.fill,
+          child: Flex(
+            direction: Axis.vertical,
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Container(
+                    color: Colors.white,
+                    padding:
+                        EdgeInsets.only(left: 52.w, top: 100.w, right: 52.w),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        children: <Widget>[
+                          /// logo
+                          Container(
+                            margin: EdgeInsets.only(bottom: 70.w),
+                            // width: 136.w,
+                            // height: 136.w,
+                            child: Image.asset(
+                              'assets/images/logo.png',
+                              // fit: BoxFit.fill,
+                            ),
+                          ),
+                          // Padding(padding: EdgeInsets.only(top: 70.w)),
+                          Text(
+                            S.current.Administratorlogin,
+                            style: TextStyle(fontSize: 48.sp),
+                          ),
+                          Padding(padding: EdgeInsets.only(top: 10.w)),
+                          Text(
+                            // '${S.of(context).currentDeive} ${loginController.userEquipment['deviceSn']}',
+                            '${S.of(context).currentDeive} $sn',
+                            style: TextStyle(
+                                fontSize: 28.sp,
+                                color: const Color(0xFF373543)),
+                          ),
+
+                          /// 账号
+                          buildAccountTextField(),
+                          // Padding(padding: EdgeInsets.only(top: 112.w)),
+
+                          /// 密码
+                          buildPasswordTextField(),
+                          Padding(padding: EdgeInsets.only(top: 102.w)),
+
+                          /// 登录
+                          buildLoginButton(),
+                          Padding(padding: EdgeInsets.only(top: 20.w)),
+                        ],
+                      ),
                     ),
                   ),
-                  // Padding(padding: EdgeInsets.only(top: 70.w)),
-                  Text(
-                    S.current.Administratorlogin,
-                    style: TextStyle(fontSize: 48.sp),
-                  ),
-                  Padding(padding: EdgeInsets.only(top: 10.w)),
-                  Text(
-                    // '${S.of(context).currentDeive} ${loginController.userEquipment['deviceSn']}',
-                    '${S.of(context).currentDeive} $sn',
-                    style: TextStyle(
-                        fontSize: 28.sp, color: const Color(0xFF373543)),
-                  ),
-
-                  /// 账号
-                  buildAccountTextField(),
-                  // Padding(padding: EdgeInsets.only(top: 112.w)),
-
-                  /// 密码
-                  buildPasswordTextField(),
-                  Padding(padding: EdgeInsets.only(top: 102.w)),
-
-                  /// 登录
-                  buildLoginButton(),
-                  Padding(padding: EdgeInsets.only(top: 20.w)),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
         ));
   }

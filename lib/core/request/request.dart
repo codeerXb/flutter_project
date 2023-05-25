@@ -46,4 +46,17 @@ class Request {
     };
     return await App.post('/platform/tr069/setParameterValues', data: data);
   }
+
+  //添加云端数据
+  addACSNode(sn, objectName) async {
+    Map<String, dynamic> data = {
+      'deviceId': sn,
+      'name': 'addObject',
+      "objectName": objectName
+    };
+    var res = await App.post(
+        '${BaseConfig.cloudBaseUrl}/platform/tr069/addOrDeleteObject',
+        data: data);
+    return res;
+  }
 }

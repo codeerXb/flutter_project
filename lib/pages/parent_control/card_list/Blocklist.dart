@@ -224,35 +224,31 @@ class _BlocklistState extends State<Blocklist> {
       appBar: customAppbar(context: context, title: 'Website Blocklist'),
       body: loading
           ? const Center(child: CircularProgressIndicator())
-          : SafeArea(
-              child: Expanded(
-                child: Column(children: [
-                  Padding(
-                    padding: EdgeInsets.only(top: 10.sp),
-                  ),
-                  InfoBox(
-                    boxCotainer: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const TitleWidger(title: 'Enable'),
-                          Switch(
-                            value: isCheck,
-                            onChanged: (newVal) {
-                              setState(() {
-                                isCheck = newVal;
-                                editEnable();
-                              });
-                            },
-                          ),
-                        ]),
-                  ),
-                  // 列表
-                  if (_itemTextList.isNotEmpty)
-                    SingleChildScrollView(
-                      child: Container(
-                        padding: const EdgeInsets.all(5.0),
-                        height: 300,
-                        child: ListView.separated(
+          : Column(children: [
+              InfoBox(
+                boxCotainer: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const TitleWidger(title: 'Enable'),
+                      Switch(
+                        value: isCheck,
+                        onChanged: (newVal) {
+                          setState(() {
+                            isCheck = newVal;
+                            editEnable();
+                          });
+                        },
+                      ),
+                    ]),
+              ),
+
+              // 列表
+              Expanded(
+                child: Container(
+                  height: 1.sh - 70,
+                  padding: const EdgeInsets.all(5.0),
+                  child: _itemTextList.isNotEmpty
+                      ? ListView.separated(
                           scrollDirection: Axis.vertical,
                           padding: const EdgeInsets.fromLTRB(12, 20, 12, 30),
                           itemCount: _itemTextList.length,
@@ -309,135 +305,117 @@ class _BlocklistState extends State<Blocklist> {
                           physics: const AlwaysScrollableScrollPhysics(),
                           // 添加下面这句 是为了GridView的高度自适应, 否则GridView需要包裹在固定宽高的容器中。
                           //shrinkWrap: true,
-                        ),
-                      ),
-                    ),
-
-                  if (!_itemTextList.isNotEmpty)
-                    Container(
-                      padding: const EdgeInsets.all(5.0),
-                      // height: 1.sh - 55,
-                      child: Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Icon(
-                              Icons.content_paste,
-                              size: 30,
-                            ),
-                            SizedBox(width: 10),
-                            Text('No URLs'),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                  // + 按钮
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Positioned(
-                      bottom: 100,
-                      child: SizedBox(
-                        width: 1.sw,
-                        child: Center(
-                          child: ElevatedButton(
-                            style: ButtonStyle(
-                              fixedSize: MaterialStateProperty.all(
-                                  const Size(150, 35)),
-                              backgroundColor: MaterialStateProperty.all(
-                                  const Color(0xffffffff)), //背景颜色
-                              foregroundColor: MaterialStateProperty.all(
-                                  const Color(0xff5E6573)), //字体颜色
-                              overlayColor: MaterialStateProperty.all(
-                                  const Color(0xffffffff)), // 高亮色
-                              shadowColor: MaterialStateProperty.all(
-                                  const Color(0xffffffff)), //阴影颜色
-                              elevation: MaterialStateProperty.all(0), //阴影值
-                              textStyle: MaterialStateProperty.all(
-                                  const TextStyle(fontSize: 12)), //字体
-                              side: MaterialStateProperty.all(const BorderSide(
-                                  width: 1, color: Color(0xffCAD0DB))), //边框
-                              shape: MaterialStateProperty.all(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ), //圆角弧度
-                            ),
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: const Text('Add'),
-                                    content: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        TextField(
-                                          decoration: const InputDecoration(
-                                            labelText: 'URL',
-                                            hintText: 'https://example.com',
-                                          ),
-                                          onChanged: (value) {
-                                            url = value;
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        child: Text(S.current.cancel),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                      ElevatedButton(
-                                        child: Text(S.current.confirm),
-                                        onPressed: () {
-                                          // 在这里处理确定按钮的逻辑
-                                          if (checkURL(url)) {
-                                            getURLAdd();
-                                            // URL格式正确
-                                            Navigator.of(context).pop();
-                                          } else {
-                                            // URL格式错误，弹出提示框
-                                            showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return AlertDialog(
-                                                  title: const Text('Error'),
-                                                  content:
-                                                      const Text('Invalid URL'),
-                                                  actions: <Widget>[
-                                                    TextButton(
-                                                      child: const Text('ok'),
-                                                      onPressed: () {
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      },
-                                                    ),
-                                                  ],
-                                                );
-                                              },
-                                            );
-                                          }
-                                        },
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            },
-                            child: Text("Add",
-                                style: TextStyle(
-                                    fontSize: 30.sp, color: Colors.blue)),
+                        )
+                      : Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Icon(
+                                Icons.content_paste,
+                                size: 30,
+                              ),
+                              SizedBox(width: 10),
+                              Text('No URLs'),
+                            ],
                           ),
                         ),
-                      ),
-                    ),
-                  ),
-                ]),
+                ),
               ),
-            ),
+
+              // + 按钮
+              SizedBox(
+                width: 1.sw,
+                child: Center(
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      fixedSize: MaterialStateProperty.all(const Size(150, 35)),
+                      backgroundColor: MaterialStateProperty.all(
+                          const Color(0xffffffff)), //背景颜色
+                      foregroundColor: MaterialStateProperty.all(
+                          const Color(0xff5E6573)), //字体颜色
+                      overlayColor: MaterialStateProperty.all(
+                          const Color(0xffffffff)), // 高亮色
+                      shadowColor: MaterialStateProperty.all(
+                          const Color(0xffffffff)), //阴影颜色
+                      elevation: MaterialStateProperty.all(0), //阴影值
+                      textStyle: MaterialStateProperty.all(
+                          const TextStyle(fontSize: 12)), //字体
+                      side: MaterialStateProperty.all(const BorderSide(
+                          width: 1, color: Color(0xffCAD0DB))), //边框
+                      shape: MaterialStateProperty.all(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ), //圆角弧度
+                    ),
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Add'),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                TextField(
+                                  decoration: const InputDecoration(
+                                    labelText: 'URL',
+                                    hintText: 'https://example.com',
+                                  ),
+                                  onChanged: (value) {
+                                    url = value;
+                                  },
+                                ),
+                              ],
+                            ),
+                            actions: <Widget>[
+                              TextButton(
+                                child: Text(S.current.cancel),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              ElevatedButton(
+                                child: Text(S.current.confirm),
+                                onPressed: () {
+                                  // 在这里处理确定按钮的逻辑
+                                  if (checkURL(url)) {
+                                    getURLAdd();
+                                    // URL格式正确
+                                    Navigator.of(context).pop();
+                                  } else {
+                                    // URL格式错误，弹出提示框
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: const Text('Error'),
+                                          content: const Text('Invalid URL'),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              child: const Text('ok'),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  }
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                    child: Text("Add",
+                        style: TextStyle(fontSize: 30.sp, color: Colors.blue)),
+                  ),
+                ),
+              ),
+            ]),
     );
   }
 

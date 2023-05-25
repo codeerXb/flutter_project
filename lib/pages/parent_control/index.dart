@@ -928,7 +928,9 @@ class _SchedulingState extends State<Scheduling> {
                           width: 390.w,
                           height: 390.w,
                           child: ArcProgresssBar(
-                              width: 1.sw, height: 1.sw, progress: 45),
+                              width: 1.sw,
+                              height: 1.sw,
+                              progress: filteredData),
                         ),
                         Column(
                           children: [
@@ -995,6 +997,7 @@ class _SchedulingState extends State<Scheduling> {
                         date = 'Mon';
                         filteredData = [];
                       });
+                      getACSNodeFn();
                       for (var item in accessList) {
                         if (item['Weekdays']['_value'].contains('Mon')) {
                           filteredData.add({

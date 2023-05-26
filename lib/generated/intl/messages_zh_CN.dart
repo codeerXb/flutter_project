@@ -175,7 +175,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "cycle": MessageLookupByLibrary.simpleMessage("套餐周期"),
         "date": MessageLookupByLibrary.simpleMessage("天"),
         "day": MessageLookupByLibrary.simpleMessage("日"),
-        "delPro": MessageLookupByLibrary.simpleMessage("删除后将无法看到该条记录,请谨慎操作"),
+        "delPro": MessageLookupByLibrary.simpleMessage("是否确定删除"),
         "delete": MessageLookupByLibrary.simpleMessage("删除"),
         "detectionServer": MessageLookupByLibrary.simpleMessage("输入检测服务器"),
         "device": MessageLookupByLibrary.simpleMessage("接入设备"),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/request/request.dart';
 import 'package:flutter_template/pages/parent_control/arc_progress_bar.dart';
+import 'package:flutter_template/pages/parent_control/card_list/Blocklist.dart';
 import 'package:get/get.dart';
 import '../../core/widget/custom_app_bar.dart';
 import '../net_status/index.dart';
@@ -505,7 +506,6 @@ class SixBoxsState extends State<SixBoxs> {
             })
             .toList()
             .length;
-        printInfo(info: 'urlListAmount$urlListAmount');
       });
     } catch (e) {
       loading = false;
@@ -734,7 +734,14 @@ class SixBoxsState extends State<SixBoxs> {
           //URL blocklist
           GestureDetector(
             onTap: () {
-              Get.toNamed('/Blocklist');
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const Blocklist())).then((value) {
+                setState(() {
+                  getURLFilter();
+                });
+              });
             },
             child: GardCard(
                 boxCotainer: Row(

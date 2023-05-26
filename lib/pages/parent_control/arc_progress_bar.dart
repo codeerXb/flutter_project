@@ -104,8 +104,9 @@ class _ArcProgressBarPainter extends CustomPainter {
     _paint.shader =
         const SweepGradient(colors: [Color(0xFF2F5AF5), Color(0xFF2F5AF5)])
             .createShader(rectOut);
-
+    // 将传入的时间片段转换成外层圈
     for (var item in transformProgressList(progress)) {
+      // 顺时针绘制
       canvas.drawArc(
           rectOut,
           _toRadius(360) - item['start'] * _toRadius(360 / (max - min)),
@@ -114,12 +115,6 @@ class _ArcProgressBarPainter extends CustomPainter {
           false,
           _paint);
     }
-    // canvas.drawArc(
-    //     rectOut,
-    //     progress * _toRadius(360 / (max - min)),
-    //     _toRadius(360) - progress * _toRadius(360 / (max - min)),
-    //     false,
-    //     _paint);
     // 绘制白色大圆和色彩圈的空隙
     Rect rectOutGap = Rect.fromLTWH(0 + _strokeSize, 0 + _strokeSize,
         size.width - _strokeSize * 2, size.height - _strokeSize * 2);

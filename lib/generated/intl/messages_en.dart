@@ -217,7 +217,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "date": MessageLookupByLibrary.simpleMessage("D"),
         "day": MessageLookupByLibrary.simpleMessage("Day"),
         "delPro": MessageLookupByLibrary.simpleMessage(
-            "After deletion, this record will no longer be visible. Please proceed with caution."),
+            "Are you sure you want to delete"),
         "delete": MessageLookupByLibrary.simpleMessage("Delete"),
         "detectionServer":
             MessageLookupByLibrary.simpleMessage("Input detection server"),

@@ -1,5 +1,5 @@
 {
-  "delPro": "删除后将无法看到该条记录,请谨慎操作",
+  "delPro": "是否确定删除",
   "wifiMapping": "Wi-Fi覆盖图",
   "loginFailed": "登录失败",
   "deviceBinded": "绑定CPE失败: 该CPE设备已被绑定",

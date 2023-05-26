@@ -50,10 +50,10 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
-  /// `After deletion, this record will no longer be visible. Please proceed with caution.`
+  /// `Are you sure you want to delete`
   String get delPro {
     return Intl.message(
-      'After deletion, this record will no longer be visible. Please proceed with caution.',
+      'Are you sure you want to delete',
       name: 'delPro',
       desc: '',
       args: [],

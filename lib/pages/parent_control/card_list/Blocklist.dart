@@ -9,7 +9,6 @@ import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/left_slide_actions.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
-import '../../../core/widget/custom_app_bar.dart';
 import '../../../generated/l10n.dart';
 
 class Blocklist extends StatefulWidget {
@@ -221,7 +220,23 @@ class _BlocklistState extends State<Blocklist> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppbar(context: context, title: 'Website Blocklist'),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.black87,
+          ),
+          onPressed: () {
+            // 自定义返回按钮的回调
+            Navigator.pop(context);
+          },
+        ),
+        title: const Text('Website Blocklist',
+            style: TextStyle(
+              color: Colors.black87,
+            )),
+      ),
       body: loading
           ? const Center(child: CircularProgressIndicator())
           : Column(children: [
@@ -461,14 +476,37 @@ class _BlocklistState extends State<Blocklist> {
         ));
   }
 
-  // 删除调用方法
+  // 删除
   Widget _buildDeleteBtn(final int index) {
     return GestureDetector(
       onTap: () {
-        setState(() {
-          id = int.parse(jsonDecode(_itemTextList[index])['id']);
-          getURLDel();
-        });
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(S.current.hint),
+              content: Text(S.current.delPro),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(S.current.cancel),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: const Text('ok'),
+                  onPressed: () {
+                    setState(() {
+                      id = int.parse(jsonDecode(_itemTextList[index])['id']);
+                      getURLDel();
+                    });
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
       },
       child: Container(
         width: 60,
@@ -509,7 +547,6 @@ class _BlocklistState extends State<Blocklist> {
                     ),
                     onChanged: (value) {
                       url = value;
-                      printInfo(info: 'url$url');
                     },
                   ),
                 ],

@@ -851,7 +851,6 @@ class _SchedulingState extends State<Scheduling> {
         ),
         child: Column(
           children: [
-            
             //第一行
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -860,7 +859,6 @@ class _SchedulingState extends State<Scheduling> {
                 const Text('Internet access time scheduling'),
                 //right
                 GestureDetector(
-
                   onTap: () {
                     Get.toNamed('/Internetaccess', arguments: {"sn": sn});
                   },
@@ -917,67 +915,73 @@ class _SchedulingState extends State<Scheduling> {
             // ),
             // TODO 周期显示的图片
             if (isFirst)
-              Container(
-                margin: EdgeInsets.zero,
-                color: const Color.fromARGB(255, 255, 255, 255),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Stack(
-                      alignment: AlignmentDirectional.center,
-                      children: [
-                        SizedBox(
-                          width: 390.w,
-                          height: 390.w,
-                          child: ArcProgresssBar(
-                              width: 1.sw,
-                              height: 1.sw,
-                              progress: filteredData),
-                        ),
-                        Column(
-                          children: [
-                            Container(
-                              margin: EdgeInsets.only(bottom: 14.sp),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: const [],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    Center(
-                      child: Container(
-                          margin: const EdgeInsets.only(right: 15, left: 15),
-                          padding: const EdgeInsets.only(top: 15, bottom: 15),
-                          width: 1.sw - 30,
-                          decoration: const BoxDecoration(
-                            // 背景色
-                            color: Color.fromARGB(255, 255, 255, 255),
-                            borderRadius: BorderRadius.all(Radius.circular(15)),
+              GestureDetector(
+                onTap: () {
+                  Get.toNamed('/Internetaccess', arguments: {"sn": sn});
+                },
+                child: Container(
+                  margin: EdgeInsets.zero,
+                  color: const Color.fromARGB(255, 255, 255, 255),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Stack(
+                        alignment: AlignmentDirectional.center,
+                        children: [
+                          SizedBox(
+                            width: 390.w,
+                            height: 390.w,
+                            child: ArcProgresssBar(
+                                width: 1.sw,
+                                height: 1.sw,
+                                progress: filteredData),
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: const [
-                              // UploadSpeed(
-                              //   rate: widget.upRate,
-                              // ),
-                              // DownloadSpeed(
-                              //   rate: widget.downRate,
-                              // ),
-                              // OnlineCount(
-                              //   count: _onlineCount,
-                              // ),
+                          Column(
+                            children: [
+                              Container(
+                                margin: EdgeInsets.only(bottom: 14.sp),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: const [],
+                                ),
+                              ),
                             ],
-                          )),
-                    ),
-                    const Text('Internet Time',
-                        style: TextStyle(
-                            color: Color.fromARGB(255, 109, 109, 109),
-                            fontSize: 12)),
-                  ],
+                          ),
+                        ],
+                      ),
+                      Center(
+                        child: Container(
+                            margin: const EdgeInsets.only(right: 15, left: 15),
+                            padding: const EdgeInsets.only(top: 15, bottom: 15),
+                            width: 1.sw - 30,
+                            decoration: const BoxDecoration(
+                              // 背景色
+                              color: Color.fromARGB(255, 255, 255, 255),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(15)),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: const [
+                                // UploadSpeed(
+                                //   rate: widget.upRate,
+                                // ),
+                                // DownloadSpeed(
+                                //   rate: widget.downRate,
+                                // ),
+                                // OnlineCount(
+                                //   count: _onlineCount,
+                                // ),
+                              ],
+                            )),
+                      ),
+                      const Text('Internet Time',
+                          style: TextStyle(
+                              color: Color.fromARGB(255, 109, 109, 109),
+                              fontSize: 12)),
+                    ],
+                  ),
                 ),
               ),
             if (!isFirst)

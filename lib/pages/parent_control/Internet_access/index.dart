@@ -126,7 +126,8 @@ class _InternetaccessState extends State<Internetaccess> {
             ),
             if (date == 'timePeriod')
               loading
-                  ? const Center(child: CircularProgressIndicator())
+                  ? Expanded(
+                      child: const Center(child: CircularProgressIndicator()))
                   : Expanded(
                       child: Column(
                         children: [
@@ -179,6 +180,7 @@ class _InternetaccessState extends State<Internetaccess> {
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
                                               IconButton(
+                                                // 编辑
                                                 icon: Icon(Icons.edit),
                                                 onPressed: () {
                                                   showDialog(
@@ -233,13 +235,49 @@ class _InternetaccessState extends State<Internetaccess> {
                                                 },
                                               ),
                                               IconButton(
+                                                //删除
                                                 icon: Icon(Icons.delete),
-                                                onPressed: () async {
-                                                  await Request().addOrDeleteObject(
-                                                      "InternetGatewayDevice.WEB_GUI.ParentalControls.List.${keyList[index]}",
-                                                      sn,
-                                                      'deleteObject');
-                                                  getACSNodeFn();
+                                                color: Color.fromRGBO(
+                                                    232, 7, 30, 1),
+                                                onPressed: () {
+                                                  showDialog(
+                                                    context: context,
+                                                    builder:
+                                                        (BuildContext context) {
+                                                      return AlertDialog(
+                                                        title: Text(S.current.delPro),
+                                                        actions: <Widget>[
+                                                          TextButton(
+                                                            child: Text(S.current.cancel),
+                                                            onPressed: () {
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .pop();
+                                                            },
+                                                          ),
+                                                          TextButton(
+                                                            child: Text(S
+                                                                .current
+                                                                .delete),
+                                                            onPressed:
+                                                                () async {
+                                                              // Perform delete operation here
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .pop();
+                                                              openLoading();
+                                                              await Request()
+                                                                  .addOrDeleteObject(
+                                                                      "InternetGatewayDevice.WEB_GUI.ParentalControls.List.${keyList[index]}",
+                                                                      sn,
+                                                                      'deleteObject');
+                                                              getACSNodeFn();
+                                                            },
+                                                          ),
+                                                        ],
+                                                      );
+                                                    },
+                                                  );
                                                 },
                                               ),
                                             ],
@@ -260,6 +298,7 @@ class _InternetaccessState extends State<Internetaccess> {
                                     context: context,
                                     builder: (BuildContext context) {
                                       return MyDialog(
+                                          id: '',
                                           getACSNodeFn: getACSNodeFn,
                                           openLoading: openLoading);
                                     },
@@ -453,7 +492,7 @@ class MyDialog extends StatefulWidget {
 }
 
 class _MyDialogState extends State<MyDialog> {
-  final List<String> _selectedDays = []; //日期选择列表
+  List<String> _selectedDays = []; //日期选择列表
 
   // 开始时间
   String startTim = '';
@@ -469,15 +508,13 @@ class _MyDialogState extends State<MyDialog> {
   @override
   void initState() {
     super.initState();
-
-    if (widget.time != '') {
+//编辑回显数据
+    if (widget.id != '') {
       startTimeH = widget.time.split('-')[0].split(':')[0];
       startTimeM = widget.time.split('-')[0].split(':')[1];
       stopTimeH = widget.time.split('-')[1].split(':')[0];
       stopTimeM = widget.time.split('-')[1].split(':')[1];
-      // _selectedDays.addAll(widget.week);
-      print('widget.id');
-      print(widget.id);
+      _selectedDays = widget.week.split(',');
     }
   }
 
@@ -597,7 +634,7 @@ class _MyDialogState extends State<MyDialog> {
                     "select the start time",
                   ),
                 ),
-                Text(startTimeH + ' ' + startTimeM),
+                Text(startTimeH + ':' + startTimeM),
               ],
             ),
             // end
@@ -611,7 +648,7 @@ class _MyDialogState extends State<MyDialog> {
                     "select the end time",
                   ),
                 ),
-                Text(stopTimeH + ' ' + stopTimeM),
+                Text(stopTimeH + ':' + stopTimeM),
               ],
             ),
 
@@ -679,7 +716,13 @@ class _MyDialogState extends State<MyDialog> {
         TextButton(
           onPressed: () {
             if (startTimeH.length == 0 || stopTimeH.length == 0) return;
-            setData();
+            if (widget.id == '') {
+              print('新增');
+              setData();
+            } else {
+              print('编辑');
+              upData();
+            }
           },
           child: Text('Confirm'),
         ),

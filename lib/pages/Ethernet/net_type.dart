@@ -132,10 +132,10 @@ class _NetTypeState extends State<NetType> {
       var res = await Request().getACSNode(parameterNames, sn);
       Map<String, dynamic> d = jsonDecode(res);
       setState(() {
-        var PREFIX = d['data']['InternetGatewayDevice']['WANDevice']['1']
+        var prefix = d['data']['InternetGatewayDevice']['WANDevice']['1']
             ['WANConnectionDevice']['1']['WANIPConnection']['1'];
 
-        var addressingType = PREFIX['AddressingType']['_value'];
+        var addressingType = prefix['AddressingType']['_value'];
         if (addressingType == 'dhcp') {
           connectionModeValue = 'Dynamic IP';
         } else if (addressingType == 'static') {
@@ -144,26 +144,26 @@ class _NetTypeState extends State<NetType> {
           connectionModeValue = 'Only LAN';
         }
 
-        iPAddressValue = PREFIX["ExternalIPAddress"]["_value"];
-        subnetMaskValue = PREFIX["SubnetMask"]["_value"];
+        iPAddressValue = prefix["ExternalIPAddress"]["_value"];
+        subnetMaskValue = prefix["SubnetMask"]["_value"];
 
-        defaultGatewayValue = PREFIX["DefaultGateway"]["_value"];
+        defaultGatewayValue = prefix["DefaultGateway"]["_value"];
 
-        var dNSServers = PREFIX["DNSServers"]["_value"];
+        var dNSServers = prefix["DNSServers"]["_value"];
         primaryDNSValue = dNSServers.split(',')[0];
         secondaryDNSValue = dNSServers.split(',')[1];
 
-        var PREFIX1 =
+        var prefix1 =
             d["data"]["InternetGatewayDevice"]["WEB_GUI"]["Ethernet"]["Status"];
 
-        var linkStatus = PREFIX['AddressingType']['_value'];
+        var linkStatus = prefix1['LinkStatus']['_value'];
         if (linkStatus == '1') {
           linkStatusValue = 'Connected';
         } else {
           linkStatusValue = 'Disconnected';
         }
 
-        var connectStatus = PREFIX['AddressingType']['_value'];
+        var connectStatus = prefix1['ConnectStatus']['_value'];
         if (connectStatus == '1') {
           connectStatusValue = 'Connected';
         } else {

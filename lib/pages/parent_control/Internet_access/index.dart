@@ -88,373 +88,347 @@ class _InternetaccessState extends State<Internetaccess> {
     return Scaffold(
         appBar: customAppbar(
             context: context, title: 'Internet access time scheduling '),
-        body: Container(
-          padding: EdgeInsets.all(26.w),
-          decoration:
-              const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
-          height: 1400.w,
-          child: SingleChildScrollView(
-              child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  //time period
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        date = 'timePeriod';
-                      });
-                    },
-                    child: Text(
-                      'Time Period',
-                      style: TextStyle(
-                          color: date == 'timePeriod'
-                              ? Colors.blue
-                              : Colors.black54),
-                    ),
+        body: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                //time period
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      date = 'timePeriod';
+                    });
+                  },
+                  child: Text(
+                    'Time Period',
+                    style: TextStyle(
+                        color: date == 'timePeriod'
+                            ? Colors.blue
+                            : Colors.black54),
                   ),
-                  //Duration
-                  TextButton(
-                    onPressed: () {
-                      setState(() {
-                        date = 'Duration';
-                      });
-                    },
-                    child: Text(
-                      'Duration',
-                      style: TextStyle(
-                          color: date == 'Duration'
-                              ? Colors.blue
-                              : Colors.black54),
-                    ),
+                ),
+                //Duration
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      date = 'Duration';
+                    });
+                  },
+                  child: Text(
+                    'Duration',
+                    style: TextStyle(
+                        color:
+                            date == 'Duration' ? Colors.blue : Colors.black54),
                   ),
-                ],
-              ),
-              if (date == 'timePeriod')
-                loading
-                    ? const Center(child: CircularProgressIndicator())
-                    : Stack(
+                ),
+              ],
+            ),
+            if (date == 'timePeriod')
+              loading
+                  ? const Center(child: CircularProgressIndicator())
+                  : Expanded(
+                      child: Column(
                         children: [
-                          Column(
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  const Text('  Enable'),
-                                  Switch(
-                                    value: enable,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        enable = value;
-                                      });
+                              const Text('Enable'),
+                              Switch(
+                                value: enable,
+                                onChanged: (value) {
+                                  setState(() {
+                                    enable = value;
+                                  });
 
-                                      String prefix =
-                                          'InternetGatewayDevice.WEB_GUI.ParentalControls.Enable';
-                                      var parameterNames = [
-                                        [prefix, value, 'xsd:string'],
-                                      ];
-                                      //设置
-                                      Request().setACSNode(parameterNames, sn);
-                                    },
-                                  ),
-                                ],
-                              ),
-                              //家长控制列表 遍历
-                              SingleChildScrollView(
-                                child: SizedBox(
-                                  height: 600.h,
-                                  child: ListView.builder(
-                                      itemCount: accessList.length,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return Card(
-                                          clipBehavior: Clip.hardEdge,
-                                          elevation: 5,
-                                          shape: const RoundedRectangleBorder(
-                                            //设置卡片圆角
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(20)),
-                                          ),
-                                          child: ListTile(
-                                            title: Text(accessList[index]
-                                                        ['TimeStart']['_value']
-                                                    .toString() +
-                                                '-' +
-                                                accessList[index]['TimeStop']
-                                                        ['_value']
-                                                    .toString()),
-                                            subtitle: Text(accessList[index]
-                                                    ['Weekdays']['_value']
-                                                .toString()),
-                                            trailing: Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                IconButton(
-                                                  icon: Icon(Icons.edit),
-                                                  onPressed: () {
-                                                    showDialog(
-                                                      context: context,
-                                                      builder: (BuildContext
-                                                          context) {
-                                                        return MyDialog(
-                                                            week: accessList[
-                                                                        index][
-                                                                    'Weekdays']
-                                                                ['_value'],
-                                                            time: accessList[index]
-                                                                            ['TimeStart'][
-                                                                        '_value']
-                                                                    .toString() +
-                                                                '-' +
-                                                                accessList[index]
-                                                                            ['TimeStop'][
-                                                                        '_value']
-                                                                    .toString(),
-                                                            id: keyList[index],
-                                                            getACSNodeFn:
-                                                                getACSNodeFn,
-                                                            openLoading:
-                                                                openLoading);
-                                                      },
-                                                    );
-                                                    //输入框
-                                                    // TextField(
-                                                    //   autofocus: true,
-                                                    //   controller: editTitleVal,
-                                                    //   decoration:
-                                                    //       InputDecoration(
-                                                    //     contentPadding:
-                                                    //         EdgeInsets.only(
-                                                    //             left: 20.w),
-                                                    //     border:
-                                                    //         OutlineInputBorder(
-                                                    //       borderRadius:
-                                                    //           BorderRadius
-                                                    //               .circular(10),
-                                                    //     ),
-                                                    //     hintText: S.current
-                                                    //         .pleaseEnter,
-                                                    //     suffixIcon: IconButton(
-                                                    //       icon: const Icon(
-                                                    //           Icons.clear),
-                                                    //       onPressed: () {
-                                                    //         // 清空输入框中的内容
-                                                    //         editTitleVal
-                                                    //             .clear();
-                                                    //       },
-                                                    //     ),
-                                                    //   ),
-                                                    //   onChanged: (value) {
-                                                    //     setState(() {});
-                                                    //   },
-                                                    // );
-                                                  },
-                                                ),
-                                                IconButton(
-                                                  icon: Icon(Icons.delete),
-                                                  onPressed: () async {
-                                                    await Request()
-                                                        .addOrDeleteObject(
-                                                            "InternetGatewayDevice.WEB_GUI.ParentalControls.List.${keyList[index]}",
-                                                            sn,
-                                                            'deleteObject');
-                                                    getACSNodeFn();
-                                                  },
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        );
-                                      }),
-                                ),
-                              ),
-
-                              Positioned(
-                                left: 0,
-                                right: 0,
-                                bottom: 0,
-                                child: SizedBox(
-                                  height: 50,
-                                  child: Center(
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return MyDialog(
-                                                getACSNodeFn: getACSNodeFn,
-                                                openLoading: openLoading);
-                                          },
-                                        );
-                                      },
-                                      child: Text(
-                                        'ADD PERIOD',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      style: ButtonStyle(
-                                        shape: MaterialStateProperty.all<
-                                            RoundedRectangleBorder>(
-                                          RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                                10), // 指定圆角的半径
-                                          ),
-                                        ),
-                                        backgroundColor:
-                                            MaterialStateProperty.all<Color>(
-                                                Colors.blue),
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                                  String prefix =
+                                      'InternetGatewayDevice.WEB_GUI.ParentalControls.Enable';
+                                  var parameterNames = [
+                                    [prefix, value, 'xsd:string'],
+                                  ];
+                                  //设置
+                                  Request().setACSNode(parameterNames, sn);
+                                },
                               ),
                             ],
                           ),
-                          // 按钮
-                        ],
-                      ),
-              if (date == 'Duration')
-                Column(
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 10),
-                      child: const Text(
-                        '  Set daily limits for how long your child can use the Internet. They can only use  Internet time during the specified time periods',
-                        style: TextStyle(
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ),
-                    InfoBox(
-                      boxCotainer: Column(children: [
-                        BottomLine(
-                            rowtem: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              children: const [Text('1h'), Text('Mon')],
+                          //家长控制列表 遍历
+                          Expanded(
+                            child: SingleChildScrollView(
+                              child: SizedBox(
+                                height: 1.sh - 70,
+                                width: 1.sw,
+                                child: ListView.builder(
+                                    itemCount: accessList.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return Card(
+                                        clipBehavior: Clip.hardEdge,
+                                        elevation: 5,
+                                        shape: const RoundedRectangleBorder(
+                                          //设置卡片圆角
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(20)),
+                                        ),
+                                        child: ListTile(
+                                          title: Text(
+                                              '${accessList[index]['TimeStart']['_value']}-${accessList[index]['TimeStop']['_value']}'),
+                                          subtitle: Text(accessList[index]
+                                                  ['Weekdays']['_value']
+                                              .toString()),
+                                          trailing: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              IconButton(
+                                                icon: const Icon(Icons.edit),
+                                                onPressed: () {
+                                                  showDialog(
+                                                    context: context,
+                                                    builder:
+                                                        (BuildContext context) {
+                                                      return MyDialog(
+                                                          week: accessList[
+                                                                      index]
+                                                                  ['Weekdays']
+                                                              ['_value'],
+                                                          time:
+                                                              '${accessList[index]['TimeStart']['_value']}-${accessList[index]['TimeStop']['_value']}',
+                                                          id: keyList[index],
+                                                          getACSNodeFn:
+                                                              getACSNodeFn,
+                                                          openLoading:
+                                                              openLoading);
+                                                    },
+                                                  );
+                                                  //输入框
+                                                  // TextField(
+                                                  //   autofocus: true,
+                                                  //   controller: editTitleVal,
+                                                  //   decoration:
+                                                  //       InputDecoration(
+                                                  //     contentPadding:
+                                                  //         EdgeInsets.only(
+                                                  //             left: 20.w),
+                                                  //     border:
+                                                  //         OutlineInputBorder(
+                                                  //       borderRadius:
+                                                  //           BorderRadius
+                                                  //               .circular(10),
+                                                  //     ),
+                                                  //     hintText: S.current
+                                                  //         .pleaseEnter,
+                                                  //     suffixIcon: IconButton(
+                                                  //       icon: const Icon(
+                                                  //           Icons.clear),
+                                                  //       onPressed: () {
+                                                  //         // 清空输入框中的内容
+                                                  //         editTitleVal
+                                                  //             .clear();
+                                                  //       },
+                                                  //     ),
+                                                  //   ),
+                                                  //   onChanged: (value) {
+                                                  //     setState(() {});
+                                                  //   },
+                                                  // );
+                                                },
+                                              ),
+                                              IconButton(
+                                                icon: Icon(Icons.delete),
+                                                onPressed: () async {
+                                                  await Request().addOrDeleteObject(
+                                                      "InternetGatewayDevice.WEB_GUI.ParentalControls.List.${keyList[index]}",
+                                                      sn,
+                                                      'deleteObject');
+                                                  getACSNodeFn();
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    }),
+                              ),
                             ),
-                            const Icon(Icons.keyboard_arrow_right_sharp)
-                          ],
-                        )),
-                        BottomLine(
-                            rowtem: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              children: const [
-                                Text('2h'),
-                                Text(
-                                  'Thu',
-                                  style: TextStyle(
-                                    color: Color(0xFF6c7481),
+                          ),
+
+                          SizedBox(
+                            width: 1.sw,
+                            child: Center(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return MyDialog(
+                                          getACSNodeFn: getACSNodeFn,
+                                          openLoading: openLoading);
+                                    },
+                                  );
+                                },
+                                style: ButtonStyle(
+                                  shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(10), // 指定圆角的半径
+                                    ),
                                   ),
-                                )
-                              ],
-                            ),
-                            const Icon(Icons.keyboard_arrow_right_sharp)
-                          ],
-                        )),
-                        BottomLine(
-                            rowtem: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              children: const [
-                                Text('5h'),
-                                Text(
-                                  'Wed',
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Colors.blue),
+                                ),
+                                child: const Text(
+                                  'ADD PERIOD',
                                   style: TextStyle(
-                                    color: Color(0xFF6c7481),
-                                  ),
-                                )
-                              ],
-                            ),
-                            const Icon(Icons.keyboard_arrow_right_sharp)
-                          ],
-                        )),
-                        BottomLine(
-                            rowtem: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              children: const [
-                                Text(
-                                  '1h',
-                                  style: TextStyle(
-                                    color: Color(0xFF6c7481),
+                                    color: Colors.white,
                                   ),
                                 ),
-                                Text(
-                                  'Thu',
-                                )
-                              ],
+                              ),
                             ),
-                            const Icon(Icons.keyboard_arrow_right_sharp)
-                          ],
-                        )),
-                        BottomLine(
-                            rowtem: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              children: const [
-                                Text('1h'),
-                                Text(
-                                  'Fri',
-                                  style: TextStyle(
-                                    color: Color(0xFF6c7481),
-                                  ),
-                                )
-                              ],
-                            ),
-                            const Icon(Icons.keyboard_arrow_right_sharp)
-                          ],
-                        )),
-                        BottomLine(
-                            rowtem: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              children: const [
-                                Text('1h'),
-                                Text(
-                                  'Sat',
-                                  style: TextStyle(
-                                    color: Color(0xFF6c7481),
-                                  ),
-                                )
-                              ],
-                            ),
-                            const Icon(Icons.keyboard_arrow_right_sharp)
-                          ],
-                        )),
-                        BottomLine(
-                            rowtem: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              children: const [
-                                Text('1h'),
-                                Text(
-                                  'Sun',
-                                  style: TextStyle(
-                                    color: Color(0xFF6c7481),
-                                  ),
-                                )
-                              ],
-                            ),
-                            const Icon(Icons.keyboard_arrow_right_sharp)
-                          ],
-                        )),
-                      ]),
-                    )
-                  ],
-                )
-            ],
-          )),
+                          ),
+                        ],
+                      ),
+                    ),
+            if (date == 'Duration')
+              Column(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 10),
+                    child: const Text(
+                      '  Set daily limits for how long your child can use the Internet. They can only use  Internet time during the specified time periods',
+                      style: TextStyle(
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
+                  InfoBox(
+                    boxCotainer: Column(children: [
+                      BottomLine(
+                          rowtem: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            children: const [Text('1h'), Text('Mon')],
+                          ),
+                          const Icon(Icons.keyboard_arrow_right_sharp)
+                        ],
+                      )),
+                      BottomLine(
+                          rowtem: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            children: const [
+                              Text('2h'),
+                              Text(
+                                'Thu',
+                                style: TextStyle(
+                                  color: Color(0xFF6c7481),
+                                ),
+                              )
+                            ],
+                          ),
+                          const Icon(Icons.keyboard_arrow_right_sharp)
+                        ],
+                      )),
+                      BottomLine(
+                          rowtem: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            children: const [
+                              Text('5h'),
+                              Text(
+                                'Wed',
+                                style: TextStyle(
+                                  color: Color(0xFF6c7481),
+                                ),
+                              )
+                            ],
+                          ),
+                          const Icon(Icons.keyboard_arrow_right_sharp)
+                        ],
+                      )),
+                      BottomLine(
+                          rowtem: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            children: const [
+                              Text(
+                                '1h',
+                                style: TextStyle(
+                                  color: Color(0xFF6c7481),
+                                ),
+                              ),
+                              Text(
+                                'Thu',
+                              )
+                            ],
+                          ),
+                          const Icon(Icons.keyboard_arrow_right_sharp)
+                        ],
+                      )),
+                      BottomLine(
+                          rowtem: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            children: const [
+                              Text('1h'),
+                              Text(
+                                'Fri',
+                                style: TextStyle(
+                                  color: Color(0xFF6c7481),
+                                ),
+                              )
+                            ],
+                          ),
+                          const Icon(Icons.keyboard_arrow_right_sharp)
+                        ],
+                      )),
+                      BottomLine(
+                          rowtem: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            children: const [
+                              Text('1h'),
+                              Text(
+                                'Sat',
+                                style: TextStyle(
+                                  color: Color(0xFF6c7481),
+                                ),
+                              )
+                            ],
+                          ),
+                          const Icon(Icons.keyboard_arrow_right_sharp)
+                        ],
+                      )),
+                      BottomLine(
+                          rowtem: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            children: const [
+                              Text('1h'),
+                              Text(
+                                'Sun',
+                                style: TextStyle(
+                                  color: Color(0xFF6c7481),
+                                ),
+                              )
+                            ],
+                          ),
+                          const Icon(Icons.keyboard_arrow_right_sharp)
+                        ],
+                      )),
+                    ]),
+                  )
+                ],
+              )
+          ],
         ));
   }
 }

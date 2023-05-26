@@ -92,6 +92,8 @@ dependencies:
   vibration: ^1.7.7
   # 获取mac地址
   mac_address: ^1.0.0
+  #选择时间
+  progressive_time_picker: ^0.0.9
 dev_dependencies:
   flutter_test:
     sdk: flutter

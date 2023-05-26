@@ -686,6 +686,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "4.2.4"
+  progressive_time_picker:
+    dependency: "direct main"
+    description:
+      name: progressive_time_picker
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.0.9"
   pull_to_refresh_flutter3:
     dependency: "direct main"
     description:

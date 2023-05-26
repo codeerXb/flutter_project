@@ -204,8 +204,8 @@ class _NetStatusState extends State<NetStatus> {
       "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.ProductModel",
       "InternetGatewayDevice.WEB_GUI.Ethernet.Status.ConnectStatus",
     ];
-    var res = await Request().getACSNode(parameterNames, sn);
     try {
+      var res = await Request().getACSNode(parameterNames, sn);
       var jsonObj = jsonDecode(res);
       if (!mounted) return;
       setState(() {

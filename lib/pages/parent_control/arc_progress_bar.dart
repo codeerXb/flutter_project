@@ -90,7 +90,7 @@ class _ArcProgressBarPainter extends CustomPainter {
     _paint
       ..isAntiAlias = true
       ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.butt
+      ..strokeCap = StrokeCap.round
       ..strokeWidth = _strokeSize;
 
     _paint.shader = const LinearGradient(
@@ -209,15 +209,51 @@ class _ArcProgressBarPainter extends CustomPainter {
     canvas.translate(cx, cy);
     canvas.rotate(_toRadius(0));
     canvas.translate(-cx, -cy);
+    // 1、将所有时间进行合并，得出最终的并集
+    List getRange(progress) {
+      List range = [];
+      for (var item in transformProgressList(progress)) {
+        var start = item['start'];
+        var duration = item['duration'];
+
+        var rangeStart = 120 - start;
+        var rangeEnd = (start > duration) ? (rangeStart + duration) : 120;
+
+        if (start > duration) {
+          rangeEnd = rangeStart + duration;
+        } else {
+          rangeEnd = 120;
+          rangeStart = Math.max(0, duration - start);
+        }
+
+        range.add([rangeStart, rangeEnd]);
+      }
+      return range;
+    }
+
+    // 2、判断数据是否在这个并集之中
+    bool isInRange(value, range) {
+      for (int i = 0; i < range.length; i++) {
+        var rangeStart = range[i][0];
+        var rangeEnd = range[i][1];
+
+        if (value >= rangeStart && value <= rangeEnd) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
     for (int i = 0; i <= (max - min); i++) {
-      // for (var item in transformProgressList(progress)) {
-      // if (i >= 120 - item['start'] &&
-      //     i <= 120 - item['start'] + item['duration']) {
-      //   paintProgress.color = const Color(0xFF2F5AF5);
-      // } else {
-      paintProgress.color = const Color(0xFFD8D8D8);
-      // }
-      // }
+      // 3、绘制并集，根据遍历的值切换画笔颜色
+      if (isInRange(i, getRange(progress))) {
+        // 4、设定时间段颜色加深
+        paintProgress.color = const Color(0xFF2F5AF5);
+      } else {
+        paintProgress.color = const Color(0xFFD8D8D8);
+      }
+
       double evaDegree = i * _toRadius(360 / (max - min));
       double b = i % 10 == 0 ? 6.sp : 0;
       double x = cx + (radius + 12.sp) * Math.cos(evaDegree);
@@ -225,6 +261,7 @@ class _ArcProgressBarPainter extends CustomPainter {
       double x1 = cx + (radius + 4.sp - b) * Math.cos(evaDegree);
       double y1 = cx + (radius + 4.sp - b) * Math.sin(evaDegree);
       canvas.drawLine(Offset(x, y), Offset(x1, y1), paintProgress);
+      // 表盘数字
       if (i % 10 == 0 && i != 0) {
         const textStyle = TextStyle(
           color: Color.fromARGB(255, 105, 105, 105),

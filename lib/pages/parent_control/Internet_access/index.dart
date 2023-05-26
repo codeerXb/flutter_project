@@ -153,110 +153,101 @@ class _InternetaccessState extends State<Internetaccess> {
                             ],
                           ),
                           //家长控制列表 遍历
-                          SingleChildScrollView(
-                            child: SizedBox(
-                              height: 600.h,
-                              child: ListView.builder(
-                                  itemCount: accessList.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return Card(
-                                      clipBehavior: Clip.hardEdge,
-                                      elevation: 5,
-                                      shape: const RoundedRectangleBorder(
-                                        //设置卡片圆角
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(20)),
-                                      ),
-                                      child: ListTile(
-                                        title: Text(accessList[index]
-                                                    ['TimeStart']['_value']
-                                                .toString() +
-                                            '-' +
-                                            accessList[index]['TimeStop']
-                                                    ['_value']
-                                                .toString()),
-                                        subtitle: Text(accessList[index]
-                                                ['Weekdays']['_value']
-                                            .toString()),
-                                        trailing: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            IconButton(
-                                              icon: Icon(Icons.edit),
-                                              onPressed: () {
-                                                showDialog(
-                                                  context: context,
-                                                  builder:
-                                                      (BuildContext context) {
-                                                    return MyDialog(
-                                                        week: accessList[index]
-                                                                ['Weekdays']
-                                                            ['_value'],
-                                                        time: accessList[index][
-                                                                        'TimeStart']
-                                                                    ['_value']
-                                                                .toString() +
-                                                            '-' +
-                                                            accessList[index][
-                                                                        'TimeStop']
-                                                                    ['_value']
-                                                                .toString(),
-                                                        id: keyList[index],
-                                                        getACSNodeFn:
-                                                            getACSNodeFn,
-                                                        openLoading:
-                                                            openLoading);
-                                                  },
-                                                );
-                                                //输入框
-                                                // TextField(
-                                                //   autofocus: true,
-                                                //   controller: editTitleVal,
-                                                //   decoration:
-                                                //       InputDecoration(
-                                                //     contentPadding:
-                                                //         EdgeInsets.only(
-                                                //             left: 20.w),
-                                                //     border:
-                                                //         OutlineInputBorder(
-                                                //       borderRadius:
-                                                //           BorderRadius
-                                                //               .circular(10),
-                                                //     ),
-                                                //     hintText: S.current
-                                                //         .pleaseEnter,
-                                                //     suffixIcon: IconButton(
-                                                //       icon: const Icon(
-                                                //           Icons.clear),
-                                                //       onPressed: () {
-                                                //         // 清空输入框中的内容
-                                                //         editTitleVal
-                                                //             .clear();
-                                                //       },
-                                                //     ),
-                                                //   ),
-                                                //   onChanged: (value) {
-                                                //     setState(() {});
-                                                //   },
-                                                // );
-                                              },
-                                            ),
-                                            IconButton(
-                                              icon: Icon(Icons.delete),
-                                              onPressed: () async {
-                                                await Request().addOrDeleteObject(
-                                                    "InternetGatewayDevice.WEB_GUI.ParentalControls.List.${keyList[index]}",
-                                                    sn,
-                                                    'deleteObject');
-                                                getACSNodeFn();
-                                              },
-                                            ),
-                                          ],
+                          Expanded(
+                            child: SingleChildScrollView(
+                              child: SizedBox(
+                                height: 1.sh - 70,
+                                child: ListView.builder(
+                                    itemCount: accessList.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return Card(
+                                        clipBehavior: Clip.hardEdge,
+                                        elevation: 5,
+                                        shape: const RoundedRectangleBorder(
+                                          //设置卡片圆角
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(20)),
                                         ),
-                                      ),
-                                    );
-                                  }),
+                                        child: ListTile(
+                                          title: Text(
+                                              '${accessList[index]['TimeStart']['_value']}-${accessList[index]['TimeStop']['_value']}'),
+                                          subtitle: Text(accessList[index]
+                                                  ['Weekdays']['_value']
+                                              .toString()),
+                                          trailing: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              IconButton(
+                                                icon: Icon(Icons.edit),
+                                                onPressed: () {
+                                                  showDialog(
+                                                    context: context,
+                                                    builder:
+                                                        (BuildContext context) {
+                                                      return MyDialog(
+                                                          week: accessList[
+                                                                      index]
+                                                                  ['Weekdays']
+                                                              ['_value'],
+                                                          time:
+                                                              '${accessList[index]['TimeStart']['_value']}-${accessList[index]['TimeStop']['_value']}',
+                                                          id: keyList[index],
+                                                          getACSNodeFn:
+                                                              getACSNodeFn,
+                                                          openLoading:
+                                                              openLoading);
+                                                    },
+                                                  );
+                                                  //输入框
+                                                  // TextField(
+                                                  //   autofocus: true,
+                                                  //   controller: editTitleVal,
+                                                  //   decoration:
+                                                  //       InputDecoration(
+                                                  //     contentPadding:
+                                                  //         EdgeInsets.only(
+                                                  //             left: 20.w),
+                                                  //     border:
+                                                  //         OutlineInputBorder(
+                                                  //       borderRadius:
+                                                  //           BorderRadius
+                                                  //               .circular(10),
+                                                  //     ),
+                                                  //     hintText: S.current
+                                                  //         .pleaseEnter,
+                                                  //     suffixIcon: IconButton(
+                                                  //       icon: const Icon(
+                                                  //           Icons.clear),
+                                                  //       onPressed: () {
+                                                  //         // 清空输入框中的内容
+                                                  //         editTitleVal
+                                                  //             .clear();
+                                                  //       },
+                                                  //     ),
+                                                  //   ),
+                                                  //   onChanged: (value) {
+                                                  //     setState(() {});
+                                                  //   },
+                                                  // );
+                                                },
+                                              ),
+                                              IconButton(
+                                                icon: Icon(Icons.delete),
+                                                onPressed: () async {
+                                                  await Request().addOrDeleteObject(
+                                                      "InternetGatewayDevice.WEB_GUI.ParentalControls.List.${keyList[index]}",
+                                                      sn,
+                                                      'deleteObject');
+                                                  getACSNodeFn();
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    }),
+                              ),
                             ),
                           ),
 

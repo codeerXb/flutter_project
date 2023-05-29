@@ -240,8 +240,8 @@ class InternetUsage extends StatelessWidget {
   }
 }
 
-var MACAddress;
 var name;
+ValueNotifier<String> MACAddress = ValueNotifier('');
 
 //上方轮播图
 class SwiperCard extends StatefulWidget {
@@ -283,30 +283,28 @@ class _SwiperCardState extends State<SwiperCard> {
       setState(() {
         //过滤列表
         accessList = accessList
-            .where((element) => element['Device']['_value'] == MACAddress)
+            .where((element) => element['Device']['_value'] == MACAddress.value)
             .toList();
       });
       for (var item in accessList) {
         if (item['Weekdays']['_value'].contains('Mon')) {
-          filteredData.add({
-            'TimeStart': item['TimeStart']['_value'],
-            'TimeStop': item['TimeStop']['_value'],
+          setState(() {
+            filteredData.add({
+              'TimeStart': item['TimeStart']['_value'],
+              'TimeStop': item['TimeStop']['_value'],
+            });
           });
         }
       }
     } catch (e) {
       // 处理异常
-    } finally {
-      setState(() {
-        loading = false;
-      });
-    }
+    } finally {}
   }
 
   @override
   void initState() {
     super.initState();
-    MACAddress = deviceList[0]['MACAddress'];
+    MACAddress.value = deviceList[0]['MACAddress'];
     name = deviceList[0]['name'];
   }
 
@@ -335,8 +333,9 @@ class _SwiperCardState extends State<SwiperCard> {
       child: Swiper(
           onIndexChanged: (int index) {
             setState(() {
-              MACAddress = deviceList[index]['MACAddress'];
+              MACAddress.value = deviceList[index]['MACAddress'];
               name = deviceList[index]['name'];
+              date = 'Mon';
             });
             getACSNodeFn();
           },
@@ -878,7 +877,7 @@ class _SchedulingState extends State<Scheduling> {
       setState(() {
         //过滤列表
         accessList = accessList
-            .where((element) => element['Device']['_value'] == MACAddress)
+            .where((element) => element['Device']['_value'] == MACAddress.value)
             .toList();
       });
       for (var item in accessList) {
@@ -927,7 +926,7 @@ class _SchedulingState extends State<Scheduling> {
                   onTap: () {
                     Get.toNamed('/Internetaccess', arguments: {
                       "sn": sn,
-                      "MACAddress": MACAddress,
+                      "MACAddress": MACAddress.value,
                       "name": name
                     });
                   },
@@ -986,7 +985,11 @@ class _SchedulingState extends State<Scheduling> {
             if (isFirst)
               GestureDetector(
                 onTap: () {
-                  Get.toNamed('/Internetaccess', arguments: {"sn": sn});
+                  Get.toNamed('/Internetaccess', arguments: {
+                    "sn": sn,
+                    "MACAddress": MACAddress.value,
+                    "name": name
+                  });
                 },
                 child: Container(
                   margin: EdgeInsets.zero,
@@ -1053,226 +1056,238 @@ class _SchedulingState extends State<Scheduling> {
                   ),
                 ),
               ),
+
             if (!isFirst)
               const Image(
                 image: AssetImage('assets/images/Durationtime.png'),
               ),
 
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                //Mon
-                Expanded(
-                  child: TextButton(
-                    style: ButtonStyle(
-                        fixedSize:
-                            MaterialStateProperty.all(const Size(10, 10))),
-                    onPressed: () {
-                      setState(() {
-                        date = 'Mon';
-                        filteredData = [];
-                      });
-                      getACSNodeFn();
-                      for (var item in accessList) {
-                        if (item['Weekdays']['_value'].contains('Mon')) {
-                          filteredData.add({
-                            'TimeStart': item['TimeStart']['_value'],
-                            'TimeStop': item['TimeStop']['_value'],
+            ValueListenableBuilder<String>(
+              valueListenable: MACAddress,
+              builder: (context, value, child) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    //Mon
+                    Expanded(
+                      child: TextButton(
+                        style: ButtonStyle(
+                            fixedSize:
+                                MaterialStateProperty.all(const Size(10, 10))),
+                        onPressed: () {
+                          setState(() {
+                            date = 'Mon';
+                            filteredData = [];
                           });
-                        }
-                      }
-                      print(filteredData);
-                    },
-                    child: ConstrainedBox(
-                        constraints: BoxConstraints(maxWidth: 150.w),
+                          getACSNodeFn();
+                          for (var item in accessList) {
+                            if (item['Weekdays']['_value'].contains('Mon')) {
+                              filteredData.add({
+                                'TimeStart': item['TimeStart']['_value'],
+                                'TimeStop': item['TimeStop']['_value'],
+                              });
+                            }
+                          }
+                          print(filteredData);
+                        },
+                        child: ConstrainedBox(
+                            constraints: BoxConstraints(maxWidth: 150.w),
+                            child: FittedBox(
+                              child: Text(
+                                'Mon',
+                                style: TextStyle(
+                                    color: date == 'Mon'
+                                        ? Colors.blue
+                                        : Colors.black54),
+                              ),
+                            )),
+                      ),
+                    ),
+
+                    //Tue
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () {
+                          setState(() {
+                            filteredData = [];
+                            date = 'Tue';
+                            filteredData = [];
+                          });
+                          for (var item in accessList) {
+                            if (item['Weekdays']['_value'].contains('Tue')) {
+                              filteredData.add({
+                                'TimeStart': item['TimeStart']['_value'],
+                                'TimeStop': item['TimeStop']['_value'],
+                              });
+                            }
+                          }
+                          print(filteredData);
+                        },
                         child: FittedBox(
                           child: Text(
-                            'Mon',
+                            'Tue',
                             style: TextStyle(
-                                color: date == 'Mon'
+                                color: date == 'Tue'
                                     ? Colors.blue
                                     : Colors.black54),
                           ),
-                        )),
-                  ),
-                ),
-
-                //Tue
-                Expanded(
-                  child: TextButton(
-                    onPressed: () {
-                      setState(() {
-                        filteredData = [];
-                        date = 'Tue';
-                        filteredData = [];
-                      });
-                      for (var item in accessList) {
-                        if (item['Weekdays']['_value'].contains('Tue')) {
-                          filteredData.add({
-                            'TimeStart': item['TimeStart']['_value'],
-                            'TimeStop': item['TimeStop']['_value'],
-                          });
-                        }
-                      }
-                      print(filteredData);
-                    },
-                    child: FittedBox(
-                      child: Text(
-                        'Tue',
-                        style: TextStyle(
-                            color:
-                                date == 'Tue' ? Colors.blue : Colors.black54),
+                        ),
                       ),
                     ),
-                  ),
-                ),
 
-                //Wed
-                Expanded(
-                  child: TextButton(
-                    onPressed: () {
-                      setState(() {
-                        date = 'Wed';
-                        filteredData = [];
-                      });
-                      for (var item in accessList) {
-                        if (item['Weekdays']['_value'].contains('Wed')) {
-                          filteredData.add({
-                            'TimeStart': item['TimeStart']['_value'],
-                            'TimeStop': item['TimeStop']['_value'],
+                    //Wed
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () {
+                          setState(() {
+                            date = 'Wed';
+                            filteredData = [];
                           });
-                        }
-                      }
-                      print(filteredData);
-                    },
-                    child: FittedBox(
-                      child: Text(
-                        'Wed',
-                        style: TextStyle(
-                            color:
-                                date == 'Wed' ? Colors.blue : Colors.black54),
+                          for (var item in accessList) {
+                            if (item['Weekdays']['_value'].contains('Wed')) {
+                              filteredData.add({
+                                'TimeStart': item['TimeStart']['_value'],
+                                'TimeStop': item['TimeStop']['_value'],
+                              });
+                            }
+                          }
+                          print(filteredData);
+                        },
+                        child: FittedBox(
+                          child: Text(
+                            'Wed',
+                            style: TextStyle(
+                                color: date == 'Wed'
+                                    ? Colors.blue
+                                    : Colors.black54),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
 
-                //Thu
-                Expanded(
-                  child: TextButton(
-                    onPressed: () {
-                      setState(() {
-                        date = 'Thu';
-                        filteredData = [];
-                      });
-                      for (var item in accessList) {
-                        if (item['Weekdays']['_value'].contains('Thu')) {
-                          filteredData.add({
-                            'TimeStart': item['TimeStart']['_value'],
-                            'TimeStop': item['TimeStop']['_value'],
+                    //Thu
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () {
+                          setState(() {
+                            date = 'Thu';
+                            filteredData = [];
                           });
-                        }
-                      }
-                      print(filteredData);
-                    },
-                    child: FittedBox(
-                      child: Text(
-                        'Thu',
-                        style: TextStyle(
-                            color:
-                                date == 'Thu' ? Colors.blue : Colors.black54),
+                          for (var item in accessList) {
+                            if (item['Weekdays']['_value'].contains('Thu')) {
+                              filteredData.add({
+                                'TimeStart': item['TimeStart']['_value'],
+                                'TimeStop': item['TimeStop']['_value'],
+                              });
+                            }
+                          }
+                          print(filteredData);
+                        },
+                        child: FittedBox(
+                          child: Text(
+                            'Thu',
+                            style: TextStyle(
+                                color: date == 'Thu'
+                                    ? Colors.blue
+                                    : Colors.black54),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
 
-                // Fri
-                Expanded(
-                  child: TextButton(
-                    onPressed: () {
-                      setState(() {
-                        date = 'Fri';
-                        filteredData = [];
-                      });
-                      for (var item in accessList) {
-                        if (item['Weekdays']['_value'].contains('Fri')) {
-                          filteredData.add({
-                            'TimeStart': item['TimeStart']['_value'],
-                            'TimeStop': item['TimeStop']['_value'],
+                    // Fri
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () {
+                          setState(() {
+                            date = 'Fri';
+                            filteredData = [];
                           });
-                        }
-                      }
-                      print(filteredData);
-                    },
-                    child: FittedBox(
-                      child: Text(
-                        'Fri',
-                        style: TextStyle(
-                            color:
-                                date == 'Fri' ? Colors.blue : Colors.black54),
+                          for (var item in accessList) {
+                            if (item['Weekdays']['_value'].contains('Fri')) {
+                              filteredData.add({
+                                'TimeStart': item['TimeStart']['_value'],
+                                'TimeStop': item['TimeStop']['_value'],
+                              });
+                            }
+                          }
+                          print(filteredData);
+                        },
+                        child: FittedBox(
+                          child: Text(
+                            'Fri',
+                            style: TextStyle(
+                                color: date == 'Fri'
+                                    ? Colors.blue
+                                    : Colors.black54),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
 
-                // Sat
-                Expanded(
-                  child: TextButton(
-                    onPressed: () {
-                      setState(() {
-                        date = 'Sat';
-                        filteredData = [];
-                      });
-                      for (var item in accessList) {
-                        if (item['Weekdays']['_value'].contains('Sat')) {
-                          filteredData.add({
-                            'TimeStart': item['TimeStart']['_value'],
-                            'TimeStop': item['TimeStop']['_value'],
+                    // Sat
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () {
+                          setState(() {
+                            date = 'Sat';
+                            filteredData = [];
                           });
-                        }
-                      }
-                      print(filteredData);
-                    },
-                    child: FittedBox(
-                      child: Text(
-                        'Sat',
-                        style: TextStyle(
-                            color:
-                                date == 'Sat' ? Colors.blue : Colors.black54),
+                          for (var item in accessList) {
+                            if (item['Weekdays']['_value'].contains('Sat')) {
+                              filteredData.add({
+                                'TimeStart': item['TimeStart']['_value'],
+                                'TimeStop': item['TimeStop']['_value'],
+                              });
+                            }
+                          }
+                          print(filteredData);
+                        },
+                        child: FittedBox(
+                          child: Text(
+                            'Sat',
+                            style: TextStyle(
+                                color: date == 'Sat'
+                                    ? Colors.blue
+                                    : Colors.black54),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
 
-                // Sun
-                Expanded(
-                  child: TextButton(
-                    onPressed: () {
-                      setState(() {
-                        date = 'Sun';
-                        filteredData = [];
-                      });
-                      for (var item in accessList) {
-                        if (item['Weekdays']['_value'].contains('Sun')) {
-                          filteredData.add({
-                            'TimeStart': item['TimeStart']['_value'],
-                            'TimeStop': item['TimeStop']['_value'],
+                    // Sun
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () {
+                          setState(() {
+                            date = 'Sun';
+                            filteredData = [];
                           });
-                        }
-                      }
-                      print(filteredData);
-                    },
-                    child: FittedBox(
-                      child: Text(
-                        'Sun',
-                        style: TextStyle(
-                            color:
-                                date == 'Sun' ? Colors.blue : Colors.black54),
+                          for (var item in accessList) {
+                            if (item['Weekdays']['_value'].contains('Sun')) {
+                              filteredData.add({
+                                'TimeStart': item['TimeStart']['_value'],
+                                'TimeStop': item['TimeStop']['_value'],
+                              });
+                            }
+                          }
+                          print(filteredData);
+                        },
+                        child: FittedBox(
+                          child: Text(
+                            'Sun',
+                            style: TextStyle(
+                                color: date == 'Sun'
+                                    ? Colors.blue
+                                    : Colors.black54),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              ],
-            )
+                  ],
+                );
+              },
+            ),
           ],
         ));
   }

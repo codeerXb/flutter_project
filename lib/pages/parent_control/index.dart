@@ -119,20 +119,6 @@ class InternetUsage extends StatelessWidget {
               children: const [
                 //left
                 Text('Internet usage today'),
-                //right
-                // Row(
-                //   children: [
-                //     Text('More',
-                //         style: TextStyle(
-                //             color: const Color.fromRGBO(144, 147, 153, 1),
-                //             fontSize: 30.sp)),
-                //     Icon(
-                //       Icons.arrow_forward_ios_outlined,
-                //       color: const Color.fromRGBO(144, 147, 153, 1),
-                //       size: 30.w,
-                //     )
-                //   ],
-                // ),
               ],
             ),
             Padding(padding: EdgeInsets.only(top: 60.w)),
@@ -254,6 +240,9 @@ class InternetUsage extends StatelessWidget {
   }
 }
 
+var MACAddress;
+var name;
+
 //上方轮播图
 class SwiperCard extends StatefulWidget {
   const SwiperCard({Key? key}) : super(key: key);
@@ -263,6 +252,64 @@ class SwiperCard extends StatefulWidget {
 }
 
 class _SwiperCardState extends State<SwiperCard> {
+  //云端
+  getACSNodeFn() async {
+    setState(() {
+      loading = true;
+    });
+
+    try {
+      var parameterNames = [
+        "InternetGatewayDevice.WEB_GUI.ParentalControls",
+      ];
+      //获取云端数据
+      var res = await Request().getACSNode(parameterNames, sn);
+      Map<String, dynamic> d = jsonDecode(res);
+      var resList = d['data']['InternetGatewayDevice']['WEB_GUI']
+          ['ParentalControls']['List'];
+      setState(() {
+        resList.remove('_object');
+        resList.remove('_timestamp');
+        resList.remove('_writable');
+        accessList = [];
+        filteredData = [];
+      });
+
+      resList.forEach((key, value) {
+        setState(() {
+          accessList.add(value);
+        });
+      });
+      setState(() {
+        //过滤列表
+        accessList = accessList
+            .where((element) => element['Device']['_value'] == MACAddress)
+            .toList();
+      });
+      for (var item in accessList) {
+        if (item['Weekdays']['_value'].contains('Mon')) {
+          filteredData.add({
+            'TimeStart': item['TimeStart']['_value'],
+            'TimeStop': item['TimeStop']['_value'],
+          });
+        }
+      }
+    } catch (e) {
+      // 处理异常
+    } finally {
+      setState(() {
+        loading = false;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    MACAddress = deviceList[0]['MACAddress'];
+    name = deviceList[0]['name'];
+  }
+
   //重设名称
   editName(String sn, String mac, String nickname) async {
     Map<String, dynamic> form = {
@@ -287,7 +334,11 @@ class _SwiperCardState extends State<SwiperCard> {
       height: deviceList.isNotEmpty ? 240.w : 0.w,
       child: Swiper(
           onIndexChanged: (int index) {
-            print('index233$index');
+            setState(() {
+              MACAddress = deviceList[index]['MACAddress'];
+              name = deviceList[index]['name'];
+            });
+            getACSNodeFn();
           },
           itemCount: deviceList.length, // 轮播图数量
           itemBuilder: (BuildContext context, int index) {
@@ -784,6 +835,8 @@ class SixBoxsState extends State<SixBoxs> {
   }
 }
 
+List accessList = []; //家长控制列表
+
 //允许上网时间安排
 class Scheduling extends StatefulWidget {
   const Scheduling({Key? key}) : super(key: key);
@@ -793,7 +846,6 @@ class Scheduling extends StatefulWidget {
 }
 
 class _SchedulingState extends State<Scheduling> {
-  List accessList = []; //家长控制列表
   //云端
   getACSNodeFn() async {
     setState(() {
@@ -822,6 +874,12 @@ class _SchedulingState extends State<Scheduling> {
         setState(() {
           accessList.add(value);
         });
+      });
+      setState(() {
+        //过滤列表
+        accessList = accessList
+            .where((element) => element['Device']['_value'] == MACAddress)
+            .toList();
       });
       for (var item in accessList) {
         if (item['Weekdays']['_value'].contains('Mon')) {
@@ -867,7 +925,11 @@ class _SchedulingState extends State<Scheduling> {
                 //right
                 GestureDetector(
                   onTap: () {
-                    Get.toNamed('/Internetaccess', arguments: {"sn": sn});
+                    Get.toNamed('/Internetaccess', arguments: {
+                      "sn": sn,
+                      "MACAddress": MACAddress,
+                      "name": name
+                    });
                   },
                   child: Row(
                     children: [

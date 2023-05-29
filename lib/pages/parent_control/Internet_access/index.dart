@@ -10,6 +10,8 @@ import '../../../generated/l10n.dart';
 import 'package:progressive_time_picker/progressive_time_picker.dart';
 
 dynamic sn = Get.arguments['sn'];
+dynamic MACAddress = Get.arguments['MACAddress'];
+dynamic name = Get.arguments['name'];
 bool loading = false;
 
 /// Internetaccess access time managemen
@@ -27,6 +29,9 @@ class _InternetaccessState extends State<Internetaccess> {
   void initState() {
     super.initState();
     getACSNodeFn();
+    MACAddress = Get.arguments['MACAddress'].toString();
+    name = Get.arguments['name'].toString();
+    sn = Get.arguments['sn'];
   }
 
   bool enable = false;
@@ -66,7 +71,11 @@ class _InternetaccessState extends State<Internetaccess> {
           keyList.add(key);
         });
       });
+
       setState(() {
+        //过滤列表
+        accessList =
+            accessList.where((element) => element['Device']['_value'] == MACAddress).toList();
         enable = d['data']['InternetGatewayDevice']['WEB_GUI']
             ['ParentalControls']['Enable']['_value'];
       });
@@ -515,8 +524,8 @@ class _MyDialogState extends State<MyDialog> {
         'InternetGatewayDevice.WEB_GUI.ParentalControls.List.$lastKey.';
 
     var parameterNames = [
-      // ['${prefix}Device', '22:4C:35:D1:20:CA', 'xsd:string'],
-      // ['${prefix}Name', 'HONOR_30-cd4d8ae98e5a0d4f', 'xsd:string'],
+      ['${prefix}Device', MACAddress, 'xsd:string'],
+      ['${prefix}Name', name, 'xsd:string'],
       ['${prefix}TimeStart', '${_initTime.h}:${_initTime.m}', 'xsd:string'],
       ['${prefix}TimeStop', '${_endTime.h}:${_endTime.m}', 'xsd:string'],
       ['${prefix}Weekdays', '${_selectedDays.join(',')}', 'xsd:string'],
@@ -538,6 +547,8 @@ class _MyDialogState extends State<MyDialog> {
         'InternetGatewayDevice.WEB_GUI.ParentalControls.List.${widget.id}.';
 
     var parameterNames = [
+      ['${prefix}Device', MACAddress, 'xsd:string'],
+      ['${prefix}Name', name, 'xsd:string'],
       ['${prefix}TimeStart', '${_initTime.h}:${_initTime.m}', 'xsd:string'],
       ['${prefix}TimeStop', '${_endTime.h}:${_endTime.m}', 'xsd:string'],
       ['${prefix}Weekdays', '${_selectedDays.join(',')}', 'xsd:string'],

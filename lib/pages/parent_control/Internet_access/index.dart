@@ -1,15 +1,17 @@
 import 'dart:convert';
 import 'package:day_night_time_picker/day_night_time_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/request/request.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:get/get.dart';
 import '../../../core/widget/custom_app_bar.dart';
 import '../../../generated/l10n.dart';
+import 'package:progressive_time_picker/progressive_time_picker.dart';
 
 dynamic sn = Get.arguments['sn'];
+dynamic MACAddress = Get.arguments['MACAddress'];
+dynamic name = Get.arguments['name'];
 bool loading = false;
 
 /// Internetaccess access time managemen
@@ -27,6 +29,9 @@ class _InternetaccessState extends State<Internetaccess> {
   void initState() {
     super.initState();
     getACSNodeFn();
+    MACAddress = Get.arguments['MACAddress'].toString();
+    name = Get.arguments['name'].toString();
+    sn = Get.arguments['sn'];
   }
 
   bool enable = false;
@@ -66,7 +71,11 @@ class _InternetaccessState extends State<Internetaccess> {
           keyList.add(key);
         });
       });
+
       setState(() {
+        //过滤列表
+        accessList =
+            accessList.where((element) => element['Device']['_value'] == MACAddress).toList();
         enable = d['data']['InternetGatewayDevice']['WEB_GUI']
             ['ParentalControls']['Enable']['_value'];
       });
@@ -201,37 +210,6 @@ class _InternetaccessState extends State<Internetaccess> {
                                                               openLoading);
                                                     },
                                                   );
-                                                  //输入框
-                                                  // TextField(
-                                                  //   autofocus: true,
-                                                  //   controller: editTitleVal,
-                                                  //   decoration:
-                                                  //       InputDecoration(
-                                                  //     contentPadding:
-                                                  //         EdgeInsets.only(
-                                                  //             left: 20.w),
-                                                  //     border:
-                                                  //         OutlineInputBorder(
-                                                  //       borderRadius:
-                                                  //           BorderRadius
-                                                  //               .circular(10),
-                                                  //     ),
-                                                  //     hintText: S.current
-                                                  //         .pleaseEnter,
-                                                  //     suffixIcon: IconButton(
-                                                  //       icon: const Icon(
-                                                  //           Icons.clear),
-                                                  //       onPressed: () {
-                                                  //         // 清空输入框中的内容
-                                                  //         editTitleVal
-                                                  //             .clear();
-                                                  //       },
-                                                  //     ),
-                                                  //   ),
-                                                  //   onChanged: (value) {
-                                                  //     setState(() {});
-                                                  //   },
-                                                  // );
                                                 },
                                               ),
                                               IconButton(
@@ -245,10 +223,13 @@ class _InternetaccessState extends State<Internetaccess> {
                                                     builder:
                                                         (BuildContext context) {
                                                       return AlertDialog(
-                                                        title: Text(S.current.delPro),
+                                                        title: Text(
+                                                            S.current.delPro),
                                                         actions: <Widget>[
                                                           TextButton(
-                                                            child: Text(S.current.cancel),
+                                                            child: Text(S
+                                                                .current
+                                                                .cancel),
                                                             onPressed: () {
                                                               Navigator.of(
                                                                       context)
@@ -492,28 +473,30 @@ class MyDialog extends StatefulWidget {
 }
 
 class _MyDialogState extends State<MyDialog> {
-  List<String> _selectedDays = []; //日期选择列表
+  List<String> _selectedDays = [
+    'Mon',
+    'Tue',
+    'Wed',
+    'Thu',
+    'Fri',
+    'Sat',
+    'Sun'
+  ]; //日期选择列表
+  PickedTime _initTime = PickedTime(h: 0, m: 0);
+  PickedTime _endTime = PickedTime(h: 8, m: 0);
 
-  // 开始时间
-  String startTim = '';
-  String startTimeH = '';
-  String startTimeM = '';
-  @override
-
-// 结束时间
-  String stopTim = '';
-  String stopTimeH = '';
-  String stopTimeM = '';
   String lastKey = ''; //当前设置项
   @override
   void initState() {
     super.initState();
 //编辑回显数据
     if (widget.id != '') {
-      startTimeH = widget.time.split('-')[0].split(':')[0];
-      startTimeM = widget.time.split('-')[0].split(':')[1];
-      stopTimeH = widget.time.split('-')[1].split(':')[0];
-      stopTimeM = widget.time.split('-')[1].split(':')[1];
+      _initTime = PickedTime(
+          h: int.parse(widget.time.split('-')[0].split(':')[0]),
+          m: int.parse(widget.time.split('-')[0].split(':')[1]));
+      _endTime = PickedTime(
+          h: int.parse(widget.time.split('-')[1].split(':')[0]),
+          m: int.parse(widget.time.split('-')[1].split(':')[1]));
       _selectedDays = widget.week.split(',');
     }
   }
@@ -541,10 +524,10 @@ class _MyDialogState extends State<MyDialog> {
         'InternetGatewayDevice.WEB_GUI.ParentalControls.List.$lastKey.';
 
     var parameterNames = [
-      // ['${prefix}Device', '22:4C:35:D1:20:CA', 'xsd:string'],
-      // ['${prefix}Name', 'HONOR_30-cd4d8ae98e5a0d4f', 'xsd:string'],
-      ['${prefix}TimeStart', '$startTimeH:$startTimeM', 'xsd:string'],
-      ['${prefix}TimeStop', '$stopTimeH:$stopTimeM', 'xsd:string'],
+      ['${prefix}Device', MACAddress, 'xsd:string'],
+      ['${prefix}Name', name, 'xsd:string'],
+      ['${prefix}TimeStart', '${_initTime.h}:${_initTime.m}', 'xsd:string'],
+      ['${prefix}TimeStop', '${_endTime.h}:${_endTime.m}', 'xsd:string'],
       ['${prefix}Weekdays', '${_selectedDays.join(',')}', 'xsd:string'],
     ];
 
@@ -564,8 +547,10 @@ class _MyDialogState extends State<MyDialog> {
         'InternetGatewayDevice.WEB_GUI.ParentalControls.List.${widget.id}.';
 
     var parameterNames = [
-      ['${prefix}TimeStart', '$startTimeH:$startTimeM', 'xsd:string'],
-      ['${prefix}TimeStop', '$stopTimeH:$stopTimeM', 'xsd:string'],
+      ['${prefix}Device', MACAddress, 'xsd:string'],
+      ['${prefix}Name', name, 'xsd:string'],
+      ['${prefix}TimeStart', '${_initTime.h}:${_initTime.m}', 'xsd:string'],
+      ['${prefix}TimeStop', '${_endTime.h}:${_endTime.m}', 'xsd:string'],
       ['${prefix}Weekdays', '${_selectedDays.join(',')}', 'xsd:string'],
     ];
 
@@ -583,75 +568,95 @@ class _MyDialogState extends State<MyDialog> {
     });
   }
 
-  void _showStartTimePicker() {
-    Navigator.of(context).push(
-      showPicker(
-        context: context,
-        value: _time,
-        onChange: onTimeChanged,
-        minuteInterval: TimePickerInterval.FIVE,
-        // Optional onChange to receive value as DateTime
-        onChangeDateTime: (DateTime dateTime) {
-          startTim = dateTime.toString();
-          startTimeH = startTim.split(' ')[1].split(':')[0];
-          startTimeM = startTim.split(' ')[1].split(':')[1];
-        },
-      ),
-    );
-  }
-
-  void _showEndTimePicker() {
-    Navigator.of(context).push(
-      showPicker(
-        context: context,
-        value: _time,
-        onChange: onTimeChanged,
-        minuteInterval: TimePickerInterval.FIVE,
-        // Optional onChange to receive value as DateTime
-        onChangeDateTime: (DateTime dateTime) {
-          stopTim = dateTime.toString();
-          stopTimeH = stopTim.split(' ')[1].split(':')[0];
-          stopTimeM = stopTim.split(' ')[1].split(':')[1];
-        },
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       content: SingleChildScrollView(
         child: Column(
           children: [
-            // start
+            Text(
+              'Time Reriod',
+              style: TextStyle(fontSize: 40.w, color: Colors.grey),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 20.w),
+            ),
+            //选中的时间 显示
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                TextButton(
-                  onPressed: () {
-                    _showStartTimePicker();
-                  },
-                  child: const Text(
-                    "select the start time",
+                Container(
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 240, 242, 241),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: const EdgeInsets.only(
+                      top: 7, bottom: 7, left: 12, right: 12),
+                  child: Text(
+                    '${_initTime.h}:${_initTime.m}',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Color.fromARGB(255, 96, 98, 97),
+                    ),
                   ),
                 ),
-                Text(startTimeH + ':' + startTimeM),
+                Text('   --   '),
+                Container(
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 240, 242, 241),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: const EdgeInsets.only(
+                      top: 7, bottom: 7, left: 12, right: 12),
+                  child: Text(
+                    '${_endTime.h}:${_endTime.m}',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Color.fromARGB(255, 96, 98, 97),
+                    ),
+                  ),
+                ),
               ],
             ),
-            // end
-            Row(
-              children: [
-                TextButton(
-                  onPressed: () {
-                    _showEndTimePicker();
-                  },
-                  child: const Text(
-                    "select the end time",
-                  ),
-                ),
-                Text(stopTimeH + ':' + stopTimeM),
-              ],
+            Padding(
+              padding: EdgeInsets.only(top: 20.w),
             ),
 
+            //时间选择
+            TimePicker(
+              initTime: _initTime,
+              endTime: _endTime,
+              onSelectionChange: (start, end, isDisableRange) {
+                setState(() {
+                  _initTime = start;
+                  _endTime = end;
+                });
+              },
+              onSelectionEnd: (start, end, isDisableRange) {
+                setState(() {
+                  _initTime = start;
+                  _endTime = end;
+                });
+              },
+              child: Image.asset(
+                'assets/images/circletime.png',
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 20.w),
+            ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Repeat',
+                style: TextStyle(
+                  fontSize: 34.w,
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 20.w),
+            ),
             //日期
             SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -667,9 +672,8 @@ class _MyDialogState extends State<MyDialog> {
                     'Sun'
                   ])
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        GestureDetector(
+                        InkWell(
                           onTap: () {
                             setState(() {
                               if (_selectedDays.contains(day)) {
@@ -679,22 +683,23 @@ class _MyDialogState extends State<MyDialog> {
                               }
                             });
                           },
-                          child: Row(
-                            children: [
-                              Checkbox(
-                                value: _selectedDays.contains(day),
-                                onChanged: (checked) {
-                                  setState(() {
-                                    if (checked != null && checked) {
-                                      _selectedDays.add(day);
-                                    } else {
-                                      _selectedDays.remove(day);
-                                    }
-                                  });
-                                },
+                          child: Container(
+                            padding: EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: _selectedDays.contains(day)
+                                  ? Colors.blue
+                                  : null,
+                            ),
+                            child: Text(
+                              day,
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: _selectedDays.contains(day)
+                                    ? Colors.white
+                                    : Colors.black,
                               ),
-                              Text(day, style: const TextStyle(fontSize: 10)),
-                            ],
+                            ),
                           ),
                         ),
                       ],
@@ -715,7 +720,6 @@ class _MyDialogState extends State<MyDialog> {
         ),
         TextButton(
           onPressed: () {
-            if (startTimeH.length == 0 || stopTimeH.length == 0) return;
             if (widget.id == '') {
               print('新增');
               setData();

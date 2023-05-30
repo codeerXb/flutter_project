@@ -884,29 +884,34 @@ class _NetStatusState extends State<NetStatus> {
                                       ),
                                       children: <Widget>[
                                         //接入设备
-                                        GardCard(
-                                            boxCotainer: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Icon(Icons.devices_other_rounded,
-                                                color: Colors.blue[500],
-                                                size: 80.sp),
-                                            Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Text(S.current.device),
-                                                Text(
-                                                  '$_onlineCount ${S.current.line}',
-                                                  style: TextStyle(
-                                                      color: Colors.black54,
-                                                      fontSize: 25.sp),
-                                                ),
-                                              ],
-                                            )
-                                          ],
-                                        )),
+                                        GestureDetector(
+                                          onTap: () {
+                                            Get.toNamed('/connected_device');
+                                          },
+                                          child: GardCard(
+                                              boxCotainer: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Icon(Icons.devices_other_rounded,
+                                                  color: Colors.blue[500],
+                                                  size: 80.sp),
+                                              Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Text(S.current.device),
+                                                  Text(
+                                                    '$_onlineCount ${S.current.line}',
+                                                    style: TextStyle(
+                                                        color: Colors.black54,
+                                                        fontSize: 25.sp),
+                                                  ),
+                                                ],
+                                              )
+                                            ],
+                                          )),
+                                        ),
                                         //儿童上网
                                         GestureDetector(
                                           onTap: () {

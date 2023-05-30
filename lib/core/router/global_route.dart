@@ -4,6 +4,7 @@ import 'package:flutter_template/pages/get_test/index.dart';
 import 'package:flutter_template/pages/get_equipment/index.dart';
 import 'package:flutter_template/pages/login/wan_login.dart';
 import 'package:flutter_template/pages/netMode/netMode.dart';
+import 'package:flutter_template/pages/net_status/connect_device/index.dart';
 import 'package:flutter_template/pages/odu/index.dart';
 import 'package:flutter_template/pages/parent_control/Internet_access/index.dart';
 import 'package:flutter_template/pages/parent_control/Internet_usage/index.dart';
@@ -201,7 +202,8 @@ class GlobalRouter {
     // 忘记密码
     '/forget_password': (BuildContext context, {Object? args}) =>
         const ForgetPassword(),
-
+    // 接入设备
+    '/connected_device': (BuildContext context, {Object? args}) => const ConnectedDevice(),
     // 视频
     '/video_play': (BuildContext context, {Object? args}) => const VideoPlay(),
     // 图片

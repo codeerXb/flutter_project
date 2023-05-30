@@ -159,26 +159,9 @@ class _ArcProgressBarPainter extends CustomPainter {
       ]).createShader(bgRectInner);
     canvas.drawArc(bgRectInner, _toRadius(0), _toRadius(360), false, _paint);
     // 画内层装饰圈
-    // 装饰圆1，外层
-    Rect rectInner1 = Rect.fromLTWH(
-        size.width / 4 - 25.sp,
-        size.height / 4 - 25.sp,
-        size.width / 2 + 50.sp,
-        size.height / 2 + 50.sp);
-    _paint
-      ..isAntiAlias = true
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.butt
-      ..strokeWidth = 2.sp
-      ..color = const Color(0xff000000)
-      ..shader = const SweepGradient(colors: [
-        Color.fromARGB(100, 47, 90, 245),
-        Color.fromARGB(100, 47, 90, 245),
-      ]).createShader(rectInner1);
-    canvas.drawArc(rectInner1, _toRadius(0), _toRadius(360), false, _paint);
     // 装饰圆2，内层
-    Rect rectInner2 = Rect.fromLTWH(size.width / 4 - 9.sp,
-        size.width / 4 - 9.sp, size.width / 2 + 18.sp, size.width / 2 + 18.sp);
+    Rect rectInner2 = Rect.fromLTWH(
+        size.width / 4, size.width / 4, size.width / 2, size.width / 2);
     _paint
       ..isAntiAlias = true
       ..style = PaintingStyle.stroke
@@ -197,7 +180,7 @@ class _ArcProgressBarPainter extends CustomPainter {
       Canvas canvas, double cx, double cy, double radius) {
     final Paint paintProgress = Paint();
     paintProgress
-      ..strokeWidth = 4.sp
+      ..strokeWidth = 2.sp
       ..strokeCap = StrokeCap.round
       ..color = const Color(0xFFD8D8D8);
     canvas.save();
@@ -215,13 +198,17 @@ class _ArcProgressBarPainter extends CustomPainter {
         var rangeEnd = (start > duration) ? (rangeStart + duration) : 120;
 
         if (start > duration) {
+          // [120-start,120-start+duration]
           rangeEnd = rangeStart + duration;
+          range.add([rangeStart, rangeEnd]);
         } else {
+          // [120-start,120]U[0,duration-start]
           rangeEnd = 120;
-          rangeStart = Math.max(0, duration - start);
+          range.add([rangeStart, rangeEnd]);
+          rangeStart = 0;
+          rangeEnd = duration - start;
+          range.add([rangeStart, rangeEnd]);
         }
-
-        range.add([rangeStart, rangeEnd]);
       }
       return range;
     }
@@ -245,6 +232,7 @@ class _ArcProgressBarPainter extends CustomPainter {
       if (isInRange(i, getRange(progress))) {
         // 4、设定时间段颜色加深
         paintProgress.color = const Color(0xFF2F5AF5);
+        paintProgress.strokeWidth = 3.sp;
       } else {
         paintProgress.color = const Color(0xFFD8D8D8);
       }
@@ -264,7 +252,7 @@ class _ArcProgressBarPainter extends CustomPainter {
         );
         var textSpan = TextSpan(
           text:
-              '${((((i / 10) + 3) % 12) * 2).truncate() == 0 ? 24 : ((((i / 10) + 3) % 12) * 2).truncate()}',
+              '${((((i / 10) + 3) % 12) * 2).truncate() == 0 ? 0 : ((((i / 10) + 3) % 12) * 2).truncate()}',
           style: textStyle,
         );
         final textPainter = TextPainter(
@@ -274,7 +262,7 @@ class _ArcProgressBarPainter extends CustomPainter {
         textPainter.layout();
         final offset = Offset(
             cx + (radius - 40.sp) * Math.cos(evaDegree) - 8.sp,
-            cy + (radius - 40.sp) * Math.sin(evaDegree) - 8.sp);
+            cy + (radius - 40.sp) * Math.sin(evaDegree) - 16.sp);
         textPainter.paint(canvas, offset);
       }
     }
@@ -287,5 +275,7 @@ class _ArcProgressBarPainter extends CustomPainter {
   double _toRadius(double degree) => degree * Math.pi / 180;
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+  bool shouldRepaint(covariant _ArcProgressBarPainter oldDelegate) {
+    return progress != oldDelegate.progress;
+  }
 }

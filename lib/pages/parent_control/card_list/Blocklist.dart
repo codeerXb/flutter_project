@@ -6,7 +6,6 @@ import 'package:flutter_template/core/request/request.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
-import 'package:flutter_template/core/widget/left_slide_actions.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
 import '../../../generated/l10n.dart';
@@ -20,7 +19,6 @@ class Blocklist extends StatefulWidget {
 
 class _BlocklistState extends State<Blocklist> {
   List<String> _itemTextList = [];
-  final Map<String, VoidCallback> _mapForHideActions = {};
   bool isCheck = false;
   bool loading = true;
   final LoginController loginController = Get.put(LoginController());
@@ -263,63 +261,132 @@ class _BlocklistState extends State<Blocklist> {
                   height: 1.sh - 70,
                   padding: const EdgeInsets.all(5.0),
                   child: _itemTextList.isNotEmpty
-                      ? ListView.separated(
-                          scrollDirection: Axis.vertical,
-                          padding: const EdgeInsets.fromLTRB(12, 20, 12, 30),
+                      ? ListView.builder(
+                          padding: const EdgeInsets.all(10),
                           itemCount: _itemTextList.length,
-                          itemBuilder: (
-                            BuildContext context,
-                            int index,
-                          ) {
-                            if (index < _itemTextList.length) {
-                              final String tempStr = _itemTextList[index];
-                              return LeftSlideActions(
-                                key: Key(tempStr),
-                                actionsWidth: 120,
-                                actions: [
-                                  // 修改
-                                  _buildChangeBtn(
-                                      index,
-                                      jsonDecode(
-                                          _itemTextList[index])['value']),
-                                  // 删除
-                                  _buildDeleteBtn(index)
-                                ],
-                                decoration: const BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(5)),
+                          itemBuilder: (context, index) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: ListTile(
+                                title: Text(
+                                    jsonDecode(_itemTextList[index])['value']),
+                                //删除
+                                trailing: IconButton(
+                                  icon: const Icon(Icons.delete,
+                                      color: Colors.red),
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: Text(S.current.hint),
+                                          content: Text(S.current.delPro),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              child: Text(S.current.cancel),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                            TextButton(
+                                              child: const Text('ok'),
+                                              onPressed: () {
+                                                setState(() {
+                                                  id = int.parse(jsonDecode(
+                                                          _itemTextList[index])[
+                                                      'id']);
+                                                  getURLDel();
+                                                });
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  },
                                 ),
-                                actionsWillShow: () {
-                                  // 隐藏其他列表项的行为。
-                                  for (int i = 0;
-                                      i < _itemTextList.length;
-                                      i++) {
-                                    if (index == i) {
-                                      continue;
-                                    }
-                                    String tempKey = _itemTextList[i];
-                                    VoidCallback? hideActions =
-                                        _mapForHideActions[tempKey];
-                                    if (hideActions != null) {
-                                      hideActions();
-                                    }
-                                  }
+                                // 修改
+                                onTap: () {
+                                  editUrlController.text =
+                                      jsonDecode(_itemTextList[index])['value'];
+                                  // 在这里显示弹窗
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text('Edit'),
+                                        content: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: <Widget>[
+                                            TextField(
+                                              controller: editUrlController,
+                                              decoration: const InputDecoration(
+                                                labelText: 'URL',
+                                              ),
+                                              onChanged: (value) {
+                                                url = value;
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            child: Text(S.current.cancel),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                          ElevatedButton(
+                                            child: Text(S.current.confirm),
+                                            onPressed: () {
+                                              // 在这里处理确定按钮的逻辑
+                                              if (checkURL(url)) {
+                                                var indexVal = jsonDecode(
+                                                    _itemTextList[index])['id'];
+                                                // 设置
+                                                setUrlData(indexVal, url);
+                                                // URL格式正确
+                                                Navigator.of(context).pop();
+                                              } else {
+                                                // URL格式错误，弹出提示框
+                                                showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return AlertDialog(
+                                                      title:
+                                                          const Text('Error'),
+                                                      content: const Text(
+                                                          'Invalid URL'),
+                                                      actions: <Widget>[
+                                                        TextButton(
+                                                          child:
+                                                              const Text('ok'),
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                          },
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                );
+                                              }
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
                                 },
-                                exportHideActions: (hideActions) {
-                                  _mapForHideActions[tempStr] = hideActions;
-                                },
-                                child: _buildListItem(index),
-                              );
-                            }
-                            return const SizedBox.shrink();
+                              ),
+                            );
                           },
-                          separatorBuilder: (BuildContext context, int index) {
-                            return const SizedBox(height: 10);
-                          },
-                          // 添加下面这句 内容未充满的时候也可以滚动。
-                          physics: const AlwaysScrollableScrollPhysics(),
-                          // 添加下面这句 是为了GridView的高度自适应, 否则GridView需要包裹在固定宽高的容器中。
-                          //shrinkWrap: true,
                         )
                       : Center(
                           child: Row(
@@ -431,184 +498,6 @@ class _BlocklistState extends State<Blocklist> {
                 ),
               ),
             ]),
-    );
-  }
-
-  // 每一项 item
-  Widget _buildListItem(final int index) {
-    return Container(
-        height: 130.w,
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        alignment: Alignment.centerLeft,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              // 阴影颜色。
-              color: Color(0x66EBEBEB),
-              // 阴影xy轴偏移量。
-              offset: Offset(0.0, 0.0),
-              // 阴影模糊程度。
-              blurRadius: 6.0,
-              // 阴影扩散程度。
-              spreadRadius: 4.0,
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.all(10.sp),
-            ),
-            Text('URL',
-                style: TextStyle(
-                    color: const Color.fromARGB(255, 5, 0, 0),
-                    fontSize: ScreenUtil().setWidth(30.0))),
-            Padding(
-              padding: EdgeInsets.only(top: 10.sp),
-            ),
-            Text(jsonDecode(_itemTextList[index])['value'],
-                style: TextStyle(
-                    color: const Color.fromRGBO(147, 148, 168, 1),
-                    fontSize: ScreenUtil().setWidth(28.0))),
-          ],
-        ));
-  }
-
-  // 删除
-  Widget _buildDeleteBtn(final int index) {
-    return GestureDetector(
-      onTap: () {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text(S.current.hint),
-              content: Text(S.current.delPro),
-              actions: <Widget>[
-                TextButton(
-                  child: Text(S.current.cancel),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                TextButton(
-                  child: const Text('ok'),
-                  onPressed: () {
-                    setState(() {
-                      id = int.parse(jsonDecode(_itemTextList[index])['id']);
-                      getURLDel();
-                    });
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        );
-      },
-      child: Container(
-        width: 60,
-        color: const Color(0xFFF20101),
-        alignment: Alignment.center,
-        child: Text(
-          S.current.delete,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: Colors.white,
-            height: 1,
-          ),
-        ),
-      ),
-    );
-  }
-
-  // 修改
-  Widget _buildChangeBtn(final int index, String val) {
-    return GestureDetector(
-      onTap: () {
-        editUrlController.text = val;
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Edit'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  TextField(
-                    controller: editUrlController,
-                    decoration: const InputDecoration(
-                      labelText: 'URL',
-                      // hintText: jsonDecode(
-                      //     val['value']), //${jsonDecode(val['value'])}
-                    ),
-                    onChanged: (value) {
-                      url = value;
-                    },
-                  ),
-                ],
-              ),
-              actions: <Widget>[
-                TextButton(
-                  child: Text(S.current.cancel),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                ElevatedButton(
-                  child: Text(S.current.confirm),
-                  onPressed: () {
-                    // 在这里处理确定按钮的逻辑
-                    if (checkURL(url)) {
-                      var indexVal = jsonDecode(_itemTextList[index])['id'];
-                      // 设置
-                      setUrlData(indexVal, url);
-                      // URL格式正确
-                      Navigator.of(context).pop();
-                    } else {
-                      // URL格式错误，弹出提示框
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text('Error'),
-                            content: const Text('Invalid URL'),
-                            actions: <Widget>[
-                              TextButton(
-                                child: const Text('ok'),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    }
-                  },
-                ),
-              ],
-            );
-          },
-        );
-      },
-      child: Container(
-        width: 60,
-        color: Colors.green,
-        alignment: Alignment.center,
-        child: Text(
-          S.current.modification,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: Colors.white,
-            height: 1,
-          ),
-        ),
-      ),
     );
   }
 }

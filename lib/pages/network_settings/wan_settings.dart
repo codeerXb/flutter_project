@@ -118,79 +118,92 @@ class _WanSettingsState extends State<WanSettings> {
     Map<String, dynamic> data = {
       'method': 'obj_get',
       'param':
-          '["systemProductModel","ethernetConnectMode","ethernetConnectOnly","ethernetConnectPriority","ethernetIp","ethernetMask","ethernetDefaultGateway","ethernetPrimaryDns","ethernetSecondaryDns","ethernetMtu","ethernetDetectServer","systemCurrentPlatform","wifiEzmeshEnable"]',
+          '["systemVersionSn","systemProductModel","ethernetConnectMode","ethernetConnectOnly","ethernetConnectPriority","ethernetIp","ethernetMask","ethernetDefaultGateway","ethernetPrimaryDns","ethernetSecondaryDns","ethernetMtu","ethernetDetectServer","systemCurrentPlatform","wifiEzmeshEnable"]',
     };
     try {
       var response = await XHttp.get('/data.html', data);
       var d = json.decode(response.toString());
-      setState(() {
-        netdata = netDatas.fromJson(d);
-        //连接模式
-        switch (netdata.ethernetConnectMode.toString()) {
-          case 'dhcp':
-            showVal = S.current.DynamicIP;
-            break;
-          case 'static':
-            showVal = S.current.staticIP;
-            break;
-          case 'lanonly':
-            showVal = S.current.LANOnly;
-            break;
-        }
-        val = ['dhcp', 'static', 'lanonly']
-            .indexOf(netdata.ethernetConnectMode.toString());
-        //仅以太网
-        isCheck = netdata.ethernetConnectOnly.toString() == '1' ? true : false;
-        //优先级 == '1' 4g
-        priorityVal = netdata.ethernetConnectPriority.toString() == '1'
-            ? '4G/5G'
-            : S.current.Ethernet;
-        priorityIndex = [S.current.Ethernet, '4G/5G'].indexOf(priorityVal);
-        //mtu
-        mtu.text = netdata.ethernetMtu.toString();
-        //检测服务器
-        server.text = netdata.ethernetDetectServer.toString();
-        // IP地址
-        ipVal = netdata.ethernetIp.toString();
-        ipVal1.text = ipVal.split('.')[0];
-        ipVal2.text = ipVal.split('.')[1];
-        ipVal3.text = ipVal.split('.')[2];
-        ipVal4.text = ipVal.split('.')[3];
-        // 子网掩码
-        zwVal = netdata.ethernetMask.toString();
-        zwVal1.text = zwVal.split('.')[0];
-        zwVal2.text = zwVal.split('.')[1];
-        zwVal3.text = zwVal.split('.')[2];
-        zwVal4.text = zwVal.split('.')[3];
-        // 默认网关
-        ipVal = netdata.ethernetDefaultGateway.toString();
-        ipVal1.text = ipVal.split('.')[0];
-        ipVal2.text = ipVal.split('.')[1];
-        ipVal3.text = ipVal.split('.')[2];
-        ipVal4.text = ipVal.split('.')[3];
-        // 主DNS
-        mrwgVal = netdata.ethernetPrimaryDns.toString();
-        mrwgVal1.text = mrwgVal.split('.')[0];
-        mrwgVal2.text = mrwgVal.split('.')[1];
-        mrwgVal3.text = mrwgVal.split('.')[2];
-        mrwgVal4.text = mrwgVal.split('.')[3];
-        // 辅DNS
-        zdnsVal = netdata.ethernetSecondaryDns.toString();
-        zdnsVal1.text = zdnsVal.split('.')[0];
-        zdnsVal2.text = zdnsVal.split('.')[1];
-        zdnsVal3.text = zdnsVal.split('.')[2];
-        zdnsVal4.text = zdnsVal.split('.')[3];
+      // 还需要验证sn是否和现在登录的一致
+      sharedGetData('deviceSn', String).then(
+        (value) {
+          if (value == d['systemVersionSn']) {
+            setState(() {
+              netdata = netDatas.fromJson(d);
+              //连接模式
+              switch (netdata.ethernetConnectMode.toString()) {
+                case 'dhcp':
+                  showVal = S.current.DynamicIP;
+                  break;
+                case 'static':
+                  showVal = S.current.staticIP;
+                  break;
+                case 'lanonly':
+                  showVal = S.current.LANOnly;
+                  break;
+              }
+              val = ['dhcp', 'static', 'lanonly']
+                  .indexOf(netdata.ethernetConnectMode.toString());
+              //仅以太网
+              isCheck =
+                  netdata.ethernetConnectOnly.toString() == '1' ? true : false;
+              //优先级 == '1' 4g
+              priorityVal = netdata.ethernetConnectPriority.toString() == '1'
+                  ? '4G/5G'
+                  : S.current.Ethernet;
+              priorityIndex =
+                  [S.current.Ethernet, '4G/5G'].indexOf(priorityVal);
+              //mtu
+              mtu.text = netdata.ethernetMtu.toString();
+              //检测服务器
+              server.text = netdata.ethernetDetectServer.toString();
+              // IP地址
+              ipVal = netdata.ethernetIp.toString();
+              ipVal1.text = ipVal.split('.')[0];
+              ipVal2.text = ipVal.split('.')[1];
+              ipVal3.text = ipVal.split('.')[2];
+              ipVal4.text = ipVal.split('.')[3];
+              // 子网掩码
+              zwVal = netdata.ethernetMask.toString();
+              zwVal1.text = zwVal.split('.')[0];
+              zwVal2.text = zwVal.split('.')[1];
+              zwVal3.text = zwVal.split('.')[2];
+              zwVal4.text = zwVal.split('.')[3];
+              // 默认网关
+              ipVal = netdata.ethernetDefaultGateway.toString();
+              ipVal1.text = ipVal.split('.')[0];
+              ipVal2.text = ipVal.split('.')[1];
+              ipVal3.text = ipVal.split('.')[2];
+              ipVal4.text = ipVal.split('.')[3];
+              // 主DNS
+              mrwgVal = netdata.ethernetPrimaryDns.toString();
+              mrwgVal1.text = mrwgVal.split('.')[0];
+              mrwgVal2.text = mrwgVal.split('.')[1];
+              mrwgVal3.text = mrwgVal.split('.')[2];
+              mrwgVal4.text = mrwgVal.split('.')[3];
+              // 辅DNS
+              zdnsVal = netdata.ethernetSecondaryDns.toString();
+              zdnsVal1.text = zdnsVal.split('.')[0];
+              zdnsVal2.text = zdnsVal.split('.')[1];
+              zdnsVal3.text = zdnsVal.split('.')[2];
+              zdnsVal4.text = zdnsVal.split('.')[3];
 
-        fDNSVal = netdata.ethernetIp.toString();
-        fDNSVal1.text = fDNSVal.split('.')[0];
-        fDNSVal2.text = fDNSVal.split('.')[1];
-        fDNSVal3.text = fDNSVal.split('.')[2];
-        fDNSVal4.text = fDNSVal.split('.')[3];
-      });
+              fDNSVal = netdata.ethernetIp.toString();
+              fDNSVal1.text = fDNSVal.split('.')[0];
+              fDNSVal2.text = fDNSVal.split('.')[1];
+              fDNSVal3.text = fDNSVal.split('.')[2];
+              fDNSVal4.text = fDNSVal.split('.')[3];
+            });
+            getWanVal();
+          } else {
+            Get.back();
+            ToastUtils.error('Remote access refused');
+          }
+        },
+      );
     } catch (e) {
       debugPrint('获取以太网设置失败：$e.toString()');
-      // ToastUtils.error('Remote access restriction');
-    } finally {}
+      ToastUtils.error('Remote access refused');
+    }
   }
 
   bool _isLoading = false;
@@ -372,7 +385,6 @@ class _WanSettingsState extends State<WanSettings> {
         // print('登录状态${d['code']}');
         if (d['code'] == 200) {
           getData();
-          getWanVal();
         } else if (d['code'] == 201) {
           //用户名或密码错误 去登录
           ToastUtils.toast(

@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http_app.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/utils/toast.dart';
+import 'package:vibration/vibration.dart';
 import 'package:get/get.dart';
 
 // 将接收的json转化成List<RectData>
@@ -23,6 +24,7 @@ List<RectData> convertToRectDataList(List<dynamic> dataList) {
       top: data['top'],
       width: data['width'],
       height: data['height'],
+      selectedEdge: data['selectedEdge'],
     );
 
     rectDataList.add(rectData);
@@ -51,6 +53,15 @@ class RectController extends GetxController {
     rects.clear();
     update();
   }
+
+  // 清除rect的isSelected和selectedEdge状态
+  void clearRectStatus() {
+    for (var rect in rects) {
+      rect.isSelected = false;
+      rect.selectedEdge = '';
+    }
+    update();
+  }
 }
 
 class MyApp extends StatefulWidget {
@@ -66,7 +77,6 @@ class _MyAppState extends State<MyApp> {
   String editingFloor = '';
   // 使用RectController来管理_rects
   final RectController _rectController = Get.put(RectController());
-  String _currentRectName = '';
   String roomName = '';
   // 当前选中的楼层
   String curFloor = '1F';
@@ -76,51 +86,49 @@ class _MyAppState extends State<MyApp> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return Container(
-          child: StatefulBuilder(
-            // 使用StatefulBuilder包裹对话框内容以更新状态
-            builder: (BuildContext context, StateSetter setState) {
-              return Column(
-                children: [
-                  ListTile(
-                    leading: Icon(Icons.edit),
-                    title: Text('Rename'),
-                    onTap: () {
-                      // 不需要在这里做任何操作，等待对话框关闭后处理
-                      Navigator.pop(context);
-                    },
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.delete),
-                    title: Text('CANCEL'),
-                    onTap: () {
-                      deleteFloor(index);
-                      Navigator.pop(context);
-                    },
-                  ),
-                  TextFormField(
-                    // 添加文本输入框
-                    initialValue: editingFloor, // 初始值为editingFloor
-                    onChanged: (value) {
-                      setState(() {
-                        editingFloor = value; // 更新editingFloor的值
-                      });
-                    },
-                  ),
-                  ElevatedButton(
-                    // 添加确认按钮
-                    onPressed: () {
-                      // 更新楼层名称为编辑后的值
-                      floors[index] = editingFloor;
-                      setState(() {}); // 刷新界面
-                      Navigator.pop(context); // 关闭对话框
-                    },
-                    child: Text('CONFIRM'),
-                  ),
-                ],
-              );
-            },
-          ),
+        return StatefulBuilder(
+          // 使用StatefulBuilder包裹对话框内容以更新状态
+          builder: (BuildContext context, StateSetter setState) {
+            return Column(
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.edit),
+                  title: const Text('Rename'),
+                  onTap: () {
+                    // 不需要在这里做任何操作，等待对话框关闭后处理
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.delete),
+                  title: const Text('CANCEL'),
+                  onTap: () {
+                    deleteFloor(index);
+                    Navigator.pop(context);
+                  },
+                ),
+                TextFormField(
+                  // 添加文本输入框
+                  initialValue: editingFloor, // 初始值为editingFloor
+                  onChanged: (value) {
+                    setState(() {
+                      editingFloor = value; // 更新editingFloor的值
+                    });
+                  },
+                ),
+                ElevatedButton(
+                  // 添加确认按钮
+                  onPressed: () {
+                    // 更新楼层名称为编辑后的值
+                    floors[index] = editingFloor;
+                    setState(() {}); // 刷新界面
+                    Navigator.pop(context); // 关闭对话框
+                  },
+                  child: const Text('CONFIRM'),
+                ),
+              ],
+            );
+          },
         );
       },
     );
@@ -150,6 +158,8 @@ class _MyAppState extends State<MyApp> {
     try {
       var sn = await sharedGetData("deviceSn", String);
       debugPrint('devicesn: $sn');
+      // 保存的时候清除isSelected和selectedEdge状态
+      _rectController.clearRectStatus();
       // 实现保存户型图逻辑
       await App.post('/platform/wifiJson/wifi', data: {
         "sn": sn,
@@ -177,8 +187,10 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.keyboard_arrow_left),
           onPressed: () {
             // 返回按钮逻辑
             Get.back();
@@ -228,8 +240,8 @@ class _MyAppState extends State<MyApp> {
                                   child: Column(
                                     children: [
                                       ListTile(
-                                        leading: Icon(Icons.edit),
-                                        title: Text('RENAME'),
+                                        leading: const Icon(Icons.edit),
+                                        title: const Text('RENAME'),
                                         onTap: () {
                                           renameFloor(context, index);
                                           Navigator.pop(context);
@@ -237,8 +249,8 @@ class _MyAppState extends State<MyApp> {
                                       ),
                                       if (index != 0)
                                         ListTile(
-                                          leading: Icon(Icons.delete),
-                                          title: Text('DELETE'),
+                                          leading: const Icon(Icons.delete),
+                                          title: const Text('DELETE'),
                                           onTap: () {
                                             deleteFloor(index);
                                             Navigator.pop(context);
@@ -358,6 +370,7 @@ class _MyAppState extends State<MyApp> {
                                   // 相对（0，0）的正向偏移
                                   offsetX: 1200.0,
                                   offsetY: 1200.0,
+                                  selectedEdge: '',
                                 );
 
                                 // 将方块数据添加到列表中
@@ -540,6 +553,9 @@ class _GridWidgetState extends State<GridWidget> {
   double maxWidth = 0.0;
   double maxHeight = 0.0;
 
+  // 定义选中的边
+  String selectedEdge = '';
+
   @override
   void initState() {
     super.initState();
@@ -559,35 +575,99 @@ class _GridWidgetState extends State<GridWidget> {
             top: offsetY + rectData.offsetY,
             child: GestureDetector(
               // behavior: HitTestBehavior.opaque,
-              onTap: () {
-                setState(() {
-                  // 将原有的所有的isSelected重置
-                  for (var rect in widget.rects) {
+              onPanDown: (details) {
+                // 将原有的所有的isSelected重置
+                for (var rect in widget.rects) {
+                  setState(() {
                     rect.isSelected = false;
-                  }
-                  // 将现在点击的变为选中
-                  rectData.isSelected = !rectData.isSelected;
-                  if (rectData.isSelected) {}
+                  });
+                }
+                // 将现在点击的变为选中
+                if (details.localPosition.dx < 15 &&
+                    details.localPosition.dy > 15 &&
+                    details.localPosition.dy < rectData.height - 15) {
+                  // 点击左边缘
+                  setState(() {
+                    rectData.selectedEdge = 'left';
+                  });
+                } else if (details.localPosition.dx > 15 &&
+                    details.localPosition.dx < rectData.width - 15 &&
+                    details.localPosition.dy < 15) {
+                  // 点击上边缘
+                  setState(() {
+                    rectData.selectedEdge = 'top';
+                  });
+                } else if (details.localPosition.dx > rectData.width - 15 &&
+                    details.localPosition.dy > 15 &&
+                    details.localPosition.dy < rectData.height - 15) {
+                  // 点击右边缘
+                  setState(() {
+                    rectData.selectedEdge = 'right';
+                  });
+                } else if (details.localPosition.dy > rectData.height - 15 &&
+                    details.localPosition.dx > 15 &&
+                    details.localPosition.dx < rectData.width - 15) {
+                  // 点击下边缘
+                  setState(() {
+                    rectData.selectedEdge = 'bottom';
+                  });
+                } else {
+                  setState(() {
+                    rectData.selectedEdge = '';
+                  });
+                }
+                setState(() {
+                  rectData.isSelected = true;
                 });
+                debugPrint(
+                    'onPanDown:${details.localPosition}||${details.globalPosition}||${offsetX + rectData.offsetX}--${rectData.width}--${rectData.height}');
               },
               onPanUpdate: (details) {
+                debugPrint(
+                    'onPanUpdate INNER: ${details.delta.dx},${details.delta.dy}');
                 if (rectData.isSelected) {
                   printInfo(info: '方块：${details.delta}');
                   setState(() {
-                    rectData.offsetX += details.delta.dx;
-                    rectData.offsetY += details.delta.dy;
-                    printInfo(
-                        info: '方块位置：${rectData.offsetX},${rectData.offsetY}');
                     // // 限制偏移范围
                     // rectData.offsetX =
                     //     rectData.offsetX.clamp(0, 2430 - rectData.rect.width);
                     // rectData.offsetY =
                     //     rectData.offsetX.clamp(0, 2305 - rectData.rect.height);
+
+                    if (rectData.selectedEdge == 'top') {
+                      // 拖拽上边缘
+                      // change top & height
+                      rectData.offsetY += details.delta.dy;
+                      rectData.height -= details.delta.dy;
+                      Vibration.vibrate(duration: 20, amplitude: 225);
+                    } else if (rectData.selectedEdge == 'left') {
+                      // 拖拽左边缘
+                      // change left & width
+                      rectData.offsetX += details.delta.dx;
+                      rectData.width -= details.delta.dx;
+                      Vibration.vibrate(duration: 20, amplitude: 225);
+                    } else if (rectData.selectedEdge == 'right') {
+                      // 拖拽右边缘
+                      // change width
+                      rectData.width += details.delta.dx;
+                      Vibration.vibrate(duration: 20, amplitude: 225);
+                    } else if (rectData.selectedEdge == 'bottom') {
+                      // 拖拽下边缘
+                      // change height
+                      rectData.height += details.delta.dy;
+                      Vibration.vibrate(duration: 20, amplitude: 225);
+                    } else {
+                      // 拖拽其他地方
+                      rectData.offsetX += details.delta.dx;
+                      rectData.offsetY += details.delta.dy;
+                      // 触发短促有力的震动
+                      Vibration.vibrate(duration: 50, amplitude: 255);
+                    }
                   });
                 }
               },
               child: CustomPaint(
-                size: const Size(100, 100),
+                size: Size(rectData.width, rectData.height),
                 painter: RectsPainter(rectData),
               ),
             ),
@@ -603,10 +683,11 @@ class _GridWidgetState extends State<GridWidget> {
           top: offsetY,
           child: GestureDetector(
             onTap: () {
-              // 将原有的所有的isSelected重置
+              // 将原有的所有的isSelected,selectedEdge重置
               for (var rect in widget.rects) {
                 setState(() {
                   rect.isSelected = false;
+                  rect.selectedEdge = '';
                 });
               }
             },
@@ -618,7 +699,8 @@ class _GridWidgetState extends State<GridWidget> {
                 // 限制偏移量范围
                 offsetX = offsetX.clamp(-2430, 0);
                 offsetY = offsetY.clamp(-2305, 0);
-                debugPrint('onPanUpdate: $offsetX,$offsetY');
+                debugPrint(
+                    'onPanUpdate OUT: ${details.delta.dx},${details.delta.dy}');
 
                 // // 更新每个矩形的位置
                 // for (int i = 0; i < widget.rects.length; i++) {
@@ -679,7 +761,20 @@ class RectsPainter extends CustomPainter {
           : const Color.fromARGB(255, 0, 0, 0)
       ..strokeWidth = 2
       ..style = PaintingStyle.stroke;
-    canvas.drawRect(rect, paint);
+    // 绘制选中边线的画笔
+    final paintEdge = Paint()
+      ..color = Colors.amber
+      ..strokeWidth = 2
+      ..style = PaintingStyle.stroke;
+    // canvas.drawRect(rect, paint);
+    canvas.drawLine(rect.topLeft, rect.topRight,
+        rectData.selectedEdge == 'top' ? paintEdge : paint);
+    canvas.drawLine(rect.topRight, rect.bottomRight,
+        rectData.selectedEdge == 'right' ? paintEdge : paint);
+    canvas.drawLine(rect.bottomRight, rect.bottomLeft,
+        rectData.selectedEdge == 'bottom' ? paintEdge : paint);
+    canvas.drawLine(rect.bottomLeft, rect.topLeft,
+        rectData.selectedEdge == 'left' ? paintEdge : paint);
 
     final textPainter = TextPainter(
       text: TextSpan(
@@ -712,6 +807,7 @@ class RectData {
   double top;
   double width;
   double height;
+  String selectedEdge;
 
   RectData({
     required this.name,
@@ -723,6 +819,7 @@ class RectData {
     required this.top,
     required this.width,
     required this.height,
+    required this.selectedEdge,
   });
   Map<String, dynamic> toJson() {
     return {
@@ -735,6 +832,7 @@ class RectData {
       'isSelected': isSelected,
       'offsetX': offsetX,
       'offsetY': offsetY,
+      'selectedEdge': selectedEdge,
     };
   }
 }

@@ -1,14 +1,13 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/pages/topo/model/equipment_datas.dart';
 import 'package:get/get.dart';
 import '../../../config/base_config.dart';
 import '../../../core/http/http_app.dart';
 import '../../../core/utils/shared_preferences_util.dart';
-import '../../../core/widget/custom_app_bar.dart';
-import '../../../generated/l10n.dart';
 
 //接入设备
 class ConnectedDevice extends StatefulWidget {
@@ -23,7 +22,10 @@ bool isOnline = true;
 List deviceList = []; //设备列表
 EquipmentDatas topoData = EquipmentDatas(onlineDeviceTable: [], max: null);
 
-class _ConnectedDeviceState extends State<ConnectedDevice> {
+class _ConnectedDeviceState extends State<ConnectedDevice>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
   bool loading = false;
 
   //获取列表
@@ -68,231 +70,164 @@ class _ConnectedDeviceState extends State<ConnectedDevice> {
   void initState() {
     super.initState();
     getDeviceListFn();
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: customAppbar(
-            context: context,
-            title: 'Devices(' + deviceList.length.toString() + ')'),
-        body: loading
-            ? const Center(child: CircularProgressIndicator())
-            : Container(
-                decoration: const BoxDecoration(
-                    color: Color.fromRGBO(240, 240, 240, 1)),
-                height: 1400.w,
-                child: SingleChildScrollView(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Padding(padding: EdgeInsets.only(top: 40.w)),
+      appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+        elevation: 0,
+        title: Text(
+          'Devices(${deviceList.length})',
+          style: const TextStyle(color: Colors.black),
+        ),
+        // backgroundColor: Colors.white,
+        centerTitle: true,
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          //设置状态栏的背景颜色
+          statusBarColor: Colors.transparent,
+          //状态栏的文字的颜色
+          statusBarIconBrightness: Brightness.dark,
+        ),
+        leading: IconButton(
+            onPressed: () {
+              Get.back();
+            },
+            icon: const Icon(
+              Icons.arrow_back_ios,
+              color: Colors.black,
+            )),
+        bottom: TabBar(
+          controller: _tabController,
+          unselectedLabelColor: Colors.black,
+          labelColor: Colors.blue,
+          tabs: [
+            Tab(text: 'Online(${deviceList.length.toString()})'),
+            const Tab(text: 'Offline(0)'),
+          ],
+        ),
+      ),
+      body: loading
+          ? const Center(child: CircularProgressIndicator())
+          : TabBarView(
+              controller: _tabController,
+              children: const [
+                OnlinePage(),
+                OfflinePage(),
+              ],
+            ),
+    );
+  }
+}
 
-                        //在线/离线
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    isOnline = true;
-                                  });
-                                },
-                                child: DecoratedBox(
-                                  decoration: BoxDecoration(
-                                    border: Border(
-                                      bottom: BorderSide(
-                                        width: 2.0,
-                                        color: isOnline
-                                            ? const Color.fromRGBO(
-                                                33, 150, 243, 1)
-                                            : const Color.fromRGBO(
-                                                240, 240, 240, 1),
-                                      ),
-                                    ),
-                                  ),
-                                  child: Padding(
-                                    padding: EdgeInsets.only(bottom: 12.0.w),
-                                    child: RichText(
-                                      text: TextSpan(
-                                        children: [
-                                          TextSpan(
-                                            text: 'Online',
-                                            style: TextStyle(
-                                              fontSize: 40.0.w,
-                                              color: isOnline
-                                                  ? const Color.fromRGBO(
-                                                      33, 150, 243, 1)
-                                                  : Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          TextSpan(
-                                            text:
-                                                '(${deviceList.length.toString()})',
-                                            style: TextStyle(
-                                              fontSize: 30.0.w,
-                                              color: isOnline
-                                                  ? const Color.fromRGBO(
-                                                      33, 150, 243, 1)
-                                                  : Colors.black,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                )),
-                            GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    isOnline = false;
-                                  });
-                                },
-                                child: DecoratedBox(
-                                  decoration: BoxDecoration(
-                                    border: Border(
-                                      bottom: BorderSide(
-                                        width: 2.0,
-                                        color: !isOnline
-                                            ? const Color.fromRGBO(
-                                                33, 150, 243, 1)
-                                            : const Color.fromRGBO(
-                                                240, 240, 240, 1),
-                                      ),
-                                    ),
-                                  ),
-                                  child: Padding(
-                                    padding: EdgeInsets.only(bottom: 12.0.w),
-                                    child: RichText(
-                                      text: TextSpan(
-                                        children: [
-                                          TextSpan(
-                                            text: 'Offline',
-                                            style: TextStyle(
-                                              fontSize: 40.0.w,
-                                              color: !isOnline
-                                                  ? const Color.fromRGBO(
-                                                      33, 150, 243, 1)
-                                                  : Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          TextSpan(
-                                            text: '(0)',
-                                            style: TextStyle(
-                                              fontSize: 30.0.w,
-                                              color: !isOnline
-                                                  ? const Color.fromRGBO(
-                                                      33, 150, 243, 1)
-                                                  : Colors.black,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                )),
-                          ],
-                        ),
+class OnlinePage extends StatelessWidget {
+  const OnlinePage({super.key});
 
-                        Padding(padding: EdgeInsets.only(top: 20.w)),
-
-                        if (isOnline)
-                          //遍历卡片
-                          SizedBox(
-                            height: deviceList.length * 150.w,
-                            child: ListView.builder(
-                              itemCount: deviceList.length,
-                              itemBuilder: (context, index) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    Get.toNamed("/access_equipment",
-                                        arguments:
-                                            topoData.onlineDeviceTable![index]);
-                                  },
-                                  child: Card(
-                                    clipBehavior: Clip.hardEdge,
-                                    elevation: 5, //设置卡片阴影的深度
-                                    shape: const RoundedRectangleBorder(
-                                      //设置卡片圆角
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(20)),
-                                    ),
-                                    child: Container(
-                                      decoration: const BoxDecoration(),
-                                      child: ListTile(
-                                          //图片
-                                          leading: ClipOval(
-                                              child: Image.asset(
-                                                  'assets/images/slices.png',
-                                                  fit: BoxFit.fitWidth,
-                                                  width: 90.w)),
-                                          //中间文字
-                                          title: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              Expanded(
-                                                child: SizedBox(
-                                                  child:
-                                                      //显示的文字
-                                                      Text(
-                                                    deviceList[index]['name'],
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    maxLines: 1,
-                                                  ),
-                                                ),
-                                              ),
-                                              // icon
-                                              IconButton(
-                                                  onPressed: () {},
-                                                  icon: deviceList[index]
-                                                              ['connection'] ==
-                                                          'LAN'
-                                                      ? const Icon(
-                                                          Icons.lan,
-                                                          color: Color.fromRGBO(
-                                                              120,
-                                                              199,
-                                                              197,
-                                                              1.0),
-                                                        )
-                                                      : const Icon(
-                                                          Icons.wifi,
-                                                          color: Color.fromRGBO(
-                                                              120,
-                                                              199,
-                                                              197,
-                                                              1.0),
-                                                        ))
-                                            ],
-                                          ),
-
-                                          //title下方显示的内容
-                                          subtitle: Row(
-                                            children: [
-                                              Text(deviceList[index]
-                                                  ['connection']),
-                                              Text(
-                                                deviceList[index]
-                                                            ['connection'] ==
-                                                        'LAN'
-                                                    ? '   LAN'
-                                                    : '   Wi-Fi',
-                                              ),
-                                            ],
-                                          )),
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        decoration:
+            const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
+        height: 1400.w,
+        child: SingleChildScrollView(
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            Padding(padding: EdgeInsets.only(top: 10.w)),
+            //遍历卡片
+            SizedBox(
+              height: deviceList.length * 150.w,
+              child: ListView.builder(
+                itemCount: deviceList.length,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () {
+                      Get.toNamed("/access_equipment",
+                          arguments: topoData.onlineDeviceTable![index]);
+                    },
+                    child: Card(
+                      clipBehavior: Clip.hardEdge,
+                      elevation: 5, //设置卡片阴影的深度
+                      shape: const RoundedRectangleBorder(
+                        //设置卡片圆角
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                      ),
+                      child: Container(
+                        decoration: const BoxDecoration(),
+                        child: ListTile(
+                            //图片
+                            leading: ClipOval(
+                                child: Image.asset('assets/images/slices.png',
+                                    fit: BoxFit.fitWidth, width: 90.w)),
+                            //中间文字
+                            title: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: SizedBox(
+                                    child:
+                                        //显示的文字
+                                        Text(
+                                      deviceList[index]['name'],
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
                                     ),
                                   ),
-                                );
-                              },
+                                ),
+                                // icon
+                                IconButton(
+                                    onPressed: () {},
+                                    icon:
+                                        deviceList[index]['connection'] == 'LAN'
+                                            ? const Icon(
+                                                Icons.lan,
+                                                color: Color.fromRGBO(
+                                                    120, 199, 197, 1.0),
+                                              )
+                                            : const Icon(
+                                                Icons.wifi,
+                                                color: Color.fromRGBO(
+                                                    120, 199, 197, 1.0),
+                                              ))
+                              ],
                             ),
-                          )
 
-                        // else
-                      ]),
-                )));
+                            //title下方显示的内容
+                            subtitle: Row(
+                              children: [
+                                Text(deviceList[index]['connection']),
+                                Text(
+                                  deviceList[index]['connection'] == 'LAN'
+                                      ? '   LAN'
+                                      : '   Wi-Fi',
+                                ),
+                              ],
+                            )),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            )
+          ]),
+        ));
+  }
+}
+
+class OfflinePage extends StatelessWidget {
+  const OfflinePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        decoration:
+            const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
+        height: 1400.w,
+        child: SingleChildScrollView(
+          child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: const []),
+        ));
   }
 }

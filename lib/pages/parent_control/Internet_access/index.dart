@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:day_night_time_picker/day_night_time_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/request/request.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
@@ -22,13 +23,17 @@ class Internetaccess extends StatefulWidget {
   State<StatefulWidget> createState() => _InternetaccessState();
 }
 
-class _InternetaccessState extends State<Internetaccess> {
+class _InternetaccessState extends State<Internetaccess>
+    with SingleTickerProviderStateMixin {
   List accessList = []; //家长控制列表
   List keyList = []; //家长控制列表
+  late TabController _tabController;
+
   @override
   void initState() {
     super.initState();
     getACSNodeFn();
+    _tabController = TabController(length: 2, vsync: this);
     MACAddress = Get.arguments['MACAddress'].toString();
     name = Get.arguments['name'].toString();
     sn = Get.arguments['sn'];
@@ -74,8 +79,9 @@ class _InternetaccessState extends State<Internetaccess> {
 
       setState(() {
         //过滤列表
-        accessList =
-            accessList.where((element) => element['Device']['_value'] == MACAddress).toList();
+        accessList = accessList
+            .where((element) => element['Device']['_value'] == MACAddress)
+            .toList();
         enable = d['data']['InternetGatewayDevice']['WEB_GUI']
             ['ParentalControls']['Enable']['_value'];
       });
@@ -95,48 +101,47 @@ class _InternetaccessState extends State<Internetaccess> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: customAppbar(
-            context: context, title: 'Internet access time scheduling '),
-        body: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                //time period
-                TextButton(
-                  onPressed: () {
-                    setState(() {
-                      date = 'timePeriod';
-                    });
-                  },
-                  child: Text(
-                    'Time Period',
-                    style: TextStyle(
-                        color: date == 'timePeriod'
-                            ? Colors.blue
-                            : Colors.black54),
-                  ),
-                ),
-                //Duration
-                TextButton(
-                  onPressed: () {
-                    setState(() {
-                      date = 'Duration';
-                    });
-                  },
-                  child: Text(
-                    'Duration',
-                    style: TextStyle(
-                        color:
-                            date == 'Duration' ? Colors.blue : Colors.black54),
-                  ),
-                ),
-              ],
-            ),
-            if (date == 'timePeriod')
+      appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+        elevation: 0,
+        title: const Text(
+          'Internet access time scheduling',
+          style: TextStyle(color: Colors.black),
+        ),
+        // backgroundColor: Colors.white,
+        centerTitle: true,
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          //设置状态栏的背景颜色
+          statusBarColor: Colors.transparent,
+          //状态栏的文字的颜色
+          statusBarIconBrightness: Brightness.dark,
+        ),
+        leading: IconButton(
+            onPressed: () {
+              Get.back();
+            },
+            icon: const Icon(
+              Icons.arrow_back_ios,
+              color: Colors.black,
+            )),
+        bottom: TabBar(
+          controller: _tabController,
+          unselectedLabelColor: Colors.black,
+          labelColor: Colors.blue,
+          tabs: const [
+            Tab(text: 'Time Period'),
+            Tab(text: 'Duration'),
+          ],
+        ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          Column(
+            children: [
               loading
-                  ? Expanded(
-                      child: const Center(child: CircularProgressIndicator()))
+                  ? const Expanded(
+                      child: Center(child: CircularProgressIndicator()))
                   : Expanded(
                       child: Column(
                         children: [
@@ -169,15 +174,14 @@ class _InternetaccessState extends State<Internetaccess> {
                                 height: 1.sh - 70,
                                 child: ListView.builder(
                                     itemCount: accessList.length,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
+                                    itemBuilder: (BuildContext context, int index) {
                                       return Card(
                                         clipBehavior: Clip.hardEdge,
                                         elevation: 5,
                                         shape: const RoundedRectangleBorder(
                                           //设置卡片圆角
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(20)),
+                                          borderRadius:
+                                              BorderRadius.all(Radius.circular(20)),
                                         ),
                                         child: ListTile(
                                           title: Text(
@@ -197,8 +201,7 @@ class _InternetaccessState extends State<Internetaccess> {
                                                     builder:
                                                         (BuildContext context) {
                                                       return MyDialog(
-                                                          week: accessList[
-                                                                      index]
+                                                          week: accessList[index]
                                                                   ['Weekdays']
                                                               ['_value'],
                                                           time:
@@ -206,8 +209,7 @@ class _InternetaccessState extends State<Internetaccess> {
                                                           id: keyList[index],
                                                           getACSNodeFn:
                                                               getACSNodeFn,
-                                                          openLoading:
-                                                              openLoading);
+                                                          openLoading: openLoading);
                                                     },
                                                   );
                                                 },
@@ -215,36 +217,31 @@ class _InternetaccessState extends State<Internetaccess> {
                                               IconButton(
                                                 //删除
                                                 icon: Icon(Icons.delete),
-                                                color: Color.fromRGBO(
-                                                    232, 7, 30, 1),
+                                                color:
+                                                    Color.fromRGBO(232, 7, 30, 1),
                                                 onPressed: () {
                                                   showDialog(
                                                     context: context,
                                                     builder:
                                                         (BuildContext context) {
                                                       return AlertDialog(
-                                                        title: Text(
-                                                            S.current.delPro),
+                                                        title:
+                                                            Text(S.current.delPro),
                                                         actions: <Widget>[
                                                           TextButton(
-                                                            child: Text(S
-                                                                .current
-                                                                .cancel),
+                                                            child: Text(
+                                                                S.current.cancel),
                                                             onPressed: () {
-                                                              Navigator.of(
-                                                                      context)
+                                                              Navigator.of(context)
                                                                   .pop();
                                                             },
                                                           ),
                                                           TextButton(
-                                                            child: Text(S
-                                                                .current
-                                                                .delete),
-                                                            onPressed:
-                                                                () async {
+                                                            child: Text(
+                                                                S.current.delete),
+                                                            onPressed: () async {
                                                               // Perform delete operation here
-                                                              Navigator.of(
-                                                                      context)
+                                                              Navigator.of(context)
                                                                   .pop();
                                                               openLoading();
                                                               await Request()
@@ -294,8 +291,7 @@ class _InternetaccessState extends State<Internetaccess> {
                                     ),
                                   ),
                                   backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Colors.blue),
+                                      MaterialStateProperty.all<Color>(Colors.blue),
                                 ),
                                 child: const Text(
                                   'ADD PERIOD',
@@ -309,146 +305,12 @@ class _InternetaccessState extends State<Internetaccess> {
                         ],
                       ),
                     ),
-            if (date == 'Duration')
-              Column(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 10),
-                    child: const Text(
-                      '  Set daily limits for how long your child can use the Internet. They can only use  Internet time during the specified time periods',
-                      style: TextStyle(
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ),
-                  InfoBox(
-                    boxCotainer: Column(children: [
-                      BottomLine(
-                          rowtem: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            children: const [Text('1h'), Text('Mon')],
-                          ),
-                          const Icon(Icons.keyboard_arrow_right_sharp)
-                        ],
-                      )),
-                      BottomLine(
-                          rowtem: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            children: const [
-                              Text('2h'),
-                              Text(
-                                'Thu',
-                                style: TextStyle(
-                                  color: Color(0xFF6c7481),
-                                ),
-                              )
-                            ],
-                          ),
-                          const Icon(Icons.keyboard_arrow_right_sharp)
-                        ],
-                      )),
-                      BottomLine(
-                          rowtem: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            children: const [
-                              Text('5h'),
-                              Text(
-                                'Wed',
-                                style: TextStyle(
-                                  color: Color(0xFF6c7481),
-                                ),
-                              )
-                            ],
-                          ),
-                          const Icon(Icons.keyboard_arrow_right_sharp)
-                        ],
-                      )),
-                      BottomLine(
-                          rowtem: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            children: const [
-                              Text(
-                                '1h',
-                                style: TextStyle(
-                                  color: Color(0xFF6c7481),
-                                ),
-                              ),
-                              Text(
-                                'Thu',
-                              )
-                            ],
-                          ),
-                          const Icon(Icons.keyboard_arrow_right_sharp)
-                        ],
-                      )),
-                      BottomLine(
-                          rowtem: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            children: const [
-                              Text('1h'),
-                              Text(
-                                'Fri',
-                                style: TextStyle(
-                                  color: Color(0xFF6c7481),
-                                ),
-                              )
-                            ],
-                          ),
-                          const Icon(Icons.keyboard_arrow_right_sharp)
-                        ],
-                      )),
-                      BottomLine(
-                          rowtem: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            children: const [
-                              Text('1h'),
-                              Text(
-                                'Sat',
-                                style: TextStyle(
-                                  color: Color(0xFF6c7481),
-                                ),
-                              )
-                            ],
-                          ),
-                          const Icon(Icons.keyboard_arrow_right_sharp)
-                        ],
-                      )),
-                      BottomLine(
-                          rowtem: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            children: const [
-                              Text('1h'),
-                              Text(
-                                'Sun',
-                                style: TextStyle(
-                                  color: Color(0xFF6c7481),
-                                ),
-                              )
-                            ],
-                          ),
-                          const Icon(Icons.keyboard_arrow_right_sharp)
-                        ],
-                      )),
-                    ]),
-                  )
-                ],
-              )
-          ],
-        ));
+            ],
+          ),
+          DurationPage(),
+        ],
+      ),
+    );
   }
 }
 
@@ -526,8 +388,16 @@ class _MyDialogState extends State<MyDialog> {
     var parameterNames = [
       ['${prefix}Device', MACAddress, 'xsd:string'],
       ['${prefix}Name', name, 'xsd:string'],
-      ['${prefix}TimeStart', '${_initTime.h.toString().padLeft(2, '0')}:${_initTime.m.toString().padLeft(2, '0')}', 'xsd:string'],
-      ['${prefix}TimeStop', '${_endTime.h.toString().padLeft(2, '0')}:${_endTime.m.toString().padLeft(2, '0')}', 'xsd:string'],
+      [
+        '${prefix}TimeStart',
+        '${_initTime.h.toString().padLeft(2, '0')}:${_initTime.m.toString().padLeft(2, '0')}',
+        'xsd:string'
+      ],
+      [
+        '${prefix}TimeStop',
+        '${_endTime.h.toString().padLeft(2, '0')}:${_endTime.m.toString().padLeft(2, '0')}',
+        'xsd:string'
+      ],
       ['${prefix}Weekdays', '${_selectedDays.join(',')}', 'xsd:string'],
     ];
 
@@ -549,8 +419,16 @@ class _MyDialogState extends State<MyDialog> {
     var parameterNames = [
       ['${prefix}Device', MACAddress, 'xsd:string'],
       ['${prefix}Name', name, 'xsd:string'],
-      ['${prefix}TimeStart', '${_initTime.h.toString().padLeft(2, '0')}:${_initTime.m.toString().padLeft(2, '0')}', 'xsd:string'],
-      ['${prefix}TimeStop', '${_endTime.h.toString().padLeft(2, '0')}:${_endTime.m.toString().padLeft(2, '0')}', 'xsd:string'],
+      [
+        '${prefix}TimeStart',
+        '${_initTime.h.toString().padLeft(2, '0')}:${_initTime.m.toString().padLeft(2, '0')}',
+        'xsd:string'
+      ],
+      [
+        '${prefix}TimeStop',
+        '${_endTime.h.toString().padLeft(2, '0')}:${_endTime.m.toString().padLeft(2, '0')}',
+        'xsd:string'
+      ],
       ['${prefix}Weekdays', '${_selectedDays.join(',')}', 'xsd:string'],
     ];
 
@@ -730,6 +608,151 @@ class _MyDialogState extends State<MyDialog> {
           },
           child: Text('Confirm'),
         ),
+      ],
+    );
+  }
+}
+
+class DurationPage extends StatelessWidget {
+  const DurationPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          margin: const EdgeInsets.only(bottom: 10),
+          child: const Text(
+            '  Set daily limits for how long your child can use the Internet. They can only use  Internet time during the specified time periods',
+            style: TextStyle(
+              color: Colors.grey,
+            ),
+          ),
+        ),
+        InfoBox(
+          boxCotainer: Column(children: [
+            BottomLine(
+                rowtem: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  children: const [Text('1h'), Text('Mon')],
+                ),
+                const Icon(Icons.keyboard_arrow_right_sharp)
+              ],
+            )),
+            BottomLine(
+                rowtem: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  children: const [
+                    Text('2h'),
+                    Text(
+                      'Thu',
+                      style: TextStyle(
+                        color: Color(0xFF6c7481),
+                      ),
+                    )
+                  ],
+                ),
+                const Icon(Icons.keyboard_arrow_right_sharp)
+              ],
+            )),
+            BottomLine(
+                rowtem: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  children: const [
+                    Text('5h'),
+                    Text(
+                      'Wed',
+                      style: TextStyle(
+                        color: Color(0xFF6c7481),
+                      ),
+                    )
+                  ],
+                ),
+                const Icon(Icons.keyboard_arrow_right_sharp)
+              ],
+            )),
+            BottomLine(
+                rowtem: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  children: const [
+                    Text(
+                      '1h',
+                      style: TextStyle(
+                        color: Color(0xFF6c7481),
+                      ),
+                    ),
+                    Text(
+                      'Thu',
+                    )
+                  ],
+                ),
+                const Icon(Icons.keyboard_arrow_right_sharp)
+              ],
+            )),
+            BottomLine(
+                rowtem: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  children: const [
+                    Text('1h'),
+                    Text(
+                      'Fri',
+                      style: TextStyle(
+                        color: Color(0xFF6c7481),
+                      ),
+                    )
+                  ],
+                ),
+                const Icon(Icons.keyboard_arrow_right_sharp)
+              ],
+            )),
+            BottomLine(
+                rowtem: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  children: const [
+                    Text('1h'),
+                    Text(
+                      'Sat',
+                      style: TextStyle(
+                        color: Color(0xFF6c7481),
+                      ),
+                    )
+                  ],
+                ),
+                const Icon(Icons.keyboard_arrow_right_sharp)
+              ],
+            )),
+            BottomLine(
+                rowtem: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  children: const [
+                    Text('1h'),
+                    Text(
+                      'Sun',
+                      style: TextStyle(
+                        color: Color(0xFF6c7481),
+                      ),
+                    )
+                  ],
+                ),
+                const Icon(Icons.keyboard_arrow_right_sharp)
+              ],
+            )),
+          ]),
+        )
       ],
     );
   }

@@ -253,11 +253,7 @@ class SwiperCard extends StatefulWidget {
 
 class _SwiperCardState extends State<SwiperCard> {
   //云端
-  getACSNodeFn() async {
-    setState(() {
-      loading = true;
-    });
-
+  getACSNodeFn(index) async {
     try {
       var parameterNames = [
         "InternetGatewayDevice.WEB_GUI.ParentalControls",
@@ -281,6 +277,10 @@ class _SwiperCardState extends State<SwiperCard> {
         });
       });
       setState(() {
+        MACAddress.value = deviceList[index]['MACAddress'];
+        name = deviceList[index]['name'];
+        date = 'Mon';
+
         //过滤列表
         accessList = accessList
             .where((element) => element['Device']['_value'] == MACAddress.value)
@@ -288,17 +288,16 @@ class _SwiperCardState extends State<SwiperCard> {
       });
       for (var item in accessList) {
         if (item['Weekdays']['_value'].contains('Mon')) {
-          setState(() {
-            filteredData.add({
-              'TimeStart': item['TimeStart']['_value'],
-              'TimeStop': item['TimeStop']['_value'],
-            });
+          filteredData.add({
+            'TimeStart': item['TimeStart']['_value'],
+            'TimeStop': item['TimeStop']['_value'],
           });
         }
       }
     } catch (e) {
       // 处理异常
-    } finally {}
+      debugPrint(e.toString());
+    }
   }
 
   @override
@@ -332,12 +331,7 @@ class _SwiperCardState extends State<SwiperCard> {
       height: deviceList.isNotEmpty ? 240.w : 0.w,
       child: Swiper(
           onIndexChanged: (int index) {
-            setState(() {
-              MACAddress.value = deviceList[index]['MACAddress'];
-              name = deviceList[index]['name'];
-              date = 'Mon';
-            });
-            getACSNodeFn();
+            getACSNodeFn(index);
           },
           itemCount: deviceList.length, // 轮播图数量
           itemBuilder: (BuildContext context, int index) {
@@ -890,6 +884,7 @@ class _SchedulingState extends State<Scheduling> {
       }
     } catch (e) {
       // 处理异常
+      debugPrint(e.toString());
     } finally {
       setState(() {
         loading = false;
@@ -946,6 +941,7 @@ class _SchedulingState extends State<Scheduling> {
                 ),
               ],
             ),
+            Padding(padding: EdgeInsets.only(top: 20.w)),
 
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -1000,13 +996,24 @@ class _SchedulingState extends State<Scheduling> {
                       Stack(
                         alignment: AlignmentDirectional.center,
                         children: [
-                          SizedBox(
-                            width: 390.w,
-                            height: 390.w,
-                            child: ArcProgresssBar(
-                                width: 1.sw,
-                                height: 1.sw,
-                                progress: filteredData),
+                          ValueListenableBuilder<String>(
+                            valueListenable: MACAddress,
+                            builder: (context, value, child) {
+                              return Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  SizedBox(
+                                    width: 390.w,
+                                    height: 390.w,
+                                    child: ArcProgresssBar(
+                                        width: 1.sw,
+                                        height: 1.sw,
+                                        progress: filteredData),
+                                  ),
+                                ],
+                              );
+                            },
                           ),
                           Column(
                             children: [
@@ -1088,7 +1095,6 @@ class _SchedulingState extends State<Scheduling> {
                               });
                             }
                           }
-                          print(filteredData);
                         },
                         child: ConstrainedBox(
                             constraints: BoxConstraints(maxWidth: 150.w),
@@ -1111,7 +1117,6 @@ class _SchedulingState extends State<Scheduling> {
                           setState(() {
                             filteredData = [];
                             date = 'Tue';
-                            filteredData = [];
                           });
                           for (var item in accessList) {
                             if (item['Weekdays']['_value'].contains('Tue')) {

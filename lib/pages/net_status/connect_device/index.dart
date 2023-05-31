@@ -119,7 +119,7 @@ class _ConnectedDeviceState extends State<ConnectedDevice> {
                                           TextSpan(
                                             text: 'Online',
                                             style: TextStyle(
-                                              fontSize: 50.0.w,
+                                              fontSize: 40.0.w,
                                               color: isOnline
                                                   ? const Color.fromRGBO(
                                                       33, 150, 243, 1)
@@ -131,7 +131,7 @@ class _ConnectedDeviceState extends State<ConnectedDevice> {
                                             text:
                                                 '(${deviceList.length.toString()})',
                                             style: TextStyle(
-                                              fontSize: 20.0,
+                                              fontSize: 30.0.w,
                                               color: isOnline
                                                   ? const Color.fromRGBO(
                                                       33, 150, 243, 1)
@@ -170,7 +170,7 @@ class _ConnectedDeviceState extends State<ConnectedDevice> {
                                           TextSpan(
                                             text: 'Offline',
                                             style: TextStyle(
-                                              fontSize: 50.0.w,
+                                              fontSize: 40.0.w,
                                               color: !isOnline
                                                   ? const Color.fromRGBO(
                                                       33, 150, 243, 1)
@@ -181,7 +181,7 @@ class _ConnectedDeviceState extends State<ConnectedDevice> {
                                           TextSpan(
                                             text: '(0)',
                                             style: TextStyle(
-                                              fontSize: 20.0,
+                                              fontSize: 30.0.w,
                                               color: !isOnline
                                                   ? const Color.fromRGBO(
                                                       33, 150, 243, 1)

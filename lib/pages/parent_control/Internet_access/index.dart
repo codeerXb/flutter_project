@@ -526,8 +526,8 @@ class _MyDialogState extends State<MyDialog> {
     var parameterNames = [
       ['${prefix}Device', MACAddress, 'xsd:string'],
       ['${prefix}Name', name, 'xsd:string'],
-      ['${prefix}TimeStart', '${_initTime.h}:${_initTime.m}', 'xsd:string'],
-      ['${prefix}TimeStop', '${_endTime.h}:${_endTime.m}', 'xsd:string'],
+      ['${prefix}TimeStart', '${_initTime.h.toString().padLeft(2, '0')}:${_initTime.m.toString().padLeft(2, '0')}', 'xsd:string'],
+      ['${prefix}TimeStop', '${_endTime.h.toString().padLeft(2, '0')}:${_endTime.m.toString().padLeft(2, '0')}', 'xsd:string'],
       ['${prefix}Weekdays', '${_selectedDays.join(',')}', 'xsd:string'],
     ];
 
@@ -549,8 +549,8 @@ class _MyDialogState extends State<MyDialog> {
     var parameterNames = [
       ['${prefix}Device', MACAddress, 'xsd:string'],
       ['${prefix}Name', name, 'xsd:string'],
-      ['${prefix}TimeStart', '${_initTime.h}:${_initTime.m}', 'xsd:string'],
-      ['${prefix}TimeStop', '${_endTime.h}:${_endTime.m}', 'xsd:string'],
+      ['${prefix}TimeStart', '${_initTime.h.toString().padLeft(2, '0')}:${_initTime.m.toString().padLeft(2, '0')}', 'xsd:string'],
+      ['${prefix}TimeStop', '${_endTime.h.toString().padLeft(2, '0')}:${_endTime.m.toString().padLeft(2, '0')}', 'xsd:string'],
       ['${prefix}Weekdays', '${_selectedDays.join(',')}', 'xsd:string'],
     ];
 
@@ -593,7 +593,7 @@ class _MyDialogState extends State<MyDialog> {
                   padding: const EdgeInsets.only(
                       top: 7, bottom: 7, left: 12, right: 12),
                   child: Text(
-                    '${_initTime.h}:${_initTime.m}',
+                    '${_initTime.h.toString().padLeft(2, '0')}:${_initTime.m.toString().padLeft(2, '0')}',
                     style: const TextStyle(
                       fontSize: 16,
                       color: Color.fromARGB(255, 96, 98, 97),
@@ -609,7 +609,7 @@ class _MyDialogState extends State<MyDialog> {
                   padding: const EdgeInsets.only(
                       top: 7, bottom: 7, left: 12, right: 12),
                   child: Text(
-                    '${_endTime.h}:${_endTime.m}',
+                    '${_endTime.h.toString().padLeft(2, '0')}:${_endTime.m.toString().padLeft(2, '0')}',
                     style: const TextStyle(
                       fontSize: 16,
                       color: Color.fromARGB(255, 96, 98, 97),

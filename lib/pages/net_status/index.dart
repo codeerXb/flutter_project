@@ -688,20 +688,20 @@ class _NetStatusState extends State<NetStatus> {
                                             S.of(context).good,
                                             style: TextStyle(
                                                 fontSize: 30.sp,
-                                                color: Colors.blue),
+                                                color: const Color.fromRGBO(95, 141, 255,1)),
                                           ),
                                           Text(
                                             S.of(context).Environment,
                                             style: TextStyle(
                                                 fontSize: 30.sp,
-                                                color: Colors.blue),
+                                                color: const Color.fromRGBO(95, 141, 255,1)),
                                           ),
                                         ],
                                       ),
                                       const Icon(
                                         Icons.thumb_up,
                                         size: 32,
-                                        color: Colors.blue,
+                                        color: Color.fromRGBO(95, 141, 255,1),
                                       )
                                       // ElevatedButton(
                                       //   onPressed: () {},
@@ -894,7 +894,7 @@ class _NetStatusState extends State<NetStatus> {
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               Icon(Icons.devices_other_rounded,
-                                                  color: Colors.blue[500],
+                                                  color: const Color.fromRGBO(95, 141, 255,1),
                                                   size: 80.sp),
                                               Column(
                                                 mainAxisAlignment:
@@ -923,7 +923,7 @@ class _NetStatusState extends State<NetStatus> {
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               Icon(Icons.child_care,
-                                                  color: Colors.blue[500],
+                                                  color: const Color.fromRGBO(95, 141, 255,1),
                                                   size: 80.sp),
                                               ConstrainedBox(
                                                 constraints: BoxConstraints(
@@ -951,7 +951,7 @@ class _NetStatusState extends State<NetStatus> {
                                             children: [
                                               FaIcon(
                                                 FontAwesomeIcons.video,
-                                                color: Colors.blue[500],
+                                                color: const Color.fromRGBO(95, 141, 255,1),
                                                 size: 80.sp,
                                               ),
                                               ConstrainedBox(
@@ -976,7 +976,7 @@ class _NetStatusState extends State<NetStatus> {
                                           children: [
                                             Icon(
                                               Icons.network_check,
-                                              color: Colors.blue[500],
+                                              color: const Color.fromRGBO(95, 141, 255,1),
                                               size: 80.sp,
                                             ),
                                             ConstrainedBox(
@@ -999,7 +999,7 @@ class _NetStatusState extends State<NetStatus> {
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               Icon(Icons.book,
-                                                  color: Colors.blue[500],
+                                                  color: const Color.fromRGBO(95, 141, 255,1),
                                                   size: 80.sp),
                                               ConstrainedBox(
                                                 constraints: BoxConstraints(
@@ -1023,7 +1023,7 @@ class _NetStatusState extends State<NetStatus> {
                                           children: [
                                             Icon(
                                               Icons.speed,
-                                              color: Colors.blue[500],
+                                              color: const Color.fromRGBO(95, 141, 255,1),
                                               size: 80.sp,
                                             ),
                                             ConstrainedBox(

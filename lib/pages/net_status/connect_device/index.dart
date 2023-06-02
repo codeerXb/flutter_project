@@ -127,91 +127,86 @@ class OnlinePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        decoration:
-            const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
-        height: 1400.w,
-        child: SingleChildScrollView(
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            Padding(padding: EdgeInsets.only(top: 10.w)),
-            //遍历卡片
-            SizedBox(
-              height: deviceList.length * 150.w,
-              child: ListView.builder(
-                itemCount: deviceList.length,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      Get.toNamed("/access_equipment",
-                          arguments: topoData.onlineDeviceTable![index]);
-                    },
-                    child: Card(
-                      clipBehavior: Clip.hardEdge,
-                      elevation: 5, //设置卡片阴影的深度
-                      shape: const RoundedRectangleBorder(
-                        //设置卡片圆角
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                      ),
-                      child: Container(
-                        decoration: const BoxDecoration(),
-                        child: ListTile(
-                            //图片
-                            leading: ClipOval(
-                                child: Image.asset('assets/images/slices.png',
-                                    fit: BoxFit.fitWidth, width: 90.w)),
-                            //中间文字
-                            title: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: SizedBox(
-                                    child:
-                                        //显示的文字
-                                        Text(
-                                      deviceList[index]['name'],
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                    ),
+    return Column(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+              child: SizedBox(
+            height: 1.sh - 70,
+            child: ListView.builder(
+              itemCount: deviceList.length,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    Get.toNamed("/access_equipment",
+                        arguments: topoData.onlineDeviceTable![index]);
+                  },
+                  child: Card(
+                    clipBehavior: Clip.hardEdge,
+                    elevation: 5, //设置卡片阴影的深度
+                    shape: const RoundedRectangleBorder(
+                      //设置卡片圆角
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
+                    child: Container(
+                      decoration: const BoxDecoration(),
+                      child: ListTile(
+                          //图片
+                          leading: ClipOval(
+                              child: Image.asset('assets/images/slices.png',
+                                  fit: BoxFit.fitWidth, width: 90.w)),
+                          //中间文字
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: SizedBox(
+                                  child:
+                                      //显示的文字
+                                      Text(
+                                    deviceList[index]['name'],
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
                                   ),
                                 ),
-                                // icon
-                                IconButton(
-                                    onPressed: () {},
-                                    icon:
-                                        deviceList[index]['connection'] == 'LAN'
-                                            ? const Icon(
-                                                Icons.lan,
-                                                color: Color.fromRGBO(
-                                                    120, 199, 197, 1.0),
-                                              )
-                                            : const Icon(
-                                                Icons.wifi,
-                                                color: Color.fromRGBO(
-                                                    120, 199, 197, 1.0),
-                                              ))
-                              ],
-                            ),
+                              ),
+                              // icon
+                              IconButton(
+                                  onPressed: () {},
+                                  icon: deviceList[index]['connection'] == 'LAN'
+                                      ? const Icon(
+                                          Icons.lan,
+                                          color: Color.fromRGBO(
+                                              120, 199, 197, 1.0),
+                                        )
+                                      : const Icon(
+                                          Icons.wifi,
+                                          color: Color.fromRGBO(
+                                              120, 199, 197, 1.0),
+                                        ))
+                            ],
+                          ),
 
-                            //title下方显示的内容
-                            subtitle: Row(
-                              children: [
-                                Text(deviceList[index]['connection']),
-                                Text(
-                                  deviceList[index]['connection'] == 'LAN'
-                                      ? '   LAN'
-                                      : '   Wi-Fi',
-                                ),
-                              ],
-                            )),
-                      ),
+                          //title下方显示的内容
+                          subtitle: Row(
+                            children: [
+                              Text(deviceList[index]['connection']),
+                              Text(
+                                deviceList[index]['connection'] == 'LAN'
+                                    ? '   LAN'
+                                    : '   Wi-Fi',
+                              ),
+                            ],
+                          )),
                     ),
-                  );
-                },
-              ),
-            )
-          ]),
-        ));
+                  ),
+                );
+              },
+            ),
+          )),
+        ),
+      ],
+    );
   }
 }
 
@@ -220,14 +215,6 @@ class OfflinePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        decoration:
-            const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
-        height: 1400.w,
-        child: SingleChildScrollView(
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: const []),
-        ));
+    return const Text(' ');
   }
 }

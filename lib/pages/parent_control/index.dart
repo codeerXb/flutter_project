@@ -67,25 +67,54 @@ class _ParentState extends State<Parent> {
                 decoration: const BoxDecoration(
                     color: Color.fromRGBO(240, 240, 240, 1)),
                 height: 1400.w,
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      const SwiperCard(),
-                      Padding(padding: EdgeInsets.only(top: 20.w)),
-                      //今日网络使用情况
-                      InternetUsage(),
+                child: CustomScrollView(
+                  slivers: [
+                    //吸顶
+                    SliverPersistentHeader(
+                      pinned: true,
+                      delegate: MySliverAppBar(
+                        minHeight: 200.w,
+                        maxHeight: 200.w,
+                        child: const SwiperCard(),
+                      ),
+                    ),
+                    SliverList(
+                      delegate: SliverChildListDelegate([
+                        Padding(padding: EdgeInsets.only(top: 20.w)),
+                        //今日网络使用情况
+                        InternetUsage(),
+                        Padding(padding: EdgeInsets.only(top: 20.w)),
+                        //6
+                        SixBoxs(),
+                        //允许上网时间
+                        const Scheduling(),
+                      ]),
+                    ),
+                  ],
+                )
 
-                      Padding(padding: EdgeInsets.only(top: 20.w)),
+                // SingleChildScrollView(
+                //   child: Column(
+                //     crossAxisAlignment: CrossAxisAlignment.stretch,
+                //     children: [
+                //       const SwiperCard(),
 
-                      //6
-                      SixBoxs(),
+                //       Padding(padding: EdgeInsets.only(top: 20.w)),
+                //       //今日网络使用情况
+                //       InternetUsage(),
 
-                      //允许上网时间
-                      const Scheduling()
-                    ],
-                  ),
-                )));
+                //       Padding(padding: EdgeInsets.only(top: 20.w)),
+
+                //       //6
+                //       SixBoxs(),
+
+                //       //允许上网时间
+                //       const Scheduling()
+                //     ],
+                //   ),
+                // )
+
+                ));
   }
 }
 
@@ -589,7 +618,8 @@ class SixBoxsState extends State<SixBoxs> {
                     Padding(
                       padding: const EdgeInsets.only(right: 2),
                       child: Icon(Icons.games,
-                          color: Colors.blue[500], size: 80.sp),
+                          color: const Color.fromRGBO(95, 141, 255, 1),
+                          size: 80.sp),
                     ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -627,7 +657,8 @@ class SixBoxsState extends State<SixBoxs> {
                     Padding(
                       padding: const EdgeInsets.only(right: 2),
                       child: Icon(Icons.videocam_rounded,
-                          color: Colors.blue[500], size: 80.sp),
+                          color: const Color.fromRGBO(95, 141, 255, 1),
+                          size: 80.sp),
                     ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -668,7 +699,8 @@ class SixBoxsState extends State<SixBoxs> {
                     Padding(
                       padding: const EdgeInsets.only(right: 2),
                       child: Icon(Icons.chat_rounded,
-                          color: Colors.blue[500], size: 80.sp),
+                          color: const Color.fromRGBO(95, 141, 255, 1),
+                          size: 80.sp),
                     ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -709,7 +741,8 @@ class SixBoxsState extends State<SixBoxs> {
                     Padding(
                       padding: const EdgeInsets.only(right: 2),
                       child: Icon(Icons.payment,
-                          color: Colors.blue[500], size: 80.sp),
+                          color: const Color.fromRGBO(95, 141, 255, 1),
+                          size: 80.sp),
                     ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -750,7 +783,8 @@ class SixBoxsState extends State<SixBoxs> {
                     Padding(
                       padding: const EdgeInsets.only(right: 2),
                       child: Icon(Icons.install_mobile,
-                          color: Colors.blue[500], size: 80.sp),
+                          color: const Color.fromRGBO(95, 141, 255, 1),
+                          size: 80.sp),
                     ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -796,7 +830,8 @@ class SixBoxsState extends State<SixBoxs> {
                     Padding(
                         padding: const EdgeInsets.only(right: 2),
                         child: Icon(Icons.block,
-                            color: Colors.blue[500], size: 80.sp)),
+                            color: const Color.fromRGBO(95, 141, 255, 1),
+                            size: 80.sp)),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -955,7 +990,9 @@ class _SchedulingState extends State<Scheduling> {
                   child: Text(
                     'Time Period',
                     style: TextStyle(
-                        color: isFirst ? Colors.blue : Colors.black54),
+                        color: isFirst
+                            ? const Color.fromRGBO(95, 141, 255, 1)
+                            : Colors.black54),
                   ),
                 ),
                 TextButton(
@@ -967,7 +1004,9 @@ class _SchedulingState extends State<Scheduling> {
                   child: Text(
                     'Duration',
                     style: TextStyle(
-                        color: !isFirst ? Colors.blue : Colors.black54),
+                        color: !isFirst
+                            ? const Color.fromRGBO(95, 141, 255, 1)
+                            : Colors.black54),
                   ),
                 )
               ],
@@ -1295,5 +1334,37 @@ class _SchedulingState extends State<Scheduling> {
             ),
           ],
         ));
+  }
+}
+
+//吸顶
+class MySliverAppBar extends SliverPersistentHeaderDelegate {
+  final double minHeight;
+  final double maxHeight;
+  final Widget child;
+
+  MySliverAppBar({
+    required this.minHeight,
+    required this.maxHeight,
+    required this.child,
+  });
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return SizedBox.expand(child: child);
+  }
+
+  @override
+  double get maxExtent => maxHeight;
+
+  @override
+  double get minExtent => minHeight;
+
+  @override
+  bool shouldRebuild(covariant MySliverAppBar oldDelegate) {
+    return maxHeight != oldDelegate.maxHeight ||
+        minHeight != oldDelegate.minHeight ||
+        child != oldDelegate.child;
   }
 }

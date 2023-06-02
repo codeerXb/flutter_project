@@ -19,12 +19,11 @@ class _GamesState extends State<Games> {
   }
 
   bool? _isChecked = false; // 用于表示Checkbox的选中状态
-  final List<bool> _checkedList = List.generate(
-      10, (index) => false); // 用于表示ListView中每个CheckboxListTile的选中状态
+  List<bool> _checkedList = []; // 用于表示ListView中每个CheckboxListTile的选中状态
 
   final TextEditingController _textEditingController = TextEditingController();
 
-  List<Map<String, dynamic>> data = [
+  List<Map<String, dynamic>> topData = [
     {
       'img': 'assets/images/MONOPOLY GO.jpg',
       'text': 'MONOPOLY GO',
@@ -43,10 +42,35 @@ class _GamesState extends State<Games> {
     },
     // ...
   ];
-  // final List<bool> _checkedList = List.generate(
-  //   data.length,
-  //   (index) => false,
-  // );
+
+  List<Map<String, dynamic>> otherData = [
+    {
+      'img': 'assets/images/Call of Duty.jpg',
+      'text': 'Call of Duty',
+    },
+    {
+      'img': 'assets/images/Gardenscapes.jpg',
+      'text': 'Gardenscapes',
+    },
+    {
+      'img': 'assets/images/Magic Tiles.jpg',
+      'text': 'Magic Tiles',
+    },
+    {
+      'img': 'assets/images/Roblox.jpg',
+      'text': 'Roblox',
+    },
+    // ...
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _checkedList = List.generate(
+      topData.length,
+      (index) => false,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,14 +129,13 @@ class _GamesState extends State<Games> {
                       title: const Text('Select all'),
                       value: _isChecked,
                       onChanged: (value) {
-                        print('11');
-                        print('111111$value');
-                        _isChecked = value;
-                        print('_isChecked$_isChecked');
-
-                        // for (int i = 0; i < _checkedList.length; i++) {
-                        //   _checkedList[i] = value;
-                        // }
+                        setState(() {
+                          _isChecked = value!;
+                          // 当Checkbox的选中状态改变时，将ListView中每个CheckboxListTile的选中状态也改变
+                          for (int i = 0; i < _checkedList.length; i++) {
+                            _checkedList[i] = value;
+                          }
+                        });
                       },
                     ),
                   ),
@@ -131,23 +154,22 @@ class _GamesState extends State<Games> {
                         color: const Color.fromARGB(255, 248, 248, 248),
                       ),
                       child: ListView.builder(
-                        itemCount: data.length,
+                        itemCount: topData.length,
                         itemBuilder: (BuildContext context, int index) {
                           return Column(
                             children: [
                               ListTile(
                                 leading: Image.asset(
-                                  data[index]['img'],
+                                  topData[index]['img'],
                                   width: 40, // 设置图片宽度
                                   height: 40,
                                 ),
-                                title: Text(data[index]['text']),
+                                title: Text(topData[index]['text']),
                                 trailing: Checkbox(
                                   value: _checkedList[index],
                                   onChanged: (value) {
                                     setState(() {
-                                      print('点了');
-                                      print('点了$value');
+                                      _checkedList[index] = value!;
                                     });
                                   },
                                 ),
@@ -158,6 +180,54 @@ class _GamesState extends State<Games> {
                         },
                       ),
                     ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 16, top: 8, bottom: 8),
+                    child: Text(
+                      'Other',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        color: const Color.fromARGB(255, 248, 248, 248),
+                      ),
+                      child: ListView.builder(
+                        itemCount: otherData.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Column(
+                            children: [
+                              ListTile(
+                                leading: Image.asset(
+                                  otherData[index]['img'],
+                                  width: 40, // 设置图片宽度
+                                  height: 40,
+                                ),
+                                title: Text(otherData[index]['text']),
+                                trailing: Checkbox(
+                                  value: _checkedList[index],
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _checkedList[index] = value!;
+                                    });
+                                  },
+                                ),
+                              ),
+                              const Divider(),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 8),
+                  ),
+                  const Center(
+                    child: Text('Dont see what youer looking for?'),
                   ),
                 ],
               ),

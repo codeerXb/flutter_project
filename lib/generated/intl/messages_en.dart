@@ -22,6 +22,12 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "warningSnNotSame": MessageLookupByLibrary.simpleMessage(
+            "Please connect the current device to a WiFi network before proceeding"),
+        "deviceException":
+            MessageLookupByLibrary.simpleMessage("Device Exception"),
+        "reconnectDevice":
+            MessageLookupByLibrary.simpleMessage("Please reconnect device"),
         "APIsolation": MessageLookupByLibrary.simpleMessage("AP Isolation"),
         "ASCII": MessageLookupByLibrary.simpleMessage(
             "ASCII characters of 8 to 63 characters"),
@@ -218,6 +224,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "day": MessageLookupByLibrary.simpleMessage("Day"),
         "delPro": MessageLookupByLibrary.simpleMessage(
             "Are you sure you want to delete"),
+        "accessRefused":
+            MessageLookupByLibrary.simpleMessage("Remote access refused"),
         "delete": MessageLookupByLibrary.simpleMessage("Delete"),
         "detectionServer":
             MessageLookupByLibrary.simpleMessage("Input detection server"),

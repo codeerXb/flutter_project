@@ -215,12 +215,7 @@ class _NetModeState extends State<NetMode> {
       List<String> loginInfo;
       if (data['username'] == 'superadmin' &&
           data['password'] == base64Encode(utf8.encode('admin123'))) {
-        loginInfo = [
-          data['username'],
-          data['password'],
-          '管理员',
-          'http://c.hiphotos.baidu.com/image/pic/item/9c16fdfaaf51f3de1e296fa390eef01f3b29795a.jpg'
-        ];
+        loginInfo = [data['username'], data['password'], '', ''];
         sharedAddAndUpdate("loginInfo", List, loginInfo); //把登录信息保存到本地
       }
     }

@@ -50,11 +50,51 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `Please connect the current device to a WiFi network before proceeding`
+  String get warningSnNotSame {
+    return Intl.message(
+      'Please connect the current device to a WiFi network before proceeding',
+      name: 'warningSnNotSame',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Are you sure you want to delete`
   String get delPro {
     return Intl.message(
       'Are you sure you want to delete',
       name: 'delPro',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Device Exception`
+  String get deviceException {
+    return Intl.message(
+      'Device Exception',
+      name: 'deviceException',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please reconnect device`
+  String get reconnectDevice {
+    return Intl.message(
+      'Please reconnect device',
+      name: 'reconnectDevice',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Remote access refused`
+  String get accessRefused {
+    return Intl.message(
+      'Remote access refused',
+      name: 'accessRefused',
       desc: '',
       args: [],
     );

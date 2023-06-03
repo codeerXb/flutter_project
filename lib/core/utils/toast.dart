@@ -57,9 +57,9 @@ class ToastUtils {
   /// successCallback:  确定回调
   /// cancelCallback:  取消回调
   static void showDialogPopup(BuildContext context, String contentDetail,
-      {String title = "提示",
-      String leftBtnText = "取消",
-      String rightBtnText = "确定",
+      {String title = "Hint",
+      String leftBtnText = "cancel",
+      String rightBtnText = "confirm",
       Function? successCallback,
       Function? cancelCallback}) {
     showDialog(
@@ -75,27 +75,29 @@ class ToastUtils {
               child: Text(contentDetail),
             ),
             actions: [
-              TextButton(
-                child: Text(
-                  leftBtnText,
-                  style: const TextStyle(color: Colors.grey),
+              if (leftBtnText != "")
+                TextButton(
+                  child: Text(
+                    leftBtnText,
+                    style: const TextStyle(color: Colors.grey),
+                  ),
+                  onPressed: () {
+                    Get.back();
+                    cancelCallback == null
+                        ? debugPrint("没有传递回调函数")
+                        : cancelCallback();
+                  },
                 ),
-                onPressed: () {
-                  Get.back();
-                  cancelCallback == null
-                      ? debugPrint("没有传递回调函数")
-                      : cancelCallback();
-                },
-              ),
-              TextButton(
-                child: Text(rightBtnText),
-                onPressed: () {
-                  Get.back();
-                  successCallback == null
-                      ? debugPrint("没有传递回调函数")
-                      : successCallback();
-                },
-              ),
+              if (rightBtnText != "")
+                TextButton(
+                  child: Text(rightBtnText),
+                  onPressed: () {
+                    Get.back();
+                    successCallback == null
+                        ? debugPrint("没有传递回调函数")
+                        : successCallback();
+                  },
+                ),
             ],
           );
         });
@@ -103,7 +105,7 @@ class ToastUtils {
 
   /// 加载框 关闭调用dismissAllToast()
   static void showLoading(
-      {String msg = "加载中...",
+      {String msg = "loading...",
       Color backgroundColor = const Color(0xff000000),
       Color fontColor = const Color(0xffffffff),
       Duration duration = const Duration(seconds: 30)}) {

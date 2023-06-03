@@ -1,4 +1,8 @@
 {
+  "warningSnNotSame":"Please connect the current device to a Wi-Fi network before proceeding",
+  "deviceException":"Device Exception",
+  "reconnectDevice":"Please reconnect device",
+  "accessRefused": "Remote access refused",
   "delPro": "Are you sure you want to delete",
   "wifiMapping": "Wi-Fi Mapping",
   "loginFailed": "Login Failed",

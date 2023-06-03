@@ -22,6 +22,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "warningSnNotSame":
+            MessageLookupByLibrary.simpleMessage("请连接当前设备wifi后再操作"),
         "APIsolation": MessageLookupByLibrary.simpleMessage("AP隔离"),
         "ASCII": MessageLookupByLibrary.simpleMessage("8~63位ASCII字符"),
         "Administratorlogin": MessageLookupByLibrary.simpleMessage("管理员登录"),
@@ -176,6 +178,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "date": MessageLookupByLibrary.simpleMessage("天"),
         "day": MessageLookupByLibrary.simpleMessage("日"),
         "delPro": MessageLookupByLibrary.simpleMessage("是否确定删除"),
+        "accessRefused": MessageLookupByLibrary.simpleMessage("远程拒绝访问"),
         "delete": MessageLookupByLibrary.simpleMessage("删除"),
         "detectionServer": MessageLookupByLibrary.simpleMessage("输入检测服务器"),
         "device": MessageLookupByLibrary.simpleMessage("接入设备"),

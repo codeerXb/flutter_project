@@ -1,4 +1,8 @@
 {
+  "warningSnNotSame":"请连接当前设备Wi-Fi后再操作",
+  "deviceException":"设备异常",
+  "reconnectDevice":"请重新连接设备",
+  "accessRefused": "远程拒绝访问",
   "delPro": "是否确定删除",
   "wifiMapping": "Wi-Fi覆盖图",
   "loginFailed": "登录失败",

@@ -209,27 +209,36 @@ class _EquInfoState extends State<EquInfo> {
                                   ? ubootVersionValue
                                   : equinfoData.systemVersionUboot.toString(),
                             )),
-                            BottomLine(
-                                rowtem: RowContainer(
-                              leftText: S.of(context).SerialNumber,
-                              righText: serialNumberValue.isNotEmpty
-                                  ? serialNumberValue
-                                  : equinfoData.systemVersionSn.toString(),
-                            )),
-                            BottomLine(
-                                rowtem: RowContainer(
-                              leftText: 'IMEI',
-                              righText: imeiValue.isNotEmpty
-                                  ? imeiValue
-                                  : equinfoData.lteImei.toString(),
-                            )),
+                            // BottomLine(
+                            //     rowtem: RowContainer(
+                            //   leftText: S.of(context).SerialNumber,
+                            //   righText: serialNumberValue.isNotEmpty
+                            //       ? serialNumberValue
+                            //       : equinfoData.systemVersionSn.toString(),
+                            // )),
+                            // BottomLine(
+                            //     rowtem: RowContainer(
+                            //   leftText: 'IMEI',
+                            //   righText: imeiValue.isNotEmpty
+                            //       ? imeiValue
+                            //       : equinfoData.lteImei.toString(),
+                            // )),
+                            // Container(
+                            //   padding: EdgeInsets.only(top: 20.w),
+                            //   child: RowContainer(
+                            //     leftText: 'IMSI',
+                            //     righText: equinfoData.lteImsi == null
+                            //         ? equinfoData.lteImsi.toString()
+                            //         : '- -',
+                            //   ),
+                            // )
                             Container(
                               padding: EdgeInsets.only(top: 20.w),
                               child: RowContainer(
-                                leftText: 'IMSI',
-                                righText: equinfoData.lteImsi == null
-                                    ? equinfoData.lteImsi.toString()
-                                    : '- -',
+                                leftText: S.of(context).SerialNumber,
+                                righText: serialNumberValue.isNotEmpty
+                                    ? serialNumberValue
+                                    : equinfoData.systemVersionSn.toString(),
                               ),
                             )
                           ],

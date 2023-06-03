@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_template/pages/Ethernet/net/net_set.dart';
 import 'package:flutter_template/pages/get_test/index.dart';
 import 'package:flutter_template/pages/get_equipment/index.dart';
-import 'package:flutter_template/pages/login/wan_login.dart';
 import 'package:flutter_template/pages/netMode/netMode.dart';
 import 'package:flutter_template/pages/net_status/connect_device/index.dart';
 import 'package:flutter_template/pages/odu/index.dart';
@@ -193,9 +192,6 @@ class GlobalRouter {
     // 用户登录（云平台登录）
     '/user_login': (BuildContext context, {Object? args}) => const UserLogin(),
 
-     // 用户登录（wan）
-    '/wan_login': (BuildContext context, {Object? args}) => const WanLogin(),
-
     // 用户注册（云平台注册）
     '/user_register': (BuildContext context, {Object? args}) =>
         const UserRegister(),
@@ -203,11 +199,12 @@ class GlobalRouter {
     '/forget_password': (BuildContext context, {Object? args}) =>
         const ForgetPassword(),
     // 接入设备
-    '/connected_device': (BuildContext context, {Object? args}) => const ConnectedDevice(),
-    // 视频
-    '/video_play': (BuildContext context, {Object? args}) => const VideoPlay(),
-    // 图片
-    '/img': (BuildContext context, {Object? args}) => const SwiperPage(),
+    '/connected_device': (BuildContext context, {Object? args}) =>
+        const ConnectedDevice(),
+    // // 视频
+    // '/video_play': (BuildContext context, {Object? args}) => const VideoPlay(),
+    // // 图片
+    // '/img': (BuildContext context, {Object? args}) => const SwiperPage(),
     // 家长控制
     '/parental_control': (BuildContext context, {Object? args}) =>
         const ParentalControl(),

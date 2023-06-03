@@ -153,21 +153,18 @@ class _LoginState extends State<Login> {
     } else {
       Map<String, dynamic> data = {
         'username': _account.trim(),
-        'password': base64Encode(utf8.encode(_password.trim().trim())),
+        'password': _password.trim().trim(),
         'rememberMe': 'true',
         'ismoble': 'ismoble'
       };
       List<String> loginInfo;
-      if (data['username'] == 'superadmin' &&
-          data['password'] == base64Encode(utf8.encode('admin123'))) {
-        loginInfo = [
-          data['username'],
-          data['password'],
-          '管理员',
-          'http://c.hiphotos.baidu.com/image/pic/item/9c16fdfaaf51f3de1e296fa390eef01f3b29795a.jpg'
-        ];
-        sharedAddAndUpdate("loginInfo", List, loginInfo); //把登录信息保存到本地
-      }
+      loginInfo = [
+        data['username'],
+        data['password'],
+        '管理员',
+        'http://c.hiphotos.baidu.com/image/pic/item/9c16fdfaaf51f3de1e296fa390eef01f3b29795a.jpg'
+      ];
+      sharedAddAndUpdate("loginInfo", List, loginInfo); //把登录信息保存到本地
     }
   }
 

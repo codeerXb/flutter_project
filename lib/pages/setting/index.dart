@@ -1,7 +1,10 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_template/config/base_config.dart';
+import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/http/http_app.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
@@ -9,9 +12,12 @@ import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:flutter_template/model/user_model.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
+import 'package:flutter_template/pages/login/model/equipment_data.dart';
+import 'package:flutter_template/pages/login/model/exception_login.dart';
 import 'package:flutter_template/pages/setting/user_card.dart';
 import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
 import 'package:get/get.dart';
+import 'package:oktoast/oktoast.dart';
 import '../../core/utils/shared_preferences_util.dart';
 import '../../core/utils/string_util.dart';
 import '../../core/widget/custom_app_bar.dart';
@@ -34,8 +40,20 @@ class _SettingState extends State<Setting> {
   /// 用户信息
   UserModel userModel = UserModel();
   final LoginController loginController = Get.put(LoginController());
+  final GlobalKey _formKey = GlobalKey<FormState>();
+  // 点击空白  关闭键盘 时传的一个对象
+  FocusNode blankNode = FocusNode();
+  String _account = 'superadmin';
+  String _password = 'admin';
+  final bool _isObscure = true;
+  EquipmentData equipmentData = EquipmentData();
+  bool _isLoading = false;
+
+  Color _accountBorderColor = Colors.white;
+  Color _passwordBorderColor = Colors.white;
   //验证云平台登录
   String _User = '';
+
   @override
   void initState() {
     super.initState();
@@ -43,11 +61,7 @@ class _SettingState extends State<Setting> {
       if (StringUtil.isNotEmpty(data)) {
         List<String> loginInfo = data as List<String>;
         setState(() {
-          userModel = UserModel(
-              deptId: '11111',
-              deptName: '研发部',
-              phone: '13258965478',
-              email: '852369745@qq.com');
+          userModel = UserModel(deptId: '', deptName: '', phone: '', email: '');
           userModel.nickName = loginInfo[2];
           userModel.avatar = loginInfo[3];
         });
@@ -64,6 +78,273 @@ class _SettingState extends State<Setting> {
         sn = res.toString();
       });
     }));
+  }
+
+  void appLogin() {
+    setState(() {
+      _isLoading = true;
+    });
+    Map<String, dynamic> data = {
+      'username': _account.trim(),
+      'password': _password.trim(),
+    };
+    XHttp.get('/action/appLogin', data).then(
+      (res) {
+        debugPrint('------登录------');
+        debugPrint(res);
+        // 以 { 或者 [ 开头的
+        RegExp exp = RegExp(r'^[{[]');
+        if (res != null && exp.hasMatch(res)) {
+          var localLoginRes = json.decode(res.toString());
+          printInfo(info: '登录返回$localLoginRes');
+          if (localLoginRes['code'] == 200) {
+            loginController.setToken(localLoginRes['token']);
+            loginController.setSession(localLoginRes['sessionid']);
+            String userInfo = jsonEncode({
+              "user": _account,
+              "pwd": base64Encode(
+                utf8.encode(_password),
+              )
+            });
+            sharedAddAndUpdate(
+              sn.toString(),
+              String,
+              userInfo,
+            );
+            sharedAddAndUpdate("token", String, localLoginRes['token']);
+            sharedAddAndUpdate("session", String, localLoginRes['sessionid']);
+            Get.back();
+          }
+        }
+      },
+    ).catchError(
+      (err) {
+        if (err.type == DioErrorType.connectTimeout) {
+          debugPrint('timeout');
+          ToastUtils.error(S.current.contimeout);
+        }
+        if (err.response != null) {
+          var resjson = json.decode(err.response.toString());
+          var errRes = ExceptionLogin.fromJson(resjson);
+
+          if (errRes.success == false) {
+            if (errRes.code == 201) {
+              Get.snackbar(
+                'Warnning',
+                '${S.current.passError}${5 - int.parse(errRes.webLoginFailedTimes.toString())}',
+              );
+              // ToastUtils.toast(
+              //     '${S.current.passError}${5 - int.parse(errRes.webLoginFailedTimes.toString())}');
+            } else if (errRes.code == 202) {
+              Get.snackbar('Warnning',
+                  '${S.current.locked}${errRes.webLoginRetryTimeout}${S.current.unlock}');
+              // ToastUtils.error(
+              //     '${S.current.locked}${errRes.webLoginRetryTimeout}${S.current.unlock}');
+            }
+          }
+          debugPrint('登录失败：${errRes.code}');
+        }
+      },
+    ).whenComplete(() {
+      setState(() {
+        _isLoading = false;
+      });
+    });
+  }
+
+  ///执行提交方法
+  void onSubmit(BuildContext context) {
+    closeKeyboard(context);
+    if (_account.trim().isEmpty) {
+      ToastUtils.toast(S.current.accountEmpty);
+    } else if (_password.trim().isEmpty) {
+      ToastUtils.toast(S.current.passwordEmpty);
+    } else {
+      Map<String, dynamic> data = {
+        'username': _account.trim(),
+        'password': _password.trim().trim(),
+        'rememberMe': 'true',
+        'ismoble': 'ismoble'
+      };
+      List<String> loginInfo;
+      loginInfo = [
+        data['username'],
+        data['password'],
+        '管理员',
+        'http://c.hiphotos.baidu.com/image/pic/item/9c16fdfaaf51f3de1e296fa390eef01f3b29795a.jpg'
+      ];
+      sharedAddAndUpdate("loginInfo", List, loginInfo); //把登录信息保存到本地
+    }
+  }
+
+  ///账号
+  Container buildAccountTextField() {
+    return Container(
+      padding: EdgeInsets.only(top: 20.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: EdgeInsets.only(top: 34.h),
+            decoration: const BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(color: Color(0XFF302F4F), width: 0.0)),
+            ),
+            child: TextFormField(
+                initialValue: _account,
+                style:
+                    TextStyle(fontSize: 32.sp, color: const Color(0xff051220)),
+                decoration: InputDecoration(
+                  icon: const Icon(Icons.perm_identity),
+                  // 表单提示信息
+                  hintText: S.current.passwordLabel,
+                  hintStyle: TextStyle(
+                      fontSize: 32.sp, color: const Color(0xff737A83)),
+                  // 取消自带的下边框
+                  border: InputBorder.none,
+                ),
+                onSaved: (String? value) => _account = value!,
+                onChanged: (String value) => _account = value,
+                onTap: () {
+                  setState(() {
+                    _passwordBorderColor = Colors.white;
+                    _accountBorderColor = const Color(0xff2692F0);
+                  });
+                },
+                inputFormatters: [
+                  LengthLimitingTextInputFormatter(50),
+                ]),
+          ),
+        ],
+      ),
+    );
+  }
+
+  ///密码
+  Container buildPasswordTextField() {
+    return Container(
+      padding: EdgeInsets.only(top: 34.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Text(
+          //   "密码",
+          //   style: TextStyle(fontSize: 32.sp, color: const Color(0xff737A83)),
+          // ),
+          Row(
+            children: [
+              Container(
+                decoration: const BoxDecoration(
+                  border: Border(
+                      bottom: BorderSide(color: Color(0XFF302F4F), width: 0.0)),
+                ),
+                child: SizedBox(
+                  width: 1.sw - 258.w,
+                  child: TextFormField(
+                      initialValue: _password,
+                      style: TextStyle(
+                          fontSize: 32.sp, color: const Color(0xff051220)),
+                      decoration: InputDecoration(
+                        icon: const Icon(Icons.lock),
+                        // 表单提示信息
+                        hintText: S.current.passwordLabel,
+                        hintStyle: TextStyle(
+                            fontSize: 32.sp, color: const Color(0xff737A83)),
+                        // 取消自带的下边框
+                        border: InputBorder.none,
+                      ),
+                      obscureText: _isObscure,
+                      onSaved: (String? value) => _password = value!,
+                      onChanged: (String value) => _password = value,
+                      onTap: () {
+                        setState(() {
+                          _accountBorderColor = Colors.white;
+                          _passwordBorderColor = const Color(0xff2692F0);
+                        });
+                      },
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(50),
+                      ]),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 登录&取消按钮
+  Row buildLoginButton() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        SizedBox(
+          width: 200.w,
+          child: ElevatedButton(
+            style: ButtonStyle(
+              padding: MaterialStateProperty.all(
+                EdgeInsets.only(top: 28.w, bottom: 28.w),
+              ),
+              shape: MaterialStateProperty.all(const StadiumBorder()),
+              backgroundColor: MaterialStateProperty.all(
+                  const Color.fromARGB(255, 72, 72, 72)),
+            ),
+            onPressed: () {
+              Navigator.of(context).pop(); // 关闭弹窗
+            },
+            child: Text(S.current.cancel),
+          ),
+        ),
+        SizedBox(
+          width: 200.w,
+          child: ElevatedButton(
+            style: ButtonStyle(
+              padding: MaterialStateProperty.all(
+                EdgeInsets.only(top: 28.w, bottom: 28.w),
+              ),
+              shape: MaterialStateProperty.all(const StadiumBorder()),
+              backgroundColor: MaterialStateProperty.all(
+                  const Color.fromARGB(255, 30, 104, 233)),
+            ),
+            onPressed: () {
+              printInfo(info: '登陆了');
+              if ((_formKey.currentState as FormState).validate()) {
+                onSubmit(context);
+                appLogin();
+              }
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (_isLoading)
+                  const SizedBox(
+                    width: 28,
+                    height: 20,
+                    child: Padding(
+                      padding: EdgeInsets.only(right: 8),
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      ),
+                    ),
+                  ),
+                Text(
+                  S.of(context).login,
+                  style: TextStyle(
+                      fontSize: 32.sp, color: const Color(0xffffffff)),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// 点击空白  关闭输入键盘
+  void closeKeyboard(BuildContext context) {
+    FocusScope.of(context).requestFocus(blankNode);
   }
 
   @override
@@ -584,12 +865,144 @@ class _SettingState extends State<Setting> {
   }
 
   /// WAN设置
+  /// 点击回调
+  clickWanSettings() async {
+    // 本地请求参数，请求获取sn
+    Map<String, dynamic> data = {
+      'method': 'obj_get',
+      'param': '["systemVersionSn"]',
+    };
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Stack(
+        children: const [
+          Opacity(
+            opacity: 0.3,
+            child: ModalBarrier(dismissible: false, color: Colors.black),
+          ),
+          Center(
+            child: CircularProgressIndicator(),
+          ),
+        ],
+      ),
+    );
+    try {
+      var res = await XHttp.get('/pub/pub_data.html', data);
+      var jsonRes = json.decode(res.toString());
+      // 得到jsonRes.systemVersionSn,比对本地存储的sn
+      sharedGetData('deviceSn', String).then((value) {
+        if (value == jsonRes['systemVersionSn']) {
+          // 本地存储设备的sn和设备返回的sn相同的时候
+          // 尝试设备登录
+          // 获取本地存取的设备用户名密码
+          sharedGetData(sn, String).then((value) async {
+            if (value != null) {
+              var userInfo = jsonDecode(value.toString());
+              var user = userInfo["user"];
+              var pwd = utf8.decode(base64Decode(userInfo["pwd"]));
+              var loginRes = await XHttp.get('/action/appLogin', {
+                'username': user,
+                'password': pwd,
+              });
+              var loginResJson = jsonDecode(loginRes.toString());
+              if (loginResJson['code'] == 200) {
+                // 存储token和session
+                loginController.setSession(loginResJson['sessionid']);
+                sharedAddAndUpdate(
+                    "session", String, loginResJson['sessionid']);
+                loginController.setToken(loginResJson['token']);
+                sharedAddAndUpdate("token", String, loginResJson['token']);
+                // 跳转到wan-setting界面
+                Get.toNamed('/wan_settings');
+              }
+            }
+          }).catchError((err) {
+            // 弹窗登录框
+            showLoginDialog();
+          });
+        } else {
+          // sn不相同的情况
+          // 提示“请连接设备WiFi后再操作”
+          ToastUtils.showDialogPopup(
+            context,
+            S.current.warningSnNotSame,
+            title: S.current.hint,
+            leftBtnText: "",
+            rightBtnText: S.current.confirm,
+          );
+        }
+      }).catchError((err) {
+        debugPrint(err.toString());
+        // 如果没有sn，就是异常状况，需要让用户重新连接设备
+        Get.snackbar(S.current.deviceException, S.current.reconnectDevice);
+        Get.offNamed('/get_equipment');
+      });
+    } catch (e) {
+      // 失败提示remote access refused
+      ToastUtils.error(S.current.accessRefused);
+      debugPrint(e.toString());
+    } finally {
+      Navigator.of(context).pop(); // 关闭弹窗
+    }
+  }
+
+  Future<dynamic> showLoginDialog() {
+    return showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        child: InkWell(
+          onTap: () => closeKeyboard(context),
+          child: SingleChildScrollView(
+            child: Container(
+              padding: EdgeInsets.only(
+                  left: 52.w, top: 40.w, right: 52.w, bottom: 40.w),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: <Widget>[
+                    Text(
+                      S.current.Administratorlogin,
+                      style: TextStyle(
+                          fontSize: 48.sp,
+                          color: const Color.fromARGB(255, 30, 104, 233)),
+                    ),
+                    Padding(padding: EdgeInsets.only(top: 10.w)),
+                    Text(
+                      '${S.of(context).currentDeive} $sn',
+                      style: TextStyle(
+                          fontSize: 24.sp, color: const Color(0xFF373543)),
+                    ),
+
+                    /// 账号
+                    buildAccountTextField(),
+
+                    /// 密码
+                    buildPasswordTextField(),
+                    Padding(padding: EdgeInsets.only(top: 102.w)),
+
+                    /// 登录 & 取消
+                    buildLoginButton(),
+                    Padding(padding: EdgeInsets.only(top: 20.w)),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget wanSettings() {
     return CommonWidget.simpleWidgetWithMine(
         title: S.of(context).wanSettings,
         icon: const Image(image: AssetImage('assets/images/wan.png')),
         callBack: () {
-          Get.toNamed("/wan_settings");
+          clickWanSettings();
         });
   }
 

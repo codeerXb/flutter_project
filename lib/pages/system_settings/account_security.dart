@@ -159,7 +159,6 @@ class _AccountSecurityState extends State<AccountSecurity> {
         var d = json.decode(res.toString());
         accountSetData = AccountSettingData.fromJson(d);
         if (accountSetData.success == true) {
-          loginout();
           ToastUtils.toast(S.current.success);
         } else {
           ToastUtils.toast(accountSetData.msg.toString());
@@ -173,18 +172,9 @@ class _AccountSecurityState extends State<AccountSecurity> {
     });
   }
 
-  void loginout() {
-    // 这里还需要调用后台接口的方法
-
-    sharedDeleteData("loginInfo");
-    sharedClearData();
-    Get.offAllNamed("/get_equipment");
-  }
-
   late bool _isLoading = false;
   // 提交
   Future<void> _saveData() async {
-  
     setState(() {
       _isLoading = true;
     });

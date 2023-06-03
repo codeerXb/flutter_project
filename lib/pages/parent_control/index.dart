@@ -332,7 +332,11 @@ class _SwiperCardState extends State<SwiperCard> {
   @override
   void initState() {
     super.initState();
-    MACAddress.value = deviceList[0]['MACAddress'];
+    if (deviceList[0].containsKey('connection')) {
+      MACAddress.value = deviceList[0]['MACAddress'];
+    } else {
+      MACAddress.value = deviceList[0]['MacAddress'];
+    }
     name = deviceList[0]['name'];
   }
 

@@ -190,11 +190,10 @@ class OnlinePage extends StatelessWidget {
                           //title下方显示的内容
                           subtitle: Row(
                             children: [
-                              Text(deviceList[index]['connection']),
                               Text(
-                                deviceList[index]['connection'] == 'LAN'
-                                    ? '   LAN'
-                                    : '   Wi-Fi',
+                                deviceList[index].containsKey('connection')
+                                    ? '${deviceList[index]['connection']}   Wi-Fi'
+                                    : 'LAN',
                               ),
                             ],
                           )),

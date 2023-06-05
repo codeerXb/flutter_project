@@ -39,9 +39,11 @@ class _NetStatusState extends State<NetStatus> {
   Future<String?> getDeviceName() async {
     var res = await Request().getEquipmentData();
     printInfo(info: '设备名字：${res.systemProductModel}');
-    setState(() {
-      name = res.systemProductModel;
-    });
+    if (mounted && res.systemProductModel != null) {
+      setState(() {
+        name = res.systemProductModel;
+      });
+    }
     return res.systemProductModel;
   }
 
@@ -99,18 +101,16 @@ class _NetStatusState extends State<NetStatus> {
 
     sharedGetData('deviceSn', String).then(((res) {
       printInfo(info: 'deviceSn$res');
-      setState(() {
-        sn = res.toString();
-        //状态为local 请求本地  状态为cloud  请求云端
-        printInfo(info: 'state--${loginController.login.state}');
-        if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
-          if (mounted) {
+      if (mounted) {
+        setState(() {
+          sn = res.toString();
+          //状态为local 请求本地  状态为cloud  请求云端
+          printInfo(info: 'state--${loginController.login.state}');
+          if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
             getBasicInfo();
             getTROnlineCount(sn);
           }
-        }
-        if (loginController.login.state == 'local') {
-          if (mounted) {
+          if (loginController.login.state == 'local') {
             // 获取流量
             getUsedFlow();
             // 获取设备列表并更新在线数量
@@ -118,8 +118,8 @@ class _NetStatusState extends State<NetStatus> {
             // 获取网络连接状态和上下行速率并更新
             updateStatus();
           }
-        }
-      });
+        });
+      }
     }));
 
     if (mounted) {
@@ -207,15 +207,16 @@ class _NetStatusState extends State<NetStatus> {
     try {
       var res = await Request().getACSNode(parameterNames, sn);
       var jsonObj = jsonDecode(res);
-      if (!mounted) return;
-      setState(() {
-        connectStatus = jsonObj['data']['InternetGatewayDevice']['WEB_GUI']
-            ['Ethernet']['Status']['ConnectStatus']['_value'];
+      if (mounted && jsonObj['data'] != null) {
+        setState(() {
+          connectStatus = jsonObj['data']['InternetGatewayDevice']['WEB_GUI']
+              ['Ethernet']['Status']['ConnectStatus']['_value'];
 
-        // 设定名字为产品类型
-        name = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Overview"]
-            ['VersionInfo']['ProductModel']['_value'];
-      });
+          // 设定名字为产品类型
+          name = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Overview"]
+              ['VersionInfo']['ProductModel']['_value'];
+        });
+      }
     } catch (e) {
       debugPrint('获取信息失败：${e.toString()}');
     }
@@ -529,534 +530,551 @@ class _NetStatusState extends State<NetStatus> {
 
   @override
   Widget build(BuildContext context) {
-    return loadingDevice
-        ? const Center(child: CircularProgressIndicator())
-        : Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                  alignment: Alignment.topCenter,
-                  image: AssetImage(
-                    'assets/images/picture_home_bg.png',
-                  ),
-                  fit: BoxFit.fitWidth),
-            ),
-            child: Scaffold(
-              appBar: AppBar(
-                elevation: 0,
-                // 不自动添加返回键
-                automaticallyImplyLeading: false,
-                title: InkWell(
-                  overlayColor:
-                      const MaterialStatePropertyAll(Colors.transparent),
-                  // 下拉icon
-                  child: SizedBox(
-                    width: 1.sw,
-                    child: DropdownButton(
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 36.sp,
-                      ),
-                      dropdownColor: Colors.black.withAlpha(180), // 设置下拉框的背景颜色
-                      underline: Container(), //去除下划线
-                      value: currentDevice,
-                      // icon: Icon(
-                      //   FontAwesomeIcons.chevronDown,
-                      //   size: 30.w,
-                      //   color: Colors.white,
-                      // ),
-                      iconEnabledColor: Colors.white,
-                      items: optionsList.map((option) {
-                        // bool isSelected = option == currentDevice;
-                        return DropdownMenuItem(
-                          value: option,
-                          child: Row(
-                            children: [
-                              Text(option),
-                            ],
-                          ),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          loading = true;
-                          currentDevice = value.toString();
-                          String? deviceSn;
-                          for (var item in deviceList) {
-                            if (item['type'] == value.toString()) {
-                              deviceSn = item['deviceSn'];
-                            }
-                          }
-                          // 为了更新新的设备
-                          Get.offNamed("/get_equipment");
-                          Get.offNamed("/home");
-                          loginController.setUserEquipment(
-                              'deviceSn', deviceSn.toString());
-                          sharedAddAndUpdate(
-                              "deviceSn", String, deviceSn.toString());
-                          loginController.setState('cloud');
-                          ToastUtils.toast('Save success');
-                          loading = false;
-                        });
-                      },
-                      onTap: (() {
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          setState(() {
-                            isShowList = !isShowList;
-                          });
-                        });
-                      }),
-                    ),
-                  ),
-                ),
-                backgroundColor: Colors.transparent,
+    if (loadingDevice) {
+      return const Center(child: CircularProgressIndicator());
+    } else {
+      return Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+              alignment: Alignment.topCenter,
+              image: AssetImage(
+                'assets/images/picture_home_bg.png',
               ),
-              backgroundColor: Colors.transparent,
-              body: loading
-                  ? const Center(child: CircularProgressIndicator())
-                  : GestureDetector(
-                      onTap: () => closeKeyboard(context),
-                      behavior: HitTestBehavior.opaque,
-                      child: Container(
-                        padding: EdgeInsets.only(left: 30.w, right: 30.0.w),
-                        decoration:
-                            const BoxDecoration(color: Color(0xFFF0F0F0)),
-                        height: 1000,
-                        child: Stack(
-                          children: [
-                            Container(
-                              width: 1.sw,
-                              height: 200.h,
-                              color: Colors.transparent,
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(top: 20.w),
-                              child: ListView(
-                                children: [
-                                  // const Center(
-                                  //     child: Text(
-                                  //   'Mapping out your Wi-Fi Coverage',
-                                  //   style:
-                                  //       TextStyle(fontWeight: FontWeight.w600),
-                                  // )),
-                                  // 热力图
-                                  Container(
-                                    height: 600.w,
-                                    margin: EdgeInsets.only(bottom: 20.w),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(18.w),
+              fit: BoxFit.fitWidth),
+        ),
+        child: Scaffold(
+          appBar: AppBar(
+            elevation: 0,
+            // 不自动添加返回键
+            automaticallyImplyLeading: false,
+            title: InkWell(
+              overlayColor: const MaterialStatePropertyAll(Colors.transparent),
+              // 下拉icon
+              child: SizedBox(
+                width: 1.sw,
+                child: DropdownButton(
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 36.sp,
+                  ),
+                  dropdownColor: Colors.black.withAlpha(180), // 设置下拉框的背景颜色
+                  underline: Container(), //去除下划线
+                  value: currentDevice,
+                  // icon: Icon(
+                  //   FontAwesomeIcons.chevronDown,
+                  //   size: 30.w,
+                  //   color: Colors.white,
+                  // ),
+                  iconEnabledColor: Colors.white,
+                  items: optionsList.map((option) {
+                    // bool isSelected = option == currentDevice;
+                    return DropdownMenuItem(
+                      value: option,
+                      child: Row(
+                        children: [
+                          Text(option),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      loading = true;
+                      currentDevice = value.toString();
+                      String? deviceSn;
+                      for (var item in deviceList) {
+                        if (item['type'] == value.toString()) {
+                          deviceSn = item['deviceSn'];
+                        }
+                      }
+                      // 为了更新新的设备
+                      Get.offNamed("/get_equipment");
+                      Get.offNamed("/home");
+                      loginController.setUserEquipment(
+                          'deviceSn', deviceSn.toString());
+                      sharedAddAndUpdate(
+                          "deviceSn", String, deviceSn.toString());
+                      loginController.setState('cloud');
+                      ToastUtils.toast('Save success');
+                      loading = false;
+                    });
+                  },
+                  onTap: (() {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      setState(() {
+                        isShowList = !isShowList;
+                      });
+                    });
+                  }),
+                ),
+              ),
+            ),
+            backgroundColor: Colors.transparent,
+          ),
+          backgroundColor: Colors.transparent,
+          body: loading
+              ? const Center(child: CircularProgressIndicator())
+              : GestureDetector(
+                  onTap: () => closeKeyboard(context),
+                  behavior: HitTestBehavior.opaque,
+                  child: Container(
+                    padding: EdgeInsets.only(left: 30.w, right: 30.0.w),
+                    decoration: const BoxDecoration(color: Color(0xFFF0F0F0)),
+                    height: 1000,
+                    child: Stack(
+                      children: [
+                        Container(
+                          width: 1.sw,
+                          height: 200.h,
+                          color: Colors.transparent,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top: 20.w),
+                          child: ListView(
+                            children: [
+                              // const Center(
+                              //     child: Text(
+                              //   'Mapping out your Wi-Fi Coverage',
+                              //   style:
+                              //       TextStyle(fontWeight: FontWeight.w600),
+                              // )),
+                              // 热力图
+                              Container(
+                                height: 600.w,
+                                margin: EdgeInsets.only(bottom: 20.w),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(18.w),
+                                ),
+                                child: Stack(
+                                  children: [
+                                    Image.asset(
+                                      'assets/images/signalcover.jpg',
                                     ),
-                                    child: Stack(
+                                    // Positioned(
+                                    //   bottom: 45.w,
+                                    //   right: 10.w,
+                                    //   child: InkWell(
+                                    //     onTap: () {
+                                    //       Get.offNamed('/signal_cover');
+                                    //     },
+                                    //     child: const Icon(
+                                    //       Icons.edit,
+                                    //       color: Color.fromARGB(
+                                    //           255, 39, 61, 255),
+                                    //     ),
+                                    // //   ),
+                                    // ),
+                                  ],
+                                ),
+                              ),
+
+                              // 网络环境
+                              WhiteCard(
+                                  boxCotainer: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Text(
+                                    connectStatus == '1'
+                                        ? S.current.Connected
+                                        : S.current.ununited,
+                                    style: TextStyle(
+                                        fontSize: 30.sp,
+                                        color: const Color(0xff051220)),
+                                  ),
+                                  Column(
+                                    children: [
+                                      Text(
+                                        S.of(context).good,
+                                        style: TextStyle(
+                                            fontSize: 30.sp,
+                                            color: const Color.fromRGBO(
+                                                95, 141, 255, 1)),
+                                      ),
+                                      Text(
+                                        S.of(context).Environment,
+                                        style: TextStyle(
+                                            fontSize: 30.sp,
+                                            color: const Color.fromRGBO(
+                                                95, 141, 255, 1)),
+                                      ),
+                                    ],
+                                  ),
+                                  const Icon(
+                                    Icons.thumb_up,
+                                    size: 32,
+                                    color: Color.fromRGBO(95, 141, 255, 1),
+                                  )
+                                  // ElevatedButton(
+                                  //   onPressed: () {},
+                                  //   style: ButtonStyle(
+                                  //     shape: MaterialStateProperty.all(
+                                  //         const CircleBorder()),
+                                  //   ),
+                                  //   child: Column(
+                                  //       mainAxisAlignment:
+                                  //           MainAxisAlignment.center,
+                                  //       children: const [
+                                  //         Icon(
+                                  //           Icons.thumb_up,
+                                  //           size: 32,
+                                  //         )
+                                  //       ]),
+                                  // )
+                                ],
+                              )),
+                              //流量套餐
+                              // WhiteCard(
+                              //     boxCotainer: Row(
+                              //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              //   children: [
+                              //     Expanded(
+                              //       child: Column(
+                              //         children: [
+                              //           Text(
+                              //             '$usedFlowInt.$usedFlowDecimals',
+                              //             style: TextStyle(
+                              //                 fontSize: 30.sp,
+                              //                 color: const Color(0xff051220)),
+                              //           ),
+                              //           Text(
+                              //             S.of(context).used,
+                              //             style: TextStyle(
+                              //               fontSize: 28.sp,
+                              //               color: Colors.black54,
+                              //             ),
+                              //           ),
+                              //         ],
+                              //       ),
+                              //     ),
+                              //     ElevatedButton(
+                              //       style: ButtonStyle(
+                              //         shape: MaterialStateProperty.all(
+                              //             const CircleBorder()),
+                              //         minimumSize: MaterialStateProperty.all<Size>(
+                              //             Size(100.w, 100.w)),
+                              //       ),
+                              //       onPressed: () {
+                              //         Get.toNamed('/net_server_settings')
+                              //             ?.then((value) {
+                              //           setState(() {
+                              //             _comboLabel = value['type'] == 0
+                              //                 ? '${value['contain']}GB/${comboCycleLabel[value['cycle']]}'
+                              //                 : '${value['contain']}h/${comboCycleLabel[value['cycle']]}';
+                              //             _comboType = value['type'];
+                              //           });
+                              //         });
+                              //       },
+                              //       child: Column(
+                              //         mainAxisAlignment: MainAxisAlignment.center,
+                              //         children: [
+                              //           Text(
+                              //             S.of(context).traffic,
+                              //             textAlign: TextAlign.center,
+                              //             style: TextStyle(fontSize: 20.sp),
+                              //           ),
+                              //           Text(
+                              //             S.of(context).sets,
+                              //             textAlign: TextAlign.center,
+                              //             style: TextStyle(fontSize: 20.sp),
+                              //           ),
+                              //         ],
+                              //       ),
+                              //     ),
+                              //     Expanded(
+                              //       child: Column(
+                              //         children: [
+                              //           Text(
+                              //             '5 GB / ${S.current.month}',
+                              //             style: TextStyle(
+                              //                 fontSize: 30.sp,
+                              //                 color: const Color(0xff051220)),
+                              //           ),
+                              //           Text(
+                              //             S.of(context).trafficPackage,
+                              //             style: TextStyle(
+                              //               fontSize: 24.sp,
+                              //               color: Colors.black54,
+                              //             ),
+                              //           ),
+                              //         ],
+                              //       ),
+                              //     ),
+                              //   ],
+                              // )),
+                              //上传速率
+                              WhiteCard(
+                                  boxCotainer: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Expanded(
+                                    child: Column(
                                       children: [
-                                        Image.asset(
-                                          'assets/images/signalcover.jpg',
+                                        Text(
+                                          '$upKb$upUnit',
+                                          style: TextStyle(
+                                              fontSize: 30.sp,
+                                              color: const Color(0xff051220)),
                                         ),
-                                        // Positioned(
-                                        //   bottom: 45.w,
-                                        //   right: 10.w,
-                                        //   child: InkWell(
-                                        //     onTap: () {
-                                        //       Get.offNamed('/signal_cover');
-                                        //     },
-                                        //     child: const Icon(
-                                        //       Icons.edit,
-                                        //       color: Color.fromARGB(
-                                        //           255, 39, 61, 255),
-                                        //     ),
-                                        // //   ),
-                                        // ),
+                                        Text(
+                                          S.current.up,
+                                          style: TextStyle(
+                                            fontSize: 28.sp,
+                                            color: Colors.black54,
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ),
-
-                                  // 网络环境
-                                  WhiteCard(
-                                      boxCotainer: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      Text(
-                                        connectStatus == '1'
-                                            ? S.current.Connected
-                                            : S.current.ununited,
-                                        style: TextStyle(
-                                            fontSize: 30.sp,
-                                            color: const Color(0xff051220)),
-                                      ),
-                                      Column(
-                                        children: [
-                                          Text(
-                                            S.of(context).good,
-                                            style: TextStyle(
-                                                fontSize: 30.sp,
-                                                color: const Color.fromRGBO(95, 141, 255,1)),
+                                  ElevatedButton(
+                                    style: ButtonStyle(
+                                      shape: MaterialStateProperty.all(
+                                          const CircleBorder()),
+                                      minimumSize:
+                                          MaterialStateProperty.all<Size>(
+                                              Size(100.w, 100.w)),
+                                      backgroundColor:
+                                          const MaterialStatePropertyAll(
+                                              Color.fromRGBO(95, 141, 255, 1)),
+                                    ),
+                                    onPressed: () {
+                                      Get.toNamed('/wlan_set');
+                                    },
+                                    child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: const [
+                                          Icon(
+                                            Icons.wifi_outlined,
+                                            size: 32,
+                                          )
+                                        ]),
+                                  ),
+                                  // 下载速率
+                                  Expanded(
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          '$downKb$downUnit',
+                                          style: TextStyle(
+                                              fontSize: 30.sp,
+                                              color: const Color(0xff051220)),
+                                        ),
+                                        Text(
+                                          S.current.down,
+                                          style: TextStyle(
+                                            fontSize: 28.sp,
+                                            color: Colors.black54,
                                           ),
-                                          Text(
-                                            S.of(context).Environment,
-                                            style: TextStyle(
-                                                fontSize: 30.sp,
-                                                color: const Color.fromRGBO(95, 141, 255,1)),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              )),
+                              //2*3网格
+                              SizedBox(
+                                height: 480.w,
+                                child: GridView(
+                                  physics:
+                                      const NeverScrollableScrollPhysics(), //禁止滚动
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2, //一行的Widget数量
+                                    childAspectRatio: 2, //宽高比为1
+                                    crossAxisSpacing: 16, //横轴方向子元素的间距
+                                  ),
+                                  children: <Widget>[
+                                    //接入设备
+                                    GestureDetector(
+                                      onTap: () {
+                                        Get.toNamed('/connected_device');
+                                      },
+                                      child: GardCard(
+                                          boxCotainer: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Icon(Icons.devices_other_rounded,
+                                              color: const Color.fromRGBO(
+                                                  95, 141, 255, 1),
+                                              size: 80.sp),
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(S.current.device),
+                                              Text(
+                                                '$_onlineCount ${S.current.line}',
+                                                style: TextStyle(
+                                                    color: Colors.black54,
+                                                    fontSize: 25.sp),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      )),
+                                    ),
+                                    //儿童上网
+                                    GestureDetector(
+                                      onTap: () {
+                                        Get.toNamed('/parent');
+                                      },
+                                      child: GardCard(
+                                          boxCotainer: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Icon(Icons.child_care,
+                                              color: const Color.fromRGBO(
+                                                  95, 141, 255, 1),
+                                              size: 80.sp),
+                                          ConstrainedBox(
+                                            constraints: BoxConstraints(
+                                              maxWidth: 180.w,
+                                            ),
+                                            child: FittedBox(
+                                              child: Text(
+                                                S.current.parent,
+                                                textAlign: TextAlign.right,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      )),
+                                    ),
+                                    //摄像头
+                                    GestureDetector(
+                                      onTap: () {
+                                        Get.toNamed('/vidicon');
+                                      },
+                                      child: GardCard(
+                                          boxCotainer: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          FaIcon(
+                                            FontAwesomeIcons.video,
+                                            color: const Color.fromRGBO(
+                                                95, 141, 255, 1),
+                                            size: 80.sp,
+                                          ),
+                                          ConstrainedBox(
+                                            constraints: BoxConstraints(
+                                              maxWidth: 180.w,
+                                            ),
+                                            child: FittedBox(
+                                              child: Text(
+                                                S.current.monitor,
+                                                textAlign: TextAlign.right,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      )),
+                                    ),
+                                    //网络测速
+                                    GardCard(
+                                        boxCotainer: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Icon(
+                                          Icons.network_check,
+                                          color: const Color.fromRGBO(
+                                              95, 141, 255, 1),
+                                          size: 80.sp,
+                                        ),
+                                        ConstrainedBox(
+                                          constraints: BoxConstraints(
+                                            maxWidth: 180.w,
+                                          ),
+                                          child: FittedBox(
+                                            child: Text(
+                                              S.current.netSpeed,
+                                              textAlign: TextAlign.right,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    )),
+                                    //网课加速
+                                    GardCard(
+                                      boxCotainer: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Icon(Icons.book,
+                                              color: const Color.fromRGBO(
+                                                  95, 141, 255, 1),
+                                              size: 80.sp),
+                                          ConstrainedBox(
+                                            constraints: BoxConstraints(
+                                              maxWidth: 180.w,
+                                            ),
+                                            child: FittedBox(
+                                              child: Text(
+                                                S.current.online,
+                                                textAlign: TextAlign.right,
+                                              ),
+                                            ),
                                           ),
                                         ],
                                       ),
-                                      const Icon(
-                                        Icons.thumb_up,
-                                        size: 32,
-                                        color: Color.fromRGBO(95, 141, 255,1),
-                                      )
-                                      // ElevatedButton(
-                                      //   onPressed: () {},
-                                      //   style: ButtonStyle(
-                                      //     shape: MaterialStateProperty.all(
-                                      //         const CircleBorder()),
-                                      //   ),
-                                      //   child: Column(
-                                      //       mainAxisAlignment:
-                                      //           MainAxisAlignment.center,
-                                      //       children: const [
-                                      //         Icon(
-                                      //           Icons.thumb_up,
-                                      //           size: 32,
-                                      //         )
-                                      //       ]),
-                                      // )
-                                    ],
-                                  )),
-                                  //流量套餐
-                                  // WhiteCard(
-                                  //     boxCotainer: Row(
-                                  //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                  //   children: [
-                                  //     Expanded(
-                                  //       child: Column(
-                                  //         children: [
-                                  //           Text(
-                                  //             '$usedFlowInt.$usedFlowDecimals',
-                                  //             style: TextStyle(
-                                  //                 fontSize: 30.sp,
-                                  //                 color: const Color(0xff051220)),
-                                  //           ),
-                                  //           Text(
-                                  //             S.of(context).used,
-                                  //             style: TextStyle(
-                                  //               fontSize: 28.sp,
-                                  //               color: Colors.black54,
-                                  //             ),
-                                  //           ),
-                                  //         ],
-                                  //       ),
-                                  //     ),
-                                  //     ElevatedButton(
-                                  //       style: ButtonStyle(
-                                  //         shape: MaterialStateProperty.all(
-                                  //             const CircleBorder()),
-                                  //         minimumSize: MaterialStateProperty.all<Size>(
-                                  //             Size(100.w, 100.w)),
-                                  //       ),
-                                  //       onPressed: () {
-                                  //         Get.toNamed('/net_server_settings')
-                                  //             ?.then((value) {
-                                  //           setState(() {
-                                  //             _comboLabel = value['type'] == 0
-                                  //                 ? '${value['contain']}GB/${comboCycleLabel[value['cycle']]}'
-                                  //                 : '${value['contain']}h/${comboCycleLabel[value['cycle']]}';
-                                  //             _comboType = value['type'];
-                                  //           });
-                                  //         });
-                                  //       },
-                                  //       child: Column(
-                                  //         mainAxisAlignment: MainAxisAlignment.center,
-                                  //         children: [
-                                  //           Text(
-                                  //             S.of(context).traffic,
-                                  //             textAlign: TextAlign.center,
-                                  //             style: TextStyle(fontSize: 20.sp),
-                                  //           ),
-                                  //           Text(
-                                  //             S.of(context).sets,
-                                  //             textAlign: TextAlign.center,
-                                  //             style: TextStyle(fontSize: 20.sp),
-                                  //           ),
-                                  //         ],
-                                  //       ),
-                                  //     ),
-                                  //     Expanded(
-                                  //       child: Column(
-                                  //         children: [
-                                  //           Text(
-                                  //             '5 GB / ${S.current.month}',
-                                  //             style: TextStyle(
-                                  //                 fontSize: 30.sp,
-                                  //                 color: const Color(0xff051220)),
-                                  //           ),
-                                  //           Text(
-                                  //             S.of(context).trafficPackage,
-                                  //             style: TextStyle(
-                                  //               fontSize: 24.sp,
-                                  //               color: Colors.black54,
-                                  //             ),
-                                  //           ),
-                                  //         ],
-                                  //       ),
-                                  //     ),
-                                  //   ],
-                                  // )),
-                                  //上传速率
-                                  WhiteCard(
-                                      boxCotainer: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      Expanded(
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                              '$upKb$upUnit',
-                                              style: TextStyle(
-                                                  fontSize: 30.sp,
-                                                  color:
-                                                      const Color(0xff051220)),
-                                            ),
-                                            Text(
-                                              S.current.up,
-                                              style: TextStyle(
-                                                fontSize: 28.sp,
-                                                color: Colors.black54,
-                                              ),
-                                            ),
-                                          ],
+                                    ),
+                                    //游戏加速
+                                    GardCard(
+                                        boxCotainer: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Icon(
+                                          Icons.speed,
+                                          color: const Color.fromRGBO(
+                                              95, 141, 255, 1),
+                                          size: 80.sp,
                                         ),
-                                      ),
-                                      ElevatedButton(
-                                        style: ButtonStyle(
-                                          shape: MaterialStateProperty.all(
-                                              const CircleBorder()),
-                                          minimumSize:
-                                              MaterialStateProperty.all<Size>(
-                                                  Size(100.w, 100.w)),
-                                        ),
-                                        onPressed: () {
-                                          Get.toNamed('/wlan_set');
-                                        },
-                                        child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: const [
-                                              Icon(
-                                                Icons.wifi_outlined,
-                                                size: 32,
-                                              )
-                                            ]),
-                                      ),
-                                      // 下载速率
-                                      Expanded(
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                              '$downKb$downUnit',
-                                              style: TextStyle(
-                                                  fontSize: 30.sp,
-                                                  color:
-                                                      const Color(0xff051220)),
+                                        ConstrainedBox(
+                                          constraints: BoxConstraints(
+                                            maxWidth: 180.w,
+                                          ),
+                                          child: FittedBox(
+                                            child: Text(
+                                              S.current.game,
+                                              textAlign: TextAlign.right,
                                             ),
-                                            Text(
-                                              S.current.down,
-                                              style: TextStyle(
-                                                fontSize: 28.sp,
-                                                color: Colors.black54,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  )),
-                                  //2*3网格
-                                  SizedBox(
-                                    height: 480.w,
-                                    child: GridView(
-                                      physics:
-                                          const NeverScrollableScrollPhysics(), //禁止滚动
-                                      gridDelegate:
-                                          const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 2, //一行的Widget数量
-                                        childAspectRatio: 2, //宽高比为1
-                                        crossAxisSpacing: 16, //横轴方向子元素的间距
-                                      ),
-                                      children: <Widget>[
-                                        //接入设备
-                                        GestureDetector(
-                                          onTap: () {
-                                            Get.toNamed('/connected_device');
-                                          },
-                                          child: GardCard(
-                                              boxCotainer: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Icon(Icons.devices_other_rounded,
-                                                  color: const Color.fromRGBO(95, 141, 255,1),
-                                                  size: 80.sp),
-                                              Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Text(S.current.device),
-                                                  Text(
-                                                    '$_onlineCount ${S.current.line}',
-                                                    style: TextStyle(
-                                                        color: Colors.black54,
-                                                        fontSize: 25.sp),
-                                                  ),
-                                                ],
-                                              )
-                                            ],
-                                          )),
-                                        ),
-                                        //儿童上网
-                                        GestureDetector(
-                                          onTap: () {
-                                            Get.toNamed('/parent');
-                                          },
-                                          child: GardCard(
-                                              boxCotainer: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Icon(Icons.child_care,
-                                                  color: const Color.fromRGBO(95, 141, 255,1),
-                                                  size: 80.sp),
-                                              ConstrainedBox(
-                                                constraints: BoxConstraints(
-                                                  maxWidth: 180.w,
-                                                ),
-                                                child: FittedBox(
-                                                  child: Text(
-                                                    S.current.parent,
-                                                    textAlign: TextAlign.right,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          )),
-                                        ),
-                                        //摄像头
-                                        GestureDetector(
-                                          onTap: () {
-                                            Get.toNamed('/vidicon');
-                                          },
-                                          child: GardCard(
-                                              boxCotainer: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              FaIcon(
-                                                FontAwesomeIcons.video,
-                                                color: const Color.fromRGBO(95, 141, 255,1),
-                                                size: 80.sp,
-                                              ),
-                                              ConstrainedBox(
-                                                constraints: BoxConstraints(
-                                                  maxWidth: 180.w,
-                                                ),
-                                                child: FittedBox(
-                                                  child: Text(
-                                                    S.current.monitor,
-                                                    textAlign: TextAlign.right,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          )),
-                                        ),
-                                        //网络测速
-                                        GardCard(
-                                            boxCotainer: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Icon(
-                                              Icons.network_check,
-                                              color: const Color.fromRGBO(95, 141, 255,1),
-                                              size: 80.sp,
-                                            ),
-                                            ConstrainedBox(
-                                              constraints: BoxConstraints(
-                                                maxWidth: 180.w,
-                                              ),
-                                              child: FittedBox(
-                                                child: Text(
-                                                  S.current.netSpeed,
-                                                  textAlign: TextAlign.right,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        )),
-                                        //网课加速
-                                        GardCard(
-                                          boxCotainer: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Icon(Icons.book,
-                                                  color: const Color.fromRGBO(95, 141, 255,1),
-                                                  size: 80.sp),
-                                              ConstrainedBox(
-                                                constraints: BoxConstraints(
-                                                  maxWidth: 180.w,
-                                                ),
-                                                child: FittedBox(
-                                                  child: Text(
-                                                    S.current.online,
-                                                    textAlign: TextAlign.right,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
                                           ),
                                         ),
-                                        //游戏加速
-                                        GardCard(
-                                            boxCotainer: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Icon(
-                                              Icons.speed,
-                                              color: const Color.fromRGBO(95, 141, 255,1),
-                                              size: 80.sp,
-                                            ),
-                                            ConstrainedBox(
-                                              constraints: BoxConstraints(
-                                                maxWidth: 180.w,
-                                              ),
-                                              child: FittedBox(
-                                                child: Text(
-                                                  S.current.game,
-                                                  textAlign: TextAlign.right,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        )),
                                       ],
+                                    )),
+                                  ],
+                                ),
+                              ),
+                              //查看更多
+                              TextButton(
+                                style: const ButtonStyle(
+                                  textStyle: MaterialStatePropertyAll(
+                                    TextStyle(
+                                      color: Color.fromRGBO(95, 141, 255, 1),
                                     ),
                                   ),
-                                  //查看更多
-                                  TextButton(
-                                      onPressed: () {
-                                        toolbarController.setPageIndex(2);
-                                      },
-                                      child: Text(S.current.more))
-                                ],
-                              ),
-                            ),
-                          ],
+                                ),
+                                onPressed: () {
+                                  toolbarController.setPageIndex(2);
+                                },
+                                child: Text(S.current.more),
+                              )
+                            ],
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-            ),
-          );
+                  ),
+                ),
+        ),
+      );
+    }
   }
 
   @override

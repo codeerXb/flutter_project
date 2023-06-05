@@ -31,21 +31,20 @@ class Topo extends StatefulWidget {
   State<Topo> createState() => _TopoState();
 }
 
-class _TopoState extends State<Topo> {
+class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
   EquipmentDatas topoData = EquipmentDatas(onlineDeviceTable: [], max: null);
   final LoginController loginController = Get.put(LoginController());
   String sn = '';
   Map<String, dynamic> onlineCount = {};
   List<String> deviceNames = [];
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
+  late AnimationController _animationController;
   @override
   void initState() {
     super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    );
     sharedGetData('deviceSn', String).then(((res) {
       printInfo(info: 'deviceSn$res');
       setState(() {
@@ -53,7 +52,7 @@ class _TopoState extends State<Topo> {
         //状态为local 请求本地  状态为cloud  请求云端
         printInfo(info: 'state--${loginController.login.state}');
         if (mounted) {
-          editName();
+          getDevices();
           getTREquinfoDatas();
         }
         // if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
@@ -71,6 +70,12 @@ class _TopoState extends State<Topo> {
         // }
       });
     }));
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   final ToolbarController toolbarController = Get.put(ToolbarController());
@@ -210,40 +215,51 @@ class _TopoState extends State<Topo> {
   bool loading = true;
 
   //终端设备列表
-  editName() async {
+  getDevices() async {
     setState(() {
       loading = true;
     });
+    // 开始旋转
+    _animationController.repeat();
+    try {
+      Map<String, dynamic> form = {'sn': sn, "type": "getDevicesTable"};
+      var res = await App.post('/cpeMqtt/getDevicesTable', data: form);
 
-    Map<String, dynamic> form = {'sn': sn, "type": "getDevicesTable"};
-    var res = await App.post('/cpeMqtt/getDevicesTable', data: form);
-    setState(() {
-      loading = false;
-    });
-    var d = json.decode(res.toString());
-    if (d['code'] != 200) {
-    } else {
-      setState(() {
-        List<OnlineDeviceTable>? onlineDeviceTable = [];
-        int id = 0;
+      var d = json.decode(res.toString());
+      if (d['code'] != 200) {
+      } else {
+        setState(() {
+          List<OnlineDeviceTable>? onlineDeviceTable = [];
+          int id = 0;
 
-        d['data']['wifiDevices'].addAll(d['data']['lanDevices']);
-        d['data']['wifiDevices'].forEach((item) {
-          OnlineDeviceTable device = OnlineDeviceTable.fromJson({
-            'id': id,
-            'LeaseTime': '1',
-            'Type': item['connection'] ?? 'LAN',
-            'HostName': item['name'],
-            'IP': item['IPAddress'],
-            'MAC': item['MACAddress'] ?? item['MacAddress']
+          d['data']['wifiDevices'].addAll(d['data']['lanDevices']);
+          d['data']['wifiDevices'].forEach((item) {
+            OnlineDeviceTable device = OnlineDeviceTable.fromJson({
+              'id': id,
+              'LeaseTime': '1',
+              'Type': item['connection'] ?? 'LAN',
+              'HostName': item['name'],
+              'IP': item['IPAddress'],
+              'MAC': item['MACAddress'] ?? item['MacAddress']
+            });
+            onlineDeviceTable.add(device);
+            id++;
           });
-          onlineDeviceTable.add(device);
-          id++;
+          topoData =
+              EquipmentDatas(onlineDeviceTable: onlineDeviceTable, max: 255);
+          // ToastUtils.toast(S.current.success);
         });
-        topoData =
-            EquipmentDatas(onlineDeviceTable: onlineDeviceTable, max: 255);
-        // ToastUtils.toast(S.current.success);
-      });
+      }
+    } catch (err) {
+      debugPrint(err.toString());
+    } finally {
+      if (mounted) {
+        setState(() {
+          loading = false;
+        });
+        // 停止旋转
+        _animationController.stop();
+      }
     }
   }
 
@@ -273,8 +289,8 @@ class _TopoState extends State<Topo> {
 
   void handleItemPressed(bool result) {
     // Do something with topoData...
-    if (result == true) {
-      editName();
+    if (result == true && mounted) {
+      getDevices();
     }
   }
 
@@ -308,17 +324,21 @@ class _TopoState extends State<Topo> {
               ),
 
               elevation: 0,
-              leading: IconButton(
-                  onPressed: () {
-                    //刷新
-                    if (mounted) {
-                      editName();
-                    }
-                  },
-                  icon: const Icon(
-                    Icons.refresh,
-                    color: Colors.black,
-                  )),
+              leading: RotationTransition(
+                turns:
+                    Tween(begin: 0.0, end: 1.0).animate(_animationController),
+                child: IconButton(
+                    onPressed: () {
+                      //刷新
+                      if (mounted) {
+                        getDevices();
+                      }
+                    },
+                    icon: const Icon(
+                      Icons.refresh,
+                      color: Colors.black,
+                    )),
+              ),
               // systemOverlayStyle: SystemUiOverlayStyle.light,
               // actions: [
               //   IconButton(

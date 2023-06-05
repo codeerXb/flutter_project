@@ -22,8 +22,6 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "warningSnNotSame":
-            MessageLookupByLibrary.simpleMessage("请连接当前设备wifi后再操作"),
         "APIsolation": MessageLookupByLibrary.simpleMessage("AP隔离"),
         "ASCII": MessageLookupByLibrary.simpleMessage("8~63位ASCII字符"),
         "Administratorlogin": MessageLookupByLibrary.simpleMessage("管理员登录"),
@@ -139,6 +137,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Wed": MessageLookupByLibrary.simpleMessage("周三"),
         "a": MessageLookupByLibrary.simpleMessage("111"),
         "access": MessageLookupByLibrary.simpleMessage("禁止访问"),
+        "accessRefused": MessageLookupByLibrary.simpleMessage("远程拒绝访问"),
         "accomplish": MessageLookupByLibrary.simpleMessage("完成"),
         "account": MessageLookupByLibrary.simpleMessage("账号"),
         "accountEmpty": MessageLookupByLibrary.simpleMessage("账号不能为空"),
@@ -178,12 +177,12 @@ class MessageLookup extends MessageLookupByLibrary {
         "date": MessageLookupByLibrary.simpleMessage("天"),
         "day": MessageLookupByLibrary.simpleMessage("日"),
         "delPro": MessageLookupByLibrary.simpleMessage("是否确定删除"),
-        "accessRefused": MessageLookupByLibrary.simpleMessage("远程拒绝访问"),
         "delete": MessageLookupByLibrary.simpleMessage("删除"),
         "detectionServer": MessageLookupByLibrary.simpleMessage("输入检测服务器"),
         "device": MessageLookupByLibrary.simpleMessage("接入设备"),
         "deviceBinded":
             MessageLookupByLibrary.simpleMessage("绑定CPE失败: 该CPE设备已被绑定"),
+        "deviceException": MessageLookupByLibrary.simpleMessage("设备异常"),
         "deviceInfo": MessageLookupByLibrary.simpleMessage("设备信息"),
         "dnsSettings": MessageLookupByLibrary.simpleMessage("DNS设置"),
         "dnsStatic": MessageLookupByLibrary.simpleMessage(
@@ -267,6 +266,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "priority": MessageLookupByLibrary.simpleMessage("优先级"),
         "privacyPolicy": MessageLookupByLibrary.simpleMessage("隐私政策"),
         "radioSettings": MessageLookupByLibrary.simpleMessage("Radio设置"),
+        "reconnectDevice": MessageLookupByLibrary.simpleMessage("请重新连接设备"),
         "register": MessageLookupByLibrary.simpleMessage("注册"),
         "requestFailed": MessageLookupByLibrary.simpleMessage("请求失败"),
         "rescan": MessageLookupByLibrary.simpleMessage("重新扫描"),
@@ -311,6 +311,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "versionUpdating": MessageLookupByLibrary.simpleMessage("版本更新"),
         "visitorNet": MessageLookupByLibrary.simpleMessage("访客网络"),
         "wanSettings": MessageLookupByLibrary.simpleMessage("WAN设置"),
+        "warningSnNotSame":
+            MessageLookupByLibrary.simpleMessage("请连接当前设备Wi-Fi后再操作"),
         "wifiMapping": MessageLookupByLibrary.simpleMessage("Wi-Fi覆盖图"),
         "wlanSet": MessageLookupByLibrary.simpleMessage("WLAN设置"),
         "workday": MessageLookupByLibrary.simpleMessage("工作日"),

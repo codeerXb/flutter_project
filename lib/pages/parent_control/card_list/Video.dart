@@ -169,6 +169,12 @@ class _VideoState extends State<Video> {
                       ),
                     ),
                   ),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 8),
+                  ),
+                  const Center(
+                    child: Text('Dont see what youer looking for?'),
+                  ),
                 ],
               ),
             ),

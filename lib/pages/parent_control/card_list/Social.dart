@@ -29,12 +29,12 @@ class _SocialState extends State<Social> {
       'text': 'Twitter',
     },
     {
-      'img': 'assets/images/Nextdoor.jpg',
-      'text': 'Nextdoor',
+      'img': 'assets/images/Face book.jpg',
+      'text': 'Face book',
     },
     {
-      'img': 'assets/images/Reddit.jpg',
-      'text': 'Reddit.jpg',
+      'img': 'assets/images/Instagram.jpg',
+      'text': 'Instagram',
     },
     // ...
   ];
@@ -156,6 +156,12 @@ class _SocialState extends State<Social> {
                         },
                       ),
                     ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 8),
+                  ),
+                  const Center(
+                    child: Text('Dont see what youer looking for?'),
                   ),
                 ],
               ),

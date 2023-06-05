@@ -25,20 +25,20 @@ class _PaymentState extends State<Payment> {
 
   List<Map<String, dynamic>> topData = [
     {
+      'img': 'assets/images/Google Pay.jpg',
+      'text': 'Google Pay',
+    },
+    {
       'img': 'assets/images/PayPal .jpg',
-      'text': 'PayPal ',
+      'text': 'PayPal',
+    },
+    {
+      'img': 'assets/images/Apple pay.jpg',
+      'text': 'Apple pay',
     },
     {
       'img': 'assets/images/Venmo.jpg',
       'text': 'Venmo',
-    },
-    {
-      'img': 'assets/images/QuickBooks Self-Employed.jpg',
-      'text': 'QuickBooks Self-Employed.jpg',
-    },
-    {
-      'img': 'assets/images/MileIQ.jpg',
-      'text': 'MileIQ.jpg',
     },
     // ...
   ];
@@ -160,6 +160,12 @@ class _PaymentState extends State<Payment> {
                         },
                       ),
                     ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 8),
+                  ),
+                  const Center(
+                    child: Text('Dont see what youer looking for?'),
                   ),
                 ],
               ),

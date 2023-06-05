@@ -18,11 +18,12 @@ class _GamesState extends State<Games> {
     FocusScope.of(context).requestFocus(blankNode);
   }
 
-  bool? _isChecked = false; // 用于表示Checkbox的选中状态
-  List<bool> _checkedList = []; // 用于表示ListView中每个CheckboxListTile的选中状态
+  bool _isChecked = false; // 用于表示Checkbox的选中状态
+  // List<bool> _checkedList = []; // 用于表示ListView中每个CheckboxListTile的选中状态
 
   final TextEditingController _textEditingController = TextEditingController();
-
+  List<bool> selected1 = [false, false, false, false];
+  List<bool> selected2 = [false, false, false, false];
   List<Map<String, dynamic>> topData = [
     {
       'img': 'assets/images/MONOPOLY GO.jpg',
@@ -66,10 +67,40 @@ class _GamesState extends State<Games> {
   @override
   void initState() {
     super.initState();
-    _checkedList = List.generate(
-      topData.length,
-      (index) => false,
-    );
+    // _checkedList = List.generate(
+    //   topData.length,
+    //   (index) => false,
+    // );
+  }
+
+  void setAllCheckBoxes(bool value) {
+    for (int i = 0; i < selected1.length; i++) {
+      selected1[i] = value;
+    }
+    for (int i = 0; i < selected2.length; i++) {
+      selected2[i] = value;
+    }
+  }
+
+  void updateAllCheckBoxes() {
+    bool allSelected = true;
+    for (int i = 0; i < selected1.length; i++) {
+      if (!selected1[i]) {
+        allSelected = false;
+        break;
+      }
+    }
+    if (allSelected) {
+      for (int i = 0; i < selected2.length; i++) {
+        if (!selected2[i]) {
+          allSelected = false;
+          break;
+        }
+      }
+    }
+    setState(() {
+      _isChecked = allSelected;
+    });
   }
 
   @override
@@ -132,9 +163,11 @@ class _GamesState extends State<Games> {
                         setState(() {
                           _isChecked = value!;
                           // 当Checkbox的选中状态改变时，将ListView中每个CheckboxListTile的选中状态也改变
-                          for (int i = 0; i < _checkedList.length; i++) {
-                            _checkedList[i] = value;
-                          }
+                          // for (int i = 0; i < _checkedList.length; i++) {
+                          //   _checkedList[i] = value;
+                          // }
+                          // 设置两个list view中每个checkbox的选中状态
+                          setAllCheckBoxes(value);
                         });
                       },
                     ),
@@ -166,11 +199,14 @@ class _GamesState extends State<Games> {
                                 ),
                                 title: Text(topData[index]['text']),
                                 trailing: Checkbox(
-                                  value: _checkedList[index],
+                                  value: selected1[index],
                                   onChanged: (value) {
                                     setState(() {
-                                      _checkedList[index] = value!;
+                                      // _checkedList[index] = value!;
+                                      selected1[index] = value!;
                                     });
+                                    // 更新总checkbox的选中状态
+                                    updateAllCheckBoxes();
                                   },
                                 ),
                               ),
@@ -208,11 +244,15 @@ class _GamesState extends State<Games> {
                                 ),
                                 title: Text(otherData[index]['text']),
                                 trailing: Checkbox(
-                                  value: _checkedList[index],
+                                  value: selected2[index],
                                   onChanged: (value) {
                                     setState(() {
-                                      _checkedList[index] = value!;
+                                      //   _checkedList[index] = value!;
+                                      // });
+                                      selected2[index] = value!;
                                     });
+                                    // 更新总checkbox的选中状态
+                                    updateAllCheckBoxes();
                                   },
                                 ),
                               ),

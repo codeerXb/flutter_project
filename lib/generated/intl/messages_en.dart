@@ -22,12 +22,6 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "warningSnNotSame": MessageLookupByLibrary.simpleMessage(
-            "Please connect the current device to a WiFi network before proceeding"),
-        "deviceException":
-            MessageLookupByLibrary.simpleMessage("Device Exception"),
-        "reconnectDevice":
-            MessageLookupByLibrary.simpleMessage("Please reconnect device"),
         "APIsolation": MessageLookupByLibrary.simpleMessage("AP Isolation"),
         "ASCII": MessageLookupByLibrary.simpleMessage(
             "ASCII characters of 8 to 63 characters"),
@@ -175,6 +169,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "Wed": MessageLookupByLibrary.simpleMessage("Wed"),
         "a": MessageLookupByLibrary.simpleMessage("111"),
         "access": MessageLookupByLibrary.simpleMessage(" Access Forbidden"),
+        "accessRefused":
+            MessageLookupByLibrary.simpleMessage("Remote access refused"),
         "accomplish": MessageLookupByLibrary.simpleMessage("Finish"),
         "account": MessageLookupByLibrary.simpleMessage("account"),
         "accountEmpty":
@@ -224,14 +220,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "day": MessageLookupByLibrary.simpleMessage("Day"),
         "delPro": MessageLookupByLibrary.simpleMessage(
             "Are you sure you want to delete"),
-        "accessRefused":
-            MessageLookupByLibrary.simpleMessage("Remote access refused"),
         "delete": MessageLookupByLibrary.simpleMessage("Delete"),
         "detectionServer":
             MessageLookupByLibrary.simpleMessage("Input detection server"),
         "device": MessageLookupByLibrary.simpleMessage("Devices"),
         "deviceBinded": MessageLookupByLibrary.simpleMessage(
             "Binding CPE failed: The CPE device has already been bound."),
+        "deviceException":
+            MessageLookupByLibrary.simpleMessage("Device Exception"),
         "deviceInfo":
             MessageLookupByLibrary.simpleMessage("Device Information"),
         "dnsSettings": MessageLookupByLibrary.simpleMessage("DNS Settings"),
@@ -339,6 +335,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "priority": MessageLookupByLibrary.simpleMessage("Priority"),
         "privacyPolicy": MessageLookupByLibrary.simpleMessage("privacy Policy"),
         "radioSettings": MessageLookupByLibrary.simpleMessage("Radio Settings"),
+        "reconnectDevice":
+            MessageLookupByLibrary.simpleMessage("Please reconnect device"),
         "register": MessageLookupByLibrary.simpleMessage("Register"),
         "requestFailed": MessageLookupByLibrary.simpleMessage("Request Failed"),
         "rescan": MessageLookupByLibrary.simpleMessage("Rescan"),
@@ -392,6 +390,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Version Updating"),
         "visitorNet": MessageLookupByLibrary.simpleMessage("Guest Network"),
         "wanSettings": MessageLookupByLibrary.simpleMessage("WAN Settings"),
+        "warningSnNotSame": MessageLookupByLibrary.simpleMessage(
+            "Please connect the current device to a Wi-Fi network before proceeding"),
         "wifiMapping": MessageLookupByLibrary.simpleMessage("Wi-Fi Mapping"),
         "wlanSet": MessageLookupByLibrary.simpleMessage("WLAN Setting"),
         "workday": MessageLookupByLibrary.simpleMessage("Workday"),

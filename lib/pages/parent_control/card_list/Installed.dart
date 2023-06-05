@@ -25,17 +25,17 @@ class _InstalledState extends State<Installed> {
 
   List<Map<String, dynamic>> topData = [
     {
-      'img': 'assets/images/Google.jpg',
-      'text': 'Google',
+      'img': 'assets/images/Amazon Appstore.jpg',
+      'text': 'Amazon Appstore',
     },
     {
-      'img': 'assets/images/T-Mobile.jpg',
-      'text': 'T-Mobile',
+      'img': 'assets/images/Google Play.png',
+      'text': 'Google Play',
     },
-    {
-      'img': 'assets/images/Shadowrocket.jpg',
-      'text': 'Shadowrocket.jpg',
-    },
+    // {
+    //   'img': 'assets/images/Shadowrocket.jpg',
+    //   'text': 'Shadowrocket.jpg',
+    // },
     // ...
   ];
 
@@ -156,6 +156,12 @@ class _InstalledState extends State<Installed> {
                         },
                       ),
                     ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.only(top: 8),
+                  ),
+                  const Center(
+                    child: Text('Dont see what youer looking for?'),
                   ),
                 ],
               ),

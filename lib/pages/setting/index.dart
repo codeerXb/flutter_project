@@ -113,7 +113,7 @@ class _SettingState extends State<Setting> {
             );
             sharedAddAndUpdate("token", String, localLoginRes['token']);
             sharedAddAndUpdate("session", String, localLoginRes['sessionid']);
-            Get.back();
+            Get.toNamed('/wan_settings');
           }
         }
       },
@@ -892,7 +892,7 @@ class _SettingState extends State<Setting> {
       var jsonRes = json.decode(res.toString());
       // 得到jsonRes.systemVersionSn,比对本地存储的sn
       sharedGetData('deviceSn', String).then((value) {
-        if (value == jsonRes['systemVersionSn']) {
+        if (value != null && value == jsonRes['systemVersionSn']) {
           // 本地存储设备的sn和设备返回的sn相同的时候
           // 尝试设备登录
           // 获取本地存取的设备用户名密码
@@ -916,6 +916,8 @@ class _SettingState extends State<Setting> {
                 // 跳转到wan-setting界面
                 Get.toNamed('/wan_settings');
               }
+            } else {
+              showLoginDialog();
             }
           }).catchError((err) {
             // 弹窗登录框

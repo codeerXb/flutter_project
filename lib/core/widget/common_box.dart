@@ -4,13 +4,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 //底部线
 class BottomLine extends StatelessWidget {
   final Widget rowtem;
+  final double height;
 
-  const BottomLine({super.key, required this.rowtem});
+  const BottomLine({super.key, required this.rowtem, this.height = 90});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 90.w,
+      height: height.w,
       padding: EdgeInsets.only(bottom: 6.w),
       margin: EdgeInsets.only(bottom: 6.w),
       decoration: const BoxDecoration(

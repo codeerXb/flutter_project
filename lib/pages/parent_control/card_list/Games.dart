@@ -123,7 +123,7 @@ class _GamesState extends State<Games> {
     return Scaffold(
         appBar: customAppbar(context: context, title: 'Games'),
         body: SizedBox(
-          height: MediaQuery.of(context).size.height * 0.8,
+          height: MediaQuery.of(context).size.height * 1,
           child: SingleChildScrollView(
             child: InkWell(
               onTap: () => closeKeyboard(context),

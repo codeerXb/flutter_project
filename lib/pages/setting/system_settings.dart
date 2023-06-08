@@ -30,6 +30,8 @@ class _SystemSettingsState extends State<SystemSettings> {
             showVal = 'English';
           } else if (res.toString() == 'zh_CN') {
             showVal = '中文简体';
+          } else if (res.toString() == 'sp_ES') {
+            showVal = "Spanish";
           } else {
             showVal = S.current.autoLang;
           }

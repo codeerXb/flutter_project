@@ -2340,30 +2340,30 @@ class S {
     );
   }
 
-  /// `D`
+  /// `d`
   String get date {
     return Intl.message(
-      'D',
+      'd',
       name: 'date',
       desc: '',
       args: [],
     );
   }
 
-  /// `H`
+  /// `h`
   String get hour {
     return Intl.message(
-      'H',
+      'h',
       name: 'hour',
       desc: '',
       args: [],
     );
   }
 
-  /// `M`
+  /// `m`
   String get minute {
     return Intl.message(
-      'M',
+      'm',
       name: 'minute',
       desc: '',
       args: [],

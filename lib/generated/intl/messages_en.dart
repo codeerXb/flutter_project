@@ -216,7 +216,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Current orientation"),
         "currentValue": MessageLookupByLibrary.simpleMessage("current Value"),
         "cycle": MessageLookupByLibrary.simpleMessage("Package Cycle"),
-        "date": MessageLookupByLibrary.simpleMessage("D"),
+        "date": MessageLookupByLibrary.simpleMessage("d"),
         "day": MessageLookupByLibrary.simpleMessage("Day"),
         "delPro": MessageLookupByLibrary.simpleMessage(
             "Are you sure you want to delete"),
@@ -253,7 +253,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Verify Code"),
         "good": MessageLookupByLibrary.simpleMessage("Good"),
         "hint": MessageLookupByLibrary.simpleMessage("Hint"),
-        "hour": MessageLookupByLibrary.simpleMessage("H"),
+        "hour": MessageLookupByLibrary.simpleMessage("h"),
         "improveSecurity": MessageLookupByLibrary.simpleMessage(
             "Change passwords periodically to improve security"),
         "interentMode":
@@ -282,7 +282,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "maintainSettings": MessageLookupByLibrary.simpleMessage("Maintenance"),
         "majorSet": MessageLookupByLibrary.simpleMessage("Region"),
         "maxValue": MessageLookupByLibrary.simpleMessage("Max Value"),
-        "minute": MessageLookupByLibrary.simpleMessage("M"),
+        "minute": MessageLookupByLibrary.simpleMessage("m"),
         "minutes": MessageLookupByLibrary.simpleMessage("Minutes"),
         "modification": MessageLookupByLibrary.simpleMessage("Edit"),
         "mon": MessageLookupByLibrary.simpleMessage("mon"),

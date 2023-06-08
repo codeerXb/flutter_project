@@ -200,7 +200,10 @@ class _VideoState extends State<Video> {
                     padding: EdgeInsets.only(top: 8),
                   ),
                   const Center(
-                    child: Text('Dont see what youer looking for?'),
+                    child: Text(
+                      "Don't see what you're looking for?",
+                      style: TextStyle(color: Color.fromRGBO(136, 135, 135, 1)),
+                    ),
                   ),
                 ],
               ),

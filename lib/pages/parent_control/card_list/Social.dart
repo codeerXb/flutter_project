@@ -18,11 +18,10 @@ class _SocialState extends State<Social> {
     FocusScope.of(context).requestFocus(blankNode);
   }
 
-  bool? _isChecked = false; // 用于表示Checkbox的选中状态
-  List<bool> _checkedList = []; // 用于表示ListView中每个CheckboxListTile的选中状态
+  bool? _isChecked = true; // 用于表示Checkbox的选中状态
 
   final TextEditingController _textEditingController = TextEditingController();
-  List<bool> selected1 = [false, false, false, false, false, false, false];
+  List<bool> selected1 = [true, true, true, true, true, true, true];
 
   List<Map<String, dynamic>> topData = [
     {
@@ -61,10 +60,6 @@ class _SocialState extends State<Social> {
   @override
   void initState() {
     super.initState();
-    _checkedList = List.generate(
-      topData.length,
-      (index) => false,
-    );
   }
 
   @override

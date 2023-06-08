@@ -631,7 +631,7 @@ class SixBoxsState extends State<SixBoxs> {
                       children: [
                         const Text('Games'),
                         Text(
-                          '135 allowed',
+                          '11 allowed',
                           style:
                               TextStyle(color: Colors.black54, fontSize: 25.sp),
                         ),
@@ -673,7 +673,7 @@ class SixBoxsState extends State<SixBoxs> {
                             child: const FittedBox(
                                 child: Text('Video Streaming'))),
                         Text(
-                          '26 allowed',
+                          '6 allowed',
                           style:
                               TextStyle(color: Colors.black54, fontSize: 25.sp),
                         ),

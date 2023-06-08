@@ -61,79 +61,76 @@ class _InstalledState extends State<Installed> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: const Color.fromRGBO(240, 240, 240, 1),
         appBar: customAppbar(context: context, title: 'App Stores'),
         body: SingleChildScrollView(
           child: InkWell(
             onTap: () => closeKeyboard(context),
-            child: Container(
-              padding: EdgeInsets.only(left: 30.w, right: 30.0.w),
-              decoration:
-                  const BoxDecoration(color: Color.fromRGBO(240, 240, 240, 1)),
-              height: 706,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.all(16),
-                    // child: Container(
-                    //   decoration: BoxDecoration(
-                    //     borderRadius: BorderRadius.circular(20),
-                    //     color: const Color.fromARGB(255, 248, 248, 248),
-                    //   ),
-                    //   child: Row(
-                    //     children: [
-                    //       const Padding(
-                    //         padding: EdgeInsets.only(left: 16, right: 8),
-                    //         child: Icon(Icons.search),
-                    //       ),
-                    //       Expanded(
-                    //         child: TextField(
-                    //           controller: _textEditingController,
-                    //           // style: const TextStyle(
-                    //           //   color: Colors.black87, // 将文本颜色加深
-                    //           // ),
-                    //           decoration: const InputDecoration(
-                    //             hintText: 'Search',
-                    //             border: InputBorder.none,
-                    //           ),
-                    //         ),
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(
-                      'Select which apps can access the Internet.',
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: Color.fromRGBO(136, 135, 135, 1)),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16, bottom: 16),
-                    child: CheckboxListTile(
-                      title: const Text('Select all'),
-                      value: _isChecked,
-                      onChanged: (value) {
-                        setState(() {
-                          _isChecked = value!;
-                          // 当Checkbox的选中状态改变时，将ListView中每个CheckboxListTile的选中状态也改变
-                          setAllCheckBoxes(value);
-                        });
-                      },
-                    ),
-                  ),
-                  // const Padding(
-                  //   padding: EdgeInsets.only(left: 16, top: 8, bottom: 8),
-                  //   child: Text(
-                  //     'Popular apps',
-                  //     style:
-                  //         TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.all(16),
+                  // child: Container(
+                  //   decoration: BoxDecoration(
+                  //     borderRadius: BorderRadius.circular(20),
+                  //     color: const Color.fromARGB(255, 248, 248, 248),
+                  //   ),
+                  //   child: Row(
+                  //     children: [
+                  //       const Padding(
+                  //         padding: EdgeInsets.only(left: 16, right: 8),
+                  //         child: Icon(Icons.search),
+                  //       ),
+                  //       Expanded(
+                  //         child: TextField(
+                  //           controller: _textEditingController,
+                  //           // style: const TextStyle(
+                  //           //   color: Colors.black87, // 将文本颜色加深
+                  //           // ),
+                  //           decoration: const InputDecoration(
+                  //             hintText: 'Search',
+                  //             border: InputBorder.none,
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ],
                   //   ),
                   // ),
-                  Container(
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    'Select which apps can access the Internet.',
+                    style: TextStyle(
+                        fontSize: 16, color: Color.fromRGBO(136, 135, 135, 1)),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 16, bottom: 16),
+                  child: CheckboxListTile(
+                    title: const Text('Select all'),
+                    value: _isChecked,
+                    onChanged: (value) {
+                      setState(() {
+                        _isChecked = value!;
+                        // 当Checkbox的选中状态改变时，将ListView中每个CheckboxListTile的选中状态也改变
+                        setAllCheckBoxes(value);
+                      });
+                    },
+                  ),
+                ),
+                // const Padding(
+                //   padding: EdgeInsets.only(left: 16, top: 8, bottom: 8),
+                //   child: Text(
+                //     'Popular apps',
+                //     style:
+                //         TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                //   ),
+                // ),
+                Padding(
+                  padding: EdgeInsets.only(left: 30.w, right: 30.0.w),
+                  child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),
                       color: const Color.fromARGB(255, 248, 248, 248),
@@ -175,51 +172,51 @@ class _InstalledState extends State<Installed> {
                       }).toList(),
                     ),
                   ),
-                  // Expanded(
-                  //   child: Container(
-                  //     decoration: BoxDecoration(
-                  //       borderRadius: BorderRadius.circular(16),
-                  //       color: const Color.fromARGB(255, 248, 248, 248),
-                  //     ),
-                  //     child: ListView.builder(
-                  //       itemCount: topData.length,
-                  //       itemBuilder: (BuildContext context, int index) {
-                  //         return Column(
-                  //           children: [
-                  //             ListTile(
-                  //               leading: Image.asset(
-                  //                 topData[index]['img'],
-                  //                 width: 40, // 设置图片宽度
-                  //                 height: 40,
-                  //               ),
-                  //               title: Text(topData[index]['text']),
-                  //               trailing: Checkbox(
-                  //                 value: _checkedList[index],
-                  //                 onChanged: (value) {
-                  //                   setState(() {
-                  //                     _checkedList[index] = value!;
-                  //                   });
-                  //                 },
-                  //               ),
-                  //             ),
-                  //             const Divider(),
-                  //           ],
-                  //         );
-                  //       },
-                  //     ),
-                  //   ),
-                  // ),
-                  const Padding(
-                    padding: EdgeInsets.only(top: 8),
+                ),
+                // Expanded(
+                //   child: Container(
+                //     decoration: BoxDecoration(
+                //       borderRadius: BorderRadius.circular(16),
+                //       color: const Color.fromARGB(255, 248, 248, 248),
+                //     ),
+                //     child: ListView.builder(
+                //       itemCount: topData.length,
+                //       itemBuilder: (BuildContext context, int index) {
+                //         return Column(
+                //           children: [
+                //             ListTile(
+                //               leading: Image.asset(
+                //                 topData[index]['img'],
+                //                 width: 40, // 设置图片宽度
+                //                 height: 40,
+                //               ),
+                //               title: Text(topData[index]['text']),
+                //               trailing: Checkbox(
+                //                 value: _checkedList[index],
+                //                 onChanged: (value) {
+                //                   setState(() {
+                //                     _checkedList[index] = value!;
+                //                   });
+                //                 },
+                //               ),
+                //             ),
+                //             const Divider(),
+                //           ],
+                //         );
+                //       },
+                //     ),
+                //   ),
+                // ),
+                const Padding(
+                  padding: EdgeInsets.only(top: 8),
+                ),
+                const Center(
+                  child: Text(
+                    "Don't see what you're looking for?",
+                    style: TextStyle(color: Color.fromRGBO(136, 135, 135, 1)),
                   ),
-                  const Center(
-                    child: Text(
-                      "Don't see what you're looking for?",
-                      style: TextStyle(color: Color.fromRGBO(136, 135, 135, 1)),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ));

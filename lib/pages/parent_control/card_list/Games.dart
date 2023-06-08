@@ -411,64 +411,11 @@ class _GamesState extends State<Games> {
                     const Padding(
                       padding: EdgeInsets.only(top: 8),
                     ),
-                    // Center(
-                    //   child: Column(
-                    //     mainAxisAlignment: MainAxisAlignment.center,
-                    //     children: <Widget>[
-                    //       const Text(
-                    //         'This is the first text.',
-                    //         textAlign: TextAlign.center,
-                    //       ),
-                    //       GestureDetector(
-                    //         onTap: () {
-                    //           showDialog(
-                    //             context: context,
-                    //             builder: (BuildContext context) {
-                    //               return AlertDialog(
-                    //                 title: const Text('Confirmation'),
-                    //                 content: const Text(
-                    //                     'Are you sure you want to proceed?'),
-                    //                 actions: <Widget>[
-                    //                   TextButton(
-                    //                     child: const Text('CANCEL'),
-                    //                     onPressed: () {
-                    //                       Navigator.of(context).pop();
-                    //                     },
-                    //                   ),
-                    //                   TextButton(
-                    //                     child: const Text('OK'),
-                    //                     onPressed: () {
-                    //                       Navigator.of(context).pop();
-                    //                       Scaffold.of(context).showSnackBar(
-                    //                         const SnackBar(
-                    //                           content:
-                    //                               Text('Action confirmed.'),
-                    //                         ),
-                    //                       );
-                    //                     },
-                    //                   ),
-                    //                 ],
-                    //               );
-                    //             },
-                    //           );
-                    //         },
-                    //         child: const Text(
-                    //           'Click me to open a dialog.',
-                    //           textAlign: TextAlign.center,
-                    //         ),
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
-                    Center(
-                      child: Row(
-                        children: const [
-                          Text(
-                            "Don't see what you're looking for?",
-                            style: TextStyle(
-                                color: Color.fromRGBO(136, 135, 135, 1)),
-                          ),
-                        ],
+                    const Center(
+                      child: Text(
+                        "Don't see what you're looking for?",
+                        style:
+                            TextStyle(color: Color.fromRGBO(136, 135, 135, 1)),
                       ),
                     ),
                   ],

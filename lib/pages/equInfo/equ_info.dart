@@ -168,12 +168,8 @@ class _EquInfoState extends State<EquInfo> {
                       InfoBox(
                         boxCotainer: RowContainer(
                           leftText: S.of(context).RunningTime,
-                          righText: day.toString() +
-                              S.of(context).date +
-                              hour.toString() +
-                              S.of(context).hour +
-                              min.toString() +
-                              S.of(context).minute,
+                          righText:
+                              "$day${S.of(context).date} $hour${S.of(context).hour} $min${S.of(context).minute}",
                         ),
                       ),
                       //2版本信息

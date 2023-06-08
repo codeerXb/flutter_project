@@ -127,7 +127,9 @@ class _VideoState extends State<Video> {
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
                       'Select which apps can access the Internet.',
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: Color.fromRGBO(136, 135, 135, 1)),
                     ),
                   ),
                   Padding(

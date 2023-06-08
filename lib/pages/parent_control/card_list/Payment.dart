@@ -86,40 +86,42 @@ class _PaymentState extends State<Payment> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Padding(
-                  //   padding: const EdgeInsets.all(16),
-                  //   child: Container(
-                  //     decoration: BoxDecoration(
-                  //       borderRadius: BorderRadius.circular(20),
-                  //       color: const Color.fromARGB(255, 248, 248, 248),
-                  //     ),
-                  //     child: Row(
-                  //       children: [
-                  //         const Padding(
-                  //           padding: EdgeInsets.only(left: 16, right: 8),
-                  //           child: Icon(Icons.search),
-                  //         ),
-                  //         Expanded(
-                  //           child: TextField(
-                  //             controller: _textEditingController,
-                  //             // style: const TextStyle(
-                  //             //   color: Colors.black87, // 将文本颜色加深
-                  //             // ),
-                  //             decoration: const InputDecoration(
-                  //               hintText: 'Search',
-                  //               border: InputBorder.none,
-                  //             ),
-                  //           ),
-                  //         ),
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
+                  const Padding(
+                    padding: EdgeInsets.all(16),
+                    // child: Container(
+                    //   decoration: BoxDecoration(
+                    //     borderRadius: BorderRadius.circular(20),
+                    //     color: const Color.fromARGB(255, 248, 248, 248),
+                    //   ),
+                    //   child: Row(
+                    //     children: [
+                    //       const Padding(
+                    //         padding: EdgeInsets.only(left: 16, right: 8),
+                    //         child: Icon(Icons.search),
+                    //       ),
+                    //       Expanded(
+                    //         child: TextField(
+                    //           controller: _textEditingController,
+                    //           // style: const TextStyle(
+                    //           //   color: Colors.black87, // 将文本颜色加深
+                    //           // ),
+                    //           decoration: const InputDecoration(
+                    //             hintText: 'Search',
+                    //             border: InputBorder.none,
+                    //           ),
+                    //         ),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
+                  ),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
                       'Select which apps can access the Internet.',
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: Color.fromRGBO(136, 135, 135, 1)),
                     ),
                   ),
                   Padding(

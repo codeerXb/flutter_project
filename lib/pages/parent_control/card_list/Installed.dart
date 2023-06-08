@@ -64,8 +64,8 @@ class _InstalledState extends State<Installed> {
         backgroundColor: const Color.fromRGBO(240, 240, 240, 1),
         appBar: customAppbar(context: context, title: 'App Stores'),
         body: SingleChildScrollView(
-          child: InkWell(
-            onTap: () => closeKeyboard(context),
+          child: GestureDetector(
+            // onTap: () => closeKeyboard(context),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

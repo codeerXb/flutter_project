@@ -68,8 +68,8 @@ class _SocialState extends State<Social> {
         backgroundColor: const Color.fromRGBO(240, 240, 240, 1),
         appBar: customAppbar(context: context, title: 'Social media'),
         body: SingleChildScrollView(
-          child: InkWell(
-            onTap: () => closeKeyboard(context),
+          child: GestureDetector(
+            // onTap: () => closeKeyboard(context),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

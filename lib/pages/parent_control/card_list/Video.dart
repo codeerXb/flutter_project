@@ -80,7 +80,7 @@ class _VideoState extends State<Video> {
         backgroundColor: const Color.fromRGBO(240, 240, 240, 1),
         appBar: customAppbar(context: context, title: 'Video Streaming'),
         body: SingleChildScrollView(
-          child: InkWell(
+          child: GestureDetector(
             onTap: () => closeKeyboard(context),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

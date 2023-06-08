@@ -22,6 +22,7 @@ class _InstalledState extends State<Installed> {
   List<bool> _checkedList = []; // 用于表示ListView中每个CheckboxListTile的选中状态
 
   final TextEditingController _textEditingController = TextEditingController();
+  List<bool> selected1 = [false, false, false, false, false, false, false];
 
   List<Map<String, dynamic>> topData = [
     {
@@ -32,12 +33,26 @@ class _InstalledState extends State<Installed> {
       'img': 'assets/images/Google Play.png',
       'text': 'Google Play',
     },
-    // {
-    //   'img': 'assets/images/Shadowrocket.jpg',
-    //   'text': 'Shadowrocket.jpg',
-    // },
     // ...
   ];
+  void setAllCheckBoxes(bool value) {
+    for (int i = 0; i < selected1.length; i++) {
+      selected1[i] = value;
+    }
+  }
+
+  void updateAllCheckBoxes() {
+    bool allSelected = true;
+    for (int i = 0; i < selected1.length; i++) {
+      if (!selected1[i]) {
+        allSelected = false;
+        break;
+      }
+    }
+    setState(() {
+      _isChecked = allSelected;
+    });
+  }
 
   @override
   void initState() {
@@ -108,9 +123,7 @@ class _InstalledState extends State<Installed> {
                         setState(() {
                           _isChecked = value!;
                           // 当Checkbox的选中状态改变时，将ListView中每个CheckboxListTile的选中状态也改变
-                          for (int i = 0; i < _checkedList.length; i++) {
-                            _checkedList[i] = value;
-                          }
+                          setAllCheckBoxes(value);
                         });
                       },
                     ),
@@ -123,40 +136,82 @@ class _InstalledState extends State<Installed> {
                   //         TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   //   ),
                   // ),
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        color: const Color.fromARGB(255, 248, 248, 248),
-                      ),
-                      child: ListView.builder(
-                        itemCount: topData.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Column(
-                            children: [
-                              ListTile(
-                                leading: Image.asset(
-                                  topData[index]['img'],
-                                  width: 40, // 设置图片宽度
-                                  height: 40,
-                                ),
-                                title: Text(topData[index]['text']),
-                                trailing: Checkbox(
-                                  value: _checkedList[index],
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _checkedList[index] = value!;
-                                    });
-                                  },
-                                ),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      color: const Color.fromARGB(255, 248, 248, 248),
+                    ),
+                    child: Column(
+                      children: topData.map((data) {
+                        final index = topData.indexOf(data);
+                        return Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 16),
+                              child: Row(
+                                children: [
+                                  Image.asset(
+                                    data['img'],
+                                    width: 50,
+                                    height: 50,
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Text(data['text']),
+                                  const Spacer(),
+                                  Checkbox(
+                                    value: selected1[index],
+                                    onChanged: (value) {
+                                      setState(() {
+                                        selected1[index] = value!;
+                                      });
+                                      updateAllCheckBoxes();
+                                    },
+                                  ),
+                                ],
                               ),
-                              const Divider(),
-                            ],
-                          );
-                        },
-                      ),
+                            ),
+                            if (index != topData.length - 1)
+                              const Divider(height: 1),
+                          ],
+                        );
+                      }).toList(),
                     ),
                   ),
+                  // Expanded(
+                  //   child: Container(
+                  //     decoration: BoxDecoration(
+                  //       borderRadius: BorderRadius.circular(16),
+                  //       color: const Color.fromARGB(255, 248, 248, 248),
+                  //     ),
+                  //     child: ListView.builder(
+                  //       itemCount: topData.length,
+                  //       itemBuilder: (BuildContext context, int index) {
+                  //         return Column(
+                  //           children: [
+                  //             ListTile(
+                  //               leading: Image.asset(
+                  //                 topData[index]['img'],
+                  //                 width: 40, // 设置图片宽度
+                  //                 height: 40,
+                  //               ),
+                  //               title: Text(topData[index]['text']),
+                  //               trailing: Checkbox(
+                  //                 value: _checkedList[index],
+                  //                 onChanged: (value) {
+                  //                   setState(() {
+                  //                     _checkedList[index] = value!;
+                  //                   });
+                  //                 },
+                  //               ),
+                  //             ),
+                  //             const Divider(),
+                  //           ],
+                  //         );
+                  //       },
+                  //     ),
+                  //   ),
+                  // ),
                   const Padding(
                     padding: EdgeInsets.only(top: 8),
                   ),

@@ -97,7 +97,10 @@ class _GamesState extends State<Games> {
   void updateAllCheckBoxes() {
     bool allSelected = true;
     for (int i = 0; i < selected1.length; i++) {
+      print('selected1[i]$i');
+
       if (!selected1[i]) {
+        print('selected1[i]${selected1[i]}');
         allSelected = false;
         break;
       }

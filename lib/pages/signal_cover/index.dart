@@ -78,6 +78,7 @@ class _MyAppState extends State<MyApp> {
   // 使用RectController来管理_rects
   final RectController _rectController = Get.put(RectController());
   String roomName = '';
+  String roomArea = '1';
   // 当前选中的楼层
   String curFloor = '1F';
 
@@ -151,31 +152,75 @@ class _MyAppState extends State<MyApp> {
 
   // saveLoading
   bool saveLayoutLoading = false;
-  void onSaveLayout() async {
-    setState(() {
-      saveLayoutLoading = true;
-    });
-    try {
-      var sn = await sharedGetData("deviceSn", String);
-      debugPrint('devicesn: $sn');
-      // 保存的时候清除isSelected和selectedEdge状态
-      _rectController.clearRectStatus();
-      // 实现保存户型图逻辑
-      await App.post('/platform/wifiJson/wifi', data: {
-        "sn": sn,
-        "wifiJson": {"list": _rectController.rects}
-      });
-      printInfo(
-          info:
-              '户型数据：${jsonEncode({"list": _rectController.rects}).toString()}');
-      Get.offNamed('/test_signal');
-    } catch (err) {
-      printError(info: err.toString());
-    } finally {
-      setState(() {
-        saveLayoutLoading = false;
-      });
-    }
+  void onSaveLayout() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Room Area(㎡)'),
+          content: TextFormField(
+            initialValue: roomArea,
+            onChanged: (value) {
+              setState(() {
+                roomArea = value;
+              });
+            },
+            decoration: const InputDecoration(
+              labelText: 'Room Area(㎡)',
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('CANCEL'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('ADD'),
+              onPressed: () async {
+                // 在此处处理确认按钮的逻辑
+                if (roomArea.isNotEmpty) {
+                  setState(() {
+                    saveLayoutLoading = true;
+                  });
+                  try {
+                    var sn = await sharedGetData("deviceSn", String);
+                    debugPrint('devicesn: $sn');
+                    // 保存的时候清除isSelected和selectedEdge状态
+                    _rectController.clearRectStatus();
+                    // 实现保存户型图逻辑
+                    await App.post('/platform/wifiJson/wifi', data: {
+                      "sn": sn,
+                      "wifiJson": {"list": _rectController.rects}
+                    });
+                    // 关闭对话框
+                    Navigator.of(context).pop();
+                    printInfo(
+                        info: '户型数据：${jsonEncode({
+                          "list": _rectController.rects
+                        }).toString()}');
+                    Get.offNamed(
+                      '/test_signal',
+                      arguments: {
+                        'roomInfo': jsonEncode(_rectController.rects),
+                        'roomArea': roomArea
+                      },
+                    );
+                  } catch (err) {
+                    printError(info: err.toString());
+                  } finally {}
+                  // 清空输入的文字
+                  setState(() {
+                    roomArea = '';
+                  });
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   // 重置户型图

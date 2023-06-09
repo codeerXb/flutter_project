@@ -1049,7 +1049,7 @@ class _SettingState extends State<Setting> {
               height: 58.w,
               image: const AssetImage('assets/images/signal_cover.png')),
           callBack: () {
-            Get.toNamed("/signal_cover");
+            Get.toNamed("/test_edit");
           }),
     );
   }

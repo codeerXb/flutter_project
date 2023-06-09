@@ -18,6 +18,7 @@ import 'package:flutter_template/pages/setting/contact_customer.dart';
 import 'package:flutter_template/pages/Ethernet/net_type.dart';
 import 'package:flutter_template/pages/setting/language_change.dart';
 import 'package:flutter_template/pages/setting/user_detail.dart';
+import 'package:flutter_template/pages/signal_cover/test_edit.dart';
 import 'package:flutter_template/pages/sub_service/ai_video.dart';
 import 'package:flutter_template/pages/sub_service/game_acceleration.dart';
 import 'package:flutter_template/pages/sub_service/index.dart';
@@ -262,9 +263,11 @@ class GlobalRouter {
     // 添加设备
     '/add_equipment': (BuildContext context, {Object? args}) =>
         const AddEquipment(),
-    // 编辑房间户型
+    // 房间户型检测与编辑(1)
+    '/test_edit': (BuildContext context, {Object? args}) => const TestEdit(),
+    // 编辑房间户型(2)
     '/signal_cover': (BuildContext context, {Object? args}) => const MyApp(),
-    // 测试信号强度
+    // 测试信号强度(3)
     '/test_signal': (BuildContext context, {Object? args}) =>
         const TestSignal(),
   };

@@ -76,11 +76,11 @@ class _InternetState extends State<Internet> {
                 ],
               ),
               if (date == 'Yesterday')
-                Image(image: AssetImage('assets/images/yeterday.png')),
+                const Image(image: AssetImage('assets/images/yeterday.png')),
               if (date == 'Today')
-                Image(image: AssetImage('assets/images/today.png')),
+                const Image(image: AssetImage('assets/images/today.png')),
               if (date == 'Lastdays')
-                Image(image: AssetImage('assets/images/last7day.png'))
+                const Image(image: AssetImage('assets/images/last7day.png'))
               // Image(
               //     image: date == 'Yesterday'
               //         ? AssetImage('assets/images/Yesterday.png')

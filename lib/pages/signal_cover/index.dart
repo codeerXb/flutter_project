@@ -232,6 +232,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 0,
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         leading: IconButton(
@@ -255,8 +256,7 @@ class _MyAppState extends State<MyApp> {
       ),
       body: Column(
         children: [
-          Container(
-            color: Colors.white,
+          SizedBox(
             height: 50,
             child: Row(
               children: [
@@ -373,7 +373,7 @@ class _MyAppState extends State<MyApp> {
           children: [
             SizedBox(
               height: 50,
-              child: ElevatedButton(
+              child: OutlinedButton(
                 onPressed: () {
                   showDialog(
                     context: context,
@@ -435,9 +435,15 @@ class _MyAppState extends State<MyApp> {
                     },
                   );
                 },
-                style: ElevatedButton.styleFrom(
+                style: OutlinedButton.styleFrom(
                   backgroundColor: Colors.white,
                   foregroundColor: Colors.black,
+                  shadowColor: Colors.white,
+                  side: const BorderSide(color: Colors.white),
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(0), // set border radius to 0
+                  ),
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -450,14 +456,20 @@ class _MyAppState extends State<MyApp> {
             ),
             SizedBox(
               height: 50,
-              child: ElevatedButton(
+              child: OutlinedButton(
                 onPressed: () {
                   // 按钮点击逻辑
                   _rectController.clearRect();
                 },
-                style: ElevatedButton.styleFrom(
+                style: OutlinedButton.styleFrom(
                   backgroundColor: Colors.white,
                   foregroundColor: Colors.black,
+                  shadowColor: Colors.white,
+                  side: const BorderSide(color: Colors.white),
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(0), // set border radius to 0
+                  ),
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -470,14 +482,20 @@ class _MyAppState extends State<MyApp> {
             ),
             SizedBox(
               height: 50,
-              child: ElevatedButton(
+              child: OutlinedButton(
                 onPressed: () {
                   // 按钮点击逻辑
                   onResetRects();
                 },
-                style: ElevatedButton.styleFrom(
+                style: OutlinedButton.styleFrom(
                   backgroundColor: Colors.white,
                   foregroundColor: Colors.black,
+                  shadowColor: Colors.white,
+                  side: const BorderSide(color: Colors.white),
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(0), // set border radius to 0
+                  ),
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -518,7 +536,7 @@ class GridPainter extends CustomPainter {
       ..color = const Color.fromARGB(255, 196, 196, 196)
       ..style = PaintingStyle.stroke;
     final paintBlack = Paint()
-      ..color = const Color.fromARGB(255, 151, 151, 151)
+      ..color = const Color.fromARGB(255, 197, 197, 197)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
 
@@ -782,7 +800,7 @@ class _GridWidgetState extends State<GridWidget> {
               backgroundColor: Colors.white,
               foregroundColor: Colors.black,
             ),
-            child: const Icon(Icons.settings_backup_restore),
+            child: const Icon(Icons.center_focus_weak_rounded),
           ),
         ),
       ],

@@ -216,44 +216,44 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
 
   //终端设备列表
   getDevices() async {
-    setState(() {
-      loading = true;
-    });
-    // 开始旋转
-    _animationController.repeat();
-    try {
-      Map<String, dynamic> form = {'sn': sn, "type": "getDevicesTable"};
-      var res = await App.post('/cpeMqtt/getDevicesTable', data: form);
+    if (mounted) {
+      setState(() {
+        loading = true;
+      });
+      // 开始旋转
+      _animationController.repeat();
+      try {
+        Map<String, dynamic> form = {'sn': sn, "type": "getDevicesTable"};
+        var res = await App.post('/cpeMqtt/getDevicesTable', data: form);
 
-      var d = json.decode(res.toString());
-      if (d['code'] != 200) {
-      } else {
-        setState(() {
-          List<OnlineDeviceTable>? onlineDeviceTable = [];
-          int id = 0;
+        var d = json.decode(res.toString());
+        if (d['code'] != 200) {
+        } else {
+          setState(() {
+            List<OnlineDeviceTable>? onlineDeviceTable = [];
+            int id = 0;
 
-          d['data']['wifiDevices'].addAll(d['data']['lanDevices']);
-          d['data']['wifiDevices'].forEach((item) {
-            OnlineDeviceTable device = OnlineDeviceTable.fromJson({
-              'id': id,
-              'LeaseTime': '1',
-              'Type': item['connection'] ?? 'LAN',
-              'HostName': item['name'],
-              'IP': item['IPAddress'],
-              'MAC': item['MACAddress'] ?? item['MacAddress']
+            d['data']['wifiDevices'].addAll(d['data']['lanDevices']);
+            d['data']['wifiDevices'].forEach((item) {
+              OnlineDeviceTable device = OnlineDeviceTable.fromJson({
+                'id': id,
+                'LeaseTime': '1',
+                'Type': item['connection'] ?? 'LAN',
+                'HostName': item['name'],
+                'IP': item['IPAddress'],
+                'MAC': item['MACAddress'] ?? item['MacAddress']
+              });
+              onlineDeviceTable.add(device);
+              id++;
             });
-            onlineDeviceTable.add(device);
-            id++;
+            topoData =
+                EquipmentDatas(onlineDeviceTable: onlineDeviceTable, max: 255);
+            // ToastUtils.toast(S.current.success);
           });
-          topoData =
-              EquipmentDatas(onlineDeviceTable: onlineDeviceTable, max: 255);
-          // ToastUtils.toast(S.current.success);
-        });
-      }
-    } catch (err) {
-      debugPrint(err.toString());
-    } finally {
-      if (mounted) {
+        }
+      } catch (err) {
+        debugPrint(err.toString());
+      } finally {
         setState(() {
           loading = false;
         });
@@ -563,7 +563,11 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
                   ),
                 ),
                 loading
-                    ? const Center(child: CircularProgressIndicator())
+                    ? const Center(
+                        child: CircularProgressIndicator(
+                        color: Color.fromARGB(255, 7, 94, 255),
+                        strokeWidth: 2,
+                      ))
                     : Column(
                         children: [
                           if (topoData.onlineDeviceTable!.isNotEmpty)

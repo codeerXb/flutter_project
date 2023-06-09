@@ -210,15 +210,76 @@ class _InstalledState extends State<Installed> {
                 const Padding(
                   padding: EdgeInsets.only(top: 8),
                 ),
-                const Center(
-                  child: Text(
-                    "Don't see what you're looking for?",
-                    style: TextStyle(color: Color.fromRGBO(136, 135, 135, 1)),
+                Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      const Text(
+                        "Don't see what you're looking for?",
+                        style:
+                            TextStyle(color: Color.fromRGBO(136, 135, 135, 1)),
+                        textAlign: TextAlign.center,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: const Text('Feedback'),
+                                content: SizedBox(
+                                  width: 400.sp,
+                                  child: TextFormField(
+                                    // controller: lanTimeController,
+                                    decoration: const InputDecoration(
+                                      labelText: "Feedback...",
+                                      border: OutlineInputBorder(),
+                                    ),
+                                  ),
+                                ),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: const Text('Cancel'),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                  TextButton(
+                                    child: const Text('Confirm'),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      _showSnackBar(
+                                          context, 'Feedback is successful!');
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        child: const Text(
+                          'Feedback',
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Color.fromRGBO(95, 130, 226, 1)),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
           ),
         ));
+  }
+
+  void _showSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 2),
+      ),
+    );
   }
 }

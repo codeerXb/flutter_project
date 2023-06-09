@@ -274,7 +274,7 @@ class _UserLoginState extends State<UserLogin> {
                                 debugPrint("$d");
                                 return;
                               } else {
-                                debugPrint('用户$data');
+                                debugPrint('用户$data,登录信息${d.toString()}');
                                 // 是否存储了设备sn
                                 sharedGetData('deviceSn', String).then((sn) {
                                   if (sn != null) {

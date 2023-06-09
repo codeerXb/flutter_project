@@ -220,15 +220,17 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
       setState(() {
         loading = true;
       });
-      // 开始旋转
-      _animationController.repeat();
-      try {
-        Map<String, dynamic> form = {'sn': sn, "type": "getDevicesTable"};
-        var res = await App.post('/cpeMqtt/getDevicesTable', data: form);
+    }
+    // 开始旋转
+    _animationController.repeat();
+    try {
+      Map<String, dynamic> form = {'sn': sn, "type": "getDevicesTable"};
+      var res = await App.post('/cpeMqtt/getDevicesTable', data: form);
 
-        var d = json.decode(res.toString());
-        if (d['code'] != 200) {
-        } else {
+      var d = json.decode(res.toString());
+      if (d['code'] != 200) {
+      } else {
+        if (mounted) {
           setState(() {
             List<OnlineDeviceTable>? onlineDeviceTable = [];
             int id = 0;
@@ -251,9 +253,11 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
             // ToastUtils.toast(S.current.success);
           });
         }
-      } catch (err) {
-        debugPrint(err.toString());
-      } finally {
+      }
+    } catch (err) {
+      debugPrint(err.toString());
+    } finally {
+      if (mounted) {
         setState(() {
           loading = false;
         });
@@ -278,10 +282,12 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
       ];
       var res = await Request().getACSNode(parameterNames, sn);
       Map<String, dynamic> d = jsonDecode(res);
-      setState(() {
-        ConnectStatus = d['data']['InternetGatewayDevice']['WEB_GUI']
-            ['Ethernet']['Status']['ConnectStatus']['_value'];
-      });
+      if (mounted && d['code'] == 200) {
+        setState(() {
+          ConnectStatus = d['data']['InternetGatewayDevice']['WEB_GUI']
+              ['Ethernet']['Status']['ConnectStatus']['_value'];
+        });
+      }
     } catch (e) {
       debugPrint('获取设备信息失败：${e.toString()}');
     }

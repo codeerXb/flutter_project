@@ -32,7 +32,7 @@ class _FeedBackState extends State<FeedBack> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppbar(context: context, title:S.current.Ethernet ),
+      appBar: customAppbar(context: context, title: S.current.Ethernet),
       body: InkWell(
         onTap: () => closeKeyboard(context),
         child: SingleChildScrollView(

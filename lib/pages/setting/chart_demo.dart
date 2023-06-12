@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 import '../../core/widget/custom_app_bar.dart';
+
+import 'package:local_auth/local_auth.dart';
 
 /// 图表demo
 class ChartDemo extends StatefulWidget {
@@ -12,109 +15,210 @@ class ChartDemo extends StatefulWidget {
 }
 
 class _ChartDemoState extends State<ChartDemo> {
-  late TooltipBehavior _tooltip;
-  late TooltipBehavior _tooltip2;
+  final LocalAuthentication auth = LocalAuthentication();
+  _SupportState _supportState = _SupportState.unknown;
+  bool? _canCheckBiometrics;
+  List<BiometricType>? _availableBiometrics;
+  String _authorized = 'Not Authorized';
+  bool _isAuthenticating = false;
 
   @override
   void initState() {
-    _tooltip = TooltipBehavior(enable: true);
-    _tooltip2 = TooltipBehavior(enable: true);
     super.initState();
+    auth.isDeviceSupported().then(
+          (bool isSupported) => setState(() => _supportState = isSupported
+              ? _SupportState.supported
+              : _SupportState.unsupported),
+        );
+  }
+
+  Future<void> _checkBiometrics() async {
+    late bool canCheckBiometrics;
+    try {
+      canCheckBiometrics = await auth.canCheckBiometrics;
+    } on PlatformException catch (e) {
+      canCheckBiometrics = false;
+      print(e);
+    }
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _canCheckBiometrics = canCheckBiometrics;
+    });
+  }
+
+  Future<void> _getAvailableBiometrics() async {
+    late List<BiometricType> availableBiometrics;
+    try {
+      availableBiometrics = await auth.getAvailableBiometrics();
+    } on PlatformException catch (e) {
+      availableBiometrics = <BiometricType>[];
+      print(e);
+    }
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _availableBiometrics = availableBiometrics;
+    });
+  }
+
+  Future<void> _authenticate() async {
+    bool authenticated = false;
+    try {
+      setState(() {
+        _isAuthenticating = true;
+        _authorized = 'Authenticating';
+      });
+      authenticated = await auth.authenticate(
+        localizedReason: 'Let OS determine authentication method',
+        options: const AuthenticationOptions(
+          stickyAuth: true,
+        ),
+      );
+      setState(() {
+        _isAuthenticating = false;
+      });
+    } on PlatformException catch (e) {
+      print(e);
+      setState(() {
+        _isAuthenticating = false;
+        _authorized = 'Error - ${e.message}';
+      });
+      return;
+    }
+    if (!mounted) {
+      return;
+    }
+
+    setState(
+        () => _authorized = authenticated ? 'Authorized' : 'Not Authorized');
+  }
+
+  Future<void> _authenticateWithBiometrics() async {
+    bool authenticated = false;
+    try {
+      setState(() {
+        _isAuthenticating = true;
+        _authorized = 'Authenticating';
+      });
+      authenticated = await auth.authenticate(
+        localizedReason:
+            'Scan your fingerprint (or face or whatever) to authenticate',
+        options: const AuthenticationOptions(
+          stickyAuth: true,
+          biometricOnly: true,
+        ),
+      );
+      setState(() {
+        _isAuthenticating = false;
+        _authorized = 'Authenticating';
+      });
+    } on PlatformException catch (e) {
+      print(e);
+      setState(() {
+        _isAuthenticating = false;
+        _authorized = 'Error - ${e.message}';
+      });
+      return;
+    }
+    if (!mounted) {
+      return;
+    }
+
+    final String message = authenticated ? 'Authorized' : 'Not Authorized';
+    setState(() {
+      _authorized = message;
+    });
+  }
+
+  Future<void> _cancelAuthentication() async {
+    await auth.stopAuthentication();
+    setState(() => _isAuthenticating = false);
   }
 
   @override
   Widget build(BuildContext context) {
-    List<ChartData> chartData = [
-      ChartData('Jan', 35),
-      ChartData('Feb', 28),
-      ChartData('Mar', 34),
-      ChartData('Apr', 32),
-      ChartData('May', 40)
-    ];
-
-    int total = 35 + 28 + 34 + 32 + 40;
-
     return Scaffold(
-        appBar: customAppbar(context: context, title: '图表Demo'),
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // 折线图
-              SfCartesianChart(
-                  primaryXAxis: CategoryAxis(),
-                  // Chart title
-                  title: ChartTitle(text: 'Half yearly sales analysis'),
-                  // Enable legend
-                  legend: Legend(isVisible: true),
-                  // Enable tooltip
-                  tooltipBehavior: TooltipBehavior(enable: true),
-                  series: <ChartSeries<ChartData, String>>[
-                    LineSeries<ChartData, String>(
-                        dataSource: chartData,
-                        xValueMapper: (ChartData data, _) => data.x,
-                        yValueMapper: (ChartData data, _) => data.y,
-                        name: 'Sales',
-                        // Enable data label
-                        dataLabelSettings:
-                            const DataLabelSettings(isVisible: true))
-                  ]),
-              // 柱状图
-              SfSparkBarChart.custom(
-                //Enable the trackball
-                trackball: const SparkChartTrackball(
-                    activationMode: SparkChartActivationMode.tap),
-                //Enable marker
-                //Enable data label
-                labelDisplayMode: SparkChartLabelDisplayMode.all,
-                xValueMapper: (int index) => chartData[index].x,
-                yValueMapper: (int index) => chartData[index].y,
-                dataCount: 5,
+      appBar: AppBar(
+        title: const Text('Plugin example app'),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.only(top: 30),
+        children: <Widget>[
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              if (_supportState == _SupportState.unknown)
+                const CircularProgressIndicator()
+              else if (_supportState == _SupportState.supported)
+                const Text('This device is supported')
+              else
+                const Text('This device is not supported'),
+              const Divider(height: 100),
+              Text('Can check biometrics: $_canCheckBiometrics\n'),
+              ElevatedButton(
+                onPressed: _checkBiometrics,
+                child: const Text('Check biometrics'),
               ),
-              // 柱状图2 横向
-              SfCartesianChart(
-                  primaryXAxis: CategoryAxis(),
-                  tooltipBehavior: _tooltip,
-                  series: <ChartSeries<ChartData, String>>[
-                    BarSeries<ChartData, String>(
-                        dataSource: chartData,
-                        dataLabelSettings: const DataLabelSettings(
-                            isVisible: true,
-                            labelAlignment: ChartDataLabelAlignment.top),
-                        xValueMapper: (ChartData data, _) => data.x,
-                        yValueMapper: (ChartData data, _) => data.y,
-                        name: 'Gold',
-                        color: Colors.pink)
-                  ]),
-              // 饼图
-              SfCircularChart(series: <CircularSeries>[
-                // Render pie chart
-                PieSeries<ChartData, String>(
-                    dataSource: chartData,
-                    pointColorMapper: (ChartData data, _) => data.color,
-                    xValueMapper: (ChartData data, _) => data.x,
-                    yValueMapper: (ChartData data, _) => data.y)
-              ]),
-              // 饼图2
-              SfCircularChart(
-                  tooltipBehavior: _tooltip2,
-                  series: <CircularSeries<ChartData, String>>[
-                    DoughnutSeries(
-                      dataSource: chartData,
-                      xValueMapper: (ChartData data, _) => data.x,
-                      yValueMapper: (ChartData data, _) => data.y,
-                      innerRadius: '70%',
-                      dataLabelMapper: (ChartData data, _) {
-                        return '${data.x}：${data.y} \n ${(data.y / total * 100).toStringAsFixed(2)}%';
-                      },
-                      dataLabelSettings: const DataLabelSettings(
-                          isVisible: true,
-                          labelIntersectAction: LabelIntersectAction.none),
-                    )
-                  ])
+              const Divider(height: 100),
+              Text('Available biometrics: $_availableBiometrics\n'),
+              ElevatedButton(
+                onPressed: _getAvailableBiometrics,
+                child: const Text('Get available biometrics'),
+              ),
+              const Divider(height: 100),
+              Text('Current State: $_authorized\n'),
+              if (_isAuthenticating)
+                ElevatedButton(
+                  onPressed: _cancelAuthentication,
+                  // TODO(goderbauer): Make this const when this package requires Flutter 3.8 or later.
+                  // ignore: prefer_const_constructors
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: const <Widget>[
+                      Text('Cancel Authentication'),
+                      Icon(Icons.cancel),
+                    ],
+                  ),
+                )
+              else
+                Column(
+                  children: <Widget>[
+                    ElevatedButton(
+                      onPressed: _authenticate,
+                      // TODO(goderbauer): Make this const when this package requires Flutter 3.8 or later.
+                      // ignore: prefer_const_constructors
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: const <Widget>[
+                          Text('Authenticate'),
+                          Icon(Icons.perm_device_information),
+                        ],
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: _authenticateWithBiometrics,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Text(_isAuthenticating
+                              ? 'Cancel'
+                              : 'Authenticate: biometrics only'),
+                          const Icon(Icons.fingerprint),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
             ],
           ),
-        ));
+        ],
+      ),
+    );
   }
 }
 
@@ -124,4 +228,10 @@ class ChartData {
   final String x;
   final double y;
   final Color? color;
+}
+
+enum _SupportState {
+  unknown,
+  supported,
+  unsupported,
 }

@@ -283,5 +283,14 @@
   "pleaseEnter": "Please enter the content",
   "ModifyRemarks": "Device Name",
   "SureRouterConnected": "Make sure the router is connected to the power supply and the WAN port is plugged in with an Ethernet cable",
+  "DetectionAndEdit": "Detection and editing",
+  "EditUnit": "Edit Unit",
+  "Blueprint": "Wi-Fi Signal Country Blueprint (for reference only)",
+  "RetestF": "Retest 1F",
+  "TestSignal": "Signal Coverage",
+  "startTesting": "Start Test",
+  "roomStrength ": "Get the signal strength of the room",
+  "GenerateOverlay": "Generate Overlay",
+  "coverageMap": "Please drag the router to the corresponding position in the room, and then click Start detection to draw the signal coverage map",
   "a": "111"
 }

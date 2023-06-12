@@ -1,16 +1,25 @@
 import 'dart:convert';
-import 'dart:math';
 import 'dart:ui' as ui;
-
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/core/http/http.dart';
+import 'package:flutter_template/core/utils/toast.dart';
 import 'package:get/get.dart';
+import 'package:mac_address/mac_address.dart';
 import 'dart:async';
 import 'package:wifi_info_plugin_plus/wifi_info_plugin_plus.dart';
 
+import '../../config/base_config.dart';
+import '../../core/http/http_app.dart';
+import '../../core/utils/shared_preferences_util.dart';
+import '../../core/widget/custom_app_bar.dart';
+import '../../generated/l10n.dart';
+
 var roomInfo = json.decode(Get.arguments['roomInfo']);
 Offset offSetValue = Offset.zero;
+Offset routerPos = Offset.zero;
+String btnText = S.current.startTesting;
 
 class TestSignal extends StatefulWidget {
   const TestSignal({super.key});
@@ -20,15 +29,12 @@ class TestSignal extends StatefulWidget {
 }
 
 class _MyAppState extends State<TestSignal> {
-  var roomArea = json.decode(Get.arguments['roomArea']);
-
-  WifiInfoWrapper? _wifiObject;
   //获取到户型数据
   @override
   void initState() {
     super.initState();
-    initPlatformState();
     setState(() {
+      btnText = S.current.startTesting;
       roomInfo = json.decode(Get.arguments['roomInfo']);
       if (roomInfo.length > 0) {
         offSetValue = Offset(
@@ -37,53 +43,20 @@ class _MyAppState extends State<TestSignal> {
     });
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    WifiInfoWrapper? wifiObject;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      wifiObject = await WifiInfoPlugin.wifiDetails;
-    } on PlatformException {}
-    if (!mounted) return;
-
-    setState(() {
-      _wifiObject = wifiObject;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    // String ipAddress =
-    //     _wifiObject != null ? _wifiObject!.ipAddress.toString() : "...";
+    return Scaffold(
+      // Test Signal Strength
+      appBar: customAppbar(context: context, title: S.current.TestSignal),
+      body: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: const [
+            //  Text('Romm Area:$roomArea ㎡'),
+            ArcProgresssBar(),
 
-    // String signalStrength =
-    //     _wifiObject != null ? _wifiObject!.signalStrength.toString() : '...';
-    // String connectionType = _wifiObject != null
-    //     ? _wifiObject!.connectionType.toString()
-    //     : 'unknown';
-
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              // 返回按钮逻辑
-              Get.offNamed('/signal_cover');
-            },
-          ),
-          title: const Text('Test Signal Strength'),
-        ),
-        body: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: const [
-              //  Text('Romm Area:$roomArea ㎡'),
-              ArcProgresssBar(),
-
-              //按钮
-              ProcessButton(),
-            ]),
-      ),
+            //按钮
+            ProcessButton(),
+          ]),
     );
   }
 }
@@ -132,15 +105,9 @@ class _ArcProgresssBarState extends State<ArcProgresssBar> {
   Widget build(BuildContext context) {
     if (_assetImageFrame == null) {
       // 处理异步加载尚未完成的情况，返回一个加载指示器或其他占位符
-      return CircularProgressIndicator();
+      return const CircularProgressIndicator();
     } else {
-      return
-          //  AspectRatio(
-          //   aspectRatio: 1,
-          //   child:
-
-          // );
-          Expanded(
+      return Expanded(
         child: Container(
           decoration: BoxDecoration(
             border: Border.all(
@@ -159,22 +126,24 @@ class _ArcProgresssBarState extends State<ArcProgresssBar> {
                       min: widget.min, max: widget.max),
                 ),
               ),
-              Positioned(
-                left: offSetValue.dx + 100,
-                top: offSetValue.dy + 100,
-                child: SizedBox(
-                  width: 200, // 添加一个具体的宽度
-                  height: 200, // 添加一个具体的高度
-                  child: GestureDetector(
-                    // 手指滑动
-                    onPanUpdate: (details) {
-                      setState(() {
-                        offSetValue += details.delta;
-                      });
-                    },
+              if (btnText == S.current.startTesting)
+                Positioned(
+                  left: offSetValue.dx + 100,
+                  top: offSetValue.dy + 100,
+                  child: SizedBox(
+                    width: 40, // 添加一个具体的宽度
+                    height: 40, // 添加一个具体的高度
+                    child: GestureDetector(
+                      // 手指滑动
+                      onPanUpdate: (details) {
+                        setState(() {
+                          offSetValue += details.delta;
+                          routerPos += details.delta;
+                        });
+                      },
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
         ),
@@ -191,23 +160,13 @@ class MyPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // var paint2 = Paint()
-    //   ..isAntiAlias = true
-    //   ..strokeWidth = 1.0
-    //   ..style = PaintingStyle.stroke
-    //   ..color = Colors.green
-    //   ..invertColors = false;
     var paint3 = Paint()
       ..isAntiAlias = true
       ..strokeWidth = 1.0
       ..style = PaintingStyle.stroke
       ..color = const Color.fromARGB(255, 95, 95, 95)
       ..invertColors = false;
-    // var paint4 = Paint()
-    //   ..isAntiAlias = true
-    //   ..strokeWidth = 1
-    //   ..style = PaintingStyle.fill
-    //   ..invertColors = false;
+
     Paint selfPaint = Paint()
       ..color = Colors.blue
       ..style = PaintingStyle.fill
@@ -215,26 +174,7 @@ class MyPainter extends CustomPainter {
       ..strokeCap = StrokeCap.butt
       ..strokeWidth = 30.0;
     // 画布起点移到屏幕中心
-    // Rect a = Rect.fromCircle(center: const Offset(0, 0), radius: 150);
     canvas.translate(size.width / 2, size.height / 2);
-    // _drawBottomRight(canvas, size);
-    // const rect = Rect.fromLTWH(-100, -100, 200, 220);
-    // final centerX = rect.left + rect.width / 2;
-    // final centerY = rect.top + rect.height / 2;
-    // final radius = min(rect.width, rect.height);
-
-    // const gradient =
-    //     RadialGradient(center: Alignment.center, radius: 2, colors: [
-    //   Color.fromRGBO(26, 188, 156, .7),
-    //   Color.fromRGBO(241, 196, 15, .7),
-    //   Color.fromRGBO(231, 76, 60, .7),
-    // ]);
-    // final paint = Paint()..shader = gradient.createShader(rect);
-
-    // canvas.drawCircle(Offset(centerX, centerY), radius, paint);
-    // canvas.drawRect(rect, paint);
-    // canvas.drawRect(a, paint2);
-    //router
 
     //router
     canvas.drawImage(aPattern, offSetValue, selfPaint);
@@ -252,36 +192,6 @@ class MyPainter extends CustomPainter {
     return true;
   }
 }
-
-//图片
-// void _img(Canvas canvas, Size size) async {
-//   Future<ui.Codec> _loadImage(AssetBundleImageKey key) async {
-//     final ByteData data = await key.bundle.load(key.name);
-//     if (data == null) throw 'Unable to read data';
-//     return await ui.instantiateImageCodec(data.buffer.asUint8List());
-//   }
-
-//   final Paint paint = Paint()
-//     ..color = Colors.yellow
-//     ..strokeWidth = 2.0
-//     ..strokeCap = StrokeCap.butt
-//     ..style = PaintingStyle.stroke;
-
-//   // sunImage
-//   //     .obtainKey(const ImageConfiguration())
-//   //     .then((AssetBundleImageKey key) {
-//   //   _loadImage(key).then((ui.Codec codec) {
-//   //     print("frameCount: ${codec.frameCount.toString()}");
-//   //     codec.getNextFrame().then((info) {
-//   //       print("image: ${info.image.toString()}");
-//   //       print("duration: ${info.duration.toString()}");
-//   //     });
-//   //   });
-//   // });
-//   // if (sunImage != null) {
-//   //   canvas.drawImage(sunImage!, size.center(Offset.fromDirection(1)), paint);
-//   // }
-// }
 
 // 盒子
 void _box(Canvas canvas, Paint paint, text, x, y, w, h) {
@@ -309,46 +219,6 @@ void _box(Canvas canvas, Paint paint, text, x, y, w, h) {
   canvas.drawParagraph(paragraph, offset);
 }
 
-// 通过移动画布的方式来绘制网格线
-// void _drawBottomRight(Canvas canvas, Size size) {
-//   // 保持画布状态
-//   canvas.save();
-//   // 循环绘制横向网格线
-//   const int count = 12;
-//   var step = 2 * pi / count;
-//   Paint paint = Paint();
-//   paint
-//     ..color = const Color.fromARGB(255, 214, 214, 214)
-//     ..strokeWidth = 1
-//     ..style = PaintingStyle.stroke;
-//   for (double i = 0; i < 30; i += 1) {
-//     // 画线，设置线的起点为0，终点为容器高度的1/2,用刚刚自定义好的画笔来画
-//     canvas.drawLine(const Offset(-150, -150), const Offset(150, -150), paint);
-//     // 设置网格往下方平移step距离
-//     canvas.translate(0, 10.0);
-//   }
-//   // 回复网格状态
-//   canvas.restore();
-//   // 保持当前画布状态
-//   canvas.save();
-//   // 于上方相同
-//   for (double i = 0; i < 30; i += 1) {
-//     canvas.drawLine(const Offset(-150, 150), const Offset(-150, -150), paint);
-//     canvas.translate(10.0, 0);
-//   }
-//   // 回复画布状态
-//   canvas.restore();
-// }
-
-//方法1：获取网络图片 返回ui.Image
-// Future<ui.Image> getNetImage(String url, {width, height}) async {
-//   ByteData data = await NetworkAssetBundle(Uri.parse(url)).load(url);
-//   ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
-//       targetWidth: width, targetHeight: height);
-//   ui.FrameInfo fi = await codec.getNextFrame();
-//   return fi.image;
-// }
-
 //方法2.2：获取本地图片 返回ui.Image 不需要传入BuildContext context
 Future<ui.Image> getAssetImage(String asset, {width, height}) async {
   ByteData data = await rootBundle.load(asset);
@@ -366,27 +236,89 @@ class ProcessButton extends StatefulWidget {
 }
 
 class _ProcessButtonState extends State<ProcessButton> {
+  bool loading = false;
+  List deviceList = []; //设备列表
   int currentIndex = -1;
-  String btnText = '开始测试';
+  var roomArea = json.decode(Get.arguments['roomArea']);
 
-  void updateButtonText() {
-    setState(() {
-      if (currentIndex < roomInfo.length - 1) {
-        currentIndex++;
-        btnText = '获取';
-        //router位置中间
-        offSetValue = Offset(
-          roomInfo[currentIndex]['offsetX'] -
-              1307.5 +
-              roomInfo[currentIndex]['width'] / 2,
-          roomInfo[currentIndex]['offsetY'] -
-              1307.5 +
-              roomInfo[currentIndex]['height'] / 2,
-        );
-      } else {
-        btnText = '生成覆盖图';
+  @override
+  void initState() {
+    super.initState();
+    currentIndex = -1;
+  }
+
+  //终端设备列表
+  getSnrFn(currentIndex) async {
+    try {
+      setState(() {
+        loading = true;
+      });
+      //先请求本地接口  获取信息 如果不通 提示请连接设备WIFL后操作
+      await XHttp.get('/pub/pub_data.html', {
+        'method': 'obj_get',
+        'param': '["systemProductModel"]',
+      });
+
+      // 获取本地mac地址
+      var mac = await GetMac.macAddress;
+
+      //终端设备列表
+      var sn = await sharedGetData('deviceSn', String);
+      var response = await App.post(
+          '${BaseConfig.cloudBaseUrl}/cpeMqtt/getDevicesTable',
+          data: {'sn': sn.toString(), "type": "getDevicesTable"});
+
+      var d = json.decode(response.toString());
+      if (d['code'] == 200) {
+        d['data']['wifiDevices'].addAll(d['data']['lanDevices']);
+        deviceList = d['data']['wifiDevices'];
+        // printInfo(info: 'deviceList$deviceList');
+
+        // 终端设备列表过滤 获得SNR
+        var snr = deviceList
+            .where((item) => item['MACAddress'] == mac)
+            .toList()[0]['SNR'];
+
+        nextFn();
+
+        //snr存到该房间对象
+        if (currentIndex < roomInfo.length - 1) {
+          roomInfo[currentIndex + 1]['snr'] = snr;
+          roomInfo[currentIndex + 1]['roomArea'] = roomArea;
+          roomInfo[currentIndex + 1]['routerPos'] = routerPos;
+        }
+
+        print(roomInfo);
       }
-    });
+      // printInfo(info: 'roomInfo$roomInfo');
+    } catch (e) {
+      debugPrint(e.toString());
+      ToastUtils.error(S.current.warningSnNotSame);
+    } finally {
+      setState(() {
+        loading = false;
+      });
+    }
+  }
+
+  void nextFn() {
+    if (currentIndex < roomInfo.length - 1) {
+      currentIndex++;
+      btnText = S.current.roomStrength;
+      //router位置中间
+      offSetValue = Offset(
+        roomInfo[currentIndex]['offsetX'] -
+            1307.5 +
+            roomInfo[currentIndex]['width'] / 2,
+        roomInfo[currentIndex]['offsetY'] -
+            1307.5 +
+            roomInfo[currentIndex]['height'] / 2,
+      );
+    } else {
+      setState(() {
+        btnText = S.current.GenerateOverlay;
+      });
+    }
   }
 
   @override
@@ -395,17 +327,23 @@ class _ProcessButtonState extends State<ProcessButton> {
       alignment: Alignment.bottomCenter,
       child: Column(
         children: [
-          const Text('请先拖动路由器至房间相应位置,然后点击“开始检测”，给制信号覆盖图'),
-          ElevatedButton(
-            onPressed: () {
-              if (btnText == '生成覆盖图') {
-                print('成功....');
-              } else {
-                updateButtonText();
-              }
-            },
-            child: Text(btnText),
-          ),
+          btnText == S.current.startTesting
+              ? Text(S.current.coverageMap)
+              : const Text(''),
+          loading
+              ? const CircularProgressIndicator()
+              : ElevatedButton(
+                  onPressed: () {
+                    //成功
+                    if (btnText == S.current.GenerateOverlay) {
+                      print('成功....');
+                    } else {
+                      // nextFn();
+                      getSnrFn(currentIndex);
+                    }
+                  },
+                  child: Text(btnText),
+                ),
         ],
       ),
     );

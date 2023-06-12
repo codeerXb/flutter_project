@@ -2890,6 +2890,86 @@ class S {
     );
   }
 
+  String get DetectionAndEdit {
+    return Intl.message(
+      'Detection and editing',
+      name: 'DetectionAndEdit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get EditUnit {
+    return Intl.message(
+      'Edit unit',
+      name: 'EditUnit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get Blueprint {
+    return Intl.message(
+      'Wi-Fi Signal Country Blueprint (for reference only)',
+      name: 'Blueprint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get TestSignal {
+    return Intl.message(
+      'Signal Coverage',
+      name: 'TestSignal',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get startTesting {
+    return Intl.message(
+      'Start Test',
+      name: 'startTesting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get RetestF {
+    return Intl.message(
+      'Retest 1F',
+      name: 'RetestF',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get roomStrength {
+    return Intl.message(
+      'Get the signal strength of the room',
+      name: 'roomStrength',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get GenerateOverlay {
+    return Intl.message(
+      'Generate Overlay',
+      name: 'GenerateOverlay',
+      desc: '',
+      args: [],
+    );
+  }
+    String get coverageMap {
+    return Intl.message(
+      'Please drag the router to the corresponding position in the room, and then click Start detection to draw the signal coverage map',
+      name: 'coverageMap',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `111`
   String get a {
     return Intl.message(

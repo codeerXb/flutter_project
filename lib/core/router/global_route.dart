@@ -18,7 +18,7 @@ import 'package:flutter_template/pages/setting/contact_customer.dart';
 import 'package:flutter_template/pages/Ethernet/net_type.dart';
 import 'package:flutter_template/pages/setting/language_change.dart';
 import 'package:flutter_template/pages/setting/user_detail.dart';
-import 'package:flutter_template/pages/signal_cover/test_edit.dart';
+import 'package:flutter_template/pages/signal_cover/detection_edit.dart';
 import 'package:flutter_template/pages/sub_service/ai_video.dart';
 import 'package:flutter_template/pages/sub_service/game_acceleration.dart';
 import 'package:flutter_template/pages/sub_service/index.dart';

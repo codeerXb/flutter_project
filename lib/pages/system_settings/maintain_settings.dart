@@ -136,9 +136,8 @@ class _MaintainSettingsState extends State<MaintainSettings> {
   }
 
   void loginout() {
-    // 这里还需要调用后台接口的方法
+    // 出了usertoken不清除其他都可以清除
     sharedDeleteData('user_phone');
-    sharedDeleteData('user_token');
     sharedDeleteData('deviceSn');
     Get.offAllNamed("/get_equipment");
   }

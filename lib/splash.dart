@@ -31,7 +31,14 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    init();
+    // 验证是否支持
+    auth.isDeviceSupported().then((bool isSupported) {
+      if (isSupported) {
+        init();
+      } else {
+        Future.delayed(duration, () => Get.offNamed("/user_login"));
+      }
+    });
   }
 
   Future<void> init() async {

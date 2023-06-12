@@ -38,6 +38,9 @@ class _SplashPageState extends State<SplashPage> {
       } else {
         Future.delayed(duration, () => Get.offNamed("/user_login"));
       }
+    }).catchError((e) {
+      debugPrint(e.toString());
+      Future.delayed(duration, () => Get.offNamed("/user_login"));
     });
   }
 

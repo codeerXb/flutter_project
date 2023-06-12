@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../core/widget/custom_app_bar.dart';
+import '../../generated/l10n.dart';
 
 class TestEdit extends StatefulWidget {
   const TestEdit({Key? key}) : super(key: key);
@@ -14,7 +15,8 @@ class _TestEditState extends State<TestEdit> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: customAppbar(context: context, title: 'Detection and editing'),
+        appBar:
+            customAppbar(context: context, title: S.current.DetectionAndEdit),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -31,28 +33,40 @@ class _TestEditState extends State<TestEdit> {
                 onPressed: () {
                   Get.toNamed("/signal_cover");
                 },
-                child: const Text(
-                  'Edit unit',
-                  style: TextStyle(
+                child: Text(
+                  S.current.EditUnit,
+                  style: const TextStyle(
                     color: Colors.blue, // 将文字颜色设置为蓝色
                   ),
                 ),
               ),
             ),
 
-            Padding(padding: EdgeInsets.only(top: 20.w)),
-
-            const Center(
-              child: Text(
-                'Wi-Fi Signal Country Blueprint (for reference only)',
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('     low  '),
+                Container(
+                  height: 10.w,
+                  width: 150.w,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color.fromARGB(249, 245, 6, 6),
+                        Color.fromARGB(235, 118, 240, 4)
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                const Text('  Strong'),
+              ],
             ),
-            // const Center(
-            //   child: Text(
-            //     'Press and drag to move the routing circle to the appropriate location in the room',
-            //   ),
-            // ),
 
+            Padding(padding: EdgeInsets.only(top: 20.w)),
+            Center(
+              child: Text(S.current.Blueprint),
+            ),
             Padding(padding: EdgeInsets.only(top: 20.w)),
             //按钮
             const BottomButton(),
@@ -77,9 +91,8 @@ class _BottomButtonState extends State<BottomButton> {
         child: Column(
           children: [
             ElevatedButton(
-              onPressed: () {
-              },
-              child: const Text('Retest 1F'),
+              onPressed: () {},
+              child: Text(S.current.RetestF),
             ),
           ],
         ),

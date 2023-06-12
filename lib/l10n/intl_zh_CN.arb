@@ -282,5 +282,14 @@
   "pleaseEnter": "请输入内容",
   "ModifyRemarks": "修改备注",
   "SureRouterConnected": "确保路由器连接电源并于WAN口插入网线",
+  "DetectionAndEdit": "检测和编辑",
+  "EditUnit": "编辑户型",
+  "Blueprint": "Wi-Fi信号覆盖图(仅供参考)",
+  "RetestF": "重新检测 1F",
+  "TestSignal": "测试信号强度",
+  "startTesting": "开始测试",
+  "roomStrength": "获取该房间信号强度",
+  "GenerateOverlay": "生成覆盖图",
+  "coverageMap": "请先拖动路由器至房间相应位置,然后点击“开始检测”，给制信号覆盖图",
   "a": "111"
 }

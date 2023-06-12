@@ -200,7 +200,7 @@ class _MyAppState extends State<MyApp> {
                         info: '户型数据：${jsonEncode({
                           "list": _rectController.rects
                         }).toString()}');
-                    Get.offNamed(
+                    Get.toNamed(
                       '/test_signal',
                       arguments: {
                         'roomInfo': jsonEncode(_rectController.rects),
@@ -213,6 +213,7 @@ class _MyAppState extends State<MyApp> {
                   // 清空输入的文字
                   setState(() {
                     roomArea = '';
+                    saveLayoutLoading = false;
                   });
                 }
               },

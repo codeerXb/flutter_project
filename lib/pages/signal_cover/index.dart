@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http_app.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
@@ -159,12 +160,16 @@ class _MyAppState extends State<MyApp> {
         return AlertDialog(
           title: const Text('Room Area(㎡)'),
           content: TextFormField(
+            keyboardType: TextInputType.number,
             initialValue: roomArea,
             onChanged: (value) {
               setState(() {
                 roomArea = value;
               });
             },
+            inputFormatters: <TextInputFormatter>[
+              FilteringTextInputFormatter.digitsOnly
+            ],
             decoration: const InputDecoration(
               labelText: 'Room Area(㎡)',
             ),
@@ -212,7 +217,7 @@ class _MyAppState extends State<MyApp> {
                   } finally {}
                   // 清空输入的文字
                   setState(() {
-                    roomArea = '';
+                    // roomArea = '';
                     saveLayoutLoading = false;
                   });
                 }

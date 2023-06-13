@@ -12,6 +12,7 @@ import 'package:wifi_info_plugin_plus/wifi_info_plugin_plus.dart';
 
 import '../../config/base_config.dart';
 import '../../core/http/http_app.dart';
+import '../../core/request/request.dart';
 import '../../core/utils/shared_preferences_util.dart';
 import '../../core/widget/custom_app_bar.dart';
 import '../../generated/l10n.dart';
@@ -51,7 +52,6 @@ class _MyAppState extends State<TestSignal> {
       body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: const [
-            //  Text('Romm Area:$roomArea ㎡'),
             ArcProgresssBar(),
 
             //按钮
@@ -134,11 +134,18 @@ class _ArcProgresssBarState extends State<ArcProgresssBar> {
                     width: 40, // 添加一个具体的宽度
                     height: 40, // 添加一个具体的高度
                     child: GestureDetector(
-                      // 手指滑动
+                      //滑动router
                       onPanUpdate: (details) {
                         setState(() {
+                          // 计算新的偏移量
                           offSetValue += details.delta;
                           routerPos += details.delta;
+
+                          // 限制偏移量不超出边框区域
+                          double clampedX = offSetValue.dx.clamp(-102, 287);
+                          double clampedY = offSetValue.dy.clamp(-102, 523);
+                          offSetValue = Offset(clampedX, clampedY);
+                          routerPos = Offset(clampedX, clampedY);
                         });
                       },
                     ),
@@ -160,15 +167,15 @@ class MyPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    var paint3 = Paint()
+    var paint1 = Paint()
       ..isAntiAlias = true
       ..strokeWidth = 1.0
       ..style = PaintingStyle.stroke
       ..color = const Color.fromARGB(255, 95, 95, 95)
       ..invertColors = false;
 
-    Paint selfPaint = Paint()
-      ..color = Colors.blue
+    Paint paint2 = Paint()
+      ..color = ui.Color.fromARGB(255, 31, 137, 224)
       ..style = PaintingStyle.fill
       ..isAntiAlias = true
       ..strokeCap = StrokeCap.butt
@@ -177,20 +184,23 @@ class MyPainter extends CustomPainter {
     canvas.translate(size.width / 2, size.height / 2);
 
     //router
-    canvas.drawImage(aPattern, offSetValue, selfPaint);
+    canvas.drawImage(aPattern, offSetValue, paint2);
 
-    //   _box(canvas, paint3, 'abc', -100.0, -100.0, 200.0, 100.0);
+    // _box(canvas, paint1, 'abc', -100.0, -100.0, 200.0, 100.0);
     roomInfo.forEach((item) {
-      _box(canvas, paint3, item["name"], item['offsetX'] - 1300,
+      _box(canvas, paint1, item["name"], item['offsetX'] - 1300,
           item['offsetY'] - 1300, item["width"], item["height"]); // 要进行缩放的组件
+      //完成的给蓝色
+      if (item.containsKey('snr')) {
+        _box(canvas, paint2, item["name"], item['offsetX'] - 1300,
+            item['offsetY'] - 1300, item["width"], item["height"]); // 要进行缩放的组件
+      }
     });
   }
 
-  //在实际场景中正确利用此回调可以避免重绘开销，本示例我们简单的返回true
+  //避免重绘开销，返回true
   @override
-  bool shouldRepaint(MyPainter oldDelegate) {
-    return true;
-  }
+  bool shouldRepaint(MyPainter oldDelegate) => true;
 }
 
 // 盒子
@@ -198,7 +208,6 @@ void _box(Canvas canvas, Paint paint, text, x, y, w, h) {
   Rect d = Rect.fromLTWH(x, y, w, h);
 
   canvas.drawRect(d, paint);
-
   ui.ParagraphBuilder pb = ui.ParagraphBuilder(ui.ParagraphStyle(
     textAlign: TextAlign.center,
     fontWeight: FontWeight.w300,
@@ -238,8 +247,10 @@ class ProcessButton extends StatefulWidget {
 class _ProcessButtonState extends State<ProcessButton> {
   bool loading = false;
   List deviceList = []; //设备列表
-  int currentIndex = -1;
   var roomArea = json.decode(Get.arguments['roomArea']);
+  dynamic sn;
+  dynamic acsNode;
+  int currentIndex = -1;
 
   @override
   void initState() {
@@ -263,7 +274,7 @@ class _ProcessButtonState extends State<ProcessButton> {
       var mac = await GetMac.macAddress;
 
       //终端设备列表
-      var sn = await sharedGetData('deviceSn', String);
+      sn = await sharedGetData('deviceSn', String);
       var response = await App.post(
           '${BaseConfig.cloudBaseUrl}/cpeMqtt/getDevicesTable',
           data: {'sn': sn.toString(), "type": "getDevicesTable"});
@@ -279,21 +290,63 @@ class _ProcessButtonState extends State<ProcessButton> {
             .where((item) => item['MACAddress'] == mac)
             .toList()[0]['SNR'];
 
-        nextFn();
+        var connection = deviceList
+            .where((item) => item['MACAddress'] == mac)
+            .toList()[0]['connection'];
 
-        //snr存到该房间对象
+        if (connection == '2.4GHz') {
+          var parameterNames1 = [
+            "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.1.NoiseLevel",
+            "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.1.TxPower"
+          ];
+          var res = await Request().getACSNode(parameterNames1, sn);
+          Map<String, dynamic> d = jsonDecode(res);
+          acsNode = d['data']['InternetGatewayDevice']['WEB_GUI']['WiFi']
+              ['WLANSettings']['1'];
+        } else {
+          var parameterNames2 = [
+            "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.2.NoiseLevel",
+            "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.2.TxPower"
+          ];
+          acsNode = await Request().getACSNode(parameterNames2, sn);
+          var res = await Request().getACSNode(parameterNames2, sn);
+          Map<String, dynamic> d = jsonDecode(res);
+          acsNode = d['data']['InternetGatewayDevice']['WEB_GUI']['WiFi']
+              ['WLANSettings']['2'];
+        }
+
+        //存到该房间对象
         if (currentIndex < roomInfo.length - 1) {
           roomInfo[currentIndex + 1]['snr'] = snr;
           roomInfo[currentIndex + 1]['roomArea'] = roomArea;
-          roomInfo[currentIndex + 1]['routerPos'] = routerPos;
+          roomInfo[currentIndex + 1]['routerX'] = routerPos.dx;
+          roomInfo[currentIndex + 1]['routerY'] = routerPos.dy;
+          roomInfo[currentIndex + 1]['TxPower'] = acsNode['TxPower']['_value'];
+          roomInfo[currentIndex + 1]['NoiseLevel'] =
+              acsNode['NoiseLevel']['_value'];
         }
-
-        print(roomInfo);
+        nextFn();
       }
+      print(roomInfo);
       // printInfo(info: 'roomInfo$roomInfo');
     } catch (e) {
       debugPrint(e.toString());
-      ToastUtils.error(S.current.warningSnNotSame);
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Text(S.current.warningSnNotSame),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     } finally {
       setState(() {
         loading = false;
@@ -321,6 +374,14 @@ class _ProcessButtonState extends State<ProcessButton> {
     }
   }
 
+  void successFn() async {
+    await App.post('/platform/wifiJson/wifi', data: {
+      "sn": sn,
+      "wifiJson": {"list": roomInfo}
+    });
+    ToastUtils.success(S.current.success);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Align(
@@ -330,20 +391,37 @@ class _ProcessButtonState extends State<ProcessButton> {
           btnText == S.current.startTesting
               ? Text(S.current.coverageMap)
               : const Text(''),
-          loading
-              ? const CircularProgressIndicator()
-              : ElevatedButton(
-                  onPressed: () {
-                    //成功
-                    if (btnText == S.current.GenerateOverlay) {
-                      print('成功....');
-                    } else {
-                      // nextFn();
-                      getSnrFn(currentIndex);
-                    }
-                  },
-                  child: Text(btnText),
-                ),
+          SizedBox(
+            width: 1.sw - 104.w,
+            child: ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(
+                    const Color.fromARGB(255, 30, 104, 233)),
+              ),
+              onPressed: () {
+                //成功
+                if (btnText == S.current.GenerateOverlay) {
+                  successFn();
+                } else {
+                  // nextFn();
+                  getSnrFn(currentIndex);
+                }
+              },
+              child: loading
+                  ? const Center(
+                      child: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                  : Text(
+                      btnText,
+                      style: TextStyle(
+                          fontSize: 32.sp, color: const Color(0xffffffff)),
+                    ),
+            ),
+          ),
         ],
       ),
     );

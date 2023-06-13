@@ -33,7 +33,7 @@ class _AtorageAdministrationState extends State<AtorageAdministration> {
                 tabs: <Widget>[
                   Tab(text: "Cloud"),
                   Tab(text: "Local"),
-                  Tab(text: "SD Card")
+                  Tab(text: "SD Card"),
                 ],
               ),
             ),
@@ -48,11 +48,80 @@ class _AtorageAdministrationState extends State<AtorageAdministration> {
                   ListTile(title: Text("Not downloaded yet")),
                 ],
               ),
-              InkWell(
-                onTap: () => closeKeyboard(context),
-                child: const Image(
-                  image: AssetImage('assets/images/storageadministration.jpg'),
-                ),
+              ListView(
+                children: [
+                  InkWell(
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              const Text(
+                                'Video Recording Saved',
+                                style: TextStyle(fontSize: 18),
+                              ),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(40),
+                                  ),
+                                  backgroundColor:
+                                      const Color.fromARGB(255, 233, 233, 233),
+                                  padding: const EdgeInsets.all(10),
+                                ),
+                                child: Icon(
+                                  Icons.calendar_today,
+                                  color: Colors.grey[700],
+                                  size: 18,
+                                ),
+                                onPressed: () {
+                                  showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime(2020),
+                                    lastDate: DateTime(2025),
+                                  );
+                                },
+                              ),
+                              const SizedBox(width: 5),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(40),
+                                  ),
+                                  backgroundColor:
+                                      const Color.fromARGB(255, 233, 233, 233),
+                                  padding: const EdgeInsets.all(10),
+                                ),
+                                child: Icon(
+                                  Icons.edit,
+                                  color: Colors.grey[700],
+                                  size: 18,
+                                ),
+                                onPressed: () {
+                                  // showDatePicker(
+                                  //   context: context,
+                                  //   initialDate: DateTime.now(),
+                                  //   firstDate: DateTime(2020),
+                                  //   lastDate: DateTime(2025),
+                                  // );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Image.asset(
+                          'assets/images/storageadministration.jpg',
+                          width: 400,
+                          height: 580,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ])));
   }

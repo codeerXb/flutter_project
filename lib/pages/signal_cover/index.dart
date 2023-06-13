@@ -82,6 +82,12 @@ class _MyAppState extends State<MyApp> {
   // 当前选中的楼层
   String curFloor = '1F';
 
+  @override
+  void initState() {
+    super.initState();
+    _rectController.init();
+  }
+
   void renameFloor(BuildContext context, int index) {
     editingFloor = floors[index]; // 将选中的楼层名称赋值给editingFloor变量
     showDialog(
@@ -787,11 +793,12 @@ class _GridWidgetState extends State<GridWidget> {
         ),
         // 绘制矩形
         ...rectWidgets,
-        // 复位操作按钮
+        // 复位操作按钮，聚焦操作
         Positioned(
           bottom: 0,
           child: ElevatedButton(
             onPressed: () {
+              // 根据实际的方块所在的位置进行聚焦
               setState(() {
                 offsetX = -1200;
                 offsetY = -1200;

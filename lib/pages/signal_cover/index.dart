@@ -190,7 +190,6 @@ class _MyAppState extends State<MyApp> {
             TextButton(
               child: const Text('ADD'),
               onPressed: () async {
-                // 在此处处理确认按钮的逻辑
                 if (roomArea.isNotEmpty) {
                   setState(() {
                     saveLayoutLoading = true;
@@ -211,11 +210,12 @@ class _MyAppState extends State<MyApp> {
                         info: '户型数据：${jsonEncode({
                           "list": _rectController.rects
                         }).toString()}');
-                    Get.toNamed(
+                    Get.offNamed(
                       '/test_signal',
                       arguments: {
                         'roomInfo': jsonEncode(_rectController.rects),
-                        'roomArea': roomArea
+                        'roomArea': roomArea,
+                        'curFloor': curFloor
                       },
                     );
                   } catch (err) {
@@ -250,8 +250,7 @@ class _MyAppState extends State<MyApp> {
         leading: IconButton(
           icon: const Icon(Icons.keyboard_arrow_left),
           onPressed: () {
-            // 返回按钮逻辑
-            Get.back();
+             Get.offNamed('/test_edit');
           },
         ),
         title: const Text('Edit House Layout'),

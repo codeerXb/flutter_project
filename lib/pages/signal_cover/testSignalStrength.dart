@@ -17,7 +17,8 @@ import '../../core/utils/shared_preferences_util.dart';
 import '../../core/widget/custom_app_bar.dart';
 import '../../generated/l10n.dart';
 
-var roomInfo = json.decode(Get.arguments['roomInfo']);
+var roomInfo = []; //画的房屋信息
+var allRoomInfo = []; //所有房屋信息
 Offset offSetValue = Offset.zero;
 Offset routerPos = Offset.zero;
 String btnText = S.current.startTesting;
@@ -36,8 +37,14 @@ class _MyAppState extends State<TestSignal> {
     super.initState();
     setState(() {
       btnText = S.current.startTesting;
-      roomInfo = json.decode(Get.arguments['roomInfo']);
-      if (roomInfo.length > 0) {
+      allRoomInfo = json.decode(Get.arguments['roomInfo']);
+      print(allRoomInfo);
+      //过滤出当前楼层
+      roomInfo = allRoomInfo
+          .where((item) => item['floor'] == Get.arguments['curFloor'])
+          .toList();
+
+      if (roomInfo.isNotEmpty) {
         offSetValue = Offset(
             roomInfo[0]['offsetX'] - 1300, roomInfo[0]['offsetY'] - 1300);
       }
@@ -47,8 +54,18 @@ class _MyAppState extends State<TestSignal> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Test Signal Strength
-      appBar: customAppbar(context: context, title: S.current.TestSignal),
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        leading: IconButton(
+          icon: const Icon(Icons.keyboard_arrow_left),
+          onPressed: () {
+            Get.offNamed('/signal_cover');
+          },
+        ),
+        title: Text(S.current.TestSignal),
+      ),
       body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: const [
@@ -96,6 +113,7 @@ class _ArcProgresssBarState extends State<ArcProgresssBar> {
         'assets/images/icon_homepage_route.png',
         width: 20,
         height: 20);
+
     setState(() {
       _assetImageFrame = imageFrame;
     });
@@ -175,7 +193,14 @@ class MyPainter extends CustomPainter {
       ..invertColors = false;
 
     Paint paint2 = Paint()
-      ..color = ui.Color.fromARGB(255, 31, 137, 224)
+      ..color = const ui.Color.fromARGB(140, 31, 137, 224)
+      ..style = PaintingStyle.fill
+      ..isAntiAlias = true
+      ..strokeCap = StrokeCap.butt
+      ..strokeWidth = 30.0;
+
+    Paint paint3 = Paint()
+      ..color = const ui.Color.fromARGB(255, 6, 143, 255)
       ..style = PaintingStyle.fill
       ..isAntiAlias = true
       ..strokeCap = StrokeCap.butt
@@ -184,10 +209,10 @@ class MyPainter extends CustomPainter {
     canvas.translate(size.width / 2, size.height / 2);
 
     //router
-    canvas.drawImage(aPattern, offSetValue, paint2);
+    canvas.drawImage(aPattern, offSetValue, paint3);
 
     // _box(canvas, paint1, 'abc', -100.0, -100.0, 200.0, 100.0);
-    roomInfo.forEach((item) {
+    for (var item in roomInfo) {
       _box(canvas, paint1, item["name"], item['offsetX'] - 1300,
           item['offsetY'] - 1300, item["width"], item["height"]); // 要进行缩放的组件
       //完成的给蓝色
@@ -195,7 +220,7 @@ class MyPainter extends CustomPainter {
         _box(canvas, paint2, item["name"], item['offsetX'] - 1300,
             item['offsetY'] - 1300, item["width"], item["height"]); // 要进行缩放的组件
       }
-    });
+    }
   }
 
   //避免重绘开销，返回true
@@ -375,11 +400,19 @@ class _ProcessButtonState extends State<ProcessButton> {
   }
 
   void successFn() async {
-    await App.post('/platform/wifiJson/wifi', data: {
-      "sn": sn,
-      "wifiJson": {"list": roomInfo}
-    });
-    ToastUtils.success(S.current.success);
+    allRoomInfo
+        .removeWhere((item) => item["floor"] == Get.arguments['curFloor']);
+    allRoomInfo.addAll(roomInfo);
+    try {
+      await App.post('/platform/wifiJson/wifi', data: {
+        "sn": sn,
+        "wifiJson": {"list": allRoomInfo}
+      });
+      ToastUtils.success(S.current.success);
+      Get.offNamed("/test_edit");
+    } catch (e) {
+      ToastUtils.success(S.current.error);
+    }
   }
 
   @override
@@ -401,10 +434,10 @@ class _ProcessButtonState extends State<ProcessButton> {
               onPressed: () {
                 //成功
                 if (btnText == S.current.GenerateOverlay) {
-                  successFn();
+                  // successFn();
                 } else {
-                  // nextFn();
-                  getSnrFn(currentIndex);
+                  nextFn();
+                  // getSnrFn(currentIndex);
                 }
               },
               child: loading

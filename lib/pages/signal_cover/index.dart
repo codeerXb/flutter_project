@@ -15,6 +15,7 @@ List<RectData> convertToRectDataList(List<dynamic> dataList) {
   for (var dataItem in dataList) {
     final data = dataItem as Map<String, dynamic>;
     RectData rectData = RectData(
+      floorId: data['floorId'],
       name: data['name'],
       floor: data['floor'],
       isSelected: data['isSelected'],
@@ -34,14 +35,15 @@ List<RectData> convertToRectDataList(List<dynamic> dataList) {
 }
 
 // 将接收的json转化成floors
-List<String> getUniqueFloors(List<dynamic> floors) {
-  List<String> uniqueFloors = [];
-  for (var floor in floors) {
-    if (!uniqueFloors.contains(floor['floor'].toString())) {
-      uniqueFloors.add(floor['floor'].toString());
-    }
-  }
-  return uniqueFloors;
+List<Map<String, String>> getUniqueFloors(List<dynamic> data) {
+  List<Map<String, String>> uniqueFloor = data
+      .map(
+          (e) => {'id': e['floorId'].toString(), 'name': e['floor'].toString()})
+      .toSet()
+      .toList();
+  uniqueFloor
+      .sort((a, b) => int.parse(a['id']!).compareTo(int.parse(b['id']!)));
+  return uniqueFloor;
 }
 
 class RectController extends GetxController {
@@ -81,15 +83,19 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  List<String> floors = ['1F'];
+  // 定义楼层数据
+  List<Map<String, String>> floors = [
+    {'id': '1', 'name': '1F'}
+  ];
   bool isGridExpanded = false;
   String editingFloor = '';
   // 使用RectController来管理_rects
   final RectController _rectController = Get.put(RectController());
   String roomName = '';
-  String roomArea = '1';
+  String roomArea = '100';
   // 当前选中的楼层
   String curFloor = '1F';
+  String curFloorId = '1';
   bool rentrunHomepage = false; //是否返回首页
 
   Future<dynamic> getData() async {
@@ -109,16 +115,19 @@ class _MyAppState extends State<MyApp> {
     rentrunHomepage = Get.arguments['homepage'];
     getData().then((value) {
       if (value != null) {
-        setState(() {
-          floors = getUniqueFloors(value['wifiJson']['list']);
-        });
+        if (getUniqueFloors(value['wifiJson']['list']).isNotEmpty) {
+          setState(() {
+            floors = getUniqueFloors(value['wifiJson']['list']);
+          });
+        }
         _rectController.init(value);
       }
     });
   }
 
+  // --- 重命名楼层 ---
   void renameFloor(BuildContext context, int index) {
-    editingFloor = floors[index]; // 将选中的楼层名称赋值给editingFloor变量
+    editingFloor = floors[index]['name']!; // 将选中的楼层名称赋值给editingFloor变量
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -156,7 +165,7 @@ class _MyAppState extends State<MyApp> {
                   // 添加确认按钮
                   onPressed: () {
                     // 更新楼层名称为编辑后的值
-                    floors[index] = editingFloor;
+                    floors[index]['name'] = editingFloor;
                     setState(() {}); // 刷新界面
                     Navigator.pop(context); // 关闭对话框
                   },
@@ -171,17 +180,21 @@ class _MyAppState extends State<MyApp> {
     Navigator.pop(context);
   }
 
+  // --- 删除楼层 ---
   void deleteFloor(index) {
     // 实现删除逻辑
     floors.remove(floors[index]);
     setState(() {});
   }
 
+  // --- 添加楼层 ---
   void addFloor() {
-    // 匹配最后一个楼层字符串的数字
-    String digit = floors[floors.length - 1].replaceAll(RegExp(r'[^0-9]'), '');
-    int nextFloorNumber = int.parse(digit) + 1;
-    floors.add('$nextFloorNumber' 'F');
+    // 找出floors中的最大id
+    var maxId = floors.reduce((cur, next) =>
+        int.parse(cur['id']!) > int.parse(next['id']!) ? cur : next)['id'];
+    // id++
+    int nextFloorNumber = int.parse(maxId!) + 1;
+    floors.add({'id': '$nextFloorNumber', 'name': '$nextFloorNumber' 'F'});
     setState(() {});
   }
 
@@ -314,14 +327,15 @@ class _MyAppState extends State<MyApp> {
                     separatorBuilder: (context, index) =>
                         const SizedBox(width: 10),
                     itemBuilder: (context, index) {
-                      String floor = floors[index];
+                      String? floor = floors[index]['name'];
                       return GestureDetector(
                         onTap: () {
                           // 判断是否选中了这个楼层
                           if (floor != curFloor) {
                             // 未选中改变curFloor
                             setState(() {
-                              curFloor = floor;
+                              curFloor = floor!;
+                              curFloorId = floors[index]['id']!;
                             });
                           } else {
                             // 选中展开抽屉操作菜单
@@ -373,7 +387,7 @@ class _MyAppState extends State<MyApp> {
                                     color: Colors.black, width: 1), // 添加黑色边框
                           ),
                           child: Text(
-                            floor,
+                            floor!,
                             style: const TextStyle(
                               color: Color.fromARGB(255, 0, 0, 0),
                               fontSize: 20,
@@ -452,6 +466,7 @@ class _MyAppState extends State<MyApp> {
                               if (roomName.isNotEmpty) {
                                 // 创建一个方块数据对象
                                 final rectData = RectData(
+                                  floorId: curFloorId,
                                   left: 0,
                                   top: 0,
                                   width: 100,
@@ -963,8 +978,10 @@ class RectData {
   double width;
   double height;
   String selectedEdge;
+  String floorId;
 
   RectData({
+    required this.floorId,
     required this.name,
     required this.floor,
     required this.isSelected,
@@ -978,6 +995,7 @@ class RectData {
   });
   Map<String, dynamic> toJson() {
     return {
+      'floorId': floorId,
       'name': name,
       'left': left,
       'top': top,

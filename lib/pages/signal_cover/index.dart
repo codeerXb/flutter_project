@@ -49,6 +49,7 @@ class RectController extends GetxController {
 
   void init(res) {
     rects = convertToRectDataList(res['wifiJson']['list']);
+
     update();
   }
 
@@ -89,6 +90,7 @@ class _MyAppState extends State<MyApp> {
   String roomArea = '1';
   // 当前选中的楼层
   String curFloor = '1F';
+  bool rentrunHomepage = false; //是否返回首页
 
   Future<dynamic> getData() async {
     try {
@@ -104,6 +106,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    rentrunHomepage = Get.arguments['homepage'];
     getData().then((value) {
       if (value != null) {
         setState(() {
@@ -279,7 +282,11 @@ class _MyAppState extends State<MyApp> {
         leading: IconButton(
           icon: const Icon(Icons.keyboard_arrow_left),
           onPressed: () {
-            Get.offNamed('/test_edit');
+            if (rentrunHomepage) {
+              Get.back();
+            } else {
+              Get.offNamed('/test_edit');
+            }
           },
         ),
         title: const Text('Edit House Layout'),

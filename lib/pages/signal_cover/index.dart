@@ -792,45 +792,74 @@ class _GridWidgetState extends State<GridWidget> {
                   });
                 }
               },
+              // 长按选中之后弹窗  修改home值  删除方块
               onLongPress: () {
-                // 长按选中之后弹窗修改home值
-                showDialog(
+                showModalBottomSheet(
                   context: context,
                   builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text('edit Room'),
-                      content: TextFormField(
-                        initialValue: rectData.name,
-                        onChanged: (value) {
-                          setState(() {
-                            editRoomName = value;
-                          });
-                        },
-                        decoration: const InputDecoration(
-                          labelText: 'Room Name',
-                        ),
+                    return SizedBox(
+                      height: 120,
+                      child: Column(
+                        children: [
+                          ListTile(
+                            leading: const Icon(Icons.edit),
+                            title: const Text('Edit'),
+                            onTap: () {
+                              Navigator.pop(context);
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text('edit Room'),
+                                    content: TextFormField(
+                                      initialValue: rectData.name,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          editRoomName = value;
+                                        });
+                                      },
+                                      // decoration: const InputDecoration(
+                                      //   labelText: 'Room Name',
+                                      // ),
+                                    ),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: const Text('CANCEL'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      TextButton(
+                                        child: const Text('edit'),
+                                        onPressed: () {
+                                          rectData.name = editRoomName;
+                                          // 在此处处理确认按钮的逻辑
+                                          // 清空输入的文字
+                                          setState(() {
+                                            editRoomName = '';
+                                          });
+                                          // 关闭对话框
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.delete),
+                            title: const Text('Delete'),
+                            onTap: () {
+                              Navigator.pop(context);
+                              setState(() {
+                                widget.rects.remove(rectData);
+                              });
+                            },
+                          ),
+                        ],
                       ),
-                      actions: <Widget>[
-                        TextButton(
-                          child: const Text('CANCEL'),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                        TextButton(
-                          child: const Text('edit'),
-                          onPressed: () {
-                            rectData.name = editRoomName;
-                            // 在此处处理确认按钮的逻辑
-                            // 清空输入的文字
-                            setState(() {
-                              editRoomName = '';
-                            });
-                            // 关闭对话框
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ],
                     );
                   },
                 );

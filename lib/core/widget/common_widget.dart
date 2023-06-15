@@ -1,4 +1,4 @@
-import 'package:badges/badges.dart';
+import 'package:badges/badges.dart' as Badges;
 import 'package:flutter/material.dart';
 import 'package:flutter_template/config/constant.dart';
 import 'package:flutter_template/core/utils/string_util.dart';
@@ -150,7 +150,7 @@ class CommonWidget {
                 contentPadding:
                     EdgeInsets.only(top: 8.w, left: -25.w, right: -25.w),
                 leading: leading != null
-                    ? Badge(
+                    ? Badges.Badge(
                         badgeContent: Text(
                           tipNum ?? '0',
                           style:

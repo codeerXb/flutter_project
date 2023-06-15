@@ -45,7 +45,6 @@ import 'package:flutter_template/pages/wifi_set/wps/wps_set.dart';
 import 'package:flutter_template/pages/topo/access_equipment.dart';
 import 'package:flutter_template/splash.dart';
 import 'package:flutter_template/pages/net_status/net_server_settings.dart';
-import 'package:flutter_template/pages/address_book/address_book_detail.dart';
 import 'package:flutter_template/pages/login/login.dart';
 import 'package:flutter_template/pages/login/user_agreement.dart';
 import 'package:flutter_template/pages/network_settings/dns_settings.dart';
@@ -56,7 +55,6 @@ import 'package:flutter_template/pages/parent_control/card_list/Payment.dart';
 import 'package:flutter_template/pages/parent_control/card_list/Social.dart';
 import 'package:flutter_template/pages/parent_control/card_list/Video.dart';
 import 'package:flutter_template/pages/setting/chart_demo.dart';
-import 'package:flutter_template/pages/setting/scan_code.dart';
 import 'package:flutter_template/pages/setting/system_settings.dart';
 import 'package:flutter_template/pages/system_settings/maintain_settings.dart';
 import 'package:flutter_template/pages/system_settings/account_security.dart';
@@ -99,9 +97,6 @@ class GlobalRouter {
     '/user_detail': (BuildContext context, {Object? args}) =>
         const UserDetail(),
 
-    /// 扫一扫
-    '/scan_code': (BuildContext context, {Object? args}) => const ScanCode(),
-
     /// 设备信息
     '/common_problem': (BuildContext context, {Object? args}) =>
         const EquInfo(),
@@ -130,10 +125,6 @@ class GlobalRouter {
 
     /// 图表demo
     '/chart_demo': (BuildContext context, {Object? args}) => const ChartDemo(),
-
-    ///通讯录详情
-    '/address_book_detail': (BuildContext context, {Object? args}) =>
-        const AddressBookDetail(),
 
     /// WAN设置
     '/wan_settings': (BuildContext context, {Object? args}) =>

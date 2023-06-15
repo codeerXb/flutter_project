@@ -9,17 +9,13 @@ environment:
   sdk: ">=2.17.3 <3.3.0"
 
 dependencies:
-  #贝壳
-  bruno: ^3.2.0
-
   flutter:
     sdk: flutter
   # 图标库
   font_awesome_flutter: ^10.1.0
   # 加载动画
   flutter_spinkit: ^5.1.0
-  kg_charts: ^0.0.5
-
+  # 虚线边框
   dotted_border: ^2.0.0+3
 
   # The following adds the Cupertino Icons font to your application.
@@ -33,8 +29,6 @@ dependencies:
   path_provider: ^2.0.11
   # 提示
   oktoast: ^3.2.0
-  # 更新
-  flutter_xupdate: ^2.0.2
   # 简单数据存储
   shared_preferences: ^2.0.15
   # 路由管理 & 状态管理
@@ -47,8 +41,6 @@ dependencies:
   badges: ^2.0.3
   # url 处理 打开网页、打电话、发邮件等
   url_launcher: ^6.1.3
-  # 滚动插件  - 通讯录使用
-  scrollable_positioned_list: ^0.3.2
   # 上拉下拉刷新
   pull_to_refresh_flutter3: ^2.0.1
   # 日期格式化
@@ -56,26 +48,19 @@ dependencies:
   # html 处理
   flutter_html: ^3.0.0-alpha.5
   # 获取版本信息
-  package_info: ^2.0.2
-  # 扫码
-  qr_code_scanner: ^1.0.0
-  # 图表
-  syncfusion_flutter_charts: ^20.2.36
+  package_info_plus: ^2.0.0
   # 图片选择 -- 头像上传
   image_picker: ^0.8.5+3
-  # 文件下载
-  flutter_downloader: ^1.8.0+1
   # 权限
   permission_handler: ^10.0.0
   # 文件选择器
-  file_picker: ^4.6.1
+  file_picker: ^5.0.0
   # # 视频流
   # fijkplayer_skin: ^2.2.8
   # # 视频解码器 软解码
   # fijkplayer: ^0.10.1
   # wakelock: ^0.6.2
-  # 定位
-  amap_location_fluttify: ^0.22.0-rc.0
+  # css滤镜效果
   css_filter: ^1.0.2
   flutter_swiper_null_safety: ^1.0.2 # 轮播图空异常版
   # 国际化
@@ -84,7 +69,9 @@ dependencies:
   intl: 0.17.0
   # AES加密
   encrypt: ^5.0.1
+  # 时间选择
   day_night_time_picker: ^1.2.0
+  # wifi信息获取
   wifi_info_plugin_plus: ^2.0.2
   #网络监测
   connectivity: ^3.0.6

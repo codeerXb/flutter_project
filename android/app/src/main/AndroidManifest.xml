@@ -2,12 +2,6 @@
     package="com.example.flutter_template">
     <!--允许访问网络，必选权限-->
     <uses-permission android:name="android.permission.INTERNET" />
-    <!--允许获取精确位置，精准定位必选-->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <!--允许获取粗略位置，粗略定位必选-->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <!--后台获取位置信息，若需后台定位则必选-->
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
     <!--允许获取设备和运营商信息，用于问题排查和网络定位，若无gps但仍需实现定位小蓝点功能则此权限必选-->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <!--允许获取网络状态，用于网络定位，若无gps但仍需实现定位小蓝点功能则此权限必选-->
@@ -50,22 +44,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <!--DownloadedFileProvider
-        是用于下载的控件-->
-        <provider
-            android:name="vn.hunghd.flutterdownloader.DownloadedFileProvider"
-            android:authorities="${applicationId}.flutter_downloader.provider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths" />
-        </provider>
-
-        <!-- 高德定位key -->
-        <meta-data android:name="com.amap.api.v2.apikey"
-            android:value="5531d5748b4bf2404773c8f19bf7ea81" />
 
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->

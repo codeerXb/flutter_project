@@ -8,13 +8,10 @@ import 'package:flutter_template/core/utils/toast.dart';
 import 'package:get/get.dart';
 import 'package:mac_address/mac_address.dart';
 import 'dart:async';
-import 'package:wifi_info_plugin_plus/wifi_info_plugin_plus.dart';
-
 import '../../config/base_config.dart';
 import '../../core/http/http_app.dart';
 import '../../core/request/request.dart';
 import '../../core/utils/shared_preferences_util.dart';
-import '../../core/widget/custom_app_bar.dart';
 import '../../generated/l10n.dart';
 
 var roomInfo = []; //画的房屋信息
@@ -40,11 +37,12 @@ class _MyAppState extends State<TestSignal> {
     setState(() {
       btnText = S.current.startTesting;
       allRoomInfo = json.decode(Get.arguments['roomInfo']);
-      print(allRoomInfo);
+
       //过滤出当前楼层
       roomInfo = allRoomInfo
           .where((item) => item['floor'] == Get.arguments['curFloor'])
           .toList();
+      print(roomInfo);
 
       if (roomInfo.isNotEmpty) {
         offSetValue = Offset(
@@ -300,7 +298,7 @@ class _ProcessButtonState extends State<ProcessButton> {
   }
 
   //终端设备列表
-  getSnrFn(currentIndex) async {
+  getSnrFn() async {
     try {
       setState(() {
         loading = true;
@@ -334,8 +332,8 @@ class _ProcessButtonState extends State<ProcessButton> {
         var connection = deviceList
             .where((item) => item['MACAddress'] == mac)
             .toList()[0]['connection'];
-            
-        //判断是2.4G还是5G
+
+        // 判断是2.4G还是5G
         if (connection == '2.4GHz') {
           var parameterNames1 = [
             "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.1.NoiseLevel",
@@ -356,7 +354,6 @@ class _ProcessButtonState extends State<ProcessButton> {
           acsNode = d['data']['InternetGatewayDevice']['WEB_GUI']['WiFi']
               ['WLANSettings']['2'];
         }
-
         //存到该房间对象
         if (currentIndex < roomInfo.length - 1) {
           roomInfo[currentIndex + 1]['snr'] = snr;
@@ -369,6 +366,7 @@ class _ProcessButtonState extends State<ProcessButton> {
         }
         nextFn();
       }
+
       print(roomInfo);
       // printInfo(info: 'roomInfo$roomInfo');
     } catch (e) {
@@ -398,7 +396,7 @@ class _ProcessButtonState extends State<ProcessButton> {
 
   void nextFn() {
     if (currentIndex < roomInfo.length - 1) {
-      currentIndex++;
+        currentIndex++;
       btnText = S.current.roomStrength;
       //router位置中间
       // offSetValue = Offset(
@@ -411,14 +409,14 @@ class _ProcessButtonState extends State<ProcessButton> {
       // );
 
       //下一步的图像
-      nextetValue = Offset(
-        roomInfo[currentIndex + 1]['offsetX'] -
-            1307.5 +
-            roomInfo[currentIndex + 1]['width'] / 2,
-        roomInfo[currentIndex + 1]['offsetY'] -
-            1307.5 +
-            roomInfo[currentIndex + 1]['height'] / 2,
-      );
+      // nextetValue = Offset(
+      //   roomInfo[currentIndex + 1]['offsetX'] -
+      //       1307.5 +
+      //       roomInfo[currentIndex + 1]['width'] / 2,
+      //   roomInfo[currentIndex + 1]['offsetY'] -
+      //       1307.5 +
+      //       roomInfo[currentIndex + 1]['height'] / 2,
+      // );
     } else {
       setState(() {
         nextetValue = const Offset(1999, 1999);
@@ -439,7 +437,7 @@ class _ProcessButtonState extends State<ProcessButton> {
       ToastUtils.success(S.current.success);
       Get.offNamed("/test_edit");
     } catch (e) {
-      ToastUtils.success(S.current.error);
+      ToastUtils.error(S.current.error);
     }
   }
 
@@ -464,8 +462,7 @@ class _ProcessButtonState extends State<ProcessButton> {
                 if (btnText == S.current.GenerateOverlay) {
                   successFn();
                 } else {
-                  // nextFn();
-                  getSnrFn(currentIndex);
+                  getSnrFn();
                 }
               },
               child: loading

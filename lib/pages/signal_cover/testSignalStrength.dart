@@ -289,12 +289,12 @@ class _ProcessButtonState extends State<ProcessButton> {
   var roomArea = json.decode(Get.arguments['roomArea']);
   dynamic sn;
   dynamic acsNode;
-  int currentIndex = -1;
+  int currentIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    currentIndex = -1;
+    currentIndex = 0;
   }
 
   //终端设备列表
@@ -355,13 +355,13 @@ class _ProcessButtonState extends State<ProcessButton> {
               ['WLANSettings']['2'];
         }
         //存到该房间对象
-        if (currentIndex < roomInfo.length - 1) {
-          roomInfo[currentIndex + 1]['snr'] = snr;
-          roomInfo[currentIndex + 1]['roomArea'] = roomArea;
-          roomInfo[currentIndex + 1]['routerX'] = routerPos.dx;
-          roomInfo[currentIndex + 1]['routerY'] = routerPos.dy;
-          roomInfo[currentIndex + 1]['TxPower'] = acsNode['TxPower']['_value'];
-          roomInfo[currentIndex + 1]['NoiseLevel'] =
+        if (currentIndex + 1 <= roomInfo.length) {
+          roomInfo[currentIndex]['snr'] = snr;
+          roomInfo[currentIndex]['roomArea'] = roomArea;
+          roomInfo[currentIndex]['routerX'] = routerPos.dx;
+          roomInfo[currentIndex]['routerY'] = routerPos.dy;
+          roomInfo[currentIndex]['TxPower'] = acsNode['TxPower']['_value'];
+          roomInfo[currentIndex]['NoiseLevel'] =
               acsNode['NoiseLevel']['_value'];
         }
         nextFn();
@@ -396,8 +396,8 @@ class _ProcessButtonState extends State<ProcessButton> {
 
   void nextFn() {
     if (currentIndex < roomInfo.length - 1) {
-        currentIndex++;
-      btnText = S.current.roomStrength;
+        btnText = S.current.roomStrength;
+      currentIndex++;
       //router位置中间
       // offSetValue = Offset(
       //   roomInfo[currentIndex]['offsetX'] -
@@ -407,16 +407,15 @@ class _ProcessButtonState extends State<ProcessButton> {
       //       1307.5 +
       //       roomInfo[currentIndex]['height'] / 2,
       // );
-
       //下一步的图像
-      // nextetValue = Offset(
-      //   roomInfo[currentIndex + 1]['offsetX'] -
-      //       1307.5 +
-      //       roomInfo[currentIndex + 1]['width'] / 2,
-      //   roomInfo[currentIndex + 1]['offsetY'] -
-      //       1307.5 +
-      //       roomInfo[currentIndex + 1]['height'] / 2,
-      // );
+      nextetValue = Offset(
+        roomInfo[currentIndex]['offsetX'] -
+            1307.5 +
+            roomInfo[currentIndex]['width'] / 2,
+        roomInfo[currentIndex]['offsetY'] -
+            1307.5 +
+            roomInfo[currentIndex]['height'] / 2,
+      );
     } else {
       setState(() {
         nextetValue = const Offset(1999, 1999);

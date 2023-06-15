@@ -20,6 +20,8 @@ import '../../generated/l10n.dart';
 var roomInfo = []; //画的房屋信息
 var allRoomInfo = []; //所有房屋信息
 Offset offSetValue = Offset.zero;
+Offset nextetValue = Offset.zero;
+
 Offset routerPos = Offset.zero;
 String btnText = S.current.startTesting;
 
@@ -47,6 +49,7 @@ class _MyAppState extends State<TestSignal> {
       if (roomInfo.isNotEmpty) {
         offSetValue = Offset(
             roomInfo[0]['offsetX'] - 1300, roomInfo[0]['offsetY'] - 1300);
+        nextetValue = const Offset(1999, 1999);
       }
     });
   }
@@ -100,6 +103,7 @@ class ArcProgresssBar extends StatefulWidget {
 
 class _ArcProgresssBarState extends State<ArcProgresssBar> {
   ui.Image? _assetImageFrame; //本地图片
+  ui.Image? _nextImage; //本地图片
 
   @override
   void initState() {
@@ -113,9 +117,11 @@ class _ArcProgresssBarState extends State<ArcProgresssBar> {
         'assets/images/icon_homepage_route.png',
         width: 20,
         height: 20);
-
+    ui.Image nextImage =
+        await getAssetImage('assets/images/people.png', width: 20, height: 20);
     setState(() {
       _assetImageFrame = imageFrame;
+      _nextImage = nextImage;
     });
   }
 
@@ -140,7 +146,8 @@ class _ArcProgresssBarState extends State<ArcProgresssBar> {
                 top: 0,
                 child: CustomPaint(
                   size: Size(widget.width, widget.height),
-                  painter: MyPainter(_assetImageFrame!, 32.sp, widget.progress,
+                  painter: MyPainter(
+                      _assetImageFrame!, 32.sp, widget.progress, _nextImage!,
                       min: widget.min, max: widget.max),
                 ),
               ),
@@ -179,7 +186,8 @@ class _ArcProgresssBarState extends State<ArcProgresssBar> {
 
 class MyPainter extends CustomPainter {
   ui.Image aPattern;
-  MyPainter(this.aPattern, double sp, double progress,
+  ui.Image bPattern;
+  MyPainter(this.aPattern, double sp, double progress, this.bPattern,
       {required double min, required double max})
       : super();
 
@@ -205,11 +213,19 @@ class MyPainter extends CustomPainter {
       ..isAntiAlias = true
       ..strokeCap = StrokeCap.butt
       ..strokeWidth = 30.0;
+
+    Paint paint4 = Paint()
+      ..color = ui.Color.fromARGB(255, 255, 6, 6)
+      ..style = PaintingStyle.fill
+      ..isAntiAlias = true
+      ..strokeCap = StrokeCap.butt
+      ..strokeWidth = 30.0;
     // 画布起点移到屏幕中心
     canvas.translate(size.width / 2, size.height / 2);
 
     //router
     canvas.drawImage(aPattern, offSetValue, paint3);
+    canvas.drawImage(bPattern, nextetValue, paint4);
 
     // _box(canvas, paint1, 'abc', -100.0, -100.0, 200.0, 100.0);
     for (var item in roomInfo) {
@@ -318,7 +334,8 @@ class _ProcessButtonState extends State<ProcessButton> {
         var connection = deviceList
             .where((item) => item['MACAddress'] == mac)
             .toList()[0]['connection'];
-
+            
+        //判断是2.4G还是5G
         if (connection == '2.4GHz') {
           var parameterNames1 = [
             "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.1.NoiseLevel",
@@ -384,16 +401,27 @@ class _ProcessButtonState extends State<ProcessButton> {
       currentIndex++;
       btnText = S.current.roomStrength;
       //router位置中间
-      offSetValue = Offset(
-        roomInfo[currentIndex]['offsetX'] -
+      // offSetValue = Offset(
+      //   roomInfo[currentIndex]['offsetX'] -
+      //       1307.5 +
+      //       roomInfo[currentIndex]['width'] / 2,
+      //   roomInfo[currentIndex]['offsetY'] -
+      //       1307.5 +
+      //       roomInfo[currentIndex]['height'] / 2,
+      // );
+
+      //下一步的图像
+      nextetValue = Offset(
+        roomInfo[currentIndex + 1]['offsetX'] -
             1307.5 +
-            roomInfo[currentIndex]['width'] / 2,
-        roomInfo[currentIndex]['offsetY'] -
+            roomInfo[currentIndex + 1]['width'] / 2,
+        roomInfo[currentIndex + 1]['offsetY'] -
             1307.5 +
-            roomInfo[currentIndex]['height'] / 2,
+            roomInfo[currentIndex + 1]['height'] / 2,
       );
     } else {
       setState(() {
+        nextetValue = const Offset(1999, 1999);
         btnText = S.current.GenerateOverlay;
       });
     }
@@ -434,10 +462,10 @@ class _ProcessButtonState extends State<ProcessButton> {
               onPressed: () {
                 //成功
                 if (btnText == S.current.GenerateOverlay) {
-                  // successFn();
+                  successFn();
                 } else {
-                  nextFn();
-                  // getSnrFn(currentIndex);
+                  // nextFn();
+                  getSnrFn(currentIndex);
                 }
               },
               child: loading

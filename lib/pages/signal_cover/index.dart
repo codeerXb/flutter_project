@@ -36,10 +36,13 @@ List<RectData> convertToRectDataList(List<dynamic> dataList) {
 
 // 将接收的json转化成floors
 List<Map<String, String>> getUniqueFloors(List<dynamic> data) {
+  // 对floorId去重
+  var uniqueIds = data.map((e) => e['floorId']).toSet();
+  // 得到楼层数据
   List<Map<String, String>> uniqueFloor = data
+      .where((e) => uniqueIds.remove(e['floorId']))
       .map(
           (e) => {'id': e['floorId'].toString(), 'name': e['floor'].toString()})
-      .toSet()
       .toList();
   uniqueFloor
       .sort((a, b) => int.parse(a['id']!).compareTo(int.parse(b['id']!)));
@@ -51,7 +54,6 @@ class RectController extends GetxController {
 
   void init(res) {
     rects = convertToRectDataList(res['wifiJson']['list']);
-
     update();
   }
 
@@ -60,8 +62,12 @@ class RectController extends GetxController {
     update(); // 通知监听器刷新界面
   }
 
-  void clearRect() {
-    rects.clear();
+  void clearRect(floorId) {
+    for (var rect in rects) {
+      if (rect.floorId == floorId) {
+        rects.remove(rect);
+      }
+    }
     update();
   }
 
@@ -521,7 +527,8 @@ class _MyAppState extends State<MyApp> {
               child: OutlinedButton(
                 onPressed: () {
                   // 按钮点击逻辑
-                  _rectController.clearRect();
+                  // 清空当前楼层
+                  _rectController.clearRect(curFloorId);
                 },
                 style: OutlinedButton.styleFrom(
                   backgroundColor: Colors.white,

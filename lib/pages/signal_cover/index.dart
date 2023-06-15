@@ -223,9 +223,7 @@ class _MyAppState extends State<MyApp> {
             inputFormatters: <TextInputFormatter>[
               FilteringTextInputFormatter.digitsOnly
             ],
-            decoration: const InputDecoration(
-              labelText: 'Room Area(㎡)',
-            ),
+          
           ),
           actions: <Widget>[
             TextButton(
@@ -235,7 +233,7 @@ class _MyAppState extends State<MyApp> {
               },
             ),
             TextButton(
-              child: const Text('ADD'),
+              child: const Text('SAVE'),
               onPressed: () async {
                 if (roomArea.isNotEmpty) {
                   setState(() {

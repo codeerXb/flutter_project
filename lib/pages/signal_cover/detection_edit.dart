@@ -31,7 +31,7 @@ class _TestEditState extends State<TestEdit> {
             Center(
               child: TextButton(
                 onPressed: () {
-                  Get.offNamed("/signal_cover");
+                  Get.offNamed("/signal_cover", arguments: {'homepage': false});
                 },
                 child: Text(
                   S.current.EditUnit,

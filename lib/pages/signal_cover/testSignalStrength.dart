@@ -64,7 +64,7 @@ class _MyAppState extends State<TestSignal> {
         leading: IconButton(
           icon: const Icon(Icons.keyboard_arrow_left),
           onPressed: () {
-            Get.offNamed('/signal_cover');
+            Get.offNamed('/signal_cover', arguments: {'homepage': false});
           },
         ),
         title: Text(S.current.TestSignal),

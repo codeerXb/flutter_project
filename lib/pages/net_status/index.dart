@@ -664,7 +664,8 @@ class _NetStatusState extends State<NetStatus> {
                                     right: 20,
                                     child: InkWell(
                                       onTap: () {
-                                        Get.toNamed('/signal_cover');
+                                        Get.toNamed('/signal_cover',
+                                            arguments: {'homepage': true});
                                       },
                                       child: Container(
                                         height: 30,

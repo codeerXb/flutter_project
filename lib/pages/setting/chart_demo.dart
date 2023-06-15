@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:syncfusion_flutter_charts/sparkcharts.dart';
-import '../../core/widget/custom_app_bar.dart';
 
 import 'package:local_auth/local_auth.dart';
 

@@ -12,12 +12,16 @@ import 'package:wifi_info_plugin_plus/wifi_info_plugin_plus.dart';
 
 import '../../config/base_config.dart';
 import '../../core/http/http_app.dart';
+import '../../core/request/request.dart';
 import '../../core/utils/shared_preferences_util.dart';
 import '../../core/widget/custom_app_bar.dart';
 import '../../generated/l10n.dart';
 
-var roomInfo = json.decode(Get.arguments['roomInfo']);
+var roomInfo = []; //画的房屋信息
+var allRoomInfo = []; //所有房屋信息
 Offset offSetValue = Offset.zero;
+Offset nextetValue = Offset.zero;
+
 Offset routerPos = Offset.zero;
 String btnText = S.current.startTesting;
 
@@ -35,10 +39,17 @@ class _MyAppState extends State<TestSignal> {
     super.initState();
     setState(() {
       btnText = S.current.startTesting;
-      roomInfo = json.decode(Get.arguments['roomInfo']);
-      if (roomInfo.length > 0) {
+      allRoomInfo = json.decode(Get.arguments['roomInfo']);
+      print(allRoomInfo);
+      //过滤出当前楼层
+      roomInfo = allRoomInfo
+          .where((item) => item['floor'] == Get.arguments['curFloor'])
+          .toList();
+
+      if (roomInfo.isNotEmpty) {
         offSetValue = Offset(
             roomInfo[0]['offsetX'] - 1300, roomInfo[0]['offsetY'] - 1300);
+        nextetValue = const Offset(1999, 1999);
       }
     });
   }
@@ -46,12 +57,21 @@ class _MyAppState extends State<TestSignal> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Test Signal Strength
-      appBar: customAppbar(context: context, title: S.current.TestSignal),
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        leading: IconButton(
+          icon: const Icon(Icons.keyboard_arrow_left),
+          onPressed: () {
+            Get.offNamed('/signal_cover');
+          },
+        ),
+        title: Text(S.current.TestSignal),
+      ),
       body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: const [
-            //  Text('Romm Area:$roomArea ㎡'),
             ArcProgresssBar(),
 
             //按钮
@@ -83,6 +103,7 @@ class ArcProgresssBar extends StatefulWidget {
 
 class _ArcProgresssBarState extends State<ArcProgresssBar> {
   ui.Image? _assetImageFrame; //本地图片
+  ui.Image? _nextImage; //本地图片
 
   @override
   void initState() {
@@ -96,8 +117,11 @@ class _ArcProgresssBarState extends State<ArcProgresssBar> {
         'assets/images/icon_homepage_route.png',
         width: 20,
         height: 20);
+    ui.Image nextImage =
+        await getAssetImage('assets/images/people.png', width: 20, height: 20);
     setState(() {
       _assetImageFrame = imageFrame;
+      _nextImage = nextImage;
     });
   }
 
@@ -122,7 +146,8 @@ class _ArcProgresssBarState extends State<ArcProgresssBar> {
                 top: 0,
                 child: CustomPaint(
                   size: Size(widget.width, widget.height),
-                  painter: MyPainter(_assetImageFrame!, 32.sp, widget.progress,
+                  painter: MyPainter(
+                      _assetImageFrame!, 32.sp, widget.progress, _nextImage!,
                       min: widget.min, max: widget.max),
                 ),
               ),
@@ -134,11 +159,18 @@ class _ArcProgresssBarState extends State<ArcProgresssBar> {
                     width: 40, // 添加一个具体的宽度
                     height: 40, // 添加一个具体的高度
                     child: GestureDetector(
-                      // 手指滑动
+                      //滑动router
                       onPanUpdate: (details) {
                         setState(() {
+                          // 计算新的偏移量
                           offSetValue += details.delta;
                           routerPos += details.delta;
+
+                          // 限制偏移量不超出边框区域
+                          double clampedX = offSetValue.dx.clamp(-102, 287);
+                          double clampedY = offSetValue.dy.clamp(-102, 523);
+                          offSetValue = Offset(clampedX, clampedY);
+                          routerPos = Offset(clampedX, clampedY);
                         });
                       },
                     ),
@@ -154,21 +186,36 @@ class _ArcProgresssBarState extends State<ArcProgresssBar> {
 
 class MyPainter extends CustomPainter {
   ui.Image aPattern;
-  MyPainter(this.aPattern, double sp, double progress,
+  ui.Image bPattern;
+  MyPainter(this.aPattern, double sp, double progress, this.bPattern,
       {required double min, required double max})
       : super();
 
   @override
   void paint(Canvas canvas, Size size) {
-    var paint3 = Paint()
+    var paint1 = Paint()
       ..isAntiAlias = true
       ..strokeWidth = 1.0
       ..style = PaintingStyle.stroke
       ..color = const Color.fromARGB(255, 95, 95, 95)
       ..invertColors = false;
 
-    Paint selfPaint = Paint()
-      ..color = Colors.blue
+    Paint paint2 = Paint()
+      ..color = const ui.Color.fromARGB(140, 31, 137, 224)
+      ..style = PaintingStyle.fill
+      ..isAntiAlias = true
+      ..strokeCap = StrokeCap.butt
+      ..strokeWidth = 30.0;
+
+    Paint paint3 = Paint()
+      ..color = const ui.Color.fromARGB(255, 6, 143, 255)
+      ..style = PaintingStyle.fill
+      ..isAntiAlias = true
+      ..strokeCap = StrokeCap.butt
+      ..strokeWidth = 30.0;
+
+    Paint paint4 = Paint()
+      ..color = ui.Color.fromARGB(255, 255, 6, 6)
       ..style = PaintingStyle.fill
       ..isAntiAlias = true
       ..strokeCap = StrokeCap.butt
@@ -177,20 +224,24 @@ class MyPainter extends CustomPainter {
     canvas.translate(size.width / 2, size.height / 2);
 
     //router
-    canvas.drawImage(aPattern, offSetValue, selfPaint);
+    canvas.drawImage(aPattern, offSetValue, paint3);
+    canvas.drawImage(bPattern, nextetValue, paint4);
 
-    //   _box(canvas, paint3, 'abc', -100.0, -100.0, 200.0, 100.0);
-    roomInfo.forEach((item) {
-      _box(canvas, paint3, item["name"], item['offsetX'] - 1300,
+    // _box(canvas, paint1, 'abc', -100.0, -100.0, 200.0, 100.0);
+    for (var item in roomInfo) {
+      _box(canvas, paint1, item["name"], item['offsetX'] - 1300,
           item['offsetY'] - 1300, item["width"], item["height"]); // 要进行缩放的组件
-    });
+      //完成的给蓝色
+      if (item.containsKey('snr')) {
+        _box(canvas, paint2, item["name"], item['offsetX'] - 1300,
+            item['offsetY'] - 1300, item["width"], item["height"]); // 要进行缩放的组件
+      }
+    }
   }
 
-  //在实际场景中正确利用此回调可以避免重绘开销，本示例我们简单的返回true
+  //避免重绘开销，返回true
   @override
-  bool shouldRepaint(MyPainter oldDelegate) {
-    return true;
-  }
+  bool shouldRepaint(MyPainter oldDelegate) => true;
 }
 
 // 盒子
@@ -198,7 +249,6 @@ void _box(Canvas canvas, Paint paint, text, x, y, w, h) {
   Rect d = Rect.fromLTWH(x, y, w, h);
 
   canvas.drawRect(d, paint);
-
   ui.ParagraphBuilder pb = ui.ParagraphBuilder(ui.ParagraphStyle(
     textAlign: TextAlign.center,
     fontWeight: FontWeight.w300,
@@ -238,8 +288,10 @@ class ProcessButton extends StatefulWidget {
 class _ProcessButtonState extends State<ProcessButton> {
   bool loading = false;
   List deviceList = []; //设备列表
-  int currentIndex = -1;
   var roomArea = json.decode(Get.arguments['roomArea']);
+  dynamic sn;
+  dynamic acsNode;
+  int currentIndex = -1;
 
   @override
   void initState() {
@@ -263,7 +315,7 @@ class _ProcessButtonState extends State<ProcessButton> {
       var mac = await GetMac.macAddress;
 
       //终端设备列表
-      var sn = await sharedGetData('deviceSn', String);
+      sn = await sharedGetData('deviceSn', String);
       var response = await App.post(
           '${BaseConfig.cloudBaseUrl}/cpeMqtt/getDevicesTable',
           data: {'sn': sn.toString(), "type": "getDevicesTable"});
@@ -279,21 +331,64 @@ class _ProcessButtonState extends State<ProcessButton> {
             .where((item) => item['MACAddress'] == mac)
             .toList()[0]['SNR'];
 
-        nextFn();
+        var connection = deviceList
+            .where((item) => item['MACAddress'] == mac)
+            .toList()[0]['connection'];
+            
+        //判断是2.4G还是5G
+        if (connection == '2.4GHz') {
+          var parameterNames1 = [
+            "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.1.NoiseLevel",
+            "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.1.TxPower"
+          ];
+          var res = await Request().getACSNode(parameterNames1, sn);
+          Map<String, dynamic> d = jsonDecode(res);
+          acsNode = d['data']['InternetGatewayDevice']['WEB_GUI']['WiFi']
+              ['WLANSettings']['1'];
+        } else {
+          var parameterNames2 = [
+            "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.2.NoiseLevel",
+            "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.2.TxPower"
+          ];
+          acsNode = await Request().getACSNode(parameterNames2, sn);
+          var res = await Request().getACSNode(parameterNames2, sn);
+          Map<String, dynamic> d = jsonDecode(res);
+          acsNode = d['data']['InternetGatewayDevice']['WEB_GUI']['WiFi']
+              ['WLANSettings']['2'];
+        }
 
-        //snr存到该房间对象
+        //存到该房间对象
         if (currentIndex < roomInfo.length - 1) {
           roomInfo[currentIndex + 1]['snr'] = snr;
           roomInfo[currentIndex + 1]['roomArea'] = roomArea;
-          roomInfo[currentIndex + 1]['routerPos'] = routerPos;
+          roomInfo[currentIndex + 1]['routerX'] = routerPos.dx;
+          roomInfo[currentIndex + 1]['routerY'] = routerPos.dy;
+          roomInfo[currentIndex + 1]['TxPower'] = acsNode['TxPower']['_value'];
+          roomInfo[currentIndex + 1]['NoiseLevel'] =
+              acsNode['NoiseLevel']['_value'];
         }
-
-        print(roomInfo);
+        nextFn();
       }
+      print(roomInfo);
       // printInfo(info: 'roomInfo$roomInfo');
     } catch (e) {
       debugPrint(e.toString());
-      ToastUtils.error(S.current.warningSnNotSame);
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            content: Text(S.current.warningSnNotSame),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     } finally {
       setState(() {
         loading = false;
@@ -306,18 +401,45 @@ class _ProcessButtonState extends State<ProcessButton> {
       currentIndex++;
       btnText = S.current.roomStrength;
       //router位置中间
-      offSetValue = Offset(
-        roomInfo[currentIndex]['offsetX'] -
+      // offSetValue = Offset(
+      //   roomInfo[currentIndex]['offsetX'] -
+      //       1307.5 +
+      //       roomInfo[currentIndex]['width'] / 2,
+      //   roomInfo[currentIndex]['offsetY'] -
+      //       1307.5 +
+      //       roomInfo[currentIndex]['height'] / 2,
+      // );
+
+      //下一步的图像
+      nextetValue = Offset(
+        roomInfo[currentIndex + 1]['offsetX'] -
             1307.5 +
-            roomInfo[currentIndex]['width'] / 2,
-        roomInfo[currentIndex]['offsetY'] -
+            roomInfo[currentIndex + 1]['width'] / 2,
+        roomInfo[currentIndex + 1]['offsetY'] -
             1307.5 +
-            roomInfo[currentIndex]['height'] / 2,
+            roomInfo[currentIndex + 1]['height'] / 2,
       );
     } else {
       setState(() {
+        nextetValue = const Offset(1999, 1999);
         btnText = S.current.GenerateOverlay;
       });
+    }
+  }
+
+  void successFn() async {
+    allRoomInfo
+        .removeWhere((item) => item["floor"] == Get.arguments['curFloor']);
+    allRoomInfo.addAll(roomInfo);
+    try {
+      await App.post('/platform/wifiJson/wifi', data: {
+        "sn": sn,
+        "wifiJson": {"list": allRoomInfo}
+      });
+      ToastUtils.success(S.current.success);
+      Get.offNamed("/test_edit");
+    } catch (e) {
+      ToastUtils.success(S.current.error);
     }
   }
 
@@ -330,20 +452,37 @@ class _ProcessButtonState extends State<ProcessButton> {
           btnText == S.current.startTesting
               ? Text(S.current.coverageMap)
               : const Text(''),
-          loading
-              ? const CircularProgressIndicator()
-              : ElevatedButton(
-                  onPressed: () {
-                    //成功
-                    if (btnText == S.current.GenerateOverlay) {
-                      print('成功....');
-                    } else {
-                      // nextFn();
-                      getSnrFn(currentIndex);
-                    }
-                  },
-                  child: Text(btnText),
-                ),
+          SizedBox(
+            width: 1.sw - 104.w,
+            child: ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(
+                    const Color.fromARGB(255, 30, 104, 233)),
+              ),
+              onPressed: () {
+                //成功
+                if (btnText == S.current.GenerateOverlay) {
+                  successFn();
+                } else {
+                  // nextFn();
+                  getSnrFn(currentIndex);
+                }
+              },
+              child: loading
+                  ? const Center(
+                      child: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                  : Text(
+                      btnText,
+                      style: TextStyle(
+                          fontSize: 32.sp, color: const Color(0xffffffff)),
+                    ),
+            ),
+          ),
         ],
       ),
     );

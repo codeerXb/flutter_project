@@ -31,7 +31,7 @@ class _TestEditState extends State<TestEdit> {
             Center(
               child: TextButton(
                 onPressed: () {
-                  Get.toNamed("/signal_cover");
+                  Get.offNamed("/signal_cover");
                 },
                 child: Text(
                   S.current.EditUnit,
@@ -52,7 +52,9 @@ class _TestEditState extends State<TestEdit> {
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
                       colors: [
-                        Color.fromARGB(249, 245, 6, 6),
+                        Color.fromARGB(200, 240, 64, 64),
+                        Color.fromARGB(249, 248, 244, 11),
+                        Color.fromARGB(235, 118, 240, 4),
                         Color.fromARGB(235, 118, 240, 4)
                       ],
                     ),

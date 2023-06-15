@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http_app.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
-import 'package:flutter_template/core/utils/toast.dart';
 import 'package:vibration/vibration.dart';
 import 'package:get/get.dart';
 
@@ -191,12 +191,16 @@ class _MyAppState extends State<MyApp> {
         return AlertDialog(
           title: const Text('Room Area(㎡)'),
           content: TextFormField(
+            keyboardType: TextInputType.number,
             initialValue: roomArea,
             onChanged: (value) {
               setState(() {
                 roomArea = value;
               });
             },
+            inputFormatters: <TextInputFormatter>[
+              FilteringTextInputFormatter.digitsOnly
+            ],
             decoration: const InputDecoration(
               labelText: 'Room Area(㎡)',
             ),
@@ -211,7 +215,6 @@ class _MyAppState extends State<MyApp> {
             TextButton(
               child: const Text('ADD'),
               onPressed: () async {
-                // 在此处处理确认按钮的逻辑
                 if (roomArea.isNotEmpty) {
                   setState(() {
                     saveLayoutLoading = true;
@@ -232,11 +235,12 @@ class _MyAppState extends State<MyApp> {
                         info: '户型数据：${jsonEncode({
                           "list": _rectController.rects
                         }).toString()}');
-                    Get.toNamed(
+                    Get.offNamed(
                       '/test_signal',
                       arguments: {
                         'roomInfo': jsonEncode(_rectController.rects),
-                        'roomArea': roomArea
+                        'roomArea': roomArea,
+                        'curFloor': curFloor
                       },
                     );
                   } catch (err) {
@@ -244,7 +248,7 @@ class _MyAppState extends State<MyApp> {
                   } finally {}
                   // 清空输入的文字
                   setState(() {
-                    roomArea = '';
+                    // roomArea = '';
                     saveLayoutLoading = false;
                   });
                 }
@@ -275,8 +279,7 @@ class _MyAppState extends State<MyApp> {
         leading: IconButton(
           icon: const Icon(Icons.keyboard_arrow_left),
           onPressed: () {
-            // 返回按钮逻辑
-            Get.back();
+            Get.offNamed('/test_edit');
           },
         ),
         title: const Text('Edit House Layout'),
@@ -655,7 +658,8 @@ class _GridWidgetState extends State<GridWidget> {
 
   // 定义选中的边
   String selectedEdge = '';
-
+  // 修改home名字
+  String editRoomName = '';
   @override
   void initState() {
     super.initState();
@@ -765,6 +769,49 @@ class _GridWidgetState extends State<GridWidget> {
                     }
                   });
                 }
+              },
+              onLongPress: () {
+                // 长按选中之后弹窗修改home值
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('edit Room'),
+                      content: TextFormField(
+                        initialValue: rectData.name,
+                        onChanged: (value) {
+                          setState(() {
+                            editRoomName = value;
+                          });
+                        },
+                        decoration: const InputDecoration(
+                          labelText: 'Room Name',
+                        ),
+                      ),
+                      actions: <Widget>[
+                        TextButton(
+                          child: const Text('CANCEL'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                        TextButton(
+                          child: const Text('edit'),
+                          onPressed: () {
+                            rectData.name = editRoomName;
+                            // 在此处处理确认按钮的逻辑
+                            // 清空输入的文字
+                            setState(() {
+                              editRoomName = '';
+                            });
+                            // 关闭对话框
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
               },
               child: CustomPaint(
                 size: Size(rectData.width, rectData.height),
@@ -899,7 +946,7 @@ class RectsPainter extends CustomPainter {
 }
 
 class RectData {
-  final String name;
+  String name;
   String floor;
   bool isSelected;
   double offsetX;

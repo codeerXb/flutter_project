@@ -2892,7 +2892,7 @@ class S {
 
   String get DetectionAndEdit {
     return Intl.message(
-      'Detection and editing',
+      'Detection and Editing',
       name: 'DetectionAndEdit',
       desc: '',
       args: [],
@@ -2901,7 +2901,7 @@ class S {
 
   String get EditUnit {
     return Intl.message(
-      'Edit unit',
+      'Edit Layout',
       name: 'EditUnit',
       desc: '',
       args: [],
@@ -2910,7 +2910,7 @@ class S {
 
   String get Blueprint {
     return Intl.message(
-      'Wi-Fi Signal Country Blueprint (for reference only)',
+      'Wi-Fi signal coverage map(for reference only)',
       name: 'Blueprint',
       desc: '',
       args: [],

@@ -63,11 +63,7 @@ class RectController extends GetxController {
   }
 
   void clearRect(floorId) {
-    for (var rect in rects) {
-      if (rect.floorId == floorId) {
-        rects.remove(rect);
-      }
-    }
+    rects = rects.where((element) => element.floorId != floorId).toList();
     update();
   }
 
@@ -223,7 +219,6 @@ class _MyAppState extends State<MyApp> {
             inputFormatters: <TextInputFormatter>[
               FilteringTextInputFormatter.digitsOnly
             ],
-          
           ),
           actions: <Widget>[
             TextButton(

@@ -33,13 +33,21 @@ List<RectData> convertToRectDataList(List<dynamic> dataList) {
   return rectDataList;
 }
 
+// 将接收的json转化成floors
+List<String> getUniqueFloors(List<Map<String, dynamic>> floors) {
+  List<String> uniqueFloors = [];
+  for (var floor in floors) {
+    if (!uniqueFloors.contains(floor['floor'].toString())) {
+      uniqueFloors.add(floor['floor'].toString());
+    }
+  }
+  return uniqueFloors;
+}
+
 class RectController extends GetxController {
   List<RectData> rects = [];
 
-  void init() async {
-    var sn = await sharedGetData('deviceSn', String);
-    var res = await App.get('/platform/wifiJson/getOne/$sn');
-    debugPrint(res['wifiJson']['list'].toString());
+  void init(res) {
     rects = convertToRectDataList(res['wifiJson']['list']);
     update();
   }
@@ -82,10 +90,28 @@ class _MyAppState extends State<MyApp> {
   // 当前选中的楼层
   String curFloor = '1F';
 
+  Future<dynamic> getData() async {
+    try {
+      var sn = await sharedGetData('deviceSn', String);
+      var res = await App.get('/platform/wifiJson/getOne/$sn');
+      return res;
+    } catch (err) {
+      debugPrint(err.toString());
+    }
+    return null;
+  }
+
   @override
   void initState() {
     super.initState();
-    _rectController.init();
+    getData().then((value) {
+      if (value != null) {
+        setState(() {
+          floors = getUniqueFloors(value['wifiJson']['list']);
+        });
+        _rectController.init(value);
+      }
+    });
   }
 
   void renameFloor(BuildContext context, int index) {
@@ -232,7 +258,11 @@ class _MyAppState extends State<MyApp> {
 
   // 重置户型图
   void onResetRects() {
-    _rectController.init();
+    getData().then((value) {
+      if (value != null) {
+        _rectController.init(value);
+      }
+    });
   }
 
   @override

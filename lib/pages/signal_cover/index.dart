@@ -34,7 +34,7 @@ List<RectData> convertToRectDataList(List<dynamic> dataList) {
 }
 
 // 将接收的json转化成floors
-List<String> getUniqueFloors(List<Map<String, dynamic>> floors) {
+List<String> getUniqueFloors(List<dynamic> floors) {
   List<String> uniqueFloors = [];
   for (var floor in floors) {
     if (!uniqueFloors.contains(floor['floor'].toString())) {

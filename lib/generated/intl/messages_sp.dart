@@ -34,6 +34,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "BRIDGE": MessageLookupByLibrary.simpleMessage("BRIDGE"),
         "Band": MessageLookupByLibrary.simpleMessage("Band"),
         "Bandwidth": MessageLookupByLibrary.simpleMessage("Bandwidth"),
+        "Blueprint": MessageLookupByLibrary.simpleMessage(
+            "Wi-Fi signal coverage map(for reference only)"),
         "CacheCleared": MessageLookupByLibrary.simpleMessage("Cache Cleared"),
         "Channel": MessageLookupByLibrary.simpleMessage("Channel"),
         "Chile": MessageLookupByLibrary.simpleMessage("Chile"),
@@ -56,11 +58,14 @@ class MessageLookup extends MessageLookupByLibrary {
         "DefaultGateway":
             MessageLookupByLibrary.simpleMessage("Default Gateway"),
         "Detect": MessageLookupByLibrary.simpleMessage("Detect Server"),
+        "DetectionAndEdit":
+            MessageLookupByLibrary.simpleMessage("Detection and Editing"),
         "Devicelogin": MessageLookupByLibrary.simpleMessage("Device Login"),
         "DiscoveryEqu":
             MessageLookupByLibrary.simpleMessage("Looking for your Wi-Fi"),
         "DynamicIP": MessageLookupByLibrary.simpleMessage("Dynamic IP"),
         "EditPass": MessageLookupByLibrary.simpleMessage("change Password"),
+        "EditUnit": MessageLookupByLibrary.simpleMessage("Edit Layout"),
         "ElapsedTime": MessageLookupByLibrary.simpleMessage("Elapsed Time"),
         "EnableRebootScheduler":
             MessageLookupByLibrary.simpleMessage("Enable reboot scheduler"),
@@ -78,6 +83,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "France": MessageLookupByLibrary.simpleMessage("France"),
         "GSCNARFCN": MessageLookupByLibrary.simpleMessage("GSCNARFCN"),
         "General": MessageLookupByLibrary.simpleMessage("General Settings"),
+        "GenerateOverlay":
+            MessageLookupByLibrary.simpleMessage("Generate Overlay"),
         "HardwareVersion":
             MessageLookupByLibrary.simpleMessage("Hardware Version"),
         "HideSSIDBroadcast":
@@ -130,6 +137,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Request Cancellation"),
         "Reqtimeout": MessageLookupByLibrary.simpleMessage("Request Timeout"),
         "Restimeout": MessageLookupByLibrary.simpleMessage("Response Timeout"),
+        "RetestF": MessageLookupByLibrary.simpleMessage("Retest 1F"),
         "RunningTime": MessageLookupByLibrary.simpleMessage("Running Time"),
         "Russia": MessageLookupByLibrary.simpleMessage("Russia"),
         "Sat": MessageLookupByLibrary.simpleMessage("Sat"),
@@ -149,6 +157,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "SureRouterConnected": MessageLookupByLibrary.simpleMessage(
             "Make sure the router is connected to the power supply and the WAN port is plugged in with an Ethernet cable"),
         "SystemSettings": MessageLookupByLibrary.simpleMessage("System"),
+        "TestSignal": MessageLookupByLibrary.simpleMessage("Signal Coverage"),
         "Thu": MessageLookupByLibrary.simpleMessage("Thu"),
         "TimeLengthStatistics":
             MessageLookupByLibrary.simpleMessage("Time length statistics"),
@@ -210,6 +219,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Connection Mode"),
         "contimeout":
             MessageLookupByLibrary.simpleMessage("Connection Timeout"),
+        "coverageMap": MessageLookupByLibrary.simpleMessage(
+            "Please drag the router to the corresponding position in the room, and then click Start detection to draw the signal coverage map"),
         "cpeManagementPlatform": MessageLookupByLibrary.simpleMessage(""),
         "currentDeive": MessageLookupByLibrary.simpleMessage("Current Device"),
         "currentOrientation":
@@ -352,6 +363,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "startIPAddress":
             MessageLookupByLibrary.simpleMessage("Start iP address"),
         "startSearch": MessageLookupByLibrary.simpleMessage("To Search"),
+        "startTesting": MessageLookupByLibrary.simpleMessage("start Testing"),
         "state": MessageLookupByLibrary.simpleMessage("Network Status"),
         "staticIP": MessageLookupByLibrary.simpleMessage("StaticIP"),
         "status": MessageLookupByLibrary.simpleMessage("Status"),

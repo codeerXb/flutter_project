@@ -2890,6 +2890,7 @@ class S {
     );
   }
 
+  /// `Detection and Editing`
   String get DetectionAndEdit {
     return Intl.message(
       'Detection and Editing',
@@ -2899,6 +2900,7 @@ class S {
     );
   }
 
+  /// `Edit Layout`
   String get EditUnit {
     return Intl.message(
       'Edit Layout',
@@ -2908,6 +2910,7 @@ class S {
     );
   }
 
+  /// `Wi-Fi signal coverage map(for reference only)`
   String get Blueprint {
     return Intl.message(
       'Wi-Fi signal coverage map(for reference only)',
@@ -2917,24 +2920,7 @@ class S {
     );
   }
 
-  String get TestSignal {
-    return Intl.message(
-      'Signal Coverage',
-      name: 'TestSignal',
-      desc: '',
-      args: [],
-    );
-  }
-
-  String get startTesting {
-    return Intl.message(
-      'Start Test',
-      name: 'startTesting',
-      desc: '',
-      args: [],
-    );
-  }
-
+  /// `Retest 1F`
   String get RetestF {
     return Intl.message(
       'Retest 1F',
@@ -2944,6 +2930,25 @@ class S {
     );
   }
 
+  /// `Signal Coverage`
+  String get TestSignal {
+    return Intl.message(
+      'Signal Coverage',
+      name: 'TestSignal',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Start Test`
+  String get startTesting {
+    return Intl.message(
+      'Start Test',
+      name: 'startTesting',
+      desc: '',
+      args: [],
+    );
+  }
   String get roomStrength {
     return Intl.message(
       'Get the signal strength of the room',
@@ -2953,6 +2958,7 @@ class S {
     );
   }
 
+  /// `Generate Overlay`
   String get GenerateOverlay {
     return Intl.message(
       'Generate Overlay',
@@ -2961,7 +2967,9 @@ class S {
       args: [],
     );
   }
-    String get coverageMap {
+
+  /// `Please drag the router to the corresponding position in the room, and then click Start detection to draw the signal coverage map`
+  String get coverageMap {
     return Intl.message(
       'Please drag the router to the corresponding position in the room, and then click Start detection to draw the signal coverage map',
       name: 'coverageMap',

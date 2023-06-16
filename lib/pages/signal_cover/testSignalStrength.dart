@@ -42,7 +42,7 @@ class _MyAppState extends State<TestSignal> {
       roomInfo = allRoomInfo
           .where((item) => item['floor'] == Get.arguments['curFloor'])
           .toList();
-      print(roomInfo);
+      print(allRoomInfo);
 
       if (roomInfo.isNotEmpty) {
         offSetValue = Offset(
@@ -230,7 +230,7 @@ class MyPainter extends CustomPainter {
       _box(canvas, paint1, item["name"], item['offsetX'] - 1300,
           item['offsetY'] - 1300, item["width"], item["height"]); // 要进行缩放的组件
       //完成的给蓝色
-      if (item.containsKey('snr')) {
+      if (item['snr'] != '') {
         _box(canvas, paint2, item["name"], item['offsetX'] - 1300,
             item['offsetY'] - 1300, item["width"], item["height"]); // 要进行缩放的组件
       }
@@ -396,7 +396,7 @@ class _ProcessButtonState extends State<ProcessButton> {
 
   void nextFn() {
     if (currentIndex < roomInfo.length - 1) {
-        btnText = S.current.roomStrength;
+      btnText = S.current.roomStrength;
       currentIndex++;
       //router位置中间
       // offSetValue = Offset(

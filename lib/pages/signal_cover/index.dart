@@ -26,6 +26,9 @@ List<RectData> convertToRectDataList(List<dynamic> dataList) {
       width: data['width'],
       height: data['height'],
       selectedEdge: data['selectedEdge'],
+      snr: data['snr'] ?? '',
+      noiseLevel: data['NoiseLevel'] ?? '',
+      txPower: data['TxPower'] ?? '',
     );
 
     rectDataList.add(rectData);
@@ -240,10 +243,10 @@ class _MyAppState extends State<MyApp> {
                     // 保存的时候清除isSelected和selectedEdge状态
                     _rectController.clearRectStatus();
                     // 实现保存户型图逻辑
-                    await App.post('/platform/wifiJson/wifi', data: {
-                      "sn": sn,
-                      "wifiJson": {"list": _rectController.rects}
-                    });
+                    // await App.post('/platform/wifiJson/wifi', data: {
+                    //   "sn": sn,
+                    //   "wifiJson": {"list": _rectController.rects}
+                    // });
                     // 关闭对话框
                     Navigator.of(context).pop();
                     printInfo(
@@ -263,7 +266,6 @@ class _MyAppState extends State<MyApp> {
                   } finally {}
                   // 清空输入的文字
                   setState(() {
-                    // roomArea = '';
                     saveLayoutLoading = false;
                   });
                 }
@@ -1008,6 +1010,9 @@ class RectData {
   double height;
   String selectedEdge;
   String floorId;
+  String snr;
+  String noiseLevel;
+  String txPower;
 
   RectData({
     required this.floorId,
@@ -1021,6 +1026,9 @@ class RectData {
     required this.width,
     required this.height,
     required this.selectedEdge,
+    this.snr = '',
+    this.noiseLevel = '',
+    this.txPower = '',
   });
   Map<String, dynamic> toJson() {
     return {
@@ -1035,6 +1043,9 @@ class RectData {
       'offsetX': offsetX,
       'offsetY': offsetY,
       'selectedEdge': selectedEdge,
+      'snr': snr,
+      'NoiseLevel': noiseLevel,
+      'txPower': txPower,
     };
   }
 }

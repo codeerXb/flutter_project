@@ -133,53 +133,99 @@ class _MyAppState extends State<MyApp> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return StatefulBuilder(
-          // 使用StatefulBuilder包裹对话框内容以更新状态
-          builder: (BuildContext context, StateSetter setState) {
-            return Column(
-              children: [
-                ListTile(
-                  leading: const Icon(Icons.edit),
-                  title: const Text('Rename'),
-                  onTap: () {
-                    // 不需要在这里做任何操作，等待对话框关闭后处理
-                    Navigator.pop(context);
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.delete),
-                  title: const Text('CANCEL'),
-                  onTap: () {
-                    deleteFloor(index);
-                    Navigator.pop(context);
-                  },
-                ),
-                TextFormField(
-                  // 添加文本输入框
-                  initialValue: editingFloor, // 初始值为editingFloor
-                  onChanged: (value) {
-                    setState(() {
-                      editingFloor = value; // 更新editingFloor的值
-                    });
-                  },
-                ),
-                ElevatedButton(
-                  // 添加确认按钮
-                  onPressed: () {
-                    // 更新楼层名称为编辑后的值
-                    floors[index]['name'] = editingFloor;
-                    setState(() {}); // 刷新界面
-                    Navigator.pop(context); // 关闭对话框
-                  },
-                  child: const Text('CONFIRM'),
-                ),
-              ],
-            );
-          },
+        return AlertDialog(
+          title: const Text('edit Floor'),
+          content: TextFormField(
+            initialValue: editingFloor,
+            onChanged: (value) {
+              setState(() {
+                editingFloor = value;
+              });
+            },
+            // decoration: const InputDecoration(
+            //   labelText: 'Room Name',
+            // ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('CANCEL'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('edit'),
+              onPressed: () {
+                // 在此处处理确认按钮的逻辑
+                floors[index]['name'] = editingFloor;
+                // 清空输入的文字
+                setState(() {
+                  curFloor = editingFloor;
+                  curFloorId = floors[index]['id']!;
+                  // 修改同一个floorId下面的floor
+                  List<dynamic> wifiList = _rectController.rects;
+                  wifiList
+                      .where((wifi) => wifi.floorId == curFloorId)
+                      .forEach((wifi) => wifi.floor = editingFloor);
+                });
+                // 关闭对话框
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
         );
       },
     );
-    Navigator.pop(context);
+    // showDialog(
+    //   context: context,
+    //   builder: (BuildContext context) {
+    //     return StatefulBuilder(
+    //       // 使用StatefulBuilder包裹对话框内容以更新状态
+    //       builder: (BuildContext context, StateSetter setState) {
+    //         return Column(
+    //           children: [
+    //             ListTile(
+    //               leading: const Icon(Icons.edit),
+    //               title: const Text('Rename'),
+    //               onTap: () {
+    //                 // 不需要在这里做任何操作，等待对话框关闭后处理
+    //                 Navigator.pop(context);
+    //               },
+    //             ),
+    //             ListTile(
+    //               leading: const Icon(Icons.delete),
+    //               title: const Text('CANCEL'),
+    //               onTap: () {
+    //                 deleteFloor(index);
+    //                 Navigator.pop(context);
+    //               },
+    //             ),
+    //             TextFormField(
+    //               // 添加文本输入框
+    //               initialValue: editingFloor, // 初始值为editingFloor
+    //               onChanged: (value) {
+    //                 setState(() {
+    //                   editingFloor = value; // 更新editingFloor的值
+    //                 });
+    //               },
+    //             ),
+    //             ElevatedButton(
+    //               // 添加确认按钮
+    //               onPressed: () {
+    //                 // 更新楼层名称为编辑后的值
+    //                 floors[index]['name'] = editingFloor;
+    //                 setState(() {}); // 刷新界面
+    //                 Navigator.pop(context); // 关闭对话框
+    //               },
+    //               child: const Text('CONFIRM'),
+    //             ),
+    //           ],
+    //         );
+    //       },
+    //     );
+    //   },
+    // );
+    // Navigator.pop(context);
   }
 
   // --- 删除楼层 ---
@@ -327,10 +373,11 @@ class _MyAppState extends State<MyApp> {
                         const SizedBox(width: 10),
                     itemBuilder: (context, index) {
                       String? floor = floors[index]['name'];
+                      String? floorId = floors[index]['id'];
                       return GestureDetector(
                         onTap: () {
                           // 判断是否选中了这个楼层
-                          if (floor != curFloor) {
+                          if (floorId != curFloorId) {
                             // 未选中改变curFloor
                             setState(() {
                               curFloor = floor!;
@@ -348,59 +395,8 @@ class _MyAppState extends State<MyApp> {
                                         leading: const Icon(Icons.edit),
                                         title: const Text('RENAME'),
                                         onTap: () {
-                                          // renameFloor(context, index);
                                           Navigator.pop(context);
-                                          editingFloor = floors[index][
-                                              'name']!; // 将选中的楼层名称赋值给editingFloor变量
-                                          printInfo(
-                                              info:
-                                                  '111111111111$editingFloor');
-                                          showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return AlertDialog(
-                                                title: const Text('edit Floor'),
-                                                content: TextFormField(
-                                                  initialValue: editingFloor,
-                                                  onChanged: (value) {
-                                                    setState(() {
-                                                      editingFloor = value;
-                                                      printInfo(
-                                                          info:
-                                                              '2222222$editingFloor');
-                                                    });
-                                                  },
-                                                  // decoration: const InputDecoration(
-                                                  //   labelText: 'Room Name',
-                                                  // ),
-                                                ),
-                                                actions: <Widget>[
-                                                  TextButton(
-                                                    child: const Text('CANCEL'),
-                                                    onPressed: () {
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    },
-                                                  ),
-                                                  TextButton(
-                                                    child: const Text('edit'),
-                                                    onPressed: () {
-                                                      floors[index]['name'] =
-                                                          editingFloor;
-                                                      // 在此处处理确认按钮的逻辑
-                                                      // 清空输入的文字
-                                                      setState(() {
-                                                        editingFloor = '';
-                                                      });
-                                                      // 关闭对话框
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                    },
-                                                  ),
-                                                ],
-                                              );
-                                            },
-                                          );
+                                          renameFloor(context, index);
                                         },
                                       ),
                                       if (index != 0)
@@ -472,8 +468,8 @@ class _MyAppState extends State<MyApp> {
           ),
           Expanded(
             child: GetBuilder<RectController>(
-              builder: (_) =>
-                  GridWidget(rects: _rectController.rects, curFloor: curFloor),
+              builder: (_) => GridWidget(
+                  rects: _rectController.rects, curFloorId: curFloorId),
             ),
           ),
         ],
@@ -707,9 +703,9 @@ class GridPainter extends CustomPainter {
 
 class GridWidget extends StatefulWidget {
   final List<RectData> rects; // 在构造函数中接收_rects
-  final String curFloor;
+  final String curFloorId;
 
-  const GridWidget({Key? key, required this.rects, required this.curFloor})
+  const GridWidget({Key? key, required this.rects, required this.curFloorId})
       : super(key: key);
 
   @override
@@ -745,7 +741,7 @@ class _GridWidgetState extends State<GridWidget> {
   Widget build(BuildContext context) {
     final rectWidgets = <Widget>[];
     for (final rectData in widget.rects) {
-      if (widget.curFloor == rectData.floor) {
+      if (widget.curFloorId == rectData.floorId) {
         rectWidgets.add(
           Positioned(
             left: offsetX + rectData.offsetX,

@@ -2947,8 +2947,10 @@ class S {
       name: 'startTesting',
       desc: '',
       args: [],
-    );
+    ); 
   }
+
+  /// `Start Test`
   String get roomStrength {
     return Intl.message(
       'Get the signal strength of the room',
@@ -2957,6 +2959,7 @@ class S {
       args: [],
     );
   }
+  // skipped getter for the 'roomStrength ' key
 
   /// `Generate Overlay`
   String get GenerateOverlay {

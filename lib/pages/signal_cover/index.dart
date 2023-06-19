@@ -26,9 +26,6 @@ List<RectData> convertToRectDataList(List<dynamic> dataList) {
       width: data['width'],
       height: data['height'],
       selectedEdge: data['selectedEdge'],
-      snr: data['snr'] ?? '',
-      noiseLevel: data['NoiseLevel'] ?? '',
-      txPower: data['TxPower'] ?? '',
     );
 
     rectDataList.add(rectData);
@@ -243,10 +240,10 @@ class _MyAppState extends State<MyApp> {
                     // 保存的时候清除isSelected和selectedEdge状态
                     _rectController.clearRectStatus();
                     // 实现保存户型图逻辑
-                    // await App.post('/platform/wifiJson/wifi', data: {
-                    //   "sn": sn,
-                    //   "wifiJson": {"list": _rectController.rects}
-                    // });
+                    await App.post('/platform/wifiJson/wifi', data: {
+                      "sn": sn,
+                      "wifiJson": {"list": _rectController.rects}
+                    });
                     // 关闭对话框
                     Navigator.of(context).pop();
                     printInfo(
@@ -266,6 +263,7 @@ class _MyAppState extends State<MyApp> {
                   } finally {}
                   // 清空输入的文字
                   setState(() {
+                    // roomArea = '';
                     saveLayoutLoading = false;
                   });
                 }
@@ -350,8 +348,59 @@ class _MyAppState extends State<MyApp> {
                                         leading: const Icon(Icons.edit),
                                         title: const Text('RENAME'),
                                         onTap: () {
-                                          renameFloor(context, index);
+                                          // renameFloor(context, index);
                                           Navigator.pop(context);
+                                          editingFloor = floors[index][
+                                              'name']!; // 将选中的楼层名称赋值给editingFloor变量
+                                          printInfo(
+                                              info:
+                                                  '111111111111$editingFloor');
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                title: const Text('edit Floor'),
+                                                content: TextFormField(
+                                                  initialValue: editingFloor,
+                                                  onChanged: (value) {
+                                                    setState(() {
+                                                      editingFloor = value;
+                                                      printInfo(
+                                                          info:
+                                                              '2222222$editingFloor');
+                                                    });
+                                                  },
+                                                  // decoration: const InputDecoration(
+                                                  //   labelText: 'Room Name',
+                                                  // ),
+                                                ),
+                                                actions: <Widget>[
+                                                  TextButton(
+                                                    child: const Text('CANCEL'),
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                  ),
+                                                  TextButton(
+                                                    child: const Text('edit'),
+                                                    onPressed: () {
+                                                      floors[index]['name'] =
+                                                          editingFloor;
+                                                      // 在此处处理确认按钮的逻辑
+                                                      // 清空输入的文字
+                                                      setState(() {
+                                                        editingFloor = '';
+                                                      });
+                                                      // 关闭对话框
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
                                         },
                                       ),
                                       if (index != 0)
@@ -1010,9 +1059,6 @@ class RectData {
   double height;
   String selectedEdge;
   String floorId;
-  String snr;
-  String noiseLevel;
-  String txPower;
 
   RectData({
     required this.floorId,
@@ -1026,9 +1072,6 @@ class RectData {
     required this.width,
     required this.height,
     required this.selectedEdge,
-    this.snr = '',
-    this.noiseLevel = '',
-    this.txPower = '',
   });
   Map<String, dynamic> toJson() {
     return {
@@ -1043,9 +1086,6 @@ class RectData {
       'offsetX': offsetX,
       'offsetY': offsetY,
       'selectedEdge': selectedEdge,
-      'snr': snr,
-      'NoiseLevel': noiseLevel,
-      'txPower': txPower,
     };
   }
 }

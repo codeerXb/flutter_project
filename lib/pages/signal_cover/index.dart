@@ -26,6 +26,9 @@ List<RectData> convertToRectDataList(List<dynamic> dataList) {
       width: data['width'],
       height: data['height'],
       selectedEdge: data['selectedEdge'],
+      snr: data['snr'] ?? '',
+      noiseLevel: data['NoiseLevel'] ?? '',
+      txPower: data['TxPower'] ?? '',
     );
 
     rectDataList.add(rectData);
@@ -1059,6 +1062,9 @@ class RectData {
   double height;
   String selectedEdge;
   String floorId;
+  String snr;
+  String noiseLevel;
+  String txPower;
 
   RectData({
     required this.floorId,
@@ -1072,6 +1078,9 @@ class RectData {
     required this.width,
     required this.height,
     required this.selectedEdge,
+    this.snr = '',
+    this.noiseLevel = '',
+    this.txPower = '',
   });
   Map<String, dynamic> toJson() {
     return {
@@ -1086,6 +1095,9 @@ class RectData {
       'offsetX': offsetX,
       'offsetY': offsetY,
       'selectedEdge': selectedEdge,
+      'snr': snr,
+      'NoiseLevel': noiseLevel,
+      'txPower': txPower,
     };
   }
 }

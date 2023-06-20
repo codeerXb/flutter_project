@@ -42,8 +42,11 @@ class _MyAppState extends State<TestSignal> {
       roomInfo = allRoomInfo
           .where((item) => item['floor'] == Get.arguments['curFloor'])
           .toList();
-      print(allRoomInfo);
-
+      //清空当前的snr
+      for (var element in roomInfo) {
+        element['snr'] = '';
+      }
+      print(roomInfo);
       if (roomInfo.isNotEmpty) {
         offSetValue = Offset(
             roomInfo[0]['offsetX'] - 1300, roomInfo[0]['offsetY'] - 1300);
@@ -198,13 +201,6 @@ class MyPainter extends CustomPainter {
       ..color = const Color.fromARGB(255, 95, 95, 95)
       ..invertColors = false;
 
-    Paint paint2 = Paint()
-      ..color = const ui.Color.fromARGB(140, 31, 137, 224)
-      ..style = PaintingStyle.fill
-      ..isAntiAlias = true
-      ..strokeCap = StrokeCap.butt
-      ..strokeWidth = 30.0;
-
     Paint paint3 = Paint()
       ..color = const ui.Color.fromARGB(255, 6, 143, 255)
       ..style = PaintingStyle.fill
@@ -213,7 +209,21 @@ class MyPainter extends CustomPainter {
       ..strokeWidth = 30.0;
 
     Paint paint4 = Paint()
-      ..color = ui.Color.fromARGB(255, 255, 6, 6)
+      ..color = const ui.Color.fromARGB(255, 255, 6, 6)
+      ..style = PaintingStyle.fill
+      ..isAntiAlias = true
+      ..strokeCap = StrokeCap.butt
+      ..strokeWidth = 30.0;
+
+    Paint successPaint1 = Paint()
+      ..color = const ui.Color.fromARGB(140, 128, 206, 128)
+      ..style = PaintingStyle.fill
+      ..isAntiAlias = true
+      ..strokeCap = StrokeCap.butt
+      ..strokeWidth = 30.0;
+
+    Paint successPaint2 = Paint()
+      ..color = const ui.Color.fromARGB(138, 234, 243, 236)
       ..style = PaintingStyle.fill
       ..isAntiAlias = true
       ..strokeCap = StrokeCap.butt
@@ -231,8 +241,14 @@ class MyPainter extends CustomPainter {
           item['offsetY'] - 1300, item["width"], item["height"]); // 要进行缩放的组件
       //完成的给蓝色
       if (item['snr'] != '') {
-        _box(canvas, paint2, item["name"], item['offsetX'] - 1300,
-            item['offsetY'] - 1300, item["width"], item["height"]); // 要进行缩放的组件
+        _box(
+            canvas,
+            item['snr'] > 60 ? successPaint1 : successPaint2,
+            item["name"],
+            item['offsetX'] - 1300,
+            item['offsetY'] - 1300,
+            item["width"],
+            item["height"]); // 要进行缩放的组件
       }
     }
   }
@@ -457,6 +473,8 @@ class _ProcessButtonState extends State<ProcessButton> {
                     const Color.fromARGB(255, 30, 104, 233)),
               ),
               onPressed: () {
+                if (loading) return;
+
                 //成功
                 if (btnText == S.current.GenerateOverlay) {
                   successFn();

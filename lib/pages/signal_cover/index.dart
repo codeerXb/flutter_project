@@ -232,6 +232,8 @@ class _MyAppState extends State<MyApp> {
               child: const Text('SAVE'),
               onPressed: () async {
                 if (roomArea.isNotEmpty) {
+                  // 聚焦
+                  focusFloor(_rectController.rects, curFloor, setState);
                   setState(() {
                     saveLayoutLoading = true;
                   });
@@ -667,6 +669,49 @@ class GridWidget extends StatefulWidget {
   State<StatefulWidget> createState() => _GridWidgetState();
 }
 
+// 聚焦
+void focusFloor(rects, curFloorId, setState) {
+  // TODO:根据实际的方块所在的位置进行聚焦
+  // 找出floorId为1的所有数据
+  var filteredData = rects.where((item) => item.floorId == curFloorId).toList();
+
+  /// 思路：
+  /// 只需要将每个值的偏移量都大于1200即可
+  /// 需要计算的就是可以让每个值都大于1200的值
+  /// 只要找出所有x中最小的值，计算出与1200的差值就是每个x需要加的值
+  /// y亦然
+
+  double findMin(String value) {
+    double min = double.infinity;
+
+    for (var item in filteredData) {
+      if (item.toJson()[value] < min) {
+        min = item.toJson()[value];
+      }
+    }
+    return min;
+  }
+
+  // --- 算出差值 ---
+  // 找出最大的offsetX值
+  double maxX = findMin('offsetX');
+  // x差值
+  double diffX = 1200 - maxX;
+
+  // 找出最大的offsetY值
+  double maxY = findMin('offsetY');
+  // y差值
+  double diffY = 1200 - maxY;
+
+  // --- 更新位置 ---
+  for (var item in filteredData) {
+    setState(() {
+      item.offsetX = item.offsetX + diffX;
+      item.offsetY = item.offsetY + diffY;
+    });
+  }
+}
+
 class _GridWidgetState extends State<GridWidget> {
   final int rowCount = 350;
   final int columnCount = 350;
@@ -928,7 +973,9 @@ class _GridWidgetState extends State<GridWidget> {
           bottom: 0,
           child: ElevatedButton(
             onPressed: () {
-              // 根据实际的方块所在的位置进行聚焦
+              focusFloor(widget.rects, widget.curFloorId, setState);
+
+              // --- 视角依然聚焦到-1200 ---
               setState(() {
                 offsetX = -1200;
                 offsetY = -1200;

@@ -233,7 +233,7 @@ class _MyAppState extends State<MyApp> {
               onPressed: () async {
                 if (roomArea.isNotEmpty) {
                   // 聚焦
-                  focusFloor(_rectController.rects, curFloor, setState);
+                  focusFloor(_rectController.rects, curFloorId, setState);
                   setState(() {
                     saveLayoutLoading = true;
                   });
@@ -810,24 +810,32 @@ class _GridWidgetState extends State<GridWidget> {
                     if (rectData.selectedEdge == 'top') {
                       // 拖拽上边缘
                       // change top & height
-                      rectData.offsetY += details.delta.dy;
-                      rectData.height -= details.delta.dy;
+                      if (rectData.height - details.delta.dy > 30) {
+                        rectData.offsetY += details.delta.dy;
+                        rectData.height -= details.delta.dy;
+                      }
                       Vibration.vibrate(duration: 20, amplitude: 225);
                     } else if (rectData.selectedEdge == 'left') {
                       // 拖拽左边缘
                       // change left & width
-                      rectData.offsetX += details.delta.dx;
-                      rectData.width -= details.delta.dx;
+                      if (rectData.width - details.delta.dx > 30) {
+                        rectData.offsetX += details.delta.dx;
+                        rectData.width -= details.delta.dx;
+                      }
                       Vibration.vibrate(duration: 20, amplitude: 225);
                     } else if (rectData.selectedEdge == 'right') {
                       // 拖拽右边缘
                       // change width
-                      rectData.width += details.delta.dx;
+                      if (rectData.width + details.delta.dx > 30) {
+                        rectData.width += details.delta.dx;
+                      }
                       Vibration.vibrate(duration: 20, amplitude: 225);
                     } else if (rectData.selectedEdge == 'bottom') {
                       // 拖拽下边缘
                       // change height
-                      rectData.height += details.delta.dy;
+                      if (rectData.height + details.delta.dy > 30) {
+                        rectData.height += details.delta.dy;
+                      }
                       Vibration.vibrate(duration: 20, amplitude: 225);
                     } else {
                       // 拖拽其他地方

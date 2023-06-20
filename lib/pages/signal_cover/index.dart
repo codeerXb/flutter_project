@@ -233,7 +233,7 @@ class _MyAppState extends State<MyApp> {
               onPressed: () async {
                 if (roomArea.isNotEmpty) {
                   // 聚焦
-                  focusFloor(_rectController.rects, curFloor, setState);
+                  focusFloor(_rectController.rects, curFloorId, setState);
                   setState(() {
                     saveLayoutLoading = true;
                   });

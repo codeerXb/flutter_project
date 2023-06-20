@@ -93,7 +93,7 @@ class _SplashPageState extends State<SplashPage> {
             'Scan your fingerprint (or face or whatever) to authenticate',
         options: const AuthenticationOptions(
           stickyAuth: true,
-          biometricOnly: true,
+          biometricOnly: false,
         ),
       );
       setState(() {

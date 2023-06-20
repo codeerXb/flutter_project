@@ -40,13 +40,12 @@ class _MyAppState extends State<TestSignal> {
 
       //过滤出当前楼层
       roomInfo = allRoomInfo
-          .where((item) => item['floor'] == Get.arguments['curFloor'])
+          .where((item) => item['floorId'] == Get.arguments['curFloorId'])
           .toList();
       //清空当前的snr
       for (var element in roomInfo) {
         element['snr'] = '';
       }
-      print(roomInfo);
       if (roomInfo.isNotEmpty) {
         offSetValue = Offset(
             roomInfo[0]['offsetX'] - 1300, roomInfo[0]['offsetY'] - 1300);
@@ -442,7 +441,7 @@ class _ProcessButtonState extends State<ProcessButton> {
 
   void successFn() async {
     allRoomInfo
-        .removeWhere((item) => item["floor"] == Get.arguments['curFloor']);
+        .removeWhere((item) => item["floorId"] == Get.arguments['curFloorId']);
     allRoomInfo.addAll(roomInfo);
     try {
       await App.post('/platform/wifiJson/wifi', data: {

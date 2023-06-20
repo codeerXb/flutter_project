@@ -258,7 +258,7 @@ class _MyAppState extends State<MyApp> {
                       arguments: {
                         'roomInfo': jsonEncode(_rectController.rects),
                         'roomArea': roomArea,
-                        'curFloor': curFloor
+                        'curFloorId': curFloorId
                       },
                     );
                   } catch (err) {

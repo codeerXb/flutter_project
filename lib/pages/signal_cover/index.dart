@@ -91,6 +91,7 @@ class _MyAppState extends State<MyApp> {
   ];
   bool isGridExpanded = false;
   String editingFloor = '';
+  String editingFloorId = '';
   // 使用RectController来管理_rects
   final RectController _rectController = Get.put(RectController());
   String roomName = '';
@@ -130,6 +131,7 @@ class _MyAppState extends State<MyApp> {
   // --- 重命名楼层 ---
   void renameFloor(BuildContext context, int index) {
     editingFloor = floors[index]['name']!; // 将选中的楼层名称赋值给editingFloor变量
+    editingFloorId = floors[index]['id']!;
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -165,7 +167,7 @@ class _MyAppState extends State<MyApp> {
                   // 修改同一个floorId下面的floor
                   List<dynamic> wifiList = _rectController.rects;
                   wifiList
-                      .where((wifi) => wifi.floorId == curFloorId)
+                      .where((wifi) => wifi.floorId == editingFloorId)
                       .forEach((wifi) => wifi.floor = editingFloor);
                 });
                 // 关闭对话框
@@ -176,56 +178,6 @@ class _MyAppState extends State<MyApp> {
         );
       },
     );
-    // showDialog(
-    //   context: context,
-    //   builder: (BuildContext context) {
-    //     return StatefulBuilder(
-    //       // 使用StatefulBuilder包裹对话框内容以更新状态
-    //       builder: (BuildContext context, StateSetter setState) {
-    //         return Column(
-    //           children: [
-    //             ListTile(
-    //               leading: const Icon(Icons.edit),
-    //               title: const Text('Rename'),
-    //               onTap: () {
-    //                 // 不需要在这里做任何操作，等待对话框关闭后处理
-    //                 Navigator.pop(context);
-    //               },
-    //             ),
-    //             ListTile(
-    //               leading: const Icon(Icons.delete),
-    //               title: const Text('CANCEL'),
-    //               onTap: () {
-    //                 deleteFloor(index);
-    //                 Navigator.pop(context);
-    //               },
-    //             ),
-    //             TextFormField(
-    //               // 添加文本输入框
-    //               initialValue: editingFloor, // 初始值为editingFloor
-    //               onChanged: (value) {
-    //                 setState(() {
-    //                   editingFloor = value; // 更新editingFloor的值
-    //                 });
-    //               },
-    //             ),
-    //             ElevatedButton(
-    //               // 添加确认按钮
-    //               onPressed: () {
-    //                 // 更新楼层名称为编辑后的值
-    //                 floors[index]['name'] = editingFloor;
-    //                 setState(() {}); // 刷新界面
-    //                 Navigator.pop(context); // 关闭对话框
-    //               },
-    //               child: const Text('CONFIRM'),
-    //             ),
-    //           ],
-    //         );
-    //       },
-    //     );
-    //   },
-    // );
-    // Navigator.pop(context);
   }
 
   // --- 删除楼层 ---
@@ -421,10 +373,10 @@ class _MyAppState extends State<MyApp> {
                           padding: EdgeInsets.all(10.w),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
-                            color: floor == curFloor
+                            color: floorId == curFloorId
                                 ? const Color.fromARGB(57, 70, 88, 255)
                                 : const Color.fromARGB(255, 255, 255, 255),
-                            border: floor == curFloor
+                            border: floorId == curFloorId
                                 ? Border.all(
                                     color:
                                         const Color.fromARGB(255, 13, 153, 247),

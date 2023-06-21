@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:ui' as ui;
@@ -127,11 +129,19 @@ class _TestEditState extends State<TestEdit> {
                 child: Column(
                   children: [
                     ElevatedButton(
-                      onPressed: () {
-                        
+                      onPressed: () async {
+                        var res = await getData(currentSwiperIndex);
+                        Get.offNamed(
+                          '/test_signal',
+                          arguments: {
+                            'roomInfo': jsonEncode(res),
+                            'roomArea': res[0]['roomArea'].toString(),
+                            'curFloorId': res[0]['floorId'].toString()
+                          },
+                        );
                       },
-                      child: Text(
-                          '${S.current.RetestF}  $currentSwiperIndex F'),
+                      child:
+                          Text('${S.current.RetestF}  $currentSwiperIndex F'),
                     ),
                   ],
                 ),
@@ -141,7 +151,6 @@ class _TestEditState extends State<TestEdit> {
         ));
   }
 }
-
 
 // 获取对应楼层房屋信号数据
 Future<dynamic> getData(floorIndex) async {

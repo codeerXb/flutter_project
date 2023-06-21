@@ -285,7 +285,7 @@
   "DetectionAndEdit": "检测和编辑",
   "EditUnit": "编辑户型",
   "Blueprint": "Wi-Fi信号覆盖图(仅供参考)",
-  "RetestF": "重新检测 1F",
+  "RetestF": "重新检测",
   "TestSignal": "测试信号强度",
   "startTesting": "开始测试",
   "roomStrength": "获取该房间信号强度",

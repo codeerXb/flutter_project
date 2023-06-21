@@ -108,7 +108,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "Reqcancellation": MessageLookupByLibrary.simpleMessage("请求取消"),
         "Reqtimeout": MessageLookupByLibrary.simpleMessage("请求超时"),
         "Restimeout": MessageLookupByLibrary.simpleMessage("响应超时"),
-        "RetestF": MessageLookupByLibrary.simpleMessage("重新检测 1F"),
+        "RetestF": MessageLookupByLibrary.simpleMessage("重新检测"),
         "RunningTime": MessageLookupByLibrary.simpleMessage("运行时长"),
         "Russia": MessageLookupByLibrary.simpleMessage("俄罗斯"),
         "Sat": MessageLookupByLibrary.simpleMessage("周六"),

@@ -2923,7 +2923,7 @@ class S {
   /// `Retest 1F`
   String get RetestF {
     return Intl.message(
-      'Retest 1F',
+      'Retest',
       name: 'RetestF',
       desc: '',
       args: [],
@@ -2959,7 +2959,6 @@ class S {
       args: [],
     );
   }
-  // skipped getter for the 'roomStrength ' key
 
   /// `Generate Overlay`
   String get GenerateOverlay {

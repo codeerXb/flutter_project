@@ -17,6 +17,8 @@ class TestEdit extends StatefulWidget {
 }
 
 class _TestEditState extends State<TestEdit> {
+  int currentSwiperIndex = 1;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,6 +62,12 @@ class _TestEditState extends State<TestEdit> {
                   );
                 },
                 itemCount: 3,
+                onIndexChanged: (int index) {
+                  // print("当前索引: ${index + 1}");
+                  setState(() {
+                    currentSwiperIndex = index + 1;
+                  });
+                },
                 control: const SwiperControl(
                     size: 20,
                     color: Colors.black87,
@@ -111,38 +119,29 @@ class _TestEditState extends State<TestEdit> {
               child: Text(S.current.Blueprint),
             ),
             Padding(padding: EdgeInsets.only(top: 20.w)),
+
             //按钮
-            const BottomButton(),
+            Expanded(
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Column(
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        
+                      },
+                      child: Text(
+                          '${S.current.RetestF}  $currentSwiperIndex F'),
+                    ),
+                  ],
+                ),
+              ),
+            )
           ],
         ));
   }
 }
 
-//底部按钮
-class BottomButton extends StatefulWidget {
-  const BottomButton({super.key});
-  @override
-  State<StatefulWidget> createState() => _BottomButtonState();
-}
-
-class _BottomButtonState extends State<BottomButton> {
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Align(
-        alignment: Alignment.bottomCenter,
-        child: Column(
-          children: [
-            ElevatedButton(
-              onPressed: () {},
-              child: Text(S.current.RetestF),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 // 获取对应楼层房屋信号数据
 Future<dynamic> getData(floorIndex) async {

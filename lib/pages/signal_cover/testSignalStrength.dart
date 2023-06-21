@@ -47,8 +47,8 @@ class _MyAppState extends State<TestSignal> {
         element['snr'] = '';
       }
       if (roomInfo.isNotEmpty) {
-        offSetValue = Offset(
-            roomInfo[0]['offsetX'] - 1300, roomInfo[0]['offsetY'] - 1300);
+        // offSetValue = Offset(
+        //     roomInfo[0]['offsetX'] - 1300, roomInfo[0]['offsetY'] - 1300);
         nextetValue = const Offset(1999, 1999);
       }
     });
@@ -242,7 +242,8 @@ class MyPainter extends CustomPainter {
       if (item['snr'] != '') {
         _box(
             canvas,
-            item['snr'] > 60 ? successPaint1 : successPaint2,
+            successPaint1,
+            // item['snr'] > 60 ? successPaint1 : successPaint2,
             item["name"],
             item['offsetX'] - 1300,
             item['offsetY'] - 1300,
@@ -375,7 +376,7 @@ class _ProcessButtonState extends State<ProcessButton> {
           roomInfo[currentIndex]['roomArea'] = roomArea;
           roomInfo[currentIndex]['routerX'] = routerPos.dx;
           roomInfo[currentIndex]['routerY'] = routerPos.dy;
-          roomInfo[currentIndex]['TxPower'] = acsNode['TxPower']['_value'];
+          roomInfo[currentIndex]['txPower'] = acsNode['TxPower']['_value'];
           roomInfo[currentIndex]['NoiseLevel'] =
               acsNode['NoiseLevel']['_value'];
         }

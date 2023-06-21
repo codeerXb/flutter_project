@@ -286,7 +286,7 @@
   "DetectionAndEdit": "Detection and Editing",
   "EditUnit": "Edit Layout",
   "Blueprint": "Wi-Fi signal coverage map(for reference only)",
-  "RetestF": "Retest 1F",
+  "RetestF": "Retest",
   "TestSignal": "Signal Coverage",
   "startTesting": "Start Test",
   "roomStrength ": "Get the signal strength of the room",

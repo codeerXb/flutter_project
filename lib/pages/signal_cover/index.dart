@@ -939,7 +939,7 @@ class _GridWidgetState extends State<GridWidget> {
               // 将原有的所有的isSelected,selectedEdge重置
               for (var rect in widget.rects) {
                 setState(() {
-                  rect.isSelected = false;
+                  rect.isSelected = false; 
                   rect.selectedEdge = '';
                 });
               }

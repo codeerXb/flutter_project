@@ -1,6 +1,8 @@
 import 'dart:ui';
 
 import 'package:dio/dio.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:ui' as ui;
@@ -246,7 +248,8 @@ class _TestEditState extends State<TestEdit> {
                   children: [
                     ElevatedButton(
                       onPressed: () {},
-                      child: Text('${S.current.RetestF}  $floorName '),
+                      child:
+                          Text('${S.current.RetestF}  $currentSwiperIndex F'),
                     ),
                   ],
                 ),
@@ -255,6 +258,21 @@ class _TestEditState extends State<TestEdit> {
           ],
         ));
   }
+}
+
+// 获取对应楼层房屋信号数据
+Future<dynamic> getData(floorIndex) async {
+  try {
+    var sn = await sharedGetData('deviceSn', String);
+    var data = await App.get('/platform/wifiJson/getOne/$sn');
+    List<dynamic> filteredList = List.from(data['wifiJson']['list'])
+        .where((item) => item['floorId'] == floorIndex.toString())
+        .toList();
+    return filteredList;
+  } catch (err) {
+    debugPrint(err.toString());
+  }
+  return null;
 }
 
 // --- 信号强度覆盖图（热力图） ---

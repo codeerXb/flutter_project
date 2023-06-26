@@ -195,9 +195,9 @@ class MyPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     var paint1 = Paint()
       ..isAntiAlias = true
-      ..strokeWidth = 1.0
+      ..strokeWidth = 2.5
       ..style = PaintingStyle.stroke
-      ..color = const Color.fromARGB(255, 95, 95, 95)
+      ..color = const ui.Color.fromARGB(255, 212, 215, 212)
       ..invertColors = false;
 
     Paint paint3 = Paint()
@@ -475,7 +475,7 @@ class _ProcessButtonState extends State<ProcessButton> {
               onPressed: () {
                 if (loading) return;
 
-                //成功
+                //成功  
                 if (btnText == S.current.GenerateOverlay) {
                   successFn();
                 } else {

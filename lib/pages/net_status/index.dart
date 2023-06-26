@@ -9,6 +9,7 @@ import 'package:flutter_template/core/request/request.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_widget.dart';
+import 'package:flutter_template/core/widget/water_loading.dart';
 import 'package:flutter_template/generated/l10n.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:flutter_template/pages/net_status/model/flow_statistics.dart';
@@ -534,7 +535,8 @@ class _NetStatusState extends State<NetStatus> {
   @override
   Widget build(BuildContext context) {
     if (loadingDevice) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(
+          child: SizedBox(width: 100, height: 100, child: WaterLoading()));
     } else {
       return Container(
         decoration: const BoxDecoration(

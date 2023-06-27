@@ -248,8 +248,7 @@ class _TestEditState extends State<TestEdit> {
                   children: [
                     ElevatedButton(
                       onPressed: () {},
-                      child:
-                          Text('${S.current.RetestF}  $currentSwiperIndex F'),
+                      child: Text('${S.current.RetestF}  $floorName'),
                     ),
                   ],
                 ),

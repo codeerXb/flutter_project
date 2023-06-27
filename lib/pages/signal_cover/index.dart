@@ -65,7 +65,7 @@ class RectController extends GetxController {
     update(); // 通知监听器刷新界面
   }
 
-  void clearRect(floorId) {
+  void clearRect(String floorId) {
     rects = rects.where((element) => element.floorId != floorId).toList();
     update();
   }
@@ -185,9 +185,13 @@ class _MyAppState extends State<MyApp> {
 
   // --- 删除楼层 ---
   void deleteFloor(index) {
+    printInfo(info: '删除的楼层$floors,索引$index,值${floors[index]['id']}');
     // 实现删除逻辑
-    floors.remove(floors[index]);
-    setState(() {});
+    setState(() {
+      // 删除对应的户型图
+      _rectController.clearRect(floors[index]['id'].toString());
+      floors.remove(floors[index]);
+    });
   }
 
   // --- 添加楼层 ---
@@ -361,7 +365,12 @@ class _MyAppState extends State<MyApp> {
                                           leading: const Icon(Icons.delete),
                                           title: const Text('DELETE'),
                                           onTap: () {
+                                            // 删除当前楼层
                                             deleteFloor(index);
+                                            // 重新选中1F
+                                            setState(() {
+                                              curFloorId = '1';
+                                            });
                                             Navigator.pop(context);
                                           },
                                         ),
@@ -939,7 +948,7 @@ class _GridWidgetState extends State<GridWidget> {
               // 将原有的所有的isSelected,selectedEdge重置
               for (var rect in widget.rects) {
                 setState(() {
-                  rect.isSelected = false; 
+                  rect.isSelected = false;
                   rect.selectedEdge = '';
                 });
               }

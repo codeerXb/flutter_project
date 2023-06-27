@@ -306,6 +306,13 @@ class _CoverChartState extends State<CoverChart> {
             style: const TextStyle(color: Colors.grey),
           ),
         ),
+        SizedBox(
+          height: 640.w,
+          width: 1.sw,
+          child: CustomPaint(
+            painter: Layout(data),
+          ),
+        ),
         Positioned(
           left: (data.isNotEmpty && data[0]['routerX'] != null)
               ? data[0]['routerX']
@@ -314,13 +321,6 @@ class _CoverChartState extends State<CoverChart> {
               ? data[0]['routerY']
               : 320.w,
           child: Image.asset('assets/images/icon_homepage_route.png'),
-        ),
-        SizedBox(
-          height: 640.w,
-          width: 1.sw,
-          child: CustomPaint(
-            painter: Layout(data),
-          ),
         ),
       ],
     );
@@ -338,6 +338,10 @@ class Layout extends CustomPainter {
       ..strokeWidth = 2
       ..color = const Color.fromARGB(255, 49, 49, 49)
       ..style = PaintingStyle.stroke;
+    final paintFill = Paint()
+      ..strokeWidth = 2
+      ..color = const Color.fromARGB(112, 237, 237, 237)
+      ..style = PaintingStyle.fill;
     List<dynamic> data = floorInfo;
 
     // 计算放置所有方块之后占用的宽高
@@ -379,6 +383,7 @@ class Layout extends CustomPainter {
       );
 
       canvas.drawRect(rect, paint);
+      canvas.drawRect(rect, paintFill);
 
       // 绘制文字
       var paragraphBuilder = ParagraphBuilder(ParagraphStyle(

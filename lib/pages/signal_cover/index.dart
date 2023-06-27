@@ -988,14 +988,15 @@ class _GridWidgetState extends State<GridWidget> {
         // 复位操作按钮，聚焦操作
         Positioned(
           bottom: 0,
+          left: 10,
           child: ElevatedButton(
             onPressed: () {
               focusFloor(widget.rects, widget.curFloorId, setState);
 
               // --- 视角依然聚焦到-1200 ---
               setState(() {
-                offsetX = -1200;
-                offsetY = -1200;
+                offsetX = -1150;
+                offsetY = -1150;
               });
             },
             style: ElevatedButton.styleFrom(
@@ -1026,12 +1027,29 @@ class RectsPainter extends CustomPainter {
           : const Color.fromARGB(255, 0, 0, 0)
       ..strokeWidth = 2
       ..style = PaintingStyle.stroke;
+    final paintFill = Paint()
+      ..strokeWidth = 2
+      ..color = const Color.fromARGB(112, 237, 237, 237)
+      ..style = PaintingStyle.fill;
     // 绘制选中边线的画笔
     final paintEdge = Paint()
       ..color = Colors.amber
       ..strokeWidth = 2
       ..style = PaintingStyle.stroke;
+
     // canvas.drawRect(rect, paint);
+    // 绘制路径填充颜色
+    // 1.创建路径
+    Path path = Path();
+    path.moveTo(rect.topLeft.dx, rect.topLeft.dy);
+    path.lineTo(rect.topRight.dx, rect.topRight.dy);
+    path.lineTo(rect.bottomRight.dx, rect.bottomRight.dy);
+    path.lineTo(rect.bottomLeft.dx, rect.bottomLeft.dy);
+    path.close();
+    // 2.canvas填充颜色
+    canvas.drawPath(path, paintFill);
+
+    // 沿着路径绘制线，选中更换画笔
     canvas.drawLine(rect.topLeft, rect.topRight,
         rectData.selectedEdge == 'top' ? paintEdge : paint);
     canvas.drawLine(rect.topRight, rect.bottomRight,

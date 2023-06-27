@@ -59,8 +59,8 @@ class _MyAppState extends State<TestSignal> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.keyboard_arrow_left),
           onPressed: () {
@@ -475,7 +475,7 @@ class _ProcessButtonState extends State<ProcessButton> {
               onPressed: () {
                 if (loading) return;
 
-                //成功  
+                //成功
                 if (btnText == S.current.GenerateOverlay) {
                   successFn();
                 } else {

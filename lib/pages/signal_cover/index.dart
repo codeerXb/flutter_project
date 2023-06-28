@@ -748,189 +748,198 @@ class _GridWidgetState extends State<GridWidget> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint('户型:$offsetX,$offsetY');
     final rectWidgets = <Widget>[];
     for (final rectData in widget.rects) {
       if (widget.curFloorId == rectData.floorId) {
+        debugPrint(
+            '户型内部offset:${rectData.offsetX},${rectData.offsetY}++${offsetX},${offsetY}');
+        debugPrint("--------------");
         rectWidgets.add(
           Positioned(
-            left: offsetX + rectData.offsetX,
-            top: offsetY + rectData.offsetY,
-            child: GestureDetector(
-              // behavior: HitTestBehavior.opaque,
-              onPanDown: (details) {
-                // 将原有的所有的isSelected重置
-                for (var rect in widget.rects) {
+            // 保证绝对定位的偏移量和画布重绘的偏移量一致
+            left: offsetX,
+            top: offsetY,
+            // 相对定位
+            child: Transform.translate(
+              offset: Offset(rectData.offsetX, rectData.offsetY),
+              child: GestureDetector(
+                // behavior: HitTestBehavior.opaque,
+                onPanDown: (details) {
+                  // 将原有的所有的isSelected重置
+                  for (var rect in widget.rects) {
+                    setState(() {
+                      rect.isSelected = false;
+                    });
+                  }
+                  // 将现在点击的变为选中
+                  if (details.localPosition.dx < 15 &&
+                      details.localPosition.dy > 15 &&
+                      details.localPosition.dy < rectData.height - 15) {
+                    // 点击左边缘
+                    setState(() {
+                      rectData.selectedEdge = 'left';
+                    });
+                  } else if (details.localPosition.dx > 15 &&
+                      details.localPosition.dx < rectData.width - 15 &&
+                      details.localPosition.dy < 15) {
+                    // 点击上边缘
+                    setState(() {
+                      rectData.selectedEdge = 'top';
+                    });
+                  } else if (details.localPosition.dx > rectData.width - 15 &&
+                      details.localPosition.dy > 15 &&
+                      details.localPosition.dy < rectData.height - 15) {
+                    // 点击右边缘
+                    setState(() {
+                      rectData.selectedEdge = 'right';
+                    });
+                  } else if (details.localPosition.dy > rectData.height - 15 &&
+                      details.localPosition.dx > 15 &&
+                      details.localPosition.dx < rectData.width - 15) {
+                    // 点击下边缘
+                    setState(() {
+                      rectData.selectedEdge = 'bottom';
+                    });
+                  } else {
+                    setState(() {
+                      rectData.selectedEdge = '';
+                    });
+                  }
                   setState(() {
-                    rect.isSelected = false;
+                    rectData.isSelected = true;
                   });
-                }
-                // 将现在点击的变为选中
-                if (details.localPosition.dx < 15 &&
-                    details.localPosition.dy > 15 &&
-                    details.localPosition.dy < rectData.height - 15) {
-                  // 点击左边缘
-                  setState(() {
-                    rectData.selectedEdge = 'left';
-                  });
-                } else if (details.localPosition.dx > 15 &&
-                    details.localPosition.dx < rectData.width - 15 &&
-                    details.localPosition.dy < 15) {
-                  // 点击上边缘
-                  setState(() {
-                    rectData.selectedEdge = 'top';
-                  });
-                } else if (details.localPosition.dx > rectData.width - 15 &&
-                    details.localPosition.dy > 15 &&
-                    details.localPosition.dy < rectData.height - 15) {
-                  // 点击右边缘
-                  setState(() {
-                    rectData.selectedEdge = 'right';
-                  });
-                } else if (details.localPosition.dy > rectData.height - 15 &&
-                    details.localPosition.dx > 15 &&
-                    details.localPosition.dx < rectData.width - 15) {
-                  // 点击下边缘
-                  setState(() {
-                    rectData.selectedEdge = 'bottom';
-                  });
-                } else {
-                  setState(() {
-                    rectData.selectedEdge = '';
-                  });
-                }
-                setState(() {
-                  rectData.isSelected = true;
-                });
-                debugPrint(
-                    'onPanDown:${details.localPosition}||${details.globalPosition}||${offsetX + rectData.offsetX}--${rectData.width}--${rectData.height}');
-              },
-              onPanUpdate: (details) {
-                debugPrint(
-                    'onPanUpdate INNER: ${details.delta.dx},${details.delta.dy}');
-                if (rectData.isSelected) {
-                  printInfo(info: '方块：${details.delta}');
-                  setState(() {
-                    // // 限制偏移范围
-                    // rectData.offsetX =
-                    //     rectData.offsetX.clamp(0, 2430 - rectData.rect.width);
-                    // rectData.offsetY =
-                    //     rectData.offsetX.clamp(0, 2305 - rectData.rect.height);
+                  debugPrint(
+                      'onPanDown:${details.localPosition}||${details.globalPosition}||${offsetX + rectData.offsetX}--${rectData.width}--${rectData.height}');
+                },
+                onPanUpdate: (details) {
+                  debugPrint(
+                      'onPanUpdate INNER: ${details.delta.dx},${details.delta.dy}');
+                  if (rectData.isSelected) {
+                    printInfo(info: '方块：${details.delta}');
+                    setState(() {
+                      // // 限制偏移范围
+                      // rectData.offsetX =
+                      //     rectData.offsetX.clamp(0, 2430 - rectData.rect.width);
+                      // rectData.offsetY =
+                      //     rectData.offsetX.clamp(0, 2305 - rectData.rect.height);
 
-                    if (rectData.selectedEdge == 'top') {
-                      // 拖拽上边缘
-                      // change top & height
-                      if (rectData.height - details.delta.dy > 30) {
-                        rectData.offsetY += details.delta.dy;
-                        rectData.height -= details.delta.dy;
-                      }
-                      Vibration.vibrate(duration: 20, amplitude: 225);
-                    } else if (rectData.selectedEdge == 'left') {
-                      // 拖拽左边缘
-                      // change left & width
-                      if (rectData.width - details.delta.dx > 30) {
+                      if (rectData.selectedEdge == 'top') {
+                        // 拖拽上边缘
+                        // change top & height
+                        if (rectData.height - details.delta.dy > 15) {
+                          rectData.offsetY += details.delta.dy;
+                          rectData.height -= details.delta.dy;
+                        }
+                        Vibration.vibrate(duration: 20, amplitude: 225);
+                      } else if (rectData.selectedEdge == 'left') {
+                        // 拖拽左边缘
+                        // change left & width
+                        if (rectData.width - details.delta.dx > 15) {
+                          rectData.offsetX += details.delta.dx;
+                          rectData.width -= details.delta.dx;
+                        }
+                        Vibration.vibrate(duration: 20, amplitude: 225);
+                      } else if (rectData.selectedEdge == 'right') {
+                        // 拖拽右边缘
+                        // change width
+                        if (rectData.width + details.delta.dx > 15) {
+                          rectData.width += details.delta.dx;
+                        }
+                        Vibration.vibrate(duration: 20, amplitude: 225);
+                      } else if (rectData.selectedEdge == 'bottom') {
+                        // 拖拽下边缘
+                        // change height
+                        if (rectData.height + details.delta.dy > 15) {
+                          rectData.height += details.delta.dy;
+                        }
+                        Vibration.vibrate(duration: 20, amplitude: 225);
+                      } else {
+                        // 拖拽其他地方
                         rectData.offsetX += details.delta.dx;
-                        rectData.width -= details.delta.dx;
+                        rectData.offsetY += details.delta.dy;
+                        // 触发短促有力的震动
+                        Vibration.vibrate(duration: 50, amplitude: 255);
                       }
-                      Vibration.vibrate(duration: 20, amplitude: 225);
-                    } else if (rectData.selectedEdge == 'right') {
-                      // 拖拽右边缘
-                      // change width
-                      if (rectData.width + details.delta.dx > 30) {
-                        rectData.width += details.delta.dx;
-                      }
-                      Vibration.vibrate(duration: 20, amplitude: 225);
-                    } else if (rectData.selectedEdge == 'bottom') {
-                      // 拖拽下边缘
-                      // change height
-                      if (rectData.height + details.delta.dy > 30) {
-                        rectData.height += details.delta.dy;
-                      }
-                      Vibration.vibrate(duration: 20, amplitude: 225);
-                    } else {
-                      // 拖拽其他地方
-                      rectData.offsetX += details.delta.dx;
-                      rectData.offsetY += details.delta.dy;
-                      // 触发短促有力的震动
-                      Vibration.vibrate(duration: 50, amplitude: 255);
-                    }
-                  });
-                }
-              },
-              // 长按选中之后弹窗  修改home值  删除方块
-              onLongPress: () {
-                showModalBottomSheet(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return SizedBox(
-                      height: 120,
-                      child: Column(
-                        children: [
-                          ListTile(
-                            leading: const Icon(Icons.edit),
-                            title: const Text('Edit'),
-                            onTap: () {
-                              Navigator.pop(context);
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: const Text('edit Room'),
-                                    content: TextFormField(
-                                      initialValue: rectData.name,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          editRoomName = value;
-                                        });
-                                      },
-                                      // decoration: const InputDecoration(
-                                      //   labelText: 'Room Name',
-                                      // ),
-                                    ),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        child: const Text('CANCEL'),
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                      ),
-                                      TextButton(
-                                        child: const Text('edit'),
-                                        onPressed: () {
-                                          rectData.name = editRoomName;
-                                          // 在此处处理确认按钮的逻辑
-                                          // 清空输入的文字
+                    });
+                  }
+                },
+                // 长按选中之后弹窗  修改home值  删除方块
+                onLongPress: () {
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return SizedBox(
+                        height: 120,
+                        child: Column(
+                          children: [
+                            ListTile(
+                              leading: const Icon(Icons.edit),
+                              title: const Text('Edit'),
+                              onTap: () {
+                                Navigator.pop(context);
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text('edit Room'),
+                                      content: TextFormField(
+                                        initialValue: rectData.name,
+                                        onChanged: (value) {
                                           setState(() {
-                                            editRoomName = '';
+                                            editRoomName = value;
                                           });
-                                          // 关闭对话框
-                                          Navigator.of(context).pop();
                                         },
+                                        // decoration: const InputDecoration(
+                                        //   labelText: 'Room Name',
+                                        // ),
                                       ),
-                                    ],
-                                  );
-                                },
-                              );
-                            },
-                          ),
-                          ListTile(
-                            leading: const Icon(Icons.delete),
-                            title: const Text('Delete'),
-                            onTap: () {
-                              Navigator.pop(context);
-                              setState(() {
-                                widget.rects.remove(rectData);
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              },
-              child: CustomPaint(
-                size: Size(rectData.width, rectData.height),
-                painter: RectsPainter(rectData),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          child: const Text('CANCEL'),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                        TextButton(
+                                          child: const Text('edit'),
+                                          onPressed: () {
+                                            rectData.name = editRoomName;
+                                            // 在此处处理确认按钮的逻辑
+                                            // 清空输入的文字
+                                            setState(() {
+                                              editRoomName = '';
+                                            });
+                                            // 关闭对话框
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                            ListTile(
+                              leading: const Icon(Icons.delete),
+                              title: const Text('Delete'),
+                              onTap: () {
+                                Navigator.pop(context);
+                                setState(() {
+                                  widget.rects.remove(rectData);
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
+                child: CustomPaint(
+                  size: Size(rectData.width, rectData.height),
+                  painter: RectsPainter(rectData),
+                ),
               ),
             ),
           ),
@@ -941,6 +950,7 @@ class _GridWidgetState extends State<GridWidget> {
       children: [
         // 画布
         Positioned(
+          // 让画布偏移量和布局偏移一致
           left: offsetX,
           top: offsetY,
           child: GestureDetector(
@@ -962,7 +972,8 @@ class _GridWidgetState extends State<GridWidget> {
                 offsetX = offsetX.clamp(-2430, 0);
                 offsetY = offsetY.clamp(-2305, 0);
                 debugPrint(
-                    'onPanUpdate OUT: ${details.delta.dx},${details.delta.dy}');
+                    '网格onPanUpdate OUT: ${details.delta.dx},${details.delta.dy}');
+                debugPrint('网格onPanUpdate offset: $offsetX,$offsetY');
 
                 // // 更新每个矩形的位置
                 // for (int i = 0; i < widget.rects.length; i++) {
@@ -973,8 +984,9 @@ class _GridWidgetState extends State<GridWidget> {
             child: CustomPaint(
               size: Size(maxWidth, maxHeight),
               painter: GridPainter(
-                offsetX: offsetX,
-                offsetY: offsetY,
+                // 画布一次性绘制不再发生改变
+                offsetX: 0,
+                offsetY: 0,
                 rowCount: rowCount,
                 columnCount: columnCount,
                 cellSize: cellSize,

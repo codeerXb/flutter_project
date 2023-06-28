@@ -235,11 +235,6 @@ class _TestEditState extends State<TestEdit> {
             ),
 
             Padding(padding: EdgeInsets.only(top: 20.w)),
-            Center(
-              child: Text(S.current.Blueprint),
-            ),
-            Padding(padding: EdgeInsets.only(top: 20.w)),
-
             //按钮
             Expanded(
               child: Align(
@@ -253,7 +248,15 @@ class _TestEditState extends State<TestEdit> {
                   ],
                 ),
               ),
-            )
+            ),
+
+            Center(
+              child: Text(
+                '*${S.current.Blueprint}',
+                style: const TextStyle(color: Colors.grey),
+              ),
+            ),
+            Padding(padding: EdgeInsets.only(top: 20.w)),
           ],
         ));
   }

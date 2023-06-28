@@ -202,7 +202,25 @@ class _MyAppState extends State<MyApp> {
     // id++
     int nextFloorNumber = int.parse(maxId!) + 1;
     floors.add({'id': '$nextFloorNumber', 'name': '$nextFloorNumber' 'F'});
-    setState(() {});
+    // 创建一个方块数据对象
+    final rectData = RectData(
+      floorId: '$nextFloorNumber',
+      left: 0,
+      top: 0,
+      width: 100,
+      height: 100,
+      name: 'Room',
+      floor: '$nextFloorNumber' 'F',
+      isSelected: false,
+      // 相对（0，0）的正向偏移
+      offsetX: 1250.0,
+      offsetY: 1250.0,
+      selectedEdge: '',
+    );
+    setState(() {
+      // 初始化楼层的时候创建一个方块
+      _rectController.addRect(rectData);
+    });
   }
 
   // saveLoading

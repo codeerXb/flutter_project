@@ -9,6 +9,7 @@ import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_picker.dart';
 import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:flutter_template/core/widget/otp_input.dart';
+import 'package:flutter_template/core/widget/water_loading.dart';
 import 'package:flutter_template/pages/Ethernet/net/net_datas.dart';
 import 'package:get/get.dart';
 import '../../../core/widget/custom_app_bar.dart';
@@ -222,7 +223,7 @@ class _NetSetState extends State<NetSet> {
                     onPressed: () {
                       //确定
                       Navigator.pop(context, "Ok");
-                    
+
                       //动态ip
                       if (showVal == S.current.DynamicIP) {
                         //isCheck选中不携带 优先级
@@ -267,7 +268,15 @@ class _NetSetState extends State<NetSet> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? const Center(child: CircularProgressIndicator())
+        ? const Center(
+            child: SizedBox(
+              height: 80,
+              width: 80,
+              child: WaterLoading(
+                color: Color.fromARGB(255, 65, 167, 251),
+              ),
+            ),
+          )
         : Scaffold(
             appBar: customAppbar(
                 context: context,

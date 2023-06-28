@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/request/request.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
+import 'package:flutter_template/core/widget/water_loading.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
 import '../../../core/widget/custom_app_bar.dart';
@@ -365,7 +366,15 @@ class _DnsSettingsState extends State<DnsSettings> {
               ),
             ]),
         body: loading
-            ? const Center(child: CircularProgressIndicator())
+            ? const Center(
+                child: SizedBox(
+                  height: 80,
+                  width: 80,
+                  child: WaterLoading(
+                    color: Color.fromARGB(255, 65, 167, 251),
+                  ),
+                ),
+              )
             : Container(
                 decoration: const BoxDecoration(
                     color: Color.fromRGBO(240, 240, 240, 1)),

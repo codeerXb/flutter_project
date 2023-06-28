@@ -10,6 +10,7 @@ import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_picker.dart';
+import 'package:flutter_template/core/widget/water_loading.dart';
 import 'package:flutter_template/pages/wifi_set/wlan/wlan_datas.dart';
 import 'package:flutter_template/pages/wifi_set/wlan/channel_list.dart';
 import 'package:get/get.dart';
@@ -852,7 +853,15 @@ class _WlanSetState extends State<WlanSet> {
               ),
             ]),
         body: loading
-            ? const Center(child: CircularProgressIndicator())
+            ? const Center(
+                child: SizedBox(
+                  height: 80,
+                  width: 80,
+                  child: WaterLoading(
+                    color: Color.fromARGB(255, 65, 167, 251),
+                  ),
+                ),
+              )
             : GestureDetector(
                 onTap: () => closeKeyboard(context),
                 behavior: HitTestBehavior.opaque,

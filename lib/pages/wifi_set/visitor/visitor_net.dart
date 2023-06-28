@@ -7,6 +7,7 @@ import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_widget.dart';
+import 'package:flutter_template/core/widget/water_loading.dart';
 import 'package:flutter_template/pages/wifi_set/visitor/2.4GHZ_visitor/2.4GHZ_datas.dart';
 import 'package:flutter_template/pages/wifi_set/visitor/5G_visitor/5GHZ_datas.dart';
 import 'package:get/get.dart';
@@ -208,7 +209,15 @@ class _VisitorNetState extends State<VisitorNet> {
     return Scaffold(
       appBar: customAppbar(context: context, title: S.of(context).visitorNet),
       body: loading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(
+              child: SizedBox(
+                height: 80,
+                width: 80,
+                child: WaterLoading(
+                  color: Color.fromARGB(255, 65, 167, 251),
+                ),
+              ),
+            )
           : Container(
               padding: EdgeInsets.only(bottom: 20.w, left: 30.w, right: 30.w),
               decoration: const BoxDecoration(

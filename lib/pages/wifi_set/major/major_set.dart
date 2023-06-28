@@ -9,6 +9,7 @@ import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_picker.dart';
 import 'package:flutter_template/core/widget/common_widget.dart';
+import 'package:flutter_template/core/widget/water_loading.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:flutter_template/pages/wifi_set/major/major_datas.dart';
 import 'package:get/get.dart';
@@ -252,7 +253,15 @@ class _MajorSetState extends State<MajorSet> {
           ],
         ),
         body: _isLoading
-            ? const Center(child: CircularProgressIndicator())
+            ? const Center(
+                child: SizedBox(
+                  height: 80,
+                  width: 80,
+                  child: WaterLoading(
+                    color: Color.fromARGB(255, 65, 167, 251),
+                  ),
+                ),
+              )
             : Container(
                 decoration: const BoxDecoration(
                     color: Color.fromRGBO(240, 240, 240, 1)),

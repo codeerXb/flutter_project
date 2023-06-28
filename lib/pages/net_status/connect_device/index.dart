@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/core/widget/water_loading.dart';
 import 'package:flutter_template/pages/topo/model/equipment_datas.dart';
 import 'package:get/get.dart';
 import '../../../config/base_config.dart';
@@ -110,7 +111,15 @@ class _ConnectedDeviceState extends State<ConnectedDevice>
         ),
       ),
       body: loading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(
+              child: SizedBox(
+                height: 80,
+                width: 80,
+                child: WaterLoading(
+                  color: Color.fromARGB(255, 65, 167, 251),
+                ),
+              ),
+            )
           : TabBarView(
               controller: _tabController,
               children: const [

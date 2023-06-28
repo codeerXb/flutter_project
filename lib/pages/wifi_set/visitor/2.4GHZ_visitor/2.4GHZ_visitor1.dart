@@ -6,6 +6,7 @@ import 'package:flutter_template/core/request/request.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/custom_app_bar.dart';
+import 'package:flutter_template/core/widget/water_loading.dart';
 import 'package:flutter_template/generated/l10n.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:flutter_template/pages/wifi_set/visitor/2.4GHZ_visitor/2.4GHZ_datas.dart';
@@ -316,7 +317,15 @@ class _Visitor1State extends State<Visitor1> {
           ),
         ]),
         body: loading
-            ? const Center(child: CircularProgressIndicator())
+            ? const Center(
+                child: SizedBox(
+                  height: 80,
+                  width: 80,
+                  child: WaterLoading(
+                    color: Color.fromARGB(255, 65, 167, 251),
+                  ),
+                ),
+              )
             : GestureDetector(
                 onTap: () => closeKeyboard(context),
                 behavior: HitTestBehavior.opaque,

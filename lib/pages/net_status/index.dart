@@ -618,7 +618,15 @@ class _NetStatusState extends State<NetStatus> {
           ),
           backgroundColor: Colors.transparent,
           body: loading
-              ? const Center(child: CircularProgressIndicator())
+              ? const Center(
+                  child: SizedBox(
+                    height: 80,
+                    width: 80,
+                    child: WaterLoading(
+                      color: Color.fromARGB(255, 65, 167, 251),
+                    ),
+                  ),
+                )
               : GestureDetector(
                   onTap: () => closeKeyboard(context),
                   behavior: HitTestBehavior.opaque,

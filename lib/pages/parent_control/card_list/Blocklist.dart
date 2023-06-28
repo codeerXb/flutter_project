@@ -6,6 +6,7 @@ import 'package:flutter_template/core/request/request.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
+import 'package:flutter_template/core/widget/water_loading.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
 import '../../../generated/l10n.dart';
@@ -236,7 +237,15 @@ class _BlocklistState extends State<Blocklist> {
             )),
       ),
       body: loading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(
+              child: SizedBox(
+                height: 80,
+                width: 80,
+                child: WaterLoading(
+                  color: Color.fromARGB(255, 65, 167, 251),
+                ),
+              ),
+            )
           : Column(children: [
               InfoBox(
                 boxCotainer: Row(

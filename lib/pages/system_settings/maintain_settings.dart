@@ -8,6 +8,7 @@ import 'package:flutter_template/config/base_config.dart';
 import 'package:flutter_template/core/http/http_app.dart';
 import 'package:flutter_template/core/request/request.dart';
 import 'package:flutter_template/core/widget/common_widget.dart';
+import 'package:flutter_template/core/widget/water_loading.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
 import '../../../core/widget/custom_app_bar.dart';
@@ -640,7 +641,15 @@ class _MaintainSettingsState extends State<MaintainSettings> {
     return Scaffold(
       appBar: customAppbar(context: context, title: S.current.maintainSettings),
       body: loading
-          ? const Center(child: CircularProgressIndicator())
+          ? const Center(
+              child: SizedBox(
+                height: 80,
+                width: 80,
+                child: WaterLoading(
+                  color: Color.fromARGB(255, 65, 167, 251),
+                ),
+              ),
+            )
           : SingleChildScrollView(
               child: Container(
                 decoration: const BoxDecoration(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/request/request.dart';
+import 'package:flutter_template/core/widget/water_loading.dart';
 import 'package:flutter_template/pages/parent_control/arc_progress_bar.dart';
 import 'package:flutter_template/pages/parent_control/card_list/Blocklist.dart';
 import 'package:get/get.dart';
@@ -60,7 +61,15 @@ class _ParentState extends State<Parent> {
     return Scaffold(
         appBar: customAppbar(context: context, title: 'Parental control'),
         body: loading
-            ? const Center(child: CircularProgressIndicator())
+            ? const Center(
+                child: SizedBox(
+                  height: 80,
+                  width: 80,
+                  child: WaterLoading(
+                    color: Color.fromARGB(255, 65, 167, 251),
+                  ),
+                ),
+              )
             : Container(
                 padding: EdgeInsets.only(
                     left: 26.0.w, top: 0, right: 26.0.w, bottom: 26.0.w),

@@ -139,7 +139,7 @@ class _MyAppState extends State<MyApp> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('edit Floor'),
+          title: const Text('Edit Floor'),
           content: TextFormField(
             initialValue: editingFloor,
             onChanged: (value) {
@@ -159,7 +159,7 @@ class _MyAppState extends State<MyApp> {
               },
             ),
             TextButton(
-              child: const Text('edit'),
+              child: const Text('Edit'),
               onPressed: () {
                 // 在此处处理确认按钮的逻辑
                 floors[index]['name'] = editingFloor;
@@ -771,7 +771,7 @@ class _GridWidgetState extends State<GridWidget> {
     for (final rectData in widget.rects) {
       if (widget.curFloorId == rectData.floorId) {
         debugPrint(
-            '户型内部offset:${rectData.offsetX},${rectData.offsetY}++${offsetX},${offsetY}');
+            '户型内部offset:${rectData.offsetX},${rectData.offsetY}++$offsetX,$offsetY');
         debugPrint("--------------");
         rectWidgets.add(
           Positioned(
@@ -900,7 +900,7 @@ class _GridWidgetState extends State<GridWidget> {
                                   context: context,
                                   builder: (BuildContext context) {
                                     return AlertDialog(
-                                      title: const Text('edit Room'),
+                                      title: const Text('Edit Room'),
                                       content: TextFormField(
                                         initialValue: rectData.name,
                                         onChanged: (value) {
@@ -920,7 +920,7 @@ class _GridWidgetState extends State<GridWidget> {
                                           },
                                         ),
                                         TextButton(
-                                          child: const Text('edit'),
+                                          child: const Text('Edit'),
                                           onPressed: () {
                                             rectData.name = editRoomName;
                                             // 在此处处理确认按钮的逻辑

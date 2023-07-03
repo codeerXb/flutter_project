@@ -48,7 +48,7 @@ dependencies:
   # html 处理
   flutter_html: ^3.0.0-alpha.5
   # 获取版本信息
-  package_info_plus: ^2.0.0
+  package_info_plus: ^4.0.2
   # 图片选择 -- 头像上传
   image_picker: ^0.8.5+3
   # 权限
@@ -64,9 +64,8 @@ dependencies:
   css_filter: ^1.0.2
   flutter_swiper_null_safety: ^1.0.2 # 轮播图空异常版
   # 国际化
-  flutter_localizations:
-    sdk: flutter
-  intl: 0.17.0
+  flutter_localization: ^0.1.11
+  intl: ^0.18.0
   # AES加密
   encrypt: ^5.0.1
   # 时间选择
@@ -83,6 +82,10 @@ dependencies:
   progressive_time_picker: ^0.0.9
   # 身份验证
   local_auth: ^2.1.6
+  # 设备信息
+  device_info_plus: ^8.0.0
+  # wifi信息
+  network_info_plus: ^4.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

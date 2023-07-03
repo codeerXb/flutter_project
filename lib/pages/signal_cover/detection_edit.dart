@@ -423,6 +423,7 @@ class Layout extends CustomPainter {
       // 发射端天线增益：6
       // 路径损耗：53+30lg(d),d:到达边缘距离
       // 单个房间绘制忽略障碍物衰减，接收端天线增益为0
+
     }
   }
 

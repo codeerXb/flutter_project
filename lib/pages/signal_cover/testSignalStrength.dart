@@ -13,6 +13,7 @@ import '../../core/http/http_app.dart';
 import '../../core/request/request.dart';
 import '../../core/utils/shared_preferences_util.dart';
 import '../../generated/l10n.dart';
+import 'package:network_info_plus/network_info_plus.dart';
 
 var roomInfo = []; //画的房屋信息
 var allRoomInfo = []; //所有房屋信息
@@ -153,8 +154,8 @@ class _ArcProgresssBarState extends State<ArcProgresssBar> {
               ),
               if (btnText == S.current.startTesting)
                 Positioned(
-                  left: offSetValue.dx + 100,
-                  top: offSetValue.dy + 100,
+                  left: routerPos.dx + 100,
+                  top: routerPos.dy + 100,
                   child: SizedBox(
                     width: 40, // 添加一个具体的宽度
                     height: 40, // 添加一个具体的高度
@@ -163,13 +164,11 @@ class _ArcProgresssBarState extends State<ArcProgresssBar> {
                       onPanUpdate: (details) {
                         setState(() {
                           // 计算新的偏移量
-                          offSetValue += details.delta;
                           routerPos += details.delta;
 
                           // 限制偏移量不超出边框区域
-                          double clampedX = offSetValue.dx.clamp(-102, 287);
-                          double clampedY = offSetValue.dy.clamp(-102, 523);
-                          offSetValue = Offset(clampedX, clampedY);
+                          double clampedX = routerPos.dx.clamp(-102, 287);
+                          double clampedY = routerPos.dy.clamp(-102, 523);
                           routerPos = Offset(clampedX, clampedY);
                         });
                       },
@@ -231,7 +230,7 @@ class MyPainter extends CustomPainter {
     canvas.translate(size.width / 2, size.height / 2);
 
     //router
-    canvas.drawImage(aPattern, offSetValue, paint3);
+    canvas.drawImage(aPattern, routerPos, paint3);
     canvas.drawImage(bPattern, nextetValue, paint4);
 
     // _box(canvas, paint1, 'abc', -100.0, -100.0, 200.0, 100.0);
@@ -315,19 +314,19 @@ class _ProcessButtonState extends State<ProcessButton> {
 
   //终端设备列表
   getSnrFn() async {
+    setState(() {
+      loading = true;
+    });
+    final info = NetworkInfo();
+
     try {
-      setState(() {
-        loading = true;
-      });
-      //先请求本地接口  获取信息 如果不通 提示请连接设备WIFL后操作
-      await XHttp.get('/pub/pub_data.html', {
-        'method': 'obj_get',
-        'param': '["systemProductModel"]',
-      });
-
-      // 获取本地mac地址
-      var mac = await GetMac.macAddress;
-
+      String? wifiIP;
+      try {
+        wifiIP = await info.getWifiIP(); // 192.168.1.43
+        printInfo(info: 'wifiIp$wifiIP');
+      } catch (e) {
+        printError(info: e.toString());
+      }
       //终端设备列表
       sn = await sharedGetData('deviceSn', String);
       var response = await App.post(
@@ -335,6 +334,8 @@ class _ProcessButtonState extends State<ProcessButton> {
           data: {'sn': sn.toString(), "type": "getDevicesTable"});
 
       var d = json.decode(response.toString());
+
+      printInfo(info: d.toString());
       if (d['code'] == 200) {
         d['data']['wifiDevices'].addAll(d['data']['lanDevices']);
         deviceList = d['data']['wifiDevices'];
@@ -342,11 +343,11 @@ class _ProcessButtonState extends State<ProcessButton> {
 
         // 终端设备列表过滤 获得SNR
         var snr = deviceList
-            .where((item) => item['MACAddress'] == mac)
+            .where((item) => item['IPAddress'] == wifiIP)
             .toList()[0]['SNR'];
 
         var connection = deviceList
-            .where((item) => item['MACAddress'] == mac)
+            .where((item) => item['IPAddress'] == wifiIP)
             .toList()[0]['connection'];
 
         // 判断是2.4G还是5G

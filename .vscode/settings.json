@@ -1,4 +1,5 @@
 {
   "java.configuration.updateBuildConfiguration": "interactive",
-  "cmake.sourceDirectory": "${workspaceFolder}/linux"
+  "cmake.sourceDirectory": "${workspaceFolder}/linux",
+  "dart.flutterSdkPath": "D:\\flutter1\\flutter"
 }

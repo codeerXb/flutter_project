@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
+import 'package:flutter_template/pages/setting/user_personal_information.dart';
 import 'package:get/get.dart';
 
 import '../../generated/l10n.dart';
@@ -52,46 +53,64 @@ class _UserCardState extends State<UserCard> {
       child: Column(
         children: [
           ListTile(
-              contentPadding: EdgeInsets.only(
-                  top: 20.w, bottom: 20.w, left: 40.w, right: 40.w),
-              //图片
-              leading: ClipOval(
-                  child: Image.asset('assets/images/people.png',
-                      fit: BoxFit.fitWidth, height: 50, width: 50)),
-              //中间文字
-              title: Text(
-                  _userPhone != 'null' ? _userPhone : S.of(context).noLogin,
-                  style: _userPhone != 'null'
-                      ? const TextStyle(
-                          color: Color.fromARGB(255, 54, 152, 244))
-                      : TextStyle(fontSize: 40.sp, color: Colors.black38)),
-              //title下方显示的内容
-              // 登录后可实现远程控制
-              subtitle: Text(
-                  _userPhone != 'null'
-                      ? '${S.of(context).currentDeive} $sn'
-                      : S.of(context).Remote,
-                  style: TextStyle(fontSize: 27.sp, color: Colors.black38)),
-              //标题后显示的widget
-              trailing: CommonWidget.buttonWidget(
-                title: _userPhone != 'null'
-                    ? S.of(context).logOut
-                    : S.of(context).login,
-                callBack: () {
-                  if (_userPhone != 'null') {
-                    loginController.setState('cloud');
-                    printInfo(info: 'state--${loginController.login.state}');
-                  }
-                  Get.offNamed("/user_login");
-                  sharedDeleteData('user_phone');
-                  sharedDeleteData('user_token');
-                  sharedDeleteData('deviceSn');
-                  debugPrint('清除用户信息');
-                },
-                background: _userPhone != 'null'
-                    ? const Color.fromARGB(255, 255, 0, 0)
-                    : const Color.fromRGBO(41, 121, 255, 1),
-              )),
+            contentPadding: EdgeInsets.only(
+                top: 20.w, bottom: 20.w, left: 40.w, right: 40.w),
+            //图片
+            leading: ClipOval(
+                child: Image.asset('assets/images/people.png',
+                    fit: BoxFit.fitWidth, height: 50, width: 50)),
+            //中间文字
+            title: Text(
+                _userPhone != 'null' ? _userPhone : S.of(context).noLogin,
+                style: _userPhone != 'null'
+                    ? const TextStyle(color: Color.fromARGB(255, 54, 152, 244))
+                    : TextStyle(fontSize: 40.sp, color: Colors.black38)),
+            //title下方显示的内容
+            // 登录后可实现远程控制
+            subtitle: Text(
+                _userPhone != 'null'
+                    ? '${S.of(context).currentDeive} $sn'
+                    : S.of(context).Remote,
+                style: TextStyle(fontSize: 27.sp, color: Colors.black38)),
+            //标题后显示的widget
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CommonWidget.buttonWidget(
+                  title: _userPhone != 'null'
+                      ? S.of(context).logOut
+                      : S.of(context).login,
+                  callBack: () {
+                    if (_userPhone != 'null') {
+                      loginController.setState('cloud');
+                      printInfo(info: 'state--${loginController.login.state}');
+                    }
+                    Get.offNamed("/user_login");
+                    sharedDeleteData('user_phone');
+                    sharedDeleteData('user_token');
+                    sharedDeleteData('deviceSn');
+                    debugPrint('清除用户信息');
+                  },
+                  background: _userPhone != 'null'
+                      ? const Color.fromARGB(255, 255, 0, 0)
+                      : const Color.fromRGBO(41, 121, 255, 1),
+                ),
+                SizedBox(width: 10.w),
+                GestureDetector(
+                  onTap: () {
+                    printInfo(info: '222');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              const UserPersonalInformation()),
+                    );
+                  },
+                  child: const Icon(Icons.arrow_forward_ios),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

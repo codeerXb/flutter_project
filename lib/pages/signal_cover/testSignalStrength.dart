@@ -3,10 +3,8 @@ import 'dart:ui' as ui;
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:get/get.dart';
-import 'package:mac_address/mac_address.dart';
 import 'dart:async';
 import '../../config/base_config.dart';
 import '../../core/http/http_app.dart';
@@ -14,6 +12,8 @@ import '../../core/request/request.dart';
 import '../../core/utils/shared_preferences_util.dart';
 import '../../generated/l10n.dart';
 import 'package:network_info_plus/network_info_plus.dart';
+
+import '../toolbar/toolbar_controller.dart';
 
 var roomInfo = []; //画的房屋信息
 var allRoomInfo = []; //所有房屋信息
@@ -31,6 +31,8 @@ class TestSignal extends StatefulWidget {
 }
 
 class _MyAppState extends State<TestSignal> {
+  final ToolbarController toolbarController = Get.put(ToolbarController());
+
   //获取到户型数据
   @override
   void initState() {
@@ -48,8 +50,6 @@ class _MyAppState extends State<TestSignal> {
         element['snr'] = '';
       }
       if (roomInfo.isNotEmpty) {
-        // offSetValue = Offset(
-        //     roomInfo[0]['offsetX'] - 1300, roomInfo[0]['offsetY'] - 1300);
         nextetValue = const Offset(1999, 1999);
       }
     });
@@ -70,14 +70,44 @@ class _MyAppState extends State<TestSignal> {
         ),
         title: Text(S.current.TestSignal),
       ),
-      body: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: const [
-            ArcProgresssBar(),
+      body: Padding(
+        padding: const EdgeInsets.all(18.0),
+        child:
+            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          Text('Current detection floor:${roomInfo[0]['floorId']}F'),
+          Row(
+            children: [
+              Icon(
+                Icons.directions_walk_rounded,
+                color: const Color.fromRGBO(144, 147, 153, 1),
+                size: 30.w,
+              ),
+              Obx(
+                () => Text(
+                    '${toolbarController.currentNoiselevel.value} dBm signal '),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(top: 30),
+              ),
+              Text(
+                toolbarController.currentNoiselevel.value > -50
+                    ? 'Great'
+                    : toolbarController.currentNoiselevel.value > -70
+                        ? 'Good'
+                        : 'Bad',
+                style: const TextStyle(color: Colors.blue),
+              )
+            ],
+          ),
+          const Padding(
+            padding: EdgeInsets.only(top: 50),
+          ),
+          const ArcProgresssBar(),
 
-            //按钮
-            ProcessButton(),
-          ]),
+          //按钮
+          ProcessButton(toolbarController: toolbarController),
+        ]),
+      ),
     );
   }
 }
@@ -136,8 +166,8 @@ class _ArcProgresssBarState extends State<ArcProgresssBar> {
         child: Container(
           decoration: BoxDecoration(
             border: Border.all(
-              color: Colors.black, // 边框颜色
-              width: 2.0, // 边框宽度
+              color: Colors.white, // 边框颜色
+              width: 0, // 边框宽度
             ),
           ),
           child: Stack(
@@ -293,7 +323,8 @@ Future<ui.Image> getAssetImage(String asset, {width, height}) async {
 
 //底部按钮
 class ProcessButton extends StatefulWidget {
-  const ProcessButton({super.key});
+  ProcessButton({super.key, required this.toolbarController});
+  var toolbarController;
   @override
   State<StatefulWidget> createState() => _ProcessButtonState();
 }
@@ -380,11 +411,15 @@ class _ProcessButtonState extends State<ProcessButton> {
           roomInfo[currentIndex]['txPower'] = acsNode['TxPower']['_value'];
           roomInfo[currentIndex]['NoiseLevel'] =
               acsNode['NoiseLevel']['_value'];
+          var val = int.parse(
+                  acsNode['NoiseLevel']['_value'].split('d')[0].toString()) +
+              int.parse(snr);
+          widget.toolbarController.setCurrentNoiselevel(val);
         }
         nextFn();
       }
 
-      print(roomInfo);
+      // print(roomInfo);
       // printInfo(info: 'roomInfo$roomInfo');
     } catch (e) {
       debugPrint(e.toString());

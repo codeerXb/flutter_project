@@ -5,7 +5,7 @@
 import FlutterMacOS
 import Foundation
 
-import connectivity_macos
+import connectivity_plus
 import device_info_plus
 import file_selector_macos
 import flutter_localization

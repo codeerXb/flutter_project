@@ -73,7 +73,7 @@ dependencies:
   # wifi信息获取
   wifi_info_plugin_plus: ^2.0.2
   #网络监测
-  connectivity: ^3.0.6
+  connectivity_plus: ^4.0.1
   # 震动的插件
   vibration: ^1.7.7
   # 获取mac地址

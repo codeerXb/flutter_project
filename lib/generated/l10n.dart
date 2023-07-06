@@ -2920,7 +2920,7 @@ class S {
     );
   }
 
-  /// `Retest 1F`
+  /// `Retest`
   String get RetestF {
     return Intl.message(
       'Retest',
@@ -2947,10 +2947,10 @@ class S {
       name: 'startTesting',
       desc: '',
       args: [],
-    ); 
+    );
   }
 
-  /// `Start Test`
+  /// `Get the signal strength of the room`
   String get roomStrength {
     return Intl.message(
       'Get the signal strength of the room',

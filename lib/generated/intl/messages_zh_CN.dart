@@ -327,6 +327,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "workday": MessageLookupByLibrary.simpleMessage("工作日"),
         "wpsSet": MessageLookupByLibrary.simpleMessage("WPS设置"),
         "year": MessageLookupByLibrary.simpleMessage("年"),
-        "yourServiece": MessageLookupByLibrary.simpleMessage("你的订阅")
+        "yourServiece": MessageLookupByLibrary.simpleMessage("你的订阅"),
+        "roomStrength": MessageLookupByLibrary.simpleMessage("获取该房间信号强度")
       };
 }

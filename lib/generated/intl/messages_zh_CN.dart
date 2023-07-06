@@ -281,6 +281,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "reset": MessageLookupByLibrary.simpleMessage("复位中"),
         "restart": MessageLookupByLibrary.simpleMessage("设备重启中..."),
         "retry": MessageLookupByLibrary.simpleMessage("重新加载"),
+        "roomStrength": MessageLookupByLibrary.simpleMessage("获取该房间信号强度"),
         "save": MessageLookupByLibrary.simpleMessage("提交"),
         "second": MessageLookupByLibrary.simpleMessage("秒"),
         "server": MessageLookupByLibrary.simpleMessage("服务器"),
@@ -327,7 +328,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "workday": MessageLookupByLibrary.simpleMessage("工作日"),
         "wpsSet": MessageLookupByLibrary.simpleMessage("WPS设置"),
         "year": MessageLookupByLibrary.simpleMessage("年"),
-        "yourServiece": MessageLookupByLibrary.simpleMessage("你的订阅"),
-        "roomStrength": MessageLookupByLibrary.simpleMessage("获取该房间信号强度")
+        "yourServiece": MessageLookupByLibrary.simpleMessage("你的订阅")
       };
 }

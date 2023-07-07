@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:dio/dio.dart';
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -135,11 +136,23 @@ class _TestEditState extends State<TestEdit> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: customAppbar(
-          context: context,
-          title: S.current.DetectionAndEdit,
-          backgroundColor: Colors.blue,
-          titleColor: Colors.white,
-        ),
+            context: context,
+            title: S.current.DetectionAndEdit,
+            backgroundColor: Colors.blue,
+            titleColor: Colors.white,
+            actions: <Widget>[
+              IconButton(
+                  onPressed: () {
+                    //刷新
+                    if (mounted) {
+                      getData();
+                    }
+                  },
+                  icon: const Icon(
+                    Icons.refresh,
+                    color: Colors.white,
+                  )),
+            ]),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -345,6 +358,7 @@ class Layout extends CustomPainter {
       ..strokeWidth = 2
       ..color = const Color.fromARGB(112, 237, 237, 237)
       ..style = PaintingStyle.fill;
+
     List<dynamic> data = floorInfo;
 
     // 计算放置所有方块之后占用的宽高
@@ -370,23 +384,98 @@ class Layout extends CustomPainter {
 
     double totalWidth = right - left;
     double totalHeight = bottom - top;
-    // 计算缩放比例
+    // 计算绘制缩放比例
     double scale = totalWidth / 1.sw > totalHeight / (640.w - 20)
         ? 1.sw / totalWidth
         : (640.w - 20) / totalHeight;
     printInfo(info: 'width${size.width}height${size.height}缩放比例$scale');
+
     for (var item in data) {
       // 绘制矩形
       // 最终偏移距离应该是（容器宽度-layout宽度*scale）/2
-      final rect = Rect.fromLTWH(
-        (item['offsetX'] - 1200) * scale + (1.sw - totalWidth * scale) / 2,
-        (item['offsetY'] - 1200) * scale + 8,
-        item['width'] * scale,
-        item['height'] * scale,
-      );
+      canvas.save();
+      final pathRect = Path();
+      final x =
+          (item['offsetX'] - 1200) * scale + (1.sw - totalWidth * scale) / 2;
+      final y = (item['offsetY'] - 1200) * scale + 8;
+      final width = item['width'] * scale;
+      final height = item['height'] * scale;
+      pathRect.moveTo(x, y);
+      pathRect.lineTo(x + width, y);
+      pathRect.lineTo(x + width, y + height);
+      pathRect.lineTo(x, y + height);
+      pathRect.lineTo(x, y);
+      pathRect.close();
 
-      canvas.drawRect(rect, paint);
-      canvas.drawRect(rect, paintFill);
+      // 绘制渐变
+      // 以路由器位置作为圆心来绘制
+      // 得出当前位置的信号强度：SNR+噪声
+      // 接收信号强度 = 射频发射功率 + 发射端天线增益 - 路径损耗 - 障碍物衰减 + 接收端天线增益
+      // 射频发射功率：txPower
+      // 发射端天线增益：6
+      // 路径损耗：2.4g:46+25lg(d) 5g:53+30lg(d),d:到达边缘距离
+      // 单个房间绘制忽略障碍物衰减，接收端天线增益为0
+      // 定义方块和圆形的参数
+
+      // 需要根据以上的公式得到信号衰减到-100的时候距离
+      // great: -40~-60,good:-60~-80,bad<-80
+      // 再根据上面的分界点，-60，-80
+      // 计算公式到-60的距离：a，-80的距离:b，-100的距离:c
+      // [a/c,b/c,1]
+      bool condition = item['snr'] != '-' &&
+          item['snr'] != null &&
+          item['snr'] != '' &&
+          item['txPower'] != '-' &&
+          item['txPower'] != null &&
+          item['txPower'] != '' &&
+          item['NoiseLevel'] != '-' &&
+          item['NoiseLevel'] != null &&
+          item['NoiseLevel'] != '';
+      if (condition) {
+        // 计算实际面积对应宽高的缩放比例
+        // 缩放比例=sqrt(面积 / 宽高乘积)
+        // 实际宽高=传入宽高 x 缩放比例
+        double realScale = sqrt(item['roomArea'] / (totalWidth * totalHeight));
+        // 图中的辐射距离 = 实际辐射距离 / 缩放比例
+        num d = pow(
+                10,
+                (int.parse(item['txPower']) -
+                        (int.parse(item['NoiseLevel']) +
+                            double.parse(item['snr'])) +
+                        6 +
+                        46 -
+                        0) /
+                    (25 * log(10))) /
+            realScale;
+        debugPrint('辐射距离$d');
+        // 绘制圆形
+        var center =
+            Offset(0.5.sw + 14, 320.w + 14); // 中心始终是设备位置,14是28*28图标的一半大小
+        // 定义渐变
+        var gradient = const RadialGradient(
+          colors: [
+            Color.fromARGB(255, 118, 240, 4),
+            Color.fromARGB(255, 248, 244, 11),
+            Color.fromARGB(255, 247, 65, 41),
+          ],
+          stops: [0.6, 0.8, 1],
+        );
+        final paintc = Paint()
+          ..shader = gradient.createShader(
+            Rect.fromCircle(
+                center: center,
+                radius:
+                    double.parse(d.toString())), //radius是辐射范围：信号衰减到-100的时候距离
+          )
+          ..style = PaintingStyle.fill;
+
+        canvas.clipPath(pathRect);
+        canvas.drawCircle(center, 1.sw, paintc);
+      }
+
+      canvas.drawPath(pathRect, paint);
+      canvas.drawPath(pathRect, paintFill);
+      canvas.restore();
 
       // 绘制文字
       var paragraphBuilder = ParagraphBuilder(ParagraphStyle(
@@ -414,16 +503,6 @@ class Layout extends CustomPainter {
                 25,
             (item['offsetY'] - 1200) * scale + item['height'] * scale / 2 - 8),
       );
-
-      // 绘制渐变
-      // 以路由器位置作为圆心来绘制
-      // 得出当前位置的信号强度：SNR+噪声
-      // 接收信号强度 = 射频发射功率 + 发射端天线增益 - 路径损耗 - 障碍物衰减 + 接收端天线增益
-      // 射频发射功率：txPower
-      // 发射端天线增益：6
-      // 路径损耗：53+30lg(d),d:到达边缘距离
-      // 单个房间绘制忽略障碍物衰减，接收端天线增益为0
-
     }
   }
 

@@ -28,7 +28,8 @@ List<RectData> convertToRectDataList(List<dynamic> dataList) {
       selectedEdge: data['selectedEdge'],
       snr: data['snr'] ?? '',
       noiseLevel: data['NoiseLevel'] ?? '',
-      txPower: data['TxPower'] ?? '',
+      txPower: data['txPower'] ?? '',
+      roomArea: data['roomArea'] ?? '',
     );
 
     rectDataList.add(rectData);
@@ -76,6 +77,20 @@ class RectController extends GetxController {
       rect.isSelected = false;
       rect.selectedEdge = '';
     }
+    update();
+  }
+
+  //更新面积
+
+  void updateArea() {
+    // roomArea
+
+    // var res = rects
+    //     .where((item) => item['floorId']=='12')
+    //     .toList();
+    // print(2333);
+    // print(rects);
+
     update();
   }
 }
@@ -237,6 +252,7 @@ class _MyAppState extends State<MyApp> {
             onChanged: (value) {
               setState(() {
                 roomArea = value;
+                _rectController.updateArea();
               });
             },
             inputFormatters: <TextInputFormatter>[
@@ -1125,6 +1141,7 @@ class RectData {
   String snr;
   String noiseLevel;
   String txPower;
+  var roomArea;
 
   RectData({
     required this.floorId,
@@ -1141,6 +1158,7 @@ class RectData {
     this.snr = '',
     this.noiseLevel = '',
     this.txPower = '',
+    this.roomArea = 100,
   });
   Map<String, dynamic> toJson() {
     return {
@@ -1158,6 +1176,7 @@ class RectData {
       'snr': snr,
       'NoiseLevel': noiseLevel,
       'txPower': txPower,
+      'roomArea': roomArea,
     };
   }
 }

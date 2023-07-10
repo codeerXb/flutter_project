@@ -201,6 +201,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "band": MessageLookupByLibrary.simpleMessage("Bind Device"),
         "binding": MessageLookupByLibrary.simpleMessage("Binding?"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+        "changePassword":
+            MessageLookupByLibrary.simpleMessage("Change Password"),
         "checkNet": MessageLookupByLibrary.simpleMessage(
             "Logout login failed, Please check the network!"),
         "clear": MessageLookupByLibrary.simpleMessage("Clear"),
@@ -245,6 +247,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "dnsStatic": MessageLookupByLibrary.simpleMessage(
             "Static DNS has the highest priority, VPN DNS follows it and LTE DNS has the lowest priority. If you want to restore the VPN/LTE DNS, please clear the two DNS configuration and submit"),
         "down": MessageLookupByLibrary.simpleMessage("Down"),
+        "email": MessageLookupByLibrary.simpleMessage("Email"),
         "emptyNORecommend":
             MessageLookupByLibrary.simpleMessage("None(Not Recommened)"),
         "endIPAddress": MessageLookupByLibrary.simpleMessage("End iP address"),
@@ -264,6 +267,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Verify Code"),
         "good": MessageLookupByLibrary.simpleMessage("Good"),
         "hint": MessageLookupByLibrary.simpleMessage("Hint"),
+        "homeAddress": MessageLookupByLibrary.simpleMessage("Home Address"),
         "hour": MessageLookupByLibrary.simpleMessage("h"),
         "improveSecurity": MessageLookupByLibrary.simpleMessage(
             "Change passwords periodically to improve security"),
@@ -337,6 +341,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "The password cannot be empty"),
         "passwordLabel":
             MessageLookupByLibrary.simpleMessage("Enter your password"),
+        "phone": MessageLookupByLibrary.simpleMessage("Phone Number"),
         "phoneError": MessageLookupByLibrary.simpleMessage(
             "Please input email or phone number"),
         "phoneLabel": MessageLookupByLibrary.simpleMessage(
@@ -345,6 +350,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Please enter the content"),
         "priority": MessageLookupByLibrary.simpleMessage("Priority"),
         "privacyPolicy": MessageLookupByLibrary.simpleMessage("privacy Policy"),
+        "profile": MessageLookupByLibrary.simpleMessage("ACCOUNT AND PROFILE"),
         "radioSettings": MessageLookupByLibrary.simpleMessage("Radio Settings"),
         "reconnectDevice":
             MessageLookupByLibrary.simpleMessage("Please reconnect device"),
@@ -389,9 +395,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "unlock": MessageLookupByLibrary.simpleMessage("s"),
         "ununited": MessageLookupByLibrary.simpleMessage("Disconnected"),
         "up": MessageLookupByLibrary.simpleMessage("Up"),
+        "update": MessageLookupByLibrary.simpleMessage("UPDATE"),
         "used": MessageLookupByLibrary.simpleMessage("Used"),
         "userAgreement": MessageLookupByLibrary.simpleMessage("User Agreement"),
         "userLogin": MessageLookupByLibrary.simpleMessage("Subscriber Login"),
+        "userName": MessageLookupByLibrary.simpleMessage("User Name"),
         "verficationCode":
             MessageLookupByLibrary.simpleMessage(" Enter verification code"),
         "verficationCodeError":
@@ -410,8 +418,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "wpsSet": MessageLookupByLibrary.simpleMessage("WPS"),
         "year": MessageLookupByLibrary.simpleMessage("Year"),
         "yourServiece":
-            MessageLookupByLibrary.simpleMessage("Your Subscription"),
-        "roomStrength": MessageLookupByLibrary.simpleMessage(
-            "Get the signal strength of the room")
+            MessageLookupByLibrary.simpleMessage("Your Subscription")
       };
 }

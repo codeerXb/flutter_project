@@ -21,6 +21,18 @@ class UserPersonalInformation extends StatefulWidget {
 
 class _UserPersonalInformationState extends State<UserPersonalInformation> {
   final LoginController loginController = Get.put(LoginController());
+  //nickname
+  final TextEditingController nicknameController = TextEditingController();
+  String nicknameText = "";
+  //phone
+  final TextEditingController phoneController = TextEditingController();
+  String phoneText = "";
+  //email
+  final TextEditingController emailController = TextEditingController();
+  String emailText = "";
+  //address
+  final TextEditingController addressController = TextEditingController();
+  String addressText = "";
 
   //手机号
   String _userPhone = 'null';
@@ -43,21 +55,6 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
     if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
       // 云端请求赋值
       // await setTRDnsData();
-    }
-    if (loginController.login.state == 'local') {
-      // 本地请求赋值
-      // if (dsnMain.text == '' &&
-      //     dsnMain1.text == '' &&
-      //     dsnMain2.text == '' &&
-      //     dsnMain3.text == '' &&
-      //     dsnAssist.text == '' &&
-      //     dsnAssist1.text == '' &&
-      //     dsnAssist2.text == '' &&
-      //     dsnAssist3.text == '') {
-      //   getRadioData();
-      // } else {
-      //   getRadioSettingData();
-      // }
     }
     setState(() {
       _isLoading = false;
@@ -124,38 +121,8 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: customAppbar(
-            context: context,
-            title: 'Personal Information',
-            actions: <Widget>[
-              Container(
-                margin: EdgeInsets.all(20.w),
-                child: OutlinedButton(
-                  onPressed: _isLoading ? null : _saveData,
-                  child: Row(
-                    children: [
-                      if (_isLoading)
-                        const SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                          ),
-                        ),
-                      if (!_isLoading)
-                        Text(
-                          S.current.save,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: _isLoading ? Colors.grey : null,
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ),
-            ]),
+        // backgroundColor: const Color.fromRGBO(240, 240, 240, 1),
+        appBar: customAppbar(context: context, title: ''),
         body: loading
             ? const Center(
                 child: SizedBox(
@@ -166,155 +133,258 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
                   ),
                 ),
               )
-            : SingleChildScrollView(
-                child: InkWell(
-                  onTap: () => closeKeyboard(context),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      // 顶部文本
-                      Padding(
-                        padding: EdgeInsets.only(top: 20.w, left: 40.w),
-                        child: Text(
-                          "Personal Information",
-                          style: TextStyle(
-                            fontSize: 50.sp,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 20.w),
-                      // 图片上传按钮
-                      GestureDetector(
-                        onTap: () {
-                          _showImagePicker(context);
-                        },
-                        child: Container(
-                          width: 300.w,
-                          height: 300.w,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                                color: Colors.grey[300]!, width: 5.w),
-                            image: _imageFile != null
-                                ? DecorationImage(
-                                    image: FileImage(_imageFile!),
-                                    fit: BoxFit.cover)
-                                : null,
-                          ),
-                          child: _imageFile == null
-                              ? Icon(Icons.camera_alt, size: 50.w)
-                              : null,
-                        ),
-                      ),
-                      SizedBox(height: 20.w),
-                      // 输入框
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            const Text("顶部文字"),
-                            const SizedBox(height: 10.0),
-                            GestureDetector(
-                              onTap: () {
-                                // 处理上传图片的逻辑
-                              },
-                              child: Container(
-                                width: double.infinity,
-                                height: 200.0,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[300],
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                child: const Icon(Icons.camera_alt, size: 50.0),
+            : SizedBox(
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height * 1,
+                child: SingleChildScrollView(
+                  child: InkWell(
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    onTap: () => closeKeyboard(context),
+                    child: Container(
+                      padding: EdgeInsets.only(left: 10.w, right: 10.0.w),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          // 顶部文本
+                          Padding(
+                            padding: EdgeInsets.only(top: 16.w, left: 40.w),
+                            child: Text(
+                              S.of(context).profile,
+                              style: TextStyle(
+                                fontSize: 50.sp,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                            const SizedBox(height: 10.0),
-                            Row(
+                          ),
+                          SizedBox(height: 60.w),
+                          // 图片上传按钮
+                          GestureDetector(
+                            onTap: () {
+                              _showImagePicker(context);
+                            },
+                            child: Container(
+                              width: 300.w,
+                              height: 300.w,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                    color:
+                                        const Color.fromARGB(255, 74, 195, 189),
+                                    width: 5.w),
+                                image: _imageFile != null
+                                    ? DecorationImage(
+                                        image: FileImage(_imageFile!),
+                                        fit: BoxFit.cover)
+                                    : null,
+                              ),
+                              child: _imageFile == null
+                                  ? Icon(Icons.camera_alt, size: 50.w)
+                                  : null,
+                            ),
+                          ),
+                          SizedBox(height: 20.w),
+                          // 输入框
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                top: 30.0,
+                                left: 16.0,
+                                right: 16.0,
+                                bottom: 30.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
-                                Expanded(
-                                  child: Column(
-                                    children: [
-                                      TextFormField(
-                                        decoration: InputDecoration(
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20.0),
-                                            borderSide: BorderSide.none,
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            S.of(context).userName,
+                                            style: const TextStyle(
+                                              color: Color.fromARGB(
+                                                  255, 74, 195, 189),
+                                              fontSize: 16,
+                                            ),
                                           ),
-                                          filled: true,
-                                          fillColor: Colors.grey[300],
-                                          hintText: "输入框1",
+                                          const SizedBox(height: 5.0),
+                                          TextFormField(
+                                            textAlign: TextAlign.start,
+                                            controller: nicknameController,
+                                            keyboardType: TextInputType.text,
+                                            decoration: InputDecoration(
+                                              hintText: S.of(context).userName,
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20.0),
+                                                borderSide: BorderSide.none,
+                                              ),
+                                              filled: true,
+                                              fillColor: const Color.fromARGB(
+                                                  255, 243, 240, 240),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            S.of(context).phone,
+                                            style: const TextStyle(
+                                              color: Color.fromARGB(
+                                                  255, 74, 195, 189),
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 5.0),
+                                          TextFormField(
+                                            textAlign: TextAlign.start,
+                                            controller: phoneController,
+                                            keyboardType: TextInputType.phone,
+                                            decoration: InputDecoration(
+                                              hintText: S.of(context).phone,
+                                              border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20.0),
+                                                borderSide: BorderSide.none,
+                                              ),
+                                              filled: true,
+                                              fillColor: const Color.fromARGB(
+                                                  255, 243, 240, 240),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 10.0),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 50.0),
+                                      child: Text(
+                                        S.of(context).email,
+                                        style: const TextStyle(
+                                          color:
+                                              Color.fromARGB(255, 74, 195, 189),
+                                          fontSize: 16,
                                         ),
                                       ),
-                                      const SizedBox(height: 10.0),
-                                      TextFormField(
-                                        decoration: InputDecoration(
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20.0),
-                                            borderSide: BorderSide.none,
-                                          ),
-                                          filled: true,
-                                          fillColor: Colors.grey[300],
-                                          hintText: "输入框2",
+                                    ),
+                                    const SizedBox(height: 5.0),
+                                    TextFormField(
+                                      textAlign: TextAlign.start,
+                                      controller: emailController,
+                                      keyboardType: TextInputType.emailAddress,
+                                      maxLines: null,
+                                      decoration: InputDecoration(
+                                        hintText: S.of(context).email,
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20.0),
+                                          borderSide: BorderSide.none,
                                         ),
+                                        filled: true,
+                                        fillColor: const Color.fromARGB(
+                                            255, 243, 240, 240),
                                       ),
-                                    ],
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 10.0),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      S.of(context).homeAddress,
+                                      style: const TextStyle(
+                                        color:
+                                            Color.fromARGB(255, 74, 195, 189),
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 5.0),
+                                    TextFormField(
+                                      textAlign: TextAlign.start,
+                                      controller: addressController,
+                                      keyboardType: TextInputType.text,
+                                      maxLines: null,
+                                      decoration: InputDecoration(
+                                        hintText: S.of(context).homeAddress,
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20.0),
+                                          borderSide: BorderSide.none,
+                                        ),
+                                        filled: true,
+                                        fillColor: const Color.fromARGB(
+                                            255, 243, 240, 240),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 30.0),
+                                GestureDetector(
+                                  onTap: () {
+                                    // 点击按钮1时执行的代码
+                                    printInfo(info: '111');
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: const Color.fromARGB(
+                                          255, 243, 240, 240),
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10, vertical: 5),
+                                    child: Row(
+                                      children: [
+                                        const Icon(Icons.lock,
+                                            color: Color.fromARGB(
+                                                255, 74, 195, 189)),
+                                        const Padding(
+                                          padding: EdgeInsets.only(right: 15.0),
+                                        ),
+                                        Text(S.of(context).changePassword),
+                                        const Spacer(),
+                                        const Icon(Icons.chevron_right),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                                const SizedBox(width: 10.0),
-                                Expanded(
-                                  child: Column(
+                                const SizedBox(height: 30.0),
+                                ElevatedButton(
+                                  onPressed: () {},
+                                  style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    backgroundColor:
+                                        const Color.fromARGB(255, 74, 195, 189),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      TextFormField(
-                                        decoration: InputDecoration(
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20.0),
-                                            borderSide: BorderSide.none,
-                                          ),
-                                          filled: true,
-                                          fillColor: Colors.grey[300],
-                                          hintText: "输入框3",
-                                        ),
-                                      ),
-                                      const SizedBox(height: 10.0),
-                                      TextFormField(
-                                        decoration: InputDecoration(
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20.0),
-                                            borderSide: BorderSide.none,
-                                          ),
-                                          filled: true,
-                                          fillColor: Colors.grey[300],
-                                          hintText: "输入框4",
-                                        ),
-                                      ),
-                                      const SizedBox(height: 10.0),
-                                      TextFormField(
-                                        decoration: InputDecoration(
-                                          border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(20.0),
-                                            borderSide: BorderSide.none,
-                                          ),
-                                          filled: true,
-                                          fillColor: Colors.grey[300],
-                                          hintText: "输入框5",
-                                        ),
-                                      ),
+                                      Text(S.of(context).update),
                                     ],
                                   ),
                                 ),
                               ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ));

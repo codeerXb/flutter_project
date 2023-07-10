@@ -1,4 +1,5 @@
 {
+  "biometrics":"生物认证",
   "warningSnNotSame":"请连接当前设备Wi-Fi后再操作",
   "deviceException":"设备异常",
   "reconnectDevice":"请重新连接设备",

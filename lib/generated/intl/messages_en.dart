@@ -360,6 +360,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "reset": MessageLookupByLibrary.simpleMessage("Reset"),
         "restart": MessageLookupByLibrary.simpleMessage("Restart..."),
         "retry": MessageLookupByLibrary.simpleMessage("Retry"),
+        "roomStrength": MessageLookupByLibrary.simpleMessage(
+            "Get the signal strength of the room"),
         "save": MessageLookupByLibrary.simpleMessage("Save"),
         "second": MessageLookupByLibrary.simpleMessage("Second"),
         "server": MessageLookupByLibrary.simpleMessage("Server"),

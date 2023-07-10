@@ -286,6 +286,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "reset": MessageLookupByLibrary.simpleMessage("复位中"),
         "restart": MessageLookupByLibrary.simpleMessage("设备重启中..."),
         "retry": MessageLookupByLibrary.simpleMessage("重新加载"),
+        "roomStrength": MessageLookupByLibrary.simpleMessage("获取该房间信号强度"),
         "save": MessageLookupByLibrary.simpleMessage("提交"),
         "second": MessageLookupByLibrary.simpleMessage("秒"),
         "server": MessageLookupByLibrary.simpleMessage("服务器"),

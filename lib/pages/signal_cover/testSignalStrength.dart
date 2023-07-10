@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:ui' as ui;
+import 'dart:ui';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -52,6 +53,7 @@ class _MyAppState extends State<TestSignal> {
       if (roomInfo.isNotEmpty) {
         nextetValue = const Offset(1999, 1999);
       }
+      print('roomInfo1$roomInfo');
     });
   }
 
@@ -99,9 +101,9 @@ class _MyAppState extends State<TestSignal> {
               )
             ],
           ),
-          const Padding(
-            padding: EdgeInsets.only(top: 50),
-          ),
+          // const Padding(
+          //   padding: EdgeInsets.only(top: 50),
+          // ),
           const ArcProgresssBar(),
 
           //按钮
@@ -162,7 +164,9 @@ class _ArcProgresssBarState extends State<ArcProgresssBar> {
       // 处理异步加载尚未完成的情况，返回一个加载指示器或其他占位符
       return const CircularProgressIndicator();
     } else {
-      return Expanded(
+      return SizedBox(
+        height: 640.w,
+        width: 1.sw,
         child: Container(
           decoration: BoxDecoration(
             border: Border.all(
@@ -173,8 +177,6 @@ class _ArcProgresssBarState extends State<ArcProgresssBar> {
           child: Stack(
             children: [
               Positioned(
-                left: 0,
-                top: 0,
                 child: CustomPaint(
                   size: Size(widget.width, widget.height),
                   painter: MyPainter(
@@ -182,10 +184,15 @@ class _ArcProgresssBarState extends State<ArcProgresssBar> {
                       min: widget.min, max: widget.max),
                 ),
               ),
+              // CustomPaint(
+              //   painter: MyPainter(
+              //       _assetImageFrame!, 32.sp, widget.progress, _nextImage!,
+              //       min: widget.min, max: widget.max),
+              // ),
               if (btnText == S.current.startTesting)
                 Positioned(
-                  left: routerPos.dx + 100,
-                  top: routerPos.dy + 100,
+                  left: routerPos.dx ,
+                  top: routerPos.dy ,
                   child: SizedBox(
                     width: 40, // 添加一个具体的宽度
                     height: 40, // 添加一个具体的高度
@@ -197,9 +204,10 @@ class _ArcProgresssBarState extends State<ArcProgresssBar> {
                           routerPos += details.delta;
 
                           // 限制偏移量不超出边框区域
-                          double clampedX = routerPos.dx.clamp(-102, 287);
-                          double clampedY = routerPos.dy.clamp(-102, 523);
+                          double clampedX = routerPos.dx.clamp(0, 355);
+                          double clampedY = routerPos.dy.clamp(0, 330);
                           routerPos = Offset(clampedX, clampedY);
+                          print(routerPos);
                         });
                       },
                     ),
@@ -223,11 +231,9 @@ class MyPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     var paint1 = Paint()
-      ..isAntiAlias = true
       ..strokeWidth = 2.5
-      ..style = PaintingStyle.stroke
-      ..color = const ui.Color.fromARGB(255, 212, 215, 212)
-      ..invertColors = false;
+      ..color = const Color.fromARGB(255, 49, 49, 49)
+      ..style = PaintingStyle.stroke;
 
     Paint paint3 = Paint()
       ..color = const ui.Color.fromARGB(255, 6, 143, 255)
@@ -250,34 +256,83 @@ class MyPainter extends CustomPainter {
       ..strokeCap = StrokeCap.butt
       ..strokeWidth = 30.0;
 
-    Paint successPaint2 = Paint()
-      ..color = const ui.Color.fromARGB(138, 234, 243, 236)
-      ..style = PaintingStyle.fill
-      ..isAntiAlias = true
-      ..strokeCap = StrokeCap.butt
-      ..strokeWidth = 30.0;
+    final paintFill = Paint()
+      ..strokeWidth = 2
+      ..color = const Color.fromARGB(112, 237, 237, 237)
+      ..style = PaintingStyle.fill;
     // 画布起点移到屏幕中心
-    canvas.translate(size.width / 2, size.height / 2);
+    // canvas.translate(size.width / 0, size.height / 0);
 
     //router
     canvas.drawImage(aPattern, routerPos, paint3);
     canvas.drawImage(bPattern, nextetValue, paint4);
 
-    // _box(canvas, paint1, 'abc', -100.0, -100.0, 200.0, 100.0);
+    // 计算放置所有方块之后占用的宽高
+    double left = double.infinity;
+    double right = double.negativeInfinity;
+    double top = double.infinity;
+    double bottom = double.negativeInfinity;
+    for (var block in roomInfo) {
+      if (block['offsetX'] - 1200 < left) {
+        left = block['offsetX'] - 1200;
+      }
+      if (block['offsetX'] - 1200 + block['width'] > right) {
+        right = block['offsetX'] - 1200 + block['width'];
+      }
+      if (block['offsetY'] - 1200 < top) {
+        top = block['offsetY'] - 1200;
+      }
+      if (block['offsetY'] - 1200 + block['height'] > bottom) {
+        bottom = block['offsetY'] - 1200 + block['height'];
+      }
+    }
+    double totalWidth = right - left;
+    double totalHeight = bottom - top;
+    // 计算缩放比例
+    double scale = totalWidth / 1.sw > totalHeight / (640.w - 20)
+        ? 1.sw / totalWidth
+        : (640.w - 20) / totalHeight;
     for (var item in roomInfo) {
-      _box(canvas, paint1, item["name"], item['offsetX'] - 1300,
-          item['offsetY'] - 1300, item["width"], item["height"]); // 要进行缩放的组件
+      // 绘制矩形
+      // 最终偏移距离应该是（容器宽度-layout宽度*scale）/2
+      final rect = Rect.fromLTWH(
+        (item['offsetX'] - 1200) * scale + (1.sw - totalWidth * scale) / 2,
+        (item['offsetY'] - 1200) * scale + 8,
+        item['width'] * scale,
+        item['height'] * scale,
+      );
+      canvas.drawRect(rect, paint1);
+      canvas.drawRect(rect, paintFill);
+
+      // 绘制文字
+      var paragraphBuilder = ParagraphBuilder(ParagraphStyle(
+        textAlign: TextAlign.center,
+        fontSize: 16,
+        textDirection: TextDirection.ltr,
+      ))
+        ..pushStyle(
+          ui.TextStyle(color: const Color.fromARGB(255, 100, 100, 100)),
+        )
+        ..addText(item['name'].toString());
+
+      var paragraph = paragraphBuilder.build();
+
+      var constraints = const ParagraphConstraints(width: 50);
+
+      paragraph.layout(constraints);
+
+      canvas.drawParagraph(
+        paragraph,
+        Offset(
+            (item['offsetX'] - 1200) * scale +
+                item['width'] * scale / 2 +
+                (1.sw - totalWidth * scale) / 2 -
+                25,
+            (item['offsetY'] - 1200) * scale + item['height'] * scale / 2 - 8),
+      );
       //完成的给蓝色
       if (item['snr'] != '') {
-        _box(
-            canvas,
-            successPaint1,
-            // item['snr'] > 60 ? successPaint1 : successPaint2,
-            item["name"],
-            item['offsetX'] - 1300,
-            item['offsetY'] - 1300,
-            item["width"],
-            item["height"]); // 要进行缩放的组件
+        canvas.drawRect(rect, successPaint1);
       }
     }
   }
@@ -287,30 +342,30 @@ class MyPainter extends CustomPainter {
   bool shouldRepaint(MyPainter oldDelegate) => true;
 }
 
-// 盒子
-void _box(Canvas canvas, Paint paint, text, x, y, w, h) {
-  Rect d = Rect.fromLTWH(x, y, w, h);
+// // 盒子
+// void _box(Canvas canvas, Paint paint, text, x, y, w, h) {
+//   Rect d = Rect.fromLTWH(x, y, w, h);
 
-  canvas.drawRect(d, paint);
-  ui.ParagraphBuilder pb = ui.ParagraphBuilder(ui.ParagraphStyle(
-    textAlign: TextAlign.center,
-    fontWeight: FontWeight.w300,
-    fontStyle: FontStyle.normal,
-    fontSize: 15.0,
-  ));
-  pb.pushStyle(
-      ui.TextStyle(color: const ui.Color.fromARGB(255, 116, 116, 116)));
-  pb.addText(text);
+//   canvas.drawRect(d, paint);
+//   ui.ParagraphBuilder pb = ui.ParagraphBuilder(ui.ParagraphStyle(
+//     textAlign: TextAlign.center,
+//     fontWeight: FontWeight.w300,
+//     fontStyle: FontStyle.normal,
+//     fontSize: 15.0,
+//   ));
+//   pb.pushStyle(
+//       ui.TextStyle(color: const ui.Color.fromARGB(255, 116, 116, 116)));
+//   pb.addText(text);
 
-  ui.ParagraphConstraints pc = ui.ParagraphConstraints(
-    width: w,
-  );
-//这里需要先layout, 后面才能获取到文字高度
-  ui.Paragraph paragraph = pb.build()..layout(pc);
-//文字居中显示
-  Offset offset = Offset(x, y - 7.5 + h / 2);
-  canvas.drawParagraph(paragraph, offset);
-}
+//   ui.ParagraphConstraints pc = ui.ParagraphConstraints(
+//     width: w,
+//   );
+// //这里需要先layout, 后面才能获取到文字高度
+//   ui.Paragraph paragraph = pb.build()..layout(pc);
+// //文字居中显示
+//   Offset offset = Offset(x, y - 7.5 + h / 2);
+//   canvas.drawParagraph(paragraph, offset);
+// }
 
 //方法2.2：获取本地图片 返回ui.Image 不需要传入BuildContext context
 Future<ui.Image> getAssetImage(String asset, {width, height}) async {
@@ -409,8 +464,9 @@ class _ProcessButtonState extends State<ProcessButton> {
           roomInfo[currentIndex]['routerX'] = routerPos.dx;
           roomInfo[currentIndex]['routerY'] = routerPos.dy;
           roomInfo[currentIndex]['txPower'] = acsNode['TxPower']['_value'];
+          print(acsNode['TxPower']['_value']);
           roomInfo[currentIndex]['NoiseLevel'] =
-              acsNode['NoiseLevel']['_value'];
+              acsNode['NoiseLevel']['_value'].split(' ')[0];
           var val = int.parse(
                   acsNode['NoiseLevel']['_value'].split('d')[0].toString()) +
               int.parse(snr);
@@ -418,8 +474,6 @@ class _ProcessButtonState extends State<ProcessButton> {
         }
         nextFn();
       }
-
-      // print(roomInfo);
       // printInfo(info: 'roomInfo$roomInfo');
     } catch (e) {
       debugPrint(e.toString());
@@ -447,6 +501,30 @@ class _ProcessButtonState extends State<ProcessButton> {
   }
 
   void nextFn() {
+    double left = double.infinity;
+    double right = double.negativeInfinity;
+    double top = double.infinity;
+    double bottom = double.negativeInfinity;
+    for (var block in roomInfo) {
+      if (block['offsetX'] - 1200 < left) {
+        left = block['offsetX'] - 1200;
+      }
+      if (block['offsetX'] - 1200 + block['width'] > right) {
+        right = block['offsetX'] - 1200 + block['width'];
+      }
+      if (block['offsetY'] - 1200 < top) {
+        top = block['offsetY'] - 1200;
+      }
+      if (block['offsetY'] - 1200 + block['height'] > bottom) {
+        bottom = block['offsetY'] - 1200 + block['height'];
+      }
+    }
+    double totalWidth = right - left;
+    double totalHeight = bottom - top;
+    double scale = totalWidth / 1.sw > totalHeight / (640.w - 20)
+        ? 1.sw / totalWidth
+        : (640.w - 20) / totalHeight;
+
     if (currentIndex < roomInfo.length - 1) {
       btnText = S.current.roomStrength;
       currentIndex++;
@@ -461,12 +539,12 @@ class _ProcessButtonState extends State<ProcessButton> {
       // );
       //下一步的图像
       nextetValue = Offset(
-        roomInfo[currentIndex]['offsetX'] -
-            1307.5 +
-            roomInfo[currentIndex]['width'] / 2,
-        roomInfo[currentIndex]['offsetY'] -
-            1307.5 +
-            roomInfo[currentIndex]['height'] / 2,
+        (roomInfo[currentIndex]['offsetX'] - 1200) * scale +
+            (1.sw - totalWidth * scale) / 2 +
+            roomInfo[currentIndex]['width'] * scale / 2,
+        (roomInfo[currentIndex]['offsetY'] - 1200) * scale +
+            8 +
+            roomInfo[currentIndex]['height'] * scale / 2,
       );
     } else {
       setState(() {

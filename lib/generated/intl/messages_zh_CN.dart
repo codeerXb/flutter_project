@@ -161,6 +161,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "band": MessageLookupByLibrary.simpleMessage("绑定设备"),
         "binding": MessageLookupByLibrary.simpleMessage("绑定?"),
         "cancel": MessageLookupByLibrary.simpleMessage("取消"),
+        "changePassword": MessageLookupByLibrary.simpleMessage("修改密码"),
         "checkNet": MessageLookupByLibrary.simpleMessage("退出登录失败，请检查网络！"),
         "clear": MessageLookupByLibrary.simpleMessage("清除"),
         "clearCache": MessageLookupByLibrary.simpleMessage("清除缓存"),
@@ -196,6 +197,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "dnsStatic": MessageLookupByLibrary.simpleMessage(
             "静态DNS，VPN DNS具有最高优先级，LTE DNS具有最低优先级. 如果要恢复VPN / LTE DNS，请清除两个DNS配置并提交"),
         "down": MessageLookupByLibrary.simpleMessage("下载速率"),
+        "email": MessageLookupByLibrary.simpleMessage("邮箱"),
         "emptyNORecommend": MessageLookupByLibrary.simpleMessage("空(不推荐)"),
         "endIPAddress": MessageLookupByLibrary.simpleMessage("结束地址"),
         "enter": MessageLookupByLibrary.simpleMessage("输入"),
@@ -210,6 +212,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "getVerficationCode": MessageLookupByLibrary.simpleMessage("获取验证码"),
         "good": MessageLookupByLibrary.simpleMessage("优"),
         "hint": MessageLookupByLibrary.simpleMessage("提示"),
+        "homeAddress": MessageLookupByLibrary.simpleMessage("住址"),
         "hour": MessageLookupByLibrary.simpleMessage("时"),
         "improveSecurity": MessageLookupByLibrary.simpleMessage("定期更新密码提高安全性"),
         "interentMode": MessageLookupByLibrary.simpleMessage("选择上网方式"),
@@ -268,11 +271,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "passwordAgainError": MessageLookupByLibrary.simpleMessage("二次密码不一致"),
         "passwordEmpty": MessageLookupByLibrary.simpleMessage("密码不能为空"),
         "passwordLabel": MessageLookupByLibrary.simpleMessage("请输入密码"),
+        "phone": MessageLookupByLibrary.simpleMessage("手机号"),
         "phoneError": MessageLookupByLibrary.simpleMessage("请输入邮箱或手机号"),
         "phoneLabel": MessageLookupByLibrary.simpleMessage("请输入邮箱或手机号"),
         "pleaseEnter": MessageLookupByLibrary.simpleMessage("请输入内容"),
         "priority": MessageLookupByLibrary.simpleMessage("优先级"),
         "privacyPolicy": MessageLookupByLibrary.simpleMessage("隐私政策"),
+        "profile": MessageLookupByLibrary.simpleMessage("账户和个人资料"),
         "radioSettings": MessageLookupByLibrary.simpleMessage("Radio设置"),
         "reconnectDevice": MessageLookupByLibrary.simpleMessage("请重新连接设备"),
         "register": MessageLookupByLibrary.simpleMessage("注册"),
@@ -311,9 +316,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "unlock": MessageLookupByLibrary.simpleMessage("s后解锁"),
         "ununited": MessageLookupByLibrary.simpleMessage("未连接"),
         "up": MessageLookupByLibrary.simpleMessage("上传速率"),
+        "update": MessageLookupByLibrary.simpleMessage("更新"),
         "used": MessageLookupByLibrary.simpleMessage("已经使用"),
         "userAgreement": MessageLookupByLibrary.simpleMessage("用户协议"),
         "userLogin": MessageLookupByLibrary.simpleMessage("用户登录"),
+        "userName": MessageLookupByLibrary.simpleMessage("用户名"),
         "verficationCode": MessageLookupByLibrary.simpleMessage("请输入验证码"),
         "verficationCodeError":
             MessageLookupByLibrary.simpleMessage("请输入正确验证码"),
@@ -328,6 +335,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "workday": MessageLookupByLibrary.simpleMessage("工作日"),
         "wpsSet": MessageLookupByLibrary.simpleMessage("WPS设置"),
         "year": MessageLookupByLibrary.simpleMessage("年"),
-        "yourServiece": MessageLookupByLibrary.simpleMessage("你的订阅")
+        "yourServiece": MessageLookupByLibrary.simpleMessage("你的订阅"),
+        "biometrics": MessageLookupByLibrary.simpleMessage("生物认证"),
       };
 }

@@ -34,7 +34,11 @@ class _SplashPageState extends State<SplashPage> {
     // 验证是否支持
     auth.isDeviceSupported().then((bool isSupported) {
       if (isSupported) {
-        init();
+        sharedGetData('biometricsAuth', bool).then((value) {
+          if (value as bool == true) {
+            init();
+          }
+        });
       } else {
         Future.delayed(duration, () => Get.offNamed("/user_login"));
       }

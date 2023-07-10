@@ -67,21 +67,8 @@ class _TestEditState extends State<TestEdit> {
       },
     ]
   ];
-  List<Widget> layoutWidget = [
-    const CoverChart(floorInfo: [
-      [
-        {
-          "offsetX": 1198.0,
-          "offsetY": 1200.0,
-          "width": 100.0,
-          "height": 100.0,
-          "name": "living room",
-          "floorId": '1',
-          "floor": "1F",
-        },
-      ]
-    ], index: 0)
-  ];
+
+  List<Widget> layoutWidget = [];
   bool loading = false;
 
   // 初始化请求时调用异步获取数据
@@ -190,46 +177,59 @@ class _TestEditState extends State<TestEdit> {
                 ),
               ],
             ),
-            SizedBox(
-              width: 1.sw,
-              height: 640.w,
-              child: Swiper(
-                itemBuilder: (BuildContext context, int index) {
-                  // 返回一个widget,传入index
-                  // 根据索引值查询不同楼层数据并绘制
-                  // 这个类需要筛选所有需要的数据，绘制layout
-                  // 绘制路由器
-                  // 根据snr和噪声按照衰减公式绘制图形
-                  return loading
-                      ? const Center(
-                          child: SizedBox(
-                            height: 80,
-                            width: 80,
-                            child: WaterLoading(
-                              color: Color.fromARGB(255, 65, 167, 251),
-                            ),
-                          ),
-                        )
-                      : layoutWidget[currentSwiperIndex];
-                },
-                itemCount: layoutWidget.length,
-                onIndexChanged: (int index) {
-                  // print("当前索引: ${index + 1}");
-                  setState(() {
-                    currentSwiperIndex = index;
+            if (loading)
+              const Center(
+                child: SizedBox(
+                  height: 80,
+                  width: 80,
+                  child: WaterLoading(
+                    color: Color.fromARGB(255, 65, 167, 251),
+                  ),
+                ),
+              )
+            else
+              SizedBox(
+                width: 1.sw,
+                height: 640.w,
+                child: Swiper.children(
+                  // itemBuilder: (BuildContext context, int index) {
+                  //   // 返回一个widget,传入index
+                  //   // 根据索引值查询不同楼层数据并绘制
+                  //   // 这个类需要筛选所有需要的数据，绘制layout
+                  //   // 绘制路由器
+                  //   // 根据snr和噪声按照衰减公式绘制图形
+                  //   return loading
+                  //       ? const Center(
+                  //           child: SizedBox(
+                  //             height: 80,
+                  //             width: 80,
+                  //             child: WaterLoading(
+                  //               color: Color.fromARGB(255, 65, 167, 251),
+                  //             ),
+                  //           ),
+                  //         )
+                  //       : layoutWidget[currentSwiperIndex];
+                  // },
+                  // itemCount: layoutWidget.length,
+                  onIndexChanged: (int index) {
+                    // print("当前索引: ${index + 1}");
+                    setState(() {
+                      currentSwiperIndex = index;
 
-                    // 过滤出floorId等于当前索引的数据并取floorName
-                    if (layoutList.isNotEmpty) {
-                      floorName = layoutList[currentSwiperIndex][0]['floor'];
-                    }
-                  });
-                },
-                control: const SwiperControl(
-                    size: 20,
-                    color: Colors.black87,
-                    disableColor: Colors.black38),
+                      // 过滤出floorId等于当前索引的数据并取floorName
+                      if (layoutList.isNotEmpty) {
+                        floorName = layoutList[currentSwiperIndex][0]['floor'];
+                      }
+                    });
+                  },
+                  // pagination: const SwiperPagination(),
+                  control: const SwiperControl(
+                      size: 20,
+                      color: Colors.black87,
+                      disableColor: Colors.black38),
+                  children: layoutWidget,
+                ),
               ),
-            ),
 
             Padding(padding: EdgeInsets.only(top: 20.w)),
 
@@ -447,7 +447,7 @@ class Layout extends CustomPainter {
                         0) /
                     (25 * log(10))) /
             realScale;
-        debugPrint('辐射距离$d');
+        debugPrint('辐射距离${d * realScale}');
         // 绘制圆形
         var center =
             Offset(0.5.sw + 14, 320.w + 14); // 中心始终是设备位置,14是28*28图标的一半大小

@@ -50,6 +50,76 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `ACCOUNT AND PROFILE`
+  String get profile {
+    return Intl.message(
+      'ACCOUNT AND PROFILE',
+      name: 'profile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Change Password`
+  String get changePassword {
+    return Intl.message(
+      'Change Password',
+      name: 'changePassword',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `UPDATE`
+  String get update {
+    return Intl.message(
+      'UPDATE',
+      name: 'update',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `User Name`
+  String get userName {
+    return Intl.message(
+      'User Name',
+      name: 'userName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Home Address`
+  String get homeAddress {
+    return Intl.message(
+      'Home Address',
+      name: 'homeAddress',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Email`
+  String get email {
+    return Intl.message(
+      'Email',
+      name: 'email',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Phone Number`
+  String get phone {
+    return Intl.message(
+      'Phone Number',
+      name: 'phone',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Please connect the current device to a Wi-Fi network before proceeding`
   String get warningSnNotSame {
     return Intl.message(
@@ -2985,6 +3055,16 @@ class S {
     return Intl.message(
       '111',
       name: 'a',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Biometrics Authenticate`
+  String get biometrics {
+    return Intl.message(
+      'Biometrics Authenticate',
+      name: 'biometrics',
       desc: '',
       args: [],
     );

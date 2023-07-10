@@ -18,6 +18,8 @@ class SystemSettings extends StatefulWidget {
 
 class _SystemSettingsState extends State<SystemSettings> {
   String showVal = S.current.autoLang;
+  bool _switchValue = true;
+
   final ToolbarController toolbarController = Get.put(ToolbarController());
   @override
   void initState() {
@@ -38,6 +40,14 @@ class _SystemSettingsState extends State<SystemSettings> {
         });
       }
     }));
+    // 更新是否开启生物识别
+    sharedGetData('biometricsAuth', bool).then((value) {
+      debugPrint(_switchValue.toString());
+      debugPrint(value.toString());
+      setState(() {
+        _switchValue = value as bool;
+      });
+    });
 
     super.initState();
   }
@@ -170,6 +180,37 @@ class _SystemSettingsState extends State<SystemSettings> {
                                 Icons.arrow_forward_ios_outlined,
                                 color: const Color.fromRGBO(144, 147, 153, 1),
                                 size: 30.w,
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  // 是否开启生物识别
+                  GestureDetector(
+                    onTap: () {
+                      Get.toNamed('/language_change');
+                    },
+                    child: BottomLine(
+                      rowtem: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(S.of(context).biometrics,
+                              style: TextStyle(
+                                  color: const Color.fromARGB(255, 5, 0, 0),
+                                  fontSize: 28.sp)),
+                          Row(
+                            children: [
+                              Switch(
+                                value: _switchValue,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _switchValue = value;
+                                    sharedAddAndUpdate(
+                                        'biometricsAuth', bool, value);
+                                  });
+                                },
                               )
                             ],
                           ),

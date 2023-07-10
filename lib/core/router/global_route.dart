@@ -64,7 +64,7 @@ import 'package:flutter_template/pages/topo/parental/parental_pop.dart';
 import 'package:flutter_template/pages/topo/parental/parental_update.dart';
 import 'package:flutter_template/pages/add_equipment/index.dart';
 import 'package:flutter_template/pages/signal_cover/index.dart';
-import 'package:flutter_template/pages/signal_cover/testSignalStrength.dart';
+import 'package:flutter_template/pages/signal_cover/SignalCoverage.dart';
 
 /// 路由
 class GlobalRouter {

@@ -1,4 +1,5 @@
 {
+  "biometrics":"Biometrics Authenticate",
   "profile": "ACCOUNT AND PROFILE",
   "changePassword": "Change Password",
   "update": "UPDATE",

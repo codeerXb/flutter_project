@@ -46,14 +46,18 @@ class _MyAppState extends State<TestSignal> {
       roomInfo = allRoomInfo
           .where((item) => item['floorId'] == Get.arguments['curFloorId'])
           .toList();
-      //清空当前的snr
+      //清空当前的snr&NoiseLevel
       for (var element in roomInfo) {
         element['snr'] = '';
+        element['NoiseLevel'] = '';
       }
       if (roomInfo.isNotEmpty) {
         nextetValue = const Offset(1999, 1999);
       }
-      print('roomInfo1$roomInfo');
+      // router位置
+      routerPos =
+          Offset(roomInfo[0]['routerX'] ?? 0, roomInfo[0]['routerY'] ?? 0);
+      print('roomInfo${roomInfo}');
     });
   }
 
@@ -191,8 +195,8 @@ class _ArcProgresssBarState extends State<ArcProgresssBar> {
               // ),
               if (btnText == S.current.startTesting)
                 Positioned(
-                  left: routerPos.dx ,
-                  top: routerPos.dy ,
+                  left: routerPos.dx,
+                  top: routerPos.dy,
                   child: SizedBox(
                     width: 40, // 添加一个具体的宽度
                     height: 40, // 添加一个具体的高度
@@ -202,12 +206,11 @@ class _ArcProgresssBarState extends State<ArcProgresssBar> {
                         setState(() {
                           // 计算新的偏移量
                           routerPos += details.delta;
-
                           // 限制偏移量不超出边框区域
                           double clampedX = routerPos.dx.clamp(0, 355);
                           double clampedY = routerPos.dy.clamp(0, 330);
                           routerPos = Offset(clampedX, clampedY);
-                          print(routerPos);
+                          // print(routerPos);
                         });
                       },
                     ),
@@ -255,11 +258,6 @@ class MyPainter extends CustomPainter {
       ..isAntiAlias = true
       ..strokeCap = StrokeCap.butt
       ..strokeWidth = 30.0;
-
-    final paintFill = Paint()
-      ..strokeWidth = 2
-      ..color = const Color.fromARGB(112, 237, 237, 237)
-      ..style = PaintingStyle.fill;
     // 画布起点移到屏幕中心
     // canvas.translate(size.width / 0, size.height / 0);
 
@@ -302,7 +300,6 @@ class MyPainter extends CustomPainter {
         item['height'] * scale,
       );
       canvas.drawRect(rect, paint1);
-      canvas.drawRect(rect, paintFill);
 
       // 绘制文字
       var paragraphBuilder = ParagraphBuilder(ParagraphStyle(
@@ -330,8 +327,8 @@ class MyPainter extends CustomPainter {
                 25,
             (item['offsetY'] - 1200) * scale + item['height'] * scale / 2 - 8),
       );
-      //完成的给蓝色
-      if (item['snr'] != '') {
+      //完成的给颜色
+      if (item['NoiseLevel'] != '') {
         canvas.drawRect(rect, successPaint1);
       }
     }
@@ -464,7 +461,6 @@ class _ProcessButtonState extends State<ProcessButton> {
           roomInfo[currentIndex]['routerX'] = routerPos.dx;
           roomInfo[currentIndex]['routerY'] = routerPos.dy;
           roomInfo[currentIndex]['txPower'] = acsNode['TxPower']['_value'];
-          print(acsNode['TxPower']['_value']);
           roomInfo[currentIndex]['NoiseLevel'] =
               acsNode['NoiseLevel']['_value'].split(' ')[0];
           var val = int.parse(

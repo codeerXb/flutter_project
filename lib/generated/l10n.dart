@@ -3059,6 +3059,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Biometrics Authenticate`
+  String get biometrics {
+    return Intl.message(
+      'Biometrics Authenticate',
+      name: 'biometrics',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

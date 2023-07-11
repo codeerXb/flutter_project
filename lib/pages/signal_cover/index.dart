@@ -29,7 +29,9 @@ List<RectData> convertToRectDataList(List<dynamic> dataList) {
       snr: data['snr'] ?? '',
       noiseLevel: data['NoiseLevel'] ?? '',
       txPower: data['txPower'] ?? '',
-      roomArea: data['roomArea'] ?? '',
+      routerX: data['routerX'] ?? 0.0,
+      routerY: data['routerY'] ?? 0.0,
+      roomArea: data['roomArea'] ?? 0,
     );
 
     rectDataList.add(rectData);
@@ -81,19 +83,18 @@ class RectController extends GetxController {
   }
 
   //更新面积
-
-  void updateArea() {
-    // roomArea
-
-    // var res = rects
-    //     .where((item) => item['floorId']=='12')
-    //     .toList();
-    // print(2333);
-    // print(rects);
-
+  void updateArea(newRoomArea) {
+    var currentFloor = rects
+        .where((element) => element.floorId == curFloorId.toString())
+        .toList();
+    for (var element in currentFloor) {
+      element.roomArea = int.parse(newRoomArea);
+    }
     update();
   }
 }
+
+String curFloorId = '1';
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -113,10 +114,9 @@ class _MyAppState extends State<MyApp> {
   // 使用RectController来管理_rects
   final RectController _rectController = Get.put(RectController());
   String roomName = '';
-  String roomArea = '100';
+  var roomArea = '100';
   // 当前选中的楼层
   String curFloor = '1F';
-  String curFloorId = '1';
   bool rentrunHomepage = false; //是否返回首页
 
   Future<dynamic> getData() async {
@@ -241,6 +241,13 @@ class _MyAppState extends State<MyApp> {
   // saveLoading
   bool saveLayoutLoading = false;
   void onSaveLayout() {
+    //当前楼层面积
+    var currentFloor = _rectController.rects
+        .where((element) => element.floorId == curFloorId.toString())
+        .toList();
+    for (var element in currentFloor) {
+      roomArea = element.roomArea.toString();
+    }
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -252,7 +259,6 @@ class _MyAppState extends State<MyApp> {
             onChanged: (value) {
               setState(() {
                 roomArea = value;
-                _rectController.updateArea();
               });
             },
             inputFormatters: <TextInputFormatter>[
@@ -270,6 +276,9 @@ class _MyAppState extends State<MyApp> {
               child: const Text('SAVE'),
               onPressed: () async {
                 if (roomArea.isNotEmpty) {
+                  // 修改面积
+                  _rectController.updateArea(roomArea);
+
                   // 聚焦
                   focusFloor(_rectController.rects, curFloorId, setState);
                   setState(() {
@@ -277,7 +286,6 @@ class _MyAppState extends State<MyApp> {
                   });
                   try {
                     var sn = await sharedGetData("deviceSn", String);
-                    debugPrint('devicesn: $sn');
                     // 保存的时候清除isSelected和selectedEdge状态
                     _rectController.clearRectStatus();
                     // 实现保存户型图逻辑
@@ -1141,7 +1149,9 @@ class RectData {
   String snr;
   String noiseLevel;
   String txPower;
-  var roomArea;
+  double routerX;
+  double routerY;
+  int roomArea;
 
   RectData({
     required this.floorId,
@@ -1158,7 +1168,9 @@ class RectData {
     this.snr = '',
     this.noiseLevel = '',
     this.txPower = '',
-    this.roomArea = 100,
+    this.routerX = 0.0,
+    this.routerY = 0.0,
+    this.roomArea = 0,
   });
   Map<String, dynamic> toJson() {
     return {
@@ -1176,6 +1188,8 @@ class RectData {
       'snr': snr,
       'NoiseLevel': noiseLevel,
       'txPower': txPower,
+      'routerX': routerX,
+      'routerY': routerY,
       'roomArea': roomArea,
     };
   }

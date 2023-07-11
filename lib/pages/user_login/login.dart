@@ -30,7 +30,6 @@ class _UserLoginState extends State<UserLogin> {
   var dio = Dio(BaseOptions(
     connectTimeout: 2000,
   ));
-
   @override
   void initState() {
     super.initState();
@@ -290,6 +289,8 @@ class _UserLoginState extends State<UserLogin> {
                                     "user_token", String, (d['data']['token']));
                                 sharedAddAndUpdate("user_phone", String,
                                     (d['data']['account']));
+                                sharedAddAndUpdate("loginUserInfo", String,
+                                    jsonEncode(d['data'])); //把云平台登录信息保存到本地
                               }
                             }).catchError((err) {
                               debugPrint('请求云平台登录接口报错：$err');

@@ -98,7 +98,6 @@ class _UserCardState extends State<UserCard> {
                 SizedBox(width: 10.w),
                 GestureDetector(
                   onTap: () {
-                    printInfo(info: '222');
                     Navigator.push(
                       context,
                       MaterialPageRoute(

@@ -31,14 +31,11 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
+
     // 验证是否支持
     auth.isDeviceSupported().then((bool isSupported) {
       if (isSupported) {
-        sharedGetData('biometricsAuth', bool).then((value) {
-          if (value as bool == true) {
-            init();
-          }
-        });
+        init();
       } else {
         Future.delayed(duration, () => Get.offNamed("/user_login"));
       }
@@ -49,34 +46,42 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   Future<void> init() async {
-    // --- 做本地指纹验证 ---
-    // 异步调用验证接口,根据返回结果更新验状态
-    await _authenticateWithBiometrics();
-    // --- 验证通过之后跳转 ---
-    if (_authorized) {
-      debugPrint('指纹验证通过：$_authorized');
+    // --- 查询是否开启生物验证功能 ---
+    bool isOpenAuth = true;
+    isOpenAuth = await sharedGetData('biometricsAuth', bool) as bool;
+    if (isOpenAuth) {
+      // --- 做本地指纹验证 ---
+      // 异步调用验证接口,根据返回结果更新验状态
+      await _authenticateWithBiometrics();
+      // --- 验证通过之后跳转 ---
+      if (_authorized) {
+        debugPrint('指纹验证通过：$_authorized');
 
-      /// 查询本地保存的云登录信息
-      sharedGetData("user_token", String).then((data) {
-        printInfo(info: 'USER TOKEN${data.toString()}');
-        if (data != null) {
-          // 是否存储了设备sn
-          sharedGetData('deviceSn', String).then((sn) {
-            if (sn != null) {
-              debugPrint('设备sn号$sn');
-              Future.delayed(duration, () => Get.offNamed("/home"));
-            } else {
-              Future.delayed(duration, () => Get.offNamed("/get_equipment"));
-            }
-          });
-        } else {
-          // 没有信息则为登录过云端账号，返回云端登录页
-          Future.delayed(duration, () => Get.offNamed("/user_login"));
-        }
-      });
+        /// 查询本地保存的云登录信息
+        sharedGetData("user_token", String).then((data) {
+          printInfo(info: 'USER TOKEN${data.toString()}');
+          if (data != null) {
+            // 是否存储了设备sn
+            sharedGetData('deviceSn', String).then((sn) {
+              if (sn != null) {
+                debugPrint('设备sn号$sn');
+                Future.delayed(duration, () => Get.offNamed("/home"));
+              } else {
+                Future.delayed(duration, () => Get.offNamed("/get_equipment"));
+              }
+            });
+          } else {
+            // 没有信息则为登录过云端账号，返回云端登录页
+            Future.delayed(duration, () => Get.offNamed("/user_login"));
+          }
+        });
+      } else {
+        // --- 验证失败之后跳转用户登录页 ---
+        debugPrint('指纹验证不通过：$_authorized');
+        Future.delayed(duration, () => Get.offNamed("/user_login"));
+      }
     } else {
-      // --- 验证失败之后跳转用户登录页 ---
-      debugPrint('指纹验证不通过：$_authorized');
+      // --- 未开启生物认证 ---
       Future.delayed(duration, () => Get.offNamed("/user_login"));
     }
   }
@@ -129,18 +134,16 @@ class _SplashPageState extends State<SplashPage> {
               child: Image.asset(
                 'assets/images/splash.png',
                 fit: BoxFit.fill,
-                width: 750.w,
-                height: 1440.h,
+                // width: 750.w,
+                // height: 1440.h,
               ),
             ),
             if (_isAuthenticating)
               ElevatedButton(
                 onPressed: _cancelAuthentication,
-                // TODO(goderbauer): Make this const when this package requires Flutter 3.8 or later.
-                // ignore: prefer_const_constructors
-                child: Row(
+                child: const Row(
                   mainAxisSize: MainAxisSize.min,
-                  children: const <Widget>[
+                  children: <Widget>[
                     Text('Cancel Authentication'),
                     Icon(Icons.cancel),
                   ],

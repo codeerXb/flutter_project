@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:oktoast/oktoast.dart';
 
 import '../../core/utils/shared_preferences_util.dart';
 import '../../core/widget/common_box.dart';
@@ -210,6 +211,13 @@ class _SystemSettingsState extends State<SystemSettings> {
                                     sharedAddAndUpdate(
                                         'biometricsAuth', bool, value);
                                   });
+                                  if (value == true) {
+                                    showToast(
+                                        'Biometrics authenticate is already opened');
+                                  } else {
+                                    showToast(
+                                        'Biometrics authenticate is already closed');
+                                  }
                                 },
                               )
                             ],

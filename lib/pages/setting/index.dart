@@ -426,7 +426,7 @@ class _SettingState extends State<Setting> {
                   maintainSettings(),
 
                   /// 登录管理
-                  accountSecurity(),
+                  // accountSecurity(),
                   // const Divider(),
 
                   ///以太网设置
@@ -670,9 +670,9 @@ class _SettingState extends State<Setting> {
                       ),
                     ],
                   ),
-                  Column(
+                  const Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
+                    children: [
                       Icon(
                         Icons.currency_yen_outlined,
                         color: Colors.white,
@@ -685,9 +685,9 @@ class _SettingState extends State<Setting> {
                       ),
                     ],
                   ),
-                  Column(
+                  const Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
+                    children: [
                       Icon(
                         Icons.bookmark_border_outlined,
                         color: Colors.white,
@@ -875,8 +875,8 @@ class _SettingState extends State<Setting> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => Stack(
-        children: const [
+      builder: (context) => const Stack(
+        children: [
           Opacity(
             opacity: 0.3,
             child: ModalBarrier(dismissible: false, color: Colors.black),

@@ -53,7 +53,7 @@ class _MyAppState extends State<TestSignal> {
       if (roomInfo.isNotEmpty) {
         nextetValue = const Offset(1999, 1999);
       }
-      print('roomInfo1$roomInfo');
+      print('roomInfo$roomInfo');
     });
   }
 
@@ -207,7 +207,7 @@ class _ArcProgresssBarState extends State<ArcProgresssBar> {
                           double clampedX = routerPos.dx.clamp(0, 355);
                           double clampedY = routerPos.dy.clamp(0, 330);
                           routerPos = Offset(clampedX, clampedY);
-                          print(routerPos);
+                          // print(routerPos);
                         });
                       },
                     ),
@@ -330,8 +330,8 @@ class MyPainter extends CustomPainter {
                 25,
             (item['offsetY'] - 1200) * scale + item['height'] * scale / 2 - 8),
       );
-      //完成的给蓝色
-      if (item['snr'] != '') {
+      //完成的给颜色
+      if (item['NoiseLevel'] != '') {
         canvas.drawRect(rect, successPaint1);
       }
     }
@@ -464,7 +464,6 @@ class _ProcessButtonState extends State<ProcessButton> {
           roomInfo[currentIndex]['routerX'] = routerPos.dx;
           roomInfo[currentIndex]['routerY'] = routerPos.dy;
           roomInfo[currentIndex]['txPower'] = acsNode['TxPower']['_value'];
-          print(acsNode['TxPower']['_value']);
           roomInfo[currentIndex]['NoiseLevel'] =
               acsNode['NoiseLevel']['_value'].split(' ')[0];
           var val = int.parse(

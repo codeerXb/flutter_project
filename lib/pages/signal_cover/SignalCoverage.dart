@@ -46,14 +46,18 @@ class _MyAppState extends State<TestSignal> {
       roomInfo = allRoomInfo
           .where((item) => item['floorId'] == Get.arguments['curFloorId'])
           .toList();
-      //清空当前的snr
+      //清空当前的snr&NoiseLevel
       for (var element in roomInfo) {
         element['snr'] = '';
+        element['NoiseLevel'] = '';
       }
       if (roomInfo.isNotEmpty) {
         nextetValue = const Offset(1999, 1999);
       }
-      print('roomInfo$roomInfo');
+      // router位置
+      routerPos =
+          Offset(roomInfo[0]['routerX'] ?? 0, roomInfo[0]['routerY'] ?? 0);
+      print('roomInfo${roomInfo}');
     });
   }
 
@@ -191,8 +195,8 @@ class _ArcProgresssBarState extends State<ArcProgresssBar> {
               // ),
               if (btnText == S.current.startTesting)
                 Positioned(
-                  left: routerPos.dx ,
-                  top: routerPos.dy ,
+                  left: routerPos.dx,
+                  top: routerPos.dy,
                   child: SizedBox(
                     width: 40, // 添加一个具体的宽度
                     height: 40, // 添加一个具体的高度
@@ -202,7 +206,6 @@ class _ArcProgresssBarState extends State<ArcProgresssBar> {
                         setState(() {
                           // 计算新的偏移量
                           routerPos += details.delta;
-
                           // 限制偏移量不超出边框区域
                           double clampedX = routerPos.dx.clamp(0, 355);
                           double clampedY = routerPos.dy.clamp(0, 330);

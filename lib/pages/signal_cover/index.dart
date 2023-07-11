@@ -29,7 +29,9 @@ List<RectData> convertToRectDataList(List<dynamic> dataList) {
       snr: data['snr'] ?? '',
       noiseLevel: data['NoiseLevel'] ?? '',
       txPower: data['txPower'] ?? '',
-      roomArea: data['roomArea'] ?? '',
+      routerX: data['routerX'] ?? 0.0,
+      routerY: data['routerY'] ?? 0.0,
+      roomArea: data['roomArea'] ?? 0,
     );
 
     rectDataList.add(rectData);
@@ -1147,6 +1149,8 @@ class RectData {
   String snr;
   String noiseLevel;
   String txPower;
+  double routerX;
+  double routerY;
   int roomArea;
 
   RectData({
@@ -1164,6 +1168,8 @@ class RectData {
     this.snr = '',
     this.noiseLevel = '',
     this.txPower = '',
+    this.routerX = 0.0,
+    this.routerY = 0.0,
     this.roomArea = 0,
   });
   Map<String, dynamic> toJson() {
@@ -1182,6 +1188,8 @@ class RectData {
       'snr': snr,
       'NoiseLevel': noiseLevel,
       'txPower': txPower,
+      'routerX': routerX,
+      'routerY': routerY,
       'roomArea': roomArea,
     };
   }

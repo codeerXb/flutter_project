@@ -258,11 +258,6 @@ class MyPainter extends CustomPainter {
       ..isAntiAlias = true
       ..strokeCap = StrokeCap.butt
       ..strokeWidth = 30.0;
-
-    final paintFill = Paint()
-      ..strokeWidth = 2
-      ..color = const Color.fromARGB(112, 237, 237, 237)
-      ..style = PaintingStyle.fill;
     // 画布起点移到屏幕中心
     // canvas.translate(size.width / 0, size.height / 0);
 
@@ -305,7 +300,6 @@ class MyPainter extends CustomPainter {
         item['height'] * scale,
       );
       canvas.drawRect(rect, paint1);
-      canvas.drawRect(rect, paintFill);
 
       // 绘制文字
       var paragraphBuilder = ParagraphBuilder(ParagraphStyle(

@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter_template/config/base_config.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/http/http_app.dart';
 import './model/equipment_data.dart';
@@ -55,5 +54,11 @@ class Request {
       'objectName': objectName
     };
     return await App.post('/platform/tr069/addOrDeleteObject', data: data);
+  }
+
+  //修改
+  Future putObject(objectName) async {
+    Map<String, dynamic> data = objectName;
+    return await App.put('/platform/appCustomer/update', data: data);
   }
 }

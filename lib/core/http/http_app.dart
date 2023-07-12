@@ -73,6 +73,23 @@ class App {
     }
   }
 
+  ///put请求
+  static Future put(String url,
+      {Map<String, dynamic>? params, Map<String, dynamic>? data}) async {
+    try {
+      Response response = await appdio.put(url,
+          queryParameters: params != null
+              // ? {...params, '_csrf_token': BaseConfig.token}
+              ? {...params}
+              : null,
+          options: Options(responseType: ResponseType.plain),
+          data: data);
+      return response.data;
+    } on DioError {
+      rethrow;
+    }
+  }
+
   ///error统一处理
   static void handleError(DioError e) {
     switch (e.type) {

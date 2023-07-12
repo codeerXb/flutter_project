@@ -422,6 +422,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "wpsSet": MessageLookupByLibrary.simpleMessage("WPS"),
         "year": MessageLookupByLibrary.simpleMessage("Year"),
         "yourServiece":
-            MessageLookupByLibrary.simpleMessage("Your Subscription")
+            MessageLookupByLibrary.simpleMessage("Your Subscription"),
+        "accountOrPwdError": MessageLookupByLibrary.simpleMessage(
+            "Incorrect account or password"),
       };
 }

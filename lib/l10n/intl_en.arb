@@ -1,4 +1,5 @@
 {
+  "accountOrPwdError": "Incorrect account or password",
   "biometrics":"Biometrics Authenticate",
   "profile": "ACCOUNT AND PROFILE",
   "changePassword": "Change Password",

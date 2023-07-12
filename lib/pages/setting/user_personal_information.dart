@@ -1,13 +1,15 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/core/request/request.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
+import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/custom_app_bar.dart';
 import 'package:flutter_template/core/widget/water_loading.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-
 import '../../generated/l10n.dart';
 
 class UserPersonalInformation extends StatefulWidget {
@@ -33,13 +35,19 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
   //address
   final TextEditingController addressController = TextEditingController();
   String addressText = "";
+  // avatar
+  // late var avatar = '';
+
+  File? _imageFile;
 
   //手机号
-  String _userPhone = 'null';
+  final String _userPhone = 'null';
   String sn = 'null';
   // 点击空白  关闭键盘 时传的一个对象
   FocusNode blankNode = FocusNode();
   bool loading = false;
+  // 当前登录账户的信息
+  Map<String, dynamic> loginUserInfo = {};
 
   /// 点击空白  关闭输入键盘
   void closeKeyboard(BuildContext context) {
@@ -61,7 +69,58 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
     });
   }
 
-  File? _imageFile;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    sharedGetData('loginUserInfo', String).then(((res) {
+      printInfo(info: 'res$res');
+      setState(() {
+        loginUserInfo = jsonDecode(res.toString());
+        // 租约时间
+        nicknameController.text = loginUserInfo['nickname'] ?? '';
+        phoneController.text = loginUserInfo['phone'] ?? '';
+        emailController.text = loginUserInfo['email'] ?? '';
+        addressController.text = loginUserInfo['address'] ?? '';
+        // _imageFile = loginUserInfo['avatar'];
+
+        // main();
+      });
+    }));
+    nicknameController.addListener(() {
+      debugPrint('监听名字：${nicknameController.text}');
+    });
+    phoneController.addListener(() {
+      debugPrint('监听手机号：${phoneController.text}');
+    });
+    emailController.addListener(() {
+      debugPrint('监听Email：${emailController.text}');
+    });
+    addressController.addListener(() {
+      debugPrint('监听地址：${addressController.text}');
+    });
+  }
+
+  // void main() async {
+  //   final url = loginUserInfo['avatar'];
+  //   print('11111$url'); // 输出结果为 File:
+
+  //   final response = await http.get(Uri.parse(url));
+  //   print('222222$response'); // 输出结果为 File:
+
+  //   final bytes = response.bodyBytes;
+  //   print('333333333$bytes'); // 输出结果为 File:
+  //   final directory = Directory('assets/new_file');
+  //   if (!directory.existsSync()) {
+  //     directory.createSync(recursive: true);
+  //   }
+
+  //   final file = File('assets/new_file/file.webp');
+  //   print('4444444$file'); // 输出结果为 File:
+
+  //   await file.writeAsBytes(bytes);
+  //   print(file); // 输出结果为 File: 'path/to/new/file.webp'
+  // }
 
   Future<void> _getImage(ImageSource source) async {
     final pickedFile = await ImagePicker().getImage(source: source);
@@ -84,6 +143,7 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
                 title: const Text("拍照"),
                 onTap: () {
                   _getImage(ImageSource.camera);
+                  printInfo(info: '2222${ImageSource.camera}');
                 },
               ),
               ListTile(
@@ -91,6 +151,7 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
                 title: const Text("相册"),
                 onTap: () {
                   _getImage(ImageSource.gallery);
+                  printInfo(info: '11111111111${ImageSource.gallery}');
                 },
               ),
             ],
@@ -100,22 +161,31 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
     );
   }
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    sharedGetData('user_phone', String).then(((res) {
-      printInfo(info: '用户手机号：$res');
-      setState(() {
-        _userPhone = res.toString();
-      });
-    }));
-    sharedGetData('deviceSn', String).then(((res) {
-      printInfo(info: 'deviceSn$res');
-      setState(() {
-        sn = res.toString();
-      });
-    }));
+  // 设置 云端
+  setData() async {
+    var objectName = {
+      "id": loginUserInfo['id'],
+      "nickname": nicknameController.text,
+      "avatar": loginUserInfo['avatar'],
+      "phone": phoneController.text,
+      "email": emailController.text,
+      "address": addressController.text,
+    };
+    printInfo(info: '111$objectName');
+    var res = await Request().putObject(objectName);
+    try {
+      var jsonObj = jsonDecode(res);
+      if (jsonObj['code'] == 200) {
+        ToastUtils.toast('success');
+        sharedAddAndUpdate("loginUserInfo", String, objectName); //把更新后的信息保存到本地
+      } else {
+        ToastUtils.error('Task Failed');
+      }
+      printInfo(info: '````$jsonObj');
+      setState(() {});
+    } catch (e) {
+      debugPrint('修改信息失败：${e.toString()}');
+    }
   }
 
   @override
@@ -170,17 +240,24 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
                                 shape: BoxShape.circle,
                                 border: Border.all(
                                     color:
-                                        const Color.fromARGB(255, 74, 195, 189),
+                                        const Color.fromARGB(255, 85, 137, 233),
                                     width: 5.w),
-                                image: _imageFile != null
-                                    ? DecorationImage(
-                                        image: FileImage(_imageFile!),
-                                        fit: BoxFit.cover)
-                                    : null,
+                                image:
+                                    // Image.network(loginUserInfo['avatar']),
+                                    _imageFile != null
+                                        //     &&
+                                        //         Image.network()
+                                        // loginUserInfo['avatar'] != ''
+                                        ? DecorationImage(
+                                            image: FileImage(_imageFile!),
+                                            fit: BoxFit.cover)
+                                        : null,
                               ),
-                              child: _imageFile == null
+                              child: _imageFile == null &&
+                                      loginUserInfo['avatar'] == ''
                                   ? Icon(Icons.camera_alt, size: 50.w)
-                                  : null,
+                                  : Icon(Icons.camera_alt, size: 50.w),
+                              // Image.network(loginUserInfo['avatar']),
                             ),
                           ),
                           SizedBox(height: 20.w),
@@ -205,7 +282,7 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
                                             S.of(context).userName,
                                             style: const TextStyle(
                                               color: Color.fromARGB(
-                                                  255, 74, 195, 189),
+                                                  255, 85, 137, 233),
                                               fontSize: 16,
                                             ),
                                           ),
@@ -239,7 +316,7 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
                                             S.of(context).phone,
                                             style: const TextStyle(
                                               color: Color.fromARGB(
-                                                  255, 74, 195, 189),
+                                                  255, 85, 137, 233),
                                               fontSize: 16,
                                             ),
                                           ),
@@ -276,7 +353,7 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
                                         S.of(context).email,
                                         style: const TextStyle(
                                           color:
-                                              Color.fromARGB(255, 74, 195, 189),
+                                              Color.fromARGB(255, 85, 137, 233),
                                           fontSize: 16,
                                         ),
                                       ),
@@ -309,7 +386,7 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
                                       S.of(context).homeAddress,
                                       style: const TextStyle(
                                         color:
-                                            Color.fromARGB(255, 74, 195, 189),
+                                            Color.fromARGB(255, 85, 137, 233),
                                         fontSize: 16,
                                       ),
                                     ),
@@ -337,7 +414,8 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
                                 GestureDetector(
                                   onTap: () {
                                     // 点击按钮1时执行的代码
-                                    printInfo(info: '111');
+                                    Get.toNamed("/account_security")?.then(
+                                        (value) => {print("新密码：$value")});
                                   },
                                   child: Container(
                                     decoration: BoxDecoration(
@@ -351,7 +429,7 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
                                       children: [
                                         const Icon(Icons.lock,
                                             color: Color.fromARGB(
-                                                255, 74, 195, 189)),
+                                                255, 85, 137, 233)),
                                         const Padding(
                                           padding: EdgeInsets.only(right: 15.0),
                                         ),
@@ -364,21 +442,26 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
                                 ),
                                 const SizedBox(height: 30.0),
                                 ElevatedButton(
-                                  onPressed: () {},
-                                  style: ElevatedButton.styleFrom(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20),
+                                    onPressed: () {
+                                      setData();
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      backgroundColor: const Color.fromARGB(
+                                          255, 85, 137, 233),
                                     ),
-                                    backgroundColor:
-                                        const Color.fromARGB(255, 74, 195, 189),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(S.of(context).update),
-                                    ],
-                                  ),
-                                ),
+                                    child: Align(
+                                      alignment: Alignment.bottomCenter,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(S.of(context).update),
+                                        ],
+                                      ),
+                                    )),
                               ],
                             ),
                           ),

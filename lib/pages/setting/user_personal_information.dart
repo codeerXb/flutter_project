@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/core/request/request.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
+import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/custom_app_bar.dart';
 import 'package:flutter_template/core/widget/water_loading.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
@@ -72,11 +74,12 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
     // TODO: implement initState
     super.initState();
     sharedGetData('loginUserInfo', String).then(((res) {
+      printInfo(info: 'res$res');
       setState(() {
         loginUserInfo = jsonDecode(res.toString());
         // 租约时间
-        nicknameController.text = loginUserInfo['nickname'];
-        phoneController.text = loginUserInfo['phone'];
+        nicknameController.text = loginUserInfo['nickname'] ?? '';
+        phoneController.text = loginUserInfo['phone'] ?? '';
         emailController.text = loginUserInfo['email'] ?? '';
         addressController.text = loginUserInfo['address'] ?? '';
         // _imageFile = loginUserInfo['avatar'];
@@ -158,6 +161,33 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
     );
   }
 
+  // 设置 云端
+  setData() async {
+    var objectName = {
+      "id": loginUserInfo['id'],
+      "nickname": nicknameController.text,
+      "avatar": loginUserInfo['avatar'],
+      "phone": phoneController.text,
+      "email": emailController.text,
+      "address": addressController.text,
+    };
+    printInfo(info: '111$objectName');
+    var res = await Request().putObject(objectName);
+    try {
+      var jsonObj = jsonDecode(res);
+      if (jsonObj['code'] == 200) {
+        ToastUtils.toast('success');
+        sharedAddAndUpdate("loginUserInfo", String, objectName); //把更新后的信息保存到本地
+      } else {
+        ToastUtils.error('Task Failed');
+      }
+      printInfo(info: '````$jsonObj');
+      setState(() {});
+    } catch (e) {
+      debugPrint('修改信息失败：${e.toString()}');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -214,21 +244,19 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
                                     width: 5.w),
                                 image:
                                     // Image.network(loginUserInfo['avatar']),
-                                    // _imageFile != null
-                                    //     &&
-                                    //         Image.network()
-                                    loginUserInfo['avatar'] != ''
+                                    _imageFile != null
+                                        //     &&
+                                        //         Image.network()
+                                        // loginUserInfo['avatar'] != ''
                                         ? DecorationImage(
                                             image: FileImage(_imageFile!),
                                             fit: BoxFit.cover)
                                         : null,
                               ),
-                              child:
-                                  // _imageFile == null
-                                  // &&
-                                  loginUserInfo['avatar'] == ''
-                                      ? Icon(Icons.camera_alt, size: 50.w)
-                                      : null,
+                              child: _imageFile == null &&
+                                      loginUserInfo['avatar'] == ''
+                                  ? Icon(Icons.camera_alt, size: 50.w)
+                                  : Icon(Icons.camera_alt, size: 50.w),
                               // Image.network(loginUserInfo['avatar']),
                             ),
                           ),
@@ -414,7 +442,9 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
                                 ),
                                 const SizedBox(height: 30.0),
                                 ElevatedButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      setData();
+                                    },
                                     style: ElevatedButton.styleFrom(
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(20),

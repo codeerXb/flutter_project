@@ -157,14 +157,17 @@ class _TestEditState extends State<TestEdit> {
                   height: 10.w,
                   width: 150.w,
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [
-                        Color.fromARGB(200, 240, 64, 64),
-                        Color.fromARGB(249, 248, 244, 11),
-                        Color.fromARGB(235, 118, 240, 4),
-                        Color.fromARGB(235, 118, 240, 4)
-                      ],
-                    ),
+                    gradient: const LinearGradient(colors: [
+                      Color.fromARGB(255, 247, 65, 41),
+                      Color.fromARGB(255, 248, 244, 11),
+                      Color.fromARGB(255, 118, 240, 4),
+                      Color.fromARGB(255, 20, 255, 0),
+                    ], stops: [
+                      0.2,
+                      0.4,
+                      0.6,
+                      1
+                    ]),
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
@@ -384,11 +387,13 @@ class Layout extends CustomPainter {
 
     double totalWidth = right - left;
     double totalHeight = bottom - top;
-    // 计算绘制缩放比例
+
+    /// 计算绘制缩放比例,用于“Dectection and Editing”页面展示，将原有图形放大或者缩小
+    /// 但是这里的totalWidth和totalHeight并不是对应到实际的数值，而是绘制户型图时绘制的原始值
+    /// *这里计算比例是为了绘制不出现偏差
     double scale = totalWidth / 1.sw > totalHeight / (640.w - 20)
         ? 1.sw / totalWidth
         : (640.w - 20) / totalHeight;
-    printInfo(info: 'width${size.width}height${size.height}缩放比例$scale');
 
     for (var item in data) {
       // 绘制矩形
@@ -417,11 +422,21 @@ class Layout extends CustomPainter {
       // 单个房间绘制忽略障碍物衰减，接收端天线增益为0
       // 定义方块和圆形的参数
 
-      // 需要根据以上的公式得到信号衰减到-100的时候距离
       // great: -40~-60,good:-60~-80,bad<-80
       // 再根据上面的分界点，-60，-80
       // 计算公式到-60的距离：a，-80的距离:b，-100的距离:c
       // [a/c,b/c,1]
+
+      /// 由于路径损耗只和频率和距离相关
+      /// 所以如果默认为2.4g路径损耗便只与距离相关
+      /// 发射端天线增益为常量
+      /// 接收端增益为0
+      /// 这样未知的只有障碍物衰减
+      /// *这里的距离要计算目前router位置和每个房间中心点的实际距离d
+      /// 目前可以采用d=sqrt(pow(((item['offsetX'] - 1200+item['width'])-item['routerX']/2),2) + pow(((item['offsetY'] - 1200+item['height'])-item['routerY']/2),2))
+      /// 障碍物衰减 = item['txPower'] + 6 - [46 + 25lg(d)] + 0 - (item['snr'] + item['NoiseLevel'])
+      /// d = pow(10,(item['txPower']+6-障碍物衰减+0-(item['snr'] + item['NoiseLevel'])-46)/25)
+      /// 得到障碍物衰减之后，我们就可以得出到不同评价节点的距离比，从而绘制出不一样的渐变圆
       bool condition = item['snr'] != '-' &&
           item['snr'] != null &&
           item['snr'] != '' &&
@@ -430,35 +445,77 @@ class Layout extends CustomPainter {
           item['txPower'] != '' &&
           item['NoiseLevel'] != '-' &&
           item['NoiseLevel'] != null &&
-          item['NoiseLevel'] != '';
+          item['NoiseLevel'] != '' &&
+          item['routerX'] != null &&
+          item['routerX'] != '';
       if (condition) {
-        // 计算实际面积对应宽高的缩放比例
-        // 缩放比例=sqrt(面积 / 宽高乘积)
-        // 实际宽高=传入宽高 x 缩放比例
+        /// --- 计算实际面积对应宽高的缩放比例 ---
+        /// 缩放比例=sqrt(面积 / 宽高乘积)
+        /// 实际宽高=传入宽高 x 缩放比例
+        /// *这里计算的是根据面积计算的根据原有绘制数据计算的比例
+        /// 所以这个比例的使用要使用存储的原绘制数据
         double realScale = sqrt(item['roomArea'] / (totalWidth * totalHeight));
-        // 图中的辐射距离 = 实际辐射距离 / 缩放比例
-        num d = pow(
-                10,
-                (int.parse(item['txPower']) -
-                        (int.parse(item['NoiseLevel']) +
-                            double.parse(item['snr'])) +
-                        6 +
-                        46 -
-                        0) /
-                    (25 * log(10))) /
+
+        /// 原始数据距离 = 实际辐射距离 / 缩放比例
+        /// --- 设备与房间中心点距离,用于计算障碍物损耗 ---
+        /// *这里使用原有数据计算，再乘以realScale得到对应真实的距离
+        num reald = sqrt(pow(
+                    ((item['offsetX'] - 1200 + item['width'] / 2) -
+                        item['routerX']),
+                    2) +
+                pow(
+                    ((item['offsetY'] - 1200 + item['height'] / 2) -
+                        item['routerY']),
+                    2)) *
             realScale;
-        debugPrint('辐射距离${d * realScale}');
-        // 绘制圆形
-        var center =
-            Offset(0.5.sw + 14, 320.w + 14); // 中心始终是设备位置,14是28*28图标的一半大小
+
+        debugPrint(
+            '测值和设备距离$reald,房间测量值：${int.parse(item['snr']) + int.parse(item['NoiseLevel'])},房屋大小${item['roomArea']},房间位置${item['offsetX']},${item['offsetY']},房间名字：${item['name']},缩放比例$realScale');
+        // 障碍物衰减
+        double obstacle = int.parse(item['txPower']) +
+            6 -
+            (46 + 25 * (log(reald) / log(10))) +
+            0 -
+            (int.parse(item['snr']) + int.parse(item['NoiseLevel']));
+
+        /// --- 计算信号强度分别是-40，-60，-80，-100时候的距离 ---
+        /// 根据-100时候的值作为最大距离
+        /// *这里是套公式计算，距离对应实际中的n米
+        num max100 = pow(10,
+            (int.parse(item['txPower']) + 6 - obstacle + 0 - (-100) - 46) / 25);
+        num max80 = pow(10,
+            (int.parse(item['txPower']) + 6 - obstacle + 0 - (-80) - 46) / 25);
+        num max60 = pow(10,
+            (int.parse(item['txPower']) + 6 - obstacle + 0 - (-60) - 46) / 25);
+        num max40 = pow(10,
+            (int.parse(item['txPower']) + 6 - obstacle + 0 - (-40) - 46) / 25);
+        double percent40 = max40 / max100;
+        double percent60 = max60 / max100;
+        double percent80 = max80 / max100;
+        debugPrint(
+            '衰减：$obstacle 比例：$percent40 $percent60 $percent80,实际距离：$max40 $max60 $max80 $max100');
+
+        /// --- 衰减渐变图的半径 ---
+        /// *这里已知实际距离，需要根据实际距离换算原始数值，再换算成应该绘制的距离
+        num d = max100 / realScale * scale;
+
+        /// --- 绘制衰减渐变图 ---
+        // 圆心坐标
+        // *这里是绘制，所以应该用原始值*scale，得到绘制的坐标值
+        var center = item['routerX'] != null
+            ? Offset(item['routerX'] / scale + 14, item['routerY'] / scale + 14)
+            : Offset(0.5.sw + 14, 320.w + 14); // 中心始终是设备位置,14是28*28图标的一半大小
+        debugPrint(
+            '中心点${Offset((item['offsetX'] - 1200 + item['width'] / 2), (item['offsetY'] - 1200 + item['height'] / 2))},router位置${Offset(item['routerX'] + 14, item['routerY'] + 14)},画布宽高：${1.sw},${640.w},实际绘制距离：$d');
         // 定义渐变
-        var gradient = const RadialGradient(
-          colors: [
+        var gradient = RadialGradient(
+          colors: const [
+            Color.fromARGB(255, 20, 255, 0),
             Color.fromARGB(255, 118, 240, 4),
             Color.fromARGB(255, 248, 244, 11),
             Color.fromARGB(255, 247, 65, 41),
           ],
-          stops: [0.6, 0.8, 1],
+          stops: [percent40, percent60, percent80, 1],
         );
         final paintc = Paint()
           ..shader = gradient.createShader(

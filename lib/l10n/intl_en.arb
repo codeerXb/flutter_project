@@ -300,5 +300,6 @@
   "roomStrength": "Get the signal strength of the room",
   "GenerateOverlay": "Generate Overlay",
   "coverageMap": "Please drag the router to the corresponding position in the room, and then click Start detection to draw the signal coverage map",
+  "moveCurrentRoom": "Please move to the current room",
   "a": "111"
 }

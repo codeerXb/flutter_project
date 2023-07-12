@@ -200,6 +200,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Automatic IP retrieval"),
         "band": MessageLookupByLibrary.simpleMessage("Bind Device"),
         "binding": MessageLookupByLibrary.simpleMessage("Binding?"),
+        "biometrics":
+            MessageLookupByLibrary.simpleMessage("Biometrics Authenticate"),
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "changePassword":
             MessageLookupByLibrary.simpleMessage("Change Password"),
@@ -304,6 +306,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "monitor": MessageLookupByLibrary.simpleMessage("Monitor"),
         "month": MessageLookupByLibrary.simpleMessage("Mon"),
         "more": MessageLookupByLibrary.simpleMessage("View More"),
+        "moveCurrentRoom": MessageLookupByLibrary.simpleMessage(
+            "Please move to the current room"),
         "mustSuccess": MessageLookupByLibrary.simpleMessage(
             "The restart date must be selected"),
         "name": MessageLookupByLibrary.simpleMessage("Name"),
@@ -418,8 +422,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "wpsSet": MessageLookupByLibrary.simpleMessage("WPS"),
         "year": MessageLookupByLibrary.simpleMessage("Year"),
         "yourServiece":
-            MessageLookupByLibrary.simpleMessage("Your Subscription"),
-        "biometrics":
-            MessageLookupByLibrary.simpleMessage("Biometrics Authenticate"),
+            MessageLookupByLibrary.simpleMessage("Your Subscription")
       };
 }

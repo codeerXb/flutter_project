@@ -160,6 +160,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "autoip": MessageLookupByLibrary.simpleMessage("自动获取ip"),
         "band": MessageLookupByLibrary.simpleMessage("绑定设备"),
         "binding": MessageLookupByLibrary.simpleMessage("绑定?"),
+        "biometrics": MessageLookupByLibrary.simpleMessage("生物认证"),
         "cancel": MessageLookupByLibrary.simpleMessage("取消"),
         "changePassword": MessageLookupByLibrary.simpleMessage("修改密码"),
         "checkNet": MessageLookupByLibrary.simpleMessage("退出登录失败，请检查网络！"),
@@ -335,7 +336,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "workday": MessageLookupByLibrary.simpleMessage("工作日"),
         "wpsSet": MessageLookupByLibrary.simpleMessage("WPS设置"),
         "year": MessageLookupByLibrary.simpleMessage("年"),
-        "yourServiece": MessageLookupByLibrary.simpleMessage("你的订阅"),
-        "biometrics": MessageLookupByLibrary.simpleMessage("生物认证"),
+        "yourServiece": MessageLookupByLibrary.simpleMessage("你的订阅")
       };
 }

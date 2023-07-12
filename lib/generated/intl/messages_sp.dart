@@ -421,5 +421,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Your Subscription"),
         "biometrics":
             MessageLookupByLibrary.simpleMessage("Biometrics Authenticate"),
+        "accountOrPwdError": MessageLookupByLibrary.simpleMessage(
+            "Incorrect account or password"),
       };
 }

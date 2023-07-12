@@ -337,5 +337,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "year": MessageLookupByLibrary.simpleMessage("年"),
         "yourServiece": MessageLookupByLibrary.simpleMessage("你的订阅"),
         "biometrics": MessageLookupByLibrary.simpleMessage("生物认证"),
+        "accountOrPwdError": MessageLookupByLibrary.simpleMessage("用户名或密码错误"),
       };
 }

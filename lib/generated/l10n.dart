@@ -3069,6 +3069,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Incorrect account or password`
+  String get accountOrPwdError {
+    return Intl.message(
+      'Incorrect account or password',
+      name: 'accountOrPwdError',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

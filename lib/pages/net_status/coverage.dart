@@ -1,11 +1,9 @@
 import 'dart:ui';
 
 import 'package:dio/dio.dart';
-import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'dart:ui' as ui;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http_app.dart';
@@ -16,7 +14,6 @@ import '../../core/widget/custom_app_bar.dart';
 import '../../generated/l10n.dart';
 import 'package:card_swiper/card_swiper.dart';
 
-List roominfo = [];
 // 获取房屋信号数据
 Future<List> getDataAPI(CancelToken cancelToken) async {
   try {
@@ -24,7 +21,6 @@ Future<List> getDataAPI(CancelToken cancelToken) async {
     var data = await App.get(
         '/platform/wifiJson/getOne/$sn', {"cancelToken": cancelToken});
     List list = List.from(data['wifiJson']['list']).toList();
-    roominfo = List.from(data['wifiJson']['list']).toList();
     return list;
   } catch (err) {
     debugPrint(err.toString());
@@ -123,65 +119,48 @@ class _TestEditState extends State<TestEdit> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: customAppbar(
-            context: context,
-            title: S.current.DetectionAndEdit,
-            backgroundColor: Colors.blue,
-            titleColor: Colors.white,
-            actions: <Widget>[
-              IconButton(
-                  onPressed: () {
-                    //刷新
-                    if (mounted) {
-                      getData();
-                    }
-                  },
-                  icon: const Icon(
-                    Icons.refresh,
-                    color: Colors.white,
-                  )),
-            ]),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                const Text(
-                  'Low',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Color.fromARGB(255, 68, 68, 68),
-                  ),
-                ),
-                Container(
-                  height: 10.w,
-                  width: 150.w,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(colors: [
-                      Color.fromARGB(255, 247, 65, 41),
-                      Color.fromARGB(255, 248, 244, 11),
-                      Color.fromARGB(255, 118, 240, 4),
-                      Color.fromARGB(255, 20, 255, 0),
-                    ], stops: [
-                      0.2,
-                      0.4,
-                      0.6,
-                      1
-                    ]),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                const Text(
-                  'Strong',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Color.fromARGB(255, 68, 68, 68),
-                  ),
-                ),
-              ],
+            const Text(
+              'Low',
+              style: TextStyle(
+                fontSize: 12,
+                color: Color.fromARGB(255, 68, 68, 68),
+              ),
             ),
+            Container(
+              height: 10.w,
+              width: 150.w,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(colors: [
+                  Color.fromARGB(255, 247, 65, 41),
+                  Color.fromARGB(255, 248, 244, 11),
+                  Color.fromARGB(255, 118, 240, 4),
+                  Color.fromARGB(255, 20, 255, 0),
+                ], stops: [
+                  0.2,
+                  0.4,
+                  0.6,
+                  1
+                ]),
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            const Text(
+              'Strong',
+              style: TextStyle(
+                fontSize: 12,
+                color: Color.fromARGB(255, 68, 68, 68),
+              ),
+            ),
+          ],
+        ),
+        Stack(
+          children: [
             if (loading)
               const Center(
                 child: SizedBox(
@@ -195,27 +174,8 @@ class _TestEditState extends State<TestEdit> {
             else
               SizedBox(
                 width: 1.sw,
-                height: 640.w,
+                height: 600.w,
                 child: Swiper.children(
-                  // itemBuilder: (BuildContext context, int index) {
-                  //   // 返回一个widget,传入index
-                  //   // 根据索引值查询不同楼层数据并绘制
-                  //   // 这个类需要筛选所有需要的数据，绘制layout
-                  //   // 绘制路由器
-                  //   // 根据snr和噪声按照衰减公式绘制图形
-                  //   return loading
-                  //       ? const Center(
-                  //           child: SizedBox(
-                  //             height: 80,
-                  //             width: 80,
-                  //             child: WaterLoading(
-                  //               color: Color.fromARGB(255, 65, 167, 251),
-                  //             ),
-                  //           ),
-                  //         )
-                  //       : layoutWidget[currentSwiperIndex];
-                  // },
-                  // itemCount: layoutWidget.length,
                   onIndexChanged: (int index) {
                     // print("当前索引: ${index + 1}");
                     setState(() {
@@ -235,57 +195,31 @@ class _TestEditState extends State<TestEdit> {
                   children: layoutWidget,
                 ),
               ),
-
-            Padding(padding: EdgeInsets.only(top: 20.w)),
-
-            Center(
-              child: TextButton(
-                onPressed: () {
-                  Get.offNamed("/signal_cover", arguments: {'homepage': false});
+            Positioned(
+              bottom: 22.5,
+              right: 20,
+              child: InkWell(
+                onTap: () {
+                  Get.toNamed('/signal_cover', arguments: {'homepage': true});
                 },
-                child: Text(
-                  S.current.EditUnit,
-                  style: const TextStyle(
-                    color: Colors.blue, // 将文字颜色设置为蓝色
+                child: Container(
+                  height: 30,
+                  width: 30,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white,
+                  ),
+                  child: const Icon(
+                    Icons.edit,
+                    color: Color.fromRGBO(95, 141, 255, 1),
                   ),
                 ),
               ),
             ),
-
-            Padding(padding: EdgeInsets.only(top: 20.w)),
-            //按钮
-            Expanded(
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Column(
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        printInfo(info: '户型数据：${ jsonEncode(roominfo)}');
-                        Get.offNamed(
-                          '/test_signal',
-                          arguments: {
-                            'roomInfo': jsonEncode(roominfo),
-                            'curFloorId': floorName.split('F')[0]
-                          },
-                        );
-                      },
-                      child: Text('${S.current.RetestF}  $floorName'),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-            Center(
-              child: Text(
-                '*${S.current.Blueprint}',
-                style: const TextStyle(color: Colors.grey),
-              ),
-            ),
-            Padding(padding: EdgeInsets.only(top: 20.w)),
           ],
-        ));
+        ),
+      ],
+    );
   }
 }
 
@@ -337,7 +271,7 @@ class _CoverChartState extends State<CoverChart> {
           ),
         ),
         SizedBox(
-          height: 640.w,
+          height: 600.w,
           width: 1.sw,
           child: CustomPaint(
             painter: Layout(data),
@@ -349,7 +283,7 @@ class _CoverChartState extends State<CoverChart> {
               : 0.5.sw,
           top: (data.isNotEmpty && data[0]['routerY'] != null)
               ? data[0]['routerY']
-              : 320.w,
+              : 300.w,
           child: Image.asset('assets/images/icon_homepage_route.png'),
         ),
       ],
@@ -402,9 +336,9 @@ class Layout extends CustomPainter {
     /// 计算绘制缩放比例,用于“Dectection and Editing”页面展示，将原有图形放大或者缩小
     /// 但是这里的totalWidth和totalHeight并不是对应到实际的数值，而是绘制户型图时绘制的原始值
     /// *这里计算比例是为了绘制不出现偏差
-    double scale = totalWidth / 1.sw > totalHeight / (640.w - 20)
+    double scale = totalWidth / 1.sw > totalHeight / (600.w - 20)
         ? 1.sw / totalWidth
-        : (640.w - 20) / totalHeight;
+        : (600.w - 20) / totalHeight;
 
     for (var item in data) {
       // 绘制矩形
@@ -412,7 +346,7 @@ class Layout extends CustomPainter {
       canvas.save();
       final pathRect = Path();
       final x =
-          (item['offsetX'] - 1200) * scale + (1.sw - totalWidth * scale) / 2;
+          (item['offsetX'] - 1200) * scale + (1.sw - totalWidth * scale) / 3;
       final y = (item['offsetY'] - 1200) * scale + 8;
       final width = item['width'] * scale;
       final height = item['height'] * scale;
@@ -470,14 +404,13 @@ class Layout extends CustomPainter {
         /// 原始数据距离 = 实际辐射距离 / 缩放比例
         /// --- 设备与房间中心点距离,用于计算障碍物损耗 ---
         /// *这里使用原有数据计算，再乘以realScale得到对应真实的距离
-        /// router的位置是原始值缩放之后的尺寸
         num reald = sqrt(pow(
                     ((item['offsetX'] - 1200 + item['width'] / 2) -
-                        item['routerX'] / scale),
+                        item['routerX']),
                     2) +
                 pow(
                     ((item['offsetY'] - 1200 + item['height'] / 2) -
-                        item['routerY'] / scale),
+                        item['routerY']),
                     2)) *
             realScale;
 
@@ -515,10 +448,10 @@ class Layout extends CustomPainter {
         // 圆心坐标
         // *这里是绘制，所以应该用原始值*scale，得到绘制的坐标值
         var center = item['routerX'] != null
-            ? Offset(item['routerX'] + 14, item['routerY'] + 14)
+            ? Offset(item['routerX'] / scale + 14, item['routerY'] / scale + 14)
             : Offset(0.5.sw + 14, 320.w + 14); // 中心始终是设备位置,14是28*28图标的一半大小
         debugPrint(
-            '中心点${Offset((item['offsetX'] - 1200 + item['width'] / 2), (item['offsetY'] - 1200 + item['height'] / 2))},router位置${Offset(item['routerX'] + 14, item['routerY'] + 14)},画布宽高：${1.sw},${640.w},实际绘制距离：$d');
+            '中心点${Offset((item['offsetX'] - 1200 + item['width'] / 2), (item['offsetY'] - 1200 + item['height'] / 2))},router位置${Offset(item['routerX'] + 14, item['routerY'] + 14)},画布宽高：${1.sw},${600.w},实际绘制距离：$d');
         // 定义渐变
         var gradient = RadialGradient(
           colors: const [

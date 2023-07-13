@@ -296,14 +296,11 @@ class _MyAppState extends State<MyApp> {
                     // 关闭对话框
                     Navigator.of(context).pop();
                     printInfo(
-                        info: '户型数据：${jsonEncode({
-                          "list": _rectController.rects
-                        }).toString()}');
+                        info: '户型数据：${jsonEncode(_rectController.rects)}');
                     Get.offNamed(
                       '/test_signal',
                       arguments: {
                         'roomInfo': jsonEncode(_rectController.rects),
-                        'roomArea': roomArea,
                         'curFloorId': curFloorId
                       },
                     );

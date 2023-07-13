@@ -384,7 +384,6 @@ class ProcessButton extends StatefulWidget {
 class _ProcessButtonState extends State<ProcessButton> {
   bool loading = false;
   List deviceList = []; //设备列表
-  var roomArea = json.decode(Get.arguments['roomArea']);
   dynamic sn;
   dynamic acsNode;
   int currentIndex = 0;
@@ -456,7 +455,6 @@ class _ProcessButtonState extends State<ProcessButton> {
         //存到该房间对象
         if (currentIndex + 1 <= roomInfo.length) {
           roomInfo[currentIndex]['snr'] = snr;
-          roomInfo[currentIndex]['roomArea'] = roomArea;
           roomInfo[currentIndex]['routerX'] = routerPos.dx;
           roomInfo[currentIndex]['routerY'] = routerPos.dy;
           roomInfo[currentIndex]['txPower'] = acsNode['TxPower']['_value'];
@@ -467,7 +465,6 @@ class _ProcessButtonState extends State<ProcessButton> {
               int.parse(snr);
           widget.toolbarController.setCurrentNoiselevel(val);
         }
-
         nextFn();
       }
       // printInfo(info: 'roomInfo$roomInfo');

@@ -16,6 +16,7 @@ import '../../core/widget/custom_app_bar.dart';
 import '../../generated/l10n.dart';
 import 'package:card_swiper/card_swiper.dart';
 
+List roominfo = [];
 // 获取房屋信号数据
 Future<List> getDataAPI(CancelToken cancelToken) async {
   try {
@@ -23,6 +24,7 @@ Future<List> getDataAPI(CancelToken cancelToken) async {
     var data = await App.get(
         '/platform/wifiJson/getOne/$sn', {"cancelToken": cancelToken});
     List list = List.from(data['wifiJson']['list']).toList();
+    roominfo = List.from(data['wifiJson']['list']).toList();
     return list;
   } catch (err) {
     debugPrint(err.toString());
@@ -258,7 +260,16 @@ class _TestEditState extends State<TestEdit> {
                 child: Column(
                   children: [
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        printInfo(info: '户型数据：${ jsonEncode(roominfo)}');
+                        Get.offNamed(
+                          '/test_signal',
+                          arguments: {
+                            'roomInfo': jsonEncode(roominfo),
+                            'curFloorId': floorName.split('F')[0]
+                          },
+                        );
+                      },
                       child: Text('${S.current.RetestF}  $floorName'),
                     ),
                   ],

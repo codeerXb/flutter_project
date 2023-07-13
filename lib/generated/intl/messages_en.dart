@@ -306,6 +306,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "monitor": MessageLookupByLibrary.simpleMessage("Monitor"),
         "month": MessageLookupByLibrary.simpleMessage("Mon"),
         "more": MessageLookupByLibrary.simpleMessage("View More"),
+        "moveCurrentRoom": MessageLookupByLibrary.simpleMessage(
+            "Please move to the current room"),
         "mustSuccess": MessageLookupByLibrary.simpleMessage(
             "The restart date must be selected"),
         "name": MessageLookupByLibrary.simpleMessage("Name"),
@@ -422,6 +424,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "wpsSet": MessageLookupByLibrary.simpleMessage("WPS"),
         "year": MessageLookupByLibrary.simpleMessage("Year"),
         "yourServiece":
-            MessageLookupByLibrary.simpleMessage("Your Subscription")
+            MessageLookupByLibrary.simpleMessage("Your Subscription"),
+        "accountOrPwdError": MessageLookupByLibrary.simpleMessage(
+            "Incorrect account or password"),
       };
 }

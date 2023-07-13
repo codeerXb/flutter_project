@@ -3060,11 +3060,31 @@ class S {
     );
   }
 
+  /// `Please move to the current room`
+  String get moveCurrentRoom {
+    return Intl.message(
+      'Please move to the current room',
+      name: 'moveCurrentRoom',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `111`
   String get a {
     return Intl.message(
       '111',
       name: 'a',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Incorrect account or password`
+  String get accountOrPwdError {
+    return Intl.message(
+      'Incorrect account or password',
+      name: 'accountOrPwdError',
       desc: '',
       args: [],
     );

@@ -18,6 +18,7 @@ import 'package:flutter_template/pages/net_status/model/online_device.dart';
 import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:flutter_template/pages/net_status/coverage.dart';
 
 /// 消息页面
 class NetStatus extends StatefulWidget {
@@ -649,52 +650,7 @@ class _NetStatusState extends State<NetStatus> {
                               style: TextStyle(fontWeight: FontWeight.w600),
                             )),
                             // 热力图
-                            Container(
-                              height: 600.w,
-                              margin: EdgeInsets.only(bottom: 20.w),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(18.w),
-                              ),
-                              child: Stack(
-                                children: [
-                                  Image.asset(
-                                    'assets/images/signalcover.jpg',
-                                  ),
-                                  Positioned(
-                                      top: 22,
-                                      right: 65,
-                                      child: Text(
-                                        '$_onlineCount',
-                                        style: const TextStyle(
-                                            fontSize: 11,
-                                            fontWeight: FontWeight.bold),
-                                      )),
-                                  Positioned(
-                                    bottom: 22.5,
-                                    right: 20,
-                                    child: InkWell(
-                                      onTap: () {
-                                        Get.toNamed('/signal_cover',
-                                            arguments: {'homepage': true});
-                                      },
-                                      child: Container(
-                                        height: 30,
-                                        width: 30,
-                                        decoration: const BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Colors.white,
-                                        ),
-                                        child: const Icon(
-                                          Icons.edit,
-                                          color:
-                                              Color.fromRGBO(95, 141, 255, 1),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                            const TestEdit(),
 
                             // 网络环境
                             WhiteCard(

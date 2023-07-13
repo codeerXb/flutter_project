@@ -384,11 +384,9 @@ class ProcessButton extends StatefulWidget {
 class _ProcessButtonState extends State<ProcessButton> {
   bool loading = false;
   List deviceList = []; //设备列表
-  var roomArea = json.decode(Get.arguments['roomArea']);
   dynamic sn;
   dynamic acsNode;
   int currentIndex = 0;
-
   @override
   void initState() {
     super.initState();
@@ -457,7 +455,6 @@ class _ProcessButtonState extends State<ProcessButton> {
         //存到该房间对象
         if (currentIndex + 1 <= roomInfo.length) {
           roomInfo[currentIndex]['snr'] = snr;
-          roomInfo[currentIndex]['roomArea'] = roomArea;
           roomInfo[currentIndex]['routerX'] = routerPos.dx;
           roomInfo[currentIndex]['routerY'] = routerPos.dy;
           roomInfo[currentIndex]['txPower'] = acsNode['TxPower']['_value'];
@@ -550,6 +547,42 @@ class _ProcessButtonState extends State<ProcessButton> {
     }
   }
 
+  //第一步人头的位置
+  void firstOffset() {
+    double left = double.infinity;
+    double right = double.negativeInfinity;
+    double top = double.infinity;
+    double bottom = double.negativeInfinity;
+    for (var block in roomInfo) {
+      if (block['offsetX'] - 1200 < left) {
+        left = block['offsetX'] - 1200;
+      }
+      if (block['offsetX'] - 1200 + block['width'] > right) {
+        right = block['offsetX'] - 1200 + block['width'];
+      }
+      if (block['offsetY'] - 1200 < top) {
+        top = block['offsetY'] - 1200;
+      }
+      if (block['offsetY'] - 1200 + block['height'] > bottom) {
+        bottom = block['offsetY'] - 1200 + block['height'];
+      }
+    }
+    double totalWidth = right - left;
+    double totalHeight = bottom - top;
+    double scale = totalWidth / 1.sw > totalHeight / (640.w - 20)
+        ? 1.sw / totalWidth
+        : (640.w - 20) / totalHeight;
+
+    nextetValue = Offset(
+      (roomInfo[0]['offsetX'] - 1200) * scale +
+          (1.sw - totalWidth * scale) / 2 +
+          roomInfo[0]['width'] * scale / 2,
+      (roomInfo[0]['offsetY'] - 1200) * scale +
+          8 +
+          roomInfo[0]['height'] * scale / 2,
+    );
+  }
+
   void successFn() async {
     allRoomInfo
         .removeWhere((item) => item["floorId"] == Get.arguments['curFloorId']);
@@ -566,15 +599,14 @@ class _ProcessButtonState extends State<ProcessButton> {
     }
   }
 
+  String hintText = S.current.coverageMap; //按钮上方提示文字
   @override
   Widget build(BuildContext context) {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Column(
         children: [
-          btnText == S.current.startTesting
-              ? Text(S.current.coverageMap)
-              : const Text(''),
+          btnText == S.current.startTesting ? Text(hintText) : const Text(''),
           SizedBox(
             width: 1.sw - 104.w,
             child: ElevatedButton(
@@ -588,7 +620,16 @@ class _ProcessButtonState extends State<ProcessButton> {
                 //成功
                 if (btnText == S.current.GenerateOverlay) {
                   successFn();
-                } else {
+                }
+                //第一步人头位置
+                else if (hintText == S.current.coverageMap) {
+                  setState(() {
+                    hintText = S.current.moveCurrentRoom;
+                  });
+                  firstOffset();
+                }
+                //第一步完成 开始下一步
+                else {
                   getSnrFn();
                 }
               },

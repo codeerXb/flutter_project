@@ -336,6 +336,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "workday": MessageLookupByLibrary.simpleMessage("工作日"),
         "wpsSet": MessageLookupByLibrary.simpleMessage("WPS设置"),
         "year": MessageLookupByLibrary.simpleMessage("年"),
-        "yourServiece": MessageLookupByLibrary.simpleMessage("你的订阅")
+        "yourServiece": MessageLookupByLibrary.simpleMessage("你的订阅"),
+        "accountOrPwdError": MessageLookupByLibrary.simpleMessage("用户名或密码错误"),
       };
 }

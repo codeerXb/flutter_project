@@ -50,6 +50,16 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `Biometrics Authenticate`
+  String get biometrics {
+    return Intl.message(
+      'Biometrics Authenticate',
+      name: 'biometrics',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `ACCOUNT AND PROFILE`
   String get profile {
     return Intl.message(
@@ -3055,16 +3065,6 @@ class S {
     return Intl.message(
       '111',
       name: 'a',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Biometrics Authenticate`
-  String get biometrics {
-    return Intl.message(
-      'Biometrics Authenticate',
-      name: 'biometrics',
       desc: '',
       args: [],
     );

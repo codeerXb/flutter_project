@@ -25,17 +25,46 @@ class _SocialState extends State<Social> {
 
   List<Map<String, dynamic>> topData = [
     {
-      'img': 'assets/images/Twitter.jpg',
-      'text': 'Twitter',
+      'img': 'assets/images/Face book.jpg',
+      'text': 'Face book',
+      'code': '1001',
     },
     {
       'img': 'assets/images/Face book.jpg',
-      'text': 'Face book',
+      'text': 'Whatsapp',
+      'code': '1002',
     },
+    {
+      'img': 'assets/images/Twitter.jpg',
+      'text': 'Twitter',
+      'code': '1003',
+    },
+
     {
       'img': 'assets/images/Instagram.jpg',
       'text': 'Instagram',
+      'code': '1004',
     },
+    {
+      'img': 'assets/images/Instagram.jpg',
+      'text': 'VK',
+      'code': '1005',
+    },
+    {
+      'img': 'assets/images/Instagram.jpg',
+      'text': 'Line',
+      'code': '1006',
+    },
+    {
+      'img': 'assets/images/Instagram.jpg',
+      'text': 'Snapchat',
+      'code': '1007',
+    },
+    // {
+    //   'img': 'assets/images/Instagram.jpg',
+    //   'text': 'Tinder',
+    //  'code': '1008',
+    // },
     // ...
   ];
   void setAllCheckBoxes(bool value) {

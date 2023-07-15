@@ -25,30 +25,82 @@ class _VideoState extends State<Video> {
 
   List<Map<String, dynamic>> topData = [
     {
-      'img': 'assets/images/Amazon Prime Video.jpg',
-      'text': 'Amazon Prime Video',
-    },
-    {
-      'img': 'assets/images/Disney+.jpg',
-      'text': 'Disney+',
-    },
-    {
-      'img': 'assets/images/Hulu.jpg',
-      'text': 'Hulu',
-    },
-    {
-      'img': 'assets/images/Netflix.jpg',
-      'text': 'Netflix',
+      'img': 'assets/images/Watch TNT.jpg',
+      'text': 'YouTube',
+      'code': '3001',
     },
     {
       'img': 'assets/images/TikTok.jpg',
       'text': 'TikTok',
+      'code': '3002',
+
+    },
+    {
+      'img': 'assets/images/Netflix.jpg',
+      'text': 'Netflix',
+      'code': '3003',
+
     },
     {
       'img': 'assets/images/Watch TNT.jpg',
-      'text': 'Watch TNT',
+      'text': 'Vimeo',
+      'code': '3004',
+
     },
-    // ...
+    {
+      'img': 'assets/images/Watch TNT.jpg',
+      'text': 'DailyMotior',
+      'code': '3005',
+
+    },
+    {
+      'img': 'assets/images/Watch TNT.jpg',
+      'text': 'Hulu',
+      'code': '3006',
+
+    },
+    {
+      'img': 'assets/images/Watch TNT.jpg',
+      'text': 'Vube',
+      'code': '3007',
+
+    },
+    // {
+    //   'img': 'assets/images/Watch TNT.jpg',
+    //   'text': 'Twitch',
+      // 'code': '3008',
+
+    // },
+    // {
+    //   'img': 'assets/images/Watch TNT.jpg',
+    //   'text': 'LiveLeak',
+      // 'code': '3009',
+
+    // },
+    // {
+    //   'img': 'assets/images/Watch TNT.jpg',
+    //   'text': 'Spotify',
+      // 'code': '3010',
+
+    // },
+    // {
+    //   'img': 'assets/images/Watch TNT.jpg',
+    //   'text': 'Xvideos',
+      // 'code': '3050',
+
+    // },
+    // {
+    //   'img': 'assets/images/Watch TNT.jpg',
+    //   'text': 'Pornhub',
+      // 'code': '3051',
+
+    // },
+    // {
+    //   'img': 'assets/images/Watch TNT.jpg',
+    //   'text': 'Xnxx',
+      // 'code': '3052',
+
+    // },
   ];
   void setAllCheckBoxes(bool value) {
     for (int i = 0; i < selected1.length; i++) {

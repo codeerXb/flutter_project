@@ -26,20 +26,65 @@ class _PaymentState extends State<Payment> {
   List<Map<String, dynamic>> topData = [
     {
       'img': 'assets/images/Google Pay.jpg',
-      'text': 'Google Pay',
+      'text': 'Amazon',
+      'code': '4001',
     },
     {
       'img': 'assets/images/PayPal .jpg',
-      'text': 'PayPal',
+      'text': 'eBay',
+      'code': '4002',
     },
     {
       'img': 'assets/images/Apple pay.jpg',
-      'text': 'Apple pay',
+      'text': 'Etsy',
+      'code': '4003',
     },
     {
       'img': 'assets/images/Venmo.jpg',
-      'text': 'Venmo',
+      'text': 'Wish',
+      'code': '4004',
     },
+    {
+      'img': 'assets/images/Venmo.jpg',
+      'text': 'Alibaba',
+      'code': '4005',
+    },
+    {
+      'img': 'assets/images/Venmo.jpg',
+      'text': 'Aliexpress',
+      'code': '4006',
+    },
+    {
+      'img': 'assets/images/Venmo.jpg',
+      'text': 'Walmart',
+      'code': '4007',
+    },
+    // {
+    //   'img': 'assets/images/Venmo.jpg',
+    //   'text': 'Sears',
+    //   'code': '4008',
+    // },
+    // {
+    //   'img': 'assets/images/Venmo.jpg',
+    //   'text': 'Kohls',
+    //   'code': '4009',
+    // },
+    // {
+    //   'img': 'assets/images/Venmo.jpg',
+    //   'text': 'Costco',
+    //   'code': '4010',
+    // },
+    // {
+    //   'img': 'assets/images/Venmo.jpg',
+    //   'text': 'Asos',
+    //   'code': '4011',
+    // },
+    // {
+    //   'img': 'assets/images/Venmo.jpg',
+    //   'text': 'Cuyana',
+    //   'code': '4012',
+    // },
+
     // ...
   ];
   void setAllCheckBoxes(bool value) {
@@ -70,7 +115,7 @@ class _PaymentState extends State<Payment> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: const Color.fromRGBO(240, 240, 240, 1),
-        appBar: customAppbar(context: context, title: 'Payment Service'),
+        appBar: customAppbar(context: context, title: 'Shopping'),
         body: SingleChildScrollView(
           child: GestureDetector(
             // onTap: () => closeKeyboard(context),

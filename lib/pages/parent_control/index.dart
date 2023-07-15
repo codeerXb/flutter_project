@@ -855,13 +855,13 @@ class SixBoxsState extends State<SixBoxs> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ConstrainedBox(
-                          constraints: BoxConstraints(maxWidth: 150.w),
+                          constraints: BoxConstraints(maxWidth: 350.w),
                           child: const FittedBox(
                               child: Text('Website Blocklist'))),
                       Text(
                         '$urlListAmount blocked',
                         style:
-                            TextStyle(color: Colors.black54, fontSize: 25.sp),
+                            TextStyle(color: Colors.black54, fontSize: 35.sp),
                       ),
                     ],
                   )

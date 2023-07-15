@@ -150,6 +150,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "accountEnter": MessageLookupByLibrary.simpleMessage("请输入账号"),
         "accountIncorrect":
             MessageLookupByLibrary.simpleMessage("请输入正确的邮箱或手机号"),
+        "accountOrPwdError": MessageLookupByLibrary.simpleMessage("用户名或密码错误"),
         "accountSecurity": MessageLookupByLibrary.simpleMessage("登录管理"),
         "addDevice": MessageLookupByLibrary.simpleMessage("添加设备"),
         "advancedSet": MessageLookupByLibrary.simpleMessage("高级设置"),
@@ -336,7 +337,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "workday": MessageLookupByLibrary.simpleMessage("工作日"),
         "wpsSet": MessageLookupByLibrary.simpleMessage("WPS设置"),
         "year": MessageLookupByLibrary.simpleMessage("年"),
-        "yourServiece": MessageLookupByLibrary.simpleMessage("你的订阅"),
-        "accountOrPwdError": MessageLookupByLibrary.simpleMessage("用户名或密码错误"),
+        "yourServiece": MessageLookupByLibrary.simpleMessage("你的订阅")
       };
 }

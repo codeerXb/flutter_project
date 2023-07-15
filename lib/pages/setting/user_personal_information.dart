@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/core/http/http_app.dart';
 import 'package:flutter_template/core/request/request.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/utils/toast.dart';
@@ -36,13 +37,9 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
   final TextEditingController addressController = TextEditingController();
   String addressText = "";
   // avatar
-  // late var avatar = '';
-
+  late var avatar = '';
   File? _imageFile;
 
-  //手机号
-  final String _userPhone = 'null';
-  String sn = 'null';
   // 点击空白  关闭键盘 时传的一个对象
   FocusNode blankNode = FocusNode();
   bool loading = false;
@@ -60,10 +57,6 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
       _isLoading = true;
     });
     closeKeyboard(context);
-    if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
-      // 云端请求赋值
-      // await setTRDnsData();
-    }
     setState(() {
       _isLoading = false;
     });
@@ -74,17 +67,13 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
     // TODO: implement initState
     super.initState();
     sharedGetData('loginUserInfo', String).then(((res) {
-      printInfo(info: 'res$res');
       setState(() {
         loginUserInfo = jsonDecode(res.toString());
-        // 租约时间
+        // 页面初始更新数据
         nicknameController.text = loginUserInfo['nickname'] ?? '';
         phoneController.text = loginUserInfo['phone'] ?? '';
         emailController.text = loginUserInfo['email'] ?? '';
         addressController.text = loginUserInfo['address'] ?? '';
-        // _imageFile = loginUserInfo['avatar'];
-
-        // main();
       });
     }));
     nicknameController.addListener(() {
@@ -101,33 +90,16 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
     });
   }
 
-  // void main() async {
-  //   final url = loginUserInfo['avatar'];
-  //   print('11111$url'); // 输出结果为 File:
-
-  //   final response = await http.get(Uri.parse(url));
-  //   print('222222$response'); // 输出结果为 File:
-
-  //   final bytes = response.bodyBytes;
-  //   print('333333333$bytes'); // 输出结果为 File:
-  //   final directory = Directory('assets/new_file');
-  //   if (!directory.existsSync()) {
-  //     directory.createSync(recursive: true);
-  //   }
-
-  //   final file = File('assets/new_file/file.webp');
-  //   print('4444444$file'); // 输出结果为 File:
-
-  //   await file.writeAsBytes(bytes);
-  //   print(file); // 输出结果为 File: 'path/to/new/file.webp'
-  // }
-
   Future<void> _getImage(ImageSource source) async {
-    final pickedFile = await ImagePicker().getImage(source: source);
+    final pickedFile = await ImagePicker().pickImage(source: source);
     setState(() {
       _imageFile = File(pickedFile!.path);
+      Navigator.pop(context);
     });
-    Navigator.pop(context);
+    var res = await App.uploadImg(pickedFile!);
+    printInfo(info: 'res222222$res');
+    avatar = res['data'];
+    printInfo(info: 'avatar$avatar');
   }
 
   void _showImagePicker(BuildContext context) {
@@ -143,7 +115,6 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
                 title: const Text("拍照"),
                 onTap: () {
                   _getImage(ImageSource.camera);
-                  printInfo(info: '2222${ImageSource.camera}');
                 },
               ),
               ListTile(
@@ -151,7 +122,6 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
                 title: const Text("相册"),
                 onTap: () {
                   _getImage(ImageSource.gallery);
-                  printInfo(info: '11111111111${ImageSource.gallery}');
                 },
               ),
             ],
@@ -161,12 +131,12 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
     );
   }
 
-  // 设置 云端
+  // 修改信息 云端
   setData() async {
     var objectName = {
       "id": loginUserInfo['id'],
       "nickname": nicknameController.text,
-      "avatar": loginUserInfo['avatar'],
+      "avatar": avatar,
       "phone": phoneController.text,
       "email": emailController.text,
       "address": addressController.text,
@@ -177,7 +147,8 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
       var jsonObj = jsonDecode(res);
       if (jsonObj['code'] == 200) {
         ToastUtils.toast('success');
-        sharedAddAndUpdate("loginUserInfo", String, objectName); //把更新后的信息保存到本地
+        sharedAddAndUpdate(
+            "loginUserInfo", String, jsonEncode(objectName)); //把更新后的信息保存到本地
       } else {
         ToastUtils.error('Task Failed');
       }
@@ -191,7 +162,6 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // backgroundColor: const Color.fromRGBO(240, 240, 240, 1),
         appBar: customAppbar(context: context, title: ''),
         body: loading
             ? const Center(

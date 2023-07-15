@@ -50,7 +50,7 @@ dependencies:
   # 获取版本信息
   package_info_plus: ^4.0.2
   # 图片选择 -- 头像上传
-  image_picker: ^0.8.5+3
+  image_picker: ^1.0.0
   # 权限
   permission_handler: ^10.0.0
   # 文件选择器

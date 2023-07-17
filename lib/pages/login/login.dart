@@ -64,7 +64,7 @@ class _LoginState extends State<Login> {
             debugPrint('云平台绑定响应------>$bindDevRes');
             if (bindDevRes['code'] != 200) {
               // 绑定失败提示
-              if (bindDevRes['code'] == 500) {
+              if (bindDevRes['code'] == 9983) {
                 ToastUtils.error(S.current.deviceBinded);
               } else {
                 ToastUtils.error(S.current.unkownFail);

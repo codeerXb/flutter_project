@@ -55,9 +55,9 @@ class HttpAppInterceptors extends InterceptorsWrapper {
 
         // 9999：用户令牌不能为空
         // 9998：平台登录标识不能为空
-        // 900：用户令牌过期或非法
+        // 9996：用户令牌过期或非法
         // 9997：平台登录标识非法
-        if (code == 9998 || code == 9997 || code == 900 || code == 9999) {
+        if (code == 9998 || code == 9997 || code == 9996 || code == 9999) {
           // 处理登录过期的情况
           ToastUtils.error(S.current.tokenExpired);
           Get.offNamed("/user_login");

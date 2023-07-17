@@ -49,12 +49,12 @@ class _MyWidgetState extends State<Equipment> {
       if (d['code'] != 200) {
         // 9999：用户令牌不能为空
         // 9998：平台登录标识不能为空
-        // 900：用户令牌过期或非法
+        // 9996：用户令牌过期或非法
         // 9997：平台登录标识非法
         if (d['code'] == 9999 ||
             d['code'] == 9998 ||
             d['code'] == 9997 ||
-            d['code'] == 900) {
+            d['code'] == 9996) {
           ToastUtils.error(S.of(context).tokenExpired);
           sharedDeleteData('user_token');
           Get.offAllNamed('/user_login');

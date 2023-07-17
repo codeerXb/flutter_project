@@ -607,271 +607,275 @@ class SixBoxsState extends State<SixBoxs> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 520.w,
-      child: GridView(
-        physics: const NeverScrollableScrollPhysics(), //禁止滚动
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2, //一行的Widget数量
-          childAspectRatio: 2, //宽高比为1
-          crossAxisSpacing: 22, //横轴方向子元素的间距
+    return Column(
+      children: [
+        SizedBox(
+          height: 320.w,
+          child: GridView(
+            physics: const NeverScrollableScrollPhysics(), //禁止滚动
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2, //一行的Widget数量
+              childAspectRatio: 2, //宽高比为1
+              crossAxisSpacing: 22, //横轴方向子元素的间距
+            ),
+            children: <Widget>[
+              //Games
+              // GestureDetector(
+              //   onTap: () {
+              //     Get.toNamed('/games');
+              //   },
+              //   child: GardCard(
+              //       boxCotainer: Row(
+              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //     children: [
+              //       Row(
+              //         children: [
+              //           Padding(
+              //             padding: const EdgeInsets.only(right: 2),
+              //             child: Icon(Icons.games,
+              //                 color: const Color.fromRGBO(95, 141, 255, 1),
+              //                 size: 80.sp),
+              //           ),
+              //           Column(
+              //             mainAxisAlignment: MainAxisAlignment.center,
+              //             crossAxisAlignment: CrossAxisAlignment.start,
+              //             children: [
+              //               const Text('Games'),
+              //               Text(
+              //                 '11 allowed',
+              //                 style:
+              //                     TextStyle(color: Colors.black54, fontSize: 25.sp),
+              //               ),
+              //             ],
+              //           )
+              //         ],
+              //       ),
+              //       Icon(
+              //         Icons.arrow_forward_ios_outlined,
+              //         color: const Color.fromRGBO(144, 147, 153, 1),
+              //         size: 30.w,
+              //       )
+              //     ],
+              //   )),
+              // ),
+              //Video
+              GestureDetector(
+                onTap: () {
+                  Get.toNamed('/Video');
+                },
+                child: GardCard(
+                    boxCotainer: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 2),
+                          child: Icon(Icons.videocam_rounded,
+                              color: const Color.fromRGBO(95, 141, 255, 1),
+                              size: 80.sp),
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ConstrainedBox(
+                                constraints: BoxConstraints(maxWidth: 150.w),
+                                child: const FittedBox(
+                                    child: Text('Video Streaming'))),
+                            Text(
+                              '6 allowed',
+                              style: TextStyle(
+                                  color: Colors.black54, fontSize: 25.sp),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                    Icon(
+                      Icons.arrow_forward_ios_outlined,
+                      color: const Color.fromRGBO(144, 147, 153, 1),
+                      size: 30.w,
+                    )
+                  ],
+                )),
+              ),
+              //Social
+              GestureDetector(
+                onTap: () {
+                  Get.toNamed('/Social');
+                },
+                child: GardCard(
+                    boxCotainer: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 2),
+                          child: Icon(Icons.chat_rounded,
+                              color: const Color.fromRGBO(95, 141, 255, 1),
+                              size: 80.sp),
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ConstrainedBox(
+                                constraints: BoxConstraints(maxWidth: 150.w),
+                                child: const FittedBox(
+                                    child: Text('Social media'))),
+                            Text(
+                              '3 allowed',
+                              style: TextStyle(
+                                  color: Colors.black54, fontSize: 25.sp),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                    Icon(
+                      Icons.arrow_forward_ios_outlined,
+                      color: const Color.fromRGBO(144, 147, 153, 1),
+                      size: 30.w,
+                    )
+                  ],
+                )),
+              ),
+              //payment
+              GestureDetector(
+                onTap: () {
+                  Get.toNamed('/Payment');
+                },
+                child: GardCard(
+                    boxCotainer: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 2),
+                          child: Icon(Icons.payment,
+                              color: const Color.fromRGBO(95, 141, 255, 1),
+                              size: 80.sp),
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ConstrainedBox(
+                                constraints: BoxConstraints(maxWidth: 150.w),
+                                child:
+                                    const FittedBox(child: Text('Shopping'))),
+                            Text(
+                              '4 allowed',
+                              style: TextStyle(
+                                  color: Colors.black54, fontSize: 25.sp),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                    Icon(
+                      Icons.arrow_forward_ios_outlined,
+                      color: const Color.fromRGBO(144, 147, 153, 1),
+                      size: 30.w,
+                    )
+                  ],
+                )),
+              ),
+              //Installed
+              GestureDetector(
+                onTap: () {
+                  Get.toNamed('/Installed');
+                },
+                child: GardCard(
+                    boxCotainer: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 2),
+                          child: Icon(Icons.install_mobile,
+                              color: const Color.fromRGBO(95, 141, 255, 1),
+                              size: 80.sp),
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ConstrainedBox(
+                                constraints: BoxConstraints(maxWidth: 150.w),
+                                child:
+                                    const FittedBox(child: Text('APP Stores'))),
+                            Text(
+                              '2 allowed',
+                              style: TextStyle(
+                                  color: Colors.black54, fontSize: 25.sp),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                    Icon(
+                      Icons.arrow_forward_ios_outlined,
+                      color: const Color.fromRGBO(144, 147, 153, 1),
+                      size: 30.w,
+                    )
+                  ],
+                )),
+              ),
+            ],
+          ),
         ),
-        children: <Widget>[
-          //Games
-          GestureDetector(
-            onTap: () {
-              Get.toNamed('/games');
-            },
-            child: GardCard(
-                boxCotainer: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 2),
-                      child: Icon(Icons.games,
-                          color: const Color.fromRGBO(95, 141, 255, 1),
-                          size: 80.sp),
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text('Games'),
-                        Text(
-                          '11 allowed',
-                          style:
-                              TextStyle(color: Colors.black54, fontSize: 25.sp),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-                Icon(
-                  Icons.arrow_forward_ios_outlined,
-                  color: const Color.fromRGBO(144, 147, 153, 1),
-                  size: 30.w,
-                )
-              ],
-            )),
-          ),
-          //Video
-          GestureDetector(
-            onTap: () {
-              Get.toNamed('/Video');
-            },
-            child: GardCard(
-                boxCotainer: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 2),
-                      child: Icon(Icons.videocam_rounded,
-                          color: const Color.fromRGBO(95, 141, 255, 1),
-                          size: 80.sp),
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ConstrainedBox(
-                            constraints: BoxConstraints(maxWidth: 150.w),
-                            child: const FittedBox(
-                                child: Text('Video Streaming'))),
-                        Text(
-                          '6 allowed',
-                          style:
-                              TextStyle(color: Colors.black54, fontSize: 25.sp),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-                Icon(
-                  Icons.arrow_forward_ios_outlined,
-                  color: const Color.fromRGBO(144, 147, 153, 1),
-                  size: 30.w,
-                )
-              ],
-            )),
-          ),
-          //Social
-          GestureDetector(
-            onTap: () {
-              Get.toNamed('/Social');
-            },
-            child: GardCard(
-                boxCotainer: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 2),
-                      child: Icon(Icons.chat_rounded,
-                          color: const Color.fromRGBO(95, 141, 255, 1),
-                          size: 80.sp),
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ConstrainedBox(
-                            constraints: BoxConstraints(maxWidth: 150.w),
-                            child:
-                                const FittedBox(child: Text('Social media'))),
-                        Text(
-                          '3 allowed',
-                          style:
-                              TextStyle(color: Colors.black54, fontSize: 25.sp),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-                Icon(
-                  Icons.arrow_forward_ios_outlined,
-                  color: const Color.fromRGBO(144, 147, 153, 1),
-                  size: 30.w,
-                )
-              ],
-            )),
-          ),
-          //payment
-          GestureDetector(
-            onTap: () {
-              Get.toNamed('/Payment');
-            },
-            child: GardCard(
-                boxCotainer: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 2),
-                      child: Icon(Icons.payment,
-                          color: const Color.fromRGBO(95, 141, 255, 1),
-                          size: 80.sp),
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ConstrainedBox(
-                            constraints: BoxConstraints(maxWidth: 150.w),
-                            child: const FittedBox(
-                                child: Text('Payment Service'))),
-                        Text(
-                          '4 allowed',
-                          style:
-                              TextStyle(color: Colors.black54, fontSize: 25.sp),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-                Icon(
-                  Icons.arrow_forward_ios_outlined,
-                  color: const Color.fromRGBO(144, 147, 153, 1),
-                  size: 30.w,
-                )
-              ],
-            )),
-          ),
-          //Installed
-          GestureDetector(
-            onTap: () {
-              Get.toNamed('/Installed');
-            },
-            child: GardCard(
-                boxCotainer: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 2),
-                      child: Icon(Icons.install_mobile,
-                          color: const Color.fromRGBO(95, 141, 255, 1),
-                          size: 80.sp),
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ConstrainedBox(
-                            constraints: BoxConstraints(maxWidth: 150.w),
-                            child: const FittedBox(child: Text('APP Stores'))),
-                        Text(
-                          '2 allowed',
-                          style:
-                              TextStyle(color: Colors.black54, fontSize: 25.sp),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-                Icon(
-                  Icons.arrow_forward_ios_outlined,
-                  color: const Color.fromRGBO(144, 147, 153, 1),
-                  size: 30.w,
-                )
-              ],
-            )),
-          ),
-          //URL blocklist
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const Blocklist())).then((value) {
-                setState(() {
-                  getURLFilter();
-                });
+        //URL blocklist
+        GestureDetector(
+          onTap: () {
+            Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const Blocklist()))
+                .then((value) {
+              setState(() {
+                getURLFilter();
               });
-            },
-            child: GardCard(
-                boxCotainer: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Padding(
-                        padding: const EdgeInsets.only(right: 2),
-                        child: Icon(Icons.block,
-                            color: const Color.fromRGBO(95, 141, 255, 1),
-                            size: 80.sp)),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ConstrainedBox(
-                            constraints: BoxConstraints(maxWidth: 150.w),
-                            child: const FittedBox(
-                                child: Text('Website Blocklist'))),
-                        Text(
-                          '$urlListAmount blocked',
-                          style:
-                              TextStyle(color: Colors.black54, fontSize: 25.sp),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-                Icon(
-                  Icons.arrow_forward_ios_outlined,
-                  color: const Color.fromRGBO(144, 147, 153, 1),
-                  size: 30.w,
-                )
-              ],
-            )),
-          ),
-        ],
-      ),
+            });
+          },
+          child: GardCard(
+              boxCotainer: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Padding(
+                      padding: const EdgeInsets.only(right: 2),
+                      child: Icon(Icons.block,
+                          color: const Color.fromRGBO(95, 141, 255, 1),
+                          size: 80.sp)),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ConstrainedBox(
+                          constraints: BoxConstraints(maxWidth: 350.w),
+                          child: const FittedBox(
+                              child: Text('Website Blocklist'))),
+                      Text(
+                        '$urlListAmount blocked',
+                        style:
+                            TextStyle(color: Colors.black54, fontSize: 35.sp),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+              Icon(
+                Icons.arrow_forward_ios_outlined,
+                color: const Color.fromRGBO(144, 147, 153, 1),
+                size: 30.w,
+              )
+            ],
+          )),
+        ),
+      ],
     );
   }
 }

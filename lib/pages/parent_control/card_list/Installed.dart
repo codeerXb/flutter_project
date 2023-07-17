@@ -25,12 +25,39 @@ class _InstalledState extends State<Installed> {
 
   List<Map<String, dynamic>> topData = [
     {
-      'img': 'assets/images/Amazon Appstore.jpg',
-      'text': 'Amazon Appstore',
-    },
-    {
       'img': 'assets/images/Google Play.png',
       'text': 'Google Play',
+      'code': '7001',
+    },
+    {
+      'img': 'assets/images/Amazon Appstore.jpg',
+      'text': 'Appstore',
+      'code': '7002',
+    },
+    {
+      'img': 'assets/images/Amazon Appstore.jpg',
+      'text': 'WindowsUpdate',
+      'code': '7003',
+    },
+    {
+      'img': 'assets/images/Amazon Appstore.jpg',
+      'text': 'Speedtest',
+      'code': '7050',
+    },
+    {
+      'img': 'assets/images/Amazon Appstore.jpg',
+      'text': 'samba',
+      'code': '7060',
+    },
+    {
+      'img': 'assets/images/Amazon Appstore.jpg',
+      'text': 'ftp',
+      'code': '7061',
+    },
+    {
+      'img': 'assets/images/Amazon Appstore.jpg',
+      'text': 'ssh',
+      'code': '7062',
     },
     // ...
   ];

@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_template/core/http/http_app_interceptor.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/generated/l10n.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../config/base_config.dart';
 import 'package:dio/adapter.dart';
 
@@ -88,6 +89,27 @@ class App {
     } on DioError {
       rethrow;
     }
+  }
+
+  // 上传文件
+  static Future uploadFile(String url, Map<String, dynamic> data) async {
+    Response response = await appdio.post(url,
+        data: FormData.fromMap(data),
+        options: Options(headers: {'Content-Type': 'multipart/form-data'}));
+    return response.data;
+  }
+
+  // 上传图片
+  static Future uploadImg(XFile img) async {
+    final FormData formData = FormData.fromMap({
+      'file': await MultipartFile.fromFile(
+        img.path,
+        filename: img.name,
+      )
+    });
+    // Send FormData
+    Response response = await appdio.post('/file/upload', data: formData);
+    return response.data;
   }
 
   ///error统一处理

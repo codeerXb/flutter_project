@@ -1,7 +1,10 @@
 import 'dart:convert';
-
+// import 'dart:html';
+// import 'package:dio/dio.dart';
+import 'package:dio/src/form_data.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/http/http_app.dart';
+// import 'package:get/get_connect/http/src/multipart/multipart_file.dart';
 import './model/equipment_data.dart';
 
 class Request {
@@ -61,4 +64,15 @@ class Request {
     Map<String, dynamic> data = objectName;
     return await App.put('/platform/appCustomer/update', data: data);
   }
+
+  //file
+  // Future fileObject(objectName) async {
+  //   Map<String, dynamic> data = objectName;
+  //   return await App.post('/file/upload', data: data);
+  // }
+  //file
+  // Future fileObject(objectName) async {
+  //   FormData formData = FormData.fromMap({'file': objectName});
+  //   return await App.post('/file/upload', data: formData);
+  // }
 }

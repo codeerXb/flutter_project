@@ -188,6 +188,8 @@ class MessageLookup extends MessageLookupByLibrary {
             "Please enter the account number"),
         "accountIncorrect": MessageLookupByLibrary.simpleMessage(
             "Please input correct email or phone number"),
+        "accountOrPwdError": MessageLookupByLibrary.simpleMessage(
+            "Incorrect account or password"),
         "accountSecurity": MessageLookupByLibrary.simpleMessage("Account"),
         "addDevice": MessageLookupByLibrary.simpleMessage("Add Device"),
         "advancedSet":
@@ -422,8 +424,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "wpsSet": MessageLookupByLibrary.simpleMessage("WPS"),
         "year": MessageLookupByLibrary.simpleMessage("Year"),
         "yourServiece":
-            MessageLookupByLibrary.simpleMessage("Your Subscription"),
-        "accountOrPwdError": MessageLookupByLibrary.simpleMessage(
-            "Incorrect account or password"),
+            MessageLookupByLibrary.simpleMessage("Your Subscription")
       };
 }

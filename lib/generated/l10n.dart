@@ -50,6 +50,16 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `Incorrect account or password`
+  String get accountOrPwdError {
+    return Intl.message(
+      'Incorrect account or password',
+      name: 'accountOrPwdError',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Biometrics Authenticate`
   String get biometrics {
     return Intl.message(
@@ -3075,16 +3085,6 @@ class S {
     return Intl.message(
       '111',
       name: 'a',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Incorrect account or password`
-  String get accountOrPwdError {
-    return Intl.message(
-      'Incorrect account or password',
-      name: 'accountOrPwdError',
       desc: '',
       args: [],
     );

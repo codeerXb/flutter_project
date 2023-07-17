@@ -269,7 +269,7 @@ class _UserLoginState extends State<UserLogin> {
                                 .then((res) {
                               var d = json.decode(res.toString());
                               if (d['code'] != 200) {
-                                if (d['code'] == 500) {
+                                if (d['code'] == 9995) {
                                   ToastUtils.error(S.current.accountOrPwdError);
                                 }
                                 debugPrint("$d");

@@ -349,7 +349,7 @@ class _UserRegisterState extends State<UserRegister> {
                                           });
                                         }
                                       } else {
-                                        if (d['code'] == 500) {
+                                        if (d['code'] == 9991) {
                                           ToastUtils.toast(
                                               S.current.accountIncorrect);
                                         }

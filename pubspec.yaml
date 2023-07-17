@@ -86,6 +86,9 @@ dependencies:
   device_info_plus: ^8.0.0
   # wifi信息
   network_info_plus: ^4.0.1
+  # 加载网络图片
+  cached_network_image: ^3.1.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

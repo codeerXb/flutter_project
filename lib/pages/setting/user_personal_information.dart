@@ -39,7 +39,7 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
   // avatar
   late var avatar = '';
   File? _imageFile;
-
+  String _imageFileAvatar = '';
   // 点击空白  关闭键盘 时传的一个对象
   FocusNode blankNode = FocusNode();
   bool loading = false;
@@ -49,17 +49,6 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
   /// 点击空白  关闭输入键盘
   void closeKeyboard(BuildContext context) {
     FocusScope.of(context).requestFocus(blankNode);
-  }
-
-  bool _isLoading = false;
-  Future<void> _saveData() async {
-    setState(() {
-      _isLoading = true;
-    });
-    closeKeyboard(context);
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   @override
@@ -74,8 +63,13 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
         phoneController.text = loginUserInfo['phone'] ?? '';
         emailController.text = loginUserInfo['email'] ?? '';
         addressController.text = loginUserInfo['address'] ?? '';
+        _imageFileAvatar = loginUserInfo['avatar'] ?? '';
+        printInfo(info: '_imageFileAvatar$_imageFileAvatar');
       });
+      printInfo(info: '_imageFile$_imageFile');
     }));
+    printInfo(info: '_imageFile33333333$_imageFile');
+
     nicknameController.addListener(() {
       debugPrint('监听名字：${nicknameController.text}');
     });
@@ -97,9 +91,7 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
       Navigator.pop(context);
     });
     var res = await App.uploadImg(pickedFile!);
-    printInfo(info: 'res222222$res');
     avatar = res['data'];
-    printInfo(info: 'avatar$avatar');
   }
 
   void _showImagePicker(BuildContext context) {
@@ -141,7 +133,6 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
       "email": emailController.text,
       "address": addressController.text,
     };
-    printInfo(info: '111$objectName');
     var res = await Request().putObject(objectName);
     try {
       var jsonObj = jsonDecode(res);
@@ -212,22 +203,19 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
                                     color:
                                         const Color.fromARGB(255, 85, 137, 233),
                                     width: 5.w),
-                                image:
-                                    // Image.network(loginUserInfo['avatar']),
-                                    _imageFile != null
-                                        //     &&
-                                        //         Image.network()
-                                        // loginUserInfo['avatar'] != ''
-                                        ? DecorationImage(
-                                            image: FileImage(_imageFile!),
-                                            fit: BoxFit.cover)
-                                        : null,
+                                image: _imageFile != null
+                                    ? DecorationImage(
+                                        image: FileImage(_imageFile!),
+                                        fit: BoxFit.cover)
+                                    : DecorationImage(
+                                        image: NetworkImage(_imageFileAvatar),
+                                        fit: BoxFit.cover,
+                                      ),
                               ),
                               child: _imageFile == null &&
                                       loginUserInfo['avatar'] == ''
                                   ? Icon(Icons.camera_alt, size: 50.w)
                                   : Icon(Icons.camera_alt, size: 50.w),
-                              // Image.network(loginUserInfo['avatar']),
                             ),
                           ),
                           SizedBox(height: 20.w),

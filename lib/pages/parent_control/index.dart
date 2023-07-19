@@ -193,13 +193,14 @@ class InternetUsage extends StatelessWidget {
                             ),
                           ],
                         ),
-                        child: const Column(
+                        child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text('Shopping',
+                            const Text('Shopping',
                                 style: TextStyle(
                                     fontSize: 12, color: Colors.white)),
-                            Text('0 min',
+                            Padding(padding: EdgeInsets.only(top: 5.w)),
+                            const Text('0 min',
                                 style: TextStyle(
                                     fontSize: 8, color: Colors.white)),
                           ],
@@ -233,13 +234,14 @@ class InternetUsage extends StatelessWidget {
                             ),
                           ],
                         ),
-                        child: const Column(
+                        child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text('Video',
+                            const Text('Video',
                                 style: TextStyle(
                                     fontSize: 12, color: Colors.white)),
-                            Text('0 min',
+                            Padding(padding: EdgeInsets.only(top: 5.w)),
+                            const Text('0 min',
                                 style: TextStyle(
                                     fontSize: 8, color: Colors.white)),
                           ],
@@ -277,13 +279,14 @@ class InternetUsage extends StatelessWidget {
                             ),
                           ],
                         ),
-                        child: const Column(
+                        child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text('APP Stores',
+                            const Text('APP Stores',
                                 style: TextStyle(
                                     fontSize: 12, color: Colors.white)),
-                            Text('0 min',
+                            Padding(padding: EdgeInsets.only(top: 5.w)),
+                            const Text('0 min',
                                 style: TextStyle(
                                     fontSize: 8, color: Colors.white)),
                           ],
@@ -317,13 +320,14 @@ class InternetUsage extends StatelessWidget {
                             ),
                           ],
                         ),
-                        child: const Column(
+                        child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text('Social media',
+                            const Text('Social media',
                                 style: TextStyle(
                                     fontSize: 12, color: Colors.white)),
-                            Text('0 min',
+                            Padding(padding: EdgeInsets.only(top: 5.w)),
+                            const Text('0 min',
                                 style: TextStyle(
                                     fontSize: 8, color: Colors.white)),
                           ],

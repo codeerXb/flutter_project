@@ -1,6 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
+import '../../../config/base_config.dart';
+import '../../../core/http/http_app.dart';
+import '../../../core/utils/toast.dart';
 import '../../../core/widget/custom_app_bar.dart';
+import '../../../generated/l10n.dart';
 
 class Video extends StatefulWidget {
   const Video({Key? key}) : super(key: key);
@@ -18,119 +26,219 @@ class _VideoState extends State<Video> {
     FocusScope.of(context).requestFocus(blankNode);
   }
 
-  bool? _isChecked = true; // 用于表示Checkbox的选中状态
+  dynamic mac = Get.arguments['mac'];
+  dynamic sn = Get.arguments['sn'];
+  dynamic formParam = ''; //传输给后台的param
+
+  bool? allChecked = false; // 全选
 
   final TextEditingController _textEditingController = TextEditingController();
-  List<bool> selected1 = [true, true, true, true, true, true, true];
 
   List<Map<String, dynamic>> topData = [
     {
       'img': 'assets/images/Watch TNT.jpg',
       'text': 'YouTube',
       'code': '3001',
+      'select': false,
     },
     {
       'img': 'assets/images/TikTok.jpg',
       'text': 'TikTok',
       'code': '3002',
-
+      'select': false,
     },
     {
       'img': 'assets/images/Netflix.jpg',
       'text': 'Netflix',
       'code': '3003',
-
+      'select': false,
     },
     {
       'img': 'assets/images/Watch TNT.jpg',
       'text': 'Vimeo',
       'code': '3004',
-
+      'select': false,
     },
     {
       'img': 'assets/images/Watch TNT.jpg',
       'text': 'DailyMotior',
       'code': '3005',
-
+      'select': false,
     },
     {
       'img': 'assets/images/Watch TNT.jpg',
       'text': 'Hulu',
       'code': '3006',
-
+      'select': false,
     },
     {
       'img': 'assets/images/Watch TNT.jpg',
       'text': 'Vube',
       'code': '3007',
-
+      'select': false,
     },
-    // {
-    //   'img': 'assets/images/Watch TNT.jpg',
-    //   'text': 'Twitch',
-      // 'code': '3008',
-
-    // },
-    // {
-    //   'img': 'assets/images/Watch TNT.jpg',
-    //   'text': 'LiveLeak',
-      // 'code': '3009',
-
-    // },
-    // {
-    //   'img': 'assets/images/Watch TNT.jpg',
-    //   'text': 'Spotify',
-      // 'code': '3010',
-
-    // },
-    // {
-    //   'img': 'assets/images/Watch TNT.jpg',
-    //   'text': 'Xvideos',
-      // 'code': '3050',
-
-    // },
-    // {
-    //   'img': 'assets/images/Watch TNT.jpg',
-    //   'text': 'Pornhub',
-      // 'code': '3051',
-
-    // },
-    // {
-    //   'img': 'assets/images/Watch TNT.jpg',
-    //   'text': 'Xnxx',
-      // 'code': '3052',
-
-    // },
+    {
+      'img': 'assets/images/Watch TNT.jpg',
+      'text': 'Twitch',
+      'code': '3008',
+      'select': false,
+    },
+    {
+      'img': 'assets/images/Watch TNT.jpg',
+      'text': 'LiveLeak',
+      'code': '3009',
+      'select': false,
+    },
+    {
+      'img': 'assets/images/Watch TNT.jpg',
+      'text': 'Spotify',
+      'code': '3010',
+      'select': false,
+    },
+    {
+      'img': 'assets/images/Watch TNT.jpg',
+      'text': 'Xvideos',
+      'code': '3050',
+      'select': false,
+    },
+    {
+      'img': 'assets/images/Watch TNT.jpg',
+      'text': 'Pornhub',
+      'code': '3051',
+      'select': false,
+    },
+    {
+      'img': 'assets/images/Watch TNT.jpg',
+      'text': 'Xnxx',
+      'code': '3052',
+      'select': false,
+    },
   ];
   void setAllCheckBoxes(bool value) {
-    for (int i = 0; i < selected1.length; i++) {
-      selected1[i] = value;
+    for (var item in topData) {
+      item['select'] = value;
     }
   }
 
-  void updateAllCheckBoxes() {
+  void deselectAll() {
     bool allSelected = true;
-    for (int i = 0; i < selected1.length; i++) {
-      if (!selected1[i]) {
+
+    for (int i = 0; i < topData.length; i++) {
+      if (!topData[i]['select']) {
         allSelected = false;
         break;
       }
     }
     setState(() {
-      _isChecked = allSelected;
+      allChecked = allSelected;
     });
+  }
+
+  bool _isLoading = false;
+  Future<void> _saveData() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    formParam['rules']['videoapps'] = '';
+    for (var element in topData) {
+      if (element['select'] == true) {
+        formParam['rules']['videoapps'] += element['code'] + ' ';
+      }
+    }
+
+    setParentControlConfigFn();
+  }
+
+  //获取配置
+  void getParentControlConfigFn() async {
+    try {
+      var response = await App.post(
+          '${BaseConfig.cloudBaseUrl}/parentControl/getParentControlConfig',
+          data: {'sn': sn, "mac": mac});
+      var d = json.decode(response.toString());
+      setState(() {
+        formParam = d['data'];
+        //遍历白名单列表
+        d['data']['rules']['videoapps'].split(' ').forEach((item) {
+          //遍历数据如果包含
+          for (var element in topData) {
+            if (element['code'] == item) {
+              element['select'] = true;
+            }
+          }
+        });
+      });
+    } catch (e) {
+      debugPrint('失败：$e.toString()');
+    }
+  }
+
+  //下发配置
+  void setParentControlConfigFn() async {
+    try {
+      var form = {
+        'event': 'setParentControlConfig',
+        'sn': sn,
+        "param": formParam
+      };
+      await App.post(
+          '${BaseConfig.cloudBaseUrl}/parentControl/setParentControlConfig',
+          data: {'s': json.encode(form)},
+          header: {'Content-Type': 'application/x-www-form-urlencoded'});
+      // print('response$response');
+      setState(() {
+        _isLoading = false;
+      });
+      ToastUtils.toast(S.current.success);
+    } catch (e) {
+      debugPrint('失败：$e.toString()');
+      ToastUtils.toast(S.current.error);
+    }
   }
 
   @override
   void initState() {
     super.initState();
+    getParentControlConfigFn();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: const Color.fromRGBO(240, 240, 240, 1),
-        appBar: customAppbar(context: context, title: 'Video Streaming'),
+        appBar: customAppbar(
+            context: context,
+            title: 'Video Streaming',
+            actions: <Widget>[
+              Container(
+                margin: EdgeInsets.all(20.w),
+                child: OutlinedButton(
+                  onPressed: _isLoading ? null : _saveData,
+                  child: Row(
+                    children: [
+                      if (_isLoading)
+                        const SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                          ),
+                        ),
+                      if (!_isLoading)
+                        Text(
+                          S.current.save,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: _isLoading ? Colors.grey : null,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ]),
         body: SingleChildScrollView(
           child: GestureDetector(
             onTap: () => closeKeyboard(context),
@@ -178,10 +286,10 @@ class _VideoState extends State<Video> {
                   padding: const EdgeInsets.only(top: 16, bottom: 16),
                   child: CheckboxListTile(
                     title: const Text('Select all'),
-                    value: _isChecked,
+                    value: allChecked,
                     onChanged: (value) {
                       setState(() {
-                        _isChecked = value!;
+                        allChecked = value!;
                         // 当Checkbox的选中状态改变时，将ListView中每个CheckboxListTile的选中状态也改变
                         setAllCheckBoxes(value);
                       });
@@ -198,6 +306,7 @@ class _VideoState extends State<Video> {
                 Padding(
                   padding: EdgeInsets.only(left: 30.w, right: 30.0.w),
                   child: Container(
+                    height: 107.h * topData.length,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),
                       color: const Color.fromARGB(255, 248, 248, 248),
@@ -221,12 +330,12 @@ class _VideoState extends State<Video> {
                                   Text(data['text']),
                                   const Spacer(),
                                   Checkbox(
-                                    value: selected1[index],
-                                    onChanged: (value) {
+                                    value: data['select'],
+                                    onChanged: (newValue) {
                                       setState(() {
-                                        selected1[index] = value!;
+                                        data['select'] = newValue;
+                                        deselectAll(); //取消全选
                                       });
-                                      updateAllCheckBoxes();
                                     },
                                   ),
                                 ],

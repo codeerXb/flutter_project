@@ -59,14 +59,16 @@ class App {
 
   ///post请求
   static Future post(String url,
-      {Map<String, dynamic>? params, Map<String, dynamic>? data}) async {
+      {Map<String, dynamic>? params,
+      Map<String, dynamic>? data,
+      Map<String, dynamic>? header}) async {
     try {
       Response response = await appdio.post(url,
           queryParameters: params != null
               // ? {...params, '_csrf_token': BaseConfig.token}
               ? {...params}
               : null,
-          options: Options(responseType: ResponseType.plain),
+          options: Options(responseType: ResponseType.plain, headers: header),
           data: data);
       return response.data;
     } on DioError {

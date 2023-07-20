@@ -661,7 +661,8 @@ class SixBoxsState extends State<SixBoxs> {
               //Video
               GestureDetector(
                 onTap: () {
-                  Get.toNamed('/Video');
+                  Get.toNamed('/Video',
+                      arguments: {'mac': MACAddress.value, 'sn': sn});
                 },
                 child: GardCard(
                     boxCotainer: Row(

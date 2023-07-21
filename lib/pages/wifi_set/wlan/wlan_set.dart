@@ -56,23 +56,46 @@ class _WlanSetState extends State<WlanSet> {
   //模式
   // 2.4g
   // 传值
-  List<String> modeVal = ['11ng', '11axg', '11g', '11b'];
+  List<String> modeVal = [
+    '11b',
+    '11g',
+    '11n',
+    '11bg',
+    '11bgn',
+    '11ax',
+    '11axg',
+    '11ng'
+  ];
   // 选项显示
   List<String> modeOpt = [
-    '802.11n/g',
-    '802.11axg',
+    '802.11b Only',
     '802.11g Only',
-    '802.11b Only'
+    '802.11n Only',
+    '802.11b/g',
+    '802.11b/g/n(Auto)',
+    '802.11ax',
   ];
   // 5g
   // 传值
-  List<String> modeVal5g = ['11ac', '11axa', '11na', '11a'];
+  List<String> modeVal5g = [
+    '11a',
+    '11n',
+    '11a/n',
+    '11an/ac',
+    '11a/an/ac',
+    '11ax',
+    '11axa',
+    '11na',
+    '11ac'
+  ];
   // 选项显示
   List<String> modeValOpt = [
-    '802.11ac',
-    '802.11axa',
-    '802.11n/a',
-    '802.11a Only'
+    '802.11a Only',
+    '802.11n Only',
+    '802.11a/n',
+    '802.11n/ac',
+    '802.11a/n/ac(Auto)',
+    '802.11ax',
   ];
   // 2.4g索引值
   int modeIndex = 0;
@@ -82,19 +105,24 @@ class _WlanSetState extends State<WlanSet> {
   // 带宽
   int bandWidthIndex = 0;
   int bandWidthIndex5g = 0;
-  // 2.4g传值和选项显示名称相同
-  List<String> bandWidthVal = ['20MHz', '40+MHz', '40-MHz'];
+  // 2.4g 选项显示
+  List<String> bandWidthOptVal = ['20MHz', '20/40MHz'];
+  // 2.4g传值的内容
+  List<String> bandWidthVal = ['20MHz', '40MHz'];
+
   // 5g选项显示
   List<String> bandWidthOpt5g = [
     '20MHz',
     '20/40MHz',
     '20/40/80MHz',
+    '20/40/80/160MHz',
   ];
   // 5g传值的内容
   List<String> bandWidthVal5g = [
     '20MHz',
     '40MHz',
     '80MHz',
+    '160MHz',
   ];
 
   // Channel 通道的选项和值
@@ -1050,7 +1078,7 @@ class _WlanSetState extends State<WlanSet> {
                                     var result = CommonPicker.showPicker(
                                       context: context,
                                       options: bandIndex == 0
-                                          ? bandWidthVal
+                                          ? bandWidthOptVal
                                           : bandWidthOpt5g,
                                       value: bandIndex == 0
                                           ? bandWidthIndex
@@ -1089,7 +1117,7 @@ class _WlanSetState extends State<WlanSet> {
                                           children: [
                                             Text(
                                                 bandIndex == 0
-                                                    ? bandWidthVal[
+                                                    ? bandWidthOptVal[
                                                         bandWidthIndex]
                                                     : bandWidthOpt5g[
                                                         bandWidthIndex5g],

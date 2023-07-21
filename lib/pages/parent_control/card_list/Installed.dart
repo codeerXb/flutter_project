@@ -1,6 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
+import '../../../config/base_config.dart';
+import '../../../core/http/http_app.dart';
+import '../../../core/utils/toast.dart';
 import '../../../core/widget/custom_app_bar.dart';
+import '../../../generated/l10n.dart';
 
 class Installed extends StatefulWidget {
   const Installed({Key? key}) : super(key: key);
@@ -18,66 +26,142 @@ class _InstalledState extends State<Installed> {
     FocusScope.of(context).requestFocus(blankNode);
   }
 
-  bool? _isChecked = true; // 用于表示Checkbox的选中状态
+  bool? allChecked = false; // 用于表示Checkbox的选中状态
+  bool _isLoading = false;
+  dynamic mac = Get.arguments['mac'];
+  dynamic sn = Get.arguments['sn'];
+  dynamic formParam = ''; //传输给后台的param
 
   final TextEditingController _textEditingController = TextEditingController();
-  List<bool> selected1 = [true, true, true, true, true, true, true];
 
   List<Map<String, dynamic>> topData = [
     {
-      'img': 'assets/images/Google Play.png',
+      'img': 'assets/images/GooglePlay.webp',
       'text': 'Google Play',
       'code': '7001',
+      'select': false,
     },
     {
-      'img': 'assets/images/Amazon Appstore.jpg',
+      'img': 'assets/images/Appstore.jpg',
       'text': 'Appstore',
       'code': '7002',
+      'select': false,
     },
+    // {
+    //   'img': 'assets/images/WindowsUpdate.jpg',
+    //   'text': 'WindowsUpdate',
+    //   'code': '7003',
+    //   'select': false,
+    // },
     {
-      'img': 'assets/images/Amazon Appstore.jpg',
-      'text': 'WindowsUpdate',
-      'code': '7003',
-    },
-    {
-      'img': 'assets/images/Amazon Appstore.jpg',
+      'img': 'assets/images/Speedtest.jpg',
       'text': 'Speedtest',
       'code': '7050',
+      'select': false,
     },
     {
-      'img': 'assets/images/Amazon Appstore.jpg',
+      'img': 'assets/images/samba.jpg',
       'text': 'samba',
       'code': '7060',
+      'select': false,
     },
     {
-      'img': 'assets/images/Amazon Appstore.jpg',
+      'img': 'assets/images/ftp.jpg',
       'text': 'ftp',
       'code': '7061',
+      'select': false,
     },
-    {
-      'img': 'assets/images/Amazon Appstore.jpg',
-      'text': 'ssh',
-      'code': '7062',
-    },
+    // {
+    //   'img': 'assets/images/ssh.jpg',
+    //   'text': 'ssh',
+    //   'code': '7062',
+    //   'select': false,
+    // },
     // ...
   ];
   void setAllCheckBoxes(bool value) {
-    for (int i = 0; i < selected1.length; i++) {
-      selected1[i] = value;
+    for (var item in topData) {
+      item['select'] = value;
     }
   }
 
-  void updateAllCheckBoxes() {
+  void deselectAll() {
     bool allSelected = true;
-    for (int i = 0; i < selected1.length; i++) {
-      if (!selected1[i]) {
+
+    for (int i = 0; i < topData.length; i++) {
+      if (!topData[i]['select']) {
         allSelected = false;
         break;
       }
     }
     setState(() {
-      _isChecked = allSelected;
+      allChecked = allSelected;
     });
+  }
+
+  Future<void> _saveData() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    formParam['rules']['downloadapps'] = '';
+    for (var element in topData) {
+      if (element['select'] == true) {
+        formParam['rules']['downloadapps'] += element['code'] + ' ';
+      }
+    }
+
+    setParentControlConfigFn();
+  }
+
+  //获取配置
+  void getParentControlConfigFn() async {
+    try {
+      var response = await App.post(
+          '${BaseConfig.cloudBaseUrl}/parentControl/getParentControlConfig',
+          data: {'sn': sn, "mac": mac});
+      var d = json.decode(response.toString());
+      setState(() {
+        formParam = d['data'];
+        print('object$formParam');
+        //遍历白名单列表
+        d['data']['rules']['downloadapps'].split(' ').forEach((item) {
+          //遍历数据如果包含
+          for (var element in topData) {
+            if (element['code'] == item) {
+              element['select'] = true;
+            }
+          }
+        });
+      });
+    } catch (e) {
+      debugPrint('失败：$e.toString()');
+    }
+  }
+
+  //下发配置
+  void setParentControlConfigFn() async {
+    try {
+      var form = {
+        'event': 'setParentControlConfig',
+        'sn': sn,
+        "param": formParam
+      };
+      await App.post(
+          '${BaseConfig.cloudBaseUrl}/parentControl/setParentControlConfig',
+          data: {'s': json.encode(form)},
+          header: {'Content-Type': 'application/x-www-form-urlencoded'});
+      // print('response$response');
+
+      ToastUtils.toast(S.current.success);
+    } catch (e) {
+      debugPrint('失败：$e.toString()');
+      ToastUtils.toast(S.current.error);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   @override
@@ -89,7 +173,38 @@ class _InstalledState extends State<Installed> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: const Color.fromRGBO(240, 240, 240, 1),
-        appBar: customAppbar(context: context, title: 'App Stores'),
+        appBar: customAppbar(
+            context: context,
+            title: 'App Stores',
+            actions: <Widget>[
+              Container(
+                margin: EdgeInsets.all(20.w),
+                child: OutlinedButton(
+                  onPressed: _isLoading ? null : _saveData,
+                  child: Row(
+                    children: [
+                      if (_isLoading)
+                        const SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                          ),
+                        ),
+                      if (!_isLoading)
+                        Text(
+                          S.current.save,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: _isLoading ? Colors.grey : null,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ]),
         body: SingleChildScrollView(
           child: GestureDetector(
             // onTap: () => closeKeyboard(context),
@@ -137,10 +252,10 @@ class _InstalledState extends State<Installed> {
                   padding: const EdgeInsets.only(top: 16, bottom: 16),
                   child: CheckboxListTile(
                     title: const Text('Select all'),
-                    value: _isChecked,
+                    value: allChecked,
                     onChanged: (value) {
                       setState(() {
-                        _isChecked = value!;
+                        allChecked = value!;
                         // 当Checkbox的选中状态改变时，将ListView中每个CheckboxListTile的选中状态也改变
                         setAllCheckBoxes(value);
                       });
@@ -158,6 +273,7 @@ class _InstalledState extends State<Installed> {
                 Padding(
                   padding: EdgeInsets.only(left: 30.w, right: 30.0.w),
                   child: Container(
+                    height: 107.h * topData.length,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),
                       color: const Color.fromARGB(255, 248, 248, 248),
@@ -181,12 +297,12 @@ class _InstalledState extends State<Installed> {
                                   Text(data['text']),
                                   const Spacer(),
                                   Checkbox(
-                                    value: selected1[index],
-                                    onChanged: (value) {
+                                    value: data['select'],
+                                    onChanged: (newValue) {
                                       setState(() {
-                                        selected1[index] = value!;
+                                        data['select'] = newValue;
+                                        deselectAll(); //取消全选
                                       });
-                                      updateAllCheckBoxes();
                                     },
                                   ),
                                 ],

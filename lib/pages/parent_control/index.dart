@@ -91,10 +91,10 @@ class _ParentState extends State<Parent> {
                       delegate: SliverChildListDelegate([
                         Padding(padding: EdgeInsets.only(top: 20.w)),
                         //今日网络使用情况
-                        InternetUsage(),
+                        const InternetUsage(),
                         Padding(padding: EdgeInsets.only(top: 20.w)),
                         //6
-                        SixBoxs(),
+                        const SixBoxs(),
                         //允许上网时间
                         const Scheduling(),
                       ]),
@@ -141,6 +141,8 @@ final List<TextEditingController> _editvalueList = []; //编辑列表
 
 //今日网络使用情况
 class InternetUsage extends StatelessWidget {
+  const InternetUsage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -152,16 +154,189 @@ class InternetUsage extends StatelessWidget {
         child: Column(
           children: [
             //第一行
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
+              children: [
                 //left
                 Text('Internet usage today'),
               ],
             ),
             Padding(padding: EdgeInsets.only(top: 60.w)),
-            const Image(
-              image: AssetImage('assets/images/butterfly.png'),
+            Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Shopping
+                    GestureDetector(
+                      onTap: () {
+                        // 在此处添加导航到其他页面的代码
+                        Get.toNamed('/Payment');
+                      },
+                      child: Container(
+                        width: 80,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(8),
+                            bottomRight: Radius.circular(8),
+                            topRight: Radius.circular(30),
+                            bottomLeft: Radius.circular(30),
+                          ),
+                          color: const Color.fromARGB(255, 88, 225, 235),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text('Shopping',
+                                style: TextStyle(
+                                    fontSize: 12, color: Colors.white)),
+                            Padding(padding: EdgeInsets.only(top: 5.w)),
+                            const Text('0 min',
+                                style: TextStyle(
+                                    fontSize: 8, color: Colors.white)),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(padding: EdgeInsets.only(left: 5.w)),
+                    // video
+                    GestureDetector(
+                      onTap: () {
+                        // 在此处添加导航到其他页面的代码
+                        Get.toNamed('/Video');
+                      },
+                      child: Container(
+                        width: 80,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(30),
+                            bottomRight: Radius.circular(30),
+                            topRight: Radius.circular(8),
+                            bottomLeft: Radius.circular(8),
+                          ),
+                          color: const Color.fromARGB(255, 238, 138, 205),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text('Video',
+                                style: TextStyle(
+                                    fontSize: 12, color: Colors.white)),
+                            Padding(padding: EdgeInsets.only(top: 5.w)),
+                            const Text('0 min',
+                                style: TextStyle(
+                                    fontSize: 8, color: Colors.white)),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Padding(padding: EdgeInsets.only(top: 5.w)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        // 在此处添加导航到其他页面的代码
+                        Get.toNamed('/Installed');
+                      },
+                      child: Container(
+                        width: 80,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(30),
+                            bottomRight: Radius.circular(30),
+                            topRight: Radius.circular(8),
+                            bottomLeft: Radius.circular(8),
+                          ),
+                          color: const Color.fromARGB(255, 241, 167, 98),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text('APP Stores',
+                                style: TextStyle(
+                                    fontSize: 12, color: Colors.white)),
+                            Padding(padding: EdgeInsets.only(top: 5.w)),
+                            const Text('0 min',
+                                style: TextStyle(
+                                    fontSize: 8, color: Colors.white)),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Padding(padding: EdgeInsets.only(left: 5.w)),
+                    // Social
+                    GestureDetector(
+                      onTap: () {
+                        // 在此处添加导航到其他页面的代码
+                        Get.toNamed('/Social');
+                      },
+                      child: Container(
+                        width: 80,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(8),
+                            bottomRight: Radius.circular(8),
+                            topRight: Radius.circular(30),
+                            bottomLeft: Radius.circular(30),
+                          ),
+                          color: const Color.fromARGB(255, 207, 124, 240),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                              offset: const Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text('Social media',
+                                style: TextStyle(
+                                    fontSize: 12, color: Colors.white)),
+                            Padding(padding: EdgeInsets.only(top: 5.w)),
+                            const Text('0 min',
+                                style: TextStyle(
+                                    fontSize: 8, color: Colors.white)),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
             Padding(padding: EdgeInsets.only(top: 60.w)),
 
@@ -559,6 +734,7 @@ class _SwiperCardState extends State<SwiperCard> {
 
 //卡片
 class SixBoxs extends StatefulWidget {
+  const SixBoxs({super.key});
   @override
   SixBoxsState createState() => SixBoxsState();
 }
@@ -661,7 +837,8 @@ class SixBoxsState extends State<SixBoxs> {
               //Video
               GestureDetector(
                 onTap: () {
-                  Get.toNamed('/Video');
+                  Get.toNamed('/Video',
+                      arguments: {'mac': MACAddress.value, 'sn': sn});
                 },
                 child: GardCard(
                     boxCotainer: Row(
@@ -703,7 +880,8 @@ class SixBoxsState extends State<SixBoxs> {
               //Social
               GestureDetector(
                 onTap: () {
-                  Get.toNamed('/Social');
+                  Get.toNamed('/Social',
+                      arguments: {'mac': MACAddress.value, 'sn': sn});
                 },
                 child: GardCard(
                     boxCotainer: Row(
@@ -742,10 +920,11 @@ class SixBoxsState extends State<SixBoxs> {
                   ],
                 )),
               ),
-              //payment
+              //shopping
               GestureDetector(
                 onTap: () {
-                  Get.toNamed('/Payment');
+                  Get.toNamed('/Payment',
+                      arguments: {'mac': MACAddress.value, 'sn': sn});
                 },
                 child: GardCard(
                     boxCotainer: Row(
@@ -784,10 +963,11 @@ class SixBoxsState extends State<SixBoxs> {
                   ],
                 )),
               ),
-              //Installed
+              //APP Stores
               GestureDetector(
                 onTap: () {
-                  Get.toNamed('/Installed');
+                  Get.toNamed('/Installed',
+                      arguments: {'mac': MACAddress.value, 'sn': sn});
                 },
                 child: GardCard(
                     boxCotainer: Row(
@@ -1075,10 +1255,10 @@ class _SchedulingState extends State<Scheduling> {
                             children: [
                               Container(
                                 margin: EdgeInsets.only(bottom: 14.sp),
-                                child: Row(
+                                child: const Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: const [],
+                                  children: [],
                                 ),
                               ),
                             ],
@@ -1096,9 +1276,9 @@ class _SchedulingState extends State<Scheduling> {
                               borderRadius:
                                   BorderRadius.all(Radius.circular(15)),
                             ),
-                            child: Row(
+                            child: const Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: const [
+                              children: [
                                 // UploadSpeed(
                                 //   rate: widget.upRate,
                                 // ),

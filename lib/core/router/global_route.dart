@@ -51,7 +51,7 @@ import 'package:flutter_template/pages/network_settings/dns_settings.dart';
 import 'package:flutter_template/pages/network_settings/lan_settings.dart';
 import 'package:flutter_template/pages/network_settings/radio_settings.dart';
 import 'package:flutter_template/pages/network_settings/wan_settings.dart';
-import 'package:flutter_template/pages/parent_control/card_list/Payment.dart';
+import 'package:flutter_template/pages/parent_control/card_list/shopping.dart';
 import 'package:flutter_template/pages/parent_control/card_list/Social.dart';
 import 'package:flutter_template/pages/parent_control/card_list/Video.dart';
 import 'package:flutter_template/pages/setting/chart_demo.dart';

@@ -181,13 +181,14 @@ class _PaymentState extends State<Payment> {
           data: {'s': json.encode(form)},
           header: {'Content-Type': 'application/x-www-form-urlencoded'});
       // print('response$response');
-      setState(() {
-        _isLoading = false;
-      });
       ToastUtils.toast(S.current.success);
     } catch (e) {
       debugPrint('失败：$e.toString()');
       ToastUtils.toast(S.current.error);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 

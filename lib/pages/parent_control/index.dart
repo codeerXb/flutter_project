@@ -880,7 +880,8 @@ class SixBoxsState extends State<SixBoxs> {
               //Social
               GestureDetector(
                 onTap: () {
-                  Get.toNamed('/Social');
+                  Get.toNamed('/Social',
+                      arguments: {'mac': MACAddress.value, 'sn': sn});
                 },
                 child: GardCard(
                     boxCotainer: Row(
@@ -919,10 +920,11 @@ class SixBoxsState extends State<SixBoxs> {
                   ],
                 )),
               ),
-              //payment
+              //shopping
               GestureDetector(
                 onTap: () {
-                  Get.toNamed('/Payment');
+                  Get.toNamed('/Payment',
+                      arguments: {'mac': MACAddress.value, 'sn': sn});
                 },
                 child: GardCard(
                     boxCotainer: Row(
@@ -961,10 +963,11 @@ class SixBoxsState extends State<SixBoxs> {
                   ],
                 )),
               ),
-              //Installed
+              //APP Stores
               GestureDetector(
                 onTap: () {
-                  Get.toNamed('/Installed');
+                  Get.toNamed('/Installed',
+                      arguments: {'mac': MACAddress.value, 'sn': sn});
                 },
                 child: GardCard(
                     boxCotainer: Row(

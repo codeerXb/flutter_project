@@ -1011,9 +1011,13 @@ class SixBoxsState extends State<SixBoxs> {
         //URL blocklist
         GestureDetector(
           onTap: () {
-            Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const Blocklist()))
-                .then((value) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const Blocklist(),
+                  settings: RouteSettings(
+                      arguments: {'mac': MACAddress.value, 'sn': sn}),
+                )).then((value) {
               setState(() {
                 getURLFilter();
               });

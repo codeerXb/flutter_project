@@ -1,8 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/config/base_config.dart';
+import 'package:flutter_template/core/http/http_app.dart';
+import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
-import 'package:flutter_template/core/widget/custom_app_bar.dart';
-import 'package:flutter_template/generated/l10n.dart';
+import 'package:get/get.dart';
+import '../../../core/widget/custom_app_bar.dart';
+import '../../../generated/l10n.dart';
 
 class Blocklist extends StatefulWidget {
   const Blocklist({super.key});
@@ -15,7 +21,7 @@ class _BlocklistState extends State<Blocklist> {
   bool? isAllSelected = false;
   final List<Map<String, dynamic>> topData = [
     {
-      'img': 'assets/images/Watch TNT.jpg',
+      'img': 'assets/images/Google.jpg',
       'text': 'Google',
       'code': '8001',
     },
@@ -25,22 +31,22 @@ class _BlocklistState extends State<Blocklist> {
       'code': '8002',
     },
     {
-      'img': 'assets/images/Netflix.jpg',
+      'img': 'assets/images/Yahoo.jpg',
       'text': 'Yahoo',
       'code': '8003',
     },
     {
-      'img': 'assets/images/Watch TNT.jpg',
+      'img': 'assets/images/Apple.jpg',
       'text': 'Apple',
       'code': '8004',
     },
     {
-      'img': 'assets/images/Watch TNT.jpg',
+      'img': 'assets/images/Reddit.jpg',
       'text': 'Reddit',
       'code': '8010',
     },
     {
-      'img': 'assets/images/Watch TNT.jpg',
+      'img': 'assets/images/Outlook.jpg',
       'text': 'Outlook',
       'code': '8011',
     },
@@ -50,32 +56,32 @@ class _BlocklistState extends State<Blocklist> {
       'code': '8012',
     },
     {
-      'img': 'assets/images/Watch TNT.jpg',
+      'img': 'assets/images/Fandom.jpg',
       'text': 'Fandom',
       'code': '8013',
     },
     {
-      'img': 'assets/images/Watch TNT.jpg',
+      'img': 'assets/images/Globo.jpg',
       'text': 'Globo',
       'code': '8015',
     },
     {
-      'img': 'assets/images/Watch TNT.jpg',
+      'img': 'assets/images/Yelp.jpg',
       'text': 'Yelp',
       'code': '8016',
     },
     {
-      'img': 'assets/images/Watch TNT.jpg',
+      'img': 'assets/images/Pinterest.jpg',
       'text': 'Pinterest',
       'code': '8017',
     },
     {
-      'img': 'assets/images/Watch TNT.jpg',
+      'img': 'assets/images/BBC.jpg',
       'text': 'BBC',
       'code': '8018',
     },
     {
-      'img': 'assets/images/Watch TNT.jpg',
+      'img': 'assets/images/Linkedin.jpg',
       'text': 'Linkedin',
       'code': '8020',
     },
@@ -85,12 +91,12 @@ class _BlocklistState extends State<Blocklist> {
       'code': '8022',
     },
     {
-      'img': 'assets/images/Watch TNT.jpg',
+      'img': 'assets/images/Dictionary.jpg',
       'text': 'Dictionary',
       'code': '8027',
     },
     {
-      'img': 'assets/images/Watch TNT.jpg',
+      'img': 'assets/images/Tripadvisor.jpg',
       'text': 'Tripadvisor',
       'code': '8028',
     },
@@ -100,27 +106,27 @@ class _BlocklistState extends State<Blocklist> {
       'code': '8029',
     },
     {
-      'img': 'assets/images/Watch TNT.jpg',
+      'img': 'assets/images/Cambridge.jpg',
       'text': 'Cambridge',
       'code': '8030',
     },
     {
-      'img': 'assets/images/Watch TNT.jpg',
+      'img': 'assets/images/Weather.jpg',
       'text': 'Weather',
       'code': '8032',
     },
     {
-      'img': 'assets/images/Watch TNT.jpg',
+      'img': 'assets/images/Wiktionary.jpg',
       'text': 'Wiktionary',
       'code': '8033',
     },
     {
-      'img': 'assets/images/Watch TNT.jpg',
+      'img': 'assets/images/Espn.jpg',
       'text': 'Espn',
       'code': '8034',
     },
     {
-      'img': 'assets/images/Watch TNT.jpg',
+      'img': 'assets/images/Microsoft.jpg',
       'text': 'Microsoft',
       'code': '8035',
     },
@@ -130,27 +136,27 @@ class _BlocklistState extends State<Blocklist> {
       'code': '8038',
     },
     {
-      'img': 'assets/images/Watch TNT.jpg',
+      'img': 'assets/images/Webmd.jpg',
       'text': 'Webmd',
       'code': '8039',
     },
     {
-      'img': 'assets/images/Watch TNT.jpg',
+      'img': 'assets/images/Craigslist.jpg',
       'text': 'Craigslist',
       'code': '8040',
     },
     {
-      'img': 'assets/images/Watch TNT.jpg',
+      'img': 'assets/images/Cricbuzz.jpg',
       'text': 'Cricbuzz',
       'code': '8041',
     },
     {
-      'img': 'assets/images/Watch TNT.jpg',
+      'img': 'assets/images/Mayoclinic.jpg',
       'text': 'Mayoclinic',
       'code': '8042',
     },
     {
-      'img': 'assets/images/Watch TNT.jpg',
+      'img': 'assets/images/Timeanddate.jpg',
       'text': 'Timeanddate',
       'code': '8043',
     },
@@ -160,7 +166,7 @@ class _BlocklistState extends State<Blocklist> {
       'code': '8044',
     },
     {
-      'img': 'assets/images/Watch TNT.jpg',
+      'img': 'assets/images/Healthline.jpg',
       'text': 'Healthline',
       'code': '8045',
     },
@@ -175,12 +181,12 @@ class _BlocklistState extends State<Blocklist> {
       'code': '8049',
     },
     {
-      'img': 'assets/images/Watch TNT.jpg',
+      'img': 'assets/images/Bestbuy.jpg',
       'text': 'Bestbuy',
       'code': '8052',
     },
     {
-      'img': 'assets/images/Watch TNT.jpg',
+      'img': 'assets/images/Indeed.jpg',
       'text': 'Indeed',
       'code': '8053',
     },
@@ -195,7 +201,7 @@ class _BlocklistState extends State<Blocklist> {
       'code': '8059',
     },
     {
-      'img': 'assets/images/Watch TNT.jpg',
+      'img': 'assets/images/Flashscore.jpg',
       'text': 'Flashscore',
       'code': '8060',
     },
@@ -205,12 +211,12 @@ class _BlocklistState extends State<Blocklist> {
       'code': '8061',
     },
     {
-      'img': 'assets/images/Watch TNT.jpg',
+      'img': 'assets/images/Roblox.jpg',
       'text': 'Roblox',
       'code': '8064',
     },
     {
-      'img': 'assets/images/Watch TNT.jpg',
+      'img': 'assets/images/Nordstrom.jpg',
       'text': 'Nordstrom',
       'code': '8065',
     },
@@ -220,12 +226,12 @@ class _BlocklistState extends State<Blocklist> {
       'code': '8066',
     },
     {
-      'img': 'assets/images/Watch TNT.jpg',
+      'img': 'assets/images/Indiatimes.jpg',
       'text': 'Indiatimes',
       'code': '8067',
     },
     {
-      'img': 'assets/images/Watch TNT.jpg',
+      'img': 'assets/images/Cnbc.jpg',
       'text': 'Cnbc',
       'code': '8068',
     },
@@ -235,17 +241,17 @@ class _BlocklistState extends State<Blocklist> {
       'code': '8069',
     },
     {
-      'img': 'assets/images/Watch TNT.jpg',
+      'img': 'assets/images/Adobe.jpg',
       'text': 'Adobe',
       'code': '8070',
     },
     {
-      'img': 'assets/images/Watch TNT.jpg',
+      'img': 'assets/images/Speedtest.jpg',
       'text': 'Speedtest',
       'code': '8071',
     },
     {
-      'img': 'assets/images/Watch TNT.jpg',
+      'img': 'assets/images/Lowes.jpg',
       'text': 'Lowes',
       'code': '8072',
     },
@@ -258,11 +264,15 @@ class _BlocklistState extends State<Blocklist> {
   final TextEditingController _textEditingController = TextEditingController();
   // url
   String url = '';
-
+  dynamic mac = Get.arguments['mac'];
+  dynamic sn = Get.arguments['sn'];
+  dynamic formParam = ''; //传输给后台的param
+  List<String> allCodes = [];
   @override
   void initState() {
     super.initState();
     itemSelections = List.generate(topData.length, (index) => false);
+    getParentControlConfigFn();
   }
 
   /// 点击空白  关闭输入键盘
@@ -284,7 +294,7 @@ class _BlocklistState extends State<Blocklist> {
   }
 
   // _isLoading
-  final bool _isLoading = false;
+  bool _isLoading = false;
   void warningReboot(Function save) {
     showDialog(
       context: context,
@@ -315,26 +325,66 @@ class _BlocklistState extends State<Blocklist> {
 
   Future<void> _saveData() async {
     setState(() {
-      // _isLoading = true;
+      _isLoading = true;
     });
     closeKeyboard(context);
-    // if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
-    //   // 云端请求赋值
-    //   await setTRLanData();
-    // }
-    // if (loginController.login.state == 'local') {
-    //   // 本地请求赋值
-    //   if (isCheckVal == '1') {
-    //     getLanSettingSubmit();
-    //   } else {
-    //     getLanSetting();
-    //   }
-    // }
+    // setParentControlConfigFn();
+
     setState(() {
-      // _isLoading = false;
+      _isLoading = false;
       Navigator.pop(context);
     });
     return;
+  }
+
+  //获取配置
+  void getParentControlConfigFn() async {
+    try {
+      var response = await App.post(
+          '${BaseConfig.cloudBaseUrl}/parentControl/getParentControlConfig',
+          data: {'sn': sn, "mac": mac});
+      printInfo(info: 'sn$sn,mac$mac');
+
+      var d = json.decode(response.toString());
+      printInfo(info: 'D$d');
+      setState(() {
+        // formParam = d['data'];
+        // // 遍历白名单列表
+        // d['data']['rules']['websiteapps'].split(' ').forEach((item) {
+        //   //遍历数据如果包含
+        //   for (var element in topData) {
+        //     if (element['code'] == item) {
+        //       // element['select'] = true;
+        //     }
+        //   }
+        // });
+      });
+    } catch (e) {
+      debugPrint('失败：$e.toString()');
+    }
+  }
+
+  //下发配置
+  void setParentControlConfigFn() async {
+    try {
+      var form = {
+        'event': 'setParentControlConfig',
+        'sn': sn,
+        "param": formParam
+      };
+      await App.post(
+          '${BaseConfig.cloudBaseUrl}/parentControl/setParentControlConfig',
+          data: {'s': json.encode(form)},
+          header: {'Content-Type': 'application/x-www-form-urlencoded'});
+      // print('response$response');
+      setState(() {
+        _isLoading = false;
+      });
+      ToastUtils.toast(S.current.success);
+    } catch (e) {
+      debugPrint('失败：$e.toString()');
+      ToastUtils.toast(S.current.error);
+    }
   }
 
   @override
@@ -473,6 +523,13 @@ class _BlocklistState extends State<Blocklist> {
                     // 设置两个list view中每个checkbox的选中状态
                     itemSelections =
                         List.generate(topData.length, (index) => value);
+                    if (isAllSelected != null && isAllSelected!) {
+                      allCodes = topData
+                          .map((item) => item['code'].toString())
+                          .toList();
+                      // 在这里使用 allCodes 变量
+                      print(allCodes);
+                    }
                   });
                 },
               ),
@@ -492,23 +549,25 @@ class _BlocklistState extends State<Blocklist> {
               child: ListView.builder(
                 itemCount: topData.length,
                 itemBuilder: (context, index) {
-                  return CheckboxListTile(
-                    value: itemSelections[index] ?? false,
-                    onChanged: (value) {
-                      setState(() {
-                        itemSelections[index] = value;
-                        isAllSelected =
-                            itemSelections.every((item) => item ?? false);
-                        if (value == true) {
-                          print('选中了：${topData[index]}');
-                        } else {
-                          print('取消选中：${topData[index]}');
-                        }
-                      });
-                    },
-                    title: Text(topData[index]['text']),
-                    subtitle: Text(topData[index]['code']),
-                    secondary: Image.asset(topData[index]['img']),
+                  return Container(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: CheckboxListTile(
+                      value: itemSelections[index] ?? false,
+                      onChanged: (value) {
+                        setState(() {
+                          itemSelections[index] = value;
+                          isAllSelected =
+                              itemSelections.every((item) => item ?? false);
+                          if (value == true) {
+                            print('选中了：${topData[index]['code']}');
+                          } else {
+                            print('取消选中：${topData[index]['code']}');
+                          }
+                        });
+                      },
+                      title: Text(topData[index]['text']),
+                      secondary: Image.asset(topData[index]['img']),
+                    ),
                   );
                 },
               ),

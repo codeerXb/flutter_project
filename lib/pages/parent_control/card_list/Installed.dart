@@ -36,47 +36,47 @@ class _InstalledState extends State<Installed> {
 
   List<Map<String, dynamic>> topData = [
     {
-      'img': 'assets/images/Google Play.png',
+      'img': 'assets/images/GooglePlay.webp',
       'text': 'Google Play',
       'code': '7001',
       'select': false,
     },
     {
-      'img': 'assets/images/Amazon Appstore.jpg',
+      'img': 'assets/images/Appstore.jpg',
       'text': 'Appstore',
       'code': '7002',
       'select': false,
     },
+    // {
+    //   'img': 'assets/images/WindowsUpdate.jpg',
+    //   'text': 'WindowsUpdate',
+    //   'code': '7003',
+    //   'select': false,
+    // },
     {
-      'img': 'assets/images/Amazon Appstore.jpg',
-      'text': 'WindowsUpdate',
-      'code': '7003',
-      'select': false,
-    },
-    {
-      'img': 'assets/images/Amazon Appstore.jpg',
+      'img': 'assets/images/Speedtest.jpg',
       'text': 'Speedtest',
       'code': '7050',
       'select': false,
     },
     {
-      'img': 'assets/images/Amazon Appstore.jpg',
+      'img': 'assets/images/samba.jpg',
       'text': 'samba',
       'code': '7060',
       'select': false,
     },
     {
-      'img': 'assets/images/Amazon Appstore.jpg',
+      'img': 'assets/images/ftp.jpg',
       'text': 'ftp',
       'code': '7061',
       'select': false,
     },
-    {
-      'img': 'assets/images/Amazon Appstore.jpg',
-      'text': 'ssh',
-      'code': '7062',
-      'select': false,
-    },
+    // {
+    //   'img': 'assets/images/ssh.jpg',
+    //   'text': 'ssh',
+    //   'code': '7062',
+    //   'select': false,
+    // },
     // ...
   ];
   void setAllCheckBoxes(bool value) {

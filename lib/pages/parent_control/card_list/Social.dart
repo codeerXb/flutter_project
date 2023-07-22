@@ -36,13 +36,13 @@ class _SocialState extends State<Social> {
 
   List<Map<String, dynamic>> topData = [
     {
-      'img': 'assets/images/Face book.jpg',
-      'text': 'Face book',
+      'img': 'assets/images/Facebook.jpg',
+      'text': 'Facebook',
       'code': '1001',
       'select': false,
     },
     {
-      'img': 'assets/images/Face book.jpg',
+      'img': 'assets/images/Whatsapp.jpg',
       'text': 'Whatsapp',
       'code': '1002',
       'select': false,
@@ -60,25 +60,25 @@ class _SocialState extends State<Social> {
       'select': false,
     },
     {
-      'img': 'assets/images/Instagram.jpg',
+      'img': 'assets/images/VK.png',
       'text': 'VK',
       'code': '1005',
       'select': false,
     },
     {
-      'img': 'assets/images/Instagram.jpg',
+      'img': 'assets/images/Line.jpg',
       'text': 'Line',
       'code': '1006',
       'select': false,
     },
     {
-      'img': 'assets/images/Instagram.jpg',
+      'img': 'assets/images/Snapchat.jpg',
       'text': 'Snapchat',
       'code': '1007',
       'select': false,
     },
     {
-      'img': 'assets/images/Instagram.jpg',
+      'img': 'assets/images/Tinder.jpg',
       'text': 'Tinder',
       'code': '1008',
       'select': false,

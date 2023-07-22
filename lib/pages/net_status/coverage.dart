@@ -14,34 +14,8 @@ import '../../core/widget/custom_app_bar.dart';
 import '../../generated/l10n.dart';
 import 'package:card_swiper/card_swiper.dart';
 
-// 获取房屋信号数据
-Future<List> getDataAPI(CancelToken cancelToken) async {
-  try {
-    var sn = await sharedGetData('deviceSn', String);
-    var data = await App.get(
-        '/platform/wifiJson/getOne/$sn', {"cancelToken": cancelToken});
-    List list = List.from(data['wifiJson']['list']).toList();
-    return list;
-  } catch (err) {
-    debugPrint(err.toString());
-  }
-  // 没有数据的时候返回默认的户型图
-  return [
-    {
-      "offsetX": 1198.0,
-      "offsetY": 1200.0,
-      "width": 100.0,
-      "height": 100.0,
-      "name": "living room",
-      "floor": "1F",
-      "id": 0,
-    }
-  ];
-}
-
 class TestEdit extends StatefulWidget {
   const TestEdit({Key? key}) : super(key: key);
-
   @override
   State<StatefulWidget> createState() => _TestEditState();
 }
@@ -88,8 +62,41 @@ class _TestEditState extends State<TestEdit> {
         .sort((a, b) => a.first['floorId'].compareTo(b.first['floorId']));
     // 清空默认数据
     List<Widget> layoutWidgetTemp = [];
+
     for (var i = 0; i < layoutListTemp.length; i++) {
-      layoutWidgetTemp.add(CoverChart(floorInfo: layoutListTemp, index: i));
+      // 计算放置所有方块之后占用的宽高
+      double left = double.infinity;
+      double right = double.negativeInfinity;
+      double top = double.infinity;
+      double bottom = double.negativeInfinity;
+
+      for (var block in layoutListTemp[i]) {
+        if (block['offsetX'] - 1200 < left) {
+          left = block['offsetX'] - 1200;
+        }
+        if (block['offsetX'] - 1200 + block['width'] > right) {
+          right = block['offsetX'] - 1200 + block['width'];
+        }
+        if (block['offsetY'] - 1200 < top) {
+          top = block['offsetY'] - 1200;
+        }
+        if (block['offsetY'] - 1200 + block['height'] > bottom) {
+          bottom = block['offsetY'] - 1200 + block['height'];
+        }
+      }
+
+      double totalWidth = right - left;
+      double totalHeight = bottom - top;
+
+      /// 计算绘制缩放比例,用于“Dectection and Editing”页面展示，将原有图形放大或者缩小
+      /// 但是这里的totalWidth和totalHeight并不是对应到实际的数值，而是绘制户型图时绘制的原始值
+      /// *这里计算比例是为了绘制不出现偏差
+      double scale = totalWidth / (1.sw - 40) > totalHeight / (600.w - 40)
+          ? (1.sw - 40) / totalWidth
+          : (600.w - 40) / totalHeight;
+      debugPrint('文字的坐标$scale');
+      layoutWidgetTemp
+          .add(CoverChart(floorInfo: layoutListTemp, index: i, scale: scale));
     }
     setState(() {
       layoutList = layoutListTemp;
@@ -122,6 +129,7 @@ class _TestEditState extends State<TestEdit> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        // 渐变图例
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -159,6 +167,7 @@ class _TestEditState extends State<TestEdit> {
             ),
           ],
         ),
+        // 覆盖图
         Stack(
           children: [
             if (loading)
@@ -195,12 +204,19 @@ class _TestEditState extends State<TestEdit> {
                   children: layoutWidget,
                 ),
               ),
+            // 编辑按钮
             Positioned(
               bottom: 22.5,
               right: 20,
               child: InkWell(
-                onTap: () {
-                  Get.toNamed('/signal_cover', arguments: {'homepage': true});
+                onTap: () async {
+                  var res = await Get.toNamed('/signal_cover',
+                      arguments: {'homepage': true});
+                  if (res == null) {
+                    // 返回的都是null
+                    // 那么只要返回就执行
+                    getData();
+                  }
                 },
                 child: Container(
                   height: 30,
@@ -223,27 +239,17 @@ class _TestEditState extends State<TestEdit> {
   }
 }
 
-// 获取对应楼层房屋信号数据
-Future<dynamic> getData(floorIndex) async {
-  try {
-    var sn = await sharedGetData('deviceSn', String);
-    var data = await App.get('/platform/wifiJson/getOne/$sn');
-    List<dynamic> filteredList = List.from(data['wifiJson']['list'])
-        .where((item) => item['floorId'] == floorIndex.toString())
-        .toList();
-    return filteredList;
-  } catch (err) {
-    debugPrint(err.toString());
-  }
-  return null;
-}
-
 // --- 信号强度覆盖图（热力图） ---
 class CoverChart extends StatefulWidget {
-  const CoverChart({Key? key, required this.floorInfo, required this.index})
+  const CoverChart(
+      {Key? key,
+      required this.floorInfo,
+      required this.index,
+      required this.scale})
       : super(key: key);
   final List floorInfo;
   final int index;
+  final double scale;
 
   @override
   State<StatefulWidget> createState() => _CoverChartState();
@@ -274,16 +280,17 @@ class _CoverChartState extends State<CoverChart> {
           height: 600.w,
           width: 1.sw,
           child: CustomPaint(
-            painter: Layout(data),
+            painter: Layout(data, widget.scale),
           ),
         ),
+        // 设备位置
         Positioned(
           left: (data.isNotEmpty && data[0]['routerX'] != null)
               ? data[0]['routerX']
-              : 0.5.sw,
+              : 0.5.sw - 20,
           top: (data.isNotEmpty && data[0]['routerY'] != null)
               ? data[0]['routerY']
-              : 300.w,
+              : 300.w - 20,
           child: Image.asset('assets/images/icon_homepage_route.png'),
         ),
       ],
@@ -293,8 +300,9 @@ class _CoverChartState extends State<CoverChart> {
 
 // --- 房型图 ---
 class Layout extends CustomPainter {
-  Layout(this.floorInfo) : super();
+  Layout(this.floorInfo, this.scale) : super();
   final List<dynamic> floorInfo;
+  double scale;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -308,7 +316,6 @@ class Layout extends CustomPainter {
       ..style = PaintingStyle.fill;
 
     List<dynamic> data = floorInfo;
-
     // 计算放置所有方块之后占用的宽高
     double left = double.infinity;
     double right = double.negativeInfinity;
@@ -333,20 +340,13 @@ class Layout extends CustomPainter {
     double totalWidth = right - left;
     double totalHeight = bottom - top;
 
-    /// 计算绘制缩放比例,用于“Dectection and Editing”页面展示，将原有图形放大或者缩小
-    /// 但是这里的totalWidth和totalHeight并不是对应到实际的数值，而是绘制户型图时绘制的原始值
-    /// *这里计算比例是为了绘制不出现偏差
-    double scale = totalWidth / 1.sw > totalHeight / (600.w - 20)
-        ? 1.sw / totalWidth
-        : (600.w - 20) / totalHeight;
-
     for (var item in data) {
       // 绘制矩形
       // 最终偏移距离应该是（容器宽度-layout宽度*scale）/2
       canvas.save();
       final pathRect = Path();
       final x =
-          (item['offsetX'] - 1200) * scale + (1.sw - totalWidth * scale) / 3;
+          (item['offsetX'] - 1200) * scale + (1.sw - totalWidth * scale) / 2;
       final y = (item['offsetY'] - 1200) * scale + 8;
       final width = item['width'] * scale;
       final height = item['height'] * scale;
@@ -472,7 +472,7 @@ class Layout extends CustomPainter {
           ..style = PaintingStyle.fill;
 
         canvas.clipPath(pathRect);
-        canvas.drawCircle(center, 1.sw, paintc);
+        canvas.drawCircle(center, double.parse(d.toString()), paintc);
       }
 
       canvas.drawPath(pathRect, paint);
@@ -482,7 +482,7 @@ class Layout extends CustomPainter {
       // 绘制文字
       var paragraphBuilder = ParagraphBuilder(ParagraphStyle(
         textAlign: TextAlign.center,
-        fontSize: 16,
+        fontSize: 12,
         textDirection: TextDirection.ltr,
       ))
         ..pushStyle(
@@ -500,11 +500,13 @@ class Layout extends CustomPainter {
         paragraph,
         Offset(
             (item['offsetX'] - 1200) * scale +
-                item['width'] * scale / 2 +
-                (1.sw - totalWidth * scale) / 2 -
+                (1.sw - totalWidth * scale) / 2 +
+                item['width'] * scale / 2 -
                 25,
             (item['offsetY'] - 1200) * scale + item['height'] * scale / 2 - 8),
       );
+      debugPrint(
+          '文字的坐标${Offset((item['offsetX'] - 1200) * scale + item['width'] * scale / 2 + (1.sw - totalWidth * scale) / 2 - 25, (item['offsetY'] - 1200) * scale + item['height'] * scale / 2 - 8)}');
     }
   }
 
@@ -512,4 +514,44 @@ class Layout extends CustomPainter {
   bool shouldRepaint(Layout oldDelegate) {
     return true;
   }
+}
+
+// 获取房屋信号数据
+Future<List> getDataAPI(CancelToken cancelToken) async {
+  try {
+    var sn = await sharedGetData('deviceSn', String);
+    var data = await App.get(
+        '/platform/wifiJson/getOne/$sn', {"cancelToken": cancelToken});
+    List list = List.from(data['wifiJson']['list']).toList();
+    return list;
+  } catch (err) {
+    debugPrint(err.toString());
+  }
+  // 没有数据的时候返回默认的户型图
+  return [
+    {
+      "offsetX": 1198.0,
+      "offsetY": 1200.0,
+      "width": 100.0,
+      "height": 100.0,
+      "name": "living room",
+      "floor": "1F",
+      "id": 0,
+    }
+  ];
+}
+
+// 获取对应楼层房屋信号数据
+Future<dynamic> getData(floorIndex) async {
+  try {
+    var sn = await sharedGetData('deviceSn', String);
+    var data = await App.get('/platform/wifiJson/getOne/$sn');
+    List<dynamic> filteredList = List.from(data['wifiJson']['list'])
+        .where((item) => item['floorId'] == floorIndex.toString())
+        .toList();
+    return filteredList;
+  } catch (err) {
+    debugPrint(err.toString());
+  }
+  return null;
 }

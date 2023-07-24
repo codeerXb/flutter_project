@@ -258,6 +258,7 @@ class _BlocklistState extends State<Blocklist> {
   ];
 
   late List<bool?> itemSelections;
+  List<String> selectedWebsites = [];
   // Enable
   bool isEnable = false;
   // 搜索框
@@ -295,40 +296,42 @@ class _BlocklistState extends State<Blocklist> {
 
   // _isLoading
   bool _isLoading = false;
-  void warningReboot(Function save) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Warning'),
-          content: const Text(
-              'It is a warning action, because device will reboot. Confirm to save it?'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text('Save'),
-              onPressed: () {
-                save();
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+  // void warningReboot(Function save) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return AlertDialog(
+  //         title: const Text('Warning'),
+  //         content: const Text(
+  //             'It is a warning action, because device will reboot. Confirm to save it?'),
+  //         actions: <Widget>[
+  //           TextButton(
+  //             child: const Text('Cancel'),
+  //             onPressed: () {
+  //               Navigator.of(context).pop();
+  //             },
+  //           ),
+  //           TextButton(
+  //             child: const Text('Save'),
+  //             onPressed: () {
+  //               save();
+  //               Navigator.of(context).pop();
+  //             },
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 
   Future<void> _saveData() async {
     setState(() {
       _isLoading = true;
     });
     closeKeyboard(context);
-    // setParentControlConfigFn();
+    printInfo(info: '111111');
+
+    setParentControlConfigFn();
 
     setState(() {
       _isLoading = false;
@@ -343,13 +346,13 @@ class _BlocklistState extends State<Blocklist> {
       var response = await App.post(
           '${BaseConfig.cloudBaseUrl}/parentControl/getParentControlConfig',
           data: {'sn': sn, "mac": mac});
-      printInfo(info: 'sn$sn,mac$mac');
 
       var d = json.decode(response.toString());
-      printInfo(info: 'D$d');
       setState(() {
-        // formParam = d['data'];
-        // // 遍历白名单列表
+        formParam = d['data'];
+        printInfo(info: 'formParam$formParam');
+
+        // 遍历白名单列表
         // d['data']['rules']['websiteapps'].split(' ').forEach((item) {
         //   //遍历数据如果包含
         //   for (var element in topData) {
@@ -358,6 +361,23 @@ class _BlocklistState extends State<Blocklist> {
         //     }
         //   }
         // });
+        // 遍历白名单列表
+        if (formParam['rules']['websiteapps'] != null) {
+          List<String> websiteapps =
+              formParam['rules']['websiteapps'].split(' ');
+          for (int i = 0; i < topData.length; i++) {
+            for (int i = 0; i < topData.length; i++) {
+              if (websiteapps.contains(topData[i]['code'])) {
+                itemSelections[i] = true;
+              } else {
+                itemSelections[i] = false;
+              }
+            }
+          }
+        }
+        printInfo(info: 'formParam11111$formParam');
+        // 更改enable状态
+        isEnable = formParam['enable'] == '1' ? true : false;
       });
     } catch (e) {
       debugPrint('失败：$e.toString()');
@@ -372,14 +392,20 @@ class _BlocklistState extends State<Blocklist> {
         'sn': sn,
         "param": formParam
       };
-      await App.post(
+      printInfo(info: 'form$form');
+
+      var res = await App.post(
           '${BaseConfig.cloudBaseUrl}/parentControl/setParentControlConfig',
           data: {'s': json.encode(form)},
           header: {'Content-Type': 'application/x-www-form-urlencoded'});
-      // print('response$response');
-      setState(() {
-        _isLoading = false;
-      });
+      printInfo(info: 'res$res');
+      var jsonObj = jsonDecode(res);
+      if (jsonObj['code'] == 200) {
+        ToastUtils.toast('success');
+      } else {
+        ToastUtils.error('Task Failed');
+      }
+
       ToastUtils.toast(S.current.success);
     } catch (e) {
       debugPrint('失败：$e.toString()');
@@ -407,7 +433,7 @@ class _BlocklistState extends State<Blocklist> {
             Container(
               margin: EdgeInsets.all(20.w),
               child: OutlinedButton(
-                onPressed: () => warningReboot(_saveData),
+                onPressed: () => _saveData(),
                 child: Row(
                   children: [
                     if (_isLoading)
@@ -466,7 +492,7 @@ class _BlocklistState extends State<Blocklist> {
                       onChanged: (newVal) {
                         setState(() {
                           isEnable = newVal;
-                          // editEnable();
+                          formParam['enable'] = isEnable == true ? '1' : '2';
                         });
                       },
                     ),
@@ -520,7 +546,6 @@ class _BlocklistState extends State<Blocklist> {
                 onChanged: (value) {
                   setState(() {
                     isAllSelected = value!;
-                    // 设置两个list view中每个checkbox的选中状态
                     itemSelections =
                         List.generate(topData.length, (index) => value);
                     if (isAllSelected != null && isAllSelected!) {
@@ -559,9 +584,14 @@ class _BlocklistState extends State<Blocklist> {
                           isAllSelected =
                               itemSelections.every((item) => item ?? false);
                           if (value == true) {
-                            print('选中了：${topData[index]['code']}');
+                            selectedWebsites.add(topData[index]['code']);
+                            formParam['rules']['websiteapps']
+                                .add(selectedWebsites.join(' '));
+                            printInfo(info: 'formParam$formParam');
                           } else {
-                            print('取消选中：${topData[index]['code']}');
+                            selectedWebsites.remove(topData[index]['code']);
+                            formParam['rules']['websiteapps'] =
+                                selectedWebsites.join(' ');
                           }
                         });
                       },

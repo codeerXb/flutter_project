@@ -350,17 +350,6 @@ class _BlocklistState extends State<Blocklist> {
       var d = json.decode(response.toString());
       setState(() {
         formParam = d['data'];
-        printInfo(info: 'formParam$formParam');
-
-        // 遍历白名单列表
-        // d['data']['rules']['websiteapps'].split(' ').forEach((item) {
-        //   //遍历数据如果包含
-        //   for (var element in topData) {
-        //     if (element['code'] == item) {
-        //       // element['select'] = true;
-        //     }
-        //   }
-        // });
         // 遍历白名单列表
         if (formParam['rules']['websiteapps'] != null) {
           List<String> websiteapps =
@@ -375,7 +364,6 @@ class _BlocklistState extends State<Blocklist> {
             }
           }
         }
-        printInfo(info: 'formParam11111$formParam');
         // 更改enable状态
         isEnable = formParam['enable'] == '1' ? true : false;
       });
@@ -585,13 +573,38 @@ class _BlocklistState extends State<Blocklist> {
                               itemSelections.every((item) => item ?? false);
                           if (value == true) {
                             selectedWebsites.add(topData[index]['code']);
-                            formParam['rules']['websiteapps']
-                                .add(selectedWebsites.join(' '));
-                            printInfo(info: 'formParam$formParam');
-                          } else {
-                            selectedWebsites.remove(topData[index]['code']);
+                            // 判断 websiteapps 是否包含值
+                            if (formParam['rules']['websiteapps'] != null &&
+                                formParam['rules']['websiteapps'].isNotEmpty) {
+                              // 将 websiteapps 中已有的值添加到 selectedWebsites 中
+                              List<String> websiteapps =
+                                  formParam['rules']['websiteapps'].split(' ');
+                              for (String websiteapp in websiteapps) {
+                                if (!selectedWebsites.contains(websiteapp)) {
+                                  selectedWebsites.add(websiteapp);
+                                }
+                              }
+                            }
+                            // 将 selectedWebsites 中的值连接成字符串，并赋值给 websiteapps
                             formParam['rules']['websiteapps'] =
                                 selectedWebsites.join(' ');
+                          } else {
+                            // formParam['rules']['websiteapps']
+                            //     .remove(topData[index]['code']);
+                            if (formParam['rules']['websiteapps'] != null &&
+                                formParam['rules']['websiteapps'].isNotEmpty) {
+                              List<String> websiteapps =
+                                  formParam['rules']['websiteapps'].split(' ');
+                              printInfo(info: 'websiteapps$websiteapps');
+                              // printInfo(info: 'websiteapp$websiteapp');
+
+                              websiteapps.remove(topData[index]['code']);
+                              printInfo(info: 'websiteapps22222$websiteapps');
+
+                              // formParam['rules']['websiteapps'] =
+                              //     websiteapps.join(' ');
+                            }
+                            // printInfo(info: 'formParam$formParam');
                           }
                         });
                       },

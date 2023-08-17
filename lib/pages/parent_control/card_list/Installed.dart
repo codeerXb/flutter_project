@@ -117,8 +117,7 @@ class _InstalledState extends State<Installed> {
   //获取配置
   void getParentControlConfigFn() async {
     try {
-      var response = await App.post(
-          '${BaseConfig.cloudBaseUrl}/parentControl/getParentControlConfig',
+      var response = await App.post('/parentControl/getParentControlConfig',
           data: {'sn': sn, "mac": mac});
       var d = json.decode(response.toString());
       setState(() {
@@ -147,8 +146,7 @@ class _InstalledState extends State<Installed> {
         'sn': sn,
         "param": formParam
       };
-      await App.post(
-          '${BaseConfig.cloudBaseUrl}/parentControl/setParentControlConfig',
+      await App.post('/parentControl/setParentControlConfig',
           data: {'s': json.encode(form)},
           header: {'Content-Type': 'application/x-www-form-urlencoded'});
       // print('response$response');

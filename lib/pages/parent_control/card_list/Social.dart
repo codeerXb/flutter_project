@@ -26,7 +26,7 @@ class _SocialState extends State<Social> {
     FocusScope.of(context).requestFocus(blankNode);
   }
 
-  bool? allChecked = false; // 用于表示Checkbox的选中状态
+  bool? allChecked = true; // 用于表示Checkbox的选中状态
   bool _isLoading = false;
   dynamic mac = Get.arguments['mac'];
   dynamic sn = Get.arguments['sn'];
@@ -39,49 +39,49 @@ class _SocialState extends State<Social> {
       'img': 'assets/images/Facebook.jpg',
       'text': 'Facebook',
       'code': '1001',
-      'select': false,
+      'select': true,
     },
     {
       'img': 'assets/images/Whatsapp.jpg',
       'text': 'Whatsapp',
       'code': '1002',
-      'select': false,
+      'select': true,
     },
     {
       'img': 'assets/images/Twitter.jpg',
       'text': 'Twitter',
       'code': '1003',
-      'select': false,
+      'select': true,
     },
     {
       'img': 'assets/images/Instagram.jpg',
       'text': 'Instagram',
       'code': '1004',
-      'select': false,
+      'select': true,
     },
     {
       'img': 'assets/images/VK.png',
       'text': 'VK',
       'code': '1005',
-      'select': false,
+      'select': true,
     },
     {
       'img': 'assets/images/Line.jpg',
       'text': 'Line',
       'code': '1006',
-      'select': false,
+      'select': true,
     },
     {
       'img': 'assets/images/Snapchat.jpg',
       'text': 'Snapchat',
       'code': '1007',
-      'select': false,
+      'select': true,
     },
     {
       'img': 'assets/images/Tinder.jpg',
       'text': 'Tinder',
       'code': '1008',
-      'select': false,
+      'select': true,
     },
   ];
   void setAllCheckBoxes(bool value) {
@@ -277,47 +277,48 @@ class _SocialState extends State<Social> {
                 // ),
                 Padding(
                   padding: EdgeInsets.only(left: 30.w, right: 30.0.w),
-                  child: Container(
-                      height: 107.h * topData.length,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      color: const Color.fromARGB(255, 248, 248, 248),
-                    ),
-                    child: Column(
-                      children: topData.map((data) {
-                        final index = topData.indexOf(data);
-                        return Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 16),
-                              child: Row(
-                                children: [
-                                  Image.asset(
-                                    data['img'],
-                                    width: 50,
-                                    height: 50,
-                                  ),
-                                  const SizedBox(width: 16),
-                                  Text(data['text']),
-                                  const Spacer(),
-                                  Checkbox(
-                                    value: data['select'],
-                                    onChanged: (newValue) {
-                                      setState(() {
-                                        data['select'] = newValue;
-                                        deselectAll(); //取消全选
-                                      });
-                                    },
-                                  ),
-                                ],
+                  child: SingleChildScrollView(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        color: const Color.fromARGB(255, 248, 248, 248),
+                      ),
+                      child: Column(
+                        children: topData.map((data) {
+                          final index = topData.indexOf(data);
+                          return Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 16),
+                                child: Row(
+                                  children: [
+                                    Image.asset(
+                                      data['img'],
+                                      width: 50,
+                                      height: 50,
+                                    ),
+                                    const SizedBox(width: 16),
+                                    Text(data['text']),
+                                    const Spacer(),
+                                    Checkbox(
+                                      value: data['select'],
+                                      onChanged: (newValue) {
+                                        setState(() {
+                                          data['select'] = newValue;
+                                          deselectAll(); //取消全选
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            if (index != topData.length - 1)
-                              const Divider(height: 1),
-                          ],
-                        );
-                      }).toList(),
+                              if (index != topData.length - 1)
+                                const Divider(height: 1),
+                            ],
+                          );
+                        }).toList(),
+                      ),
                     ),
                   ),
                 ),

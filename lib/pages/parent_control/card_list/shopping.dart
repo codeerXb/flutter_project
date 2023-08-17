@@ -45,7 +45,7 @@ class _PaymentState extends State<Payment> {
   dynamic mac = Get.arguments['mac'];
   dynamic sn = Get.arguments['sn'];
   dynamic formParam = ''; //传输给后台的param
-  bool? allChecked = false;
+  bool? allChecked = true;
 
   final TextEditingController _textEditingController = TextEditingController();
 
@@ -54,74 +54,74 @@ class _PaymentState extends State<Payment> {
       'img': 'assets/images/Amazon.jpg',
       'text': 'Amazon',
       'code': '4001',
-      'select': false,
+      'select': true,
     },
     {
       'img': 'assets/images/eBay.jpg',
       'text': 'eBay',
       'code': '4002',
-      'select': false,
+      'select': true,
     },
     {
       'img': 'assets/images/Etsy.jpg',
       'text': 'Etsy',
       'code': '4003',
-      'select': false,
+      'select': true,
     },
     {
       'img': 'assets/images/Wish.jpg',
       'text': 'Wish',
       'code': '4004',
-      'select': false,
+      'select': true,
     },
     {
       'img': 'assets/images/Alibaba.jpg',
       'text': 'Alibaba',
       'code': '4005',
-      'select': false,
+      'select': true,
     },
     {
       'img': 'assets/images/Aliexpress.jpg',
       'text': 'Aliexpress',
       'code': '4006',
-      'select': false,
+      'select': true,
     },
     {
       'img': 'assets/images/Walmart.jpg',
       'text': 'Walmart',
       'code': '4007',
-      'select': false,
+      'select': true,
     },
     {
       'img': 'assets/images/Sears.jpg',
       'text': 'Sears',
       'code': '4008',
-      'select': false,
+      'select': true,
     },
     {
       'img': 'assets/images/Kohls.jpg',
       'text': 'Kohls',
       'code': '4009',
-      'select': false,
+      'select': true,
     },
     {
       'img': 'assets/images/Costco.jpg',
       'text': 'Costco',
       'code': '4010',
-      'select': false,
+      'select': true,
     },
     {
       'img': 'assets/images/Asos.jpg',
       'text': 'Asos',
       'code': '4011',
-      'select': false,
+      'select': true,
     },
-    {
-      'img': 'assets/images/Cuyana.jpg',
-      'text': 'Cuyana',
-      'code': '4012',
-      'select': false,
-    },
+    // {
+    //   'img': 'assets/images/Cuyana.jpg',
+    //   'text': 'Cuyana',
+    //   'code': '4012',
+    //   'select': true,
+    // },
   ];
   void setAllCheckBoxes(bool value) {
     for (var item in topData) {
@@ -299,47 +299,48 @@ class _PaymentState extends State<Payment> {
                 // ),
                 Padding(
                   padding: EdgeInsets.only(left: 30.w, right: 30.0.w),
-                  child: Container(
-                    height: 107.h * topData.length,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      color: const Color.fromARGB(255, 248, 248, 248),
-                    ),
-                    child: Column(
-                      children: topData.map((data) {
-                        final index = topData.indexOf(data);
-                        return Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 16),
-                              child: Row(
-                                children: [
-                                  Image.asset(
-                                    data['img'],
-                                    width: 50,
-                                    height: 50,
-                                  ),
-                                  const SizedBox(width: 16),
-                                  Text(data['text']),
-                                  const Spacer(),
-                                  Checkbox(
-                                    value: data['select'],
-                                    onChanged: (newValue) {
-                                      setState(() {
-                                        data['select'] = newValue;
-                                        deselectAll(); //取消全选
-                                      });
-                                    },
-                                  ),
-                                ],
+                  child: SingleChildScrollView(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        color: const Color.fromARGB(255, 248, 248, 248),
+                      ),
+                      child: Column(
+                        children: topData.map((data) {
+                          final index = topData.indexOf(data);
+                          return Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 16),
+                                child: Row(
+                                  children: [
+                                    Image.asset(
+                                      data['img'],
+                                      width: 50,
+                                      height: 50,
+                                    ),
+                                    const SizedBox(width: 16),
+                                    Text(data['text']),
+                                    const Spacer(),
+                                    Checkbox(
+                                      value: data['select'],
+                                      onChanged: (newValue) {
+                                        setState(() {
+                                          data['select'] = newValue;
+                                          deselectAll(); //取消全选
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            if (index != topData.length - 1)
-                              const Divider(height: 1),
-                          ],
-                        );
-                      }).toList(),
+                              if (index != topData.length - 1)
+                                const Divider(height: 1),
+                            ],
+                          );
+                        }).toList(),
+                      ),
                     ),
                   ),
                 ),

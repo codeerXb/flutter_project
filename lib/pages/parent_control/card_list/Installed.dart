@@ -26,7 +26,7 @@ class _InstalledState extends State<Installed> {
     FocusScope.of(context).requestFocus(blankNode);
   }
 
-  bool? allChecked = false; // 用于表示Checkbox的选中状态
+  bool? allChecked = true; // 用于表示Checkbox的选中状态
   bool _isLoading = false;
   dynamic mac = Get.arguments['mac'];
   dynamic sn = Get.arguments['sn'];
@@ -39,43 +39,43 @@ class _InstalledState extends State<Installed> {
       'img': 'assets/images/GooglePlay.webp',
       'text': 'Google Play',
       'code': '7001',
-      'select': false,
+      'select': true,
     },
     {
       'img': 'assets/images/Appstore.jpg',
       'text': 'Appstore',
       'code': '7002',
-      'select': false,
+      'select': true,
     },
     // {
     //   'img': 'assets/images/WindowsUpdate.jpg',
     //   'text': 'WindowsUpdate',
     //   'code': '7003',
-    //   'select': false,
+    //   'select': true,
     // },
     {
       'img': 'assets/images/Speedtest.jpg',
       'text': 'Speedtest',
       'code': '7050',
-      'select': false,
+      'select': true,
     },
     {
       'img': 'assets/images/samba.jpg',
       'text': 'samba',
       'code': '7060',
-      'select': false,
+      'select': true,
     },
     {
       'img': 'assets/images/ftp.jpg',
       'text': 'ftp',
       'code': '7061',
-      'select': false,
+      'select': true,
     },
     // {
     //   'img': 'assets/images/ssh.jpg',
     //   'text': 'ssh',
     //   'code': '7062',
-    //   'select': false,
+    //   'select': true,
     // },
     // ...
   ];
@@ -270,47 +270,48 @@ class _InstalledState extends State<Installed> {
                 // ),
                 Padding(
                   padding: EdgeInsets.only(left: 30.w, right: 30.0.w),
-                  child: Container(
-                    height: 107.h * topData.length,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      color: const Color.fromARGB(255, 248, 248, 248),
-                    ),
-                    child: Column(
-                      children: topData.map((data) {
-                        final index = topData.indexOf(data);
-                        return Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 16),
-                              child: Row(
-                                children: [
-                                  Image.asset(
-                                    data['img'],
-                                    width: 50,
-                                    height: 50,
-                                  ),
-                                  const SizedBox(width: 16),
-                                  Text(data['text']),
-                                  const Spacer(),
-                                  Checkbox(
-                                    value: data['select'],
-                                    onChanged: (newValue) {
-                                      setState(() {
-                                        data['select'] = newValue;
-                                        deselectAll(); //取消全选
-                                      });
-                                    },
-                                  ),
-                                ],
+                  child: SingleChildScrollView(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        color: const Color.fromARGB(255, 248, 248, 248),
+                      ),
+                      child: Column(
+                        children: topData.map((data) {
+                          final index = topData.indexOf(data);
+                          return Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 16),
+                                child: Row(
+                                  children: [
+                                    Image.asset(
+                                      data['img'],
+                                      width: 50,
+                                      height: 50,
+                                    ),
+                                    const SizedBox(width: 16),
+                                    Text(data['text']),
+                                    const Spacer(),
+                                    Checkbox(
+                                      value: data['select'],
+                                      onChanged: (newValue) {
+                                        setState(() {
+                                          data['select'] = newValue;
+                                          deselectAll(); //取消全选
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            if (index != topData.length - 1)
-                              const Divider(height: 1),
-                          ],
-                        );
-                      }).toList(),
+                              if (index != topData.length - 1)
+                                const Divider(height: 1),
+                            ],
+                          );
+                        }).toList(),
+                      ),
                     ),
                   ),
                 ),

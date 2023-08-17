@@ -30,7 +30,7 @@ class _VideoState extends State<Video> {
   dynamic sn = Get.arguments['sn'];
   dynamic formParam = ''; //传输给后台的param
 
-  bool? allChecked = false; // 全选
+  bool? allChecked = true; // 全选
 
   final TextEditingController _textEditingController = TextEditingController();
 
@@ -39,67 +39,67 @@ class _VideoState extends State<Video> {
       'img': 'assets/images/YouTube.jpg',
       'text': 'YouTube',
       'code': '3001',
-      'select': false,
+      'select': true,
     },
     {
       'img': 'assets/images/TikTok.jpg',
       'text': 'TikTok',
       'code': '3002',
-      'select': false,
+      'select': true,
     },
     {
       'img': 'assets/images/Netflix.jpg',
       'text': 'Netflix',
       'code': '3003',
-      'select': false,
+      'select': true,
     },
     {
       'img': 'assets/images/Vimeo.jpg',
       'text': 'Vimeo',
       'code': '3004',
-      'select': false,
+      'select': true,
     },
     {
       'img': 'assets/images/Dailymotion.jpg',
       'text': 'Dailymotion',
       'code': '3005',
-      'select': false,
+      'select': true,
     },
     {
       'img': 'assets/images/Hulu.jpg',
       'text': 'Hulu',
       'code': '3006',
-      'select': false,
+      'select': true,
     },
     {
       'img': 'assets/images/Twitch.jpg',
       'text': 'Twitch',
       'code': '3008',
-      'select': false,
+      'select': true,
     },
     {
       'img': 'assets/images/Spotify.jpg',
       'text': 'Spotify',
       'code': '3010',
-      'select': false,
+      'select': true,
     },
     {
       'img': 'assets/images/Xvideos.jpg',
       'text': 'Xvideos',
       'code': '3050',
-      'select': false,
+      'select': true,
     },
     {
       'img': 'assets/images/Pornhub.png',
       'text': 'Pornhub',
       'code': '3051',
-      'select': false,
+      'select': true,
     },
     {
       'img': 'assets/images/Xnxx.png',
       'text': 'Xnxx',
       'code': '3052',
-      'select': false,
+      'select': true,
     },
   ];
   void setAllCheckBoxes(bool value) {
@@ -294,47 +294,48 @@ class _VideoState extends State<Video> {
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: 30.w, right: 30.0.w),
-                  child: Container(
-                    height: 107.h * topData.length,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      color: const Color.fromARGB(255, 248, 248, 248),
-                    ),
-                    child: Column(
-                      children: topData.map((data) {
-                        final index = topData.indexOf(data);
-                        return Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 16),
-                              child: Row(
-                                children: [
-                                  Image.asset(
-                                    data['img'],
-                                    width: 50,
-                                    height: 50,
-                                  ),
-                                  const SizedBox(width: 16),
-                                  Text(data['text']),
-                                  const Spacer(),
-                                  Checkbox(
-                                    value: data['select'],
-                                    onChanged: (newValue) {
-                                      setState(() {
-                                        data['select'] = newValue;
-                                        deselectAll(); //取消全选
-                                      });
-                                    },
-                                  ),
-                                ],
+                  child: SingleChildScrollView(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        color: const Color.fromARGB(255, 248, 248, 248),
+                      ),
+                      child: Column(
+                        children: topData.map((data) {
+                          final index = topData.indexOf(data);
+                          return Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 16),
+                                child: Row(
+                                  children: [
+                                    Image.asset(
+                                      data['img'],
+                                      width: 50,
+                                      height: 50,
+                                    ),
+                                    const SizedBox(width: 16),
+                                    Text(data['text']),
+                                    const Spacer(),
+                                    Checkbox(
+                                      value: data['select'],
+                                      onChanged: (newValue) {
+                                        setState(() {
+                                          data['select'] = newValue;
+                                          deselectAll(); //取消全选
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            if (index != topData.length - 1)
-                              const Divider(height: 1),
-                          ],
-                        );
-                      }).toList(),
+                              if (index != topData.length - 1)
+                                const Divider(height: 1),
+                            ],
+                          );
+                        }).toList(),
+                      ),
                     ),
                   ),
                 ),

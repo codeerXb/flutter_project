@@ -613,7 +613,7 @@ class _BlocklistState extends State<Blocklist> {
                           textAlign: TextAlign.center,
                         ),
                       ),
-                    ],
+                       ],
                   ),
                 ),
               ],

@@ -33,8 +33,8 @@ class _UserLoginState extends State<UserLogin> {
   @override
   void initState() {
     super.initState();
-    phone.text = '13654785984';
-    password.text = '123456';
+    phone.text = '';
+    password.text = '';
   }
 
   @override

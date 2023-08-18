@@ -117,7 +117,7 @@ class _MyAppState extends State<MyApp> {
   var roomArea = '100';
   // 当前选中的楼层
   String curFloor = '1F';
-  bool rentrunHomepage = false; //是否返回首页
+  bool returnHomePage = false; //是否返回首页
 
   Future<dynamic> getData() async {
     try {
@@ -133,7 +133,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    rentrunHomepage = Get.arguments['homepage'];
+    returnHomePage = Get.arguments['homepage'];
     getData().then((value) {
       if (value != null) {
         if (getUniqueFloors(value['wifiJson']['list']).isNotEmpty) {
@@ -340,7 +340,7 @@ class _MyAppState extends State<MyApp> {
         leading: IconButton(
           icon: const Icon(Icons.keyboard_arrow_left),
           onPressed: () {
-            if (rentrunHomepage) {
+            if (returnHomePage) {
               Get.back();
             } else {
               Get.offNamed('/test_edit');
@@ -805,10 +805,12 @@ class _GridWidgetState extends State<GridWidget> {
               child: GestureDetector(
                 // behavior: HitTestBehavior.opaque,
                 onPanDown: (details) {
-                  // 将原有的所有的isSelected重置
                   for (var rect in widget.rects) {
                     setState(() {
+                      // 将原有的所有的isSelected重置
                       rect.isSelected = false;
+                      // 将原有的所有选中的边重置
+                      rect.selectedEdge = '';
                     });
                   }
                   // 将现在点击的变为选中
@@ -905,75 +907,111 @@ class _GridWidgetState extends State<GridWidget> {
                 },
                 // 长按选中之后弹窗  修改home值  删除方块
                 onLongPress: () {
-                  showModalBottomSheet(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return SizedBox(
-                        height: 120,
-                        child: Column(
-                          children: [
-                            ListTile(
-                              leading: const Icon(Icons.edit),
-                              title: const Text('Edit'),
-                              onTap: () {
-                                Navigator.pop(context);
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: const Text('Edit Room'),
-                                      content: TextFormField(
-                                        initialValue: rectData.name,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            editRoomName = value;
-                                          });
-                                        },
-                                        // decoration: const InputDecoration(
-                                        //   labelText: 'Room Name',
-                                        // ),
-                                      ),
-                                      actions: <Widget>[
-                                        TextButton(
-                                          child: const Text('CANCEL'),
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                        ),
-                                        TextButton(
-                                          child: const Text('Edit'),
-                                          onPressed: () {
-                                            rectData.name = editRoomName;
-                                            // 在此处处理确认按钮的逻辑
-                                            // 清空输入的文字
+                  if (rectData.selectedEdge == '') {
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return SizedBox(
+                          height: 120,
+                          child: Column(
+                            children: [
+                              ListTile(
+                                leading: const Icon(Icons.edit),
+                                title: const Text('Edit'),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text('Edit Room'),
+                                        content: TextFormField(
+                                          initialValue: rectData.name,
+                                          onChanged: (value) {
                                             setState(() {
-                                              editRoomName = '';
+                                              editRoomName = value;
                                             });
-                                            // 关闭对话框
-                                            Navigator.of(context).pop();
                                           },
+                                          // decoration: const InputDecoration(
+                                          //   labelText: 'Room Name',
+                                          // ),
                                         ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              },
-                            ),
-                            ListTile(
-                              leading: const Icon(Icons.delete),
-                              title: const Text('Delete'),
-                              onTap: () {
-                                Navigator.pop(context);
-                                setState(() {
-                                  widget.rects.remove(rectData);
-                                });
-                              },
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  );
+                                        actions: <Widget>[
+                                          TextButton(
+                                            child: const Text('CANCEL'),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                          TextButton(
+                                            child: const Text('Edit'),
+                                            onPressed: () {
+                                              rectData.name = editRoomName;
+                                              // 在此处处理确认按钮的逻辑
+                                              // 清空输入的文字
+                                              setState(() {
+                                                editRoomName = '';
+                                              });
+                                              // 关闭对话框
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                              ListTile(
+                                leading: const Icon(Icons.delete),
+                                title: const Text('Delete'),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  setState(() {
+                                    widget.rects.remove(rectData);
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  } else {
+                    // 其他情况下就是点击边缘时触发
+                    // 长按边缘可以删除选中的边缘
+                    // 也可以长按边缘拆除墙面
+                    showModalBottomSheet(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return SizedBox(
+                          height: 120,
+                          child: Column(
+                            children: [
+                              ListTile(
+                                leading: const Icon(Icons.edit),
+                                title: const Text('Split Wall'),
+                                onTap: () {
+                                  // 拆墙添加一个中心点
+                                  Navigator.pop(context);
+                                },
+                              ),
+                              ListTile(
+                                leading: const Icon(Icons.delete),
+                                title: const Text('Delete Wall'),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  setState(() {
+                                    widget.rects.remove(rectData);
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  }
                 },
                 child: CustomPaint(
                   size: Size(rectData.width, rectData.height),

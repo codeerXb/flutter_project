@@ -1050,8 +1050,13 @@ class _WlanSetState extends State<WlanSet> {
                                           children: [
                                             Text(
                                                 bandIndex == 0
-                                                    ? modeOpt[modeIndex]
-                                                    : modeValOpt[modeIndex5g],
+                                                    ? modeIndex > 0
+                                                        ? modeOpt[modeIndex]
+                                                        : ''
+                                                    : modeIndex5g > 0
+                                                        ? modeValOpt[
+                                                            modeIndex5g]
+                                                        : '',
                                                 style: TextStyle(
                                                     color: const Color.fromARGB(
                                                         255, 5, 0, 0),

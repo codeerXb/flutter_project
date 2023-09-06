@@ -48,7 +48,13 @@ class _SplashPageState extends State<SplashPage> {
   Future<void> init() async {
     // --- 查询是否开启生物验证功能 ---
     bool isOpenAuth = true;
-    isOpenAuth = await sharedGetData('biometricsAuth', bool) as bool;
+    var isAuth = await sharedGetData('biometricsAuth', bool);
+    if (isAuth != null) {
+      isOpenAuth = isAuth as bool;
+    } else {
+      // 存入默认值
+      sharedAddAndUpdate('biometricsAuth', bool, isOpenAuth);
+    }
     if (isOpenAuth) {
       // --- 做本地指纹验证 ---
       // 异步调用验证接口,根据返回结果更新验状态
@@ -133,7 +139,7 @@ class _SplashPageState extends State<SplashPage> {
               color: Colors.white,
               child: Image.asset(
                 'assets/images/splash.png',
-                fit: BoxFit.fill,
+                fit: BoxFit.cover,
                 // width: 750.w,
                 // height: 1440.h,
               ),

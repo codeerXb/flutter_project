@@ -39,14 +39,16 @@ class _MyAppState extends State<MyApp> {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   final ToolbarController toolbarController = Get.put(ToolbarController());
-  String language = '';
+  String language = 'en_US';
   @override
   initState() {
     //读取当前语言
     sharedGetData('lang', String).then(((res) {
-      setState(() {
-        language = res.toString();
-      });
+      if (res != null) {
+        setState(() {
+          language = res.toString();
+        });
+      }
       printInfo(info: '当前设置的语言${res.toString()}');
     }));
     super.initState();

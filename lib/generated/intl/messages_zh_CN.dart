@@ -22,6 +22,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "deviceUnprovide": MessageLookupByLibrary.simpleMessage("设备未注册,请联系运营商"),
         "APIsolation": MessageLookupByLibrary.simpleMessage("AP隔离"),
         "ASCII": MessageLookupByLibrary.simpleMessage("8~63位ASCII字符"),
         "Administratorlogin": MessageLookupByLibrary.simpleMessage("管理员登录"),
@@ -141,7 +142,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "UsedFlow": MessageLookupByLibrary.simpleMessage("已用流量"),
         "WPAEncry": MessageLookupByLibrary.simpleMessage("WPA加密"),
         "Wed": MessageLookupByLibrary.simpleMessage("周三"),
-        "a": MessageLookupByLibrary.simpleMessage("111"),
         "access": MessageLookupByLibrary.simpleMessage("禁止访问"),
         "accessRefused": MessageLookupByLibrary.simpleMessage("远程拒绝访问"),
         "accomplish": MessageLookupByLibrary.simpleMessage("完成"),

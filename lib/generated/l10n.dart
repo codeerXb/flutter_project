@@ -3080,11 +3080,11 @@ class S {
     );
   }
 
-  /// `111`
-  String get a {
+  /// `deviceUnprovide`
+  String get deviceUnprovide {
     return Intl.message(
-      '111',
-      name: 'a',
+      "Device not registered, please contact operator",
+      name: 'deviceUnprovide',
       desc: '',
       args: [],
     );

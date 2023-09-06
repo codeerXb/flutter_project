@@ -22,6 +22,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "deviceUnprovide": MessageLookupByLibrary.simpleMessage(
+            "Device not registered, please contact operator"),
         "APIsolation": MessageLookupByLibrary.simpleMessage("AP Isolation"),
         "ASCII": MessageLookupByLibrary.simpleMessage(
             "ASCII characters of 8 to 63 characters"),

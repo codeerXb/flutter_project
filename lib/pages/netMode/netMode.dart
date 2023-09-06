@@ -116,6 +116,8 @@ class _NetModeState extends State<NetMode> {
               // 绑定失败提示
               if (bindDevRes['code'] == 9983) {
                 ToastUtils.error(S.current.deviceBinded);
+              } else if (bindDevRes['code'] == 9984) {
+                ToastUtils.error(S.current.deviceUnprovide);
               } else {
                 ToastUtils.error(S.current.unkownFail);
               }

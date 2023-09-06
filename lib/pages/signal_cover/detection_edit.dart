@@ -132,7 +132,7 @@ class _TestEditState extends State<TestEdit> {
             actions: <Widget>[
               IconButton(
                   onPressed: () {
-                    //刷新
+                    // 刷新
                     if (mounted) {
                       getData();
                     }
@@ -261,7 +261,7 @@ class _TestEditState extends State<TestEdit> {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        printInfo(info: '户型数据：${ jsonEncode(roominfo)}');
+                        printInfo(info: '户型数据：${jsonEncode(roominfo)}');
                         Get.offNamed(
                           '/test_signal',
                           arguments: {
@@ -402,7 +402,7 @@ class Layout extends CustomPainter {
     /// 计算绘制缩放比例,用于“Dectection and Editing”页面展示，将原有图形放大或者缩小
     /// 但是这里的totalWidth和totalHeight并不是对应到实际的数值，而是绘制户型图时绘制的原始值
     /// *这里计算比例是为了绘制不出现偏差
-    double scale = totalWidth / 1.sw > totalHeight / (640.w - 20)
+    double scale = totalWidth > totalHeight
         ? 1.sw / totalWidth
         : (640.w - 20) / totalHeight;
 
@@ -549,7 +549,7 @@ class Layout extends CustomPainter {
       // 绘制文字
       var paragraphBuilder = ParagraphBuilder(ParagraphStyle(
         textAlign: TextAlign.center,
-        fontSize: 16,
+        fontSize: 12,
         textDirection: TextDirection.ltr,
       ))
         ..pushStyle(

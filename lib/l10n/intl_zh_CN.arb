@@ -1,4 +1,5 @@
 {
+  "deviceUnprovide": "设备未注册,请联系运营商",
   "accountOrPwdError": "用户名或密码错误",
   "biometrics":"生物认证",
   "profile": "账户和个人资料",
@@ -299,6 +300,5 @@
   "startTesting": "开始测试",
   "roomStrength": "获取该房间信号强度",
   "GenerateOverlay": "生成覆盖图",
-  "coverageMap": "请先拖动路由器至房间相应位置,然后点击“开始检测”，给制信号覆盖图",
-  "a": "111"
+  "coverageMap": "请先拖动路由器至房间相应位置,然后点击“开始检测”，给制信号覆盖图"
 }

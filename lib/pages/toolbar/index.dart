@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_template/generated/l10n.dart';
-import 'package:flutter_template/pages/setting/index.dart';
-import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
-import 'package:flutter_template/pages/topo/index.dart';
 import 'package:get/get.dart';
-
-import '../../core/utils/sign_out_util.dart';
+import 'package:flutter_template/generated/l10n.dart';
+import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
 import '../net_status/index.dart';
+import 'package:flutter_template/pages/topo/index.dart';
+import 'package:flutter_template/pages/setting/index.dart';
+import '../../core/utils/sign_out_util.dart';
 
 class Toolbar extends StatefulWidget {
   const Toolbar({Key? key}) : super(key: key);

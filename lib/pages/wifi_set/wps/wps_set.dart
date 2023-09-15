@@ -424,7 +424,13 @@ class _WpsSetState extends State<WpsSet> {
                                             isCheck = newVal;
                                             wpsVal =
                                                 newVal == false ? '0' : '1';
+                                            if(wpsVal == '0') {
+                                              ToastUtils.toast("wps已关闭");
+                                            }else {
+                                              ToastUtils.toast("wps已开启");
+                                            }
                                           });
+
                                         },
                                       ),
                                     ],

@@ -1923,7 +1923,7 @@ class S {
   /// `Restart start time`
   String get DateReboot {
     return Intl.message(
-      'Restart start time',
+      'Restart time',
       name: 'DateReboot',
       desc: '',
       args: [],

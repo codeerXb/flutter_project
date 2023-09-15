@@ -65,7 +65,7 @@ import 'package:flutter_template/pages/topo/parental/parental_update.dart';
 import 'package:flutter_template/pages/add_equipment/index.dart';
 import 'package:flutter_template/pages/signal_cover/index.dart';
 import 'package:flutter_template/pages/signal_cover/SignalCoverage.dart';
-
+import 'package:flutter_template/pages/user_login/changePasswordPage.dart';
 /// 路由
 class GlobalRouter {
   /// 路由
@@ -177,42 +177,45 @@ class GlobalRouter {
     // '/odu': (BuildContext context, {Object? args}) => const SocketPage(),
     '/odu': (BuildContext context, {Object? args}) => const ODU(),
 
-    // 套餐设置
+    /// 套餐设置
     '/net_server_settings': (BuildContext context, {Object? args}) =>
         const NetServerSettings(),
 
-    // 用户登录（云平台登录）
+    /// 用户登录（云平台登录）
     '/user_login': (BuildContext context, {Object? args}) => const UserLogin(),
 
-    // 用户注册（云平台注册）
+    /// 用户注册（云平台注册）
     '/user_register': (BuildContext context, {Object? args}) =>
         const UserRegister(),
-    // 忘记密码
+    /// 忘记密码
     '/forget_password': (BuildContext context, {Object? args}) =>
         const ForgetPassword(),
-    // 接入设备
+    /// 修改密码
+    '/change_password': (BuildContext context, {Object? args}) =>
+    const ChangePasswordPage(),
+    /// 接入设备
     '/connected_device': (BuildContext context, {Object? args}) =>
         const ConnectedDevice(),
     // // 视频
     // '/video_play': (BuildContext context, {Object? args}) => const VideoPlay(),
     // // 图片
     // '/img': (BuildContext context, {Object? args}) => const SwiperPage(),
-    // 家长控制
+    /// 家长控制
     '/parental_control': (BuildContext context, {Object? args}) =>
         const ParentalControl(),
-    // 家长控制 新增
+    /// 家长控制 新增
     '/parental_pop': (BuildContext context, {Object? args}) =>
         const ParentalPop(),
-    // 家长控制 修改
+    /// 家长控制 修改
     '/parental_update': (BuildContext context, {Object? args}) =>
         const ParentalUpdate(),
-    // 订阅服务
+    /// 订阅服务
     '/sub_service': (BuildContext context, {Object? args}) =>
         const SubSerivce(),
-    // 家长控制详情
+    /// 家长控制详情
     '/parcontrol_info': (BuildContext context, {Object? args}) =>
         const Parcontrol(),
-    // 游戏加速详情
+    /// 游戏加速详情
     '/gameacce_inofo': (BuildContext context, {Object? args}) =>
         const Gameacce(),
     // ai视频

@@ -660,6 +660,10 @@ class _Visitor6State extends State<Visitor6> {
                                             color: const Color(0xff737A83)),
                                         border: InputBorder.none,
                                       ),
+                                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                                      validator: (value) {
+                                        return value!.trim().length > 8 ? null : "密码不能少于8位";
+                                      },
                                     ),
                                   ),
                                 ],

@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
@@ -8,7 +7,6 @@ import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_picker.dart';
-import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:flutter_template/core/widget/water_loading.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:flutter_template/pages/wifi_set/major/major_datas.dart';
@@ -110,7 +108,7 @@ class _MajorSetState extends State<MajorSet> {
             ["WLANSettings"]["CountryCode"]["_type"];
         var radioState = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
             ["WiFi"]["WLANSettings"]["CountryCode"]["_value"];
-        index = ['US', 'FR', 'RU', 'SG', 'AU', 'CL', 'PL'].indexOf(radioState);
+        index = ['CN','US', 'FR', 'RU', 'SG', 'AU', 'CL', 'PL'].indexOf(radioState);
         //读取地区
         switch (radioState) {
           case 'CN':
@@ -181,7 +179,7 @@ class _MajorSetState extends State<MajorSet> {
       var d = json.decode(response.toString());
       setState(() {
         majorData = majorDatas.fromJson(d);
-        index = ['US', 'FR', 'RU', 'SG', 'AU', 'CL', 'PL']
+        index = ['CN','US', 'FR', 'RU', 'SG', 'AU', 'CL', 'PL']
             .indexOf(majorData.wifiRegionCountry.toString());
         //读取地区
         switch (majorData.wifiRegionCountry.toString()) {
@@ -280,6 +278,7 @@ class _MajorSetState extends State<MajorSet> {
                               var result = CommonPicker.showPicker(
                                 context: context,
                                 options: [
+                                  S.current.China,
                                   S.current.UnitedStates,
                                   S.current.France,
                                   S.current.Russia,
@@ -297,6 +296,7 @@ class _MajorSetState extends State<MajorSet> {
                                         setState(() => {
                                               index = selectedValue,
                                               showVal = [
+                                                S.current.China,
                                                 S.current.UnitedStates,
                                                 S.current.France,
                                                 S.current.Russia,
@@ -306,6 +306,7 @@ class _MajorSetState extends State<MajorSet> {
                                                 S.current.Poland
                                               ][index],
                                               val = [
+                                                'CN',
                                                 'US',
                                                 'FR',
                                                 'RU',

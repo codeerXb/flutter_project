@@ -13,7 +13,6 @@ import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:flutter_template/pages/login/model/equipment_data.dart';
 import 'package:flutter_template/pages/login/model/exception_login.dart';
 import 'package:get/get.dart';
-
 import '../../core/utils/shared_preferences_util.dart';
 import '../../core/utils/toast.dart';
 
@@ -41,6 +40,11 @@ class _LoginState extends State<Login> {
   EquipmentData equipmentData = EquipmentData();
   bool _isLoading = false;
 
+  @override
+  void initState() {
+    super.initState();
+
+  }
   void appLogin() {
     setState(() {
       _isLoading = true;
@@ -292,7 +296,7 @@ class _LoginState extends State<Login> {
               const Color.fromARGB(255, 30, 104, 233)),
         ),
         onPressed: () {
-          printInfo(info: '登陆了');
+          printInfo(info: '登录了');
           if ((_formKey.currentState as FormState).validate()) {
             onSubmit(context);
             appLogin();

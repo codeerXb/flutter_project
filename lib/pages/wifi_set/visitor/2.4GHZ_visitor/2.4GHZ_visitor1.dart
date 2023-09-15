@@ -340,336 +340,341 @@ class _Visitor1State extends State<Visitor1> {
                         TitleWidger(title: S.of(context).Settings),
                         InfoBox(
                             boxCotainer: Column(
-                          children: [
-                            //访客网络索引
-                            // BottomLine(
-                            //   rowtem: Row(
-                            //     mainAxisAlignment:
-                            //         MainAxisAlignment.spaceBetween,
-                            //     children: [
-                            //       Text(S.of(context).NetworkIndex,
-                            //           style: TextStyle(
-                            //               color: const Color.fromARGB(
-                            //                   255, 5, 0, 0),
-                            //               fontSize: 28.sp)),
-                            //       Text('2.4G_1',
-                            //           style: TextStyle(
-                            //               color: const Color.fromARGB(
-                            //                   255, 5, 0, 0),
-                            //               fontSize: 28.sp)),
-                            //     ],
-                            //   ),
-                            // ),
-                            //是否允许访问内网
-                            BottomLine(
-                              rowtem: Row(
-                                mainAxisAlignment:
+                              children: [
+                                //访客网络索引
+                                // BottomLine(
+                                //   rowtem: Row(
+                                //     mainAxisAlignment:
+                                //         MainAxisAlignment.spaceBetween,
+                                //     children: [
+                                //       Text(S.of(context).NetworkIndex,
+                                //           style: TextStyle(
+                                //               color: const Color.fromARGB(
+                                //                   255, 5, 0, 0),
+                                //               fontSize: 28.sp)),
+                                //       Text('2.4G_1',
+                                //           style: TextStyle(
+                                //               color: const Color.fromARGB(
+                                //                   255, 5, 0, 0),
+                                //               fontSize: 28.sp)),
+                                //     ],
+                                //   ),
+                                // ),
+                                //是否允许访问内网
+                                BottomLine(
+                                  rowtem: Row(
+                                    mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(S.of(context).AllowAccess,
-                                      style: TextStyle(
-                                          color: const Color.fromARGB(
-                                              255, 5, 0, 0),
-                                          fontSize: 28.sp)),
-                                  Row(
                                     children: [
-                                      Switch(
-                                        value: networkCheck,
-                                        onChanged: (newVal) {
-                                          setState(() {
-                                            networkCheck = newVal;
-                                          });
-                                        },
+                                      Text(S.of(context).AllowAccess,
+                                          style: TextStyle(
+                                              color: const Color.fromARGB(
+                                                  255, 5, 0, 0),
+                                              fontSize: 28.sp)),
+                                      Row(
+                                        children: [
+                                          Switch(
+                                            value: networkCheck,
+                                            onChanged: (newVal) {
+                                              setState(() {
+                                                networkCheck = newVal;
+                                              });
+                                            },
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                //SSID
+                                BottomLine(
+                                  rowtem: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('SSID',
+                                          style: TextStyle(
+                                              color: const Color.fromARGB(
+                                                  255, 5, 0, 0),
+                                              fontSize: 28.sp)),
+                                      SizedBox(
+                                        width: 300.w,
+                                        child: TextFormField(
+                                          textAlign: TextAlign.right,
+                                          controller: ssidVal,
+                                          style: TextStyle(
+                                              fontSize: 26.sp,
+                                              color: const Color(0xff051220)),
+                                          decoration: InputDecoration(
+                                            hintText: S.current.ascii32,
+                                            hintStyle: TextStyle(
+                                                fontSize: 26.sp,
+                                                color: const Color(0xff737A83)),
+                                            border: InputBorder.none,
+                                          ),
+                                        ),
                                       ),
                                     ],
-                                  )
-                                ],
-                              ),
-                            ),
-                            //SSID
-                            BottomLine(
-                              rowtem: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text('SSID',
-                                      style: TextStyle(
-                                          color: const Color.fromARGB(
-                                              255, 5, 0, 0),
-                                          fontSize: 28.sp)),
-                                  SizedBox(
-                                    width: 300.w,
-                                    child: TextFormField(
-                                      textAlign: TextAlign.right,
-                                      controller: ssidVal,
-                                      style: TextStyle(
-                                          fontSize: 26.sp,
-                                          color: const Color(0xff051220)),
-                                      decoration: InputDecoration(
-                                        hintText: S.current.ascii32,
-                                        hintStyle: TextStyle(
-                                            fontSize: 26.sp,
-                                            color: const Color(0xff737A83)),
-                                        border: InputBorder.none,
-                                      ),
-                                    ),
                                   ),
-                                ],
-                              ),
-                            ),
-                            //最大设备数
-                            BottomLine(
-                              rowtem: Row(
-                                mainAxisAlignment:
+                                ),
+                                //最大设备数
+                                BottomLine(
+                                  rowtem: Row(
+                                    mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(S.of(context).Maximum,
-                                      style: TextStyle(
-                                          color: const Color.fromARGB(
-                                              255, 5, 0, 0),
-                                          fontSize: 28.sp)),
-                                  SizedBox(
-                                    width: 100.w,
-                                    child: TextFormField(
-                                      textAlign: TextAlign.right,
-                                      keyboardType: TextInputType.number,
-                                      controller: maxVal,
-                                      style: TextStyle(
-                                          fontSize: 26.sp,
-                                          color: const Color(0xff051220)),
-                                      decoration: InputDecoration(
-                                        hintText: "1~32",
-                                        hintStyle: TextStyle(
-                                            fontSize: 26.sp,
-                                            color: const Color(0xff737A83)),
-                                        border: InputBorder.none,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            //隐藏SSID网络
-                            BottomLine(
-                              rowtem: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(S.of(context).HideSSIDBroadcast,
-                                      style: TextStyle(
-                                          color: const Color.fromARGB(
-                                              255, 5, 0, 0),
-                                          fontSize: 28.sp)),
-                                  Row(
                                     children: [
-                                      Switch(
-                                        value: showSsid,
-                                        onChanged: (newVal) {
-                                          setState(() {
-                                            showSsid = newVal;
-                                          });
-                                        },
+                                      Text(S.of(context).Maximum,
+                                          style: TextStyle(
+                                              color: const Color.fromARGB(
+                                                  255, 5, 0, 0),
+                                              fontSize: 28.sp)),
+                                      SizedBox(
+                                        width: 100.w,
+                                        child: TextFormField(
+                                          textAlign: TextAlign.right,
+                                          keyboardType: TextInputType.number,
+                                          controller: maxVal,
+                                          style: TextStyle(
+                                              fontSize: 26.sp,
+                                              color: const Color(0xff051220)),
+                                          decoration: InputDecoration(
+                                            hintText: "1~32",
+                                            hintStyle: TextStyle(
+                                                fontSize: 26.sp,
+                                                color: const Color(0xff737A83)),
+                                            border: InputBorder.none,
+                                          ),
+                                        ),
                                       ),
                                     ],
-                                  )
-                                ],
-                              ),
-                            ),
-                            //AP隔离
-                            // BottomLine(
-                            //   rowtem: Row(
-                            //     mainAxisAlignment:
-                            //         MainAxisAlignment.spaceBetween,
-                            //     children: [
-                            //       Text(S.of(context).APIsolation,
-                            //           style: TextStyle(
-                            //               color: const Color.fromARGB(
-                            //                   255, 5, 0, 0),
-                            //               fontSize: 28.sp)),
-                            //       Row(
-                            //         children: [
-                            //           Switch(
-                            //             value: apVAl,
-                            //             onChanged: (newVal) {
-                            //               setState(() {
-                            //                 apVAl = newVal;
-                            //               });
-                            //             },
-                            //           ),
-                            //         ],
-                            //       )
-                            //     ],
-                            //   ),
-                            // ),
-                            //安全
-                            GestureDetector(
-                              onTap: () {
-                                closeKeyboard(context);
-                                var result = CommonPicker.showPicker(
-                                  context: context,
-                                  options: [
-                                    'WPA-PSK',
-                                    'WPA2-PSK',
-                                    'WPA-PSK&WPA2-PSK'
-                                  ],
-                                  value: safeIndex,
-                                );
-                                result?.then((selectedValue) => {
+                                  ),
+                                ),
+                                //隐藏SSID网络
+                                BottomLine(
+                                  rowtem: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(S.of(context).HideSSIDBroadcast,
+                                          style: TextStyle(
+                                              color: const Color.fromARGB(
+                                                  255, 5, 0, 0),
+                                              fontSize: 28.sp)),
+                                      Row(
+                                        children: [
+                                          Switch(
+                                            value: showSsid,
+                                            onChanged: (newVal) {
+                                              setState(() {
+                                                showSsid = newVal;
+                                              });
+                                            },
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                //AP隔离
+                                // BottomLine(
+                                //   rowtem: Row(
+                                //     mainAxisAlignment:
+                                //         MainAxisAlignment.spaceBetween,
+                                //     children: [
+                                //       Text(S.of(context).APIsolation,
+                                //           style: TextStyle(
+                                //               color: const Color.fromARGB(
+                                //                   255, 5, 0, 0),
+                                //               fontSize: 28.sp)),
+                                //       Row(
+                                //         children: [
+                                //           Switch(
+                                //             value: apVAl,
+                                //             onChanged: (newVal) {
+                                //               setState(() {
+                                //                 apVAl = newVal;
+                                //               });
+                                //             },
+                                //           ),
+                                //         ],
+                                //       )
+                                //     ],
+                                //   ),
+                                // ),
+                                //安全
+                                GestureDetector(
+                                  onTap: () {
+                                    closeKeyboard(context);
+                                    var result = CommonPicker.showPicker(
+                                      context: context,
+                                      options: [
+                                        'WPA-PSK',
+                                        'WPA2-PSK',
+                                        'WPA-PSK&WPA2-PSK'
+                                      ],
+                                      value: safeIndex,
+                                    );
+                                    result?.then((selectedValue) => {
                                       if (safeIndex != selectedValue &&
                                           selectedValue != null)
                                         {
                                           setState(() => {
-                                                safeIndex = selectedValue,
-                                                safeShowVal = [
-                                                  'WPA-PSK',
-                                                  'WPA2-PSK',
-                                                  'WPA-PSK&WPA2-PSK'
-                                                ][safeIndex],
-                                                safeVal = [
-                                                  'psk',
-                                                  'psk2',
-                                                  'psk-mixed'
-                                                ][safeIndex]
-                                              })
+                                            safeIndex = selectedValue,
+                                            safeShowVal = [
+                                              'WPA-PSK',
+                                              'WPA2-PSK',
+                                              'WPA-PSK&WPA2-PSK'
+                                            ][safeIndex],
+                                            safeVal = [
+                                              'psk',
+                                              'psk2',
+                                              'psk-mixed'
+                                            ][safeIndex]
+                                          })
                                         }
                                     });
-                              },
-                              child: BottomLine(
-                                rowtem: Row(
-                                  mainAxisAlignment:
+                                  },
+                                  child: BottomLine(
+                                    rowtem: Row(
+                                      mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(S.of(context).Security,
-                                        style: TextStyle(
-                                            color: const Color.fromARGB(
-                                                255, 5, 0, 0),
-                                            fontSize: 28.sp)),
-                                    Row(
                                       children: [
-                                        Text(safeShowVal,
+                                        Text(S.of(context).Security,
                                             style: TextStyle(
                                                 color: const Color.fromARGB(
                                                     255, 5, 0, 0),
                                                 fontSize: 28.sp)),
-                                        Icon(
-                                          Icons.arrow_forward_ios_outlined,
-                                          color: const Color.fromRGBO(
-                                              144, 147, 153, 1),
-                                          size: 30.w,
-                                        )
+                                        Row(
+                                          children: [
+                                            Text(safeShowVal,
+                                                style: TextStyle(
+                                                    color: const Color.fromARGB(
+                                                        255, 5, 0, 0),
+                                                    fontSize: 28.sp)),
+                                            Icon(
+                                              Icons.arrow_forward_ios_outlined,
+                                              color: const Color.fromRGBO(
+                                                  144, 147, 153, 1),
+                                              size: 30.w,
+                                            )
+                                          ],
+                                        ),
                                       ],
                                     ),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                            ),
-                            //WPA加密
-                            GestureDetector(
-                              onTap: () {
-                                closeKeyboard(context);
-                                var result = CommonPicker.showPicker(
-                                  context: context,
-                                  options: [
-                                    S.current.aesRecommend,
-                                    'TKIP',
-                                    'TKIP&AES'
-                                  ],
-                                  value: wpaIndex,
-                                );
-                                result?.then((selectedValue) => {
+                                //WPA加密
+                                GestureDetector(
+                                  onTap: () {
+                                    closeKeyboard(context);
+                                    var result = CommonPicker.showPicker(
+                                      context: context,
+                                      options: [
+                                        S.current.aesRecommend,
+                                        'TKIP',
+                                        'TKIP&AES'
+                                      ],
+                                      value: wpaIndex,
+                                    );
+                                    result?.then((selectedValue) => {
                                       if (wpaIndex != selectedValue &&
                                           selectedValue != null)
                                         {
                                           setState(() => {
-                                                wpaIndex = selectedValue,
-                                                wpaShowVal = [
-                                                  S.current.aesRecommend,
-                                                  'TKIP',
-                                                  'TKIP&AES'
-                                                ][wpaIndex],
-                                                wpaVal = [
-                                                  'aes',
-                                                  'tkip',
-                                                  'tkip+aes'
-                                                ][wpaIndex]
-                                              })
+                                            wpaIndex = selectedValue,
+                                            wpaShowVal = [
+                                              S.current.aesRecommend,
+                                              'TKIP',
+                                              'TKIP&AES'
+                                            ][wpaIndex],
+                                            wpaVal = [
+                                              'aes',
+                                              'tkip',
+                                              'tkip+aes'
+                                            ][wpaIndex]
+                                          })
                                         }
                                     });
-                              },
-                              child: BottomLine(
-                                rowtem: Row(
-                                  mainAxisAlignment:
+                                  },
+                                  child: BottomLine(
+                                    rowtem: Row(
+                                      mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(S.of(context).WPAEncry,
-                                        style: TextStyle(
-                                            color: const Color.fromARGB(
-                                                255, 5, 0, 0),
-                                            fontSize: 28.sp)),
-                                    Row(
                                       children: [
-                                        Text(wpaShowVal,
+                                        Text(S.of(context).WPAEncry,
                                             style: TextStyle(
                                                 color: const Color.fromARGB(
                                                     255, 5, 0, 0),
                                                 fontSize: 28.sp)),
-                                        Icon(
-                                          Icons.arrow_forward_ios_outlined,
-                                          color: const Color.fromRGBO(
-                                              144, 147, 153, 1),
-                                          size: 30.w,
-                                        )
+                                        Row(
+                                          children: [
+                                            Text(wpaShowVal,
+                                                style: TextStyle(
+                                                    color: const Color.fromARGB(
+                                                        255, 5, 0, 0),
+                                                    fontSize: 28.sp)),
+                                            Icon(
+                                              Icons.arrow_forward_ios_outlined,
+                                              color: const Color.fromRGBO(
+                                                  144, 147, 153, 1),
+                                              size: 30.w,
+                                            )
+                                          ],
+                                        ),
                                       ],
                                     ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            //密码
-                            BottomLine(
-                              rowtem: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(S.of(context).Password,
-                                      style: TextStyle(
-                                          color: const Color.fromARGB(
-                                              255, 5, 0, 0),
-                                          fontSize: 28.sp)),
-                                  SizedBox(
-                                    height: 80.w,
-                                    width: 300.w,
-                                    child: TextFormField(
-                                      textAlign: TextAlign.right,
-                                      obscureText: passwordValShow,
-                                      controller: password,
-                                      style: TextStyle(
-                                          fontSize: 26.sp,
-                                          color: const Color(0xff051220)),
-                                      decoration: InputDecoration(
-                                        suffixIcon: IconButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                passwordValShow =
-                                                    !passwordValShow;
-                                              });
-                                            },
-                                            icon: Icon(!passwordValShow
-                                                ? Icons.visibility
-                                                : Icons.visibility_off)),
-                                        hintText: S.current.ASCII,
-                                        hintStyle: TextStyle(
-                                            fontSize: 26.sp,
-                                            color: const Color(0xff737A83)),
-                                        border: InputBorder.none,
-                                      ),
-                                    ),
                                   ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        )),
+                                ),
+                                //密码
+                                BottomLine(
+                                  rowtem: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(S.of(context).Password,
+                                          style: TextStyle(
+                                              color: const Color.fromARGB(
+                                                  255, 5, 0, 0),
+                                              fontSize: 28.sp)),
+                                      SizedBox(
+                                        height: 80.w,
+                                        width: 300.w,
+                                        child: TextFormField(
+                                          textAlign: TextAlign.right,
+                                          obscureText: passwordValShow,
+                                          controller: password,
+                                          style: TextStyle(
+                                              fontSize: 26.sp,
+                                              color: const Color(0xff051220)),
+                                          decoration: InputDecoration(
+                                            suffixIcon: IconButton(
+                                                onPressed: () {
+                                                  setState(() {
+                                                    passwordValShow =
+                                                    !passwordValShow;
+                                                  });
+                                                },
+                                                icon: Icon(!passwordValShow
+                                                    ? Icons.visibility
+                                                    : Icons.visibility_off)),
+                                            hintText: S.current.ASCII,
+                                            hintStyle: TextStyle(
+                                                fontSize: 26.sp,
+                                                color: const Color(0xff737A83)),
+                                            border: InputBorder.none,
+                                          ),
+                                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                                          validator: (value) {
+                                            debugPrint("输入的密码是:$value");
+                                            return value!.trim().length >= 8 ? null : "密码不能少于8位";
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            )),
                         //提交
                         // Padding(
                         //   padding: EdgeInsets.only(top: 10.w),

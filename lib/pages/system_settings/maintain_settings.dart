@@ -4,7 +4,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_template/config/base_config.dart';
 import 'package:flutter_template/core/http/http_app.dart';
 import 'package:flutter_template/core/request/request.dart';
 import 'package:flutter_template/core/widget/common_widget.dart';
@@ -16,9 +15,10 @@ import '../../core/http/http.dart';
 import '../../core/utils/shared_preferences_util.dart';
 import '../../core/utils/toast.dart';
 import '../../core/widget/common_box.dart';
-import '../../core/widget/common_picker.dart';
 import '../../generated/l10n.dart';
 import 'model/maintain_data.dart';
+import 'package:time_picker_sheet/widget/sheet.dart';
+import 'package:time_picker_sheet/widget/time_picker.dart';
 
 /// 维护设置
 class MaintainSettings extends StatefulWidget {
@@ -38,7 +38,8 @@ class _MaintainSettingsState extends State<MaintainSettings> {
   MaintainData restart = MaintainData();
   // 恢复
   MaintainData factoryReset = MaintainData();
-
+  // 重启的时间
+  String restartTime = '0';
   // 开始时间
   String startShowVal = '0';
   int startVal = 0;
@@ -49,6 +50,32 @@ class _MaintainSettingsState extends State<MaintainSettings> {
   String num = '';
   MaintainTrestsetData acquireData = MaintainTrestsetData();
   final LoginController loginController = Get.put(LoginController());
+
+  DateTime dateTimeSelected = DateTime.now();
+
+  void _openTimePickerSheet(BuildContext context) async {
+    final result = await TimePicker.show<DateTime?>(
+      context: context,
+      sheet: TimePickerSheet(
+        sheetTitle: 'Please set time',
+        minuteTitle: 'Minute',
+        hourTitle: 'Hour',
+        saveButtonText: 'Save',
+      ),
+    );
+
+    if (result != null) {
+      setState(() {
+        dateTimeSelected = result;
+        restartTime = "${dateTimeSelected.hour} : ${dateTimeSelected.minute}";
+        startShowVal = "${dateTimeSelected.hour}";
+        endShowVal = "${dateTimeSelected.minute}";
+        sharedAddAndUpdate("restartTime", String,
+            restartTime);
+      });
+      debugPrint("${dateTimeSelected.hour},${dateTimeSelected.minute}");
+    }
+  }
 
   // 转换重启日期
   String tranfer = '0;0;0;0;0;0;0';
@@ -90,6 +117,9 @@ class _MaintainSettingsState extends State<MaintainSettings> {
         }
       });
     }));
+    sharedGetData("restartTime", String).then((value){
+      restartTime = value.toString();
+    });
   }
 
   // 重启 云端
@@ -127,7 +157,6 @@ class _MaintainSettingsState extends State<MaintainSettings> {
           }
         });
       } on FormatException catch (e) {
-        print(e);
         ToastUtils.toast(S.current.error);
       }
     }).catchError((onError) {
@@ -208,62 +237,62 @@ class _MaintainSettingsState extends State<MaintainSettings> {
 
         num = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
             ["ScheduleReboot"]["Time"]["_value"];
-        if (num != '') {
-          startVal = [
-            '0',
-            '1',
-            '2',
-            '3',
-            '4',
-            '5',
-            '6',
-            '7',
-            '8',
-            '9',
-            '10',
-            '11',
-            '12',
-            '13',
-            '14',
-            '15',
-            '16',
-            '17',
-            '18',
-            '19',
-            '20',
-            '21',
-            '22',
-            '23',
-          ].indexOf(num.split(':')[0].toString());
-          startShowVal = num.split(':')[0];
-          endVal = [
-            '0',
-            '1',
-            '2',
-            '3',
-            '4',
-            '5',
-            '6',
-            '7',
-            '8',
-            '9',
-            '10',
-            '11',
-            '12',
-            '13',
-            '14',
-            '15',
-            '16',
-            '17',
-            '18',
-            '19',
-            '20',
-            '21',
-            '22',
-            '23',
-          ].indexOf(num.split(':')[1].toString());
-          endShowVal = num.split(':')[1];
-        }
+        // if (num != '') {
+        //   startVal = [
+        //     '0',
+        //     '1',
+        //     '2',
+        //     '3',
+        //     '4',
+        //     '5',
+        //     '6',
+        //     '7',
+        //     '8',
+        //     '9',
+        //     '10',
+        //     '11',
+        //     '12',
+        //     '13',
+        //     '14',
+        //     '15',
+        //     '16',
+        //     '17',
+        //     '18',
+        //     '19',
+        //     '20',
+        //     '21',
+        //     '22',
+        //     '23',
+        //   ].indexOf(num.split(':')[0].toString());
+        //   startShowVal = num.split(':')[0];
+        //   endVal = [
+        //     '0',
+        //     '1',
+        //     '2',
+        //     '3',
+        //     '4',
+        //     '5',
+        //     '6',
+        //     '7',
+        //     '8',
+        //     '9',
+        //     '10',
+        //     '11',
+        //     '12',
+        //     '13',
+        //     '14',
+        //     '15',
+        //     '16',
+        //     '17',
+        //     '18',
+        //     '19',
+        //     '20',
+        //     '21',
+        //     '22',
+        //     '23',
+        //   ].indexOf(num.split(':')[1].toString());
+        //   endShowVal = num.split(':')[1];
+        // }
       });
     } catch (e) {
       debugPrint('获取信息失败：${e.toString()}');
@@ -299,6 +328,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
       printInfo(info: '````$jsonObj');
       setState(() {});
     } catch (e) {
+      ToastUtils.toast("获取信息失败：${e.toString()}");
       debugPrint('获取信息失败：${e.toString()}');
     }
   }
@@ -310,11 +340,13 @@ class _MaintainSettingsState extends State<MaintainSettings> {
       'param':
           '{"systemScheduleRebootEnable":"$checkVal","systemScheduleRebootDays":"$tranfer","systemScheduleRebootTime":"$startShowVal:$endShowVal"}',
     };
+    debugPrint("${data.toString()}");
     XHttp.get('/data.html', data).then((res) {
       try {
         var d = json.decode(res.toString());
         setState(() {
           restart = MaintainData.fromJson(d);
+          debugPrint(restart.toString());
           if (restart.success == true) {
             ToastUtils.toast(S.current.success);
           } else {
@@ -322,7 +354,6 @@ class _MaintainSettingsState extends State<MaintainSettings> {
           }
         });
       } on FormatException catch (e) {
-        print(e);
         ToastUtils.toast(S.current.error);
       }
     }).catchError((onError) {
@@ -352,62 +383,62 @@ class _MaintainSettingsState extends State<MaintainSettings> {
         }
 
         num = acquireData.systemScheduleRebootTime.toString();
-        if (num != '') {
-          startVal = [
-            '0',
-            '1',
-            '2',
-            '3',
-            '4',
-            '5',
-            '6',
-            '7',
-            '8',
-            '9',
-            '10',
-            '11',
-            '12',
-            '13',
-            '14',
-            '15',
-            '16',
-            '17',
-            '18',
-            '19',
-            '20',
-            '21',
-            '22',
-            '23',
-          ].indexOf(num.split(':')[0].toString());
-          startShowVal = num.split(':')[0];
-          endVal = [
-            '0',
-            '1',
-            '2',
-            '3',
-            '4',
-            '5',
-            '6',
-            '7',
-            '8',
-            '9',
-            '10',
-            '11',
-            '12',
-            '13',
-            '14',
-            '15',
-            '16',
-            '17',
-            '18',
-            '19',
-            '20',
-            '21',
-            '22',
-            '23',
-          ].indexOf(num.split(':')[1].toString());
-          endShowVal = num.split(':')[1];
-        }
+        // if (num != '') {
+        //   startVal = [
+        //     '0',
+        //     '1',
+        //     '2',
+        //     '3',
+        //     '4',
+        //     '5',
+        //     '6',
+        //     '7',
+        //     '8',
+        //     '9',
+        //     '10',
+        //     '11',
+        //     '12',
+        //     '13',
+        //     '14',
+        //     '15',
+        //     '16',
+        //     '17',
+        //     '18',
+        //     '19',
+        //     '20',
+        //     '21',
+        //     '22',
+        //     '23',
+        //   ].indexOf(num.split(':')[0].toString());
+        //   startShowVal = num.split(':')[0];
+        //   endVal = [
+        //     '0',
+        //     '1',
+        //     '2',
+        //     '3',
+        //     '4',
+        //     '5',
+        //     '6',
+        //     '7',
+        //     '8',
+        //     '9',
+        //     '10',
+        //     '11',
+        //     '12',
+        //     '13',
+        //     '14',
+        //     '15',
+        //     '16',
+        //     '17',
+        //     '18',
+        //     '19',
+        //     '20',
+        //     '21',
+        //     '22',
+        //     '23',
+        //   ].indexOf(num.split(':')[1].toString());
+        //   endShowVal = num.split(':')[1];
+        // }
 
         tranfer = acquireData.systemScheduleRebootDays.toString();
         if (tranfer != '') {
@@ -477,7 +508,6 @@ class _MaintainSettingsState extends State<MaintainSettings> {
           }
         });
       } on FormatException catch (e) {
-        print(e);
         ToastUtils.toast(S.current.error);
       }
     }).catchError((onError) {
@@ -740,71 +770,73 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                         offstage: !isCheck,
                         child: GestureDetector(
                           onTap: () {
-                            var result = CommonPicker.showPicker(
-                              context: context,
-                              options: [
-                                '0',
-                                '1',
-                                '2',
-                                '3',
-                                '4',
-                                '5',
-                                '6',
-                                '7',
-                                '8',
-                                '9',
-                                '10',
-                                '11',
-                                '12',
-                                '13',
-                                '14',
-                                '15',
-                                '16',
-                                '17',
-                                '18',
-                                '19',
-                                '20',
-                                '21',
-                                '22',
-                                '23',
-                              ],
-                              value: startVal,
-                            );
-                            result?.then((selectedValue) => {
-                                  if (startVal != selectedValue &&
-                                      selectedValue != null)
-                                    {
-                                      setState(() => {
-                                            startVal = selectedValue,
-                                            startShowVal = [
-                                              '0',
-                                              '1',
-                                              '2',
-                                              '3',
-                                              '4',
-                                              '5',
-                                              '6',
-                                              '7',
-                                              '8',
-                                              '9',
-                                              '10',
-                                              '11',
-                                              '12',
-                                              '13',
-                                              '14',
-                                              '15',
-                                              '16',
-                                              '17',
-                                              '18',
-                                              '19',
-                                              '20',
-                                              '21',
-                                              '22',
-                                              '23',
-                                            ][startVal],
-                                          })
-                                    }
-                                });
+                            // Get.offAllNamed('/change_password');
+                            _openTimePickerSheet(context);
+                            // var result = CommonPicker.showPicker(
+                            //   context: context,
+                            //   options: [
+                            //     '0',
+                            //     '1',
+                            //     '2',
+                            //     '3',
+                            //     '4',
+                            //     '5',
+                            //     '6',
+                            //     '7',
+                            //     '8',
+                            //     '9',
+                            //     '10',
+                            //     '11',
+                            //     '12',
+                            //     '13',
+                            //     '14',
+                            //     '15',
+                            //     '16',
+                            //     '17',
+                            //     '18',
+                            //     '19',
+                            //     '20',
+                            //     '21',
+                            //     '22',
+                            //     '23',
+                            //   ],
+                            //   value: startVal,
+                            // );
+                            // result?.then((selectedValue) => {
+                            //       if (startVal != selectedValue &&
+                            //           selectedValue != null)
+                            //         {
+                            //           setState(() => {
+                            //                 startVal = selectedValue,
+                            //                 startShowVal = [
+                            //                   '0',
+                            //                   '1',
+                            //                   '2',
+                            //                   '3',
+                            //                   '4',
+                            //                   '5',
+                            //                   '6',
+                            //                   '7',
+                            //                   '8',
+                            //                   '9',
+                            //                   '10',
+                            //                   '11',
+                            //                   '12',
+                            //                   '13',
+                            //                   '14',
+                            //                   '15',
+                            //                   '16',
+                            //                   '17',
+                            //                   '18',
+                            //                   '19',
+                            //                   '20',
+                            //                   '21',
+                            //                   '22',
+                            //                   '23',
+                            //                 ][startVal],
+                            //               })
+                            //         }
+                            //     });
                           },
                           child: BottomLine(
                             rowtem: Row(
@@ -815,7 +847,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                                       style: TextStyle(fontSize: 30.sp)),
                                   Row(
                                     children: [
-                                      Text(startShowVal,
+                                      Text(restartTime,
                                           style: TextStyle(fontSize: 30.sp)),
                                       Icon(
                                         Icons.arrow_forward_ios_outlined,
@@ -830,99 +862,99 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                         ),
                       ),
                       // 结束时间
-                      Offstage(
-                        offstage: !isCheck,
-                        child: GestureDetector(
-                          onTap: () {
-                            var result = CommonPicker.showPicker(
-                              context: context,
-                              options: [
-                                '0',
-                                '1',
-                                '2',
-                                '3',
-                                '4',
-                                '5',
-                                '6',
-                                '7',
-                                '8',
-                                '9',
-                                '10',
-                                '11',
-                                '12',
-                                '13',
-                                '14',
-                                '15',
-                                '16',
-                                '17',
-                                '18',
-                                '19',
-                                '20',
-                                '21',
-                                '22',
-                                '23',
-                              ],
-                              value: endVal,
-                            );
-                            result?.then((selectedValue) => {
-                                  if (endVal != selectedValue &&
-                                      selectedValue != null)
-                                    {
-                                      setState(() => {
-                                            endVal = selectedValue,
-                                            endShowVal = [
-                                              '0',
-                                              '1',
-                                              '2',
-                                              '3',
-                                              '4',
-                                              '5',
-                                              '6',
-                                              '7',
-                                              '8',
-                                              '9',
-                                              '10',
-                                              '11',
-                                              '12',
-                                              '13',
-                                              '14',
-                                              '15',
-                                              '16',
-                                              '17',
-                                              '18',
-                                              '19',
-                                              '20',
-                                              '21',
-                                              '22',
-                                              '23',
-                                            ][endVal],
-                                          })
-                                    }
-                                });
-                          },
-                          child: BottomLine(
-                            rowtem: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(S.of(context).TimeReboot,
-                                      style: TextStyle(fontSize: 30.sp)),
-                                  Row(
-                                    children: [
-                                      Text(endShowVal,
-                                          style: TextStyle(fontSize: 30.sp)),
-                                      Icon(
-                                        Icons.arrow_forward_ios_outlined,
-                                        color: const Color.fromRGBO(
-                                            144, 147, 153, 1),
-                                        size: 30.w,
-                                      )
-                                    ],
-                                  ),
-                                ]),
-                          ),
-                        ),
-                      )
+                      // Offstage(
+                      //   offstage: !isCheck,
+                      //   child: GestureDetector(
+                      //     onTap: () {
+                      //       var result = CommonPicker.showPicker(
+                      //         context: context,
+                      //         options: [
+                      //           '0',
+                      //           '1',
+                      //           '2',
+                      //           '3',
+                      //           '4',
+                      //           '5',
+                      //           '6',
+                      //           '7',
+                      //           '8',
+                      //           '9',
+                      //           '10',
+                      //           '11',
+                      //           '12',
+                      //           '13',
+                      //           '14',
+                      //           '15',
+                      //           '16',
+                      //           '17',
+                      //           '18',
+                      //           '19',
+                      //           '20',
+                      //           '21',
+                      //           '22',
+                      //           '23',
+                      //         ],
+                      //         value: endVal,
+                      //       );
+                      //       result?.then((selectedValue) => {
+                      //             if (endVal != selectedValue &&
+                      //                 selectedValue != null)
+                      //               {
+                      //                 setState(() => {
+                      //                       endVal = selectedValue,
+                      //                       endShowVal = [
+                      //                         '0',
+                      //                         '1',
+                      //                         '2',
+                      //                         '3',
+                      //                         '4',
+                      //                         '5',
+                      //                         '6',
+                      //                         '7',
+                      //                         '8',
+                      //                         '9',
+                      //                         '10',
+                      //                         '11',
+                      //                         '12',
+                      //                         '13',
+                      //                         '14',
+                      //                         '15',
+                      //                         '16',
+                      //                         '17',
+                      //                         '18',
+                      //                         '19',
+                      //                         '20',
+                      //                         '21',
+                      //                         '22',
+                      //                         '23',
+                      //                       ][endVal],
+                      //                     })
+                      //               }
+                      //           });
+                      //     },
+                      //     child: BottomLine(
+                      //       rowtem: Row(
+                      //           mainAxisAlignment:
+                      //               MainAxisAlignment.spaceBetween,
+                      //           children: [
+                      //             Text(S.of(context).TimeReboot,
+                      //                 style: TextStyle(fontSize: 30.sp)),
+                      //             Row(
+                      //               children: [
+                      //                 Text(endShowVal,
+                      //                     style: TextStyle(fontSize: 30.sp)),
+                      //                 Icon(
+                      //                   Icons.arrow_forward_ios_outlined,
+                      //                   color: const Color.fromRGBO(
+                      //                       144, 147, 153, 1),
+                      //                   size: 30.w,
+                      //                 )
+                      //               ],
+                      //             ),
+                      //           ]),
+                      //     ),
+                      //   ),
+                      // )
                     ])),
                     Center(
                       child: SizedBox(
@@ -933,6 +965,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                               backgroundColor: MaterialStateProperty.all(
                                   const Color.fromARGB(255, 48, 118, 250))),
                           onPressed: () {
+                            ToastUtils.toast("保存成功");
                             if (tranfer == '0;0;0;0;0;0;0' && isCheck == true) {
                               ToastUtils.toast(S.current.mustSuccess);
                             } else {

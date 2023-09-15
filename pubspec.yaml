@@ -3,7 +3,7 @@ description: A new Flutter application for router.
 
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.0+1
+version: 1.0.0+2
 
 environment:
   sdk: ">=2.17.3 <3.3.0"
@@ -64,7 +64,7 @@ dependencies:
   css_filter: ^1.0.2
   flutter_swiper_null_safety: ^1.0.2 # 轮播图空异常版
   # 国际化
-  flutter_localization: ^0.1.11
+  flutter_localization: ^0.1.13
   intl: ^0.18.0
   # AES加密
   encrypt: ^5.0.1
@@ -76,8 +76,8 @@ dependencies:
   connectivity_plus: ^4.0.1
   # 震动的插件
   vibration: ^1.7.7
-  # 获取mac地址
-  mac_address: ^1.0.0
+  # 获取mac地址(暂时去掉)
+#  mac_address: ^1.0.0
   #选择时间
   progressive_time_picker: ^0.0.9
   # 身份验证
@@ -88,6 +88,7 @@ dependencies:
   network_info_plus: ^4.0.1
   # 加载网络图片
   cached_network_image: ^3.1.0
+  time_picker_sheet: ^0.0.2+1
 dev_dependencies:
   flutter_test:
     sdk: flutter

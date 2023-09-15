@@ -828,7 +828,7 @@ class _NetStatusState extends State<NetStatus> {
 
                         // 网络环境
                         WhiteCard(
-                            height: 170,
+                            height: 210,
                             boxCotainer: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
@@ -895,12 +895,13 @@ class _NetStatusState extends State<NetStatus> {
                                                   )
                                           ]),
                                     ),
+                                    const SizedBox(height: 5,),
                                     Text(
                                       S.current.netSpeed,
                                       style: const TextStyle(
                                           color:
                                               Color.fromARGB(255, 0, 50, 121),
-                                          fontSize: 8),
+                                          fontSize: 10),
                                     ),
                                   ],
                                 ),
@@ -912,20 +913,24 @@ class _NetStatusState extends State<NetStatus> {
                                   ),
                                 ),
                                 Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     const Text(
                                       'Tip: Last Speed test',
                                       style: TextStyle(
-                                          color: Colors.grey, fontSize: 8),
+                                          color: Colors.grey, fontSize:  10),
                                     ),
+                                    const SizedBox(height: 3,),
                                     Text(
                                       'Up⬆ $testUp',
                                       style: const TextStyle(fontSize: 12),
                                     ),
+                                    const SizedBox(height: 3,),
                                     Text(
                                       'Down⬇ $testDown',
                                       style: const TextStyle(fontSize: 12),
                                     ),
+                                    const SizedBox(height: 3,),
                                     Text(
                                       'Lantency $lantency',
                                       style: const TextStyle(fontSize: 12),
@@ -1015,7 +1020,7 @@ class _NetStatusState extends State<NetStatus> {
                         // )),
                         //上传速率
                         WhiteCard(
-                            height: 208,
+                            height: 218,
                             boxCotainer: Column(
                               children: [
                                 const Text(
@@ -1072,12 +1077,13 @@ class _NetStatusState extends State<NetStatus> {
                                                         'assets/images/wlan.png')),
                                               ]),
                                         ),
+                                        const SizedBox(height: 3,),
                                         Text(
                                           S.current.wlanSet,
                                           style: const TextStyle(
                                               color: Color.fromARGB(
                                                   255, 0, 50, 121),
-                                              fontSize: 8),
+                                              fontSize: 10),
                                         ),
                                       ],
                                     ),
@@ -1284,15 +1290,11 @@ class _NetStatusState extends State<NetStatus> {
                                         height: 55.w,
                                         image: const AssetImage(
                                             'assets/images/equ_info.png')),
-                                    ConstrainedBox(
-                                      constraints: BoxConstraints(
-                                        maxWidth: 180.w,
-                                      ),
-                                      child: FittedBox(
-                                        child: Text(
-                                          S.current.deviceInfo,
-                                          textAlign: TextAlign.right,
-                                        ),
+                                    Expanded(
+                                      child: Text(
+                                        S.current.deviceInfo,
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(fontSize: 13,color: Colors.black),
                                       ),
                                     ),
                                   ],

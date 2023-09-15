@@ -64,5 +64,7 @@
 		<string>该应用程序需要您的同意来访问您的位置，以执行在线考勤打卡和在线定位的功能</string>
 		<key>NSFaceIDUsageDescription</key>
 		<string>Why is my app authenticating using face id?</string>
-	</dict>
+		<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+</dict>
 </plist>

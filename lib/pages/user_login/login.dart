@@ -11,7 +11,7 @@ import '../../core/utils/Aes.dart';
 import '../../core/utils/shared_preferences_util.dart';
 import '../../core/utils/toast.dart';
 import '../toolbar/toolbar_controller.dart';
-
+import '../../core/utils/string_util.dart';
 /// 用户登录
 class UserLogin extends StatefulWidget {
   const UserLogin({Key? key}) : super(key: key);
@@ -33,7 +33,16 @@ class _UserLoginState extends State<UserLogin> {
   @override
   void initState() {
     super.initState();
-    phone.text = '';
+    sharedGetData("user_phone", String).then((data) {
+      debugPrint("当前获取的用户信息:${data.toString()}");
+      if (StringUtil.isNotEmpty(data)) {
+        String loginInfo = data as String;
+        setState(() {
+          phone.text = loginInfo;
+        });
+      }
+    });
+    // phone.text = '';
     password.text = '';
   }
 
@@ -137,6 +146,13 @@ class _UserLoginState extends State<UserLogin> {
                                         color: const Color(0xff737A83)),
                                     // 取消自带的下边框
                                     border: InputBorder.none,
+                                    suffixIcon: IconButton(
+                                      icon: const Icon(Icons.cancel),
+                                      onPressed: (){
+                                        phone.clear();
+                                      },
+                                    ),
+
                                   ),
                                   validator: (value) {
                                     // RegExp reg = RegExp(
@@ -231,10 +247,10 @@ class _UserLoginState extends State<UserLogin> {
                         // 忘记密码
                         TextButton(
                             onPressed: (() {
-                              // Get.offAllNamed("/forget_password");
+                              Get.offAllNamed("/forget_password");
                             }),
-                            child: const Text('',
-                                style: TextStyle(color: Colors.black45)))
+                            child: const Text('忘记密码',
+                                style: TextStyle(color: Colors.black45,fontSize: 14)))
                       ],
                     ),
                     Padding(padding: EdgeInsets.only(top: 200.w)),

@@ -4,12 +4,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/utils/toast.dart';
-import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
 import 'package:flutter_template/config/base_config.dart';
-
+import '../../core/utils/Aes.dart';
 import '../../generated/l10n.dart';
 
 class ForgetPassword extends StatefulWidget {
@@ -29,10 +27,11 @@ class _ForgetPasswordState extends State<ForgetPassword> {
 
   //验证码
   String _codeValue = '';
-  bool iscode = false; //获取验证码状态
+  bool isCode = false; //获取验证码状态
   int codeNum = 60; //倒计时 60秒
-
   var timer;
+
+  final TextEditingController _textController = TextEditingController();
   @override
   void dispose() {
     super.dispose();
@@ -94,7 +93,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                               ),
                             ),
                             Text(
-                              '忘记密码',
+                              '修改密码',
                               style: TextStyle(fontSize: 60.sp),
                             ),
                             Text(
@@ -109,9 +108,9 @@ class _ForgetPasswordState extends State<ForgetPassword> {
 
                       //手机号
                       buildPhoneField(),
-                      Padding(padding: EdgeInsets.only(top: 20.w)),
+                      Padding(padding: EdgeInsets.only(top: 40.w)),
 
-                      // 验证码
+                      /// 验证码
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -124,16 +123,25 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                             ),
                             child: SizedBox(
                               child: TextFormField(
-                                textAlign: TextAlign.right,
+                                controller: _textController,
+                                textAlign: TextAlign.left,
                                 style: TextStyle(
                                     fontSize: 32.sp,
                                     color: const Color(0xff051220)),
                                 decoration: InputDecoration(
+                                  icon: const Icon(Icons.phone_android),
                                   // 表单提示信息
                                   hintText: "请输入验证码",
                                   hintStyle: TextStyle(
                                       fontSize: 32.sp,
                                       color: const Color(0xff737A83)),
+                                  border: InputBorder.none,
+                                  // suffixIcon: IconButton(
+                                  //   icon: const Icon(Icons.cancel),
+                                  //   onPressed: (){
+                                  //     _textController.clear();
+                                  //   },
+                                  // )
                                 ),
                                 validator: (value) {
                                   if (value.toString().length != 4) {
@@ -141,13 +149,31 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                                   }
                                   return null;
                                 },
-                                onChanged: (String value) => _codeValue = value,
+                                onChanged: (String value) {
+                                  setState(() {
+                                    _codeValue = value;
+                                  });
+                                } ,
                                 inputFormatters: [
                                   LengthLimitingTextInputFormatter(4),
                                 ],
                               ),
                             ),
                           ),
+                           Expanded(
+                               child: SizedBox(
+                               width: 40,
+                               height: 40,
+                               child:Offstage(
+                               offstage: _codeValue.isEmpty ? true : false,
+                               child: IconButton(
+                                 icon: const Icon(Icons.cancel,color: Colors.grey,),
+                                 onPressed: () {
+                                   _textController.clear();
+                                 },
+                               ),
+                             ),
+                           )),
                           // 获取验证码
                           TextButton(
                               onPressed: (() async {
@@ -158,7 +184,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                                 } else {
                                   //发请求
                                   var res = await dio.post(
-                                      '${BaseConfig.cloudBaseUrl}/fota/fota/appCustomer/sendSmsOrEmailCode?account=$_phoneVal');
+                                      '${BaseConfig.cloudBaseUrl}/platform/appCustomer/sendSmsOrEmailCode?account=$_phoneVal');
                                   var d = json.decode(res.toString());
                                   debugPrint('响应------>$d');
                                   d['code'] == 200
@@ -167,7 +193,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                                   if (codeNum == 60) {
                                     //倒计时60s
                                     setState(() {
-                                      iscode = true;
+                                      isCode = true;
                                     });
 
                                     timer = Timer.periodic(
@@ -179,7 +205,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                                         timer.cancel();
                                         setState(() {
                                           codeNum = 60;
-                                          iscode = false;
+                                          isCode = false;
                                         });
                                       }
                                     });
@@ -187,13 +213,13 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                                 }
                               }),
                               child: Text(
-                                iscode ? '$codeNum秒' : '获取验证码',
+                                isCode ? '$codeNum秒' : '获取验证码',
                                 style: TextStyle(
                                     color: Colors.blue, fontSize: 30.w),
                               )),
                         ],
                       ),
-                      Padding(padding: EdgeInsets.only(top: 20.w)),
+                      Padding(padding: EdgeInsets.only(top: 40.w)),
 
                       /// 密码
                       Row(
@@ -207,7 +233,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                             child: SizedBox(
                               width: 1.sw - 104.w,
                               child: TextFormField(
-                                textAlign: TextAlign.right,
+                                textAlign: TextAlign.left,
                                 obscureText: passwordValShow,
                                 style: TextStyle(
                                     fontSize: 32.sp,
@@ -246,7 +272,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                       ),
                       Padding(padding: EdgeInsets.only(top: 40.w)),
 
-                      ///修改密码
+                      /// 更新密码
                       SizedBox(
                         width: 1.sw - 104.w,
                         child: ElevatedButton(
@@ -259,28 +285,30 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                             backgroundColor: MaterialStateProperty.all(
                                 const Color.fromARGB(255, 30, 104, 233)),
                           ),
+                          // onPressed: (){
+                          //   Get.offAllNamed("/change_password");
+                          // },
+
                           onPressed: () async {
                             Map<String, dynamic> data = {
                               "account": _phoneVal,
-                              "newPassword": _passwordVal,
+                              "newPassword": AESUtil.generateAES(_passwordVal),
                               "code": _codeValue
                             };
                             //表单校验
                             if ((_formKey.currentState as FormState)
                                 .validate()) {
                               var res = await dio.post(
-                                  '${BaseConfig.cloudBaseUrl}/fota/fota/appCustomer/updatePwd',
+                                  '${BaseConfig.cloudBaseUrl}/platform/appCustomer/forgetPwdToUpdatePwd',
                                   data: data);
-                              print(res);
-                              print(data);
-                              // var d = json.decode(res.toString());
-                              // debugPrint('响应------>$d');
-                              // ToastUtils.toast(d['message']);
-                              // if (d['code'] != 200) {
-                              //   return;
-                              // } else {
-                              //   Get.offAllNamed("/user_login");
-                              // }
+                              var d = json.decode(res.toString());
+                              debugPrint('响应------>$d');
+                              ToastUtils.toast(d['message']);
+                              if (d['code'] != 200) {
+                                return;
+                              } else {
+                                Get.offAllNamed("/user_login");
+                              }
                             }
                           },
                           child: Text(
@@ -304,6 +332,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
 //手机号
 var dio = Dio();
 dynamic _phoneVal = '';
+final TextEditingController _textPhoneController = TextEditingController();
 Row buildPhoneField() {
   return Row(
     children: [
@@ -315,7 +344,8 @@ Row buildPhoneField() {
         child: SizedBox(
           width: 1.sw - 104.w,
           child: TextFormField(
-              textAlign: TextAlign.right,
+            controller: _textPhoneController,
+              textAlign: TextAlign.left,
               keyboardType: TextInputType.number,
               style: TextStyle(fontSize: 32.sp, color: const Color(0xff051220)),
               decoration: InputDecoration(
@@ -326,6 +356,11 @@ Row buildPhoneField() {
                     TextStyle(fontSize: 32.sp, color: const Color(0xff737A83)),
                 // 取消自带的下边框
                 border: InputBorder.none,
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.cancel),
+                  onPressed: (){
+                    _textPhoneController.clear();
+                  }),
               ),
               validator: (value) {
                 RegExp reg = RegExp(
@@ -345,3 +380,10 @@ Row buildPhoneField() {
     ],
   );
 }
+// Bool UpdateButtonStatus(codeValue) {
+//   if (_phoneVal.length > 0 && codeValue.length > 0) {
+//
+//   }
+//   return true;
+// }
+

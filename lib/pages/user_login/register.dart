@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/core/utils/Aes.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
@@ -37,6 +38,9 @@ class _UserRegisterState extends State<UserRegister> {
   String _codeValue = '';
   bool iscode = false; //获取验证码状态
   int codeNum = 60; //倒计时 60秒
+
+  final TextEditingController _textController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
   var dio = Dio(BaseOptions(
     connectTimeout: 2000,
   ));
@@ -138,6 +142,7 @@ class _UserRegisterState extends State<UserRegister> {
                               child: SizedBox(
                                 width: 1.sw - 104.w,
                                 child: TextFormField(
+                                  controller: _phoneController,
                                   keyboardType: TextInputType.text,
                                   style: TextStyle(
                                       fontSize: 32.sp,
@@ -151,6 +156,12 @@ class _UserRegisterState extends State<UserRegister> {
                                         color: const Color(0xff737A83)),
                                     // 取消自带的下边框
                                     border: InputBorder.none,
+                                    suffixIcon: IconButton(
+                                      icon: const Icon(Icons.cancel),
+                                      onPressed: (){
+                                        _phoneController.clear();
+                                      },
+                                    )
                                   ),
                                   validator: (value) {
                                     if (value == '') {
@@ -184,6 +195,7 @@ class _UserRegisterState extends State<UserRegister> {
                                 width: 1.sw - 104.w,
                                 child: TextFormField(
                                   obscureText: passwordValShow,
+                                  maxLength: 60,
                                   style: TextStyle(
                                       fontSize: 32.sp,
                                       color: const Color(0xff051220)),
@@ -209,10 +221,7 @@ class _UserRegisterState extends State<UserRegister> {
                                   onChanged: (String value) =>
                                       _passwordVal = value,
                                   validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return S.of(context).passwordLabel;
-                                    }
-                                    return null;
+                                    return value!.trim().length > 8 ? null : "密码不能少于8位";
                                   },
                                 ),
                               ),
@@ -285,6 +294,7 @@ class _UserRegisterState extends State<UserRegister> {
                               ),
                               child: SizedBox(
                                 child: TextFormField(
+                                  controller: _textController,
                                   style: TextStyle(
                                       fontSize: 32.sp,
                                       color: const Color(0xff051220)),
@@ -294,6 +304,13 @@ class _UserRegisterState extends State<UserRegister> {
                                     hintStyle: TextStyle(
                                         fontSize: 32.sp,
                                         color: const Color(0xff737A83)),
+                                    border: InputBorder.none,
+                                    suffixIcon: IconButton(
+                                      icon: const Icon(Icons.cancel),
+                                      onPressed: (){
+                                        _textController.clear();
+                                      },
+                                    )
                                   ),
                                   validator: (value) {
                                     if (value.toString().length != 4) {
@@ -393,7 +410,7 @@ class _UserRegisterState extends State<UserRegister> {
                             onPressed: () {
                               final data = {
                                 "account": _phoneVal,
-                                "password": _passwordVal,
+                                "password": AESUtil.generateAES(_passwordVal),
                                 "code": _codeValue
                               };
                               //表单校验

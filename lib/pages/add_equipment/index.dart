@@ -131,6 +131,7 @@ class _MyWidgetState extends State<AddEquipment> {
     // 组件销毁时判断Timer是否仍然处于激活状态，是则取消
     if (timer != null) {
       timer?.cancel();
+      timer = null;
     }
   }
 

@@ -36,9 +36,10 @@ class _WpsSetState extends State<WpsSet> {
   bool isCheck = false;
   //wps选中
   String wpsVal = '0';
+  String modeShowVal = 'PBC';
   //key  wifiWps/wifi5gWps
   dynamic paramKey = 'wifiWps';
-  String modeShowVal = 'PBC';
+
   int modeVal = 0;
   dynamic parmas = '';
   final TextEditingController pinVal = TextEditingController();
@@ -46,6 +47,10 @@ class _WpsSetState extends State<WpsSet> {
   final LoginController loginController = Get.put(LoginController());
   String sn = '';
   String type = '';
+  // WPS获取和提交的参数
+  String wpsValue = '0';
+  String modeValue = 'PBC';
+  String clientPin = "";
 
   @override
   void initState() {
@@ -105,20 +110,19 @@ class _WpsSetState extends State<WpsSet> {
       _isLoading = true;
       loading = true;
     });
-    var parameterNames = [
-      "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.1.WPS"
-    ];
-    var res = await Request().getACSNode(parameterNames, sn);
+    var parameterNames = {
+      "method" : "get",
+      "nodes" : ["wifiWps","wifiWpsMode","wifiWpsClientPin"]
+    };
+    var res = await Request().getWPSNode(parameterNames, sn);
     try {
       var jsonObj = jsonDecode(res);
       printInfo(info: '````$jsonObj');
       setState(() {
-        type = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["WiFi"]
-            ["WLANSettings"]["1"]["WPS"]["Enable"]["_type"];
-        var wps1 = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["WiFi"]
-            ["WLANSettings"]["1"]["WPS"]["Enable"]["_value"]!;
-        isCheck = wps1 == true ? true : false;
-        printInfo(info: '${isCheck = wps1 == true ? true : false}');
+        isCheck = jsonObj["data"]["wifiWps"] == "1" ? true : false;
+        modeShowVal = jsonObj["data"]["wifiWpsMode"];
+        pinVal.text = jsonObj["data"]["wifiWpsClientPin"].toString();
+        printInfo(info: '$isCheck--$modeValue---$clientPin');
       });
     } catch (e) {
       debugPrint('获取信息失败：${e.toString()}');
@@ -136,19 +140,20 @@ class _WpsSetState extends State<WpsSet> {
       _isLoading = true;
       loading = true;
     });
-    var parameterNames = [
-      "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.2.WPS"
-    ];
-    var res = await Request().getACSNode(parameterNames, sn);
+
+    var parameterNames = {
+      "method" : "get",
+      "nodes" : ["wifi5gWps","wifi5gWpsMode","wifi5gWpsClientPin"]
+    };
+    var res = await Request().getWPSNode(parameterNames, sn);
     try {
       var jsonObj = jsonDecode(res);
-      printInfo(info: '````$jsonObj');
+      printInfo(info: '$jsonObj');
       setState(() {
-        type = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["WiFi"]
-            ["WLANSettings"]["2"]["WPS"]["Enable"]["_type"];
-        var wps2 = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["WiFi"]
-            ["WLANSettings"]["2"]["WPS"]["Enable"]["_value"]!;
-        isCheck = wps2 == true ? true : false;
+        isCheck = jsonObj["data"]["wifi5gWps"] == "1" ? true : false;
+        modeShowVal = jsonObj["data"]["wifi5gWpsMode"];
+        pinVal.text = jsonObj["data"]["wifi5gWpsClientPin"].toString();
+        printInfo(info: '$isCheck--$modeValue---$clientPin');
       });
     } catch (e) {
       debugPrint('获取信息失败：${e.toString()}');
@@ -162,17 +167,29 @@ class _WpsSetState extends State<WpsSet> {
 
 // 设置 云端   2.4G
   setTRWpsData() async {
-    var parameterNames = [
-      [
-        "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.1.WPS.Enable",
-        isCheck,
-        type
-      ]
-    ];
-    var res = await Request().setACSNode(parameterNames, sn);
+    wpsValue = isCheck == true ? "1" : "0";
+    if (isCheck == true) {
+      if (modeShowVal == 'PBC'){
+        modeValue = "PBC";
+      }else {
+        modeValue = "client";
+      }
+    }
+    clientPin = pinVal.text;
+    var parameterNames = {
+      "method" : "set",
+      "nodes" : {"wifiWps" : wpsValue,
+                 "wifiWpsMode" : modeValue,
+                 "wifiWpsClientPin" : clientPin
+      }
+    };
+    debugPrint("--------wpsValue:$wpsValue----------");
+    debugPrint("--------modevalue:$modeValue----------");
+    debugPrint("--------pinvalue:${pinVal.text}----------");
+    var res = await Request().setWPSNode(parameterNames, sn);
     try {
       var jsonObj = jsonDecode(res);
-      printInfo(info: '````$jsonObj');
+      printInfo(info: '$jsonObj');
       setState(() {});
     } catch (e) {
       debugPrint('获取信息失败：${e.toString()}');
@@ -181,14 +198,24 @@ class _WpsSetState extends State<WpsSet> {
 
   // 设置 云端   5G
   setTRWpsData2() async {
-    var parameterNames = [
-      [
-        "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.2.WPS.Enable",
-        isCheck,
-        type
-      ]
-    ];
-    var res = await Request().setACSNode(parameterNames, sn);
+    wpsValue = isCheck == true ? "1" : "0";
+    if (isCheck == true) {
+      if (modeShowVal == 'PBC'){
+        modeValue = "PBC";
+      }else {
+        modeValue = "client";
+      }
+    }
+    clientPin = pinVal.text;
+    var parameterNames = {
+    "method" : "set",
+    "nodes" : {
+      "wifi5gWps" : wpsValue,
+      "wifi5gWpsMode" : modeValue,
+      "wifi5gWpsClientPin" : clientPin
+      }
+    };
+    var res = await Request().setWPSNode(parameterNames, sn);
     try {
       var jsonObj = jsonDecode(res);
       printInfo(info: '````$jsonObj');
@@ -439,57 +466,54 @@ class _WpsSetState extends State<WpsSet> {
                               ),
                             ),
                             //模式
-                            Offstage(
-                              offstage: true,
-                              child: GestureDetector(
-                                onTap: () {
-                                  closeKeyboard(context);
-                                  var result = CommonPicker.showPicker(
-                                    context: context,
-                                    options: ['PBC', 'Client PIN'],
-                                    value: modeVal,
-                                  );
-                                  result?.then((selectedValue) => {
-                                        if (modeVal != selectedValue &&
-                                            selectedValue != null)
-                                          {
-                                            setState(() => {
-                                                  modeVal = selectedValue,
-                                                  modeShowVal = [
-                                                    'PBC',
-                                                    'Client PIN'
-                                                  ][modeVal]
-                                                })
-                                          }
-                                      });
-                                },
-                                child: BottomLine(
-                                  rowtem: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(S.of(context).Mode,
-                                          style: TextStyle(
-                                              color: const Color.fromARGB(
-                                                  255, 5, 0, 0),
-                                              fontSize: 28.sp)),
-                                      Row(
-                                        children: [
-                                          Text(modeShowVal,
-                                              style: TextStyle(
-                                                  color: const Color.fromARGB(
-                                                      255, 5, 0, 0),
-                                                  fontSize: 28.sp)),
-                                          Icon(
-                                            Icons.arrow_forward_ios_outlined,
-                                            color: const Color.fromRGBO(
-                                                144, 147, 153, 1),
-                                            size: 30.w,
-                                          )
-                                        ],
-                                      ),
-                                    ],
-                                  ),
+                            GestureDetector(
+                              onTap: () {
+                                closeKeyboard(context);
+                                var result = CommonPicker.showPicker(
+                                  context: context,
+                                  options: ['PBC', 'Client PIN'],
+                                  value: modeVal,
+                                );
+                                result?.then((selectedValue) => {
+                                  if (modeVal != selectedValue &&
+                                      selectedValue != null)
+                                    {
+                                      setState(() => {
+                                        modeVal = selectedValue,
+                                        modeShowVal = [
+                                          'PBC',
+                                          'Client PIN'
+                                        ][modeVal]
+                                      })
+                                    }
+                                });
+                              },
+                              child: BottomLine(
+                                rowtem: Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(S.of(context).Mode,
+                                        style: TextStyle(
+                                            color: const Color.fromARGB(
+                                                255, 5, 0, 0),
+                                            fontSize: 28.sp)),
+                                    Row(
+                                      children: [
+                                        Text(modeShowVal,
+                                            style: TextStyle(
+                                                color: const Color.fromARGB(
+                                                    255, 5, 0, 0),
+                                                fontSize: 28.sp)),
+                                        Icon(
+                                          Icons.arrow_forward_ios_outlined,
+                                          color: const Color.fromRGBO(
+                                              144, 147, 153, 1),
+                                          size: 30.w,
+                                        )
+                                      ],
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
@@ -506,22 +530,31 @@ class _WpsSetState extends State<WpsSet> {
                                             color: const Color.fromARGB(
                                                 255, 5, 0, 0),
                                             fontSize: 28.sp)),
-                                    SizedBox(
-                                      width: 100.w,
-                                      child: TextFormField(
-                                        textAlign: TextAlign.right,
-                                        keyboardType: TextInputType.number,
-                                        controller: pinVal,
-                                        style: TextStyle(
-                                            fontSize: 26.sp,
-                                            color: const Color(0xff051220)),
-                                        decoration: InputDecoration(
-                                          hintStyle: TextStyle(
-                                              fontSize: 26.sp,
-                                              color: const Color(0xff737A83)),
-                                          border: InputBorder.none,
+                                    Expanded(
+                                      flex: 1,
+                                        child:Padding(
+                                          padding: const EdgeInsets.only(left: 10),
+                                          child: SizedBox(
+                                            width: 200.w,
+                                            child: TextFormField(
+                                              textAlign: TextAlign.left,
+                                              keyboardType: TextInputType.number,
+                                              controller: pinVal,
+                                              style: TextStyle(
+                                                  fontSize: 26.sp,
+                                                  color: const Color(0xff051220)),
+                                              decoration: InputDecoration(
+                                                hintStyle: TextStyle(
+                                                    fontSize: 26.sp,
+                                                    color: const Color(0xff737A83)),
+                                                border: InputBorder.none,
+                                              ),
+                                              onChanged: (value){
+                                                debugPrint("Pinvalue:$value");
+                                              },
+                                            ),
+                                          ),
                                         ),
-                                      ),
                                     ),
                                   ],
                                 ),

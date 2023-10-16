@@ -26,8 +26,8 @@ import 'package:flutter_template/pages/sub_service/parental_control.dart';
 import 'package:flutter_template/pages/user_login/forgetPassword.dart';
 import 'package:flutter_template/pages/user_login/login.dart';
 import 'package:flutter_template/pages/user_login/register.dart';
-import 'package:flutter_template/pages/video/index.dart';
-import 'package:flutter_template/pages/video/show_img.dart';
+// import 'package:flutter_template/pages/video/index.dart';
+// import 'package:flutter_template/pages/video/show_img.dart';
 import 'package:flutter_template/pages/vidicon/index.dart';
 import 'package:flutter_template/pages/vidicon/look_back.dart';
 import 'package:flutter_template/pages/vidicon/look_house.dart';
@@ -64,11 +64,21 @@ import 'package:flutter_template/pages/topo/parental/parental_pop.dart';
 import 'package:flutter_template/pages/topo/parental/parental_update.dart';
 import 'package:flutter_template/pages/add_equipment/index.dart';
 import 'package:flutter_template/pages/signal_cover/index.dart';
+// import 'package:flutter_template/pages/signal_cover/index1.dart';
 import 'package:flutter_template/pages/signal_cover/SignalCoverage.dart';
 import 'package:flutter_template/pages/user_login/changePasswordPage.dart';
 /// 路由
 class GlobalRouter {
-  /// 路由
+ // 定义单例
+  static GlobalRouter? _singleton;
+
+  GlobalRouter._internal();
+
+  factory GlobalRouter() {
+    return _singleton ?? GlobalRouter._internal();
+  }
+
+ // -------------------------------------------------路由-------------------------------------------------------
   /// 从非toolbar页面（子页面）跳转到toolbar页面（主页）实现：
   /// pushName到对应的路由，因为Toolbar是单例模式，所以只会创建一个
   /// pushName之后，在ToolBar，initState中获取当前的路由，实现切换页面
@@ -265,14 +275,6 @@ class GlobalRouter {
     '/test_signal': (BuildContext context, {Object? args}) =>
         const TestSignal(),
   };
-
-  static GlobalRouter? _singleton;
-
-  GlobalRouter._internal();
-
-  factory GlobalRouter() {
-    return _singleton ?? GlobalRouter._internal();
-  }
 
   /// 监听route
   Route? getRoutes(RouteSettings settings) {

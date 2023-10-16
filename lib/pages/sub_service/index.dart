@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import '../../core/utils/shared_preferences_util.dart';
-import '../../core/widget/common_widget.dart';
 import '../../core/widget/custom_app_bar.dart';
 import '../../generated/l10n.dart';
 

@@ -1,9 +1,6 @@
-import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as Math;
 import 'dart:ui' as UI;
-
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ArcProgresssBar extends StatelessWidget {

@@ -1,7 +1,5 @@
 import 'dart:convert';
-// import 'dart:html';
-// import 'package:dio/dio.dart';
-import 'package:dio/src/form_data.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/http/http_app.dart';
 // import 'package:get/get_connect/http/src/multipart/multipart_file.dart';
@@ -21,15 +19,22 @@ class Request {
         equipmentData.systemVersionSn !=
             EquipmentData.fromJson(d).systemVersionSn) {
       equipmentData = EquipmentData.fromJson(d);
-      print('设备正确');
-      print('设备信息：${equipmentData.systemProductModel}');
+      debugPrint('设备信息：${equipmentData.systemProductModel}');
       return equipmentData;
     }
-    print('设备：$equipmentData');
+    debugPrint('设备：$equipmentData');
     return equipmentData;
   }
 
-  //获取云端数据
+  //获取WPS云端数据
+  Future getWPSNode(parameterNames, sn) async {
+    Map<String, dynamic> data = {
+      'sn': sn,
+      'param': parameterNames
+    };
+    return await App.post('/cpeMqtt/getAndSetDeviceSODNodes', data: data);
+  }
+
   Future getACSNode(parameterNames, sn) async {
     Map<String, dynamic> data = {
       'deviceId': sn,
@@ -37,6 +42,17 @@ class Request {
       'parameterNames': parameterNames
     };
     return await App.post('/platform/tr069/getParameterValues', data: data);
+  }
+
+
+
+  //设置WPS云端数据
+  Future setWPSNode(parameterNames, sn) async {
+    Map<String, dynamic> data = {
+      'sn': sn,
+      'param': parameterNames
+    };
+    return await App.post('/cpeMqtt/getAndSetDeviceSODNodes', data: data);
   }
 
   //设置云端数据
@@ -48,6 +64,7 @@ class Request {
     };
     return await App.post('/platform/tr069/setParameterValues', data: data);
   }
+
 
   //添加或删除
   Future addOrDeleteObject(objectName, sn, name) async {

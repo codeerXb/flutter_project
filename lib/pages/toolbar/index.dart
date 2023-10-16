@@ -43,7 +43,6 @@ class _ToolbarState extends State<Toolbar> {
 
   @override
   Widget build(BuildContext context) {
-    // debugPrint('vn=$vn');
     return WillPopScope(
         child: Scaffold(
           body: PageView(

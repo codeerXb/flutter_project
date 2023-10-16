@@ -83,7 +83,7 @@ class _ParcontrolState extends State<Parcontrol> {
                           ),
                         ),
                         title: !istrue
-                            ? Text('订阅解锁服务')
+                            ? const Text('订阅解锁服务')
                             : Text('开始时间:$startDate'),
                         subtitle: Text("套餐类型:$type"),
                         // trailing: Text("剩余1个月"),
@@ -106,7 +106,7 @@ class _ParcontrolState extends State<Parcontrol> {
                     child: Column(
                       children: [
                         ListTile(
-                          title: Text('连续包年 ￥148 已优惠￥90'),
+                          title:const Text('连续包年 ￥148 已优惠￥90'),
                           trailing: Icon(
                             Icons.check,
                             color: index == 1 ? Colors.black : Colors.white,
@@ -119,7 +119,7 @@ class _ParcontrolState extends State<Parcontrol> {
                         ),
                         commonLine(),
                         ListTile(
-                          title: Text('连续包季 ￥40 折合13.3/月'),
+                          title:const Text('连续包季 ￥40 折合13.3/月'),
                           trailing: Icon(
                             Icons.check,
                             color: index == 2 ? Colors.black : Colors.white,
@@ -132,7 +132,7 @@ class _ParcontrolState extends State<Parcontrol> {
                         ),
                         commonLine(),
                         ListTile(
-                          title: Text('连续包月 ￥15'),
+                          title:const Text('连续包月 ￥15'),
                           trailing: Icon(
                             Icons.check,
                             color: index == 3 ? Colors.black : Colors.white,
@@ -185,7 +185,7 @@ class _ParcontrolState extends State<Parcontrol> {
                               onPressed: () {
                                 print(1);
                               },
-                              child: Text('开始前阅读《服务协议》和《自动续费协议》'))),
+                              child:const Text('开始前阅读《服务协议》和《自动续费协议》'))),
                     ),
                   ),
                 if (istrue)
@@ -199,7 +199,7 @@ class _ParcontrolState extends State<Parcontrol> {
                         child: ElevatedButton(
                           style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(
-                                  Color.fromARGB(255, 212, 40, 34))),
+                                 const Color.fromARGB(255, 212, 40, 34))),
                           onPressed: () {
                             sharedDeleteData('parental_control');
                             istrue = false;

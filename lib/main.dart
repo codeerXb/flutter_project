@@ -8,7 +8,6 @@ import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
 import 'package:get/get.dart';
-
 import 'core/http/http.dart';
 import 'core/router/global_route.dart';
 import 'generated/l10n.dart';

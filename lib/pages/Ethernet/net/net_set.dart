@@ -1,13 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_picker.dart';
-import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:flutter_template/core/widget/otp_input.dart';
 import 'package:flutter_template/core/widget/water_loading.dart';
 import 'package:flutter_template/pages/Ethernet/net/net_datas.dart';

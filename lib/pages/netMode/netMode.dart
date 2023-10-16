@@ -839,11 +839,11 @@ class _NetModeState extends State<NetMode> {
                         ],
                       ),
                     if (linkStatus == '2')
-                      Container(
+                      SizedBox(
                         width: double.infinity,
                         child: Column(
                           children: [
-                            Text('确保路由器连接电源并于WAN口插入网线'),
+                            const Text('确保路由器连接电源并于WAN口插入网线'),
                             Image.asset("assets/images/sureWan.png",
                                 fit: BoxFit.fitWidth,
                                 height: 600.w,

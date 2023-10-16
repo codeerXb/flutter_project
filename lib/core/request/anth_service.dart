@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import '../../pages/login/login_controller.dart';
 import '../http/http.dart';
 import 'package:get/get.dart';
-
 import '../utils/shared_preferences_util.dart';
 
 const _tokenExpirationTime = Duration(minutes: 1);
@@ -34,7 +34,7 @@ class AuthService {
       final response = await XHttp.get('/action/appLogin', data);
 
       var d = json.decode(response.toString());
-      print('登录成功${d['token']}');
+      debugPrint('登录成功${d['token']}');
       loginController.setSession(d['sessionid']);
       sharedAddAndUpdate("session", String, d['sessionid']);
       loginController.setToken(d['token']);

@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -146,6 +145,7 @@ class _PaymentState extends State<Payment> {
   //获取配置
   void getParentControlConfigFn() async {
     try {
+      debugPrint("当前的sn$sn----mac:$mac");
       var response = await App.post(
           '${BaseConfig.cloudBaseUrl}/parentControl/getParentControlConfig',
           data: {'sn': sn, "mac": mac});
@@ -169,7 +169,7 @@ class _PaymentState extends State<Payment> {
   }
 
   //下发配置
-  void setParentControlConfigFn() async {
+  Future setParentControlConfigFn() async {
     try {
       var form = {
         'event': 'setParentControlConfig',

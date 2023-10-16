@@ -153,7 +153,7 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: customAppbar(context: context, title: ''),
+        appBar: customAppbar(context: context, title: 'ACCOUNT'),
         body: loading
             ? const Center(
                 child: SizedBox(
@@ -175,7 +175,7 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
                     child: Container(
                       padding: EdgeInsets.only(left: 10.w, right: 10.0.w),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           // 顶部文本
                           Padding(
@@ -214,8 +214,8 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
                               ),
                               child: _imageFile == null &&
                                       loginUserInfo['avatar'] == ''
-                                  ? Icon(Icons.camera_alt, size: 50.w)
-                                  : Icon(Icons.camera_alt, size: 50.w),
+                                  ? Icon(Icons.camera_alt, size: 50.w,color: Colors.lightBlue,)
+                                  : Icon(Icons.camera_alt, size: 50.w,color: Colors.lightBlue),
                             ),
                           ),
                           SizedBox(height: 20.w),
@@ -321,7 +321,7 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
                                       textAlign: TextAlign.start,
                                       controller: emailController,
                                       keyboardType: TextInputType.emailAddress,
-                                      maxLines: null,
+                                      maxLines: 2,
                                       decoration: InputDecoration(
                                         hintText: S.of(context).email,
                                         border: OutlineInputBorder(
@@ -353,7 +353,7 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
                                       textAlign: TextAlign.start,
                                       controller: addressController,
                                       keyboardType: TextInputType.text,
-                                      maxLines: null,
+                                      maxLines: 2,
                                       decoration: InputDecoration(
                                         hintText: S.of(context).homeAddress,
                                         border: OutlineInputBorder(
@@ -373,9 +373,10 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
                                   onTap: () {
                                     // 点击按钮1时执行的代码
                                     Get.toNamed("/account_security")?.then(
-                                        (value) => {print("新密码：$value")});
+                                        (value) => {debugPrint("新密码：$value")});
                                   },
                                   child: Container(
+                                    height: 60,
                                     decoration: BoxDecoration(
                                       color: const Color.fromARGB(
                                           255, 243, 240, 240),

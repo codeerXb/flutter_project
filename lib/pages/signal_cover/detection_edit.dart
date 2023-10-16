@@ -1,9 +1,7 @@
 import 'dart:ui';
-
 import 'package:dio/dio.dart';
 import 'dart:convert';
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:ui' as ui;
@@ -12,11 +10,12 @@ import 'package:flutter_template/core/http/http_app.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/widget/water_loading.dart';
 import 'package:get/get.dart';
+import 'package:oktoast/oktoast.dart';
 import '../../core/widget/custom_app_bar.dart';
 import '../../generated/l10n.dart';
 import 'package:card_swiper/card_swiper.dart';
 
-List roominfo = [];
+List roomInfo = [];
 // 获取房屋信号数据
 Future<List> getDataAPI(CancelToken cancelToken) async {
   try {
@@ -24,7 +23,9 @@ Future<List> getDataAPI(CancelToken cancelToken) async {
     var data = await App.get(
         '/platform/wifiJson/getOne/$sn', {"cancelToken": cancelToken});
     List list = List.from(data['wifiJson']['list']).toList();
-    roominfo = List.from(data['wifiJson']['list']).toList();
+    roomInfo = List.from(data['wifiJson']['list']).toList();
+    debugPrint("--------floorRes:$list");
+    debugPrint("--------floorRoomInfo:$roomInfo");
     return list;
   } catch (err) {
     debugPrint(err.toString());
@@ -38,7 +39,7 @@ Future<List> getDataAPI(CancelToken cancelToken) async {
       "height": 100.0,
       "name": "living room",
       "floor": "1F",
-      "id": 0,
+      "floorId": 1,
     }
   ];
 }
@@ -55,6 +56,7 @@ class _TestEditState extends State<TestEdit> {
   int swiperCount = 1;
   String floorName = '';
   CancelToken cancelToken = CancelToken();
+
   // 定义布局List: 根据floorId来进行分类
   List layoutList = [
     [
@@ -79,11 +81,13 @@ class _TestEditState extends State<TestEdit> {
       loading = true;
     });
     List<dynamic> res = await getDataAPI(cancelToken);
+    debugPrint("--------floorRes:$res");
     // 构建List，需要添加一个id让它始终对应swiper的索引
     // 1、将不同floorId的Map分组
     List<List> layoutListTemp = [];
-    Set floorIdSet = res.map((item) => item['floorId']).toSet();
-    for (String id in floorIdSet) {
+    List floorIdSet = res.map((item) => item['floorId']).toList();
+    debugPrint("--------floorIdSet:$floorIdSet");
+    for (int id in floorIdSet) {
       layoutListTemp
           .add(res.where((element) => element['floorId'] == id).toList());
     }
@@ -99,6 +103,8 @@ class _TestEditState extends State<TestEdit> {
       layoutList = layoutListTemp;
       // 过滤不同floorId的数组,取长度赋值
       swiperCount = floorIdSet.length;
+      debugPrint(
+          "--------floorName:${layoutListTemp[currentSwiperIndex][0]['floor']}");
       floorName = layoutListTemp[currentSwiperIndex][0]['floor'];
       layoutWidget = layoutWidgetTemp;
     });
@@ -261,14 +267,19 @@ class _TestEditState extends State<TestEdit> {
                   children: [
                     ElevatedButton(
                       onPressed: () {
-                        printInfo(info: '户型数据：${jsonEncode(roominfo)}');
-                        Get.offNamed(
-                          '/test_signal',
-                          arguments: {
-                            'roomInfo': jsonEncode(roominfo),
-                            'curFloorId': floorName.split('F')[0]
-                          },
-                        );
+                        printInfo(info: '户型数据：${jsonEncode(roomInfo)}');
+                        debugPrint("当前的floor:$floorName");
+                        if (roomInfo.isNotEmpty && floorName.isNotEmpty) {
+                          Get.offNamed(
+                            '/test_signal',
+                            arguments: {
+                              'roomInfo': jsonEncode(roomInfo),
+                              'curFloorId': floorName.split('F')[0]
+                            },
+                          );
+                        } else {
+                          showToast("请设置户型数据");
+                        }
                       },
                       child: Text('${S.current.RetestF}  $floorName'),
                     ),
@@ -283,7 +294,7 @@ class _TestEditState extends State<TestEdit> {
                 style: const TextStyle(color: Colors.grey),
               ),
             ),
-            Padding(padding: EdgeInsets.only(top: 20.w)),
+            Padding(padding: EdgeInsets.only(bottom: 40.w)),
           ],
         ));
   }

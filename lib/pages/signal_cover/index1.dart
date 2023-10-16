@@ -1,55 +1,64 @@
 import 'package:flutter/material.dart';
 
-class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+class MyIndexApp extends StatefulWidget {
+  const MyIndexApp({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _MyAppState();
+  State<StatefulWidget> createState() => _MyIndexAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyIndexAppState extends State<MyIndexApp> {
   List<RectData> _rects = [];
   String _currentRectName = '';
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('画布'),
       ),
-      body: InteractiveViewer(
-        minScale: 0.1, // 最小缩放比例
-        maxScale: 4.0, // 最大缩放比例
-        constrained: false, // 是否对缩放和平移进行限制
-        child: GestureDetector(
-          onTapDown: (details) {
-            const rectSize = Size(50, 50); // 矩形大小
-            final tappedPosition = details.localPosition;
+      body: SizedBox(
+        height: 400,
+        width: double.infinity,
+        child: InteractiveViewer(
+          minScale: 0.1, // 最小缩放比例
+          maxScale: 4.0, // 最大缩放比例
+          constrained: false, // 是否对缩放和平移进行限制
+          child: GestureDetector(
+            onTapDown: (details) {
+              const rectSize = Size(50, 50); // 矩形大小
+              final tappedPosition = details.localPosition;
 
-            // 将点击位置转换为网格位置
-            final gridPosition = Offset(
-              tappedPosition.dx - (tappedPosition.dx % rectSize.width),
-              tappedPosition.dy - (tappedPosition.dy % rectSize.height),
-            );
+              // 将点击位置转换为网格位置
+              final gridPosition = Offset(
+                tappedPosition.dx - (tappedPosition.dx % rectSize.width),
+                tappedPosition.dy - (tappedPosition.dy % rectSize.height),
+              );
 
-            // 创建一个带名称的矩形数据
-            final newRect = RectData(
-              rect: Rect.fromLTWH(
-                gridPosition.dx,
-                gridPosition.dy,
-                rectSize.width,
-                rectSize.height,
-              ),
-              name: _currentRectName,
-            );
+              // 创建一个带名称的矩形数据
+              final newRect = RectData(
+                rect: Rect.fromLTWH(
+                  gridPosition.dx,
+                  gridPosition.dy,
+                  rectSize.width,
+                  rectSize.height,
+                ),
+                name: _currentRectName,
+              );
 
-            setState(() {
-              _rects.add(newRect);
-            });
-          },
-          child: CustomPaint(
-            painter: GridPainter(),
-            foregroundPainter: RectsPainter(_rects),
+              setState(() {
+                _rects.add(newRect);
+              });
+            },
+            child: CustomPaint(
+              painter: GridPainter(),
+              foregroundPainter: RectsPainter(_rects),
+            ),
           ),
         ),
       ),

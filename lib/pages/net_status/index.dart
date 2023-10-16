@@ -19,7 +19,7 @@ import 'package:flutter_template/pages/system_settings/model/maintain_data.dart'
 import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:flutter_template/pages/net_status/coverage.dart';
+import 'package:flutter_template/core/utils/screen_adapter.dart';
 
 /// 消息页面
 class NetStatus extends StatefulWidget {
@@ -130,7 +130,7 @@ class _NetStatusState extends State<NetStatus> {
   @override
   void initState() {
     super.initState();
-
+    getqueryingBoundDevices();
     sharedGetData('deviceSn', String).then(((res) {
       printInfo(info: 'deviceSn$res');
       if (mounted) {
@@ -140,36 +140,24 @@ class _NetStatusState extends State<NetStatus> {
           printInfo(info: 'state--${loginController.login.state}');
           if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
             getBasicInfo();
-            getTROnlineCount(sn);
+            // getTROnlineCount(sn);
           }
-          if (loginController.login.state == 'local') {
-            // 获取流量
-            getUsedFlow();
-            // 获取设备列表并更新在线数量
-            updateOnlineCount();
-            // 获取网络连接状态和上下行速率并更新
-            updateStatus();
-          }
+          // if (loginController.login.state == 'local') {
+          //   // 获取流量
+          //   getUsedFlow();
+          //   // 获取设备列表并更新在线数量
+          //   updateOnlineCount();
+          //   // 获取网络连接状态和上下行速率并更新
+          //   updateStatus();
+          // }
 
-          App.get('/platform/cpeMqttSpeed/queryLatestSpeed', {'sn': sn})
-              .then((res) {
-            setState(() {
-              testUp = getRate(res['data'].first['upload']);
-              testDown = getRate(res['data'].first['download']);
-              lantency = getPing(res['data'].first['ping']);
-            });
-          }).catchError((err) {
-            printError(info: err.toString());
-          });
+          getLastSpeed(sn);
         });
       }
     }));
 
-    if (mounted) {
-      getqueryingBoundDevices();
-    }
-
-    timer = Timer.periodic(const Duration(seconds: 2), (t) async {
+    // 之前是设置的 2秒,方便调试改为1分钟
+    timer = Timer.periodic(const Duration(seconds: 60), (t) async {
       if (mounted) {
         printInfo(info: '定时获取的state--${loginController.login.state}');
         if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
@@ -237,11 +225,23 @@ class _NetStatusState extends State<NetStatus> {
     // });
   }
 
+  void getLastSpeed(String sn) {
+    App.get('/platform/cpeMqttSpeed/queryLatestSpeed', {'sn': sn}).then((res) {
+      setState(() {
+        testUp = getRate(res['data'].first['upload']);
+        testDown = getRate(res['data'].first['download']);
+        lantency = getPing(res['data'].first['ping']);
+      });
+    }).catchError((err) {
+      printError(info: err.toString());
+    });
+  }
+
 //1连接
   var connectStatus = '1';
 
   /// 获取云端基础信息
-  getBasicInfo() async {
+ Future<void> getBasicInfo() async {
     // Navigator.push(context, DialogRouter(LoadingDialog()));
     printInfo(info: 'sn在这里有值吗-------$sn');
     var parameterNames = [
@@ -267,7 +267,7 @@ class _NetStatusState extends State<NetStatus> {
   }
 
   ///  获取云端轮询信息
-  getTROnlineCount(sn) async {
+ Future<void> getTROnlineCount(sn) async {
     // 已用流量
     // var flowTable = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
     //     ["Overview"]["ThroughputStatisticsList"];
@@ -371,7 +371,7 @@ class _NetStatusState extends State<NetStatus> {
   }
 
   /// 获取网络连接状态和上下行速率并更新  本地
-  void updateStatus() async {
+  Future<void> updateStatus() async {
     Map<String, dynamic> netStatus = {
       'method': 'obj_get',
       'param':
@@ -621,7 +621,6 @@ class _NetStatusState extends State<NetStatus> {
           }
         });
       } on FormatException catch (e) {
-        print(e);
         ToastUtils.toast(S.current.error);
       }
     }).catchError((onError) {
@@ -631,7 +630,7 @@ class _NetStatusState extends State<NetStatus> {
   }
 
   // 恢复出厂 云端
-  void getfactoryResetData() {
+  void getFactoryResetData() {
     App.post('/platform/tr069/factoryReset?deviceId=$sn').then((res) {
       var d = json.decode(res.toString());
       debugPrint('响应------>$d');
@@ -647,7 +646,7 @@ class _NetStatusState extends State<NetStatus> {
   }
 
   // 恢复出厂
-  void getfactoryReset() {
+  void getFactoryReset() {
     Map<String, dynamic> data = {
       'method': 'obj_set',
       'param': '{"systemFactoryReset":"1","systemRebootFlag":"1"}',
@@ -665,7 +664,7 @@ class _NetStatusState extends State<NetStatus> {
           }
         });
       } on FormatException catch (e) {
-        print(e);
+        debugPrint(e.message);
         ToastUtils.toast(S.current.error);
       }
     }).catchError((onError) {
@@ -680,36 +679,44 @@ class _NetStatusState extends State<NetStatus> {
       testLoading = true;
     });
     try {
-      var app = await App.post('/platform/cpeMqttSpeed/sendSpeedTest',
-          data: {'sn': sn});
-      debugPrint('我的createTime${app.toString()}');
-      // 5002
-      debugPrint('我的createTime${jsonDecode(app)['code']}');
-      if (jsonDecode(app)['code'] == 5002) {
-        setState(() {
-          testLoading = false;
-        });
-      }
-      var res =
-          await App.get('/platform/cpeMqttSpeed/queryLatestSpeed', {'sn': sn});
-      final createTime = res['data'].first['createTime'];
-      Timer.periodic(const Duration(seconds: 3), (timer) async {
-        var speed = await App.get(
+      // var app = await App.post('/platform/cpeMqttSpeed/sendSpeedTest',
+      //     data: {'sn': sn});
+      // debugPrint('我的createTime${app.toString()}');
+      // // 5002
+      // debugPrint('我的createTime${jsonDecode(app)['code']}');
+      // if (jsonDecode(app)['code'] == 5002) {
+      //   setState(() {
+      //     testLoading = false;
+      //   });
+      // }
+      // var res =
+      //     await App.get('/platform/cpeMqttSpeed/queryLatestSpeed', {'sn': sn});
+      // final createTime = res['data'].first['createTime'];
+
+      // Timer.periodic(const Duration(seconds: 3), (timer) async {
+
+      // });
+
+      Future.delayed(const Duration(milliseconds: 3000)).then((value) async {
+        final speed = await App.get(
             '/platform/cpeMqttSpeed/queryLatestSpeed', {'sn': sn});
         debugPrint(
-            '我的createTime$createTime,${speed['data'].first['createTime']},${speed['data'].length.toString()}');
-        if (speed['data'].first['createTime'] != createTime) {
-          setState(() {
-            testUp = getRate(res['data'].first['upload']);
-            testDown = getRate(res['data'].first['download']);
-            lantency = getPing(res['data'].first['ping']);
-          });
-          timer.cancel();
-          setState(() {
-            testLoading = false;
-          });
-        }
+            '我的createTime${speed['data'].first['createTime']},${speed['data'].length.toString()}');
+        setState(() {
+          testUp = getRate(speed['data'].first['upload']);
+          testDown = getRate(speed['data'].first['download']);
+          lantency = getPing(speed['data'].first['ping']);
+          testLoading = false;
+        });
       });
+
+      // if (speed['data'].first['createTime'] != createTime) {
+
+      // timer.cancel();
+      // setState(() {
+
+      // });
+      // }
     } catch (e) {
       printInfo(info: e.toString());
     }
@@ -815,7 +822,7 @@ class _NetStatusState extends State<NetStatus> {
                   behavior: HitTestBehavior.opaque,
                   child: Container(
                     decoration: const BoxDecoration(color: Color(0xFFF0F0F0)),
-                    height: 1000,
+                    height: double.infinity,
                     child: ListView(
                       children: [
                         // const Center(
@@ -862,40 +869,46 @@ class _NetStatusState extends State<NetStatus> {
                                 // ),
                                 Column(
                                   children: [
-                                    ElevatedButton(
-                                      style: ButtonStyle(
-                                        minimumSize:
-                                            MaterialStateProperty.all<Size>(
-                                                Size(80.w, 80.w)),
-                                        shape: MaterialStateProperty.all(
-                                            const CircleBorder()),
-                                        backgroundColor:
-                                            const MaterialStatePropertyAll(
-                                                Color.fromRGBO(
-                                                    235, 235, 235, 1)),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 5),
+                                      child: ElevatedButton(
+                                        style: ButtonStyle(
+                                          minimumSize:
+                                              MaterialStateProperty.all<Size>(
+                                                  Size(80.w, 80.w)),
+                                          shape: MaterialStateProperty.all(
+                                              const CircleBorder()),
+                                          backgroundColor:
+                                              const MaterialStatePropertyAll(
+                                                  Color.fromRGBO(
+                                                      235, 235, 235, 1)),
+                                        ),
+                                        onPressed: () {
+                                          // 测速
+                                          testSpeed();
+                                        },
+                                        child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              testLoading
+                                                  ? const CircularProgressIndicator(
+                                                      color: Color.fromRGBO(
+                                                          95, 141, 255, 1),
+                                                    )
+                                                  : Icon(
+                                                      Icons.network_check,
+                                                      color:
+                                                          const Color.fromRGBO(
+                                                              95, 141, 255, 1),
+                                                      size: 60.sp,
+                                                    )
+                                            ]),
                                       ),
-                                      onPressed: () {
-                                        // 测速
-                                        testSpeed();
-                                      },
-                                      child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            testLoading
-                                                ? const CircularProgressIndicator(
-                                                    color: Color.fromRGBO(
-                                                        95, 141, 255, 1),
-                                                  )
-                                                : Icon(
-                                                    Icons.network_check,
-                                                    color: const Color.fromRGBO(
-                                                        95, 141, 255, 1),
-                                                    size: 60.sp,
-                                                  )
-                                          ]),
                                     ),
-                                    const SizedBox(height: 5,),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
                                     Text(
                                       S.current.netSpeed,
                                       style: const TextStyle(
@@ -918,19 +931,25 @@ class _NetStatusState extends State<NetStatus> {
                                     const Text(
                                       'Tip: Last Speed test',
                                       style: TextStyle(
-                                          color: Colors.grey, fontSize:  10),
+                                          color: Colors.grey, fontSize: 10),
                                     ),
-                                    const SizedBox(height: 3,),
+                                    const SizedBox(
+                                      height: 3,
+                                    ),
                                     Text(
                                       'Up⬆ $testUp',
                                       style: const TextStyle(fontSize: 12),
                                     ),
-                                    const SizedBox(height: 3,),
+                                    const SizedBox(
+                                      height: 3,
+                                    ),
                                     Text(
                                       'Down⬇ $testDown',
                                       style: const TextStyle(fontSize: 12),
                                     ),
-                                    const SizedBox(height: 3,),
+                                    const SizedBox(
+                                      height: 3,
+                                    ),
                                     Text(
                                       'Lantency $lantency',
                                       style: const TextStyle(fontSize: 12),
@@ -1020,8 +1039,9 @@ class _NetStatusState extends State<NetStatus> {
                         // )),
                         //上传速率
                         WhiteCard(
-                            height: 218,
+                            height: 230,
                             boxCotainer: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 const Text(
                                   'Tip: Current traffic passed',
@@ -1038,13 +1058,14 @@ class _NetStatusState extends State<NetStatus> {
                                           Text(
                                             '$upKb$upUnit',
                                             style: TextStyle(
-                                                fontSize: 30.sp,
+                                                fontSize: ScreenAdapter.fontSize(30),
                                                 color: const Color(0xff051220)),
                                           ),
                                           Text(
                                             S.current.up,
                                             style: TextStyle(
-                                              fontSize: 28.sp,
+                                              fontSize:
+                                                  ScreenAdapter.fontSize(28),
                                               color: Colors.black54,
                                             ),
                                           ),
@@ -1077,7 +1098,9 @@ class _NetStatusState extends State<NetStatus> {
                                                         'assets/images/wlan.png')),
                                               ]),
                                         ),
-                                        const SizedBox(height: 3,),
+                                        const SizedBox(
+                                          height: 8,
+                                        ),
                                         Text(
                                           S.current.wlanSet,
                                           style: const TextStyle(
@@ -1094,13 +1117,13 @@ class _NetStatusState extends State<NetStatus> {
                                           Text(
                                             '$downKb$downUnit',
                                             style: TextStyle(
-                                                fontSize: 30.sp,
+                                                fontSize: ScreenAdapter.fontSize(30),
                                                 color: const Color(0xff051220)),
                                           ),
                                           Text(
                                             S.current.down,
                                             style: TextStyle(
-                                              fontSize: 28.sp,
+                                              fontSize: ScreenAdapter.fontSize(28),
                                               color: Colors.black54,
                                             ),
                                           ),
@@ -1150,7 +1173,8 @@ class _NetStatusState extends State<NetStatus> {
                                             '$_onlineCount ${S.current.line}',
                                             style: TextStyle(
                                                 color: Colors.black54,
-                                                fontSize: 25.sp),
+                                                fontSize:
+                                                    ScreenAdapter.fontSize(25)),
                                           ),
                                         ],
                                       ),
@@ -1174,12 +1198,13 @@ class _NetStatusState extends State<NetStatus> {
                                         size: 60.sp),
                                     ConstrainedBox(
                                       constraints: BoxConstraints(
-                                        maxWidth: 180.w,
+                                        maxWidth: ScreenAdapter.width(180),
                                       ),
                                       child: FittedBox(
                                         child: Text(
                                           S.current.parent,
-                                          textAlign: TextAlign.right,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(fontSize: 30.w),
                                         ),
                                       ),
                                     ),
@@ -1228,8 +1253,8 @@ class _NetStatusState extends State<NetStatus> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Image(
-                                        width: 80.w,
-                                        height: 80.w,
+                                        width: ScreenAdapter.width(80),
+                                        height: ScreenAdapter.height(80),
                                         image: const AssetImage(
                                             'assets/images/visitor_net.png')),
                                     ConstrainedBox(
@@ -1294,7 +1319,8 @@ class _NetStatusState extends State<NetStatus> {
                                       child: Text(
                                         S.current.deviceInfo,
                                         textAlign: TextAlign.center,
-                                        style: const TextStyle(fontSize: 13,color: Colors.black),
+                                        style: const TextStyle(
+                                            fontSize: 13, color: Colors.black),
                                       ),
                                     ),
                                   ],
@@ -1585,13 +1611,13 @@ class _NetStatusState extends State<NetStatus> {
                                                                     if (loginController.login.state ==
                                                                             'cloud' &&
                                                                         sn.isNotEmpty) {
-                                                                      getfactoryResetData();
+                                                                      getFactoryResetData();
                                                                     }
                                                                     if (loginController
                                                                             .login
                                                                             .state ==
                                                                         'local') {
-                                                                      getfactoryReset();
+                                                                      getFactoryReset();
                                                                     }
                                                                   }
                                                                   Navigator.pop(

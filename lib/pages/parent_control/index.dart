@@ -39,6 +39,7 @@ class _ParentState extends State<Parent> {
       loading = false;
     });
     var d = json.decode(response.toString());
+    debugPrint('返回的数据是:$d');
     setState(() {
       d['data']['wifiDevices'].addAll(d['data']['lanDevices']);
       deviceList = d['data']['wifiDevices'];
@@ -46,7 +47,7 @@ class _ParentState extends State<Parent> {
       //编辑文字回显
       _editvalueList.addAll(
           deviceList.map((item) => TextEditingController(text: item['name'])));
-      print('设备列表$deviceList');
+      debugPrint('设备列表$deviceList');
     });
   }
 
@@ -93,7 +94,7 @@ class _ParentState extends State<Parent> {
                         //今日网络使用情况
                         const InternetUsage(),
                         Padding(padding: EdgeInsets.only(top: 20.w)),
-                        //6
+
                         const SixBoxs(),
                         //允许上网时间
                         const Scheduling(),
@@ -154,11 +155,14 @@ class InternetUsage extends StatelessWidget {
         child: Column(
           children: [
             //第一行
-            const Row(
+             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 //left
-                Text('Internet usage today'),
+                Text(
+                  'Internet usage today',
+                  style: TextStyle(fontSize: 32.w,fontWeight: FontWeight.w500),
+                ),
               ],
             ),
             Padding(padding: EdgeInsets.only(top: 60.w)),
@@ -171,7 +175,8 @@ class InternetUsage extends StatelessWidget {
                     GestureDetector(
                       onTap: () {
                         // 在此处添加导航到其他页面的代码
-                        Get.toNamed('/Payment');
+                        Get.toNamed('/Payment',
+                            arguments: {"mac": "", "sn": sn});
                       },
                       child: Container(
                         width: 80,
@@ -212,7 +217,7 @@ class InternetUsage extends StatelessWidget {
                     GestureDetector(
                       onTap: () {
                         // 在此处添加导航到其他页面的代码
-                        Get.toNamed('/Video');
+                        Get.toNamed('/Video', arguments: {"mac": "", "sn": sn});
                       },
                       child: Container(
                         width: 80,
@@ -257,7 +262,8 @@ class InternetUsage extends StatelessWidget {
                     GestureDetector(
                       onTap: () {
                         // 在此处添加导航到其他页面的代码
-                        Get.toNamed('/Installed');
+                        Get.toNamed('/Installed',
+                            arguments: {"mac": "", "sn": sn});
                       },
                       child: Container(
                         width: 80,
@@ -298,7 +304,8 @@ class InternetUsage extends StatelessWidget {
                     GestureDetector(
                       onTap: () {
                         // 在此处添加导航到其他页面的代码
-                        Get.toNamed('/Social');
+                        Get.toNamed('/Social',
+                            arguments: {"mac": "", "sn": sn});
                       },
                       child: Container(
                         width: 80,
@@ -352,11 +359,14 @@ class InternetUsage extends StatelessWidget {
                     children: [
                       const Text(
                         'Time Online',
-                        style: TextStyle(color: Colors.black45),
+                        style: TextStyle(color: Colors.black45, fontSize: 16),
+                      ),
+                      const SizedBox(
+                        height: 8,
                       ),
                       Text(
                         '0 min',
-                        style: TextStyle(fontSize: 36.w, color: Colors.black87),
+                        style: TextStyle(fontSize: 22.w, color: Colors.black87),
                       ),
                       // const Text(
                       //   'Healthy Internet access',
@@ -373,11 +383,14 @@ class InternetUsage extends StatelessWidget {
                     children: [
                       const Text(
                         'Time Left',
-                        style: TextStyle(color: Colors.black45),
+                        style: TextStyle(fontSize: 16, color: Colors.black45),
+                      ),
+                      const SizedBox(
+                        height: 8,
                       ),
                       Text(
                         'Not Set',
-                        style: TextStyle(fontSize: 36.w, color: Colors.black87),
+                        style: TextStyle(fontSize: 22.w, color: Colors.black87),
                       ),
                       // const Text(
                       //   'Add 10 min',
@@ -393,28 +406,32 @@ class InternetUsage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-                  width: 300.w,
+                  width: 320.w,
                   height: 80.w,
                   decoration: const BoxDecoration(
                     color: Color.fromRGBO(240, 240, 240, 1),
                     borderRadius: BorderRadius.all(Radius.circular(30)),
                   ),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Icon(
-                        Icons.wifi_off_outlined,
-                        color: const Color.fromRGBO(144, 147, 153, 1),
-                        size: 40.w,
-                      ),
-                      ConstrainedBox(
-                        constraints: BoxConstraints(maxWidth: 150.w),
-                        child: const FittedBox(
-                          child: Text(
-                            'Disconnect Internet',
-                            style: TextStyle(color: Colors.black87),
-                          ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 5),
+                        child: Icon(
+                          Icons.wifi_off_outlined,
+                          color: const Color.fromRGBO(144, 147, 153, 1),
+                          size: 40.w,
                         ),
+                      ),
+                      // ConstrainedBox(
+                      //   constraints: BoxConstraints(maxWidth: 150.w),
+                      //   child: const FittedBox(
+                      //     child:
+                      //   ),
+                      // ),
+                      const Text(
+                        'Disconnect Internet',
+                        style: TextStyle(color: Colors.black87, fontSize: 12),
                       ),
                       Icon(
                         Icons.arrow_drop_down_outlined,
@@ -425,23 +442,30 @@ class InternetUsage extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  width: 300.w,
+                  width: 320.w,
                   height: 80.w,
                   decoration: const BoxDecoration(
                     color: Color.fromRGBO(240, 240, 240, 1),
                     borderRadius: BorderRadius.all(Radius.circular(30)),
                   ),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Icon(
-                        Icons.verified_user_outlined,
-                        color: const Color.fromRGBO(144, 147, 153, 1),
-                        size: 40.w,
+                      Padding(
+                        padding: const EdgeInsets.only(left: 5),
+                        child: Icon(
+                          Icons.verified_user_outlined,
+                          color: const Color.fromRGBO(144, 147, 153, 1),
+                          size: 40.w,
+                        ),
                       ),
-                      const Text(
-                        'No Time Limit',
-                        style: TextStyle(color: Colors.black87),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 8),
+                        child: Text(
+                          'No Time Limit',
+                          style: TextStyle(color: Colors.black87, fontSize: 12),
+                          textAlign: TextAlign.start,
+                        ),
                       ),
                     ],
                   ),
@@ -453,7 +477,7 @@ class InternetUsage extends StatelessWidget {
   }
 }
 
-var name;
+var name = "";
 ValueNotifier<String> MACAddress = ValueNotifier('');
 
 //上方轮播图
@@ -474,8 +498,12 @@ class _SwiperCardState extends State<SwiperCard> {
       //获取云端数据
       var res = await Request().getACSNode(parameterNames, sn);
       Map<String, dynamic> d = jsonDecode(res);
+
       var resList = d['data']['InternetGatewayDevice']['WEB_GUI']
           ['ParentalControls']['List'];
+
+      debugPrint("获取的顶部轮播数据:$resList");
+
       setState(() {
         resList.remove('_object');
         resList.remove('_timestamp');
@@ -489,9 +517,12 @@ class _SwiperCardState extends State<SwiperCard> {
           accessList.add(value);
         });
       });
+
       setState(() {
-        MACAddress.value = deviceList[index]['MACAddress'];
-        name = deviceList[index]['name'];
+        if (deviceList.isNotEmpty) {
+          MACAddress.value = deviceList[index]['MACAddress'];
+          name = deviceList[index]['name'];
+        }
         date = 'Mon';
 
         //过滤列表
@@ -499,6 +530,7 @@ class _SwiperCardState extends State<SwiperCard> {
             .where((element) => element['Device']['_value'] == MACAddress.value)
             .toList();
       });
+
       for (var item in accessList) {
         if (item['Weekdays']['_value'].contains('Mon')) {
           filteredData.add({
@@ -516,12 +548,14 @@ class _SwiperCardState extends State<SwiperCard> {
   @override
   void initState() {
     super.initState();
-    if (deviceList[0].containsKey('connection')) {
-      MACAddress.value = deviceList[0]['MACAddress'];
-    } else {
-      MACAddress.value = deviceList[0]['MacAddress'];
+    if (deviceList.isNotEmpty) {
+      if (deviceList[0].containsKey('connection')) {
+        MACAddress.value = deviceList[0]['MACAddress'];
+      } else {
+        MACAddress.value = deviceList[0]['MacAddress'];
+      }
+      name = deviceList[0]['name'];
     }
-    name = deviceList[0]['name'];
   }
 
   //重设名称
@@ -538,7 +572,8 @@ class _SwiperCardState extends State<SwiperCard> {
       ToastUtils.error(d['message']);
     } else {
       ToastUtils.success(d['message']);
-      Navigator.pop(context);
+      // Navigator.pop(context);
+      Get.back();
     }
   }
 
@@ -584,7 +619,9 @@ class _SwiperCardState extends State<SwiperCard> {
                           child:
                               //显示的文字
                               Text(
-                            deviceList[index]['name'],
+                            deviceList.isNotEmpty
+                                ? deviceList[index]['name']
+                                : "",
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
                           ),
@@ -600,7 +637,8 @@ class _SwiperCardState extends State<SwiperCard> {
                             builder: (BuildContext context) {
                               return WillPopScope(
                                 onWillPop: () async {
-                                  Navigator.pop(context);
+                                  // Navigator.pop(context);
+                                  Get.back();
                                   _editvalueList[index].text =
                                       deviceList[index]['name'];
                                   return false;
@@ -735,6 +773,7 @@ class _SwiperCardState extends State<SwiperCard> {
 //卡片
 class SixBoxs extends StatefulWidget {
   const SixBoxs({super.key});
+
   @override
   SixBoxsState createState() => SixBoxsState();
 }
@@ -838,44 +877,44 @@ class SixBoxsState extends State<SixBoxs> {
               GestureDetector(
                 onTap: () {
                   Get.toNamed('/Video',
-                      arguments: {'mac': MACAddress.value, 'sn': sn});
+                      arguments: {'mac': MACAddress.value ?? "", 'sn': sn});
                 },
                 child: GardCard(
-                    boxCotainer: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 2),
-                          child: Icon(Icons.videocam_rounded,
-                              color: const Color.fromRGBO(95, 141, 255, 1),
-                              size: 80.sp),
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ConstrainedBox(
-                                constraints: BoxConstraints(maxWidth: 150.w),
-                                child: const FittedBox(
-                                    child: Text('Video Streaming'))),
-                            Text(
-                              '6 allowed',
-                              style: TextStyle(
-                                  color: Colors.black54, fontSize: 25.sp),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                    Icon(
-                      Icons.arrow_forward_ios_outlined,
-                      color: const Color.fromRGBO(144, 147, 153, 1),
-                      size: 30.w,
-                    )
-                  ],
-                )),
+                  boxCotainer: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 2),
+                        child: Icon(Icons.videocam_rounded,
+                            color: const Color.fromRGBO(95, 141, 255, 1),
+                            size: 60.sp),
+                      ),
+                      Expanded(
+                          child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Expanded(
+                              child: Text(
+                            'Video Streaming',
+                            style: TextStyle(fontSize: 12),
+                            textAlign: TextAlign.center,
+                          )),
+                          Text(
+                            '6 allowed',
+                            style: TextStyle(
+                                color: Colors.black54, fontSize: 20.sp),
+                          ),
+                        ],
+                      )),
+                      Icon(
+                        Icons.arrow_forward_ios_outlined,
+                        color: const Color.fromRGBO(144, 147, 153, 1),
+                        size: 30.w,
+                      )
+                    ],
+                  ),
+                ),
               ),
               //Social
               GestureDetector(
@@ -887,29 +926,29 @@ class SixBoxsState extends State<SixBoxs> {
                     boxCotainer: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
+                    Padding(
+                      padding: const EdgeInsets.only(right: 2),
+                      child: Icon(Icons.chat_rounded,
+                          color: const Color.fromRGBO(95, 141, 255, 1),
+                          size: 45.sp),
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 2),
-                          child: Icon(Icons.chat_rounded,
-                              color: const Color.fromRGBO(95, 141, 255, 1),
-                              size: 80.sp),
+                        ConstrainedBox(
+                            constraints: BoxConstraints(maxWidth: 150.w),
+                            child: const FittedBox(
+                                child: Text('Social media',
+                                    style: TextStyle(fontSize: 14)))),
+                        const SizedBox(
+                          height: 5,
                         ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ConstrainedBox(
-                                constraints: BoxConstraints(maxWidth: 150.w),
-                                child: const FittedBox(
-                                    child: Text('Social media'))),
-                            Text(
-                              '3 allowed',
-                              style: TextStyle(
-                                  color: Colors.black54, fontSize: 25.sp),
-                            ),
-                          ],
-                        )
+                        Text(
+                          '3 allowed',
+                          style:
+                              TextStyle(color: Colors.black54, fontSize: 20.sp),
+                        ),
                       ],
                     ),
                     Icon(
@@ -930,29 +969,30 @@ class SixBoxsState extends State<SixBoxs> {
                     boxCotainer: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
+                    Padding(
+                      padding: const EdgeInsets.only(right: 2),
+                      child: Icon(Icons.payment,
+                          color: const Color.fromRGBO(95, 141, 255, 1),
+                          size: 50.sp),
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 2),
-                          child: Icon(Icons.payment,
-                              color: const Color.fromRGBO(95, 141, 255, 1),
-                              size: 80.sp),
+                        ConstrainedBox(
+                            constraints: BoxConstraints(maxWidth: 150.w),
+                            child: const FittedBox(
+                                fit: BoxFit.fitWidth,
+                                child: Text('Shopping',
+                                    style: TextStyle(fontSize: 14)))),
+                        const SizedBox(
+                          height: 5,
                         ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ConstrainedBox(
-                                constraints: BoxConstraints(maxWidth: 150.w),
-                                child:
-                                    const FittedBox(child: Text('Shopping'))),
-                            Text(
-                              '4 allowed',
-                              style: TextStyle(
-                                  color: Colors.black54, fontSize: 25.sp),
-                            ),
-                          ],
-                        )
+                        Text(
+                          '4 allowed',
+                          style:
+                              TextStyle(color: Colors.black54, fontSize: 20.sp),
+                        ),
                       ],
                     ),
                     Icon(
@@ -973,28 +1013,28 @@ class SixBoxsState extends State<SixBoxs> {
                     boxCotainer: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
+                    Padding(
+                      padding: const EdgeInsets.only(right: 2),
+                      child: Icon(Icons.install_mobile,
+                          color: const Color.fromRGBO(95, 141, 255, 1),
+                          size: 50.sp),
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 2),
-                          child: Icon(Icons.install_mobile,
-                              color: const Color.fromRGBO(95, 141, 255, 1),
-                              size: 80.sp),
+                        ConstrainedBox(
+                            constraints: BoxConstraints(maxWidth: 150.w),
+                            child: const FittedBox(
+                                child: Text('APP Stores',
+                                    style: TextStyle(fontSize: 14)))),
+                        const SizedBox(
+                          height: 5,
                         ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            ConstrainedBox(
-                                constraints: BoxConstraints(maxWidth: 150.w),
-                                child:
-                                    const FittedBox(child: Text('APP Stores'))),
-                            Text(
-                              '2 allowed',
-                              style: TextStyle(
-                                  color: Colors.black54, fontSize: 25.sp),
-                            ),
-                          ],
-                        )
+                        Text(
+                          '2 allowed',
+                          style:
+                              TextStyle(color: Colors.black54, fontSize: 20.sp),
+                        ),
                       ],
                     ),
                     Icon(
@@ -1033,19 +1073,25 @@ class SixBoxsState extends State<SixBoxs> {
                       padding: const EdgeInsets.only(right: 2),
                       child: Icon(Icons.block,
                           color: const Color.fromRGBO(95, 141, 255, 1),
-                          size: 80.sp)),
+                          size: 60.sp)),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ConstrainedBox(
                           constraints: BoxConstraints(maxWidth: 350.w),
-                          child: const FittedBox(
-                              child: Text('Website Blocklist'))),
+                          child: FittedBox(
+                              child: Text(
+                            'Website Blocklist',
+                            style: TextStyle(fontSize: 32.w,fontWeight: FontWeight.w500),
+                          ))),
+                      const SizedBox(
+                        height: 5,
+                      ),
                       Text(
                         '$urlListAmount blocked',
                         style:
-                            TextStyle(color: Colors.black54, fontSize: 35.sp),
+                            TextStyle(color: Colors.black54, fontSize: 25.sp),
                       ),
                     ],
                   )
@@ -1151,7 +1197,20 @@ class _SchedulingState extends State<Scheduling> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 //left
-                const Text('Internet access time scheduling'),
+                 SizedBox(
+                  width: 250.w,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                          flex: 1,
+                          child: Text(
+                            'Internet access time scheduling',
+                            style: TextStyle(fontSize: 32.w,fontWeight: FontWeight.w500 ),
+                          ))
+                    ],
+                  ),
+                ),
                 //right
                 GestureDetector(
                   onTap: () {
@@ -1255,50 +1314,53 @@ class _SchedulingState extends State<Scheduling> {
                               );
                             },
                           ),
-                          Column(
-                            children: [
-                              Container(
-                                margin: EdgeInsets.only(bottom: 14.sp),
-                                child: const Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [],
-                                ),
-                              ),
-                            ],
-                          ),
+                          // Column(
+                          //   children: [
+                          //     Container(
+                          //       margin: EdgeInsets.only(bottom: 14.sp),
+                          //       child: const Row(
+                          //         mainAxisAlignment: MainAxisAlignment.center,
+                          //         crossAxisAlignment: CrossAxisAlignment.end,
+                          //         children: [],
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
                         ],
                       ),
                       Center(
                         child: Container(
-                            margin: const EdgeInsets.only(right: 15, left: 15),
-                            padding: const EdgeInsets.only(top: 15, bottom: 15),
-                            width: 1.sw - 30,
-                            decoration: const BoxDecoration(
-                              // 背景色
-                              color: Color.fromARGB(255, 255, 255, 255),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(15)),
-                            ),
-                            child: const Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                // UploadSpeed(
-                                //   rate: widget.upRate,
-                                // ),
-                                // DownloadSpeed(
-                                //   rate: widget.downRate,
-                                // ),
-                                // OnlineCount(
-                                //   count: _onlineCount,
-                                // ),
-                              ],
-                            )),
+                          margin: const EdgeInsets.only(right: 15, left: 15),
+                          padding: const EdgeInsets.only(top: 15, bottom: 15),
+                          width: 1.sw - 30,
+                          decoration: const BoxDecoration(
+                            // 背景色
+                            color: Color.fromARGB(255, 255, 255, 255),
+                            borderRadius: BorderRadius.all(Radius.circular(15)),
+                          ),
+                          child: const Center(
+                            child: Text('Internet Time',
+                                style: TextStyle(
+                                    color: Color.fromARGB(255, 109, 109, 109),
+                                    fontSize: 14)),
+                          ),
+
+                          // const Row(
+                          //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          //   children: [
+                          //     UploadSpeed(
+                          //       rate: widget.upRate,
+                          //     ),
+                          //     DownloadSpeed(
+                          //       rate: widget.downRate,
+                          //     ),
+                          //     OnlineCount(
+                          //       count: _onlineCount,
+                          //     ),
+                          //   ],
+                          // )
+                        ),
                       ),
-                      const Text('Internet Time',
-                          style: TextStyle(
-                              color: Color.fromARGB(255, 109, 109, 109),
-                              fontSize: 12)),
                     ],
                   ),
                 ),

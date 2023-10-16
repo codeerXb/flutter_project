@@ -558,9 +558,9 @@ class _MyAppState extends State<MyApp> {
                         BorderRadius.circular(0), // set border radius to 0
                   ),
                 ),
-                child: Column(
+                child:const Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     Icon(Icons.add),
                     Text('Add Room'),
                   ],
@@ -585,9 +585,9 @@ class _MyAppState extends State<MyApp> {
                         BorderRadius.circular(0), // set border radius to 0
                   ),
                 ),
-                child: Column(
+                child:const Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     Icon(Icons.clear),
                     Text('Clear'),
                   ],
@@ -611,9 +611,9 @@ class _MyAppState extends State<MyApp> {
                         BorderRadius.circular(0), // set border radius to 0
                   ),
                 ),
-                child: Column(
+                child:const Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     Icon(Icons.settings_backup_restore),
                     Text('Reset'),
                   ],

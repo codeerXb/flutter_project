@@ -124,24 +124,20 @@ class App {
       case DioErrorType.sendTimeout:
         debugPrint("请求超时");
         ToastUtils.error(S.current.Reqtimeout);
-
         break;
       case DioErrorType.receiveTimeout:
         debugPrint("响应超时");
         ToastUtils.error(S.current.Restimeout);
-
         break;
       case DioErrorType.response:
         debugPrint("出现异常");
         ToastUtils.error(S.current.error);
-
         break;
       case DioErrorType.cancel:
         debugPrint(S.current.Reqcancellation);
         break;
       default:
         ToastUtils.error(S.current.networkError);
-
         debugPrint("未知错误");
         break;
     }

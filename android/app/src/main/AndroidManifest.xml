@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.flutter_template">
+    package="com.smawave.nebula">
     <!--允许访问网络，必选权限-->
     <uses-permission android:name="android.permission.INTERNET" />
     <!--允许获取设备和运营商信息，用于问题排查和网络定位，若无gps但仍需实现定位小蓝点功能则此权限必选-->
@@ -20,12 +20,13 @@
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
 
     <application
-        android:label="Router"
+        android:label="Nebula"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
             android:exported="true"
+            android:usesCleartextTraffic="true"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"

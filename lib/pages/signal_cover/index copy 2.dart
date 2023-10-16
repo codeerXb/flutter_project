@@ -1,20 +1,19 @@
 import 'dart:math';
 import 'dart:ui' as ui;
-
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:async';
 import 'package:wifi_info_plugin_plus/wifi_info_plugin_plus.dart';
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+class MyCopyApp extends StatefulWidget {
+  const MyCopyApp({super.key});
 
   @override
-  State<StatefulWidget> createState() => _MyAppState();
+  State<StatefulWidget> createState() => _MyCopyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyCopyAppState extends State<MyCopyApp> {
   WifiInfoWrapper? _wifiObject;
 
   @override
@@ -53,18 +52,20 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
-        body: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Center(
-            child: Text('Running on IP:$ipAddress'),
-          ),
-          Center(
-            child: Text('Running on Mac:$signalStrength'),
-          ),
-          Center(
-            child: Text('Connection type:$connectionType'),
-          ),
-          const ArcProgresssBar(),
-        ]),
+        body: SingleChildScrollView(
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Center(
+              child: Text('Running on IP:$ipAddress'),
+            ),
+            Center(
+              child: Text('Running on Mac:$signalStrength'),
+            ),
+            Center(
+              child: Text('Connection type:$connectionType'),
+            ),
+            const ArcProgresssBar(),
+          ]),
+        ),
         // body: LALPageNews(),
       ),
     );

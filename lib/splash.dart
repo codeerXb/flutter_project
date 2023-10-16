@@ -1,14 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
 import 'package:local_auth/local_auth.dart';
-
 import 'core/utils/shared_preferences_util.dart';
 
 /// 类似广告启动页
@@ -132,6 +127,7 @@ class _SplashPageState extends State<SplashPage> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: ListView(
           children: [

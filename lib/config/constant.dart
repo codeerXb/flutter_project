@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// 常量类
 class Constant {
-
   /// toast 提示默认时长
   static const defaultToastDuration = Duration(seconds: 2);
   /// toast 提示默认颜色
@@ -23,7 +22,6 @@ class Constant {
     fontSize: 26.sp,
     color: const Color(0xff979DA3)
   );
-  /// 搜索框相关样式 结束
 
   /// 主页面 左右侧padding值
   static double paddingLeftRight = 20.w;

@@ -1,8 +1,6 @@
 import 'dart:ui';
-
 import 'package:dio/dio.dart';
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,8 +8,6 @@ import 'package:flutter_template/core/http/http_app.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/widget/water_loading.dart';
 import 'package:get/get.dart';
-import '../../core/widget/custom_app_bar.dart';
-import '../../generated/l10n.dart';
 import 'package:card_swiper/card_swiper.dart';
 
 class TestEdit extends StatefulWidget {

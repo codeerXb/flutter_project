@@ -1,19 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
-import 'package:flutter_template/core/utils/toast.dart';
-import 'package:flutter_template/core/widget/common_widget.dart';
-import 'package:flutter_template/core/widget/custom_app_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:flutter_template/pages/net_status/arc_progress_bar.dart';
 import 'package:flutter_template/pages/net_status/model/net_connect_status.dart';
 import 'package:flutter_template/pages/net_status/dashboard.dart';
-
 import '../../core/http/http.dart';
 import '../../generated/l10n.dart';
 import 'homepage_state_btn.dart';

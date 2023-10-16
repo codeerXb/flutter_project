@@ -13,7 +13,6 @@ import '../../core/request/request.dart';
 import '../../core/utils/shared_preferences_util.dart';
 import '../../generated/l10n.dart';
 import 'package:network_info_plus/network_info_plus.dart';
-
 import '../toolbar/toolbar_controller.dart';
 
 var roomInfo = []; //画的房屋信息
@@ -40,8 +39,9 @@ class _MyAppState extends State<TestSignal> {
     super.initState();
     setState(() {
       btnText = S.current.startTesting;
+      debugPrint(
+          "${Get.arguments['roomInfo']} --- ${Get.arguments['curFloorId']}");
       allRoomInfo = json.decode(Get.arguments['roomInfo']);
-
       //过滤出当前楼层
       roomInfo = allRoomInfo
           .where((item) => item['floorId'] == Get.arguments['curFloorId'])
@@ -57,7 +57,7 @@ class _MyAppState extends State<TestSignal> {
       // router位置
       routerPos =
           Offset(roomInfo[0]['routerX'] ?? 0, roomInfo[0]['routerY'] ?? 0);
-      print('roomInfo${roomInfo}');
+      debugPrint('roomInfo$roomInfo');
     });
   }
 
@@ -79,7 +79,7 @@ class _MyAppState extends State<TestSignal> {
       body: Padding(
         padding: const EdgeInsets.all(18.0),
         child:
-            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Text('Current detection floor:${roomInfo[0]['floorId']}F'),
           Row(
             children: [
@@ -109,7 +109,6 @@ class _MyAppState extends State<TestSignal> {
           //   padding: EdgeInsets.only(top: 50),
           // ),
           const ArcProgresssBar(),
-
           //按钮
           ProcessButton(toolbarController: toolbarController),
         ]),
@@ -227,6 +226,7 @@ class _ArcProgresssBarState extends State<ArcProgresssBar> {
 class MyPainter extends CustomPainter {
   ui.Image aPattern;
   ui.Image bPattern;
+
   MyPainter(this.aPattern, double sp, double progress, this.bPattern,
       {required double min, required double max})
       : super();
@@ -376,7 +376,9 @@ Future<ui.Image> getAssetImage(String asset, {width, height}) async {
 //底部按钮
 class ProcessButton extends StatefulWidget {
   ProcessButton({super.key, required this.toolbarController});
+
   var toolbarController;
+
   @override
   State<StatefulWidget> createState() => _ProcessButtonState();
 }
@@ -387,6 +389,7 @@ class _ProcessButtonState extends State<ProcessButton> {
   dynamic sn;
   dynamic acsNode;
   int currentIndex = 0;
+
   @override
   void initState() {
     super.initState();
@@ -446,7 +449,7 @@ class _ProcessButtonState extends State<ProcessButton> {
             "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.2.NoiseLevel",
             "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.2.TxPower"
           ];
-          acsNode = await Request().getACSNode(parameterNames2, sn);
+          // acsNode = await Request().getACSNode(parameterNames2, sn);
           var res = await Request().getACSNode(parameterNames2, sn);
           Map<String, dynamic> d = jsonDecode(res);
           acsNode = d['data']['InternetGatewayDevice']['WEB_GUI']['WiFi']

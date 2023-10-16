@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_template/config/base_config.dart';
 import 'package:dio/dio.dart';
 
@@ -40,7 +41,7 @@ class AppAuthService {
           data: data);
 
       var d = json.decode(response.toString());
-      print('登录成功${d['data']['token']}');
+      debugPrint('登录成功${d['data']['token']}');
       loginController.setUserToken(d['data']['token']);
       sharedAddAndUpdate("userToken", String, d['data']['token']);
       user = {

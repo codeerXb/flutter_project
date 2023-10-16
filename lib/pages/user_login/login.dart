@@ -24,7 +24,10 @@ class UserLogin extends StatefulWidget {
 final GlobalKey _formKey = GlobalKey<FormState>();
 
 class _UserLoginState extends State<UserLogin> {
+  final TextEditingController phone = TextEditingController();
+  final TextEditingController password = TextEditingController();
   final LoginController loginController = Get.put(LoginController());
+  
   bool passwordValShow = true;
   bool _isLoading = false;
   var dio = Dio(BaseOptions(
@@ -270,62 +273,8 @@ class _UserLoginState extends State<UserLogin> {
                         ),
                         onPressed: () {
                           if ((_formKey.currentState as FormState).validate()) {
-                            setState(() {
-                              _isLoading = true;
-                            });
-                            Map<String, dynamic> data = {
-                              "account": phone.text,
-                              "password": AESUtil.generateAES(password.text),
-                            };
-                            // 根据输入的用户名密码登录云平台
-                            dio
-                                .post(
-                                    '${BaseConfig.cloudBaseUrl}/platform/appCustomer/login',
-                                    data: data)
-                                .then((res) {
-                              var d = json.decode(res.toString());
-                              if (d['code'] != 200) {
-                                if (d['code'] == 9995) {
-                                  ToastUtils.error(S.current.accountOrPwdError);
-                                }
-                                debugPrint("$d");
-                                return;
-                              } else {
-                                debugPrint('用户$data,登录信息${d.toString()}');
-                                // 是否存储了设备sn
-                                sharedGetData('deviceSn', String).then((sn) {
-                                  if (sn != null) {
-                                    debugPrint('设备sn号$sn');
-                                    Get.offNamed("/home");
-                                    toolbarController.setPageIndex(0);
-                                  } else {
-                                    Get.offNamed("/get_equipment");
-                                  }
-                                });
-                                //存储用户信息
-                                sharedAddAndUpdate(
-                                    "user_token", String, (d['data']['token']));
-                                sharedAddAndUpdate("user_phone", String,
-                                    (d['data']['account']));
-                                sharedAddAndUpdate("loginUserInfo", String,
-                                    jsonEncode(d['data'])); //把云平台登录信息保存到本地
-                              }
-                            }).catchError((err) {
-                              debugPrint('请求云平台登录接口报错：$err');
-
-                              // 响应超时
-                              if ((err is DioError &&
-                                  err.type == DioErrorType.connectTimeout)) {
-                                debugPrint('timeout');
-                                ToastUtils.error(S.current.contimeout);
-                              } else {
-                                ToastUtils.error(S.current.loginFailed);
-                              }
-                            }).whenComplete(() {
-                              setState(() {
-                                _isLoading = false;
-                              });
-                            });
+                            // 请求登录
+                            loginData();
                           } else {
                             return;
                           }
@@ -353,7 +302,66 @@ class _UserLoginState extends State<UserLogin> {
           ),
         ));
   }
+
+  void loginData() {
+    setState(() {
+      _isLoading = true;
+    });
+    Map<String, dynamic> data = {
+      "account": phone.text,
+      "password": AESUtil.generateAES(password.text),
+    };
+    debugPrint("用户登录的信息----${data.toString()}");
+    // 根据输入的用户名密码登录云平台
+    dio
+        .post(
+        '${BaseConfig.cloudBaseUrl}/platform/appCustomer/login',
+        data: data)
+        .then((res) {
+      var d = json.decode(res.toString());
+      if (d['code'] != 200) {
+        if (d['code'] == 9995) {
+          ToastUtils.error(S.current.accountOrPwdError);
+        }
+        debugPrint("$d");
+        return;
+      } else {
+        debugPrint('用户$data,登录信息${d.toString()}');
+        // 是否存储了设备sn
+        sharedGetData('deviceSn', String).then((sn) {
+          if (sn != null) {
+            debugPrint('设备sn号$sn');
+            Get.offNamed("/home");
+            toolbarController.setPageIndex(0);
+          } else {
+            Get.offNamed("/get_equipment");
+          }
+        });
+        //存储用户信息
+        sharedAddAndUpdate(
+            "user_token", String, (d['data']['token']));
+        sharedAddAndUpdate("user_phone", String,
+            (d['data']['account']));
+        sharedAddAndUpdate("loginUserInfo", String,
+            jsonEncode(d['data'])); //把云平台登录信息保存到本地
+      }
+    }).catchError((err) {
+      debugPrint('请求云平台登录接口报错：$err');
+
+      // 响应超时
+      if ((err is DioError &&
+          err.type == DioErrorType.connectTimeout)) {
+        debugPrint('timeout');
+        ToastUtils.error(S.current.contimeout);
+      } else {
+        ToastUtils.error(S.current.loginFailed);
+      }
+    }).whenComplete(() {
+      setState(() {
+        _isLoading = false;
+      });
+    });
+  }
+
 }
 
-final TextEditingController phone = TextEditingController();
-final TextEditingController password = TextEditingController();

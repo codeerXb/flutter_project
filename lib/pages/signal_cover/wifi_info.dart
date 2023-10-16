@@ -9,9 +9,8 @@ class WifiInfoPlugin {
     return version;
   }
 
-  ///
   /// Wifi details  represents a case for a method that can be called in the method handler
-  ///
+
   static Future<WifiInfoWrapper> get wifiDetails async {
     final Map<dynamic, dynamic> data =
         await _channel.invokeMethod('getWifiDetails');

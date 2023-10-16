@@ -141,21 +141,26 @@ class _VideoState extends State<Video> {
   //获取配置
   void getParentControlConfigFn() async {
     try {
+      debugPrint("当前的sn$sn----mac:$mac");
       var response = await App.post(
           '${BaseConfig.cloudBaseUrl}/parentControl/getParentControlConfig',
           data: {'sn': sn, "mac": mac});
       var d = json.decode(response.toString());
       setState(() {
         formParam = d['data'];
-        //遍历白名单列表
-        d['data']['rules']['videoapps'].split(' ').forEach((item) {
-          //遍历数据如果包含
-          for (var element in topData) {
-            if (element['code'] == item) {
-              element['select'] = true;
+        List videoApps = d['data']['rules']['videoapps'].split(' ');
+        if(videoApps.isNotEmpty){
+          //遍历白名单列表
+          videoApps.forEach((item) {
+            //遍历数据如果包含
+            for (var element in topData) {
+              if (element['code'] == item) {
+                element['select'] = true;
+              }
             }
-          }
-        });
+          });
+        }
+
       });
     } catch (e) {
       debugPrint('失败：$e.toString()');
@@ -189,6 +194,7 @@ class _VideoState extends State<Video> {
   @override
   void initState() {
     super.initState();
+    debugPrint('进去视频');
     getParentControlConfigFn();
   }
 

@@ -1,14 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/pages/net_status/model/flow_statistics.dart';
-import 'package:flutter_template/pages/net_status/model/net_connect_status.dart';
 import 'package:flutter_template/pages/net_status/model/online_device.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 import '../../generated/l10n.dart';
 import 'arc_progress_bar.dart';
 

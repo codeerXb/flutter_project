@@ -369,7 +369,6 @@ class _MyDialogState extends State<MyDialog> {
     widget.openLoading();
     await Request().addOrDeleteObject(
         "InternetGatewayDevice.WEB_GUI.ParentalControls.List", sn, 'addObject');
-
     //获取云端数据
     var res = await Request().getACSNode([
       "InternetGatewayDevice.WEB_GUI.ParentalControls",
@@ -385,6 +384,8 @@ class _MyDialogState extends State<MyDialog> {
     String prefix =
         'InternetGatewayDevice.WEB_GUI.ParentalControls.List.$lastKey.';
 
+    String selectDays = _selectedDays.join(',');
+
     var parameterNames = [
       ['${prefix}Device', MACAddress, 'xsd:string'],
       ['${prefix}Name', name, 'xsd:string'],
@@ -398,12 +399,12 @@ class _MyDialogState extends State<MyDialog> {
         '${_endTime.h.toString().padLeft(2, '0')}:${_endTime.m.toString().padLeft(2, '0')}',
         'xsd:string'
       ],
-      ['${prefix}Weekdays', '${_selectedDays.join(',')}', 'xsd:string'],
+      ['${prefix}Weekdays', '$selectDays', 'xsd:string'],
     ];
 
     //设置
     await Request().setACSNode(parameterNames, sn);
-    Future.delayed(Duration(milliseconds: 500), () {
+    Future.delayed(const Duration(milliseconds: 500), () {
       widget.getACSNodeFn();
     });
   }
@@ -434,7 +435,7 @@ class _MyDialogState extends State<MyDialog> {
 
     //设置
     await Request().setACSNode(parameterNames, sn);
-    Future.delayed(Duration(milliseconds: 500), () {
+    Future.delayed(const Duration(milliseconds: 500), () {
       widget.getACSNodeFn();
     });
   }

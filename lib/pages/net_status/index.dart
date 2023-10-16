@@ -241,7 +241,7 @@ class _NetStatusState extends State<NetStatus> {
   var connectStatus = '1';
 
   /// 获取云端基础信息
- Future<void> getBasicInfo() async {
+  Future<void> getBasicInfo() async {
     // Navigator.push(context, DialogRouter(LoadingDialog()));
     printInfo(info: 'sn在这里有值吗-------$sn');
     var parameterNames = [
@@ -267,7 +267,7 @@ class _NetStatusState extends State<NetStatus> {
   }
 
   ///  获取云端轮询信息
- Future<void> getTROnlineCount(sn) async {
+  Future<void> getTROnlineCount(sn) async {
     // 已用流量
     // var flowTable = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
     //     ["Overview"]["ThroughputStatisticsList"];
@@ -1058,7 +1058,8 @@ class _NetStatusState extends State<NetStatus> {
                                           Text(
                                             '$upKb$upUnit',
                                             style: TextStyle(
-                                                fontSize: ScreenAdapter.fontSize(30),
+                                                fontSize:
+                                                    ScreenAdapter.fontSize(30),
                                                 color: const Color(0xff051220)),
                                           ),
                                           Text(
@@ -1117,13 +1118,15 @@ class _NetStatusState extends State<NetStatus> {
                                           Text(
                                             '$downKb$downUnit',
                                             style: TextStyle(
-                                                fontSize: ScreenAdapter.fontSize(30),
+                                                fontSize:
+                                                    ScreenAdapter.fontSize(30),
                                                 color: const Color(0xff051220)),
                                           ),
                                           Text(
                                             S.current.down,
                                             style: TextStyle(
-                                              fontSize: ScreenAdapter.fontSize(28),
+                                              fontSize:
+                                                  ScreenAdapter.fontSize(28),
                                               color: Colors.black54,
                                             ),
                                           ),

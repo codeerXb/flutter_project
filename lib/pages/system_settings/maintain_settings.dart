@@ -70,8 +70,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
         restartTime = "${dateTimeSelected.hour} : ${dateTimeSelected.minute}";
         startShowVal = "${dateTimeSelected.hour}";
         endShowVal = "${dateTimeSelected.minute}";
-        sharedAddAndUpdate("restartTime", String,
-            restartTime);
+        sharedAddAndUpdate("restartTime", String, restartTime);
       });
       debugPrint("${dateTimeSelected.hour},${dateTimeSelected.minute}");
     }
@@ -117,7 +116,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
         }
       });
     }));
-    sharedGetData("restartTime", String).then((value){
+    sharedGetData("restartTime", String).then((value) {
       restartTime = value.toString();
     });
   }

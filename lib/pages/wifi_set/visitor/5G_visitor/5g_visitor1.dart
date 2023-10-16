@@ -192,7 +192,7 @@ class _Visitor4State extends State<Visitor4> {
       try {
         ToastUtils.toast(S.current.success);
       } on FormatException catch (e) {
-        print(e);
+        debugPrint(e.message);
       }
     }).catchError((onError) {
       debugPrint('失败：${onError.toString()}');
@@ -228,6 +228,7 @@ class _Visitor4State extends State<Visitor4> {
     }
   }
 
+  @override
   void initState() {
     super.initState();
     getData();
@@ -661,9 +662,12 @@ class _Visitor4State extends State<Visitor4> {
                                             color: const Color(0xff737A83)),
                                         border: InputBorder.none,
                                       ),
-                                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                                      autovalidateMode:
+                                          AutovalidateMode.onUserInteraction,
                                       validator: (value) {
-                                        return value!.trim().length > 8 ? null : "密码不能少于8位";
+                                        return value!.trim().length > 8
+                                            ? null
+                                            : "密码不能少于8位";
                                       },
                                     ),
                                   ),

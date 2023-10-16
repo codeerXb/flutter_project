@@ -400,7 +400,6 @@ class _LoginState extends State<Login> {
                           /// 密码
                           buildPasswordTextField(),
                           Padding(padding: EdgeInsets.only(top: 102.w)),
-
                           /// 登录
                           buildLoginButton(),
                           Padding(padding: EdgeInsets.only(top: 20.w)),

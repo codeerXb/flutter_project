@@ -17,6 +17,8 @@ import 'package:flutter_template/config/base_config.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/http/http_app.dart';
 import 'package:flutter_template/pages/login/model/equipment_data.dart';
+import 'package:location/location.dart';
+import 'package:geocode/geocode.dart';
 
 /// 选择上网方式
 class NetMode extends StatefulWidget {
@@ -67,6 +69,46 @@ class _NetModeState extends State<NetMode> {
 
   Timer? timer = Timer.periodic(const Duration(minutes: 0), (timer) {});
   final LoginController loginController = Get.put(LoginController());
+  // 位置信息
+  LocationData? currentLocation;
+  String? longitudeString;
+  String? latitudeString;
+
+  Future<LocationData?> _getLocation() async {
+    Location location = Location();
+    LocationData _locationData;
+
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return null;
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return null;
+      }
+    }
+
+    _locationData = await location.getLocation();
+
+    return _locationData;
+  }
+
+  Future<String> _getAddress(double? lat, double? lang) async {
+    if (lat == null || lang == null) return "ssss";
+    GeoCode geoCode = GeoCode();
+    Address address =
+        await geoCode.reverseGeocoding(latitude: lat, longitude: lang);
+    return "${address.streetAddress}, ${address.city}, ${address.countryName}, ${address.postal}";
+  }
 
   void login(pwd) {
     debugPrint('登录密码：$pwd');
@@ -108,7 +150,14 @@ class _NetModeState extends State<NetMode> {
         var localLoginRes = json.decode(res.toString());
         printInfo(info: '登录返回$localLoginRes');
         if (localLoginRes['code'] == 200) {
-          App.post('/platform/appCustomer/bindingCpe?deviceSn=$sn').then((res) {
+          Map<String, dynamic> bindParma = {
+            "deviceSn": sn,
+            "lon": longitudeString,
+            "lat": latitudeString
+          };
+          debugPrint("用户绑定设备的信息----${bindParma.toString()}");
+          App.post('/platform/appCustomer/bindingCpe', data: bindParma)
+              .then((res) {
             var bindDevRes = json.decode(res.toString());
 
             debugPrint('云平台绑定响应------>$bindDevRes');
@@ -339,7 +388,7 @@ class _NetModeState extends State<NetMode> {
               const Color.fromARGB(255, 30, 104, 233)),
         ),
         onPressed: () {
-          printInfo(info: '登陆了');
+          printInfo(info: '登录成功了');
           if ((_formKey.currentState as FormState).validate()) {
             onSubmit(context);
             appLogin();
@@ -511,7 +560,28 @@ class _NetModeState extends State<NetMode> {
                                       fixedSize: const Size(200, 30),
                                       backgroundColor: const Color.fromARGB(
                                           255, 30, 104, 233)),
-                                  onPressed: controlsDetails.onStepContinue,
+                                  onPressed: () {
+                                    controlsDetails.onStepContinue;
+                                    // 获取设备位置信息(经纬度)
+                                    _getLocation().then((value) {
+                                      LocationData? location = value;
+                                      _getAddress(location?.latitude,
+                                              location?.longitude)
+                                          .then((value) {
+                                        setState(() {
+                                          currentLocation = location;
+                                          latitudeString = currentLocation
+                                              ?.latitude
+                                              .toString();
+                                          longitudeString = currentLocation
+                                              ?.longitude
+                                              .toString();
+                                          debugPrint(
+                                              "当前的经纬度是$latitudeString $longitudeString");
+                                        });
+                                      });
+                                    });
+                                  },
                                   child: Text(S.of(context).Next),
                                 ),
                             ],

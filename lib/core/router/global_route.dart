@@ -67,9 +67,11 @@ import 'package:flutter_template/pages/signal_cover/index.dart';
 // import 'package:flutter_template/pages/signal_cover/index1.dart';
 import 'package:flutter_template/pages/signal_cover/SignalCoverage.dart';
 import 'package:flutter_template/pages/user_login/changePasswordPage.dart';
+import 'package:flutter_template/pages/user_login/user_location.dart';
+
 /// 路由
 class GlobalRouter {
- // 定义单例
+  // 定义单例
   static GlobalRouter? _singleton;
 
   GlobalRouter._internal();
@@ -78,7 +80,7 @@ class GlobalRouter {
     return _singleton ?? GlobalRouter._internal();
   }
 
- // -------------------------------------------------路由-------------------------------------------------------
+  // -------------------------------------------------路由-------------------------------------------------------
   /// 从非toolbar页面（子页面）跳转到toolbar页面（主页）实现：
   /// pushName到对应的路由，因为Toolbar是单例模式，所以只会创建一个
   /// pushName之后，在ToolBar，initState中获取当前的路由，实现切换页面
@@ -197,12 +199,15 @@ class GlobalRouter {
     /// 用户注册（云平台注册）
     '/user_register': (BuildContext context, {Object? args}) =>
         const UserRegister(),
+
     /// 忘记密码
     '/forget_password': (BuildContext context, {Object? args}) =>
         const ForgetPassword(),
+
     /// 修改密码
     '/change_password': (BuildContext context, {Object? args}) =>
-    const ChangePasswordPage(),
+        const ChangePasswordPage(),
+
     /// 接入设备
     '/connected_device': (BuildContext context, {Object? args}) =>
         const ConnectedDevice(),
@@ -213,18 +218,23 @@ class GlobalRouter {
     /// 家长控制
     '/parental_control': (BuildContext context, {Object? args}) =>
         const ParentalControl(),
+
     /// 家长控制 新增
     '/parental_pop': (BuildContext context, {Object? args}) =>
         const ParentalPop(),
+
     /// 家长控制 修改
     '/parental_update': (BuildContext context, {Object? args}) =>
         const ParentalUpdate(),
+
     /// 订阅服务
     '/sub_service': (BuildContext context, {Object? args}) =>
         const SubSerivce(),
+
     /// 家长控制详情
     '/parcontrol_info': (BuildContext context, {Object? args}) =>
         const Parcontrol(),
+
     /// 游戏加速详情
     '/gameacce_inofo': (BuildContext context, {Object? args}) =>
         const Gameacce(),
@@ -274,6 +284,8 @@ class GlobalRouter {
     // 测试信号强度(3)
     '/test_signal': (BuildContext context, {Object? args}) =>
         const TestSignal(),
+    '/test_location': (BuildContext context, {Object? args}) =>
+        GetUserLocation(title: "title"),
   };
 
   /// 监听route

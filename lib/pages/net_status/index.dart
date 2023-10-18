@@ -752,7 +752,8 @@ class _NetStatusState extends State<NetStatus> {
                     color: Colors.white,
                     fontSize: 36.sp,
                   ),
-                  dropdownColor: Colors.black.withAlpha(180), // 设置下拉框的背景颜色
+                  dropdownColor:
+                      const Color.fromARGB(221, 174, 167, 167), // 设置下拉框的背景颜色
                   underline: Container(), //去除下划线
                   value: currentDevice,
                   // icon: Icon(
@@ -804,6 +805,17 @@ class _NetStatusState extends State<NetStatus> {
                 ),
               ),
             ),
+            // actions: [
+            //   OutlinedButton(
+            //       onPressed: () {
+            //         Get.toNamed('/test_location');
+            //         debugPrint("获取定位信息");
+            //       },
+            //       child: const Icon(
+            //         Icons.location_on_outlined,
+            //         color: Colors.white,
+            //       ))
+            // ],
             backgroundColor: Colors.transparent,
           ),
           backgroundColor: Colors.transparent,
@@ -817,7 +829,8 @@ class _NetStatusState extends State<NetStatus> {
                     ),
                   ),
                 )
-              : GestureDetector(
+              : SafeArea(
+                  child: GestureDetector(
                   onTap: () => closeKeyboard(context),
                   behavior: HitTestBehavior.opaque,
                   child: Container(
@@ -1667,7 +1680,7 @@ class _NetStatusState extends State<NetStatus> {
                       ],
                     ),
                   ),
-                ),
+                )),
         ),
       );
     }

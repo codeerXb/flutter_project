@@ -93,7 +93,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                               ),
                             ),
                             Text(
-                              '修改密码',
+                              'Change Password',
                               style: TextStyle(fontSize: 60.sp),
                             ),
                             Text(
@@ -115,7 +115,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Container(
-                            width: 400.w,
+                            width: 450.w,
                             decoration: const BoxDecoration(
                               border: Border(
                                   bottom: BorderSide(
@@ -131,7 +131,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                                 decoration: InputDecoration(
                                   icon: const Icon(Icons.phone_android),
                                   // 表单提示信息
-                                  hintText: "请输入验证码",
+                                  hintText: "please enter verification code",
                                   hintStyle: TextStyle(
                                       fontSize: 32.sp,
                                       color: const Color(0xff737A83)),
@@ -145,7 +145,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                                 ),
                                 validator: (value) {
                                   if (value.toString().length != 4) {
-                                    return '输入正确验证码';
+                                    return 'Please enter correct verify code';
                                   }
                                   return null;
                                 },
@@ -153,69 +153,84 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                                   setState(() {
                                     _codeValue = value;
                                   });
-                                } ,
+                                },
                                 inputFormatters: [
                                   LengthLimitingTextInputFormatter(4),
                                 ],
                               ),
                             ),
                           ),
-                           Expanded(
-                               child: SizedBox(
-                               width: 40,
-                               height: 40,
-                               child:Offstage(
-                               offstage: _codeValue.isEmpty ? true : false,
-                               child: IconButton(
-                                 icon: const Icon(Icons.cancel,color: Colors.grey,),
-                                 onPressed: () {
-                                   _textController.clear();
-                                 },
-                               ),
-                             ),
-                           )),
+                          Expanded(
+                              flex: 1,
+                              child: SizedBox(
+                                width: 40,
+                                height: 40,
+                                child: Offstage(
+                                  offstage: _codeValue.isEmpty ? true : false,
+                                  child: IconButton(
+                                    icon: const Icon(
+                                      Icons.cancel,
+                                      color: Colors.grey,
+                                    ),
+                                    onPressed: () {
+                                      _textController.clear();
+                                    },
+                                  ),
+                                ),
+                              )),
                           // 获取验证码
-                          TextButton(
-                              onPressed: (() async {
-                                RegExp reg = RegExp(
-                                    r'^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$');
-                                if (!reg.hasMatch(_phoneVal!)) {
-                                  ToastUtils.toast('手机号格式有误');
-                                } else {
-                                  //发请求
-                                  var res = await dio.post(
-                                      '${BaseConfig.cloudBaseUrl}/platform/appCustomer/sendSmsOrEmailCode?account=$_phoneVal');
-                                  var d = json.decode(res.toString());
-                                  debugPrint('响应------>$d');
-                                  d['code'] == 200
-                                      ? ToastUtils.toast('短信发送成功')
-                                      : ToastUtils.toast(d['message']);
-                                  if (codeNum == 60) {
-                                    //倒计时60s
-                                    setState(() {
-                                      isCode = true;
-                                    });
+                          Expanded(
+                              flex: 2,
+                              child: Container(
+                                color: Colors.white,
+                                child: TextButton(
+                                    onPressed: (() async {
+                                      RegExp reg = RegExp(
+                                          r'^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$');
+                                      if (!reg.hasMatch(_phoneVal!)) {
+                                        ToastUtils.toast(
+                                            'Mobile phone number format is wrong');
+                                      } else {
+                                        //发请求
+                                        var res = await dio.post(
+                                            '${BaseConfig.cloudBaseUrl}/platform/appCustomer/sendSmsOrEmailCode?account=$_phoneVal');
+                                        var d = json.decode(res.toString());
+                                        debugPrint('响应------>$d');
+                                        d['code'] == 200
+                                            ? ToastUtils.toast(
+                                                'SMS sent successfully')
+                                            : ToastUtils.toast(d['message']);
+                                        if (codeNum == 60) {
+                                          //倒计时60s
+                                          setState(() {
+                                            isCode = true;
+                                          });
 
-                                    timer = Timer.periodic(
-                                        const Duration(seconds: 1), (time) {
-                                      setState(() {
-                                        codeNum--;
-                                      });
-                                      if (codeNum <= 1) {
-                                        timer.cancel();
-                                        setState(() {
-                                          codeNum = 60;
-                                          isCode = false;
-                                        });
+                                          timer = Timer.periodic(
+                                              const Duration(seconds: 1),
+                                              (time) {
+                                            setState(() {
+                                              codeNum--;
+                                            });
+                                            if (codeNum <= 1) {
+                                              timer.cancel();
+                                              setState(() {
+                                                codeNum = 60;
+                                                isCode = false;
+                                              });
+                                            }
+                                          });
+                                        }
                                       }
-                                    });
-                                  }
-                                }
-                              }),
-                              child: Text(
-                                isCode ? '$codeNum秒' : '获取验证码',
-                                style: TextStyle(
-                                    color: Colors.blue, fontSize: 30.w),
+                                    }),
+                                    child: Text(
+                                      isCode
+                                          ? '$codeNum Second'
+                                          : 'Verify Code',
+                                      textAlign: TextAlign.right,
+                                      style: TextStyle(
+                                          color: Colors.blue, fontSize: 30.w),
+                                    )),
                               )),
                         ],
                       ),
@@ -250,7 +265,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                                           ? Icons.visibility
                                           : Icons.visibility_off)),
                                   // 表单提示信息
-                                  hintText: "请输入新密码",
+                                  hintText: "Please enter a new password",
                                   hintStyle: TextStyle(
                                       fontSize: 32.sp,
                                       color: const Color(0xff737A83)),
@@ -261,7 +276,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                                     _passwordVal = value,
                                 validator: (value) {
                                   if (value!.isEmpty) {
-                                    return '请输入密码';
+                                    return 'Please enter password';
                                   }
                                   return null;
                                 },
@@ -312,7 +327,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                             }
                           },
                           child: Text(
-                            '修改密码',
+                            'Change Password',
                             style: TextStyle(
                                 fontSize: 32.sp,
                                 color: const Color(0xffffffff)),
@@ -344,29 +359,29 @@ Row buildPhoneField() {
         child: SizedBox(
           width: 1.sw - 104.w,
           child: TextFormField(
-            controller: _textPhoneController,
+              controller: _textPhoneController,
               textAlign: TextAlign.left,
               keyboardType: TextInputType.number,
               style: TextStyle(fontSize: 32.sp, color: const Color(0xff051220)),
               decoration: InputDecoration(
                 icon: const Icon(Icons.perm_identity),
                 // 表单提示信息
-                hintText: "请输入手机号",
+                hintText: "Please enter phone number",
                 hintStyle:
                     TextStyle(fontSize: 32.sp, color: const Color(0xff737A83)),
                 // 取消自带的下边框
                 border: InputBorder.none,
                 suffixIcon: IconButton(
-                  icon: const Icon(Icons.cancel),
-                  onPressed: (){
-                    _textPhoneController.clear();
-                  }),
+                    icon: const Icon(Icons.cancel),
+                    onPressed: () {
+                      _textPhoneController.clear();
+                    }),
               ),
               validator: (value) {
                 RegExp reg = RegExp(
                     r'^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$');
                 if (!reg.hasMatch(value!)) {
-                  return '手机号有误';
+                  return 'Mobile phone number is wrong';
                 } else {
                   return null;
                 }

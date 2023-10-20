@@ -10,7 +10,6 @@ class ChangePasswordPage extends StatefulWidget {
 }
 
 class _ChangePasswordPageState extends State<ChangePasswordPage> {
-
   DateTime dateTimeSelected = DateTime.now();
 
   void _openTimePickerSheet(BuildContext context) async {

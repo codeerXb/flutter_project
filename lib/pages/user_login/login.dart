@@ -12,6 +12,7 @@ import '../../core/utils/shared_preferences_util.dart';
 import '../../core/utils/toast.dart';
 import '../toolbar/toolbar_controller.dart';
 import '../../core/utils/string_util.dart';
+
 /// 用户登录
 class UserLogin extends StatefulWidget {
   const UserLogin({Key? key}) : super(key: key);
@@ -27,7 +28,7 @@ class _UserLoginState extends State<UserLogin> {
   final TextEditingController phone = TextEditingController();
   final TextEditingController password = TextEditingController();
   final LoginController loginController = Get.put(LoginController());
-  
+
   bool passwordValShow = true;
   bool _isLoading = false;
   var dio = Dio(BaseOptions(
@@ -151,11 +152,10 @@ class _UserLoginState extends State<UserLogin> {
                                     border: InputBorder.none,
                                     suffixIcon: IconButton(
                                       icon: const Icon(Icons.cancel),
-                                      onPressed: (){
+                                      onPressed: () {
                                         phone.clear();
                                       },
                                     ),
-
                                   ),
                                   validator: (value) {
                                     // RegExp reg = RegExp(
@@ -252,8 +252,9 @@ class _UserLoginState extends State<UserLogin> {
                             onPressed: (() {
                               Get.offAllNamed("/forget_password");
                             }),
-                            child: const Text('忘记密码',
-                                style: TextStyle(color: Colors.black45,fontSize: 14)))
+                            child: const Text('forget the password',
+                                style: TextStyle(
+                                    color: Colors.black45, fontSize: 14)))
                       ],
                     ),
                     Padding(padding: EdgeInsets.only(top: 200.w)),
@@ -314,9 +315,8 @@ class _UserLoginState extends State<UserLogin> {
     debugPrint("用户登录的信息----${data.toString()}");
     // 根据输入的用户名密码登录云平台
     dio
-        .post(
-        '${BaseConfig.cloudBaseUrl}/platform/appCustomer/login',
-        data: data)
+        .post('${BaseConfig.cloudBaseUrl}/platform/appCustomer/login',
+            data: data)
         .then((res) {
       var d = json.decode(res.toString());
       if (d['code'] != 200) {
@@ -338,19 +338,16 @@ class _UserLoginState extends State<UserLogin> {
           }
         });
         //存储用户信息
+        sharedAddAndUpdate("user_token", String, (d['data']['token']));
+        sharedAddAndUpdate("user_phone", String, (d['data']['account']));
         sharedAddAndUpdate(
-            "user_token", String, (d['data']['token']));
-        sharedAddAndUpdate("user_phone", String,
-            (d['data']['account']));
-        sharedAddAndUpdate("loginUserInfo", String,
-            jsonEncode(d['data'])); //把云平台登录信息保存到本地
+            "loginUserInfo", String, jsonEncode(d['data'])); //把云平台登录信息保存到本地
       }
     }).catchError((err) {
       debugPrint('请求云平台登录接口报错：$err');
 
       // 响应超时
-      if ((err is DioError &&
-          err.type == DioErrorType.connectTimeout)) {
+      if ((err is DioError && err.type == DioErrorType.connectTimeout)) {
         debugPrint('timeout');
         ToastUtils.error(S.current.contimeout);
       } else {
@@ -362,6 +359,4 @@ class _UserLoginState extends State<UserLogin> {
       });
     });
   }
-
 }
-

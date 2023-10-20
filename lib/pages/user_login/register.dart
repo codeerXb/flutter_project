@@ -148,21 +148,20 @@ class _UserRegisterState extends State<UserRegister> {
                                       fontSize: 32.sp,
                                       color: const Color(0xff051220)),
                                   decoration: InputDecoration(
-                                    icon: const Icon(Icons.perm_identity),
-                                    // 表单提示信息
-                                    hintText: S.of(context).phoneLabel,
-                                    hintStyle: TextStyle(
-                                        fontSize: 32.sp,
-                                        color: const Color(0xff737A83)),
-                                    // 取消自带的下边框
-                                    border: InputBorder.none,
-                                    suffixIcon: IconButton(
-                                      icon: const Icon(Icons.cancel),
-                                      onPressed: (){
-                                        _phoneController.clear();
-                                      },
-                                    )
-                                  ),
+                                      icon: const Icon(Icons.perm_identity),
+                                      // 表单提示信息
+                                      hintText: S.of(context).phoneLabel,
+                                      hintStyle: TextStyle(
+                                          fontSize: 32.sp,
+                                          color: const Color(0xff737A83)),
+                                      // 取消自带的下边框
+                                      border: InputBorder.none,
+                                      suffixIcon: IconButton(
+                                        icon: const Icon(Icons.cancel),
+                                        onPressed: () {
+                                          _phoneController.clear();
+                                        },
+                                      )),
                                   validator: (value) {
                                     if (value == '') {
                                       return S.of(context).phoneError;
@@ -221,7 +220,9 @@ class _UserRegisterState extends State<UserRegister> {
                                   onChanged: (String value) =>
                                       _passwordVal = value,
                                   validator: (value) {
-                                    return value!.trim().length > 8 ? null : "密码不能少于8位";
+                                    return value!.trim().length > 6
+                                        ? null
+                                        : "密码不能少于6位";
                                   },
                                 ),
                               ),
@@ -299,19 +300,18 @@ class _UserRegisterState extends State<UserRegister> {
                                       fontSize: 32.sp,
                                       color: const Color(0xff051220)),
                                   decoration: InputDecoration(
-                                    // 表单提示信息
-                                    hintText: S.of(context).verficationCode,
-                                    hintStyle: TextStyle(
-                                        fontSize: 32.sp,
-                                        color: const Color(0xff737A83)),
-                                    border: InputBorder.none,
-                                    suffixIcon: IconButton(
-                                      icon: const Icon(Icons.cancel),
-                                      onPressed: (){
-                                        _textController.clear();
-                                      },
-                                    )
-                                  ),
+                                      // 表单提示信息
+                                      hintText: S.of(context).verficationCode,
+                                      hintStyle: TextStyle(
+                                          fontSize: 32.sp,
+                                          color: const Color(0xff737A83)),
+                                      border: InputBorder.none,
+                                      suffixIcon: IconButton(
+                                        icon: const Icon(Icons.cancel),
+                                        onPressed: () {
+                                          _textController.clear();
+                                        },
+                                      )),
                                   validator: (value) {
                                     if (value.toString().length != 4) {
                                       return S.of(context).verficationCodeError;

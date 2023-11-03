@@ -12,6 +12,7 @@ import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../generated/l10n.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class UserPersonalInformation extends StatefulWidget {
   final name;
@@ -85,11 +86,15 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
   }
 
   Future<void> _getImage(ImageSource source) async {
+    // 先判断是否授权相机和相册权限
+    requestMediaPermission();
+    // 获取照片
     final pickedFile = await ImagePicker().pickImage(source: source);
     setState(() {
       _imageFile = File(pickedFile!.path);
       Navigator.pop(context);
     });
+    // 上传图片
     var res = await App.uploadImg(pickedFile!);
     avatar = res['data'];
   }
@@ -150,6 +155,50 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
     }
   }
 
+  /// 检查是否授权
+  Future<bool> checkGalleryPermissions() async {
+    PermissionStatus status = await Permission.photos.request();
+    if (status == PermissionStatus.granted) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  /// 获取相机/相册权限
+  requestMediaPermission() async {
+    if (!await checkGalleryPermissions()) {
+      bool isShown = await Permission.photos.shouldShowRequestRationale;
+      debugPrint("当前是否获取了访问相册的权限:$isShown");
+      if (isShown) {
+        debugPrint("打开了弹窗");
+        showDialog(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+                  title: const Text("Permission request"),
+                  content: Text(
+                      "Camera related permissions are required, is it allowed?"),
+                  actions: <Widget>[
+                    OutlinedButton(
+                      child: Text("deny"),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                    OutlinedButton(
+                      child: Text("allow"),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        openAppSettings();
+                      },
+                    ),
+                  ],
+                ));
+      } else {
+        debugPrint("执行到这里了");
+        // openAppSettings();
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -183,7 +232,7 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
                             child: Text(
                               S.of(context).profile,
                               style: TextStyle(
-                                fontSize: 50.sp,
+                                fontSize: 40.sp,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -214,8 +263,13 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
                               ),
                               child: _imageFile == null &&
                                       loginUserInfo['avatar'] == ''
-                                  ? Icon(Icons.camera_alt, size: 50.w,color: Colors.lightBlue,)
-                                  : Icon(Icons.camera_alt, size: 50.w,color: Colors.lightBlue),
+                                  ? Icon(
+                                      Icons.camera_alt,
+                                      size: 50.w,
+                                      color: Colors.lightBlue,
+                                    )
+                                  : Icon(Icons.camera_alt,
+                                      size: 50.w, color: Colors.lightBlue),
                             ),
                           ),
                           SizedBox(height: 20.w),

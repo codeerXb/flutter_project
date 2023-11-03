@@ -133,11 +133,24 @@ class _SplashPageState extends State<SplashPage> {
           children: [
             Container(
               color: Colors.white,
-              child: Image.asset(
-                'assets/images/splash.png',
-                fit: BoxFit.cover,
-                // width: 750.w,
-                // height: 1440.h,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Image.asset(
+                    'assets/images/splash1.png',
+                    fit: BoxFit.cover,
+                    // width: 750.w,
+                    // height: 1440.h,
+                  ),
+                  const Positioned(
+                    top: 150,
+                    child: Text("Please Wait",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold)),
+                  )
+                ],
               ),
             ),
             if (_isAuthenticating)

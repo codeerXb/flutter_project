@@ -2170,10 +2170,10 @@ class S {
     );
   }
 
-  /// ` Confirm the password.`
+  /// ` Confirm the password`
   String get confrimPassorld {
     return Intl.message(
-      ' Confirm the password.',
+      ' Confirm the password ',
       name: 'confrimPassorld',
       desc: '',
       args: [],

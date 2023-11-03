@@ -62,7 +62,6 @@ class CommonWidget {
               decoration: InputDecoration(
                 contentPadding: EdgeInsets.only(
                     left: -25.w, right: showSuffixIcon ? -20.0.w : 20.w),
-
                 /// 左边图标
                 icon: const Icon(
                   Icons.search,
@@ -277,7 +276,7 @@ class CommonWidget {
       String? trailingTitle,
       Function? callBack}) {
     return InkWell(
-      onTap: () => {callBack == null ? print("没有传递回调函数") : callBack()},
+      onTap: () => {callBack == null ? debugPrint("没有传递回调函数") : callBack()},
       child: Container(
           width: Constant.defaultWidth,
           height: 150.w,
@@ -686,10 +685,10 @@ class LoadingDialog extends Dialog {
                   ),
                 ),
               ),
-              child: Column(
+              child: const Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: const <Widget>[
+                children: <Widget>[
                   CircularProgressIndicator(),
                   Padding(
                     padding: EdgeInsets.only(

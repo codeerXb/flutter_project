@@ -244,8 +244,8 @@ class _AccountSecurityState extends State<AccountSecurity> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    TitleWidger(title: S.of(context).Settings),
-
+                    // TitleWidger(title: S.of(context).Settings),
+                    Padding(padding: EdgeInsets.only(top: 20.w)),
                     /// 上边的提示
                     // topTipsWidget(),
 

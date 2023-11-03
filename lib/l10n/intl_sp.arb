@@ -212,7 +212,7 @@
   "EditPass": "change Password",
   "PassRule": "The password must be a combination of 8 to 16 digits and characters.",
   "newOldError": "The new password is different from the confirmed password",
-  "confrimPassorld": " Confirm the password.",
+  "confrimPassorld": " Confirm the password",
   "newPassowld": "New Password",
   "ConfirmnewPassowld": "Please enter a new password",
   "oldPassowld": "Old Password",

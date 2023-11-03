@@ -158,18 +158,17 @@ class _UserLoginState extends State<UserLogin> {
                                     ),
                                   ),
                                   validator: (value) {
-                                    // RegExp reg = RegExp(
-                                    //     r'^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$');
-                                    // if (!reg.hasMatch(value!)) {
-                                    //   return S.of(context).phoneError;
-                                    // } else {
-                                    //   return null;
-                                    // }
-                                    if (value == '') {
+                                    RegExp reg = RegExp(
+                                        r'^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$');
+                                    if (!reg.hasMatch(value!) ||
+                                        value.isEmpty) {
                                       return S.of(context).phoneError;
                                     } else {
                                       return null;
                                     }
+                                    // return value!.trim().isNotEmpty
+                                    //     ? null
+                                    //     : S.of(context).phoneError;
                                   },
                                 ),
                               ),
@@ -220,10 +219,9 @@ class _UserLoginState extends State<UserLogin> {
                                     border: InputBorder.none,
                                   ),
                                   validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return S.of(context).passwordLabel;
-                                    }
-                                    return null;
+                                    return value!.trim().length > 5
+                                        ? null
+                                        : S.of(context).passwordLabel;
                                   },
                                 ),
                               ),
@@ -261,41 +259,42 @@ class _UserLoginState extends State<UserLogin> {
 
                     /// 登录
                     SizedBox(
-                      width: 1.sw - 104.w,
-                      child: ElevatedButton(
-                        style: ButtonStyle(
-                          padding: MaterialStateProperty.all(
-                            EdgeInsets.only(top: 28.w, bottom: 28.w),
-                          ),
-                          shape:
-                              MaterialStateProperty.all(const StadiumBorder()),
-                          backgroundColor: MaterialStateProperty.all(
-                              const Color.fromARGB(255, 30, 104, 233)),
-                        ),
-                        onPressed: () {
-                          if ((_formKey.currentState as FormState).validate()) {
-                            // 请求登录
-                            loginData();
-                          } else {
-                            return;
-                          }
-                        },
-                        child: _isLoading
-                            ? const Center(
-                                child: SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: CircularProgressIndicator(),
-                                ),
-                              )
-                            : Text(
-                                S.of(context).userLogin,
-                                style: TextStyle(
-                                    fontSize: 32.sp,
-                                    color: const Color(0xffffffff)),
+                        width: 1.sw - 104.w,
+                        child: Builder(builder: (context) {
+                          return ElevatedButton(
+                            style: ButtonStyle(
+                              padding: MaterialStateProperty.all(
+                                EdgeInsets.only(top: 28.w, bottom: 28.w),
                               ),
-                      ),
-                    ),
+                              shape: MaterialStateProperty.all(
+                                  const StadiumBorder()),
+                              backgroundColor: MaterialStateProperty.all(
+                                  const Color.fromARGB(255, 30, 104, 233)),
+                            ),
+                            onPressed: () {
+                              if (Form.of(context).validate()) {
+                                // 请求登录
+                                loginData();
+                              } else {
+                                return;
+                              }
+                            },
+                            child: _isLoading
+                                ? const Center(
+                                    child: SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  )
+                                : Text(
+                                    S.of(context).userLogin,
+                                    style: TextStyle(
+                                        fontSize: 32.sp,
+                                        color: const Color(0xffffffff)),
+                                  ),
+                          );
+                        })),
                   ],
                 ),
               ),

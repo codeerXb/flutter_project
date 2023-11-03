@@ -278,7 +278,7 @@ class _TestEditState extends State<TestEdit> {
                             },
                           );
                         } else {
-                          showToast("请设置户型数据");
+                          showToast("Please set the house type data");
                         }
                       },
                       child: Text('${S.current.RetestF}  $floorName'),

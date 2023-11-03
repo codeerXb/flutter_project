@@ -66,6 +66,7 @@ dependencies:
   # 国际化
   flutter_localization: ^0.1.13
   intl: ^0.18.0
+  intl_generator: ^0.4.1
   # AES加密
   encrypt: ^5.0.1
   # 时间选择

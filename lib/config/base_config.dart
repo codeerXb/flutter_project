@@ -2,8 +2,8 @@
 class BaseConfig {
   /// 服务器路径
   static const baseUrl = "https://192.168.1.1";
-  // 开发版本后台
-  static const cloudBaseUrl = "http://172.16.110.51:8095";
+  // 开发版本后台地址
+  static const cloudBaseUrl = "http://172.16.11.201:8095";// http://172.16.110.51:8095(暂时废弃)
   // 上线公网地址
   // static const cloudBaseUrl = "http://222.71.171.172:18095";
 

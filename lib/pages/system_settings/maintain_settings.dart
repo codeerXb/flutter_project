@@ -68,6 +68,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
       setState(() {
         dateTimeSelected = result;
         restartTime = "${dateTimeSelected.hour} : ${dateTimeSelected.minute}";
+        debugPrint("获取重置时间:$restartTime");
         startShowVal = "${dateTimeSelected.hour}";
         endShowVal = "${dateTimeSelected.minute}";
         sharedAddAndUpdate("restartTime", String, restartTime);
@@ -93,9 +94,9 @@ class _MaintainSettingsState extends State<MaintainSettings> {
   List arr = [];
   List arrList = [];
   String sn = '';
-  String typeEnable = '';
-  String typeDateToReboot = '';
-  String typeTime = '';
+  // String typeEnable = '';
+  // String typeDateToReboot = '';
+  // String typeTime = '';
 
   @override
   void initState() {
@@ -117,7 +118,11 @@ class _MaintainSettingsState extends State<MaintainSettings> {
       });
     }));
     sharedGetData("restartTime", String).then((value) {
+      debugPrint("当前获取的重置时间是:${value.toString()}");
       restartTime = value.toString();
+      if (restartTime == "null") {
+        restartTime = "0 : 0";
+      }
     });
   }
 
@@ -179,26 +184,33 @@ class _MaintainSettingsState extends State<MaintainSettings> {
       loading = true;
     });
     printInfo(info: 'sn在这里有值吗-------$sn');
-    var parameterNames = [
-      "InternetGatewayDevice.WEB_GUI.ScheduleReboot.Enable",
-      "InternetGatewayDevice.WEB_GUI.ScheduleReboot.DateToReboot",
-      "InternetGatewayDevice.WEB_GUI.ScheduleReboot.Time",
-    ];
+    // var parameterNames = [
+    //   "InternetGatewayDevice.WEB_GUI.ScheduleReboot.Enable",
+    //   "InternetGatewayDevice.WEB_GUI.ScheduleReboot.DateToReboot",
+    //   "InternetGatewayDevice.WEB_GUI.ScheduleReboot.Time",
+    // ];
+
+    var parameterNames = {
+      "method": "get",
+      "nodes": [
+        "systemScheduleRebootEnable",
+        "systemScheduleRebootDays",
+        "systemScheduleRebootTime"
+      ]
+    };
     var res = await Request().getACSNode(parameterNames, sn);
     try {
       var jsonObj = jsonDecode(res);
       printInfo(info: '````$jsonObj');
       setState(() {
-        typeEnable = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
-            ["ScheduleReboot"]["DateToReboot"]["_type"]!;
-        typeDateToReboot = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
-            ["ScheduleReboot"]["Enable"]["_type"]!;
-        typeTime = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
-            ["ScheduleReboot"]["Time"]["_type"]!;
+        // typeEnable = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
+        //     ["ScheduleReboot"]["DateToReboot"]["_type"]!;
+        // typeDateToReboot = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
+        //     ["ScheduleReboot"]["Enable"]["_type"]!;
+        // typeTime = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
+        //     ["ScheduleReboot"]["Time"]["_type"]!;
 
-        if (jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
-                ["ScheduleReboot"]["Enable"]["_value"] ==
-            false) {
+        if (jsonObj["data"]["systemScheduleRebootEnable"] == false) {
           isCheck = false;
           checkVal = 0;
         } else {
@@ -206,8 +218,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
           checkVal = 1;
         }
 
-        tranfer = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
-            ["ScheduleReboot"]["DateToReboot"]["_value"];
+        tranfer = jsonObj["data"]["systemScheduleRebootDays"];
         if (tranfer != '') {
           // 展示获取回来的重启日期
           arr = tranfer.split(';').map((String text) => (text)).toList();
@@ -234,8 +245,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
           }
         }
 
-        num = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
-            ["ScheduleReboot"]["Time"]["_value"];
+        num = jsonObj["data"]["systemScheduleRebootTime"];
         // if (num != '') {
         //   startVal = [
         //     '0',
@@ -304,23 +314,32 @@ class _MaintainSettingsState extends State<MaintainSettings> {
 
   // 设置 云端
   setTRAcquireData() async {
-    var parameterNames = [
-      [
-        "InternetGatewayDevice.WEB_GUI.ScheduleReboot.Enable",
-        isCheck,
-        typeEnable
-      ],
-      [
-        "InternetGatewayDevice.WEB_GUI.ScheduleReboot.DateToReboot",
-        tranfer,
-        typeDateToReboot
-      ],
-      [
-        "InternetGatewayDevice.WEB_GUI.ScheduleReboot.Time",
-        '$startShowVal:$endShowVal',
-        typeTime
-      ]
-    ];
+    // var parameterNames = [
+    //   [
+    //     "InternetGatewayDevice.WEB_GUI.ScheduleReboot.Enable",
+    //     isCheck,
+    //     typeEnable
+    //   ],
+    //   [
+    //     "InternetGatewayDevice.WEB_GUI.ScheduleReboot.DateToReboot",
+    //     tranfer,
+    //     typeDateToReboot
+    //   ],
+    //   [
+    //     "InternetGatewayDevice.WEB_GUI.ScheduleReboot.Time",
+    //     '$startShowVal:$endShowVal',
+    //     typeTime
+    //   ]
+    // ];
+
+    var parameterNames = {
+      "method": "set",
+      "nodes": {
+        "systemScheduleRebootEnable": "$isCheck",
+        "systemScheduleRebootDays": tranfer,
+        "systemScheduleRebootTime": '$startShowVal:$endShowVal'
+      }
+    };
     var res = await Request().setACSNode(parameterNames, sn);
     try {
       var jsonObj = jsonDecode(res);
@@ -544,9 +563,6 @@ class _MaintainSettingsState extends State<MaintainSettings> {
       child: Column(
         children: [
           buildItem(result, onTap: () {}),
-
-          //   //取消按钮
-          //   //添加个点击事件
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             InkWell(
               onTap: () {

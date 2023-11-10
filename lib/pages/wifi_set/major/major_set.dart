@@ -30,7 +30,7 @@ class _MajorSetState extends State<MajorSet> {
 
   final LoginController loginController = Get.put(LoginController());
   String sn = '';
-  String type = '';
+  // String type = '';
   @override
   void initState() {
     super.initState();
@@ -96,18 +96,23 @@ class _MajorSetState extends State<MajorSet> {
       _isLoading = true;
     });
     printInfo(info: 'sn在这里有值吗-------$sn');
-    var parameterNames = [
-      "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.CountryCode",
-    ];
+    // var parameterNames = [
+    //   "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.CountryCode",
+    // ];
+
+    var parameterNames = {
+      "method" : "get",
+      "nodes" : ["wifiRegionCountry"]
+    };
+
     var res = await Request().getACSNode(parameterNames, sn);
     try {
       var jsonObj = jsonDecode(res);
       printInfo(info: '````$jsonObj');
       setState(() {
-        type = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["WiFi"]
-            ["WLANSettings"]["CountryCode"]["_type"];
-        var radioState = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
-            ["WiFi"]["WLANSettings"]["CountryCode"]["_value"];
+        // type = jsonObj["data"]["wifiRegionCountry"]["WEB_GUI"]["WiFi"]
+        //     ["WLANSettings"]["CountryCode"]["_type"];
+        var radioState = jsonObj["data"]["wifiRegionCountry"];
         index = ['CN','US', 'FR', 'RU', 'SG', 'AU', 'CL', 'PL'].indexOf(radioState);
         //读取地区
         switch (radioState) {
@@ -148,9 +153,15 @@ class _MajorSetState extends State<MajorSet> {
 
 // 设置 云端
   setTRData() async {
-    var parameterNames = [
-      ["InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.CountryCode", val, type]
-    ];
+    // var parameterNames = [
+    //   ["InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.CountryCode", val, type]
+    // ];
+
+    var parameterNames = {
+      "method" : "set",
+      "nodes" : {"wifiRegionCountry" : val}
+    };
+
     setState(() {
       _isLoading = true;
     });

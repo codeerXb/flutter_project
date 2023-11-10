@@ -22,6 +22,9 @@ import '../../login/login_controller.dart';
 import 'wifi5g_table.dart';
 import 'wifi_table.dart';
 import 'package:flutter_template/core/request/request.dart';
+import '../visitor/guest_model.dart';
+import '../wlan/wlanBeans.dart';
+import '../wlan/wlan5gBeans.dart';
 
 /// WLAN设置
 class WlanSet extends StatefulWidget {
@@ -53,6 +56,10 @@ class _WlanSetState extends State<WlanSet> {
   // 频段的索引值（0:2.4g,1:5g）
   int bandIndex = 0;
 
+  // 模型数据
+  guestModel? dataModel;
+  // 模型数据
+  guestModel? wlanModel;
   //模式
   // 2.4g
   // 传值
@@ -328,41 +335,64 @@ class _WlanSetState extends State<WlanSet> {
       loading = true;
       _isLoading = true;
     });
+
+    Object? sn = await sharedGetData('deviceSn', String);
+    // 获取SOD节点数据
+    var parameterNames = {
+      "method": "get",
+      "nodes": [
+        "wifiEnable",
+        "wifiMode",
+        "wifiHtmode",
+        "wifiChannel",
+        "wifiTxpower"
+      ]
+    };
+    var res = await Request().getACSNode(parameterNames, sn);
+    var jsonObj = jsonDecode(res);
+    var jsonModel = wlanBean.fromJson(jsonObj);
+    debugPrint('wlan数据:$jsonObj');
+    // 获取SOD表数据
+    var parameters = {"method": "get", "table": "WiFiSsidTable"};
+    var result = await Request().getSODTable(parameters, sn);
+    var jsonRes = jsonDecode(result);
+    var model = guestModel.fromJson(jsonRes);
+    dataModel = model;
+    debugPrint('2.4G wlan获取的数据:$jsonRes');
+
     try {
-      Object? sn = await sharedGetData('deviceSn', String);
-      List<String> parameterNames = [
-        'InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.1'
-      ];
-      var res = await Request().getACSNode(parameterNames, sn.toString());
-      var list = json.decode(res)['data']['InternetGatewayDevice']['WEB_GUI']
-          ['WiFi']['WLANSettings']['1'];
+      // List<String> parameterNames = [
+      //   'InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.1'
+      // ];
+      // var res = await Request().getACSNode(parameterNames, sn.toString());
+      // var list = json.decode(res)['data']['InternetGatewayDevice']['WEB_GUI']
+      //     ['WiFi']['WLANSettings']['1'];
       // WLAN Enable
-      bool enable = list['Enable']['_value'];
+      bool enable = jsonModel.data!.wifiEnable == "0" ? false : true;
       // Mode
-      String mode = list['Mode']['_value'];
+      String mode = jsonModel.data!.wifiMode ?? "";
       // Bandwidth
-      String bandwidth = list['ChannelBandwidth']['_value'];
+      String bandwidth = jsonModel.data!.wifiHtmode ?? "";
       // Channel
-      String channel = list['Channel']['_value'];
+      String channel = jsonModel.data!.wifiChannel ?? "";
       // TX Power
-      String txPower = list['TxPower']['_value'];
+      String txPower = jsonModel.data!.wifiTxpower ?? "";
       // SSID
-      String ssidText = list['SSIDProfile']['1']['SSID']['_value'];
+      String ssidText = model.data![0].ssid ?? "";
       // MAX
-      int maxText = list['SSIDProfile']['1']['MaxNoOfDev']['_value'];
+      String maxText = model.data![0].maxClient ?? "";
       // HIDE BROADCAST
-      bool hideBroadcast =
-          list['SSIDProfile']['1']['HideSSIDBroadcast']['_value'];
+      bool hideBroadcast = model.data![0].ssidHide == "0" ? false : true;
       // AP Isolation
-      bool isolation = list['SSIDProfile']['1']['APIsolation']['_value'];
+      bool isolation = model.data![0].apIsolate == "0" ? false : true;
       // encryptionmode
-      var encyptionmode = list['SSIDProfile']['1']['EncryptionMode']['_value'];
+      String encyptionmode = model.data![0].encryption ?? "";
       // SERCURITY
       String sercurity = encyptionmode.split('+')[0];
       // WPA ENCYPITON
       String wpaEncyption = encyptionmode.split('+').skip(1).join('+');
       // PASSWORD
-      String wpaKey = list['SSIDProfile']['1']['WPAKey']['_value'];
+      String wpaKey = model.data![0].key ?? "";
       setState(() {
         bandIndex = 0;
         isCheck = enable;
@@ -395,7 +425,7 @@ class _WlanSetState extends State<WlanSet> {
     } catch (err) {
       debugPrint('get2.4G ERROR: $err');
       ToastUtils.error('Request Failed');
-      Get.back();
+      // Get.back();
     } finally {
       setState(() {
         loading = false;
@@ -412,41 +442,63 @@ class _WlanSetState extends State<WlanSet> {
 
       _isLoading = true;
     });
+    // 获取SOD节点数据
+    var parameterNames = {
+      "method": "get",
+      "nodes": [
+        "wifi5gEnable",
+        "wifi5gMode",
+        "wifi5gHtmode",
+        "wifi5gChannel",
+        "wifi5gTxpower"
+      ]
+    };
+    Object? sn = await sharedGetData('deviceSn', String);
+    var res = await Request().getACSNode(parameterNames, sn);
+    var jsonObj = jsonDecode(res);
+    var jsonModel = wlanAdvancedBean.fromJson(jsonObj);
+    debugPrint('wlan_5g数据:$jsonObj');
+    // 获取SOD表数据
+    var parameters = {"method": "get", "table": "WiFi5GSsidTable"};
+    var result = await Request().getSODTable(parameters, sn);
+    var jsonRes = jsonDecode(result);
+    var model = guestModel.fromJson(jsonRes);
+    wlanModel = model;
+    debugPrint('5G wlan获取的数据:$jsonRes');
+
     try {
-      Object? sn = await sharedGetData('deviceSn', String);
-      List<String> parameterNames = [
-        'InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.2'
-      ];
-      var res = await Request().getACSNode(parameterNames, sn.toString());
-      var list = json.decode(res)['data']['InternetGatewayDevice']['WEB_GUI']
-          ['WiFi']['WLANSettings']['2'];
+      // List<String> parameterNames = [
+      //   'InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.2'
+      // ];
+      // var res = await Request().getACSNode(parameterNames, sn.toString());
+      // var list = json.decode(res)['data']['InternetGatewayDevice']['WEB_GUI']
+      //     ['WiFi']['WLANSettings']['2'];
       // WLAN Enable
-      bool enable = list['Enable']['_value'];
+      bool enable = jsonModel.data!.wifi5gEnable == "0" ? false : true;
       // Mode
-      String mode = list['Mode']['_value'];
+      String mode = jsonModel.data!.wifi5gMode ?? "";
       // Bandwidth
-      String bandwidth = list['ChannelBandwidth']['_value'];
+      String bandwidth = jsonModel.data!.wifi5gHtmode ?? "";
       // Channel
-      String channel = list['Channel']['_value'];
+      String channel = jsonModel.data!.wifi5gChannel ?? "";
       // TX Power
-      String txPower = list['TxPower']['_value'];
+      String txPower = jsonModel.data!.wifi5gTxpower ?? "";
       // SSID
-      String ssidText = list['SSIDProfile']['1']['SSID']['_value'];
+      String ssidText = model.data![0].ssid ?? "";
       // MAX
-      int maxText = list['SSIDProfile']['1']['MaxNoOfDev']['_value'];
+      String maxText = model.data![0].maxClient ?? "";
       // HIDE BROADCAST
-      bool hideBroadcast =
-          list['SSIDProfile']['1']['HideSSIDBroadcast']['_value'];
+      bool hideBroadcast = model.data![0].ssidHide == "0" ? false : true;
       // AP Isolation
-      bool isolation = list['SSIDProfile']['1']['APIsolation']['_value'];
+      bool isolation = model.data![0].apIsolate == "0" ? false : true;
       // encryptionmode
-      var encyptionmode = list['SSIDProfile']['1']['EncryptionMode']['_value'];
+      var encyptionmode = model.data![0].encryption ?? "";
       // SERCURITY
       String sercurity = encyptionmode.split('+')[0];
       // WPA ENCYPITON
       String wpaEncyption = encyptionmode.split('+').skip(1).join('+');
       // PASSWORD
-      String wpaKey = list['SSIDProfile']['1']['WPAKey']['_value'];
+      String wpaKey = model.data![0].key ?? "";
 
       setState(() {
         bandIndex = 1;
@@ -474,7 +526,7 @@ class _WlanSetState extends State<WlanSet> {
     } catch (err) {
       debugPrint('get5G ERROR: $err');
       ToastUtils.error('Request Failed');
-      Get.back();
+      // Get.back();
     } finally {
       setState(() {
         loading = false;
@@ -483,85 +535,246 @@ class _WlanSetState extends State<WlanSet> {
     }
   }
 
+  // 云2.4G设置数据
+  setWlanData() async {
+    Object? sn = await sharedGetData('deviceSn', String);
+    var parameterNames = {
+      "method": "set",
+      "table": {
+        "table": "WiFiSsidTable",
+        "value": [
+          {
+            "id": dataModel!.data![0].id,
+            "Enable": dataModel!.data![0].enable,
+            "SsidHide": ssidisCheck == false ? "0" : "1",
+            "ApIsolate": apisCheck == false ? "0" : "1",
+            "ShowPasswd": dataModel!.data![0].showPasswd,
+            "Is4Guest": dataModel!.data![0].is4Guest,
+            "PasswordLength": dataModel!.data![0].passwordLength,
+            "PasswordIndex": dataModel!.data![0].passwordIndex,
+            "MaxClient": max.text,
+            "Ssid": ssid.text,
+            "Key": password.text,
+            "Password1": dataModel!.data![0].password1,
+            "Password2": dataModel!.data![0].password2,
+            "Password3": dataModel!.data![0].password3,
+            "Password4": dataModel!.data![0].password4,
+            "Encryption":
+                '${securityVal[securityIndex]}+${encryptionVal[encryptionIndex]}',
+            "SsidMac": dataModel!.data![0].ssidMac,
+            "AllowAccessIntranet": dataModel!.data![0].allowAccessIntranet,
+            "wifiRadiusServerIP": dataModel!.data![0].wifiRadiusServerIP,
+            "wifiRadiusServerPort": dataModel!.data![0].wifiRadiusServerPort,
+            "wifiRadiusSharedKey": dataModel!.data![0].wifiRadiusSharedKey
+          }
+        ]
+      }
+    };
+
+    try {
+      var res = await Request().setSODTable(parameterNames, sn);
+      var jsonObj = jsonDecode(res);
+      printInfo(info: '----$jsonObj');
+      if (jsonObj['code'] == 200) {
+        ToastUtils.toast('Save success');
+      }
+    } catch (e) {
+      printError(info: e.toString());
+    }
+
+    var parameters = {
+      "method": "set",
+      "nodes": {
+        "wifiEnable": isCheck == false ? "0" : "1",
+        "wifiMode": modeVal[modeIndex],
+        "wifiHtmode": bandWidthVal[bandWidthIndex],
+        "wifiChannel": bandWidthIndex == 0
+            ? wifiCountryChannelListHT20[channelIndex]
+            : bandWidthIndex == 1
+                ? wifiCountryChannelListHT40j[channelIndex]
+                : wifiCountryChannelListHT40[channelIndex],
+        "wifiTxpower": txPowerShowVal
+      }
+    };
+
+    try {
+      var res = await Request().setACSNode(parameters, sn);
+      var jsonObj = jsonDecode(res);
+      printInfo(info: 'wlanSet:$jsonObj');
+      if (jsonObj['code'] == 200) {
+        ToastUtils.toast(S.current.success);
+      } else {
+        ToastUtils.error('Request Failed');
+      }
+      setState(() {});
+    } catch (e) {
+      debugPrint('获取信息失败：${e.toString()}');
+      ToastUtils.error('Request Failed');
+      Get.back();
+    }
+  }
+
+  // 云5G 设置数据
+  setAdvancedWlanData() async {
+    Object? sn = await sharedGetData('deviceSn', String);
+    var parameterNames = {
+      "method": "set",
+      "table": {
+        "table": "WiFi5GSsidTable",
+        "value": [
+          {
+            "id": wlanModel!.data![0].id,
+            "Enable": wlanModel!.data![0].enable,
+            "SsidHide": ssidisCheck5 == false ? "0" : "1",
+            "ApIsolate": apisCheck5 == false ? "0" : "1",
+            "ShowPasswd": wlanModel!.data![0].showPasswd,
+            "Is4Guest": wlanModel!.data![0].is4Guest,
+            "PasswordLength": wlanModel!.data![0].passwordLength,
+            "PasswordIndex": wlanModel!.data![0].passwordIndex,
+            "MaxClient": max5.text,
+            "Ssid": ssid5.text,
+            "Key": password5.text,
+            "Password1": wlanModel!.data![0].password1,
+            "Password2": wlanModel!.data![0].password2,
+            "Password3": wlanModel!.data![0].password3,
+            "Password4": wlanModel!.data![0].password4,
+            "Encryption":
+                '${securityVal[securityIndex5g]}+${encryptionVal[encryptionIndex5g]}',
+            "SsidMac": wlanModel!.data![0].ssidMac,
+            "AllowAccessIntranet": wlanModel!.data![0].allowAccessIntranet,
+            "wifiRadiusServerIP": wlanModel!.data![0].wifiRadiusServerIP,
+            "wifiRadiusServerPort": wlanModel!.data![0].wifiRadiusServerPort,
+            "wifiRadiusSharedKey": wlanModel!.data![0].wifiRadiusSharedKey
+          }
+        ]
+      }
+    };
+
+    try {
+      var res = await Request().setSODTable(parameterNames, sn);
+      var jsonObj = jsonDecode(res);
+      printInfo(info: '----$jsonObj');
+      if (jsonObj['code'] == 200) {
+        ToastUtils.toast('Save success');
+      }
+    } catch (e) {
+      printError(info: e.toString());
+    }
+
+    var parameters = {
+      "method": "set",
+      "nodes": {
+        "wifi5gEnable": isCheck5 == false ? "0" : "1",
+        "wifi5gMode": modeVal5g[modeIndex5g],
+        "wifi5gHtmode": bandWidthVal5g[bandWidthIndex5g],
+        "wifi5gChannel": wifi5gCountryChannelList[channelIndex5g],
+        "wifi5gTxpower": txPower5gShowVal
+      }
+    };
+
+    try {
+      var res = await Request().setACSNode(parameters, sn);
+      var jsonObj = jsonDecode(res);
+      printInfo(info: 'wlanSet:$jsonObj');
+      if (jsonObj['code'] == 200) {
+        ToastUtils.toast(S.current.success);
+      } else {
+        ToastUtils.error('Request Failed');
+      }
+      setState(() {});
+    } catch (e) {
+      debugPrint('获取信息失败：${e.toString()}');
+      ToastUtils.error('Request Failed');
+      Get.back();
+    }
+  }
+
   // 保存配置
   Future setList() async {
-    Object? sn = await sharedGetData('deviceSn', String);
+    // Object? sn = await sharedGetData('deviceSn', String);
     // 定义前缀,2.4g pdVal为0 5g 为1
-    String prefix =
-        'InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.${bandIndex + 1}';
-    var res = await Request().setACSNode([
-      // [node,value,string]
-      [
-        '$prefix.Enable',
-        bandIndex == 0 ? isCheck.toString() : isCheck5.toString(),
-        'xsd:boolean'
-      ],
-      [
-        '$prefix.Mode',
-        bandIndex == 0 ? modeVal[modeIndex] : modeVal5g[modeIndex5g],
-        'xsd:string'
-      ],
-      [
-        '$prefix.ChannelBandwidth',
-        bandIndex == 0
-            ? bandWidthVal[bandWidthIndex]
-            : bandWidthVal5g[bandWidthIndex5g],
-        'xsd:string'
-      ],
-      [
-        '$prefix.Channel',
-        bandIndex == 0
-            ? bandWidthIndex == 0
-                ? wifiCountryChannelListHT20[channelIndex]
-                : bandWidthIndex == 1
-                    ? wifiCountryChannelListHT40j[channelIndex]
-                    : wifiCountryChannelListHT40[channelIndex]
-            : wifi5gCountryChannelList[channelIndex5g],
-        'xsd:string'
-      ],
-      [
-        '$prefix.TxPower',
-        bandIndex == 0 ? txPowerShowVal : txPower5gShowVal,
-        'xsd:string'
-      ],
-      [
-        '$prefix.SSIDProfile.1.SSID',
-        bandIndex == 0 ? ssid.text : ssid5.text,
-        'xsd:string'
-      ],
-      [
-        '$prefix.SSIDProfile.1.MaxNoOfDev',
-        bandIndex == 0 ? max.text : max5.text,
-        'xsd:unsignedInt'
-      ],
-      [
-        '$prefix.SSIDProfile.1.HideSSIDBroadcast',
-        bandIndex == 0 ? ssidisCheck.toString() : ssidisCheck5.toString(),
-        'xsd:boolean'
-      ],
-      [
-        '$prefix.SSIDProfile.1.APIsolation',
-        bandIndex == 0 ? apisCheck : apisCheck5,
-        'xsd:string'
-      ],
-      [
-        '$prefix.SSIDProfile.1.EncryptionMode',
-        bandIndex == 0
-            ? '${securityVal[securityIndex]}+${encryptionVal[encryptionIndex]}'
-            : '${securityVal[securityIndex5g]}+${encryptionVal[encryptionIndex5g]}',
-        'xsd:string'
-      ],
-      [
-        '$prefix.SSIDProfile.1.WPAKey',
-        bandIndex == 0 ? password.text : password5.text,
-        'xsd:string'
-      ],
-    ], sn);
-    if (json.decode(res)['code'] == 200) {
-      ToastUtils.toast('Save Success');
+    if (bandIndex == 0 && isCheck) {
+      // 2.4G设置
+      setWlanData();
     } else {
-      ToastUtils.error('Save Failed');
+      // 5G设置
+      setAdvancedWlanData();
     }
+    // String prefix =
+    //     'InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.${bandIndex + 1}';
+    // var res = await Request().setACSNode([
+    //   // [node,value,string]
+    //   [
+    //     '$prefix.Enable',
+    //     bandIndex == 0 ? isCheck.toString() : isCheck5.toString(),
+    //     'xsd:boolean'
+    //   ],
+    //   [
+    //     '$prefix.Mode',
+    //     bandIndex == 0 ? modeVal[modeIndex] : modeVal5g[modeIndex5g],
+    //     'xsd:string'
+    //   ],
+    //   [
+    //     '$prefix.ChannelBandwidth',
+    //     bandIndex == 0
+    //         ? bandWidthVal[bandWidthIndex]
+    //         : bandWidthVal5g[bandWidthIndex5g],
+    //     'xsd:string'
+    //   ],
+    //   [
+    //     '$prefix.Channel',
+    //     bandIndex == 0
+    //         ? bandWidthIndex == 0
+    //             ? wifiCountryChannelListHT20[channelIndex]
+    //             : bandWidthIndex == 1
+    //                 ? wifiCountryChannelListHT40j[channelIndex]
+    //                 : wifiCountryChannelListHT40[channelIndex]
+    //         : wifi5gCountryChannelList[channelIndex5g],
+    //     'xsd:string'
+    //   ],
+    //   [
+    //     '$prefix.TxPower',
+    //     bandIndex == 0 ? txPowerShowVal : txPower5gShowVal,
+    //     'xsd:string'
+    //   ],
+    //   [
+    //     '$prefix.SSIDProfile.1.SSID',
+    //     bandIndex == 0 ? ssid.text : ssid5.text,
+    //     'xsd:string'
+    //   ],
+    //   [
+    //     '$prefix.SSIDProfile.1.MaxNoOfDev',
+    //     bandIndex == 0 ? max.text : max5.text,
+    //     'xsd:unsignedInt'
+    //   ],
+    //   [
+    //     '$prefix.SSIDProfile.1.HideSSIDBroadcast',
+    //     bandIndex == 0 ? ssidisCheck.toString() : ssidisCheck5.toString(),
+    //     'xsd:boolean'
+    //   ],
+    //   [
+    //     '$prefix.SSIDProfile.1.APIsolation',
+    //     bandIndex == 0 ? apisCheck : apisCheck5,
+    //     'xsd:string'
+    //   ],
+    //   [
+    //     '$prefix.SSIDProfile.1.EncryptionMode',
+    //     bandIndex == 0
+    //         ? '${securityVal[securityIndex]}+${encryptionVal[encryptionIndex]}'
+    //         : '${securityVal[securityIndex5g]}+${encryptionVal[encryptionIndex5g]}',
+    //     'xsd:string'
+    //   ],
+    //   [
+    //     '$prefix.SSIDProfile.1.WPAKey',
+    //     bandIndex == 0 ? password.text : password5.text,
+    //     'xsd:string'
+    //   ],
+    // ], sn);
+    // if (json.decode(res)['code'] == 200) {
+    //   ToastUtils.toast('Save Success');
+    // } else {
+    //   ToastUtils.error('Save Failed');
+    // }
   }
 
   // 提交
@@ -658,8 +871,9 @@ class _WlanSetState extends State<WlanSet> {
         updateState();
       });
     } catch (e) {
+      ToastUtils.error('Request Failed');
       // 异步出错goback
-      Get.back();
+      // Get.back();
     }
   }
 
@@ -833,7 +1047,8 @@ class _WlanSetState extends State<WlanSet> {
         await setList();
       } catch (e) {
         debugPrint('云端请求出错：${e.toString()}');
-        Get.back();
+        ToastUtils.error('Request Failed');
+        // Get.back();
       }
     }
     if (loginController.login.state == 'local') {

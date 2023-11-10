@@ -27,6 +27,7 @@ class _MyWidgetState extends State<Equipment> {
   bool isExistCloudDevice = false;
   List appList = [];
   EquipmentData equipmentData = EquipmentData();
+  Timer? timer;
   @override
   void initState() {
     super.initState();
@@ -131,7 +132,6 @@ class _MyWidgetState extends State<Equipment> {
     });
   }
 
-  Timer? timer;
   @override
   void dispose() {
     super.dispose();

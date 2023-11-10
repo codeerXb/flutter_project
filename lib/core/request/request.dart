@@ -26,28 +26,8 @@ class Request {
     return equipmentData;
   }
 
-  //获取WPS云端数据
-  Future getWPSNode(parameterNames, sn) async {
-    Map<String, dynamic> data = {
-      'sn': sn,
-      'param': parameterNames
-    };
-    return await App.post('/cpeMqtt/getAndSetDeviceSODNodes', data: data);
-  }
-
+  //获取云端数据
   Future getACSNode(parameterNames, sn) async {
-    Map<String, dynamic> data = {
-      'deviceId': sn,
-      'name': 'getParameterValues',
-      'parameterNames': parameterNames
-    };
-    return await App.post('/platform/tr069/getParameterValues', data: data);
-  }
-
-
-
-  //设置WPS云端数据
-  Future setWPSNode(parameterNames, sn) async {
     Map<String, dynamic> data = {
       'sn': sn,
       'param': parameterNames
@@ -58,13 +38,29 @@ class Request {
   //设置云端数据
   Future setACSNode(parameterNames, sn) async {
     Map<String, dynamic> data = {
-      'deviceId': sn,
-      'name': 'setParameterValues',
-      'parameterValues': parameterNames
+      'sn': sn,
+      'param': parameterNames
     };
-    return await App.post('/platform/tr069/setParameterValues', data: data);
+    return await App.post('/cpeMqtt/getAndSetDeviceSODNodes', data: data);
   }
 
+  // 设置设备表数据
+  Future setSODTable(parameterNames, sn) async {
+    Map<String, dynamic> data = {
+      'sn': sn,
+      'param': parameterNames
+    };
+    return await App.post('/cpeMqtt/getAndSetDeviceSODTable', data: data);
+  }
+
+  //获取设备列表数据
+  Future getSODTable(parameterNames, sn) async {
+    Map<String, dynamic> data = {
+      'sn': sn,
+      'param': parameterNames
+    };
+    return await App.post('/cpeMqtt/getAndSetDeviceSODTable', data: data);
+  }
 
   //添加或删除
   Future addOrDeleteObject(objectName, sn, name) async {

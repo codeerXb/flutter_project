@@ -111,10 +111,10 @@ class _WpsSetState extends State<WpsSet> {
       loading = true;
     });
     var parameterNames = {
-      "method" : "get",
-      "nodes" : ["wifiWps","wifiWpsMode","wifiWpsClientPin"]
+      "method": "get",
+      "nodes": ["wifiWps", "wifiWpsMode", "wifiWpsClientPin"]
     };
-    var res = await Request().getWPSNode(parameterNames, sn);
+    var res = await Request().getACSNode(parameterNames, sn);
     try {
       var jsonObj = jsonDecode(res);
       printInfo(info: '````$jsonObj');
@@ -142,10 +142,10 @@ class _WpsSetState extends State<WpsSet> {
     });
 
     var parameterNames = {
-      "method" : "get",
-      "nodes" : ["wifi5gWps","wifi5gWpsMode","wifi5gWpsClientPin"]
+      "method": "get",
+      "nodes": ["wifi5gWps", "wifi5gWpsMode", "wifi5gWpsClientPin"]
     };
-    var res = await Request().getWPSNode(parameterNames, sn);
+    var res = await Request().getACSNode(parameterNames, sn);
     try {
       var jsonObj = jsonDecode(res);
       printInfo(info: '$jsonObj');
@@ -169,24 +169,25 @@ class _WpsSetState extends State<WpsSet> {
   setTRWpsData() async {
     wpsValue = isCheck == true ? "1" : "0";
     if (isCheck == true) {
-      if (modeShowVal == 'PBC'){
+      if (modeShowVal == 'PBC') {
         modeValue = "PBC";
-      }else {
+      } else {
         modeValue = "client";
       }
     }
     clientPin = pinVal.text;
     var parameterNames = {
-      "method" : "set",
-      "nodes" : {"wifiWps" : wpsValue,
-                 "wifiWpsMode" : modeValue,
-                 "wifiWpsClientPin" : clientPin
+      "method": "set",
+      "nodes": {
+        "wifiWps": wpsValue,
+        "wifiWpsMode": modeValue,
+        "wifiWpsClientPin": clientPin
       }
     };
     debugPrint("--------wpsValue:$wpsValue----------");
     debugPrint("--------modevalue:$modeValue----------");
     debugPrint("--------pinvalue:${pinVal.text}----------");
-    var res = await Request().setWPSNode(parameterNames, sn);
+    var res = await Request().setACSNode(parameterNames, sn);
     try {
       var jsonObj = jsonDecode(res);
       printInfo(info: '$jsonObj');
@@ -200,22 +201,22 @@ class _WpsSetState extends State<WpsSet> {
   setTRWpsData2() async {
     wpsValue = isCheck == true ? "1" : "0";
     if (isCheck == true) {
-      if (modeShowVal == 'PBC'){
+      if (modeShowVal == 'PBC') {
         modeValue = "PBC";
-      }else {
+      } else {
         modeValue = "client";
       }
     }
     clientPin = pinVal.text;
     var parameterNames = {
-    "method" : "set",
-    "nodes" : {
-      "wifi5gWps" : wpsValue,
-      "wifi5gWpsMode" : modeValue,
-      "wifi5gWpsClientPin" : clientPin
+      "method": "set",
+      "nodes": {
+        "wifi5gWps": wpsValue,
+        "wifi5gWpsMode": modeValue,
+        "wifi5gWpsClientPin": clientPin
       }
     };
-    var res = await Request().setWPSNode(parameterNames, sn);
+    var res = await Request().setACSNode(parameterNames, sn);
     try {
       var jsonObj = jsonDecode(res);
       printInfo(info: '````$jsonObj');
@@ -451,13 +452,12 @@ class _WpsSetState extends State<WpsSet> {
                                             isCheck = newVal;
                                             wpsVal =
                                                 newVal == false ? '0' : '1';
-                                            if(wpsVal == '0') {
+                                            if (wpsVal == '0') {
                                               ToastUtils.toast("wps已关闭");
-                                            }else {
+                                            } else {
                                               ToastUtils.toast("wps已开启");
                                             }
                                           });
-
                                         },
                                       ),
                                     ],
@@ -475,23 +475,23 @@ class _WpsSetState extends State<WpsSet> {
                                   value: modeVal,
                                 );
                                 result?.then((selectedValue) => {
-                                  if (modeVal != selectedValue &&
-                                      selectedValue != null)
-                                    {
-                                      setState(() => {
-                                        modeVal = selectedValue,
-                                        modeShowVal = [
-                                          'PBC',
-                                          'Client PIN'
-                                        ][modeVal]
-                                      })
-                                    }
-                                });
+                                      if (modeVal != selectedValue &&
+                                          selectedValue != null)
+                                        {
+                                          setState(() => {
+                                                modeVal = selectedValue,
+                                                modeShowVal = [
+                                                  'PBC',
+                                                  'Client PIN'
+                                                ][modeVal]
+                                              })
+                                        }
+                                    });
                               },
                               child: BottomLine(
                                 rowtem: Row(
                                   mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(S.of(context).Mode,
                                         style: TextStyle(
@@ -532,29 +532,31 @@ class _WpsSetState extends State<WpsSet> {
                                             fontSize: 28.sp)),
                                     Expanded(
                                       flex: 1,
-                                        child:Padding(
-                                          padding: const EdgeInsets.only(left: 10),
-                                          child: SizedBox(
-                                            width: 200.w,
-                                            child: TextFormField(
-                                              textAlign: TextAlign.left,
-                                              keyboardType: TextInputType.number,
-                                              controller: pinVal,
-                                              style: TextStyle(
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 10),
+                                        child: SizedBox(
+                                          width: 200.w,
+                                          child: TextFormField(
+                                            textAlign: TextAlign.left,
+                                            keyboardType: TextInputType.number,
+                                            controller: pinVal,
+                                            style: TextStyle(
+                                                fontSize: 26.sp,
+                                                color: const Color(0xff051220)),
+                                            decoration: InputDecoration(
+                                              hintStyle: TextStyle(
                                                   fontSize: 26.sp,
-                                                  color: const Color(0xff051220)),
-                                              decoration: InputDecoration(
-                                                hintStyle: TextStyle(
-                                                    fontSize: 26.sp,
-                                                    color: const Color(0xff737A83)),
-                                                border: InputBorder.none,
-                                              ),
-                                              onChanged: (value){
-                                                debugPrint("Pinvalue:$value");
-                                              },
+                                                  color:
+                                                      const Color(0xff737A83)),
+                                              border: InputBorder.none,
                                             ),
+                                            onChanged: (value) {
+                                              debugPrint("Pinvalue:$value");
+                                            },
                                           ),
                                         ),
+                                      ),
                                     ),
                                   ],
                                 ),

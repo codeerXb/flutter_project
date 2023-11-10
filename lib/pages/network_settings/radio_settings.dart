@@ -15,7 +15,7 @@ import '../../core/widget/common_picker.dart';
 import '../../generated/l10n.dart';
 import 'model/radio_data.dart';
 
-/// Radio设置
+/// Radio设置(页面已删除,不符合现行目标)
 class RadioSettings extends StatefulWidget {
   const RadioSettings({Key? key}) : super(key: key);
 
@@ -72,7 +72,6 @@ class _RadioSettingsState extends State<RadioSettings> {
 
   // 获取 云端
   getTRRadioGData() async {
-  
     printInfo(info: 'sn在这里有值吗-------$sn');
     var parameterNames = [
       "InternetGatewayDevice.WEB_GUI.Network.NR-LTE.ConnectMethod",

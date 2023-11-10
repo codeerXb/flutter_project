@@ -45,7 +45,7 @@ class _DnsSettingsState extends State<DnsSettings> {
   // String primary = '';
   // String subsidiary = '';
   String sn = '';
-  String type = '';
+  // String type = '';
 
   final LoginController loginController = Get.put(LoginController());
 
@@ -126,64 +126,78 @@ class _DnsSettingsState extends State<DnsSettings> {
       loading = true;
     });
     printInfo(info: 'sn在这里有值吗-------$sn');
-    var parameterNames = [
-      "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.DNSServers",
-    ];
+    // var parameterNames = [
+    //   "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.DNSServers",
+    // ];
+    var parameterNames = {
+      "method": "get",
+      "nodes": ["lteManualDns1", "lteManualDns2"]
+    };
     var res = await Request().getACSNode(parameterNames, sn);
-    try {
-      var jsonObj = jsonDecode(res);
-      printInfo(info: '````$jsonObj');
-      setState(() {
-        loading = false;
-        type = jsonObj["data"]["InternetGatewayDevice"]["WANDevice"]["1"]
-                ["WANConnectionDevice"]["1"]["WANIPConnection"]["1"]
-            ["DNSServers"]["_type"];
-        var dnsStart = jsonObj["data"]["InternetGatewayDevice"]["WANDevice"]
-                ["1"]["WANConnectionDevice"]["1"]["WANIPConnection"]["1"]
-            ["DNSServers"]["_value"];
-        dsnMainVal = dnsStart.split(',')[0];
-        dsnMain.text =
-            dsnMainVal.split('.')[0] == "" ? "" : dsnMainVal.split('.')[0];
-        dsnMain1.text =
-            dsnMainVal.split('.')[1] == "" ? "" : dsnMainVal.split('.')[1];
-        dsnMain2.text =
-            dsnMainVal.split('.')[2] == "" ? "" : dsnMainVal.split('.')[2];
-        dsnMain3.text =
-            dsnMainVal.split('.')[3] == "" ? "" : dsnMainVal.split('.')[3];
+    var jsonObj = jsonDecode(res);
+    debugPrint('DNS数据:$jsonObj');
+    setState(() {
+      loading = false;
+      // type = jsonObj["data"]["InternetGatewayDevice"]["WANDevice"]["1"]
+      //         ["WANConnectionDevice"]["1"]["WANIPConnection"]["1"]
+      //     ["DNSServers"]["_type"];
 
-        // 辅
-        dsnAssistVal = dnsStart.split(',')[1];
-        dsnAssist.text =
-            dsnAssistVal.split('.')[0] == "" ? "" : dsnAssistVal.split('.')[0];
-        dsnAssist1.text =
-            dsnAssistVal.split('.')[1] == "" ? "" : dsnAssistVal.split('.')[1];
-        dsnAssist2.text =
-            dsnAssistVal.split('.')[2] == "" ? "" : dsnAssistVal.split('.')[2];
-        dsnAssist3.text =
-            dsnAssistVal.split('.')[3] == "" ? "" : dsnAssistVal.split('.')[3];
-      });
-    } catch (e) {
-      debugPrint('获取信息失败：${e.toString()}');
-      setState(() {
-        loading = false;
-      });
-    }
+      //Primary DNS
+      var dnsStart = jsonObj["data"]["lteManualDns1"];
+      // dsnMainVal = dnsStart.split(',')[0];
+      dsnMain.text = dnsStart.split('.')[0] == "" ? "" : dnsStart.split('.')[0];
+      dsnMain1.text =
+          dnsStart.split('.')[1] == "" ? "" : dnsStart.split('.')[1];
+      dsnMain2.text =
+          dnsStart.split('.')[2] == "" ? "" : dnsStart.split('.')[2];
+      dsnMain3.text =
+          dnsStart.split('.')[3] == "" ? "" : dnsStart.split('.')[3];
+
+      // Second DNS
+      dsnAssistVal = jsonObj["data"]["lteManualDns2"];
+      dsnAssist.text =
+          dsnAssistVal.split('.')[0] == "" ? "" : dsnAssistVal.split('.')[0];
+      dsnAssist1.text =
+          dsnAssistVal.split('.')[1] == "" ? "" : dsnAssistVal.split('.')[1];
+      dsnAssist2.text =
+          dsnAssistVal.split('.')[2] == "" ? "" : dsnAssistVal.split('.')[2];
+      dsnAssist3.text =
+          dsnAssistVal.split('.')[3] == "" ? "" : dsnAssistVal.split('.')[3];
+    });
+    // try {
+
+    // } catch (e) {
+    //   debugPrint('DNS信息失败');
+    //   debugPrint('获取信息失败：${e.toString()}');
+    //   setState(() {
+    //     loading = false;
+    //   });
+    // }
   }
 
 // 设置 云端
   setTRDnsData() async {
-    var parameterNames = [
-      [
-        "InternetGatewayDevice.DNS.Client.Server.1.DNSServer",
-        '${dsnMain.text}.${dsnMain1.text}.${dsnMain2.text}.${dsnMain3.text}',
-        type
-      ],
-      [
-        "InternetGatewayDevice.DNS.Client.Server.2.DNSServer",
-        '${dsnAssist.text}.${dsnAssist1.text}.${dsnAssist2.text}.${dsnAssist3.text}',
-        type
-      ],
-    ];
+    // var parameterNames = [
+    //   [
+    //     "InternetGatewayDevice.DNS.Client.Server.1.DNSServer",
+    //     '${dsnMain.text}.${dsnMain1.text}.${dsnMain2.text}.${dsnMain3.text}',
+    //     type
+    //   ],
+    //   [
+    //     "InternetGatewayDevice.DNS.Client.Server.2.DNSServer",
+    //     '${dsnAssist.text}.${dsnAssist1.text}.${dsnAssist2.text}.${dsnAssist3.text}',
+    //     type
+    //   ],
+    // ];
+    var parameterNames = {
+      "method": "set",
+      "nodes": {
+        "lteManualDns1":
+            '${dsnMain.text}.${dsnMain1.text}.${dsnMain2.text}.${dsnMain3.text}',
+        "lteManualDns2":
+            '${dsnAssist.text}.${dsnAssist1.text}.${dsnAssist2.text}.${dsnAssist3.text}'
+      }
+    };
     try {
       var res = await Request().setACSNode(parameterNames, sn);
       var jsonObj = jsonDecode(res);

@@ -58,8 +58,8 @@ class _AccountSecurityState extends State<AccountSecurity> {
   bool againPasswordShow = true;
 
   String sn = '';
-  String typeName = '';
-  String typePas = '';
+  // String typeName = '';
+  // String typePas = '';
 
   final LoginController loginController = Get.put(LoginController());
 
@@ -97,13 +97,21 @@ class _AccountSecurityState extends State<AccountSecurity> {
 
 // 设置 云端
   setTRWanData() async {
-    var parameterNames = [
-      [
-        "InternetGatewayDevice.WEB_GUI.System.Account.ChangePassword.Admin",
-        renewPasswordController.text,
-        'xsd:string'
-      ],
-    ];
+    // var parameterNames = [
+    //   [
+    //     "InternetGatewayDevice.WEB_GUI.System.Account.ChangePassword.Admin",
+    //     renewPasswordController.text,
+    //     'xsd:string'
+    //   ],
+    // ];
+
+    var parameterNames = {
+      "method": "set",
+      "nodes": {
+        "webAdminPasswordChange": renewPasswordController.text,
+      }
+    };
+
     var res = await Request().setACSNode(parameterNames, sn);
     try {
       var jsonObj = jsonDecode(res);
@@ -246,6 +254,7 @@ class _AccountSecurityState extends State<AccountSecurity> {
                   children: [
                     // TitleWidger(title: S.of(context).Settings),
                     Padding(padding: EdgeInsets.only(top: 20.w)),
+
                     /// 上边的提示
                     // topTipsWidget(),
 

@@ -74,12 +74,12 @@ class _LanSettingsState extends State<LanSettings> {
   double comboContain = -1;
 
   String sn = '';
-  String typeIp = '';
-  String typeSub = '';
-  String typeSer = '';
-  String typeSta = '';
-  String typeEnd = '';
-  String typeLea = '';
+  // String typeIp = '';
+  // String typeSub = '';
+  // String typeSer = '';
+  // String typeSta = '';
+  // String typeEnd = '';
+  // String typeLea = '';
 
   final LoginController loginController = Get.put(LoginController());
 
@@ -166,53 +166,62 @@ class _LanSettingsState extends State<LanSettings> {
       loading = true;
     });
     printInfo(info: 'sn在这里有值吗-------$sn');
-    var parameterNames = [
-      "InternetGatewayDevice.WEB_GUI.Network.LANSettings.LANHost.IPAddress",
-      "InternetGatewayDevice.WEB_GUI.Network.LANSettings.LANHost.SubnetMask",
-      "InternetGatewayDevice.WEB_GUI.Network.LANSettings.DHCP.ServerEnable",
-      "InternetGatewayDevice.WEB_GUI.Network.LANSettings.DHCP.StartIP",
-      "InternetGatewayDevice.WEB_GUI.Network.LANSettings.DHCP.EndIP",
-      "InternetGatewayDevice.WEB_GUI.Network.LANSettings.DHCP.LeaseTime",
-    ];
+    // var parameterNames = [
+    //   "InternetGatewayDevice.WEB_GUI.Network.LANSettings.LANHost.IPAddress",
+    //   "InternetGatewayDevice.WEB_GUI.Network.LANSettings.LANHost.SubnetMask",
+    //   "InternetGatewayDevice.WEB_GUI.Network.LANSettings.DHCP.ServerEnable",
+    //   "InternetGatewayDevice.WEB_GUI.Network.LANSettings.DHCP.StartIP",
+    //   "InternetGatewayDevice.WEB_GUI.Network.LANSettings.DHCP.EndIP",
+    //   "InternetGatewayDevice.WEB_GUI.Network.LANSettings.DHCP.LeaseTime",
+    // ];
+
+    var parameterNames = {
+      "method": "get",
+      "nodes": [
+        "networkLanSettingIp",
+        "networkLanSettingMask",
+        "networkLanSettingDhcp",
+        "networkLanSettingStart",
+        "networkLanSettingEnd",
+        "networkLanSettingLeasetime"
+      ]
+    };
     var res = await Request().getACSNode(parameterNames, sn);
+    var jsonObj = jsonDecode(res);
+    debugPrint('LAN数据:$jsonObj');
     try {
-      var jsonObj = jsonDecode(res);
       printInfo(info: '````$jsonObj');
       setState(() {
         // 类型
-        typeIp = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Network"]
-            ["LANSettings"]["LANHost"]["IPAddress"]["_type"];
-        typeSub = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Network"]
-            ["LANSettings"]["LANHost"]["SubnetMask"]["_type"];
-        typeSer = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Network"]
-            ["LANSettings"]["DHCP"]["ServerEnable"]["_type"];
-        typeSta = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Network"]
-            ["LANSettings"]["DHCP"]["StartIP"]["_type"];
-        typeEnd = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Network"]
-            ["LANSettings"]["DHCP"]["EndIP"]["_type"];
-        typeLea = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Network"]
-            ["LANSettings"]["DHCP"]["LeaseTime"]["_type"];
+        // typeIp = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Network"]
+        //     ["LANSettings"]["LANHost"]["IPAddress"]["_type"];
+        // typeSub = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Network"]
+        //     ["LANSettings"]["LANHost"]["SubnetMask"]["_type"];
+        // typeSer = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Network"]
+        //     ["LANSettings"]["DHCP"]["ServerEnable"]["_type"];
+        // typeSta = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Network"]
+        //     ["LANSettings"]["DHCP"]["StartIP"]["_type"];
+        // typeEnd = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Network"]
+        //     ["LANSettings"]["DHCP"]["EndIP"]["_type"];
+        // typeLea = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Network"]
+        //     ["LANSettings"]["DHCP"]["LeaseTime"]["_type"];
 
         // IP地址
-        addressVal = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
-            ["Network"]["LANSettings"]["LANHost"]["IPAddress"]["_value"];
+        addressVal = jsonObj["data"]["networkLanSettingIp"];
         address.text = addressVal.split('.')[0];
         address1.text = addressVal.split('.')[1];
         address2.text = addressVal.split('.')[2];
         address3.text = addressVal.split('.')[3];
 
         // 子网掩码
-        subnetMaskVal = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
-            ["Network"]["LANSettings"]["LANHost"]["SubnetMask"]["_value"];
+        subnetMaskVal = jsonObj["data"]["networkLanSettingMask"];
         subnetMask.text = subnetMaskVal.split('.')[0];
         subnetMask1.text = subnetMaskVal.split('.')[1];
         subnetMask2.text = subnetMaskVal.split('.')[2];
         subnetMask3.text = subnetMaskVal.split('.')[3];
 
         // DHCP
-        if (jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Network"]
-                ["LANSettings"]["DHCP"]["ServerEnable"]["_value"] ==
-            true) {
+        if (jsonObj["data"]["networkLanSettingDhcp"] == true) {
           isCheck = true;
           isCheckVal = '1';
         } else {
@@ -221,20 +230,16 @@ class _LanSettingsState extends State<LanSettings> {
         }
 
         // 开始网址最后一位
-        startVal = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]
-            ["Network"]["LANSettings"]["DHCP"]["StartIP"]["_value"];
+        startVal = jsonObj["data"]["networkLanSettingStart"];
         start.text = startVal.split('.')[3];
 
         // 结束网址最后一位 end
-        endVal = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Network"]
-            ["LANSettings"]["DHCP"]["EndIP"]["_value"];
+        endVal = jsonObj["data"]["networkLanSettingEnd"];
         end.text = endVal.split('.')[3];
 
         // 租约时间
-        lanTimeController.text = jsonObj["data"]["InternetGatewayDevice"]
-                    ["WEB_GUI"]["Network"]["LANSettings"]["DHCP"]["LeaseTime"]
-                ["_value"]
-            .toString();
+        lanTimeController.text =
+            jsonObj["data"]["networkLanSettingLeasetime"].toString();
       });
     } catch (e) {
       debugPrint('获取信息失败：${e.toString()}');
@@ -247,38 +252,54 @@ class _LanSettingsState extends State<LanSettings> {
 
 // 设置 云端
   setTRLanData() async {
-    var parameterNames = [
-      [
-        "InternetGatewayDevice.WEB_GUI.Network.LANSettings.LANHost.IPAddress",
-        '${address.text}.${address1.text}.${address2.text}.${address3.text}',
-        typeIp
-      ],
-      [
-        "InternetGatewayDevice.WEB_GUI.Network.LANSettings.LANHost.SubnetMask",
-        '${subnetMask.text}.${subnetMask1.text}.${subnetMask2.text}.${subnetMask3.text}',
-        typeSub
-      ],
-      [
-        "InternetGatewayDevice.WEB_GUI.Network.LANSettings.DHCP.ServerEnable",
-        '$isCheck',
-        typeSer
-      ],
-      [
-        "InternetGatewayDevice.WEB_GUI.Network.LANSettings.DHCP.StartIP",
-        '${address.text}.${address1.text}.${address2.text}.${start.text}',
-        typeSta
-      ],
-      [
-        "InternetGatewayDevice.WEB_GUI.Network.LANSettings.DHCP.EndIP",
-        '${address.text}.${address1.text}.${address2.text}.${end.text}',
-        typeEnd
-      ],
-      [
-        "InternetGatewayDevice.WEB_GUI.Network.LANSettings.DHCP.LeaseTime",
-        lanTimeController.text,
-        typeLea
-      ]
-    ];
+    // var parameterNames = [
+    //   [
+    //     "InternetGatewayDevice.WEB_GUI.Network.LANSettings.LANHost.IPAddress",
+    //     '${address.text}.${address1.text}.${address2.text}.${address3.text}',
+    //     typeIp
+    //   ],
+    //   [
+    //     "InternetGatewayDevice.WEB_GUI.Network.LANSettings.LANHost.SubnetMask",
+    //     '${subnetMask.text}.${subnetMask1.text}.${subnetMask2.text}.${subnetMask3.text}',
+    //     typeSub
+    //   ],
+    //   [
+    //     "InternetGatewayDevice.WEB_GUI.Network.LANSettings.DHCP.ServerEnable",
+    //     '$isCheck',
+    //     typeSer
+    //   ],
+    //   [
+    //     "InternetGatewayDevice.WEB_GUI.Network.LANSettings.DHCP.StartIP",
+    //     '${address.text}.${address1.text}.${address2.text}.${start.text}',
+    //     typeSta
+    //   ],
+    //   [
+    //     "InternetGatewayDevice.WEB_GUI.Network.LANSettings.DHCP.EndIP",
+    //     '${address.text}.${address1.text}.${address2.text}.${end.text}',
+    //     typeEnd
+    //   ],
+    //   [
+    //     "InternetGatewayDevice.WEB_GUI.Network.LANSettings.DHCP.LeaseTime",
+    //     lanTimeController.text,
+    //     typeLea
+    //   ]
+    // ];
+
+    var parameterNames = {
+      "method": "set",
+      "nodes": {
+        "networkLanSettingIp":
+            '${address.text}.${address1.text}.${address2.text}.${address3.text}',
+        "networkLanSettingMask":
+            '${subnetMask.text}.${subnetMask1.text}.${subnetMask2.text}.${subnetMask3.text}',
+        "networkLanSettingDhcp": "$isCheck",
+        "networkLanSettingStart":
+            "${address.text}.${address1.text}.${address2.text}.${start.text}",
+        "networkLanSettingEnd":
+            "${address.text}.${address1.text}.${address2.text}.${end.text}",
+        "networkLanSettingLeasetime": lanTimeController.text
+      }
+    };
     var res = await Request().setACSNode(parameterNames, sn);
     try {
       var jsonObj = jsonDecode(res);

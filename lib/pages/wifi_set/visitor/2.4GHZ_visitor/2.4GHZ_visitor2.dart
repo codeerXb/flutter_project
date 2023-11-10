@@ -13,6 +13,7 @@ import 'package:get/get.dart';
 import '../../../../core/utils/toast.dart';
 import '../../../../core/widget/common_picker.dart';
 import '../../../../generated/l10n.dart';
+import '../guest_model.dart';
 
 /// 4G访客2
 class Visitor2 extends StatefulWidget {
@@ -49,8 +50,8 @@ class _Visitor2State extends State<Visitor2> {
   String wpaVal = 'aes';
   //密码
   bool passwordValShow = true;
-  @override
-
+  // 模型数据
+  guestModel? dataModel;
   // 点击空白  关闭键盘 时传的一个对象
   FocusNode blankNode = FocusNode();
 
@@ -124,28 +125,35 @@ class _Visitor2State extends State<Visitor2> {
       var value = await sharedGetData('deviceSn', String);
       sn = value.toString();
     }
+    var parameterNames = {"method": "get", "table": "WiFiSsidTable"};
+    var res = await Request().getSODTable(parameterNames, sn);
+    var jsonObj = jsonDecode(res);
+    var model = guestModel.fromJson(jsonObj);
+    dataModel = model;
+    debugPrint('2.4G Guest2获取的数据:$jsonObj');
     try {
-      List<String> parameterNames = [
-        'InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.1.SSIDProfile.3',
-      ];
-      var res = await Request().getACSNode(parameterNames, sn);
-      var data = jsonDecode(res)['data']['InternetGatewayDevice']['WEB_GUI']
-          ['WiFi']['WLANSettings']['1']['SSIDProfile']['3'];
+      // List<String> parameterNames = [
+      //   'InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.1.SSIDProfile.3',
+      // ];
+      // var res = await Request().getACSNode(parameterNames, sn);
+      // var data = jsonDecode(res)['data']['InternetGatewayDevice']['WEB_GUI']
+      //     ['WiFi']['WLANSettings']['1']['SSIDProfile']['3'];
 
+      var data = model.data![2];
       setState(() {
         //是否允许访问内网
-        networkCheck = data['AccessToIntranet']['_value'];
+        networkCheck = data.allowAccessIntranet == "0" ? false : true;
         //ssid
-        ssidVal.text = data['SSID']['_value'].toString();
+        ssidVal.text = data.ssid ?? "";
         //最大设备
-        maxVal.text = data['MaxNoOfDev']['_value'].toString();
+        maxVal.text = data.maxClient ?? "";
         //隐藏SSID网络
-        showSsid = data['HideSSIDBroadcast']['_value'];
+        showSsid = data.ssidHide == "0" ? false : true;
         //AP隔离
-        apVAl = data['APIsolation']['_value'];
+        apVAl = data.apIsolate == "0" ? false : true;
 
         // 安全
-        switch (data['EncryptionMode']['_value'].split('+')[0]) {
+        switch (data.encryption!.split('+')[0]) {
           case 'psk':
             safeShowVal = 'WPA-PSK';
             break;
@@ -157,11 +165,11 @@ class _Visitor2State extends State<Visitor2> {
             break;
         }
         safeIndex = ['psk', 'psk2', 'psk-mixed']
-            .indexOf(data['EncryptionMode']['_value'].split('+')[0]);
+            .indexOf(data.encryption!.split('+')[0]);
         safeVal = ['psk', 'psk2', 'psk-mixed'][safeIndex];
 
         //wpa加密
-        switch (data['EncryptionMode']['_value'].split('+')[1]) {
+        switch (data.encryption!.split('+')[1]) {
           case 'aes':
             wpaShowVal = S.current.aesRecommend;
             break;
@@ -173,8 +181,7 @@ class _Visitor2State extends State<Visitor2> {
             break;
         }
 
-        wpaIndex = ['aes', 'tkip', 'tkip+aes']
-            .indexOf(data['EncryptionMode']['_value'].split('+')[1]);
+        wpaIndex = ['aes', 'tkip', 'tkip+aes'].indexOf(data.encryption!.split('+')[1]);
         wpaVal = ['aes', 'tkip', 'tkip+aes'][wpaIndex];
       });
     } catch (e) {
@@ -228,6 +235,7 @@ class _Visitor2State extends State<Visitor2> {
     }
   }
 
+  @override
   void initState() {
     super.initState();
     getData();
@@ -236,20 +244,45 @@ class _Visitor2State extends State<Visitor2> {
 // 设置 云端
   setData() async {
     Object? sn = await sharedGetData('deviceSn', String);
-    String prefix =
-        'InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.1.SSIDProfile.3.';
-    try {
-      var res = await Request().setACSNode([
-        ['${prefix}AccessToIntranet', networkCheck, 'xsd:boolean'],
-        ['${prefix}SSID', ssidVal.text, 'xsd:string'],
-        ['${prefix}MaxNoOfDev', maxVal.text, 'xsd:unsignedInt'],
-        ['${prefix}HideSSIDBroadcast', showSsid, 'xsd:boolean'],
-        ['${prefix}APIsolation', apVAl, 'xsd:boolean'],
-        ['${prefix}EncryptionMode', '$safeVal+$wpaVal', 'xsd:string'],
-      ], sn);
-      printInfo(info: '----$res');
+    // String prefix =
+    //     'InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.1.SSIDProfile.3.';
+    var parameterNames = {
+      "method": "set",
+      "table": {
+        "table": "WiFiSsidTable",
+        "value": [
+          {
+            "id": dataModel!.data![2].id,
+            "Enable": dataModel!.data![2].enable,
+            "SsidHide": showSsid == false ? "0" : "1",
+            "ApIsolate": apVAl == false ? "0" : "1",
+            "ShowPasswd": dataModel!.data![2].showPasswd,
+            "Is4Guest": dataModel!.data![2].is4Guest,
+            "PasswordLength": dataModel!.data![2].passwordLength,
+            "PasswordIndex": dataModel!.data![2].passwordIndex,
+            "MaxClient": maxVal.text,
+            "Ssid": ssidVal.text,
+            "Key": password.text,
+            "Password1": dataModel!.data![2].password1,
+            "Password2": dataModel!.data![2].password2,
+            "Password3": dataModel!.data![2].password3,
+            "Password4": dataModel!.data![2].password4,
+            "Encryption": '$safeVal+$wpaVal',
+            "SsidMac": dataModel!.data![2].ssidMac,
+            "AllowAccessIntranet": networkCheck == false ? "0" : "1",
+            "wifiRadiusServerIP": dataModel!.data![2].wifiRadiusServerIP,
+            "wifiRadiusServerPort": dataModel!.data![2].wifiRadiusServerPort,
+            "wifiRadiusSharedKey": dataModel!.data![2].wifiRadiusSharedKey
+          }
+        ]
+      }
+    };
 
-      if (json.decode(res)['code'] == 200) {
+    try {
+      var res = await Request().setSODTable(parameterNames, sn);
+      var jsonObj = jsonDecode(res);
+      printInfo(info: '----$jsonObj');
+      if (jsonObj['code'] == 200) {
         ToastUtils.toast('Save success');
       }
     } catch (e) {

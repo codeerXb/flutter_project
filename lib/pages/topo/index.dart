@@ -133,12 +133,20 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
   //  获取在线设备  云端
   getTRTopoData(sx) async {
     printInfo(info: 'sn在这里有值吗-------$sn');
-    var parameterNames = [
-      "InternetGatewayDevice.WEB_GUI.Overview.DeviceList",
-      "InternetGatewayDevice.WEB_GUI.Network.NR-LTE.ConnectStatus",
-      "InternetGatewayDevice.WEB_GUI.Overview.WiFiStatus"
-    ];
-    var res = await Request().getACSNode(parameterNames, sn);
+    var parameterNames = {
+      "method": "get",
+      "nodes": ["lteMainStatusGet", "wifiEnable","wifi5gEnable"]
+    };
+    // var parameterNames = [
+    //   "InternetGatewayDevice.WEB_GUI.Overview.DeviceList",
+    //   "InternetGatewayDevice.WEB_GUI.Network.NR-LTE.ConnectStatus",
+    //   "InternetGatewayDevice.WEB_GUI.Overview.WiFiStatus"
+    // ];
+    var parameterNamesTable = {"method": "get", "table": "OnlineDeviceTable"};
+    var res = await Request().getSODTable(parameterNamesTable, sn);
+    var jsonObj = jsonDecode(res);
+
+    var resNode = await Request().getACSNode(parameterNames, sn);
     if (sx) {
       ToastUtils.toast(S.current.success);
     }
@@ -277,16 +285,21 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
       var value = await sharedGetData('deviceSn', String);
       sn = value.toString();
     }
+    var parameterNames = {
+      "method": "get",
+      "nodes": ["lteMainStatusGet"]
+    };
     try {
-      var parameterNames = [
-        "InternetGatewayDevice.WEB_GUI.Ethernet.Status.ConnectStatus",
-      ];
+      // var parameterNames = [
+      //   "InternetGatewayDevice.WEB_GUI.Ethernet.Status.ConnectStatus",
+      // ];
       var res = await Request().getACSNode(parameterNames, sn);
       Map<String, dynamic> d = jsonDecode(res);
       if (mounted && d['code'] == 200) {
         setState(() {
-          ConnectStatus = d['data']['InternetGatewayDevice']['WEB_GUI']
-              ['Ethernet']['Status']['ConnectStatus']['_value'];
+          // ConnectStatus = d['data']['InternetGatewayDevice']['WEB_GUI']
+          //     ['Ethernet']['Status']['ConnectStatus']['_value'];
+          ConnectStatus = d['data']['lteMainStatusGet'];
         });
       }
     } catch (e) {

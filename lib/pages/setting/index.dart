@@ -35,6 +35,7 @@ class _SettingState extends State<Setting> {
   // 获取sn
   String sn = '';
 
+  String routeOnly = "";
   /// 用户信息
   UserModel userModel = UserModel();
   final LoginController loginController = Get.put(LoginController());
@@ -71,11 +72,19 @@ class _SettingState extends State<Setting> {
       });
     }));
     sharedGetData('deviceSn', String).then(((res) {
-      printInfo(info: 'deviceSn$res');
+      debugPrint("个人中心的deviceSn $res");
       setState(() {
         sn = res.toString();
       });
     }));
+
+    sharedGetData("systemRouterOnly", String).then(((res) {
+      debugPrint("获取的systemRouterOnly $res");
+      setState(() {
+        routeOnly = res.toString();
+      });
+    }));
+
   }
 
   void appLogin() {
@@ -360,9 +369,7 @@ class _SettingState extends State<Setting> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             /// 头部
-            UserCard(
-              name: loginController.equipment['deviceSn'],
-            ),
+            UserCard(name: sn),
 
             Expanded(
                 // flex: 1,
@@ -372,9 +379,6 @@ class _SettingState extends State<Setting> {
                 children: [
                   /// 扫一扫
                   // scanCode(),
-
-                  /// 关于我们
-                  // aboutUs(),
 
                   /// 联系客服
                   // contactCustomer(),
@@ -453,6 +457,9 @@ class _SettingState extends State<Setting> {
 
                   /// 系统设置
                   systemSettings(),
+
+                  /// 关于我们
+                  aboutUs(),
 
                   /// 清除缓存
                   clearCache(),
@@ -763,7 +770,12 @@ class _SettingState extends State<Setting> {
         title: S.of(context).EthernetStatus,
         icon: const Image(image: AssetImage('assets/images/net_type.png')),
         callBack: () {
-          Get.toNamed("/feed_back");
+          if(routeOnly == "1") {
+            Get.toNamed("/feed_back");
+          }else {
+            Get.toNamed("/wanStatusPage");
+          }
+          
         });
   }
 
@@ -785,7 +797,7 @@ class _SettingState extends State<Setting> {
         callBack: () {
           /// 子页面带返回值的
           Get.toNamed("/account_security")
-              ?.then((value) => {print("新密码：$value")});
+              ?.then((value) => {debugPrint("新密码：$value")});
         });
   }
 
@@ -802,9 +814,9 @@ class _SettingState extends State<Setting> {
   /// 关于我们
   Widget aboutUs() {
     return CommonWidget.simpleWidgetWithMine(
-        title: '关于我们',
+        title: 'About Us',
         icon: const Icon(Icons.person_outline_outlined,
-            color: Color.fromRGBO(39, 192, 220, 1)),
+            color: Color.fromRGBO(39, 66, 220, 1)),
         callBack: () {
           Get.toNamed("/about_us");
         });
@@ -815,7 +827,7 @@ class _SettingState extends State<Setting> {
     return CommonWidget.simpleWidgetWithMine(
         title: '联系客服',
         icon: const Icon(Icons.connect_without_contact_outlined,
-            color: Color.fromRGBO(255, 138, 0, 1)),
+            color: Color.fromRGBO(0, 200, 255, 1)),
         callBack: () {
           Get.toNamed("/contact_customer");
         });

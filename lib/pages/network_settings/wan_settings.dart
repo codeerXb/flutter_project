@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:dio/dio.dart';
+// import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
-import 'package:flutter_template/core/utils/shared_preferences_util.dart';
+// import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_picker.dart';
@@ -16,6 +16,7 @@ import 'package:flutter_template/pages/network_settings/model/wan_data.dart';
 import 'package:get/get.dart';
 import '../../../core/widget/custom_app_bar.dart';
 import '../../../generated/l10n.dart';
+import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 
 /// WAN设置
 class WanSettings extends StatefulWidget {
@@ -43,6 +44,7 @@ class _WanSettingsState extends State<WanSettings> {
   String priorityVal = S.current.Ethernet;
   int priorityIndex = 0;
   bool isCheck = true;
+  String systemRouter = "";
   final TextEditingController mtu = TextEditingController();
   final TextEditingController server = TextEditingController();
   dynamic ipVal = '';
@@ -74,6 +76,11 @@ class _WanSettingsState extends State<WanSettings> {
   void initState() {
     super.initState();
     getData();
+    sharedGetData('systemRouterOnly', String).then(((res) {
+      printInfo(info: 'systemRouter$res');
+      systemRouter = res.toString();
+      debugPrint("当前拿到的值是:$systemRouter");
+    }));
   }
 
   @override
@@ -227,7 +234,7 @@ class _WanSettingsState extends State<WanSettings> {
         builder: (context) {
           return AlertDialog(
               title: Text(S.current.hint),
-              content: Text(S.of(context).isGoOn),
+              content: Text(S.of(context).isRestart),
               actions: <Widget>[
                 TextButton(
                   child: Text(S.current.cancel),
@@ -346,7 +353,7 @@ class _WanSettingsState extends State<WanSettings> {
           }
         });
       } on FormatException catch (e) {
-        print(e);
+        debugPrint(e.toString());
         ToastUtils.toast(S.current.error);
       }
     }).catchError((onError) {
@@ -418,25 +425,37 @@ class _WanSettingsState extends State<WanSettings> {
                               closeKeyboard(context);
                               var result = CommonPicker.showPicker(
                                 context: context,
-                                options: [
-                                  S.current.DynamicIP,
-                                  S.current.staticIP,
-                                  S.current.LANOnly
-                                ],
-                                value: val,
+                                options: systemRouter == "0"
+                                    ? [S.current.LANOnly]
+                                    : [
+                                        S.current.DynamicIP,
+                                        S.current.staticIP,
+                                        S.current.LANOnly
+                                      ],
+                                value: systemRouter == "0" ? 0 : val,
                               );
                               result?.then((selectedValue) => {
-                                    if (val != selectedValue &&
-                                        selectedValue != null)
+                                    if (selectedValue == 0)
                                       {
-                                        setState(() => {
-                                              val = selectedValue,
-                                              showVal = [
-                                                S.current.DynamicIP,
-                                                S.current.staticIP,
-                                                S.current.LANOnly
-                                              ][val],
-                                            })
+                                        setState(() {
+                                          val = selectedValue!;
+                                          showVal = S.current.LANOnly;
+                                        })
+                                      }
+                                    else
+                                      {
+                                        if (val != selectedValue &&
+                                            selectedValue != null)
+                                          {
+                                            setState(() => {
+                                                  val = selectedValue,
+                                                  showVal = [
+                                                    S.current.DynamicIP,
+                                                    S.current.staticIP,
+                                                    S.current.LANOnly
+                                                  ][val],
+                                                })
+                                          }
                                       }
                                   });
                             },

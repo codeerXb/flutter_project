@@ -9,13 +9,14 @@ import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/custom_app_bar.dart';
 import 'package:flutter_template/core/widget/water_loading.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
+import 'package:flutter_template/pages/parent_control/index.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../generated/l10n.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class UserPersonalInformation extends StatefulWidget {
-  final name;
+  final String? name;
   const UserPersonalInformation({super.key, this.name});
 
   @override
@@ -56,6 +57,8 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    name = Get.arguments["name"];
+    debugPrint("用户名是:$name");
     sharedGetData('loginUserInfo', String).then(((res) {
       setState(() {
         loginUserInfo = jsonDecode(res.toString());
@@ -109,14 +112,14 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
             children: [
               ListTile(
                 leading: const Icon(Icons.camera_alt),
-                title: const Text("拍照"),
+                title: const Text("camera"),
                 onTap: () {
                   _getImage(ImageSource.camera);
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.image),
-                title: const Text("相册"),
+                title: const Text("photo album"),
                 onTap: () {
                   _getImage(ImageSource.gallery);
                 },

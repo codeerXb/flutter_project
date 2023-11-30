@@ -14,6 +14,7 @@ import '../../core/widget/common_box.dart';
 import '../../core/widget/otp_input.dart';
 import '../../generated/l10n.dart';
 import 'model/lan_data.dart';
+import 'package:flutter_template/core/utils/string_util.dart';
 
 /// LAN设置LAN设置
 class LanSettings extends StatefulWidget {
@@ -221,7 +222,7 @@ class _LanSettingsState extends State<LanSettings> {
         subnetMask3.text = subnetMaskVal.split('.')[3];
 
         // DHCP
-        if (jsonObj["data"]["networkLanSettingDhcp"] == true) {
+        if (jsonObj["data"]["networkLanSettingDhcp"] == "1") {
           isCheck = true;
           isCheckVal = '1';
         } else {
@@ -284,19 +285,38 @@ class _LanSettingsState extends State<LanSettings> {
     //     typeLea
     //   ]
     // ];
+    var ips =
+        '${address.text}.${address1.text}.${address2.text}.${address3.text}';
+    var maskStr =
+        '${subnetMask.text}.${subnetMask1.text}.${subnetMask2.text}.${subnetMask3.text}';
+    var addressStart =
+        "${address.text}.${address1.text}.${address2.text}.${start.text}";
+    var addressEnd =
+        "${address.text}.${address1.text}.${address2.text}.${end.text}";
+    if (isCheck == true) {
+      if (StringUtil.isIp(ips) == false &&
+          StringUtil.isIp(maskStr) == false &&
+          StringUtil.isIp(addressStart) == false &&
+          StringUtil.isIp(addressEnd) == false) {
+            return;
+          }
+    } else {
+      if (StringUtil.isIp(ips) == false && StringUtil.isIp(maskStr) == false) {return;}
+    }
 
+    var dhcpSwitch = isCheck == true ? "1" : "0";
     var parameterNames = {
       "method": "set",
       "nodes": {
         "networkLanSettingIp":
-            '${address.text}.${address1.text}.${address2.text}.${address3.text}',
+            ips,
         "networkLanSettingMask":
-            '${subnetMask.text}.${subnetMask1.text}.${subnetMask2.text}.${subnetMask3.text}',
-        "networkLanSettingDhcp": "$isCheck",
+            maskStr,
+        "networkLanSettingDhcp": dhcpSwitch,
         "networkLanSettingStart":
-            "${address.text}.${address1.text}.${address2.text}.${start.text}",
+            addressStart,
         "networkLanSettingEnd":
-            "${address.text}.${address1.text}.${address2.text}.${end.text}",
+            addressEnd,
         "networkLanSettingLeasetime": lanTimeController.text
       }
     };

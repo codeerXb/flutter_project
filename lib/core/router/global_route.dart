@@ -68,7 +68,9 @@ import 'package:flutter_template/pages/signal_cover/index.dart';
 import 'package:flutter_template/pages/signal_cover/SignalCoverage.dart';
 import 'package:flutter_template/pages/user_login/changePasswordPage.dart';
 import 'package:flutter_template/pages/user_login/user_location.dart';
-
+import "package:flutter_template/pages/get_equipment/unnetworkpage.dart";
+import 'package:flutter_template/pages/setting/user_personal_information.dart';
+import 'package:flutter_template/pages/Ethernet/net/wan_status.dart';
 /// 路由
 class GlobalRouter {
   // 定义单例
@@ -100,6 +102,10 @@ class GlobalRouter {
 
     /// 设备登录
     '/loginPage': (BuildContext context, {Object? args}) => const Login(),
+
+    /// 个人中心
+    "/Personal_Center": (BuildContext context, {Object? args}) => const
+        UserPersonalInformation(),
 
     /// 用户协议页面
     '/user_agreement': (BuildContext context, {Object? args}) =>
@@ -285,7 +291,12 @@ class GlobalRouter {
     '/test_signal': (BuildContext context, {Object? args}) =>
         const TestSignal(),
     '/test_location': (BuildContext context, {Object? args}) =>
-        GetUserLocation(title: "title"),
+        const GetUserLocation(title: "title"),
+    '/unNetworkpage': (BuildContext context, {Object? args}) =>
+        const ConnectionlessPage(),
+    // WanStatus
+    '/wanStatusPage': (BuildContext context, {Object? args}) =>
+        const WanStatusPage(),
   };
 
   /// 监听route

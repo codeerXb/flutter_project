@@ -278,8 +278,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "Change passwords periodically to improve security"),
         "interentMode":
             MessageLookupByLibrary.simpleMessage("Select Internet access mode"),
-        "isGoOn": MessageLookupByLibrary.simpleMessage(
+        "isRestart": MessageLookupByLibrary.simpleMessage(
             "The device will restart after submission. Do you want to continue?"),
+        "isReset" : MessageLookupByLibrary.simpleMessage(
+            "The device will reset after submission. Do you want to continue?"),
         "lanHostSettings":
             MessageLookupByLibrary.simpleMessage("LAN host settings"),
         "lanSettings": MessageLookupByLibrary.simpleMessage("LAN Settings"),

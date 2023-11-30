@@ -7,6 +7,7 @@ import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/widget/water_loading.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import '../../../core/widget/custom_app_bar.dart';
 import '../../core/http/http.dart';
 import '../../core/utils/toast.dart';
@@ -14,6 +15,7 @@ import '../../core/widget/common_box.dart';
 import '../../core/widget/otp_input.dart';
 import '../../generated/l10n.dart';
 import 'model/dns_data.dart';
+import 'package:flutter_template/core/utils/string_util.dart';
 
 /// DNS设置
 class DnsSettings extends StatefulWidget {
@@ -61,7 +63,7 @@ class _DnsSettingsState extends State<DnsSettings> {
         });
         if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
           // 云端请求赋值
-          await getTRDnsData();
+          getTRDnsData();
         }
         if (loginController.login.state == 'local') {
           // 本地请求赋值
@@ -121,7 +123,7 @@ class _DnsSettingsState extends State<DnsSettings> {
   bool loading = false;
 
   // 获取 云端
-  getTRDnsData() async {
+  getTRDnsData() {
     setState(() {
       loading = true;
     });
@@ -133,46 +135,52 @@ class _DnsSettingsState extends State<DnsSettings> {
       "method": "get",
       "nodes": ["lteManualDns1", "lteManualDns2"]
     };
-    var res = await Request().getACSNode(parameterNames, sn);
-    var jsonObj = jsonDecode(res);
-    debugPrint('DNS数据:$jsonObj');
-    setState(() {
-      loading = false;
-      // type = jsonObj["data"]["InternetGatewayDevice"]["WANDevice"]["1"]
-      //         ["WANConnectionDevice"]["1"]["WANIPConnection"]["1"]
-      //     ["DNSServers"]["_type"];
 
-      //Primary DNS
-      var dnsStart = jsonObj["data"]["lteManualDns1"];
-      // dsnMainVal = dnsStart.split(',')[0];
-      dsnMain.text = dnsStart.split('.')[0] == "" ? "" : dnsStart.split('.')[0];
-      dsnMain1.text =
-          dnsStart.split('.')[1] == "" ? "" : dnsStart.split('.')[1];
-      dsnMain2.text =
-          dnsStart.split('.')[2] == "" ? "" : dnsStart.split('.')[2];
-      dsnMain3.text =
-          dnsStart.split('.')[3] == "" ? "" : dnsStart.split('.')[3];
+    try {
+      setState(() async {
+        loading = false;
+        // type = jsonObj["data"]["InternetGatewayDevice"]["WANDevice"]["1"]
+        //         ["WANConnectionDevice"]["1"]["WANIPConnection"]["1"]
+        //     ["DNSServers"]["_type"];
+        var res = await Request().getACSNode(parameterNames, sn);
+        var jsonObj = jsonDecode(res);
+        debugPrint('DNS数据:$jsonObj');
+        //Primary DNS
+        var dnsStart = jsonObj["data"]["lteManualDns1"] as String;
+        // dsnMainVal = dnsStart.split(',')[0];
+        dsnMain.text =
+            dnsStart.split('.')[0] == "" ? "" : dnsStart.split('.')[0];
+        dsnMain1.text =
+            dnsStart.split('.')[1] == "" ? "" : dnsStart.split('.')[1];
+        dsnMain2.text =
+            dnsStart.split('.')[2] == "" ? "" : dnsStart.split('.')[2];
+        dsnMain3.text =
+            dnsStart.split('.')[3] == "" ? "" : dnsStart.split('.')[3];
 
-      // Second DNS
-      dsnAssistVal = jsonObj["data"]["lteManualDns2"];
-      dsnAssist.text =
-          dsnAssistVal.split('.')[0] == "" ? "" : dsnAssistVal.split('.')[0];
-      dsnAssist1.text =
-          dsnAssistVal.split('.')[1] == "" ? "" : dsnAssistVal.split('.')[1];
-      dsnAssist2.text =
-          dsnAssistVal.split('.')[2] == "" ? "" : dsnAssistVal.split('.')[2];
-      dsnAssist3.text =
-          dsnAssistVal.split('.')[3] == "" ? "" : dsnAssistVal.split('.')[3];
-    });
-    // try {
-
-    // } catch (e) {
-    //   debugPrint('DNS信息失败');
-    //   debugPrint('获取信息失败：${e.toString()}');
-    //   setState(() {
-    //     loading = false;
-    //   });
-    // }
+        // Second DNS
+        dsnAssistVal = jsonObj["data"]["lteManualDns2"];
+        debugPrint("执行到这里了");
+        if (dnsStart.isEmpty && (dsnAssistVal as String).isEmpty) {
+          debugPrint("执行到这里了w");
+          loading = false;
+          ToastUtils.toast(S.current.noData);
+        }
+        dsnAssist.text =
+            dsnAssistVal.split('.')[0] == "" ? "" : dsnAssistVal.split('.')[0];
+        dsnAssist1.text =
+            dsnAssistVal.split('.')[1] == "" ? "" : dsnAssistVal.split('.')[1];
+        dsnAssist2.text =
+            dsnAssistVal.split('.')[2] == "" ? "" : dsnAssistVal.split('.')[2];
+        dsnAssist3.text =
+            dsnAssistVal.split('.')[3] == "" ? "" : dsnAssistVal.split('.')[3];
+      });
+    } catch (e) {
+      debugPrint('DNS信息失败');
+      debugPrint('获取信息失败：${e.toString()}');
+      setState(() {
+        loading = false;
+      });
+    }
   }
 
 // 设置 云端
@@ -189,14 +197,56 @@ class _DnsSettingsState extends State<DnsSettings> {
     //     type
     //   ],
     // ];
+    var dns1 = "";
+    var dns2 = "";
+    if (dsnMain.text.isEmpty &&
+        dsnMain1.text.isEmpty &&
+        dsnMain2.text.isEmpty &&
+        dsnMain3.text.isEmpty) {
+      dns1 = "";
+    } else {
+      if (dsnMain.text.isEmpty ||
+          dsnMain1.text.isEmpty ||
+          dsnMain2.text.isEmpty ||
+          dsnMain3.text.isEmpty) {
+        dns1 = "";
+        ToastUtils.toast("DNS cannot be empty");
+      } else {
+        dns1 =
+            '${dsnMain.text}.${dsnMain1.text}.${dsnMain2.text}.${dsnMain3.text}';
+      }
+    }
+
+    if (dsnAssist.text.isEmpty &&
+        dsnAssist1.text.isEmpty &&
+        dsnAssist2.text.isEmpty &&
+        dsnAssist3.text.isEmpty) {
+      dns2 = "";
+    } else {
+      if (dsnAssist.text.isEmpty ||
+          dsnAssist1.text.isEmpty ||
+          dsnAssist2.text.isEmpty ||
+          dsnAssist3.text.isEmpty) {
+        dns2 = "";
+        ToastUtils.toast("DNS cannot be empty");
+      } else {
+        dns2 =
+            '${dsnAssist.text}.${dsnAssist1.text}.${dsnAssist2.text}.${dsnAssist3.text}';
+      }
+    }
+
+    bool ipflag = StringUtil.isIp(dns1);
+    bool ipassist = StringUtil.isIp(dns2);
+    if (dns1.isNotEmpty && dns2.isNotEmpty) {
+      if (ipflag == false || ipassist == false) {
+        ToastUtils.toast("IP is illegal");
+        return;
+      }
+    }
+
     var parameterNames = {
       "method": "set",
-      "nodes": {
-        "lteManualDns1":
-            '${dsnMain.text}.${dsnMain1.text}.${dsnMain2.text}.${dsnMain3.text}',
-        "lteManualDns2":
-            '${dsnAssist.text}.${dsnAssist1.text}.${dsnAssist2.text}.${dsnAssist3.text}'
-      }
+      "nodes": {"lteManualDns1": dns1, "lteManualDns2": dns2}
     };
     try {
       var res = await Request().setACSNode(parameterNames, sn);

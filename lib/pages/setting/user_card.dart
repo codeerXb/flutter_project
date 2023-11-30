@@ -3,14 +3,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
-import 'package:flutter_template/pages/setting/user_personal_information.dart';
+import 'package:flutter_template/pages/parent_control/index.dart';
+
 import 'package:get/get.dart';
 
 import '../../generated/l10n.dart';
 
 class UserCard extends StatefulWidget {
-  final name;
-  const UserCard({super.key, this.name});
+  final String name;
+  const UserCard({super.key, required this.name});
 
   @override
   State<UserCard> createState() => _UserCardState();
@@ -25,7 +26,6 @@ class _UserCardState extends State<UserCard> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     sharedGetData('user_phone', String).then(((res) {
       printInfo(info: '用户手机号：$res');
@@ -34,7 +34,7 @@ class _UserCardState extends State<UserCard> {
       });
     }));
     sharedGetData('deviceSn', String).then(((res) {
-      printInfo(info: 'deviceSn$res');
+      // printInfo(info: 'deviceSn$res');
       setState(() {
         sn = res.toString();
       });
@@ -45,11 +45,13 @@ class _UserCardState extends State<UserCard> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => const UserPersonalInformation()),
-        );
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //       builder: (context) => const UserPersonalInformation()),
+        // );
+        debugPrint("----- name is : ${widget.name}}");
+        Get.toNamed("/Personal_Center", arguments: {"name": widget.name});
       },
       child: Card(
         elevation: 5, //设置卡片阴影的深度

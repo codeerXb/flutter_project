@@ -1,17 +1,19 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_template/core/request/request.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
 import '../../core/http/http.dart';
+import 'package:flutter_template/core/http/http_app.dart';
 import '../../core/utils/shared_preferences_util.dart';
 import '../../core/widget/common_box.dart';
 import '../../core/widget/custom_app_bar.dart';
 import '../../generated/l10n.dart';
 import 'model/account_data.dart';
+import '../../core/utils/Aes.dart';
+import '../../core/utils/string_util.dart';
 
 /// 修改密码修改密码
 class AccountSecurity extends StatefulWidget {
@@ -23,7 +25,6 @@ class AccountSecurity extends StatefulWidget {
 
 class _AccountSecurityState extends State<AccountSecurity> {
   final GlobalKey _formKey = GlobalKey<FormState>();
-
   final TextEditingController oldPasswordController = TextEditingController();
   bool oldPasswordObscure = true;
   String oldPassword = '';
@@ -57,7 +58,7 @@ class _AccountSecurityState extends State<AccountSecurity> {
   // 确认密码
   bool againPasswordShow = true;
 
-  String sn = '';
+  String phone = '';
   // String typeName = '';
   // String typePas = '';
 
@@ -67,12 +68,13 @@ class _AccountSecurityState extends State<AccountSecurity> {
   void initState() {
     super.initState();
 
-    sharedGetData('deviceSn', String).then(((res) {
-      printInfo(info: 'deviceSn$res');
-      setState(() {
-        sn = res.toString();
-      });
-    }));
+    sharedGetData("user_phone", String).then((data) {
+      debugPrint("当前获取的用户信息:${data.toString()}");
+      if (StringUtil.isNotEmpty(data)) {
+        String loginInfo = data as String;
+        phone = loginInfo;
+      }
+    });
 
     oldPasswordController.addListener(() {
       debugPrint('监听旧密码：${oldPasswordController.text}');
@@ -95,38 +97,45 @@ class _AccountSecurityState extends State<AccountSecurity> {
     super.dispose();
   }
 
-// 设置 云端
-  setTRWanData() async {
-    // var parameterNames = [
-    //   [
-    //     "InternetGatewayDevice.WEB_GUI.System.Account.ChangePassword.Admin",
-    //     renewPasswordController.text,
-    //     'xsd:string'
-    //   ],
-    // ];
-
-    var parameterNames = {
-      "method": "set",
-      "nodes": {
-        "webAdminPasswordChange": renewPasswordController.text,
-      }
+  /// 更改用户密码请求 云端
+  void setTRWanData() {
+    var newpassword = AESUtil.generateAES(newPasswordController.text);
+    var oldpassowld = AESUtil.generateAES(oldPasswordController.text);
+    debugPrint("手机号或邮箱:$phone");
+    debugPrint(
+        "新密码是:${renewPasswordController.text}---旧密码是:${oldPasswordController.text}");
+    debugPrint("新更改的密码是:$newpassword --- $oldpassowld");
+    Map<String, dynamic> data = {
+      "account": phone,
+      "newPassword": newpassword,
+      "oldPassword": oldpassowld
     };
-
-    var res = await Request().setACSNode(parameterNames, sn);
-    try {
-      var jsonObj = jsonDecode(res);
-      printInfo(info: '````$jsonObj');
-      setState(() {
-        if (jsonObj["code"] == 200) {
-          ToastUtils.toast(S.current.success);
-          Get.back();
-        } else {
-          ToastUtils.toast(S.current.error);
-        }
-      });
-    } catch (e) {
-      debugPrint('获取信息失败：${e.toString()}');
+    if ((newPasswordController.text.isEmpty ||
+            newPasswordController.text.length < 6) ||
+        (oldPasswordController.text.isEmpty ||
+            oldPasswordController.text.length < 6) ||
+        (renewPasswordController.text.isEmpty ||
+            renewPasswordController.text.length < 6)) {
+      ToastUtils.toast(
+          "Password cannot be empty and cannot be less than six characters");
+      return;
     }
+
+    App.post('/platform/appCustomer/updatePwd', data: data).then((res) {
+      var d = json.decode(res.toString());
+      debugPrint('---结果:$d------');
+      var prettyJsonString = const JsonEncoder.withIndent('  ').convert(d);
+      printInfo(info: '````$prettyJsonString');
+      if (d["code"] == 200) {
+        ToastUtils.toast(S.current.success);
+        Get.back();
+      } else {
+        debugPrint('执行到失败');
+        ToastUtils.toast(S.current.error);
+      }
+    }).catchError((error) {
+      ToastUtils.toast(error.toString());
+    });
   }
 
   //验证旧密码
@@ -187,13 +196,14 @@ class _AccountSecurityState extends State<AccountSecurity> {
       _isLoading = true;
     });
     closeKeyboard(context);
-    if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
+    if (loginController.login.state == 'cloud') {
       // 云端请求赋值
-      try {
-        await setTRWanData();
-      } catch (e) {
-        debugPrint('云端请求出错：${e.toString()}');
-      }
+      setTRWanData();
+      // try {
+      //   await
+      // } catch (e) {
+      //   debugPrint('云端请求出错：${e.toString()}');
+      // }
     }
     if (loginController.login.state == 'local') {
       // 本地请求赋值
@@ -359,7 +369,7 @@ class _AccountSecurityState extends State<AccountSecurity> {
                 border: InputBorder.none,
               ),
               validator: (value) {
-                if (value!.isEmpty) {
+                if (value!.isEmpty && value.length > 5) {
                   return S.of(context).passwordLabel;
                 }
                 return null;
@@ -404,7 +414,7 @@ class _AccountSecurityState extends State<AccountSecurity> {
                 border: InputBorder.none,
               ),
               validator: (value) {
-                if (value!.isEmpty) {
+                if (value!.isEmpty && value.length > 5) {
                   return S.of(context).passwordLabel;
                 }
                 return null;
@@ -449,9 +459,11 @@ class _AccountSecurityState extends State<AccountSecurity> {
                 border: InputBorder.none,
               ),
               validator: (value) {
-                if (newPasswordController.text !=
-                    renewPasswordController.text) {
-                  return S.of(context).passwordAgainError;
+                if (value!.isNotEmpty && value.length > 5) {
+                  if (newPasswordController.text !=
+                      renewPasswordController.text) {
+                    return S.of(context).passwordAgainError;
+                  }
                 }
                 return null;
               },
@@ -482,7 +494,7 @@ class _AccountSecurityState extends State<AccountSecurity> {
 //状态为local 请求本地  状态为cloud  请求云端
     printInfo(info: 'state--${loginController.login.state}');
     if (mounted) {
-      if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
+      if (loginController.login.state == 'cloud') {
         setTRWanData();
       }
       if (loginController.login.state == 'local') {

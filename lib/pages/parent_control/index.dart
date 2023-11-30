@@ -491,16 +491,24 @@ class SwiperCard extends StatefulWidget {
 class _SwiperCardState extends State<SwiperCard> {
   //云端
   getACSNodeFn(index) async {
+    var parameterNames = {
+      "method": "get",
+      "nodes": [
+      "FwParentControlTable",
+      ]
+    }; 
     try {
-      var parameterNames = [
-        "InternetGatewayDevice.WEB_GUI.ParentalControls",
-      ];
+      // var parameterNames = [
+      //   "InternetGatewayDevice.WEB_GUI.ParentalControls",
+      // ];
       //获取云端数据
       var res = await Request().getACSNode(parameterNames, sn);
       Map<String, dynamic> d = jsonDecode(res);
 
-      var resList = d['data']['InternetGatewayDevice']['WEB_GUI']
-          ['ParentalControls']['List'];
+      // var resList = d['data']['InternetGatewayDevice']['WEB_GUI']
+      //     ['ParentalControls']['List'];
+
+      var resList = d['data'];
 
       debugPrint("获取的顶部轮播数据:$resList");
 
@@ -788,16 +796,24 @@ class SixBoxsState extends State<SixBoxs> {
       loading = true;
       sn = sn.toString();
     });
-    var parameterNames = [
-      "InternetGatewayDevice.WEB_GUI.Security.URLFilter",
-    ];
+ 
+    var parameterNames = {
+      "method": "get",
+      "nodes": [
+      "FwParentControlTable",
+      ]
+    }; 
+    // var parameterNames = [
+    //   "InternetGatewayDevice.WEB_GUI.Security.URLFilter",
+    // ];
     var response = await Request().getACSNode(parameterNames, sn);
     try {
       Map<String, dynamic> d = jsonDecode(response);
       setState(() {
         loading = false;
-        Map<String, dynamic> flowTableName = d['data']['InternetGatewayDevice']
-            ['WEB_GUI']['Security']['URLFilter']['List'];
+        // Map<String, dynamic> flowTableName = d['data']['InternetGatewayDevice']
+        //     ['WEB_GUI']['Security']['URLFilter']['List'];
+        Map<String, dynamic> flowTableName = d['data'];
         urlListAmount = flowTableName.keys
             .toList()
             .where((element) {
@@ -1126,16 +1142,22 @@ class _SchedulingState extends State<Scheduling> {
     setState(() {
       loading = true;
     });
-
+    var parameterNames = {
+      "method": "get",
+      "nodes": [
+      "FwParentControlTable",
+      ]
+    }; 
     try {
-      var parameterNames = [
-        "InternetGatewayDevice.WEB_GUI.ParentalControls",
-      ];
+      // var parameterNames = [
+      //   "InternetGatewayDevice.WEB_GUI.ParentalControls",
+      // ];
       //获取云端数据
       var res = await Request().getACSNode(parameterNames, sn);
       Map<String, dynamic> d = jsonDecode(res);
-      var resList = d['data']['InternetGatewayDevice']['WEB_GUI']
-          ['ParentalControls']['List'];
+      // var resList = d['data']['InternetGatewayDevice']['WEB_GUI']
+      //     ['ParentalControls']['List'];
+      var resList = d['data'];
       setState(() {
         resList.remove('_object');
         resList.remove('_timestamp');

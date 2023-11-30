@@ -1070,6 +1070,15 @@ class S {
     );
   }
 
+  String get Enabled {
+    return Intl.message(
+      'Enabled',
+      name: 'Enabled',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `IP Address`
   String get IPAddress {
     return Intl.message(
@@ -1085,6 +1094,24 @@ class S {
     return Intl.message(
       'Subnet Mask',
       name: 'SubnetMask',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get UpStream {
+    return Intl.message(
+      'UpStream',
+      name: 'UpStream',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get DownStream {
+    return Intl.message(
+      'DownStream',
+      name: 'DownStream',
       desc: '',
       args: [],
     );
@@ -1270,6 +1297,15 @@ class S {
     );
   }
 
+  String get UpTime {
+    return Intl.message(
+      'UpTime',
+      name: 'UpTime',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Connect Status`
   String get connectStatus {
     return Intl.message(
@@ -1295,6 +1331,42 @@ class S {
     return Intl.message(
       'Default Gateway',
       name: 'DefaultGateway',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get ByteReceive {
+    return Intl.message(
+      'Bytes Receive',
+      name: 'BytesReceive',
+      desc: '',
+      args: [],
+    );
+  }
+
+   String get ByteSent {
+    return Intl.message(
+      'Bytes Sent',
+      name: 'BytesSent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get  PacketReceive {
+    return Intl.message(
+      'Packets Receive',
+      name: 'PacketsReceive',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get PacketSent {
+    return Intl.message(
+      'Packets Sent',
+      name: 'PacketsSent',
       desc: '',
       args: [],
     );
@@ -2031,10 +2103,19 @@ class S {
   }
 
   /// `The device will restart after submission. Do you want to continue?`
-  String get isGoOn {
+  String get isRestart {
     return Intl.message(
       'The device will restart after submission. Do you want to continue?',
-      name: 'isGoOn',
+      name: 'isRestart',
+      desc: '',
+      args: [],
+    );
+  }
+
+   String get isReset {
+    return Intl.message(
+      'The device will reset after submission. Do you want to continue?',
+      name: 'isReset',
       desc: '',
       args: [],
     );
@@ -3085,6 +3166,16 @@ class S {
     return Intl.message(
       "Device not registered, please contact operator",
       name: 'deviceUnprovide',
+      desc: '',
+      args: [],
+    );
+  }
+
+  // No data has been obtained yet
+  String get noDataTips {
+    return Intl.message(
+      "No data has been obtained yet",
+      name: 'noDataTips',
       desc: '',
       args: [],
     );

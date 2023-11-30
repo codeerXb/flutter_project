@@ -6,14 +6,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
-import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:flutter_template/core/widget/water_loading.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:flutter_template/pages/login/model/exception_login.dart';
 import 'package:get/get.dart';
 import '../../generated/l10n.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter_template/config/base_config.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/http/http_app.dart';
 import 'package:flutter_template/pages/login/model/equipment_data.dart';
@@ -61,6 +59,8 @@ class _NetModeState extends State<NetMode> {
   String _password = 'admin';
   dynamic sn = Get.arguments['sn'];
   dynamic vn = Get.arguments['vn'];
+  String routeFlag = Get.arguments["rou"];
+
   final bool _isObscure = true;
   final Color _eyeColor = Colors.grey;
   Color _accountBorderColor = Colors.white;
@@ -403,7 +403,8 @@ class _NetModeState extends State<NetMode> {
   }
 
   //以太网状态1连接
-  String linkStatus = '1';
+  String linkStatus = '';
+
   bool loading = false;
 
   //读取以太网状态
@@ -416,13 +417,14 @@ class _NetModeState extends State<NetMode> {
       'param': '["ethernetLinkStatus"]',
     };
     try {
-      var response = await XHttp.get('/data.html', data);
+      var response = await XHttp.get('/pub/pub_data.html', data);
       var d = json.decode(response.toString());
       setState(() {
         linkStatus = d['ethernetLinkStatus'];
+        debugPrint("当前返回的状态是$linkStatus");
       });
     } catch (e) {
-      debugPrint('获取以太网状态失败：$e.toString()');
+      debugPrint('获取以太网状态失败：${e.toString()}');
     }
     setState(() {
       loading = false;
@@ -435,11 +437,11 @@ class _NetModeState extends State<NetMode> {
       'method': 'obj_set',
       'param': params,
     };
-    XHttp.get('/data.html', data).then((res) {
+    XHttp.get('/pub/pub_data.html', data).then((res) {
       try {
         ToastUtils.toast(S.current.success);
       } on FormatException catch (e) {
-        print(e);
+        debugPrint(e.toString());
       }
     }).catchError((onError) {
       debugPrint('失败：${onError.toString()}');
@@ -450,6 +452,7 @@ class _NetModeState extends State<NetMode> {
   @override
   void initState() {
     getNetType();
+    getLocationInformation();
     ipValue.text = '172.16.11.207';
     sMValue.text = '255.255.255.0';
     gatewayValue.text = '172.16.11.253';
@@ -458,10 +461,29 @@ class _NetModeState extends State<NetMode> {
     super.initState();
   }
 
+  void getLocationInformation() {
+    // 获取设备位置信息(经纬度)
+    _getLocation().then((value) {
+      LocationData? location = value;
+      _getAddress(location?.latitude, location?.longitude).then((value) {
+        setState(() {
+          currentLocation = location;
+          latitudeString = currentLocation?.latitude.toString();
+          longitudeString = currentLocation?.longitude.toString();
+          debugPrint("当前的经纬度是$latitudeString $longitudeString");
+        });
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text(
+          S.of(context).band,
+          style: const TextStyle(fontSize: 20, color: Colors.black),
+        ),
         backgroundColor: Colors.white,
         centerTitle: true,
         systemOverlayStyle: const SystemUiOverlayStyle(
@@ -505,14 +527,23 @@ class _NetModeState extends State<NetMode> {
                         // type: StepperType.horizontal, //横向
                         currentStep: currentStep, //当前步骤的索引
                         //当用户点击步骤时调用的回调函数
-                        onStepTapped: (value) {},
+                        onStepTapped: (value) {
+                          setState(() {
+                            currentStep = value;
+                          });
+                          debugPrint("绑定代码执行到这里了");
+                        },
                         //下一步 回调
                         onStepContinue: () {
+                          debugPrint("绑定代码执行到这里了");
                           setState(() {
+                            debugPrint("绑定代码执行到这里了1");
                             if (currentStep < 2) {
+                              debugPrint("绑定代码执行到这里了2");
                               // 如果第一步选择的自动获取
                               if (_selectedIndex == 0) {
                                 //第1步选择自动获取时的下一步
+                                debugPrint("绑定执行到这一步了");
                                 handleSave(
                                     ' {"ethernetConnectMode":"dhcp","ethernetMtu":"1500","ethernetConnectOnly":"1","ethernetDetectServer":"0"}');
                                 currentStep += 2;
@@ -560,28 +591,7 @@ class _NetModeState extends State<NetMode> {
                                       fixedSize: const Size(200, 30),
                                       backgroundColor: const Color.fromARGB(
                                           255, 30, 104, 233)),
-                                  onPressed: () {
-                                    controlsDetails.onStepContinue;
-                                    // 获取设备位置信息(经纬度)
-                                    _getLocation().then((value) {
-                                      LocationData? location = value;
-                                      _getAddress(location?.latitude,
-                                              location?.longitude)
-                                          .then((value) {
-                                        setState(() {
-                                          currentLocation = location;
-                                          latitudeString = currentLocation
-                                              ?.latitude
-                                              .toString();
-                                          longitudeString = currentLocation
-                                              ?.longitude
-                                              .toString();
-                                          debugPrint(
-                                              "当前的经纬度是$latitudeString $longitudeString");
-                                        });
-                                      });
-                                    });
-                                  },
+                                  onPressed: controlsDetails.onStepContinue,
                                   child: Text(S.of(context).Next),
                                 ),
                             ],
@@ -908,12 +918,12 @@ class _NetModeState extends State<NetMode> {
                           ),
                         ],
                       ),
-                    if (linkStatus == '2')
+                    if (linkStatus != '1')
                       SizedBox(
                         width: double.infinity,
                         child: Column(
                           children: [
-                            const Text('确保路由器连接电源并于WAN口插入网线'),
+                            const Text('Make sure the router is connected to power and plug in a network cable to the WAN port'),
                             Image.asset("assets/images/sureWan.png",
                                 fit: BoxFit.fitWidth,
                                 height: 600.w,

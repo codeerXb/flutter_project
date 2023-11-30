@@ -65,16 +65,31 @@ class StringUtil {
   static String reverse(String s) {
     return String.fromCharCodes(s.runes.toList().reversed);
   }
+  /// 检查字符串是否为电话号码
+  static bool isPhoneNumber(String s) {
+    if (s.length > 16 || s.length < 9) return false;
+    return hasMatch(s, r'^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s./0-9]*$');
+  }
 
-  /// 检查给定的字符串是否是电子邮件地址
-  static bool isEmail(String s) {
-    var regExp = RegExp(emailRegex);
-    return regExp.hasMatch(s);
+  /// 检查给定的字符串是否是电子邮件地址   
+  static bool isEmail(String s) => hasMatch(s,
+      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
+  // static bool isEmail(String s) {
+  //   var regExp = RegExp(emailRegex);
+  //   return regExp.hasMatch(s);
+  // }
+
+  static bool isIp(String s) {
+    return hasMatch(s, r"^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$");
   }
 
   /// 判断是否网络
   static bool isNetWorkImg(String img) {
     return img.startsWith('http') || img.startsWith('https');
+  }
+
+    static bool hasMatch(String? value, String pattern) {
+    return (value == null) ? false : RegExp(pattern).hasMatch(value);
   }
 
 }

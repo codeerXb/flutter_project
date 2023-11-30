@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
@@ -140,7 +139,7 @@ class _NetStatusState extends State<NetStatus> {
           printInfo(info: 'state--${loginController.login.state}');
           if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
             getBasicInfo();
-            // getTROnlineCount(sn);
+            getTROnlineCount(sn);
           }
           // if (loginController.login.state == 'local') {
           //   // 获取流量
@@ -244,21 +243,28 @@ class _NetStatusState extends State<NetStatus> {
   Future<void> getBasicInfo() async {
     // Navigator.push(context, DialogRouter(LoadingDialog()));
     printInfo(info: 'sn在这里有值吗-------$sn');
-    var parameterNames = [
-      "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.ProductModel",
-      "InternetGatewayDevice.WEB_GUI.Ethernet.Status.ConnectStatus",
-    ];
+    // var parameterNames = [
+    //   "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.ProductModel",
+    //   "InternetGatewayDevice.WEB_GUI.Ethernet.Status.ConnectStatus",
+    // ];
+
+    var parameterNames = {
+      "method": "get",
+      "nodes": ["systemProductModel", "lteMainStatusGet"]
+    };
     try {
       var res = await Request().getACSNode(parameterNames, sn);
       var jsonObj = jsonDecode(res);
       if (mounted && jsonObj['data'] != null) {
         setState(() {
-          connectStatus = jsonObj['data']['InternetGatewayDevice']['WEB_GUI']
-              ['Ethernet']['Status']['ConnectStatus']['_value'];
+          // connectStatus = jsonObj['data']['InternetGatewayDevice']['WEB_GUI']
+          //     ['Ethernet']['Status']['ConnectStatus']['_value'];
+          connectStatus = jsonObj['data']['lteMainStatusGet'];
 
           // 设定名字为产品类型
-          name = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Overview"]
-              ['VersionInfo']['ProductModel']['_value'];
+          // name = jsonObj["data"]["InternetGatewayDevice"]["WEB_GUI"]["Overview"]
+          //     ['VersionInfo']['ProductModel']['_value'];
+          name = jsonObj["data"]["systemProductModel"];
         });
       }
     } catch (e) {
@@ -587,19 +593,37 @@ class _NetStatusState extends State<NetStatus> {
   }
 
   // 重启 云端
-  void getReBootData() {
-    App.post('/platform/tr069/rebootDevice?deviceId=$sn').then((res) {
-      var d = json.decode(res.toString());
-      debugPrint('响应------>$d');
-      if (d['code'] == 200) {
+  Future getReBootData() async {
+    var parameterNames = {
+      "method": "set",
+      "nodes": {"systemReboot": "1"}
+    };
+    var res = await Request().setACSNode(parameterNames, sn);
+     try {
+      var jsonObj = jsonDecode(res);
+      debugPrint('响应------>$jsonObj');
+      if (jsonObj['code'] == 200) {
         ToastUtils.toast(S.current.success);
         loginout();
       } else {
         ToastUtils.toast(S.current.error);
       }
-    }).catchError((err) {
+    } catch (e) {
       ToastUtils.error(S.current.contimeout);
-    });
+    }
+
+    // App.post('/platform/tr069/rebootDevice?deviceId=$sn').then((res) {
+    //   var d = json.decode(res.toString());
+    //   debugPrint('响应------>$d');
+    //   if (d['code'] == 200) {
+    //     ToastUtils.toast(S.current.success);
+    //     loginout();
+    //   } else {
+    //     ToastUtils.toast(S.current.error);
+    //   }
+    // }).catchError((err) {
+    //   ToastUtils.error(S.current.contimeout);
+    // });
   }
 
   // 重启
@@ -630,19 +654,37 @@ class _NetStatusState extends State<NetStatus> {
   }
 
   // 恢复出厂 云端
-  void getFactoryResetData() {
-    App.post('/platform/tr069/factoryReset?deviceId=$sn').then((res) {
-      var d = json.decode(res.toString());
-      debugPrint('响应------>$d');
-      if (d['code'] == 200) {
+  Future getFactoryResetData() async {
+    var parameterNames = {
+      "method": "set",
+      "nodes": {"systemFactoryReset": "1","systemReboot": "1"}
+    };
+    var res = await Request().setACSNode(parameterNames, sn);
+     try {
+      var jsonObj = jsonDecode(res);
+      debugPrint('响应------>$jsonObj');
+      if (jsonObj['code'] == 200) {
         ToastUtils.toast(S.current.success);
         loginout();
       } else {
         ToastUtils.toast(S.current.error);
       }
-    }).catchError((err) {
+    } catch (e) {
       ToastUtils.error(S.current.contimeout);
-    });
+    }
+
+    // App.post('/platform/tr069/factoryReset?deviceId=$sn').then((res) {
+    //   var d = json.decode(res.toString());
+    //   debugPrint('响应------>$d');
+    //   if (d['code'] == 200) {
+    //     ToastUtils.toast(S.current.success);
+    //     loginout();
+    //   } else {
+    //     ToastUtils.toast(S.current.error);
+    //   }
+    // }).catchError((err) {
+    //   ToastUtils.error(S.current.contimeout);
+    // });
   }
 
   // 恢复出厂
@@ -854,7 +896,7 @@ class _NetStatusState extends State<NetStatus> {
                               children: [
                                 Expanded(
                                   child: Text(
-                                    connectStatus == '1'
+                                    connectStatus == 'connected'
                                         ? S.current.Connected
                                         : S.current.ununited,
                                     style: TextStyle(
@@ -1201,14 +1243,17 @@ class _NetStatusState extends State<NetStatus> {
                               //儿童上网
                               GestureDetector(
                                 onTap: () {
-                                  Get.toNamed('/parent');
+                                  // Get.toNamed('/parent');
+                                  Get.toNamed(
+                                      "/maintain_settings"); // 暂时改为管理设置,家长控制开完,再改回来.
                                 },
                                 child: GardCard(
                                     boxCotainer: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Icon(Icons.child_care,
+                                    // Icons.child_care
+                                    Icon(Icons.settings_overscan,
                                         color: const Color.fromRGBO(
                                             95, 141, 255, 1),
                                         size: 60.sp),
@@ -1218,7 +1263,8 @@ class _NetStatusState extends State<NetStatus> {
                                       ),
                                       child: FittedBox(
                                         child: Text(
-                                          S.current.parent,
+                                          S.of(context).maintainSettings,
+                                          // S.current.parent,
                                           textAlign: TextAlign.center,
                                           style: TextStyle(fontSize: 30.w),
                                         ),
@@ -1269,10 +1315,12 @@ class _NetStatusState extends State<NetStatus> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Image(
-                                        width: ScreenAdapter.width(80),
-                                        height: ScreenAdapter.height(80),
-                                        image: const AssetImage(
-                                            'assets/images/visitor_net.png')),
+                                      width: ScreenAdapter.width(80),
+                                      height: ScreenAdapter.height(80),
+                                      image: const AssetImage(
+                                          'assets/images/visitor_net.png'),
+                                      fit: BoxFit.cover,
+                                    ),
                                     ConstrainedBox(
                                       constraints: BoxConstraints(
                                         maxWidth: 180.w,
@@ -1327,10 +1375,11 @@ class _NetStatusState extends State<NetStatus> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Image(
-                                        width: 55.w,
-                                        height: 55.w,
+                                        width: 60.w,
+                                        height: 60.w,
                                         image: const AssetImage(
-                                            'assets/images/equ_info.png')),
+                                            'assets/images/equ_info.png'),
+                                        fit: BoxFit.cover),
                                     Expanded(
                                       child: Text(
                                         S.current.deviceInfo,
@@ -1353,10 +1402,11 @@ class _NetStatusState extends State<NetStatus> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Image(
-                                        width: 80.w,
-                                        height: 80.w,
+                                        width: 70.w,
+                                        height: 70.w,
                                         image: const AssetImage(
-                                            'assets/images/DNS.png')),
+                                            'assets/images/DNS.png'),
+                                        fit: BoxFit.cover),
                                     ConstrainedBox(
                                       constraints: BoxConstraints(
                                         maxWidth: 180.w,
@@ -1382,10 +1432,11 @@ class _NetStatusState extends State<NetStatus> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Image(
-                                        width: 80.w,
-                                        height: 80.w,
+                                        width: 70.w,
+                                        height: 70.w,
                                         image: const AssetImage(
-                                            'assets/images/lan.png')),
+                                            'assets/images/lan.png'),
+                                        fit: BoxFit.cover),
                                     ConstrainedBox(
                                       constraints: BoxConstraints(
                                         maxWidth: 180.w,
@@ -1505,7 +1556,7 @@ class _NetStatusState extends State<NetStatus> {
                                                               S.current.hint),
                                                           content: Text(S
                                                               .of(context)
-                                                              .isGoOn),
+                                                              .isRestart),
                                                           actions: <Widget>[
                                                             TextButton(
                                                               child: Text(S
@@ -1597,7 +1648,7 @@ class _NetStatusState extends State<NetStatus> {
                                                               S.current.hint),
                                                           content: Text(S
                                                               .of(context)
-                                                              .isGoOn),
+                                                              .isReset),
                                                           actions: <Widget>[
                                                             TextButton(
                                                               child: Text(S

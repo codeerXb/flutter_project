@@ -218,7 +218,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "hour": MessageLookupByLibrary.simpleMessage("时"),
         "improveSecurity": MessageLookupByLibrary.simpleMessage("定期更新密码提高安全性"),
         "interentMode": MessageLookupByLibrary.simpleMessage("选择上网方式"),
-        "isGoOn": MessageLookupByLibrary.simpleMessage("提交后设备将会重启，是否继续?"),
+        "isRestart": MessageLookupByLibrary.simpleMessage("提交后设备将会重启，是否继续?"),
+        "isReset" : MessageLookupByLibrary.simpleMessage(
+            "提交后设备将会恢复出厂设置,是否继续?"),
         "lanHostSettings": MessageLookupByLibrary.simpleMessage("LAN主机设置"),
         "lanSettings": MessageLookupByLibrary.simpleMessage("LAN设置"),
         "lanStatus": MessageLookupByLibrary.simpleMessage("LAN口状态"),

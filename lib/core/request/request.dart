@@ -63,13 +63,12 @@ class Request {
   }
 
   //添加或删除
-  Future addOrDeleteObject(objectName, sn, name) async {
+  Future addOrDeleteObject(objectName, sn) async {
     Map<String, dynamic> data = {
-      'deviceId': sn,
-      'name': name,
-      'objectName': objectName
+      'sn': sn,
+      'param': objectName
     };
-    return await App.post('/platform/tr069/addOrDeleteObject', data: data);
+    return await App.post('/cpeMqtt/getAndSetDeviceSODNodes', data: data);
   }
 
   //修改

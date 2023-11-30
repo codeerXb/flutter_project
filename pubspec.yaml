@@ -56,13 +56,12 @@ dependencies:
   # 文件选择器
   file_picker: ^5.0.0
   # # 视频流
-  # fijkplayer_skin: ^2.2.8
-  # # 视频解码器 软解码
   # fijkplayer: ^0.10.1
   # wakelock: ^0.6.2
   # css滤镜效果
   css_filter: ^1.0.2
-  flutter_swiper_null_safety: ^1.0.2 # 轮播图空异常版
+  # 轮播图空异常版
+  flutter_swiper_null_safety: ^1.0.2
   # 国际化
   flutter_localization: ^0.1.13
   intl: ^0.18.0

@@ -79,7 +79,7 @@ class _MyAppState extends State<TestSignal> {
       body: Padding(
         padding: const EdgeInsets.all(18.0),
         child:
-        Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
           Text('Current detection floor:${roomInfo[0]['floorId']}F'),
           Row(
             children: [
@@ -436,36 +436,44 @@ class _ProcessButtonState extends State<ProcessButton> {
 
         // 判断是2.4G还是5G
         if (connection == '2.4GHz') {
-          var parameterNames1 = [
-            "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.1.NoiseLevel",
-            "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.1.TxPower"
-          ];
+          // var parameterNames1 = [
+          //   "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.1.NoiseLevel",//wifiNoiseLevel
+          //   "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.1.TxPower"//wifiTxpower
+          // ];
+          var parameterNames1 = {
+            "method": "get",
+            "nodes": ["wifiNoiseLevel", "wifiTxpower"]
+          };
           var res = await Request().getACSNode(parameterNames1, sn);
           Map<String, dynamic> d = jsonDecode(res);
-          acsNode = d['data']['InternetGatewayDevice']['WEB_GUI']['WiFi']
-              ['WLANSettings']['1'];
+          acsNode = d['data'];
         } else {
-          var parameterNames2 = [
-            "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.2.NoiseLevel",
-            "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.2.TxPower"
-          ];
+          // var parameterNames2 = [
+          //   "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.2.NoiseLevel", // wifi5gNoiseLevel
+          //   "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.2.TxPower" //  wifi5gTxpower
+          // ];
+          var parameterNames2 = {
+            "method": "get",
+            "nodes": ["wifi5gNoiseLevel", "wifi5gTxpower"]
+          };
           // acsNode = await Request().getACSNode(parameterNames2, sn);
           var res = await Request().getACSNode(parameterNames2, sn);
           Map<String, dynamic> d = jsonDecode(res);
-          acsNode = d['data']['InternetGatewayDevice']['WEB_GUI']['WiFi']
-              ['WLANSettings']['2'];
+          acsNode = d['data'];
         }
         //存到该房间对象
         if (currentIndex + 1 <= roomInfo.length) {
           roomInfo[currentIndex]['snr'] = snr;
           roomInfo[currentIndex]['routerX'] = routerPos.dx;
           roomInfo[currentIndex]['routerY'] = routerPos.dy;
-          roomInfo[currentIndex]['txPower'] = acsNode['TxPower']['_value'];
-          roomInfo[currentIndex]['NoiseLevel'] =
-              acsNode['NoiseLevel']['_value'].split(' ')[0];
-          var val = int.parse(
-                  acsNode['NoiseLevel']['_value'].split('d')[0].toString()) +
-              int.parse(snr);
+          roomInfo[currentIndex]['txPower'] = connection == '2.4GHz' ? acsNode['wifiTxpower'] : acsNode['wifi5gTxpower'];
+          roomInfo[currentIndex]['NoiseLevel'] = connection == '2.4GHz' ?
+              acsNode['wifiNoiseLevel'].split(' ')[0] : acsNode['wifi5gNoiseLevel'].split(' ')[0];
+          var val = connection == '2.4GHz' ? (int.parse(
+                  acsNode['wifiNoiseLevel'].split('d')[0].toString()) +
+              int.parse(snr)) : (int.parse(
+                  acsNode['wifi5gNoiseLevel'].split('d')[0].toString()) +
+              int.parse(snr));
           widget.toolbarController.setCurrentNoiselevel(val);
         }
         nextFn();

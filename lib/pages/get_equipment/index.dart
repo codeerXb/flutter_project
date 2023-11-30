@@ -13,7 +13,9 @@ import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:flutter_template/pages/login/model/equipment_data.dart';
 import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
 import 'package:get/get.dart';
-
+import 'package:location/location.dart';
+import 'package:geocode/geocode.dart';
+import 'package:dio/dio.dart';
 class Equipment extends StatefulWidget {
   const Equipment({super.key});
 
@@ -28,9 +30,15 @@ class _MyWidgetState extends State<Equipment> {
   List appList = [];
   EquipmentData equipmentData = EquipmentData();
   Timer? timer;
+  String configStatus = " ";
+  // 位置信息
+  LocationData? currentLocation;
+  String? longitudeString;
+  String? latitudeString;
   @override
   void initState() {
     super.initState();
+    getLocationInformation();
     Future.delayed(const Duration(milliseconds: 2000), () {
       if (mounted) {
         getqueryingBoundDevices();
@@ -78,7 +86,7 @@ class _MyWidgetState extends State<Equipment> {
     Map<String, dynamic> data = {
       'method': 'obj_get',
       'param':
-          '["systemProductModel","systemVersionHw","systemVersionRunning","systemVersionUboot","systemVersionSn","networkLanSettingsMac","networkLanSettingIp","networkLanSettingMask","systemRunningTime"]'
+          '["systemProductModel","systemVersionHw","systemVersionRunning","systemVersionUboot","systemVersionSn","networkLanSettingsMac","networkLanSettingIp","networkLanSettingMask","systemRunningTime","systemRouterOnly","lteMainStatusGet","ethernetLinkStatus"]'
     };
 
     XHttp.get('/pub/pub_data.html', data).then((res) {
@@ -87,9 +95,11 @@ class _MyWidgetState extends State<Equipment> {
         // if (equipmentData.systemVersionSn == null ||
         //     equipmentData.systemVersionSn !=
         //         EquipmentData.fromJson(d).systemVersionSn) {
-        setState(() {
-          equipmentData = EquipmentData.fromJson(d);
-        });
+        // setState(() {
+
+        // });
+        equipmentData = EquipmentData.fromJson(d);
+        sharedAddAndUpdate("systemRouterOnly", String, equipmentData.systemRouterOnly!);
         if (list.isNotEmpty) {
           for (var app in list) {
             String deviceSnKey = 'deviceSn';
@@ -111,24 +121,119 @@ class _MyWidgetState extends State<Equipment> {
         }
         // }
       } on FormatException catch (e) {
-        setState(() {
-          equipmentData = EquipmentData(
-              systemProductModel: null,
-              systemVersionRunning: '',
-              systemVersionSn: '');
-        });
+        // setState(() {
+        //   equipmentData = EquipmentData(
+        //       systemProductModel: null,
+        //       systemVersionRunning: '',
+        //       systemVersionSn: '');
+        // });
         debugPrint(e.toString());
       }
     }).catchError((onError) {
-      if (mounted) {
-        setState(() {
-          equipmentData = EquipmentData(
-              systemProductModel: null,
-              systemVersionRunning: '',
-              systemVersionSn: '');
-        });
-      }
+      // if (mounted) {
+      //   setState(() {
+      //     equipmentData = EquipmentData(
+      //         systemProductModel: null,
+      //         systemVersionRunning: '',
+      //         systemVersionSn: '');
+      //   });
+      // }
       debugPrint(onError.toString());
+    });
+  }
+
+  Future<LocationData?> _getLocation() async {
+    Location location = Location();
+    LocationData _locationData;
+
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return null;
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return null;
+      }
+    }
+
+    _locationData = await location.getLocation();
+
+    return _locationData;
+  }
+
+  Future<String> _getAddress(double? lat, double? lang) async {
+    if (lat == null || lang == null) return "ssss";
+    GeoCode geoCode = GeoCode();
+    Address address =
+        await geoCode.reverseGeocoding(latitude: lat, longitude: lang);
+    return "${address.streetAddress}, ${address.city}, ${address.countryName}, ${address.postal}";
+  }
+
+  void getLocationInformation() {
+    // 获取设备位置信息(经纬度)
+    _getLocation().then((value) {
+      LocationData? location = value;
+      _getAddress(location?.latitude, location?.longitude).then((value) {
+        setState(() {
+          currentLocation = location;
+          latitudeString = currentLocation?.latitude.toString();
+          longitudeString = currentLocation?.longitude.toString();
+          debugPrint("当前的经纬度是$latitudeString $longitudeString");
+        });
+      });
+    });
+  }
+
+  void bundDevice(String sn, String vn) {
+    Map<String, dynamic> bindParma = {
+      "deviceSn": sn,
+      "lon": longitudeString,
+      "lat": latitudeString
+    };
+    debugPrint("用户绑定设备的信息----${bindParma.toString()}");
+    App.post('/platform/appCustomer/bindingCpe', data: bindParma).then((res) {
+      var bindDevRes = json.decode(res.toString());
+
+      debugPrint('云平台绑定响应------>$bindDevRes');
+      if (bindDevRes['code'] != 200) {
+        // 绑定失败提示
+        if (bindDevRes['code'] == 9983) {
+          ToastUtils.error(S.current.deviceBinded);
+        } else if (bindDevRes['code'] == 9984) {
+          ToastUtils.error(S.current.deviceUnprovide);
+        } else {
+          ToastUtils.error(S.current.unkownFail);
+        }
+        return;
+      } else {
+        ToastUtils.toast(bindDevRes['message']);
+        loginController.setUserEquipment('deviceSn', sn);
+        sharedAddAndUpdate("deviceSn", String, sn);
+        // timer = Timer.periodic(const Duration(minutes: 5), (timer) {
+        //   debugPrint('登录当前时间${DateTime.now()}');
+        //   // 再次请求登录
+        //   login(_password.trim());
+        // });
+        Get.offNamed("/home", arguments: {"sn": sn, "vn": vn});
+      }
+    }).catchError((err) {
+      timer?.cancel();
+      timer = null;
+      debugPrint('云平台绑定错误响应------>$err');
+      // 响应超时
+      if (err['code'] == DioErrorType.connectTimeout) {
+        debugPrint('timeout');
+        ToastUtils.error(S.current.contimeout);
+      }
     });
   }
 
@@ -267,12 +372,22 @@ class _MyWidgetState extends State<Equipment> {
                               printInfo(
                                   info:
                                       'state--${loginController.login.state}');
-                              Get.offNamed("/NetMode", arguments: {
-                                "sn": equipmentData.systemVersionSn,
-                                "vn": equipmentData.systemProductModel
-                              });
-                              // }
-                              // });s
+                              if(equipmentData.systemRouterOnly == "0") {
+                                if(equipmentData.lteMainStatusGet ==
+                                  "connected"){
+                                    bundDevice(equipmentData.systemVersionSn!, equipmentData.systemProductModel!);
+                                }else {
+                                  // 引导连网页
+                                  ToastUtils.error("Network not connected");
+                                  Get.toNamed("/unNetworkpage");
+                                }
+                              }else {
+                                Get.offNamed("/NetMode", arguments: {
+                                    "sn": equipmentData.systemVersionSn,
+                                    "vn": equipmentData.systemProductModel,
+                                    "rou": equipmentData.systemRouterOnly
+                                  });
+                              }
                             },
                             child: Text(S.of(context).band),
                           ),

@@ -99,48 +99,75 @@ class _EquInfoState extends State<EquInfo> {
       loading = true;
     });
     printInfo(info: 'sn在这里有值吗-------$sn');
-    var parameterNames = [
-      "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.ProductModel",
-      "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.HardVersion",
-      "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.SoftwareVersion",
-      "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.UBOOTVersion",
-      "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.SerialNumber",
-      "InternetGatewayDevice.WEB_GUI.Overview.ModuleInfo.IMEI",
-      "InternetGatewayDevice.WEB_GUI.Overview.ModuleInfo.IMSI",
-      "InternetGatewayDevice.WEB_GUI.Overview.LANStatus.MACAddress",
-      "InternetGatewayDevice.WEB_GUI.Overview.LANStatus.IPAddress",
-      "InternetGatewayDevice.WEB_GUI.Overview.LANStatus.SubnetMask",
-      "InternetGatewayDevice.WEB_GUI.Overview.SystemInfo.RunTime"
-    ];
+    var parameterNames = {
+      "method": "get",
+      "nodes": [
+      "systemProductModel",
+      "systemVersionHw",
+      "systemVersionRunning",
+      "systemVersionUboot",
+      "systemVersionSn",
+      "lteImei",
+      "lteImsi",
+      "networkLanSettingsMac",
+      "networkLanSettingIp",
+      "networkLanSettingMask",
+      "systemRunningTime"
+      ]
+    };
+    // var parameterNames = [
+    //   "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.ProductModel",
+    //   "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.HardVersion",
+    //   "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.SoftwareVersion",
+    //   "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.UBOOTVersion",
+    //   "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.SerialNumber",
+    //   "InternetGatewayDevice.WEB_GUI.Overview.ModuleInfo.IMEI",
+    //   "InternetGatewayDevice.WEB_GUI.Overview.ModuleInfo.IMSI",
+    //   "InternetGatewayDevice.WEB_GUI.Overview.LANStatus.MACAddress",
+    //   "InternetGatewayDevice.WEB_GUI.Overview.LANStatus.IPAddress",
+    //   "InternetGatewayDevice.WEB_GUI.Overview.LANStatus.SubnetMask",
+    //   "InternetGatewayDevice.WEB_GUI.Overview.SystemInfo.RunTime"
+    // ];
     var res = await Request().getACSNode(parameterNames, sn);
     try {
       Map<String, dynamic> d = jsonDecode(res);
       setState(() {
         loading = false;
-        ipAddressValue = d['data']['InternetGatewayDevice']['WEB_GUI']
-            ['Overview']['LANStatus']['IPAddress']['_value'];
-        macAddressValue = d["data"]["InternetGatewayDevice"]["WEB_GUI"]
-            ["Overview"]["LANStatus"]["MACAddress"]["_value"];
-        subnetMaskValue = d["data"]["InternetGatewayDevice"]["WEB_GUI"]
-            ["Overview"]["LANStatus"]["SubnetMask"]["_value"];
-        imeiValue = d["data"]["InternetGatewayDevice"]["WEB_GUI"]["Overview"]
-            ["ModuleInfo"]["IMEI"]["_value"];
-        runtimeValue = d["data"]["InternetGatewayDevice"]["WEB_GUI"]["Overview"]
-            ["SystemInfo"]["RunTime"]["_value"];
+        // ipAddressValue = d['data']['InternetGatewayDevice']['WEB_GUI']
+        //     ['Overview']['LANStatus']['IPAddress']['_value'];
+        // macAddressValue = d["data"]["InternetGatewayDevice"]["WEB_GUI"]
+        //     ["Overview"]["LANStatus"]["MACAddress"]["_value"];
+        // subnetMaskValue = d["data"]["InternetGatewayDevice"]["WEB_GUI"]
+        //     ["Overview"]["LANStatus"]["SubnetMask"]["_value"];
+        // imeiValue = d["data"]["InternetGatewayDevice"]["WEB_GUI"]["Overview"]
+        //     ["ModuleInfo"]["IMEI"]["_value"];
+        // runtimeValue = d["data"]["InternetGatewayDevice"]["WEB_GUI"]["Overview"]
+        //     ["SystemInfo"]["RunTime"]["_value"];
+        ipAddressValue = d['data']['networkLanSettingIp'];
+        macAddressValue = d["data"]["networkLanSettingsMac"];
+        subnetMaskValue = d["data"]["networkLanSettingMask"];
+        imeiValue = d["data"]["lteImei"];
+        runtimeValue = d["data"]["systemRunningTime"];
         var time = int.parse(runtimeValue.toString());
         day = time ~/ (24 * 3600);
         hour = (time - day * 24 * 3600) ~/ 3600;
         min = (time - day * 24 * 3600 - hour * 3600) ~/ 60;
-        hardVersionValue = d["data"]["InternetGatewayDevice"]["WEB_GUI"]
-            ["Overview"]["VersionInfo"]["HardVersion"]["_value"];
-        productModelValue = d["data"]["InternetGatewayDevice"]["WEB_GUI"]
-            ["Overview"]["VersionInfo"]["ProductModel"]["_value"];
-        serialNumberValue = d["data"]["InternetGatewayDevice"]["WEB_GUI"]
-            ["Overview"]["VersionInfo"]["SerialNumber"]["_value"];
-        softwareVersionValue = d["data"]["InternetGatewayDevice"]["WEB_GUI"]
-            ["Overview"]["VersionInfo"]["SoftwareVersion"]["_value"];
-        ubootVersionValue = d["data"]["InternetGatewayDevice"]["WEB_GUI"]
-            ["Overview"]["VersionInfo"]["UBOOTVersion"]["_value"];
+        
+        // hardVersionValue = d["data"]["InternetGatewayDevice"]["WEB_GUI"]
+        //     ["Overview"]["VersionInfo"]["HardVersion"]["_value"];
+        // productModelValue = d["data"]["InternetGatewayDevice"]["WEB_GUI"]
+        //     ["Overview"]["VersionInfo"]["ProductModel"]["_value"];
+        // serialNumberValue = d["data"]["InternetGatewayDevice"]["WEB_GUI"]
+        //     ["Overview"]["VersionInfo"]["SerialNumber"]["_value"];
+        // softwareVersionValue = d["data"]["InternetGatewayDevice"]["WEB_GUI"]
+        //     ["Overview"]["VersionInfo"]["SoftwareVersion"]["_value"];
+        // ubootVersionValue = d["data"]["InternetGatewayDevice"]["WEB_GUI"]
+        //     ["Overview"]["VersionInfo"]["UBOOTVersion"]["_value"];
+        hardVersionValue = d["data"]["systemVersionHw"];
+        productModelValue = d["data"]["systemProductModel"];
+        serialNumberValue = d["data"]["systemVersionSn"];
+        softwareVersionValue = d["data"]["systemVersionRunning"];
+        ubootVersionValue = d["data"]["systemVersionUboot"];
       });
     } catch (e) {
       loading = false;

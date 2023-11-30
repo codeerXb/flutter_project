@@ -119,24 +119,40 @@ class _NetTypeState extends State<NetType> {
       loading = true;
     });
     // Navigator.push(context, DialogRouter(LoadingDialog()));
+    // networkWanSettingsConnectMode,ethernetLinkStatus,lteMainStatusGet,OnlineTime,networkWanSettingsIp,networkWanSettingsMask,networkWanSettingsGateway,networkWanSettingsDns
+    var parameterNames = {
+      "method": "get",
+      "nodes": [
+      "networkWanSettingsConnectMode",
+      "ethernetLinkStatus",
+      "lteMainStatusGet",
+      "systemOnlineTime",
+      "networkWanSettingsIp",
+      "networkWanSettingsMask",
+      "networkWanSettingsGateway",
+      "networkWanSettingsDns",
+      ]
+    };
     try {
-      var parameterNames = [
-        "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.AddressingType",
-        "InternetGatewayDevice.WEB_GUI.Ethernet.Status.LinkStatus",
-        "InternetGatewayDevice.WEB_GUI.Ethernet.Status.ConnectStatus",
-        "InternetGatewayDevice.WEB_GUI.Overview.SystemInfo.OnlineTime",
-        "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.ExternalIPAddress",
-        "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.SubnetMask",
-        "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.DefaultGateway",
-        "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.DNSServers",
-      ];
+      // var parameterNames = [
+      //   "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.AddressingType",
+      //   "InternetGatewayDevice.WEB_GUI.Ethernet.Status.LinkStatus",
+      //   "InternetGatewayDevice.WEB_GUI.Ethernet.Status.ConnectStatus",
+      //   "InternetGatewayDevice.WEB_GUI.Overview.SystemInfo.OnlineTime",
+      //   "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.ExternalIPAddress",
+      //   "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.SubnetMask",
+      //   "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.DefaultGateway",
+      //   "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.DNSServers",
+      // ];
       var res = await Request().getACSNode(parameterNames, sn);
       Map<String, dynamic> d = jsonDecode(res);
+      var prettyJsonString = const JsonEncoder.withIndent('  ').convert(d);
+      debugPrint("获取的网路状态数据:$prettyJsonString");
       setState(() {
-        var prefix = d['data']['InternetGatewayDevice']['WANDevice']['1']
-            ['WANConnectionDevice']['1']['WANIPConnection']['1'];
-
-        var addressingType = prefix['AddressingType']['_value'];
+        // var prefix = d['data']['InternetGatewayDevice']['WANDevice']['1']
+        //     ['WANConnectionDevice']['1']['WANIPConnection']['1'];
+        var prefix = d['data'];
+        var addressingType = prefix['networkWanSettingsConnectMode'];
         if (addressingType == 'dhcp') {
           connectionModeValue = 'Dynamic IP';
         } else if (addressingType == 'static') {
@@ -145,39 +161,43 @@ class _NetTypeState extends State<NetType> {
           connectionModeValue = 'Only LAN';
         }
 
-        iPAddressValue = prefix["ExternalIPAddress"]["_value"];
-        subnetMaskValue = prefix["SubnetMask"]["_value"];
+        iPAddressValue = prefix["networkWanSettingsIp"];
+        subnetMaskValue = prefix["networkWanSettingsMask"];
 
-        defaultGatewayValue = prefix["DefaultGateway"]["_value"];
+        defaultGatewayValue = prefix["networkWanSettingsGateway"];
 
-        var dNSServers = prefix["DNSServers"]["_value"];
+        var dNSServers = prefix["networkWanSettingsDns"];
         primaryDNSValue = dNSServers.split(',')[0];
         secondaryDNSValue = dNSServers.split(',')[1];
 
-        var prefix1 =
-            d["data"]["InternetGatewayDevice"]["WEB_GUI"]["Ethernet"]["Status"];
+        // var prefix1 =
+        //     d["data"]["InternetGatewayDevice"]["WEB_GUI"]["Ethernet"]["Status"];
 
-        var linkStatus = prefix1['LinkStatus']['_value'];
+        String? linkStatus = prefix["ethernetLinkStatus"];
         if (linkStatus == '1') {
           linkStatusValue = 'Connected';
         } else {
           linkStatusValue = 'Disconnected';
         }
 
-        var connectStatus = prefix1['ConnectStatus']['_value'];
-        if (connectStatus == '1') {
+        var connectStatus = prefix["lteMainStatusGet"];
+        if (connectStatus == 'connected') {
           connectStatusValue = 'Connected';
         } else {
           connectStatusValue = 'Disconnected';
         }
 
-        var onlineTime = d["data"]["InternetGatewayDevice"]["WEB_GUI"]
-            ["Overview"]["SystemInfo"]["OnlineTime"]["_value"];
+        String? onlineTime = prefix["OnlineTime"];
+        if (onlineTime!.isNotEmpty) {
         var time = int.parse(onlineTime.toString());
         day = time ~/ (24 * 3600);
         hour = (time - day * 24 * 3600) ~/ 3600;
         min = (time - day * 24 * 3600 - hour * 3600) ~/ 60;
-
+        }else {
+          day = 0;
+          hour = 0;
+          min = 0;
+        }
         onlineTimeValue = day.toString() +
             S.of(context).date +
             hour.toString() +

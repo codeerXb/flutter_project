@@ -207,7 +207,7 @@ class _NetSetState extends State<NetSet> {
         builder: (context) {
           return AlertDialog(
               title: Text(S.current.hint),
-              content: Text(S.of(context).isGoOn),
+              content: Text(S.of(context).isRestart),
               actions: <Widget>[
                 TextButton(
                   child: Text(S.current.cancel),

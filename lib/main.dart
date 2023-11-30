@@ -100,6 +100,8 @@ class _MyAppState extends State<MyApp> {
                 return Locale(locale.toString().split('_')[0], null);
               }
             },
+            locale: Get.deviceLocale,
+            fallbackLocale: const Locale('en', 'US'),
             key: navigatorKey,
             title: 'router',
             // 不显示debug标签

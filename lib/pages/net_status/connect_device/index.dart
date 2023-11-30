@@ -32,7 +32,7 @@ class _ConnectedDeviceState extends State<ConnectedDevice>
   bool loading = false;
 
   //获取列表
-  getDeviceListFn() async {
+ Future getDeviceListFn() async {
     var res = await sharedGetData('deviceSn', String);
     setState(() {
       loading = true;
@@ -78,7 +78,7 @@ class _ConnectedDeviceState extends State<ConnectedDevice>
     });
     var response = await App.post(
         '${BaseConfig.cloudBaseUrl}/cpeMqtt/getOffLineDevicesTable',
-        data: {'sn': "RS621A00214000161"});
+        data: {'sn': sn});
     setState(() {
       loading = false;
     });

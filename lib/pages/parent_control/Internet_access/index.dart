@@ -52,16 +52,18 @@ class _InternetaccessState extends State<Internetaccess>
     setState(() {
       loading = true;
     });
-
+    var parameterNames = {
+      "method": "get",
+      "nodes": ["FwParentControlTable", "securityParentControlEnable"]
+    };
     try {
-      var parameterNames = [
-        "InternetGatewayDevice.WEB_GUI.ParentalControls",
-      ];
+      // var parameterNames = [
+      //   "InternetGatewayDevice.WEB_GUI.ParentalControls",
+      // ];
       //获取云端数据
       var res = await Request().getACSNode(parameterNames, sn);
       Map<String, dynamic> d = jsonDecode(res);
-      var resList = d['data']['InternetGatewayDevice']['WEB_GUI']
-          ['ParentalControls']['List'];
+      var resList = d['data']['List'];
       setState(() {
         resList.remove('_object');
         resList.remove('_timestamp');
@@ -82,8 +84,9 @@ class _InternetaccessState extends State<Internetaccess>
         accessList = accessList
             .where((element) => element['Device']['_value'] == MACAddress)
             .toList();
-        enable = d['data']['InternetGatewayDevice']['WEB_GUI']
-            ['ParentalControls']['Enable']['_value'];
+        // enable = d['data']['InternetGatewayDevice']['WEB_GUI']
+        //     ['ParentalControls']['Enable']['_value'];
+        enable = d['data']['Enable'];
       });
     } catch (e) {
       // 处理异常
@@ -156,11 +159,17 @@ class _InternetaccessState extends State<Internetaccess>
                                     enable = value;
                                   });
 
-                                  String prefix =
-                                      'InternetGatewayDevice.WEB_GUI.ParentalControls.Enable';
-                                  var parameterNames = [
-                                    [prefix, value, 'xsd:string'],
-                                  ];
+                                  // String prefix =
+                                  //     'InternetGatewayDevice.WEB_GUI.ParentalControls.Enable';
+                                  var parameterNames = {
+                                    "method": "set",
+                                    "nodes": {
+                                      "securityParentControlEnable": value,
+                                    }
+                                  };
+                                  // var parameterNames = [
+                                  //   [prefix, value, 'xsd:string'],
+                                  // ];
                                   //设置
                                   Request().setACSNode(parameterNames, sn);
                                 },
@@ -174,14 +183,15 @@ class _InternetaccessState extends State<Internetaccess>
                                 height: 1.sh - 70,
                                 child: ListView.builder(
                                     itemCount: accessList.length,
-                                    itemBuilder: (BuildContext context, int index) {
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
                                       return Card(
                                         clipBehavior: Clip.hardEdge,
                                         elevation: 5,
                                         shape: const RoundedRectangleBorder(
                                           //设置卡片圆角
-                                          borderRadius:
-                                              BorderRadius.all(Radius.circular(20)),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(20)),
                                         ),
                                         child: ListTile(
                                           title: Text(
@@ -201,7 +211,8 @@ class _InternetaccessState extends State<Internetaccess>
                                                     builder:
                                                         (BuildContext context) {
                                                       return MyDialog(
-                                                          week: accessList[index]
+                                                          week: accessList[
+                                                                      index]
                                                                   ['Weekdays']
                                                               ['_value'],
                                                           time:
@@ -209,46 +220,59 @@ class _InternetaccessState extends State<Internetaccess>
                                                           id: keyList[index],
                                                           getACSNodeFn:
                                                               getACSNodeFn,
-                                                          openLoading: openLoading);
+                                                          openLoading:
+                                                              openLoading);
                                                     },
                                                   );
                                                 },
                                               ),
                                               IconButton(
                                                 //删除
-                                                icon: Icon(Icons.delete),
-                                                color:
-                                                    Color.fromRGBO(232, 7, 30, 1),
+                                                icon: const Icon(Icons.delete),
+                                                color: const Color.fromRGBO(
+                                                    232, 7, 30, 1),
                                                 onPressed: () {
                                                   showDialog(
                                                     context: context,
                                                     builder:
                                                         (BuildContext context) {
                                                       return AlertDialog(
-                                                        title:
-                                                            Text(S.current.delPro),
+                                                        title: Text(
+                                                            S.current.delPro),
                                                         actions: <Widget>[
                                                           TextButton(
-                                                            child: Text(
-                                                                S.current.cancel),
+                                                            child: Text(S
+                                                                .current
+                                                                .cancel),
                                                             onPressed: () {
-                                                              Navigator.of(context)
+                                                              Navigator.of(
+                                                                      context)
                                                                   .pop();
                                                             },
                                                           ),
                                                           TextButton(
-                                                            child: Text(
-                                                                S.current.delete),
-                                                            onPressed: () async {
+                                                            child: Text(S
+                                                                .current
+                                                                .delete),
+                                                            onPressed:
+                                                                () async {
                                                               // Perform delete operation here
-                                                              Navigator.of(context)
+                                                              Navigator.of(
+                                                                      context)
                                                                   .pop();
                                                               openLoading();
+                                                              var parameterNames =
+                                                                  {
+                                                                "method": "set",
+                                                                "nodes": {
+                                                                  "FwParentControlTable":
+                                                                      '${keyList[index]}'
+                                                                }
+                                                              };
                                                               await Request()
                                                                   .addOrDeleteObject(
-                                                                      "InternetGatewayDevice.WEB_GUI.ParentalControls.List.${keyList[index]}",
-                                                                      sn,
-                                                                      'deleteObject');
+                                                                      parameterNames,
+                                                                      sn);
                                                               getACSNodeFn();
                                                             },
                                                           ),
@@ -291,7 +315,8 @@ class _InternetaccessState extends State<Internetaccess>
                                     ),
                                   ),
                                   backgroundColor:
-                                      MaterialStateProperty.all<Color>(Colors.blue),
+                                      MaterialStateProperty.all<Color>(
+                                          Colors.blue),
                                 ),
                                 child: const Text(
                                   'ADD PERIOD',
@@ -367,40 +392,55 @@ class _MyDialogState extends State<MyDialog> {
   setData() async {
     Navigator.of(context).pop();
     widget.openLoading();
-    await Request().addOrDeleteObject(
-        "InternetGatewayDevice.WEB_GUI.ParentalControls.List", sn, 'addObject');
+    var parameters = {
+      "method": "get",
+      "nodes": ["FwParentControlTable"]
+    };
+    await Request().addOrDeleteObject(parameters, sn);
     //获取云端数据
-    var res = await Request().getACSNode([
-      "InternetGatewayDevice.WEB_GUI.ParentalControls",
-    ], sn);
+    var res = await Request().getACSNode(parameters, sn);
     Map<String, dynamic> d = jsonDecode(res);
-    var list = d['data']['InternetGatewayDevice']['WEB_GUI']['ParentalControls']
-        ['List'];
+    // var list = d['data']['InternetGatewayDevice']['WEB_GUI']['ParentalControls']
+    //     ['List'];
+    var list = d['data'];
     //遍历取得最后一个key
     for (var key in list.keys) {
       lastKey = key;
     }
 
-    String prefix =
-        'InternetGatewayDevice.WEB_GUI.ParentalControls.List.$lastKey.';
+    // String prefix =
+    //     'InternetGatewayDevice.WEB_GUI.ParentalControls.List.$lastKey.';
 
     String selectDays = _selectedDays.join(',');
 
-    var parameterNames = [
-      ['${prefix}Device', MACAddress, 'xsd:string'],
-      ['${prefix}Name', name, 'xsd:string'],
-      [
-        '${prefix}TimeStart',
-        '${_initTime.h.toString().padLeft(2, '0')}:${_initTime.m.toString().padLeft(2, '0')}',
-        'xsd:string'
-      ],
-      [
-        '${prefix}TimeStop',
-        '${_endTime.h.toString().padLeft(2, '0')}:${_endTime.m.toString().padLeft(2, '0')}',
-        'xsd:string'
-      ],
-      ['${prefix}Weekdays', '$selectDays', 'xsd:string'],
-    ];
+    var parameterNames = {
+      "method": "set",
+      "nodes": {
+        "Host": MACAddress,
+        "Name": name,
+        "TimeStart":
+            '${_initTime.h.toString().padLeft(2, '0')}:${_initTime.m.toString().padLeft(2, '0')}',
+        "TimeStop":
+            '${_endTime.h.toString().padLeft(2, '0')}:${_endTime.m.toString().padLeft(2, '0')}',
+        "Weekdays": selectDays
+      }
+    };
+
+    // var parameterNames = [
+    //   ['${prefix}Device', MACAddress, 'xsd:string'],
+    //   ['${prefix}Name', name, 'xsd:string'],
+    //   [
+    //     '${prefix}TimeStart',
+    //     '${_initTime.h.toString().padLeft(2, '0')}:${_initTime.m.toString().padLeft(2, '0')}',
+    //     'xsd:string'
+    //   ],
+    //   [
+    //     '${prefix}TimeStop',
+    //     '${_endTime.h.toString().padLeft(2, '0')}:${_endTime.m.toString().padLeft(2, '0')}',
+    //     'xsd:string'
+    //   ],
+    //   ['${prefix}Weekdays', '$selectDays', 'xsd:string'],
+    // ];
 
     //设置
     await Request().setACSNode(parameterNames, sn);
@@ -414,24 +454,36 @@ class _MyDialogState extends State<MyDialog> {
     Navigator.of(context).pop();
     widget.openLoading();
 
-    String prefix =
-        'InternetGatewayDevice.WEB_GUI.ParentalControls.List.${widget.id}.';
-
-    var parameterNames = [
-      ['${prefix}Device', MACAddress, 'xsd:string'],
-      ['${prefix}Name', name, 'xsd:string'],
-      [
-        '${prefix}TimeStart',
-        '${_initTime.h.toString().padLeft(2, '0')}:${_initTime.m.toString().padLeft(2, '0')}',
-        'xsd:string'
-      ],
-      [
-        '${prefix}TimeStop',
-        '${_endTime.h.toString().padLeft(2, '0')}:${_endTime.m.toString().padLeft(2, '0')}',
-        'xsd:string'
-      ],
-      ['${prefix}Weekdays', '${_selectedDays.join(',')}', 'xsd:string'],
-    ];
+    // String prefix =
+    //     'InternetGatewayDevice.WEB_GUI.ParentalControls.List.${widget.id}.';
+    String selectDays = _selectedDays.join(',');
+    var parameterNames = {
+      "method": "set",
+      "nodes": {
+        "Host": MACAddress,
+        "Name": name,
+        "TimeStart":
+            '${_initTime.h.toString().padLeft(2, '0')}:${_initTime.m.toString().padLeft(2, '0')}',
+        "TimeStop":
+            '${_endTime.h.toString().padLeft(2, '0')}:${_endTime.m.toString().padLeft(2, '0')}',
+        "Weekdays": selectDays
+      }
+    };
+    // var parameterNames = [
+    //   ['${prefix}Device', MACAddress, 'xsd:string'],
+    //   ['${prefix}Name', name, 'xsd:string'],
+    //   [
+    //     '${prefix}TimeStart',
+    //     '${_initTime.h.toString().padLeft(2, '0')}:${_initTime.m.toString().padLeft(2, '0')}',
+    //     'xsd:string'
+    //   ],
+    //   [
+    //     '${prefix}TimeStop',
+    //     '${_endTime.h.toString().padLeft(2, '0')}:${_endTime.m.toString().padLeft(2, '0')}',
+    //     'xsd:string'
+    //   ],
+    //   ['${prefix}Weekdays', '${_selectedDays.join(',')}', 'xsd:string'],
+    // ];
 
     //设置
     await Request().setACSNode(parameterNames, sn);
@@ -479,7 +531,7 @@ class _MyDialogState extends State<MyDialog> {
                     ),
                   ),
                 ),
-                Text('   --   '),
+                const Text('   --   '),
                 Container(
                   decoration: BoxDecoration(
                     color: const Color.fromARGB(255, 240, 242, 241),
@@ -595,19 +647,19 @@ class _MyDialogState extends State<MyDialog> {
             // 弹框按钮点击事件处理
             Navigator.of(context).pop(); // 关闭弹框
           },
-          child: Text('Close'),
+          child: const Text('Close'),
         ),
         TextButton(
           onPressed: () {
             if (widget.id == '') {
-              print('新增');
+              debugPrint('新增');
               setData();
             } else {
-              print('编辑');
+              debugPrint('编辑');
               upData();
             }
           },
-          child: Text('Confirm'),
+          child: const Text('Confirm'),
         ),
       ],
     );

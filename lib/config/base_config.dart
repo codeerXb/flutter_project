@@ -11,7 +11,7 @@ class BaseConfig {
   static const updateUrl = "$baseUrl/";
 
   /// 公司首页协议
-  static const companyWebProtocol = "https";
+  static const companyWebProtocol = "http";
 
   /// 公司首页地址
   static const companyWebUrl = "www.baidu.com";

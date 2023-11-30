@@ -19,13 +19,14 @@ class _AboutUsState extends State<AboutUs> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: customAppbar(context: context, title: '关于我们'),
+      appBar: customAppbar(context: context, title: 'About Us'),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             /// 公司首页
-            CommonWidget.simpleWidgetWithUserDetail("公司首页", callBack: () {
+            CommonWidget.simpleWidgetWithUserDetail("Platform official website",
+                callBack: () {
               launchUrl(
                 Uri(
                     scheme: BaseConfig.companyWebProtocol,
@@ -35,20 +36,41 @@ class _AboutUsState extends State<AboutUs> {
             }),
 
             /// 技术服务
-            CommonWidget.simpleWidgetWithUserDetail("技术服务",
+            CommonWidget.simpleWidgetWithUserDetail("Technical Support",
                 value: '13563254789', callBack: () {
               launchUrl(Uri(scheme: 'tel', path: '13563254789'));
             }),
 
             /// 服务条款
-            CommonWidget.simpleWidgetWithUserDetail("服务条款", callBack: () {
-              ToastUtils.toast("功能正在开发中");
+            CommonWidget.simpleWidgetWithUserDetail("User Agreement",
+                callBack: () {
+              ToastUtils.toast("Feature is under development");
             }),
+            aboutUs()
 
             /// 公众号信息
-            weixin(),
+            // weixin(),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget aboutUs() {
+    return Container(
+      padding: EdgeInsets.only(top: 50.w),
+      child: const Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "Version :",
+            style: TextStyle(fontSize: 16, color: Colors.black54),
+          ),
+          Text(
+            "V1.1.0",
+            style: TextStyle(fontSize: 14, color: Colors.black54),
+          ),
+        ],
       ),
     );
   }

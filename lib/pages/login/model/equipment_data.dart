@@ -10,6 +10,9 @@ class EquipmentData {
   String? networkLanSettingIp;
   String? networkLanSettingMask;
   String? systemRunningTime;
+  String? systemRouterOnly;
+  String? lteMainStatusGet;
+  String? ethernetLinkStatus;
 
   EquipmentData(
       {this.systemProductModel,
@@ -22,7 +25,11 @@ class EquipmentData {
       this.networkLanSettingsMac,
       this.networkLanSettingIp,
       this.networkLanSettingMask,
-      this.systemRunningTime});
+      this.systemRunningTime,
+      this.systemRouterOnly,
+      this.lteMainStatusGet,
+      this.ethernetLinkStatus
+      });
 
   EquipmentData.fromJson(Map<String, dynamic> json) {
     systemProductModel = json['systemProductModel'];
@@ -36,6 +43,9 @@ class EquipmentData {
     networkLanSettingIp = json['networkLanSettingIp'];
     networkLanSettingMask = json['networkLanSettingMask'];
     systemRunningTime = json['systemRunningTime'];
+    systemRouterOnly =  json['systemRouterOnly'];
+    lteMainStatusGet =  json['lteMainStatusGet'];
+    ethernetLinkStatus = json['ethernetLinkStatus'];
   }
 
   Map<String, dynamic> toJson() {
@@ -51,6 +61,9 @@ class EquipmentData {
     data['networkLanSettingIp'] = networkLanSettingIp;
     data['networkLanSettingMask'] = networkLanSettingMask;
     data['systemRunningTime'] = systemRunningTime;
+    data['systemRouterOnly'] = systemRouterOnly;
+    data['lteMainStatusGet'] = lteMainStatusGet;
+    data['ethernetLinkStatus'] = ethernetLinkStatus;
     return data;
   }
 }

@@ -201,10 +201,12 @@ class _WlanSetState extends State<WlanSet> {
   List<String> securityOpt = [
     'WPA2-PSK',
     'WPA-PSK&WPA2-PSK',
+    "WPA3-PSK",
+    'WPA2-PSK&WPA3-PSK',
     S.current.emptyNORecommend
   ];
   // 对应的value
-  List<String> securityVal = ['psk2', 'psk-mixed', 'none'];
+  List<String> securityVal = ['psk2', 'psk-mixed','wpa3','wpa2wpa3', 'none'];
   //安全 security
   String securityShowVal = 'WPA2-PSK';
   int securityIndex = 0;
@@ -348,6 +350,7 @@ class _WlanSetState extends State<WlanSet> {
         "wifiTxpower"
       ]
     };
+    // 获取SOD节点数据
     var res = await Request().getACSNode(parameterNames, sn);
     var jsonObj = jsonDecode(res);
     var jsonModel = wlanBean.fromJson(jsonObj);
@@ -390,7 +393,13 @@ class _WlanSetState extends State<WlanSet> {
       // SERCURITY
       String sercurity = encyptionmode.split('+')[0];
       // WPA ENCYPITON
-      String wpaEncyption = encyptionmode.split('+').skip(1).join('+');
+      String wpaEncyption = "";
+      if(encyptionmode == "psk2+tkip+aes" || encyptionmode == "psk-mixed+tkip+aes") {
+        wpaEncyption = encyptionmode.split('+').skip(1).join('+');
+      }else {
+        wpaEncyption = encyptionmode.split('+')[1];
+      }
+      // String wpaEncyption = encyptionmode.split('+').skip(1).join('+');
       // PASSWORD
       String wpaKey = model.data![0].key ?? "";
       setState(() {
@@ -425,6 +434,11 @@ class _WlanSetState extends State<WlanSet> {
     } catch (err) {
       debugPrint('get2.4G ERROR: $err');
       ToastUtils.error('Request Failed');
+      setState(() {
+        loading = false;
+
+        _isLoading = false;
+      });
       // Get.back();
     } finally {
       setState(() {
@@ -453,18 +467,6 @@ class _WlanSetState extends State<WlanSet> {
         "wifi5gTxpower"
       ]
     };
-    Object? sn = await sharedGetData('deviceSn', String);
-    var res = await Request().getACSNode(parameterNames, sn);
-    var jsonObj = jsonDecode(res);
-    var jsonModel = wlanAdvancedBean.fromJson(jsonObj);
-    debugPrint('wlan_5g数据:$jsonObj');
-    // 获取SOD表数据
-    var parameters = {"method": "get", "table": "WiFi5GSsidTable"};
-    var result = await Request().getSODTable(parameters, sn);
-    var jsonRes = jsonDecode(result);
-    var model = guestModel.fromJson(jsonRes);
-    wlanModel = model;
-    debugPrint('5G wlan获取的数据:$jsonRes');
 
     try {
       // List<String> parameterNames = [
@@ -473,6 +475,18 @@ class _WlanSetState extends State<WlanSet> {
       // var res = await Request().getACSNode(parameterNames, sn.toString());
       // var list = json.decode(res)['data']['InternetGatewayDevice']['WEB_GUI']
       //     ['WiFi']['WLANSettings']['2'];
+      Object? sn = await sharedGetData('deviceSn', String);
+      var res = await Request().getACSNode(parameterNames, sn);
+      var jsonObj = jsonDecode(res);
+      var jsonModel = wlanAdvancedBean.fromJson(jsonObj);
+      debugPrint('wlan_5g数据:$jsonObj');
+      // 获取SOD表数据
+      var parameters = {"method": "get", "table": "WiFi5GSsidTable"};
+      var result = await Request().getSODTable(parameters, sn);
+      var jsonRes = jsonDecode(result);
+      var model = guestModel.fromJson(jsonRes);
+      wlanModel = model;
+      debugPrint('5G wlan获取的数据:$jsonRes');
       // WLAN Enable
       bool enable = jsonModel.data!.wifi5gEnable == "0" ? false : true;
       // Mode
@@ -496,7 +510,15 @@ class _WlanSetState extends State<WlanSet> {
       // SERCURITY
       String sercurity = encyptionmode.split('+')[0];
       // WPA ENCYPITON
-      String wpaEncyption = encyptionmode.split('+').skip(1).join('+');
+      // String wpaEncyption = encyptionmode.split('+').skip(1).join('+');
+      String wpaEncyption = "";
+      if(encyptionmode == "psk2+tkip+aes" || encyptionmode == "psk-mixed+tkip+aes") {
+        wpaEncyption = encyptionmode.split('+').skip(1).join('+');
+      }else {
+        wpaEncyption = encyptionmode.split('+')[1];
+      }
+      debugPrint("获取到的encyptionmode:$encyptionmode");
+      debugPrint("获取到的wpaEncyption:$wpaEncyption");
       // PASSWORD
       String wpaKey = model.data![0].key ?? "";
 
@@ -506,6 +528,7 @@ class _WlanSetState extends State<WlanSet> {
         modeIndex5g = modeVal5g.indexOf(mode);
         bandWidthIndex5g = bandWidthVal5g.indexOf(bandwidth);
         channelIndex5g = wifi5gCountryChannelList.indexOf(channel);
+        debugPrint("获取到的索引:$modeIndex5g - $bandWidthIndex5g - $channelIndex5g");
         // fsVal5 = txPower;
         if (txPower == wifi5gTxpower[0]) {
           txPowerIndex5g = 0;
@@ -521,6 +544,7 @@ class _WlanSetState extends State<WlanSet> {
         apisCheck5 = isolation;
         securityIndex5g = securityVal.indexOf(sercurity);
         encryptionIndex5g = encryptionVal.indexOf(wpaEncyption);
+        debugPrint("获取到的索引2:$securityIndex5g - $encryptionIndex5g");
         password5.text = wpaKey;
       });
     } catch (err) {
@@ -538,6 +562,7 @@ class _WlanSetState extends State<WlanSet> {
   // 云2.4G设置数据
   setWlanData() async {
     Object? sn = await sharedGetData('deviceSn', String);
+    debugPrint("当前获取的2.4G模型数据:$dataModel");
     var parameterNames = {
       "method": "set",
       "table": {
@@ -545,7 +570,7 @@ class _WlanSetState extends State<WlanSet> {
         "value": [
           {
             "id": dataModel!.data![0].id,
-            "Enable": dataModel!.data![0].enable,
+            "Enable": isCheck == false ? "0" : "1",
             "SsidHide": ssidisCheck == false ? "0" : "1",
             "ApIsolate": apisCheck == false ? "0" : "1",
             "ShowPasswd": dataModel!.data![0].showPasswd,
@@ -617,6 +642,7 @@ class _WlanSetState extends State<WlanSet> {
   // 云5G 设置数据
   setAdvancedWlanData() async {
     Object? sn = await sharedGetData('deviceSn', String);
+    debugPrint("当前获取的5G模型数据:$wlanModel");
     var parameterNames = {
       "method": "set",
       "table": {
@@ -624,7 +650,7 @@ class _WlanSetState extends State<WlanSet> {
         "value": [
           {
             "id": wlanModel!.data![0].id,
-            "Enable": wlanModel!.data![0].enable,
+            "Enable": isCheck5 == false ? "0" : "1",
             "SsidHide": ssidisCheck5 == false ? "0" : "1",
             "ApIsolate": apisCheck5 == false ? "0" : "1",
             "ShowPasswd": wlanModel!.data![0].showPasswd,
@@ -659,6 +685,7 @@ class _WlanSetState extends State<WlanSet> {
       }
     } catch (e) {
       printError(info: e.toString());
+      ToastUtils.error('Request Failed');
     }
 
     var parameters = {
@@ -685,7 +712,7 @@ class _WlanSetState extends State<WlanSet> {
     } catch (e) {
       debugPrint('获取信息失败：${e.toString()}');
       ToastUtils.error('Request Failed');
-      Get.back();
+      // Get.back();
     }
   }
 
@@ -693,7 +720,7 @@ class _WlanSetState extends State<WlanSet> {
   Future setList() async {
     // Object? sn = await sharedGetData('deviceSn', String);
     // 定义前缀,2.4g pdVal为0 5g 为1
-    if (bandIndex == 0 && isCheck) {
+    if (bandIndex == 0) {
       // 2.4G设置
       setWlanData();
     } else {
@@ -1036,6 +1063,7 @@ class _WlanSetState extends State<WlanSet> {
   }
 
   bool _isLoading = false;
+  /// 保存
   Future<void> _saveData() async {
     setState(() {
       _isLoading = true;

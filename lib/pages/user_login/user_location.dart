@@ -43,7 +43,7 @@ class _GetUserLocationState extends State<GetUserLocation> {
                         sb.write(currentLocation?.latitude.toString());
                         sb.write(currentLocation?.longitude.toString());
                         final userLocation = sb;
-                        print("当前的经纬度是${userLocation.toString()}");
+                        debugPrint("当前的经纬度是${userLocation.toString()}");
                       });
                     });
                   });

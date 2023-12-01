@@ -16,7 +16,6 @@ import '../../../core/widget/custom_app_bar.dart';
 import '../../../generated/l10n.dart';
 
 /// WPS设置
-
 class WpsSet extends StatefulWidget {
   const WpsSet({Key? key}) : super(key: key);
 
@@ -121,6 +120,12 @@ class _WpsSetState extends State<WpsSet> {
       setState(() {
         isCheck = jsonObj["data"]["wifiWps"] == "1" ? true : false;
         modeShowVal = jsonObj["data"]["wifiWpsMode"];
+        if (modeShowVal == "client") {
+          modeShowVal = "Client PIN";
+          modeVal = 1;
+        }else {
+          modeVal = 0;
+        }
         pinVal.text = jsonObj["data"]["wifiWpsClientPin"].toString();
         printInfo(info: '$isCheck--$modeValue---$clientPin');
       });
@@ -152,6 +157,12 @@ class _WpsSetState extends State<WpsSet> {
       setState(() {
         isCheck = jsonObj["data"]["wifi5gWps"] == "1" ? true : false;
         modeShowVal = jsonObj["data"]["wifi5gWpsMode"];
+        if (modeShowVal == "client") {
+          modeShowVal = "Client PIN";
+          modeVal = 1;
+        }else {
+          modeVal = 0;
+        }
         pinVal.text = jsonObj["data"]["wifi5gWpsClientPin"].toString();
         printInfo(info: '$isCheck--$modeValue---$clientPin');
       });

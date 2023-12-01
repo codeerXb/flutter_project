@@ -46,7 +46,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
   // 结束时间
   String endShowVal = '0';
   int endVal = 0;
-
+  String currentDate = "";
   String num = '';
   MaintainTrestsetData acquireData = MaintainTrestsetData();
   final LoginController loginController = Get.put(LoginController());
@@ -127,19 +127,36 @@ class _MaintainSettingsState extends State<MaintainSettings> {
   }
 
   // 重启 云端
-  void getReBootData() {
-    App.post('/platform/tr069/rebootDevice?deviceId=$sn').then((res) {
-      var d = json.decode(res.toString());
-      debugPrint('响应------>$d');
-      if (d['code'] == 200) {
+  Future getReBootData() async {
+    var parameterNames = {
+      "method": "set",
+      "nodes": {"systemReboot": "1"}
+    };
+    var res = await Request().setACSNode(parameterNames, sn);
+    try {
+      var jsonObj = jsonDecode(res);
+      debugPrint('响应------>$jsonObj');
+      if (jsonObj['code'] == 200) {
         ToastUtils.toast(S.current.success);
         loginout();
       } else {
         ToastUtils.toast(S.current.error);
       }
-    }).catchError((err) {
+    } catch (e) {
       ToastUtils.error(S.current.contimeout);
-    });
+    }
+    // App.post('/platform/tr069/rebootDevice?deviceId=$sn').then((res) {
+    //   var d = json.decode(res.toString());
+    //   debugPrint('响应------>$d');
+    //   if (d['code'] == 200) {
+    //     ToastUtils.toast(S.current.success);
+    //     loginout();
+    //   } else {
+    //     ToastUtils.toast(S.current.error);
+    //   }
+    // }).catchError((err) {
+    //   ToastUtils.error(S.current.contimeout);
+    // });
   }
 
   // 重启
@@ -223,24 +240,31 @@ class _MaintainSettingsState extends State<MaintainSettings> {
           // 展示获取回来的重启日期
           arr = tranfer.split(';').map((String text) => (text)).toList();
           if (arr[0] == '1') {
+            currentDate = S.of(context).Sun;
             arrList.add(S.of(context).Sun);
           }
           if (arr[1] == '1') {
+            currentDate = S.of(context).mon;
             arrList.add(S.of(context).mon);
           }
           if (arr[2] == '1') {
+            currentDate = S.of(context).Tue;
             arrList.add(S.current.Tue);
           }
           if (arr[3] == '1') {
+            currentDate = S.of(context).Wed;
             arrList.add(S.current.Wed);
           }
           if (arr[4] == '1') {
+            currentDate = S.of(context).Thu;
             arrList.add(S.current.Thu);
           }
           if (arr[5] == '1') {
+            currentDate = S.of(context).fri;
             arrList.add(S.current.fri);
           }
           if (arr[6] == '1') {
+            currentDate = S.of(context).Sat;
             arrList.add(S.current.Sat);
           }
         }
@@ -332,10 +356,12 @@ class _MaintainSettingsState extends State<MaintainSettings> {
     //   ]
     // ];
 
+    var isEnable = isCheck == true ? "1" : "0";
+
     var parameterNames = {
       "method": "set",
       "nodes": {
-        "systemScheduleRebootEnable": "$isCheck",
+        "systemScheduleRebootEnable": isEnable,
         "systemScheduleRebootDays": tranfer,
         "systemScheduleRebootTime": '$startShowVal:$endShowVal'
       }
@@ -343,7 +369,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
     var res = await Request().setACSNode(parameterNames, sn);
     try {
       var jsonObj = jsonDecode(res);
-      printInfo(info: '````$jsonObj');
+      debugPrint('获取返回结果：$jsonObj');
       setState(() {});
     } catch (e) {
       ToastUtils.toast("获取信息失败：${e.toString()}");
@@ -492,19 +518,36 @@ class _MaintainSettingsState extends State<MaintainSettings> {
   }
 
   // 恢复出厂 云端
-  void getfactoryResetData() {
-    App.post('/platform/tr069/factoryReset?deviceId=$sn').then((res) {
-      var d = json.decode(res.toString());
-      debugPrint('响应------>$d');
-      if (d['code'] == 200) {
+  Future getfactoryResetData() async {
+    var parameterNames = {
+      "method": "set",
+      "nodes": {"systemFactoryReset": "1", "systemReboot": "1"}
+    };
+    var res = await Request().setACSNode(parameterNames, sn);
+    try {
+      var jsonObj = jsonDecode(res);
+      debugPrint('响应------>$jsonObj');
+      if (jsonObj['code'] == 200) {
         ToastUtils.toast(S.current.success);
         loginout();
       } else {
         ToastUtils.toast(S.current.error);
       }
-    }).catchError((err) {
+    } catch (e) {
       ToastUtils.error(S.current.contimeout);
-    });
+    }
+    // App.post('/platform/tr069/factoryReset?deviceId=$sn').then((res) {
+    //   var d = json.decode(res.toString());
+    //   debugPrint('响应------>$d');
+    //   if (d['code'] == 200) {
+    //     ToastUtils.toast(S.current.success);
+    //     loginout();
+    //   } else {
+    //     ToastUtils.toast(S.current.error);
+    //   }
+    // }).catchError((err) {
+    //   ToastUtils.error(S.current.contimeout);
+    // });
   }
 
   // 恢复出厂
@@ -589,6 +632,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                 Navigator.of(context).pop(checkboxList);
                 setState(() {
                   tranfer = dateFormat(checkboxList);
+                  debugPrint("当前设置的日期是:$tranfer");
                   // 选中后更新重启日期
                   arrList = [];
                   if (arrList != []) {
@@ -766,7 +810,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                                       style: TextStyle(fontSize: 30.sp)),
                                   Row(
                                     children: [
-                                      Text(arrList.join(),
+                                      Text(currentDate,
                                           style: TextStyle(fontSize: 30.sp)),
                                       Icon(
                                         Icons.arrow_forward_ios_outlined,
@@ -980,7 +1024,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                               backgroundColor: MaterialStateProperty.all(
                                   const Color.fromARGB(255, 48, 118, 250))),
                           onPressed: () {
-                            ToastUtils.toast("保存成功");
+                            ToastUtils.toast("Saved successfully");
                             if (tranfer == '0;0;0;0;0;0;0' && isCheck == true) {
                               ToastUtils.toast(S.current.mustSuccess);
                             } else {

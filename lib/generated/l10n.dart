@@ -873,7 +873,7 @@ class S {
   /// `1-64`
   String get MaximumRange {
     return Intl.message(
-      '1-64',
+      '1-32',
       name: 'MaximumRange',
       desc: '',
       args: [],

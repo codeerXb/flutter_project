@@ -185,6 +185,7 @@ class _Visitor4State extends State<Visitor4> {
         wpaIndex = ['aes', 'tkip', 'tkip+aes']
             .indexOf(data.encryption!.split('+')[1]);
         wpaVal = ['aes', 'tkip', 'tkip+aes'][wpaIndex];
+        password.text = data.key.toString();
       });
     } catch (e) {
       printError(info: 'getCloudData for visitor error: ${e.toString()}');

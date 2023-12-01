@@ -206,7 +206,7 @@ class _WlanSetState extends State<WlanSet> {
     S.current.emptyNORecommend
   ];
   // 对应的value
-  List<String> securityVal = ['psk2', 'psk-mixed','wpa3','wpa2wpa3', 'none'];
+  List<String> securityVal = ['psk2', 'psk-mixed', 'wpa3', 'wpa2wpa3', 'none'];
   //安全 security
   String securityShowVal = 'WPA2-PSK';
   int securityIndex = 0;
@@ -240,12 +240,17 @@ class _WlanSetState extends State<WlanSet> {
 
   // 发射功率
   String txPowerShowVal = '20';
-  String txPower5gShowVal = '24';
+  String txPower5gShowVal = '20';
   // 发射功率对应到节点数据
   // 2.4g发射功率对应关系
-  List<String> wifiTxpower = ['20', '17', '14'];
+  List<String> wifiTxpower = [
+    "100",
+    '80',
+    '40',
+    '20',
+  ];
   // 5g发射功率对应关系
-  List<String> wifi5gTxpower = ['24', '21', '18'];
+  List<String> wifi5gTxpower = ['100', '80', '40', "20"];
   // 选择的索引值
   int txPowerIndex = 0;
   int txPowerIndex5g = 0;
@@ -394,9 +399,10 @@ class _WlanSetState extends State<WlanSet> {
       String sercurity = encyptionmode.split('+')[0];
       // WPA ENCYPITON
       String wpaEncyption = "";
-      if(encyptionmode == "psk2+tkip+aes" || encyptionmode == "psk-mixed+tkip+aes") {
+      if (encyptionmode == "psk2+tkip+aes" ||
+          encyptionmode == "psk-mixed+tkip+aes") {
         wpaEncyption = encyptionmode.split('+').skip(1).join('+');
-      }else {
+      } else {
         wpaEncyption = encyptionmode.split('+')[1];
       }
       // String wpaEncyption = encyptionmode.split('+').skip(1).join('+');
@@ -512,9 +518,10 @@ class _WlanSetState extends State<WlanSet> {
       // WPA ENCYPITON
       // String wpaEncyption = encyptionmode.split('+').skip(1).join('+');
       String wpaEncyption = "";
-      if(encyptionmode == "psk2+tkip+aes" || encyptionmode == "psk-mixed+tkip+aes") {
+      if (encyptionmode == "psk2+tkip+aes" ||
+          encyptionmode == "psk-mixed+tkip+aes") {
         wpaEncyption = encyptionmode.split('+').skip(1).join('+');
-      }else {
+      } else {
         wpaEncyption = encyptionmode.split('+')[1];
       }
       debugPrint("获取到的encyptionmode:$encyptionmode");
@@ -596,6 +603,16 @@ class _WlanSetState extends State<WlanSet> {
       }
     };
 
+    var maxNum = int.parse(max.text);
+    if (maxNum > 32) {
+      ToastUtils.toast("The maximum number of supported connected devices is 32");
+      return;  
+    }
+    if (password.text.length > 8) {
+      ToastUtils.toast("Password cannot exceed 8 characters");
+      return;  
+    }
+
     try {
       var res = await Request().setSODTable(parameterNames, sn);
       var jsonObj = jsonDecode(res);
@@ -675,6 +692,16 @@ class _WlanSetState extends State<WlanSet> {
         ]
       }
     };
+
+    var maxNum = int.parse(max5.text);
+    if (maxNum > 32) {
+      ToastUtils.toast("The maximum number of supported connected devices is 32");
+      return;  
+    }
+    if (password5.text.length > 8) {
+      ToastUtils.toast("Password cannot exceed 8 characters");
+      return;  
+    }
 
     try {
       var res = await Request().setSODTable(parameterNames, sn);
@@ -1063,6 +1090,7 @@ class _WlanSetState extends State<WlanSet> {
   }
 
   bool _isLoading = false;
+
   /// 保存
   Future<void> _saveData() async {
     setState(() {
@@ -1473,7 +1501,8 @@ class _WlanSetState extends State<WlanSet> {
                                       context: context,
                                       options: [
                                         '100%',
-                                        '50%',
+                                        '80%',
+                                        '40%',
                                         '20%',
                                       ],
                                       value: bandIndex == 0
@@ -1488,43 +1517,49 @@ class _WlanSetState extends State<WlanSet> {
                                                       {
                                                         txPowerIndex =
                                                             selectedValue,
-                                                        if (selectedValue == 0)
-                                                          {
-                                                            txPowerShowVal =
-                                                                wifiTxpower[0],
-                                                          }
-                                                        else if (selectedValue ==
-                                                            1)
-                                                          {
-                                                            txPowerShowVal =
-                                                                wifiTxpower[1],
-                                                          }
-                                                        else
-                                                          {
-                                                            txPowerShowVal =
-                                                                wifiTxpower[2],
-                                                          }
+                                                        txPowerShowVal =
+                                                            wifiTxpower[
+                                                                selectedValue],
+                                                        // if (selectedValue == 0)
+                                                        //   {
+                                                        //     txPowerShowVal =
+                                                        //         wifiTxpower[0],
+                                                        //   }
+                                                        // else if (selectedValue ==
+                                                        //     1)
+                                                        //   {
+                                                        //     txPowerShowVal =
+                                                        //         wifiTxpower[1],
+                                                        //   }
+                                                        // else
+                                                        //   {
+                                                        //     txPowerShowVal =
+                                                        //         wifiTxpower[2],
+                                                        //   }
                                                       }
                                                     else
                                                       {
                                                         txPowerIndex5g =
                                                             selectedValue,
-                                                        if (selectedValue == 0)
-                                                          {
-                                                            txPower5gShowVal =
-                                                                wifiTxpower[0],
-                                                          }
-                                                        else if (selectedValue ==
-                                                            1)
-                                                          {
-                                                            txPower5gShowVal =
-                                                                wifiTxpower[1],
-                                                          }
-                                                        else
-                                                          {
-                                                            txPower5gShowVal =
-                                                                wifiTxpower[2],
-                                                          }
+                                                        txPower5gShowVal =
+                                                            wifi5gTxpower[
+                                                                selectedValue],
+                                                        // if (selectedValue == 0)
+                                                        //   {
+                                                        //     txPower5gShowVal =
+                                                        //         wifiTxpower[0],
+                                                        //   }
+                                                        // else if (selectedValue ==
+                                                        //     1)
+                                                        //   {
+                                                        //     txPower5gShowVal =
+                                                        //         wifiTxpower[1],
+                                                        //   }
+                                                        // else
+                                                        //   {
+                                                        //     txPower5gShowVal =
+                                                        //         wifiTxpower[2],
+                                                        //   }
                                                       }
                                                   })
                                             }
@@ -1888,6 +1923,11 @@ class _WlanSetState extends State<WlanSet> {
                                                 color: const Color(0xff737A83)),
                                             border: InputBorder.none,
                                           ),
+                                          validator: (value) {
+                                            return value!.trim().length >= 8
+                                                ? null
+                                                : 'Password is set to 8 characters';
+                                          },
                                         ),
                                       ),
                                     ],

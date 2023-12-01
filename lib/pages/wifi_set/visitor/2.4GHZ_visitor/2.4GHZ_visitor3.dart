@@ -183,10 +183,10 @@ class _Visitor3State extends State<Visitor3> {
             wpaShowVal = 'TKIP&ARS';
             break;
         }
-
         wpaIndex = ['aes', 'tkip', 'tkip+aes']
             .indexOf(data.encryption!.split('+')[1]);
         wpaVal = ['aes', 'tkip', 'tkip+aes'][wpaIndex];
+        password.text = data.key.toString();
       });
     } catch (e) {
       printError(info: 'getCloudData for visitor error: ${e.toString()}');

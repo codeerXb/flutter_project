@@ -226,6 +226,9 @@ class _AccountSecurityState extends State<AccountSecurity> {
               margin: EdgeInsets.all(20.w),
               child: OutlinedButton(
                 onPressed: _isLoading ? null : _saveData,
+                style: OutlinedButton.styleFrom(
+                side:const BorderSide(width: 1.5,color: Colors.blue),
+              ),
                 child: Row(
                   children: [
                     if (_isLoading)
@@ -242,7 +245,7 @@ class _AccountSecurityState extends State<AccountSecurity> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
-                          color: _isLoading ? Colors.grey : null,
+                          color: _isLoading ? Colors.grey : Colors.blue,
                         ),
                       ),
                   ],

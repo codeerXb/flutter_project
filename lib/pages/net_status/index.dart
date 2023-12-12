@@ -1094,7 +1094,7 @@ class _NetStatusState extends State<NetStatus> {
                         // )),
                         //上传速率
                         WhiteCard(
-                            height: 230,
+                            height: 250,
                             boxCotainer: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
@@ -1506,7 +1506,7 @@ class _NetStatusState extends State<NetStatus> {
                         ),
                         //  设备操作
                         WhiteCard(
-                            height: 258,
+                            height: 270,
                             boxCotainer: Column(
                               children: [
                                 Container(

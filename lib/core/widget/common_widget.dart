@@ -389,7 +389,7 @@ class CommonWidget {
   static Widget simpleWidgetWithMine(
       {Widget? icon, required String title, Function? callBack}) {
     return InkWell(
-      onTap: () => {callBack == null ? print("没有传递回调函数") : callBack()},
+      onTap: () => {callBack == null ? debugPrint("没有传递回调函数") : callBack()},
       child: Container(
         height: 100.w,
         alignment: Alignment.center,
@@ -488,7 +488,7 @@ class CommonWidget {
     }
 
     return InkWell(
-        onTap: () => {callBack == null ? print("没有传递回调函数") : callBack()},
+        onTap: () => {callBack == null ? debugPrint("没有传递回调函数") : callBack()},
         child: Container(
           height: 100.w,
           alignment: Alignment.center,

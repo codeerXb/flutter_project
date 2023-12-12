@@ -409,7 +409,7 @@ class _SettingState extends State<Setting> {
                   /// 访客网络
                   visitorNet(),
 
-                  /// 专业设置
+                  /// 地区设置
                   majorSet(),
 
                   /// WPS设置
@@ -1094,7 +1094,7 @@ class _SettingState extends State<Setting> {
         });
   }
 
-  /// 专业设置
+  /// 地区设置
   Widget majorSet() {
     return CommonWidget.simpleWidgetWithMine(
         title: S.of(context).majorSet,

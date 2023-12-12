@@ -123,7 +123,7 @@ class _WpsSetState extends State<WpsSet> {
         if (modeShowVal == "client") {
           modeShowVal = "Client PIN";
           modeVal = 1;
-        }else {
+        } else {
           modeVal = 0;
         }
         pinVal.text = jsonObj["data"]["wifiWpsClientPin"].toString();
@@ -160,7 +160,7 @@ class _WpsSetState extends State<WpsSet> {
         if (modeShowVal == "client") {
           modeShowVal = "Client PIN";
           modeVal = 1;
-        }else {
+        } else {
           modeVal = 0;
         }
         pinVal.text = jsonObj["data"]["wifi5gWpsClientPin"].toString();
@@ -334,6 +334,9 @@ class _WpsSetState extends State<WpsSet> {
             margin: EdgeInsets.all(20.w),
             child: OutlinedButton(
               onPressed: _isLoading ? null : _saveData,
+              style: OutlinedButton.styleFrom(
+                side:const BorderSide(width: 1.5,color: Colors.blue),
+              ),
               child: Row(
                 children: [
                   if (_isLoading)
@@ -350,7 +353,7 @@ class _WpsSetState extends State<WpsSet> {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
-                        color: _isLoading ? Colors.grey : null,
+                        color: _isLoading ? Colors.grey : Colors.blue,
                       ),
                     ),
                 ],

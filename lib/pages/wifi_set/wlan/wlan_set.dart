@@ -5,7 +5,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_template/config/base_config.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
@@ -185,6 +184,10 @@ class _WlanSetState extends State<WlanSet> {
   ];
   List<String> wifiCountryChannelListHT40 = [
     'auto',
+    "1",
+    "2",
+    "3",
+    "4",
     "5",
     "6",
     "7",
@@ -239,16 +242,11 @@ class _WlanSetState extends State<WlanSet> {
   bool passwordValHidden = true;
 
   // 发射功率
-  String txPowerShowVal = '20';
-  String txPower5gShowVal = '20';
+  String txPowerShowVal = '';
+  String txPower5gShowVal = '';
   // 发射功率对应到节点数据
   // 2.4g发射功率对应关系
-  List<String> wifiTxpower = [
-    "100",
-    '80',
-    '40',
-    '20',
-  ];
+  List<String> wifiTxpower = ["100",'80','40','20',];
   // 5g发射功率对应关系
   List<String> wifi5gTxpower = ['100', '80', '40', "20"];
   // 选择的索引值
@@ -284,7 +282,7 @@ class _WlanSetState extends State<WlanSet> {
         if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
           // 云端请求赋值
           await get24gList();
-          await getWifiCountryChannelList();
+          // await getWifiCountryChannelList();
         }
         if (loginController.login.state == 'local') {
           // 本地请求赋值
@@ -299,7 +297,7 @@ class _WlanSetState extends State<WlanSet> {
     });
   }
 
-  // 获取WIFI信道列表
+  // 获取WIFI信道列表(废弃)
   getWifiCountryChannelList() async {
     var data = {
       'sn': sn,
@@ -352,21 +350,23 @@ class _WlanSetState extends State<WlanSet> {
         "wifiMode",
         "wifiHtmode",
         "wifiChannel",
-        "wifiTxpower"
+        "wifiTxpower",
+        "wifiCountryChannelList_HT20",
+        "wifiCountryChannelList_HT40"
       ]
     };
     // 获取SOD节点数据
     var res = await Request().getACSNode(parameterNames, sn);
     var jsonObj = jsonDecode(res);
     var jsonModel = wlanBean.fromJson(jsonObj);
-    debugPrint('wlan数据:$jsonObj');
+    debugPrint('wlan节点数据:----$jsonObj----}');
     // 获取SOD表数据
     var parameters = {"method": "get", "table": "WiFiSsidTable"};
     var result = await Request().getSODTable(parameters, sn);
     var jsonRes = jsonDecode(result);
     var model = guestModel.fromJson(jsonRes);
     dataModel = model;
-    debugPrint('2.4G wlan获取的数据:$jsonRes');
+    debugPrint('2.4G wlan表获取的数据:-----$jsonRes ----');
 
     try {
       // List<String> parameterNames = [
@@ -385,6 +385,11 @@ class _WlanSetState extends State<WlanSet> {
       String channel = jsonModel.data!.wifiChannel ?? "";
       // TX Power
       String txPower = jsonModel.data!.wifiTxpower ?? "";
+
+      String channel_HT20 = jsonModel.data!.wifiCountryChannelListHT20 ?? "";
+
+      String channel_HT40 = jsonModel.data!.wifiCountryChannelListHT40 ?? "";
+      debugPrint('channel_HT20:${jsonModel.data!.wifiCountryChannelListHT20} -- channel_HT40:${jsonModel.data!.wifiCountryChannelListHT40}');
       // SSID
       String ssidText = model.data![0].ssid ?? "";
       // MAX
@@ -412,19 +417,26 @@ class _WlanSetState extends State<WlanSet> {
         bandIndex = 0;
         isCheck = enable;
         modeIndex = modeVal.indexOf(mode);
+        wifiCountryChannelListHT20 = [
+          "auto",
+          ...channel_HT20.split(';')
+        ]; 
+        wifiCountryChannelListHT40 = [
+          "auto",
+          ...channel_HT40.split(';')
+        ]; 
         bandWidthIndex = bandWidthVal.indexOf(bandwidth);
         channelIndex = bandWidthIndex == 0
             ? wifiCountryChannelListHT20.indexOf(channel)
-            : bandWidthIndex == 1
-                ? wifiCountryChannelListHT40j.indexOf(channel)
-                : wifiCountryChannelListHT40.indexOf(channel);
-        if (txPower == wifiTxpower[0]) {
-          txPowerIndex = 0;
-        } else if (txPower == wifiTxpower[1]) {
-          txPowerIndex = 1;
-        } else {
-          txPowerIndex = 2;
+            : wifiCountryChannelListHT40.indexOf(channel);
+        
+        for(var i = 0 ;i < wifiTxpower.length; i++ ) {
+          if (txPower == wifiTxpower[i]) {
+            txPowerIndex = i;
+          }
         }
+
+        
         ssid.text = ssidText;
         max.text = maxText.toString();
         ssidisCheck = hideBroadcast;
@@ -470,7 +482,8 @@ class _WlanSetState extends State<WlanSet> {
         "wifi5gMode",
         "wifi5gHtmode",
         "wifi5gChannel",
-        "wifi5gTxpower"
+        "wifi5gTxpower",
+        "wifi5gCountryChannelList"
       ]
     };
 
@@ -503,6 +516,8 @@ class _WlanSetState extends State<WlanSet> {
       String channel = jsonModel.data!.wifi5gChannel ?? "";
       // TX Power
       String txPower = jsonModel.data!.wifi5gTxpower ?? "";
+
+      String channel_5G_List = jsonModel.data!.wifi5gCountryChannelList ?? "";
       // SSID
       String ssidText = model.data![0].ssid ?? "";
       // MAX
@@ -533,16 +548,26 @@ class _WlanSetState extends State<WlanSet> {
         bandIndex = 1;
         isCheck5 = enable;
         modeIndex5g = modeVal5g.indexOf(mode);
+        wifi5gCountryChannelList = [
+          "auto",
+          ...channel_5G_List.split(';')
+        ];
         bandWidthIndex5g = bandWidthVal5g.indexOf(bandwidth);
         channelIndex5g = wifi5gCountryChannelList.indexOf(channel);
         debugPrint("获取到的索引:$modeIndex5g - $bandWidthIndex5g - $channelIndex5g");
         // fsVal5 = txPower;
-        if (txPower == wifi5gTxpower[0]) {
-          txPowerIndex5g = 0;
-        } else if (txPower == wifi5gTxpower[1]) {
-          txPowerIndex5g = 1;
-        } else {
-          txPowerIndex5g = 2;
+        // if (txPower == wifi5gTxpower[0]) {
+        //   txPowerIndex5g = 0;
+        // } else if (txPower == wifi5gTxpower[1]) {
+        //   txPowerIndex5g = 1;
+        // } else {
+        //   txPowerIndex5g = 2;
+        // }
+
+        for(var i = 0 ;i < wifi5gTxpower.length; i++ ) {
+          if (txPower == wifi5gTxpower[i]) {
+            txPowerIndex5g = i;
+          }
         }
 
         ssid5.text = ssidText;
@@ -605,12 +630,13 @@ class _WlanSetState extends State<WlanSet> {
 
     var maxNum = int.parse(max.text);
     if (maxNum > 32) {
-      ToastUtils.toast("The maximum number of supported connected devices is 32");
-      return;  
+      ToastUtils.toast(
+          "The maximum number of supported connected devices is 32");
+      return;
     }
-    if (password.text.length > 8) {
+    if (password.text.length < 8 || password.text.length > 16) {
       ToastUtils.toast("Password cannot exceed 8 characters");
-      return;  
+      return;
     }
 
     try {
@@ -632,9 +658,7 @@ class _WlanSetState extends State<WlanSet> {
         "wifiHtmode": bandWidthVal[bandWidthIndex],
         "wifiChannel": bandWidthIndex == 0
             ? wifiCountryChannelListHT20[channelIndex]
-            : bandWidthIndex == 1
-                ? wifiCountryChannelListHT40j[channelIndex]
-                : wifiCountryChannelListHT40[channelIndex],
+            : wifiCountryChannelListHT40[channelIndex],
         "wifiTxpower": txPowerShowVal
       }
     };
@@ -695,12 +719,13 @@ class _WlanSetState extends State<WlanSet> {
 
     var maxNum = int.parse(max5.text);
     if (maxNum > 32) {
-      ToastUtils.toast("The maximum number of supported connected devices is 32");
-      return;  
+      ToastUtils.toast(
+          "The maximum number of supported connected devices is 32");
+      return;
     }
-    if (password5.text.length > 8) {
+    if (password5.text.length < 8 || password5.text.length > 16) {
       ToastUtils.toast("Password cannot exceed 8 characters");
-      return;  
+      return;
     }
 
     try {
@@ -1127,6 +1152,9 @@ class _WlanSetState extends State<WlanSet> {
                 margin: EdgeInsets.all(20.w),
                 child: OutlinedButton(
                   onPressed: _isLoading ? null : _saveData,
+                  style: OutlinedButton.styleFrom(
+                side:const BorderSide(width: 1.5,color: Colors.blue),
+              ),
                   child: Row(
                     children: [
                       if (_isLoading)
@@ -1143,7 +1171,7 @@ class _WlanSetState extends State<WlanSet> {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
-                            color: _isLoading ? Colors.grey : null,
+                            color: _isLoading ? Colors.grey : Colors.blue,
                           ),
                         ),
                     ],
@@ -1167,7 +1195,7 @@ class _WlanSetState extends State<WlanSet> {
                 child: Container(
                   decoration: const BoxDecoration(
                       color: Color.fromRGBO(240, 240, 240, 1)),
-                  height: 2000.w,
+                  height: double.infinity,
                   child: SingleChildScrollView(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1346,7 +1374,7 @@ class _WlanSetState extends State<WlanSet> {
                                 ),
                               //带宽
                               if (bandIndex == 0
-                                  ? isCheck && (modeIndex < 2)
+                                  ? isCheck
                                   : isCheck5 && modeIndex5g != 3)
                                 GestureDetector(
                                   onTap: () {
@@ -1424,9 +1452,7 @@ class _WlanSetState extends State<WlanSet> {
                                           ? wifi5gCountryChannelList
                                           : bandWidthIndex == 0
                                               ? wifiCountryChannelListHT20
-                                              : bandWidthIndex == 1
-                                                  ? wifiCountryChannelListHT40j
-                                                  : wifiCountryChannelListHT40,
+                                              : wifiCountryChannelListHT40,
                                       value: bandIndex == 0
                                           ? channelIndex
                                           : channelIndex5g,
@@ -1471,10 +1497,7 @@ class _WlanSetState extends State<WlanSet> {
                                                     : bandWidthIndex == 0
                                                         ? wifiCountryChannelListHT20[
                                                             channelIndex]
-                                                        : bandWidthIndex == 1
-                                                            ? wifiCountryChannelListHT40j[
-                                                                channelIndex]
-                                                            : wifiCountryChannelListHT40[
+                                                        : wifiCountryChannelListHT40[
                                                                 channelIndex],
                                                 style: TextStyle(
                                                     color: const Color.fromARGB(
@@ -1580,8 +1603,9 @@ class _WlanSetState extends State<WlanSet> {
                                             Text(
                                                 [
                                                   '100%',
-                                                  '50%',
-                                                  '20%',
+                                                  '80%',
+                                                  '40%',
+                                                  '20%'
                                                 ][bandIndex == 0
                                                     ? txPowerIndex
                                                     : txPowerIndex5g],
@@ -1622,7 +1646,8 @@ class _WlanSetState extends State<WlanSet> {
                                             color: const Color.fromARGB(
                                                 255, 5, 0, 0),
                                             fontSize: 28.sp)),
-                                    SizedBox(
+                                    Expanded(
+                                        child: SizedBox(
                                       width: 250.w,
                                       child: TextFormField(
                                         controller:
@@ -1641,7 +1666,7 @@ class _WlanSetState extends State<WlanSet> {
                                           border: InputBorder.none,
                                         ),
                                       ),
-                                    ),
+                                    )),
                                   ],
                                 ),
                               ),
@@ -1656,7 +1681,8 @@ class _WlanSetState extends State<WlanSet> {
                                             color: const Color.fromARGB(
                                                 255, 5, 0, 0),
                                             fontSize: 28.sp)),
-                                    SizedBox(
+                                    Expanded(
+                                        child: SizedBox(
                                       width: 250.w,
                                       child: TextFormField(
                                         keyboardType: TextInputType.number,
@@ -1679,7 +1705,7 @@ class _WlanSetState extends State<WlanSet> {
                                           border: InputBorder.none,
                                         ),
                                       ),
-                                    ),
+                                    )),
                                   ],
                                 ),
                               ),

@@ -1039,7 +1039,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                               }
                             }
                           },
-                          child: Text(S.of(context).save),
+                          child: Text(S.of(context).save,style:const TextStyle(color: Colors.white)),
                         ),
                       ),
                     ),
@@ -1107,7 +1107,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                                       ]);
                                 });
                           },
-                          child: Text(S.current.Reboot),
+                          child: Text(S.current.Reboot,style:const TextStyle(color: Colors.white)),
                         ),
                       ),
                     ),
@@ -1175,7 +1175,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                                       ]);
                                 });
                           },
-                          child: Text(S.current.FactoryReset),
+                          child: Text(S.current.FactoryReset,style:const TextStyle(color: Colors.white),),
                         ),
                       ),
                     ),

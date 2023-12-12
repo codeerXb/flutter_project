@@ -331,6 +331,9 @@ class _UserRegisterState extends State<UserRegister> {
                                 onPressed: (() {
                                   // RegExp reg = RegExp(
                                   //     r'^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$');
+                                  debugPrint("注册邮箱:$_phoneVal");
+                                  
+                                  debugPrint("注册接口:${BaseConfig.cloudBaseUrl}/platform/appCustomer/sendSmsOrEmailCode?account=$_phoneVal");
                                   if (iscode) return;
                                   if (_phoneVal == '') {
                                     ToastUtils.toast(S.of(context).phoneError);
@@ -413,6 +416,7 @@ class _UserRegisterState extends State<UserRegister> {
                                 "password": AESUtil.generateAES(_passwordVal),
                                 "code": _codeValue
                               };
+                              debugPrint("注册邮箱:$_phoneVal -- ${AESUtil.generateAES(_passwordVal)} -- $_codeValue");
                               //表单校验
                               if ((_formKey.currentState as FormState)
                                   .validate()) {

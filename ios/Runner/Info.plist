@@ -32,6 +32,8 @@
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
+		<key>NSExceptionDomains</key>
+		<dict/>
 	</dict>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>该应用程序需要您的同意来访问媒体资料库，以检测是否可以存储</string>
@@ -47,6 +49,10 @@
 	<string>需要你授权访问相册</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

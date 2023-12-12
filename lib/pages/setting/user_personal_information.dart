@@ -474,7 +474,7 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
-                                          Text(S.of(context).update),
+                                          Text(S.of(context).update,style:const TextStyle(color: Colors.white)),
                                         ],
                                       ),
                                     )),

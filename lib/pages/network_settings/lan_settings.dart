@@ -510,6 +510,9 @@ class _LanSettingsState extends State<LanSettings> {
               margin: EdgeInsets.all(20.w),
               child: OutlinedButton(
                 onPressed: () => warningReboot(_saveData),
+                style: OutlinedButton.styleFrom(
+                side:const BorderSide(width: 1.5,color: Colors.blue),
+              ),
                 child: Row(
                   children: [
                     if (_isLoading)
@@ -526,7 +529,7 @@ class _LanSettingsState extends State<LanSettings> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
-                          color: _isLoading ? Colors.grey : null,
+                          color: _isLoading ? Colors.grey : Colors.blue,
                         ),
                       ),
                   ],

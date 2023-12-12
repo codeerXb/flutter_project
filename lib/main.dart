@@ -111,6 +111,27 @@ class _MyAppState extends State<MyApp> {
               debugPrint('即将跳转:${settings.name}');
               return router.getRoutes(settings);
             }),
+            theme: ThemeData(
+              switchTheme: SwitchThemeData(
+                thumbColor: MaterialStateProperty.resolveWith<Color>(
+                    (Set<MaterialState> states) {
+                  if (states.contains(MaterialState.disabled)) {
+                    return Colors.white.withOpacity(.48);
+                  }
+                  return Colors.white;
+                }),
+                trackColor: MaterialStateProperty.resolveWith<Color?>(
+                    (Set<MaterialState> states) {
+                  if (states.contains(MaterialState.disabled)) {
+                    return null;
+                  }
+                  if (states.contains(MaterialState.selected)) {
+                    return Colors.green;
+                  }
+                  return null;
+                }),
+              ),
+            ),
           ));
         });
   }

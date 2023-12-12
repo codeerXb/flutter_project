@@ -282,6 +282,11 @@ class _Visitor3State extends State<Visitor3> {
       }
     };
 
+    if (password.text.length < 8 || password.text.length > 16) {
+      ToastUtils.toast("Password cannot exceed 8 characters");
+      return;
+    }
+
     try {
       var res = await Request().setSODTable(parameterNames, sn);
       var jsonObj = jsonDecode(res);
@@ -327,6 +332,9 @@ class _Visitor3State extends State<Visitor3> {
             margin: EdgeInsets.all(20.w),
             child: OutlinedButton(
               onPressed: loading ? null : _saveData,
+              style: OutlinedButton.styleFrom(
+                side:const BorderSide(width: 1.5,color: Colors.blue),
+              ),
               child: Row(
                 children: [
                   if (loading)
@@ -343,7 +351,7 @@ class _Visitor3State extends State<Visitor3> {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
-                        color: loading ? Colors.grey : null,
+                        color: loading ? Colors.grey : Colors.blue,
                       ),
                     ),
                 ],

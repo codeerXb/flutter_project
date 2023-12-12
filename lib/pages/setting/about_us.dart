@@ -27,11 +27,13 @@ class _AboutUsState extends State<AboutUs> {
             /// 公司首页
             CommonWidget.simpleWidgetWithUserDetail("Platform official website",
                 callBack: () {
+              debugPrint(
+                  "当前访问的URL地址:${BaseConfig.companyWebProtocol}${BaseConfig.companyWebUrl}");
               launchUrl(
                 Uri(
                     scheme: BaseConfig.companyWebProtocol,
-                    host: BaseConfig.companyWebUrl),
-                mode: LaunchMode.externalApplication,
+                    host: BaseConfig.companyWebUrl,path: ":8094/auth/login"),
+                mode: LaunchMode.inAppWebView,
               );
             }),
 

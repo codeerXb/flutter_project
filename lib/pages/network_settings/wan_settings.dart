@@ -374,6 +374,9 @@ class _WanSettingsState extends State<WanSettings> {
                 margin: EdgeInsets.all(20.w),
                 child: OutlinedButton(
                   onPressed: _isLoading ? null : _saveData,
+                  style: OutlinedButton.styleFrom(
+                side:const BorderSide(width: 1.5,color: Colors.blue),
+              ),
                   child: Row(
                     children: [
                       if (_isLoading)
@@ -390,7 +393,7 @@ class _WanSettingsState extends State<WanSettings> {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
-                            color: _isLoading ? Colors.grey : null,
+                            color: _isLoading ? Colors.grey : Colors.blue,
                           ),
                         ),
                     ],

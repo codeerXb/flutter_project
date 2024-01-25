@@ -26,10 +26,11 @@ class _AdvanceChannelListPageState extends State<AdvanceChannelListPage> {
     sharedGetData('deviceSn', String).then(((res) {
       debugPrint('deviceSn : $res');
       sn = res.toString();
-      getCurrentChannnel();
+      // getCurrentChannnel();
     }));
     setState(() {
       listArray = Get.arguments["data"];
+      currentChannnel = Get.arguments["currentChannel"];
       bastChannel = listArray[0].channel!;
     });
 

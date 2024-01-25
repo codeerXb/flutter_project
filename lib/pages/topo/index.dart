@@ -19,8 +19,8 @@ import 'package:flutter_template/pages/net_status/model/net_connect_status.dart'
 import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
 import 'package:flutter_template/pages/topo/model/equipment_datas.dart';
 import 'package:get/get.dart';
-
 import '../../generated/l10n.dart';
+import 'package:flutter_template/core/utils/screen_adapter.dart';
 
 typedef void OnItemPressed(bool result);
 
@@ -39,6 +39,9 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
   Map<String, dynamic> onlineCount = {};
   List<String> deviceNames = [];
   late AnimationController _animationController;
+  // 实时在线设备数量
+  int _onlineCount = 0;
+
   @override
   void initState() {
     super.initState();
@@ -257,6 +260,7 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
               onlineDeviceTable.add(device);
               id++;
             });
+            _onlineCount = onlineDeviceTable.length;
             topoData =
                 EquipmentDatas(onlineDeviceTable: onlineDeviceTable, max: 255);
             // ToastUtils.toast(S.current.success);
@@ -426,66 +430,66 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
                     ])
                   ],
                 ),
-                //以下是暂时放开,后面打包再注释
-                Column(
-                  children: [
-                    GestureDetector(
-                      onTap: (() {
-                        Get.toNamed("/odu");
-                      }),
-                      child: Stack(
-                        children: [
-                          Container(
-                            decoration: const BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                            ),
-                            clipBehavior: Clip.hardEdge,
-                            height: 196.w,
-                            width: 196.w,
-                            margin: const EdgeInsets.all(5),
-                            child: Image.asset('assets/images/odu.png',
-                                fit: BoxFit.cover),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Text(
-                      'ODU',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24.sp,
-                      ),
-                    ),
-                    Stack(children: [
-                      SizedBox(
-                        height: 80.w,
-                        width: 1.sw,
-                      ),
-                      Center(
-                        child: Container(
-                            height: 16.w,
-                            width: 16.w,
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF2F5AF5),
-                              borderRadius: BorderRadius.circular(8.w),
-                            )),
-                      ),
-                      Center(
-                          child: Container(
-                              height: 54.w,
-                              width: 10.w,
-                              margin: EdgeInsets.only(top: 16.w),
-                              child: XFDashedLine(
-                                axis: Axis.vertical,
-                                count: 10,
-                                dashedWidth: 2.w,
-                                dashedHeight: 2.w,
-                                color: const Color(0xFF2F5AF5),
-                              ))),
-                    ])
-                  ],
-                ),
+                //TODO:以下是暂时放开,后面打包再注释
+                // Column(
+                //   children: [
+                //     GestureDetector(
+                //       onTap: (() {
+                //         Get.toNamed("/odu");
+                //       }),
+                //       child: Stack(
+                //         children: [
+                //           Container(
+                //             decoration: const BoxDecoration(
+                //               borderRadius:
+                //                   BorderRadius.all(Radius.circular(10)),
+                //             ),
+                //             clipBehavior: Clip.hardEdge,
+                //             height: 196.w,
+                //             width: 196.w,
+                //             margin: const EdgeInsets.all(5),
+                //             child: Image.asset('assets/images/odu.png',
+                //                 fit: BoxFit.cover),
+                //           ),
+                //         ],
+                //       ),
+                //     ),
+                //     Text(
+                //       'ODU',
+                //       style: TextStyle(
+                //         fontWeight: FontWeight.bold,
+                //         fontSize: 24.sp,
+                //       ),
+                //     ),
+                //     Stack(children: [
+                //       SizedBox(
+                //         height: 80.w,
+                //         width: 1.sw,
+                //       ),
+                //       Center(
+                //         child: Container(
+                //             height: 16.w,
+                //             width: 16.w,
+                //             decoration: BoxDecoration(
+                //               color: const Color(0xFF2F5AF5),
+                //               borderRadius: BorderRadius.circular(8.w),
+                //             )),
+                //       ),
+                //       Center(
+                //           child: Container(
+                //               height: 54.w,
+                //               width: 10.w,
+                //               margin: EdgeInsets.only(top: 16.w),
+                //               child: XFDashedLine(
+                //                 axis: Axis.vertical,
+                //                 count: 10,
+                //                 dashedWidth: 2.w,
+                //                 dashedHeight: 2.w,
+                //                 color: const Color(0xFF2F5AF5),
+                //               ))),
+                //     ])
+                //   ],
+                // ),
                 GestureDetector(
                   onTap: () {
                     toolbarController.setPageIndex(2);
@@ -617,8 +621,8 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
                           if (!topoData.onlineDeviceTable!.isNotEmpty)
                             Center(
                               child: Container(
-                                  margin: EdgeInsets.only(top: 100.sp),
-                                  height: 200.w,
+                                  margin: EdgeInsets.only(top: 50.sp),
+                                  height: 100.w,
                                   child: Text(S.of(context).NoDeviceConnected)),
                             ),
                         ],
@@ -630,6 +634,208 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
                 //       height: 200.w,
                 //       child: Text(S.of(context).NoDeviceConnected)),
                 // ),
+                //2*3网格
+                        Container(
+                          margin: EdgeInsets.only(
+                              left: 30.w, right: 30.0.w, top: 20.w),
+                          height: 480.w,
+                          child: GridView(
+                            physics:
+                                const NeverScrollableScrollPhysics(), //禁止滚动
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2, //一行的Widget数量
+                              childAspectRatio: 2, //宽高比为1
+                              crossAxisSpacing: 16, //横轴方向子元素的间距
+                            ),
+                            children: <Widget>[
+                              // 接入设备
+                              // GestureDetector(
+                              //   onTap: () {
+                              //     Get.toNamed('/connected_device');
+                              //   },
+                              //   child: GardCard(
+                              //       boxCotainer: Row(
+                              //     mainAxisAlignment:
+                              //         MainAxisAlignment.spaceBetween,
+                              //     children: [
+                              //       Icon(Icons.devices_other_rounded,
+                              //           color: const Color.fromRGBO(
+                              //               95, 141, 255, 1),
+                              //           size: 60.sp),
+                              //       Expanded(
+                              //         child: Column(
+                              //           mainAxisAlignment:
+                              //               MainAxisAlignment.center,
+                              //           children: [
+                              //             Text(S.current.device),
+                              //             Text(
+                              //               '$_onlineCount ${S.current.line}',
+                              //               style: TextStyle(
+                              //                   color: Colors.black54,
+                              //                   fontSize:
+                              //                       ScreenAdapter.fontSize(25)),
+                              //             ),
+                              //           ],
+                              //         ),
+                              //       )
+                              //     ],
+                              //   )),
+                              // ),
+                              //儿童上网
+                              
+                              GestureDetector(
+                                onTap: () {
+                                  // /parentList  /parent
+                                  Get.toNamed('/parentList');
+                                },
+                                child: GardCard(
+                                    boxCotainer: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Icon(Icons.child_care,
+                                        color: const Color.fromRGBO(
+                                            95, 141, 255, 1),
+                                        size: 60.sp),
+                                    ConstrainedBox(
+                                      constraints: BoxConstraints(
+                                        maxWidth: ScreenAdapter.width(180),
+                                      ),
+                                      child: FittedBox(
+                                        child: Text(
+                                          S.of(context).parent,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(fontSize: 30.w),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                              ),
+                              
+                              // 访客网路
+                              GestureDetector(
+                                onTap: () {
+                                  Get.toNamed("/visitor_net");
+                                },
+                                child: GardCard(
+                                    boxCotainer: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Image(
+                                      width: ScreenAdapter.width(80),
+                                      height: ScreenAdapter.height(80),
+                                      image: const AssetImage(
+                                          'assets/images/visitor_net.png'),
+                                      fit: BoxFit.cover,
+                                    ),
+                                    ConstrainedBox(
+                                      constraints: BoxConstraints(
+                                        maxWidth: 180.w,
+                                      ),
+                                      child: FittedBox(
+                                        child: Text(
+                                          S.current.visitorNet,
+                                          textAlign: TextAlign.right,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                              ),
+
+                              // Device Info
+                              GestureDetector(
+                                onTap: () {
+                                  Get.toNamed("/common_problem");
+                                },
+                                child: GardCard(
+                                    boxCotainer: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Image(
+                                        width: 60.w,
+                                        height: 60.w,
+                                        image: const AssetImage(
+                                            'assets/images/equ_info.png'),
+                                        fit: BoxFit.cover),
+                                    Expanded(
+                                      child: Text(
+                                        S.current.deviceInfo,
+                                        textAlign: TextAlign.center,
+                                        style: const TextStyle(
+                                            fontSize: 13, color: Colors.black),
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                              ),
+                              // DNS Setting
+                              GestureDetector(
+                                onTap: () {
+                                  Get.toNamed("/dns_settings");
+                                },
+                                child: GardCard(
+                                    boxCotainer: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Image(
+                                        width: 70.w,
+                                        height: 70.w,
+                                        image: const AssetImage(
+                                            'assets/images/DNS.png'),
+                                        fit: BoxFit.cover),
+                                    ConstrainedBox(
+                                      constraints: BoxConstraints(
+                                        maxWidth: 180.w,
+                                      ),
+                                      child: FittedBox(
+                                        child: Text(
+                                          S.current.dnsSettings,
+                                          textAlign: TextAlign.right,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                              ),
+                              // LAN Setting
+                              GestureDetector(
+                                onTap: () {
+                                  Get.toNamed("/lan_settings");
+                                },
+                                child: GardCard(
+                                    boxCotainer: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Image(
+                                        width: 70.w,
+                                        height: 70.w,
+                                        image: const AssetImage(
+                                            'assets/images/lan.png'),
+                                        fit: BoxFit.cover),
+                                    ConstrainedBox(
+                                      constraints: BoxConstraints(
+                                        maxWidth: 180.w,
+                                      ),
+                                      child: FittedBox(
+                                        child: Text(
+                                          S.current.lanSettings,
+                                          textAlign: TextAlign.right,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )),
+                              ),
+                            ],
+                          ),
+                        ),
               ],
             ),
           ),
@@ -736,6 +942,25 @@ class _TopoItemsState extends State<TopoItems> {
           // const Text('datdadada'),
         ],
       ),
+    );
+  }
+}
+
+//card
+class GardCard extends StatelessWidget {
+  final Widget boxCotainer;
+  const GardCard({super.key, required this.boxCotainer});
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 150.w,
+      padding: EdgeInsets.all(28.0.w),
+      margin: EdgeInsets.only(bottom: 20.w),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18.w),
+      ),
+      child: boxCotainer,
     );
   }
 }

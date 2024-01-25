@@ -73,6 +73,7 @@ class _NetModeState extends State<NetMode> {
   LocationData? currentLocation;
   String? longitudeString;
   String? latitudeString;
+  String userAccount = "";
 
   Future<LocationData?> _getLocation() async {
     Location location = Location();
@@ -151,6 +152,7 @@ class _NetModeState extends State<NetMode> {
         printInfo(info: '登录返回$localLoginRes');
         if (localLoginRes['code'] == 200) {
           Map<String, dynamic> bindParma = {
+            "account" : userAccount,
             "deviceSn": sn,
             "lon": longitudeString,
             "lat": latitudeString
@@ -451,6 +453,12 @@ class _NetModeState extends State<NetMode> {
 
   @override
   void initState() {
+    sharedGetData("user_phone", String).then((data) {
+      debugPrint("当前获取的用户信息:${data.toString()}");
+      if ((data.toString()).isNotEmpty) {
+        userAccount= data as String;
+      }
+    });
     getNetType();
     getLocationInformation();
     ipValue.text = '172.16.11.207';

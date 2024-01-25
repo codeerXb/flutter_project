@@ -426,9 +426,12 @@ class _WlanSetState extends State<WlanSet> {
           ...channel_HT40.split(';')
         ]; 
         bandWidthIndex = bandWidthVal.indexOf(bandwidth);
-        channelIndex = bandWidthIndex == 0
+        if (channel.isNotEmpty) {
+          channelIndex = bandWidthIndex == 0
             ? wifiCountryChannelListHT20.indexOf(channel)
             : wifiCountryChannelListHT40.indexOf(channel);
+        }
+        
         
         for(var i = 0 ;i < wifiTxpower.length; i++ ) {
           if (txPower == wifiTxpower[i]) {
@@ -553,7 +556,10 @@ class _WlanSetState extends State<WlanSet> {
           ...channel_5G_List.split(';')
         ];
         bandWidthIndex5g = bandWidthVal5g.indexOf(bandwidth);
-        channelIndex5g = wifi5gCountryChannelList.indexOf(channel);
+        if (channel.isNotEmpty) {
+          channelIndex5g = wifi5gCountryChannelList.indexOf(channel);
+        }
+        
         debugPrint("获取到的索引:$modeIndex5g - $bandWidthIndex5g - $channelIndex5g");
         // fsVal5 = txPower;
         // if (txPower == wifi5gTxpower[0]) {

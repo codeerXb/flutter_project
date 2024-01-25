@@ -12,10 +12,12 @@ import 'package:flutter_template/pages/get_equipment/water_ripple_painter.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:flutter_template/pages/login/model/equipment_data.dart';
 import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
+import '../../core/utils/string_util.dart';
 import 'package:get/get.dart';
 import 'package:location/location.dart';
 import 'package:geocode/geocode.dart';
 import 'package:dio/dio.dart';
+
 class Equipment extends StatefulWidget {
   const Equipment({super.key});
 
@@ -29,53 +31,63 @@ class _MyWidgetState extends State<Equipment> {
   bool isExistCloudDevice = false;
   List appList = [];
   EquipmentData equipmentData = EquipmentData();
-  Timer? timer;
+  // Timer? timer;
   String configStatus = " ";
   // 位置信息
   LocationData? currentLocation;
   String? longitudeString;
   String? latitudeString;
+  String userAccount = "";
   @override
   void initState() {
-    super.initState();
-    getLocationInformation();
-    Future.delayed(const Duration(milliseconds: 2000), () {
-      if (mounted) {
+    sharedGetData("user_phone", String).then((data) {
+      debugPrint("当前获取的用户信息:${data.toString()}");
+      if ((data.toString()).isNotEmpty) {
+        userAccount = data as String;
         getqueryingBoundDevices();
       }
-      return;
     });
+    super.initState();
+    getLocationInformation();
+    // Future.delayed(const Duration(milliseconds: 2000), () {
+    //   if (mounted) {
+        
+    //   }
+    //   return;
+    // });
     loginController.setLoading(true);
   }
 
   //  查询绑定设备 App
   void getqueryingBoundDevices() {
-    App.get('/platform/appCustomer/queryCustomerCpe').then((res) {
+    App.get('/platform/appCustomer/queryCustomerCpe?account=$userAccount').then((res) {
       if (res == null || res.toString().isEmpty) {
         throw Exception('Response is empty.');
       }
       var d = json.decode(json.encode(res));
-      if (d['code'] != 200) {
-        // 9999：用户令牌不能为空
-        // 9998：平台登录标识不能为空
-        // 9996：用户令牌过期或非法
-        // 9997：平台登录标识非法
-        if (d['code'] == 9999 ||
-            d['code'] == 9998 ||
-            d['code'] == 9997 ||
-            d['code'] == 9996) {
-          ToastUtils.error(S.of(context).tokenExpired);
-          sharedDeleteData('user_token');
-          Get.offAllNamed('/user_login');
+      if (mounted) {
+        if (d['code'] != 200) {
+          // 9999：用户令牌不能为空
+          // 9998：平台登录标识不能为空
+          // 9996：用户令牌过期或非法
+          // 9997：平台登录标识非法
+          if (d['code'] == 9999 ||
+              d['code'] == 9998 ||
+              d['code'] == 9997 ||
+              d['code'] == 9996) {
+            ToastUtils.error(S.of(context).tokenExpired);
+            sharedDeleteData('user_token');
+            Get.offAllNamed('/user_login');
+          } else {
+            ToastUtils.error(S.of(context).failed);
+          }
+          return;
         } else {
-          ToastUtils.error(S.of(context).failed);
+          setState(() {
+            appList = d['data'];
+          });
+          getEquipmentData(d['data']);
         }
-        return;
-      } else {
-        setState(() {
-          appList = d['data'];
-        });
-        getEquipmentData(d['data']);
       }
     }).catchError((onError) {
       debugPrint(onError.toString());
@@ -99,7 +111,8 @@ class _MyWidgetState extends State<Equipment> {
 
         // });
         equipmentData = EquipmentData.fromJson(d);
-        sharedAddAndUpdate("systemRouterOnly", String, equipmentData.systemRouterOnly!);
+        sharedAddAndUpdate(
+            "systemRouterOnly", String, equipmentData.systemRouterOnly!);
         if (list.isNotEmpty) {
           for (var app in list) {
             String deviceSnKey = 'deviceSn';
@@ -110,9 +123,11 @@ class _MyWidgetState extends State<Equipment> {
                 info:
                     'isExistCloudDevice===$isExistCloudDevice$deviceSnValue$systemVersionSnValue');
             if (deviceSnValue == systemVersionSnValue) {
-              setState(() {
-                isExistCloudDevice = true;
-              });
+              if (mounted) {
+                setState(() {
+                  isExistCloudDevice = true;
+                });
+              }
               return;
             } else {
               continue;
@@ -195,6 +210,7 @@ class _MyWidgetState extends State<Equipment> {
 
   void bundDevice(String sn, String vn) {
     Map<String, dynamic> bindParma = {
+      "account" : userAccount,
       "deviceSn": sn,
       "lon": longitudeString,
       "lat": latitudeString
@@ -226,8 +242,8 @@ class _MyWidgetState extends State<Equipment> {
         Get.offNamed("/home", arguments: {"sn": sn, "vn": vn});
       }
     }).catchError((err) {
-      timer?.cancel();
-      timer = null;
+      // timer?.cancel();
+      // timer = null;
       debugPrint('云平台绑定错误响应------>$err');
       // 响应超时
       if (err['code'] == DioErrorType.connectTimeout) {
@@ -238,13 +254,21 @@ class _MyWidgetState extends State<Equipment> {
   }
 
   @override
+  void setState(VoidCallback fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+    
+  }
+
+  @override
   void dispose() {
     super.dispose();
     // 组件销毁时判断Timer是否仍然处于激活状态，是则取消
-    if (timer != null) {
-      timer?.cancel();
-      timer = null;
-    }
+    // if (timer != null) {
+    //   timer?.cancel();
+    //   timer = null;
+    // }
   }
 
   @override
@@ -372,21 +396,22 @@ class _MyWidgetState extends State<Equipment> {
                               printInfo(
                                   info:
                                       'state--${loginController.login.state}');
-                              if(equipmentData.systemRouterOnly == "0") {
-                                if(equipmentData.lteMainStatusGet ==
-                                  "connected"){
-                                    bundDevice(equipmentData.systemVersionSn!, equipmentData.systemProductModel!);
-                                }else {
+                              if (equipmentData.systemRouterOnly == "0") {
+                                if (equipmentData.lteMainStatusGet ==
+                                    "connected") {
+                                  bundDevice(equipmentData.systemVersionSn!,
+                                      equipmentData.systemProductModel!);
+                                } else {
                                   // 引导连网页
                                   ToastUtils.error("Network not connected");
                                   Get.toNamed("/unNetworkpage");
                                 }
-                              }else {
+                              } else {
                                 Get.offNamed("/NetMode", arguments: {
-                                    "sn": equipmentData.systemVersionSn,
-                                    "vn": equipmentData.systemProductModel,
-                                    "rou": equipmentData.systemRouterOnly
-                                  });
+                                  "sn": equipmentData.systemVersionSn,
+                                  "vn": equipmentData.systemProductModel,
+                                  "rou": equipmentData.systemRouterOnly
+                                });
                               }
                             },
                             child: Text(S.of(context).band),

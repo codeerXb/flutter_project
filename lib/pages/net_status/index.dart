@@ -17,6 +17,7 @@ import 'package:flutter_template/pages/net_status/model/online_device.dart';
 import 'package:flutter_template/pages/system_settings/model/maintain_data.dart';
 import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../../core/utils/string_util.dart';
 import 'package:get/get.dart';
 import 'package:flutter_template/core/utils/screen_adapter.dart';
 
@@ -101,6 +102,8 @@ class _NetStatusState extends State<NetStatus> {
   String lantency = '0 ms';
   bool testLoading = false;
 
+  String userAccount = "";
+
   Timer? timer;
 
   String getRate(rate) {
@@ -128,8 +131,15 @@ class _NetStatusState extends State<NetStatus> {
 
   @override
   void initState() {
+    sharedGetData("user_phone", String).then((data) {
+      debugPrint("当前获取的用户信息:${data.toString()}");
+      if (StringUtil.isNotEmpty(data)) {
+        userAccount = data as String;
+        getqueryingBoundDevices();
+      }
+    });
     super.initState();
-    getqueryingBoundDevices();
+    
     sharedGetData('deviceSn', String).then(((res) {
       printInfo(info: 'deviceSn$res');
       if (mounted) {
@@ -520,7 +530,7 @@ class _NetStatusState extends State<NetStatus> {
       setState(() {
         loadingDevice = true;
       });
-      App.get('/platform/appCustomer/queryCustomerCpe').then((res) {
+      App.get('/platform/appCustomer/queryCustomerCpe?account=$userAccount').then((res) {
         if (res == null || res.toString().isEmpty) {
           throw Exception('Response is empty.');
         }
@@ -1243,17 +1253,14 @@ class _NetStatusState extends State<NetStatus> {
                               //儿童上网
                               GestureDetector(
                                 onTap: () {
-                                  // Get.toNamed('/parent');
-                                  Get.toNamed(
-                                      "/maintain_settings"); // 暂时改为管理设置,家长控制开完,再改回来.
+                                  Get.toNamed('/parent');
                                 },
                                 child: GardCard(
                                     boxCotainer: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    // Icons.child_care
-                                    Icon(Icons.settings_overscan,
+                                    Icon(Icons.child_care,
                                         color: const Color.fromRGBO(
                                             95, 141, 255, 1),
                                         size: 60.sp),
@@ -1263,8 +1270,7 @@ class _NetStatusState extends State<NetStatus> {
                                       ),
                                       child: FittedBox(
                                         child: Text(
-                                          S.of(context).maintainSettings,
-                                          // S.current.parent,
+                                          S.of(context).parent,
                                           textAlign: TextAlign.center,
                                           style: TextStyle(fontSize: 30.w),
                                         ),

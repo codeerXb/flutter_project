@@ -6,6 +6,7 @@ import '../net_status/index.dart';
 import 'package:flutter_template/pages/topo/index.dart';
 import 'package:flutter_template/pages/setting/index.dart';
 import '../../core/utils/sign_out_util.dart';
+import '../net_status/new_home_page.dart';
 
 class Toolbar extends StatefulWidget {
   const Toolbar({Key? key}) : super(key: key);
@@ -24,7 +25,7 @@ class _ToolbarState extends State<Toolbar> {
   /// 对应页面
   List<Widget> getPages() {
     List<Widget> pages = [
-      const NetStatus(),
+      const HomePage(),
       const Topo(),
       const Setting(),
     ];
@@ -43,7 +44,8 @@ class _ToolbarState extends State<Toolbar> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
+    return PopScope(
+        canPop: false,
         child: Scaffold(
           body: PageView(
             controller: _pageController,
@@ -54,50 +56,60 @@ class _ToolbarState extends State<Toolbar> {
             if (toolbarController.pageIndex.value != 0) {
               _pageController.jumpToPage(toolbarController.pageIndex.value);
             }
-            return BottomNavigationBar(
-                backgroundColor: Colors.white,
-                selectedItemColor: const Color.fromRGBO(95, 141, 255, 1),
-                unselectedItemColor: const Color.fromRGBO(76, 76, 76, 1),
-                currentIndex: toolbarController.pageIndex.value,
-                type: BottomNavigationBarType.fixed,
-                onTap: (index) {
-                  toolbarController.setPageIndex(index);
-                  _pageController.jumpToPage(index);
-                },
+            return Theme(
+                data: ThemeData(
+                  brightness: Brightness.light,
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                ),
+                child: BottomNavigationBar(
+                    backgroundColor: Colors.white,
+                    selectedItemColor: const Color.fromRGBO(95, 141, 255, 1),
+                    unselectedItemColor: const Color.fromRGBO(76, 76, 76, 1),
+                    currentIndex: toolbarController.pageIndex.value,
+                    type: BottomNavigationBarType.fixed,
+                    onTap: (index) {
+                      toolbarController.setPageIndex(index);
+                      _pageController.jumpToPage(index);
+                    },
 
-                /// 底部导航
-                items: [
-                  BottomNavigationBarItem(
-                    icon: const Image(
-                        image: AssetImage(
-                            'assets/images/icon_homepage_no_state.png')),
-                    activeIcon: const Image(
-                        image: AssetImage(
-                            'assets/images/icon_homepage_state.png')),
-                    label: S.of(context).state,
-                  ),
-                  BottomNavigationBarItem(
-                    icon: const Image(
-                        image: AssetImage(
-                            'assets/images/icon_homepage_no_topo.png')),
-                    activeIcon: const Image(
-                        image:
-                            AssetImage('assets/images/icon_homepage_topo.png')),
-                    label: S.of(context).netTopo,
-                  ),
-                  BottomNavigationBarItem(
-                    icon: const Image(
-                        image: AssetImage(
-                            'assets/images/icon_homepage_no_route.png')),
-                    activeIcon: const Image(
-                        image: AssetImage(
-                            'assets/images/icon_homepage_route.png')),
-                    label: S.of(context).advancedSet,
-                  ),
-                ]);
+                    /// 底部导航
+                    items: [
+                      BottomNavigationBarItem(
+                        icon: const Image(
+                            image: AssetImage(
+                                'assets/images/icon_homepage_no_state.png')),
+                        activeIcon: const Image(
+                            image: AssetImage(
+                                'assets/images/icon_homepage_state.png')),
+                        label: S.of(context).state,
+                      ),
+                      BottomNavigationBarItem(
+                        icon: const Image(
+                            image: AssetImage(
+                                'assets/images/icon_homepage_no_topo.png')),
+                        activeIcon: const Image(
+                            image: AssetImage(
+                                'assets/images/icon_homepage_topo.png')),
+                        label: S.of(context).netTopo,
+                      ),
+                      BottomNavigationBarItem(
+                        icon: const Image(
+                            image: AssetImage(
+                                'assets/images/icon_homepage_no_route.png')),
+                        activeIcon: const Image(
+                            image: AssetImage(
+                                'assets/images/icon_homepage_route.png')),
+                        label: S.of(context).advancedSet,
+                      ),
+                    ]));
           }),
         ),
-        onWillPop: () async =>
-            SignOutAppUtil.exitBy2Click(status: _scaffoldKey.currentState));
+        onPopInvoked: (didPoped) async {
+          if (didPoped) {
+            SignOutAppUtil.exitBy2Click(status: _scaffoldKey.currentState);
+            return;
+          }
+        });
   }
 }

@@ -90,6 +90,10 @@ class _VisitorNetState extends State<VisitorNet> {
     // debugPrint("获取的5G的长度:${prefix5g.length}");
     // debugPrint("获取的2.4G的网络数据:${prefix24g}");
     // debugPrint("获取的5G的网络数据:${prefix5g}");
+    if (guest5gModel!.data == null || guest24Model!.data == null) {
+      ToastUtils.toast("Network Exception");
+      return;
+    }
     try {
       // List<String> parameterNames = [
       //   'InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings',

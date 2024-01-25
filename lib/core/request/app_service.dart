@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_template/config/base_config.dart';
 import 'package:dio/dio.dart';
-
 import '../../pages/login/login_controller.dart';
 import 'package:get/get.dart';
 
@@ -15,9 +14,7 @@ const _tokenExpirationTime = Duration(minutes: 1);
 class AppAuthService {
   static final AppAuthService _singleton = AppAuthService._internal();
   final LoginController loginController = Get.put(LoginController());
-  var dio = Dio(BaseOptions(
-    connectTimeout: 2000,
-  ));
+  var dio = Dio();
   factory AppAuthService() {
     return _singleton;
   }
@@ -27,6 +24,12 @@ class AppAuthService {
   Map<String, String> user = {};
 
   AppAuthService._internal() {
+    dio.options.connectTimeout = 5000;
+    dio.options.receiveTimeout = 3000;
+  //   dio.options.headers = {
+  //   'Accept': 'application/json,*/*',
+  //   'Content-Type': 'application/json',
+  // };
     _startTokenRefreshTimer();
   }
 
@@ -42,6 +45,7 @@ class AppAuthService {
 
       var d = json.decode(response.toString());
       debugPrint('登录成功${d['data']['token']}');
+      _token = d['data']['token'];
       loginController.setUserToken(d['data']['token']);
       sharedAddAndUpdate("userToken", String, d['data']['token']);
       user = {
@@ -61,12 +65,6 @@ class AppAuthService {
     return response;
   }
 
-  // void _setToken(String token) {
-  //   setState(() {
-  //     _token = token;
-  //   });
-  // }
-
   void _startTokenRefreshTimer() {
     _tokenRefreshTimer = Timer.periodic(_tokenExpirationTime, (_) {
       refreshToken();
@@ -83,5 +81,5 @@ class AppAuthService {
 
   String get token => _token;
 
-  bool get isLoggedIn => _token != null;
+  bool get isLoggedIn => _token.isNotEmpty;
 }

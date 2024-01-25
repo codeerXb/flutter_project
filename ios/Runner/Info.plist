@@ -72,5 +72,11 @@
 	<false/>
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>Looking for local tcp Bonjour service</string>
+    <key>NSBonjourServices</key>
+    <array>
+      <string>mqtt.tcp</string>
+    </array>
 </dict>
 </plist>

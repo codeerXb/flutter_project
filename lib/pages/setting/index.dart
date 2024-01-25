@@ -52,9 +52,16 @@ class _SettingState extends State<Setting> {
   Color _passwordBorderColor = Colors.white;
   //验证云平台登录
   String _User = '';
+  String userAccount = "";
 
   @override
   void initState() {
+    sharedGetData("user_phone", String).then((data) {
+      debugPrint("当前获取的用户信息:${data.toString()}");
+      if (StringUtil.isNotEmpty(data)) {
+        userAccount = data as String;
+      }
+    });
     super.initState();
     sharedGetData("loginInfo", List).then((data) {
       if (StringUtil.isNotEmpty(data)) {
@@ -569,8 +576,12 @@ class _SettingState extends State<Setting> {
                       // 确定解绑
                       InkWell(
                         onTap: () {
+                          var param = {
+                            "account" : userAccount,
+                            "deviceSn" : sn
+                          };
                           App.post(
-                                  '/platform/appCustomer/unBoundCpe?deviceSn=$sn')
+                                  '/platform/appCustomer/unBoundCpe',data: param)
                               .then((res) {
                             var d = json.decode(res.toString());
                             debugPrint('响应------>$d');

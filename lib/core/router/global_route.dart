@@ -71,6 +71,21 @@ import 'package:flutter_template/pages/user_login/user_location.dart';
 import "package:flutter_template/pages/get_equipment/unnetworkpage.dart";
 import 'package:flutter_template/pages/setting/user_personal_information.dart';
 import 'package:flutter_template/pages/Ethernet/net/wan_status.dart';
+// import 'package:get/get.dart';
+import '../webscoket/scoket_service.dart';
+import '../mqtt/mqtt_client.dart';
+import '../../pages/net_status/channel_scan.dart';
+import '../../pages/net_status/channel_tables.dart';
+import '../../pages/net_status/channel_tables_advance.dart';
+import '../../pages/parent_control/pie_chart_page.dart';
+import '../../pages/parent_control/parent_detail_page.dart';
+import '../../pages/parent_control/parent_config_page.dart';
+import '../../pages/parent_control/parent_config_home.dart';
+import '../../pages/parent_control/website_creat_page.dart';
+import '../../pages/parent_control/parent_device_page.dart';
+import '../../pages/parent_control/parent_time_list_page.dart';
+import '../../pages/parent_control/parent_creatTimPage.dart';
+import '../../pages/parent_control/new_parent_page.dart';
 /// 路由
 class GlobalRouter {
   // 定义单例
@@ -297,6 +312,32 @@ class GlobalRouter {
     // WanStatus
     '/wanStatusPage': (BuildContext context, {Object? args}) =>
         const WanStatusPage(),
+    '/socketPage': (BuildContext context, {Object? args}) =>
+        const SocketChannelPage(),
+    '/mqttPage': (BuildContext context, {Object? args}) =>
+        const MqttPage(),
+    '/channelScan': (BuildContext context, {Object? args}) =>
+        const ChannelScanPage(),
+    '/channelList': (BuildContext context, {Object? args}) =>
+        const ChannelListPage(),
+    '/advancechannelList': (BuildContext context, {Object? args}) =>
+        const AdvanceChannelListPage(),
+    '/parentList': (BuildContext context, {Object? args}) =>
+        const PieChartPage(),
+    '/parentConfigPage': (BuildContext context, {Object? args}) =>
+        const ParentConfigPage(),
+    '/parentDetailList': (BuildContext context, {Object? args}) =>
+        const ParentDetailListPage(),
+    '/parentConfigHome': (BuildContext context, {Object? args}) =>
+        const ParentConfigHomePage(),
+    '/websiteConfigPage': (BuildContext context, {Object? args}) =>
+        const ParentWebSitePage(),
+    '/websiteDevicePage': (BuildContext context, {Object? args}) =>
+        const ParentDevicePage(),
+    '/websiteTimeListPage': (BuildContext context, {Object? args}) =>
+        const ParentTimeListPage(),
+    '/websiteCreatTimePage': (BuildContext context, {Object? args}) =>
+        const ParentCreatTimePage(),
   };
 
   /// 监听route

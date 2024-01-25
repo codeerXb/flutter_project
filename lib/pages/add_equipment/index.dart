@@ -13,6 +13,7 @@ import 'package:flutter_template/pages/get_equipment/water_ripple_painter.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:flutter_template/pages/login/model/equipment_data.dart';
 import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
+import '../../core/utils/string_util.dart';
 import 'package:get/get.dart';
 
 class AddEquipment extends StatefulWidget {
@@ -28,15 +29,23 @@ class _MyWidgetState extends State<AddEquipment> {
   bool isExistCloudDevice = false;
   List appList = [];
   EquipmentData equipmentData = EquipmentData();
+  String userAccount = "";
   @override
   void initState() {
-    super.initState();
-    Future.delayed(const Duration(milliseconds: 2000), () {
-      if (mounted) {
+    sharedGetData("user_phone", String).then((data) {
+      debugPrint("当前获取的用户信息:${data.toString()}");
+      if (StringUtil.isNotEmpty(data)) {
+        userAccount = data as String;
         getqueryingBoundDevices();
       }
-      return;
     });
+    super.initState();
+    // Future.delayed(const Duration(milliseconds: 2000), () {
+    //   if (mounted) {
+    //     getqueryingBoundDevices();
+    //   }
+    //   return;
+    // });
     loginController.setLoading(true);
   }
 
@@ -48,8 +57,10 @@ class _MyWidgetState extends State<AddEquipment> {
     };
 
     XHttp.get('/pub/pub_data.html', data).then((res) {
+      var d = json.decode(res.toString());
+      debugPrint("当前的绑定信息是:----$d-----");
       try {
-        var d = json.decode(res.toString());
+        
         setState(() {
           equipmentData = EquipmentData.fromJson(d);
         });
@@ -72,30 +83,30 @@ class _MyWidgetState extends State<AddEquipment> {
         }
         // }
       } on FormatException catch (e) {
-        setState(() {
-          equipmentData = EquipmentData(
-              systemProductModel: null,
-              systemVersionRunning: '',
-              systemVersionSn: '');
-        });
+        // setState(() {
+        //   equipmentData = EquipmentData(
+        //       systemProductModel: null,
+        //       systemVersionRunning: '',
+        //       systemVersionSn: '');
+        // });
         debugPrint(e.toString());
       }
     }).catchError((onError) {
-      if (mounted) {
-        setState(() {
-          equipmentData = EquipmentData(
-              systemProductModel: null,
-              systemVersionRunning: '',
-              systemVersionSn: '');
-        });
-      }
+      // if (mounted) {
+      //   setState(() {
+      //     equipmentData = EquipmentData(
+      //         systemProductModel: null,
+      //         systemVersionRunning: '',
+      //         systemVersionSn: '');
+      //   });
+      // }
       debugPrint(onError.toString());
     });
   }
 
   //  查询绑定设备 App
   void getqueryingBoundDevices() {
-    App.get('/platform/appCustomer/queryCustomerCpe').then((res) {
+    App.get('/platform/appCustomer/queryCustomerCpe?account=$userAccount').then((res) {
       if (res == null || res.toString().isEmpty) {
         throw Exception('Response is empty.');
       }

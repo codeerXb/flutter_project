@@ -8,7 +8,7 @@ import 'package:get/get.dart' as GetX;
 /// 拦截器
 class HttpInterceptors extends InterceptorsWrapper {
   final LoginController loginController = GetX.Get.put(LoginController());
- 
+
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     String token = loginController.login.token.value;

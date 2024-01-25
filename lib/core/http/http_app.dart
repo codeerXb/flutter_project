@@ -11,13 +11,14 @@ import 'package:dio/adapter.dart';
 
 class App {
   App._internal();
-
   ///网络请求配置
   static final Dio appdio = Dio(BaseOptions(
     baseUrl: BaseConfig.cloudBaseUrl,
     connectTimeout: 5000,
     receiveTimeout: 5000,
-    // headers: BaseConfig.header,
+    headers: BaseConfig.header,
+    contentType: Headers.jsonContentType,
+    responseType: ResponseType.json
   ));
 
   ///初始化dio
@@ -113,6 +114,17 @@ class App {
     Response response = await appdio.post('/file/upload', data: formData);
     return response.data;
   }
+
+  /*
+   * 取消请求
+   *
+   * 同一个cancel token 可以用于多个请求，当一个cancel token取消时，所有使用该cancel token的请求都会被取消。
+   * 所以参数可选
+   */
+  static void cancelRequests(CancelToken token) {
+    token.cancel("cancelled");
+  }
+
 
   ///error统一处理
   static void handleError(DioError e) {

@@ -13,8 +13,11 @@ import 'package:flutter_template/core/http/http_app.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/generated/l10n.dart';
-
 import '../../config/base_config.dart';
+import '../../core/mqtt/mqtt_service.dart';
+import 'package:mqtt_client/mqtt_client.dart';
+import 'package:mqtt_client/mqtt_server_client.dart';
+import '../.././core/utils/string_util.dart';
 
 /// 家长控制
 class Parent extends StatefulWidget {
@@ -25,36 +28,91 @@ class Parent extends StatefulWidget {
 }
 
 class _ParentState extends State<Parent> {
+  MqttClient client = MqttServerClient(
+      BaseConfig.mqttMainUrl, "flutter_client",
+      maxConnectionAttempts: 10);
+  // 订阅的主题
+  var subTopic = "";
   //获取列表
   getDeviceListFn() async {
-    var res = await sharedGetData('deviceSn', String);
     setState(() {
       loading = true;
-      sn = res.toString();
     });
-    var response = await App.post(
-        '${BaseConfig.cloudBaseUrl}/cpeMqtt/getDevicesTable',
-        data: {'sn': sn, "type": "getDevicesTable"});
+    
+    // var response = await App.post(
+    //     '${BaseConfig.cloudBaseUrl}/cpeMqtt/getDevicesTable',
+    //     data: {'sn': sn, "type": "getDevicesTable"});
     setState(() {
       loading = false;
     });
-    var d = json.decode(response.toString());
-    debugPrint('返回的数据是:$d');
-    setState(() {
-      d['data']['wifiDevices'].addAll(d['data']['lanDevices']);
-      deviceList = d['data']['wifiDevices'];
+    // var d = json.decode(response.toString());
+    // debugPrint('返回的数据是:$d');
+    // setState(() {
+    //   d['data']['wifiDevices'].addAll(d['data']['lanDevices']);
+    //   deviceList = d['data']['wifiDevices'];
 
-      //编辑文字回显
-      _editvalueList.addAll(
-          deviceList.map((item) => TextEditingController(text: item['name'])));
-      debugPrint('设备列表$deviceList');
-    });
+    //   //编辑文字回显
+    //   _editvalueList.addAll(
+    //       deviceList.map((item) => TextEditingController(text: item['name'])));
+    //   debugPrint('设备列表$deviceList');
+    // });
   }
 
   @override
   void initState() {
-    super.initState();
+    requestInitData();
     getDeviceListFn();
+    super.initState();
+  }
+
+  requestInitData() async {
+    var res = await sharedGetData('deviceSn', String);
+    sn = res.toString();
+    subTopic = "cpe/$sn";
+    connect().then((value) {
+      client = value;
+      debugPrint("执行到订阅这里了,订阅的主题是:$subTopic");
+      final sessionIdStr = StringUtil.generateRandomString(10);
+      var parameterNames = {
+        "event": "getParentControlDevList",
+        "sn": sn,
+        "sessionId": sessionIdStr,
+        "pubTopic": "$subTopic-getappList"
+      };
+      _publishMessage(subTopic, parameterNames);
+      client.subscribe("$subTopic-getappList", MqttQos.atLeastOnce);
+      _getDeviceList();
+    });
+  }
+  //  监听消息的具体实现
+  _getListTableData(List<MqttReceivedMessage<MqttMessage>> data) {
+    debugPrint("====================监听到新消息了======================");
+    final MqttPublishMessage recMess = data[0].payload as MqttPublishMessage;
+    final String topic = data[0].topic;
+    final String pt = const Utf8Decoder().convert(recMess.payload.message);
+    String desString = "topic is <$topic>, payload is <-- $pt -->";
+    debugPrint("string =$desString");
+    // final payloadModel = mqtt_model.fromJson(jsonDecode(pt));
+  }
+
+//  开启监听消息
+  _getDeviceList() {
+    client.updates!.listen(_getListTableData);
+  }
+
+  // 发送消息
+  void _publishMessage(String topic, Map<String, dynamic> message) {
+    debugPrint("======发送获取Applist的消息成功了=======");
+    debugPrint("======$message=======");
+    var builder = MqttClientPayloadBuilder();
+    // builder.addString('Hello from flutter_client:$message');
+    // Uint8Buffer uint8buffer = Uint8Buffer();
+    // var codeUnits = message.codeUnits;
+    // uint8buffer.addAll(codeUnits);
+    var jsonData = json.encode(message);
+    builder.addUTF8String(jsonData);
+
+    client.publishMessage(topic, MqttQos.atLeastOnce, builder.payload!);
   }
 
   @override
@@ -126,6 +184,13 @@ class _ParentState extends State<Parent> {
 
                 ));
   }
+
+  @override
+  void dispose() {
+    client.unsubscribe(subTopic);
+    client.disconnect();
+    super.dispose();
+  }
 }
 
 List<Map<String, dynamic>> filteredData = [];
@@ -155,13 +220,13 @@ class InternetUsage extends StatelessWidget {
         child: Column(
           children: [
             //第一行
-             Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 //left
                 Text(
                   'Internet usage today',
-                  style: TextStyle(fontSize: 32.w,fontWeight: FontWeight.w500),
+                  style: TextStyle(fontSize: 32.w, fontWeight: FontWeight.w500),
                 ),
               ],
             ),
@@ -494,9 +559,9 @@ class _SwiperCardState extends State<SwiperCard> {
     var parameterNames = {
       "method": "get",
       "nodes": [
-      "FwParentControlTable",
+        "FwParentControlTable",
       ]
-    }; 
+    };
     try {
       // var parameterNames = [
       //   "InternetGatewayDevice.WEB_GUI.ParentalControls",
@@ -508,14 +573,14 @@ class _SwiperCardState extends State<SwiperCard> {
       // var resList = d['data']['InternetGatewayDevice']['WEB_GUI']
       //     ['ParentalControls']['List'];
 
-      var resList = d['data'];
+      Map<String, dynamic> resList = d['data'];
 
       debugPrint("获取的顶部轮播数据:$resList");
 
       setState(() {
-        resList.remove('_object');
-        resList.remove('_timestamp');
-        resList.remove('_writable');
+        // resList.remove('_object');
+        // resList.remove('_timestamp');
+        // resList.remove('_writable');
         accessList = [];
         filteredData = [];
       });
@@ -796,13 +861,13 @@ class SixBoxsState extends State<SixBoxs> {
       loading = true;
       sn = sn.toString();
     });
- 
+
     var parameterNames = {
       "method": "get",
       "nodes": [
-      "FwParentControlTable",
+        "FwParentControlTable",
       ]
-    }; 
+    };
     // var parameterNames = [
     //   "InternetGatewayDevice.WEB_GUI.Security.URLFilter",
     // ];
@@ -1099,7 +1164,8 @@ class SixBoxsState extends State<SixBoxs> {
                           child: FittedBox(
                               child: Text(
                             'Website Blocklist',
-                            style: TextStyle(fontSize: 32.w,fontWeight: FontWeight.w500),
+                            style: TextStyle(
+                                fontSize: 32.w, fontWeight: FontWeight.w500),
                           ))),
                       const SizedBox(
                         height: 5,
@@ -1145,9 +1211,9 @@ class _SchedulingState extends State<Scheduling> {
     var parameterNames = {
       "method": "get",
       "nodes": [
-      "FwParentControlTable",
+        "FwParentControlTable",
       ]
-    }; 
+    };
     try {
       // var parameterNames = [
       //   "InternetGatewayDevice.WEB_GUI.ParentalControls",
@@ -1219,7 +1285,7 @@ class _SchedulingState extends State<Scheduling> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 //left
-                 SizedBox(
+                SizedBox(
                   width: 250.w,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -1228,7 +1294,8 @@ class _SchedulingState extends State<Scheduling> {
                           flex: 1,
                           child: Text(
                             'Internet access time scheduling',
-                            style: TextStyle(fontSize: 32.w,fontWeight: FontWeight.w500 ),
+                            style: TextStyle(
+                                fontSize: 32.w, fontWeight: FontWeight.w500),
                           ))
                     ],
                   ),

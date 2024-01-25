@@ -79,11 +79,14 @@ class _AccessEquipmentState extends State<AccessEquipment> {
       isScrollControlled: true,
       context: context,
       builder: (BuildContext context) {
-        return WillPopScope(
-          onWillPop: () async {
-            Navigator.pop(context);
-            editTitleVal.text = Title;
-            return false;
+        return PopScope(
+          canPop: false,
+          onPopInvoked: (didPoped) async {
+            if(didPoped) {
+              Navigator.pop(context);
+              editTitleVal.text = Title;
+              return;
+            }
           },
           child: SingleChildScrollView(
             child: Container(

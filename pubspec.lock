@@ -113,6 +113,22 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.18.0"
+  community_charts_common:
+    dependency: transitive
+    description:
+      name: community_charts_common
+      sha256: "20697244c826df0545237ebe01d61caa96a2a2e4d23c6f88890441636a4d5220"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.2"
+  community_charts_flutter:
+    dependency: transitive
+    description:
+      name: community_charts_flutter
+      sha256: ca5bd07337e162daee13c19679f602cd8b3f704520d242beeebbc2e312f84f89
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.2"
   connectivity_plus:
     dependency: "direct main"
     description:
@@ -185,6 +201,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.5"
+  d_chart:
+    dependency: "direct main"
+    description:
+      name: d_chart
+      sha256: f48447c9d2a33f71ae51c33ee184a565fcd066410ca12ce32dd805df412c9f1b
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.6.3"
   dart_style:
     dependency: transitive
     description:
@@ -257,6 +281,22 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.0.0+3"
+  dropdown_button2:
+    dependency: "direct main"
+    description:
+      name: dropdown_button2
+      sha256: b0fe8d49a030315e9eef6c7ac84ca964250155a6224d491c1365061bc974a9e1
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.3.9"
+  easy_pie_chart:
+    dependency: "direct main"
+    description:
+      name: easy_pie_chart
+      sha256: "4b08684a42bd12a633604fbb55891bef0f07a68f2f37b2c9737bd4da16d17105"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.0"
   encrypt:
     dependency: "direct main"
     description:
@@ -265,6 +305,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "5.0.1"
+  event_bus:
+    dependency: "direct main"
+    description:
+      name: event_bus
+      sha256: "44baa799834f4c803921873e7446a2add0f3efa45e101a054b1f0ab9b95f8edc"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.0.0"
   fake_async:
     dependency: transitive
     description:
@@ -403,6 +451,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "5.2.0"
+  flutter_spinner_time_picker:
+    dependency: "direct main"
+    description:
+      name: flutter_spinner_time_picker
+      sha256: d17bf1a31b89d3debac168d8ea740e5e9bdc0103f096f6b53329ad068781c68d
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.2.1"
   flutter_swiper_null_safety:
     dependency: "direct main"
     description:
@@ -411,6 +467,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.2"
+  flutter_switch:
+    dependency: "direct main"
+    description:
+      name: flutter_switch
+      sha256: b91477f926bba135d2d203d7b24367492662d8d9c3aa6adb960b14c1087d3c41
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.3.2"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -557,6 +621,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.4.1"
+  intl_phone_field:
+    dependency: "direct main"
+    description:
+      name: intl_phone_field
+      sha256: "73819d3dfcb68d2c85663606f6842597c3ddf6688ac777f051b17814fe767bbf"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.2.0"
   js:
     dependency: transitive
     description:
@@ -677,6 +749,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.4"
+  mqtt_client:
+    dependency: "direct main"
+    description:
+      name: mqtt_client
+      sha256: "873c124f6485c17b5ca085047880068f3c5acc9db54317995d752a3253f95a72"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "10.0.0"
   network_info_plus:
     dependency: "direct main"
     description:
@@ -858,6 +938,14 @@ packages:
     description:
       name: petitparser
       sha256: cb3798bef7fc021ac45b308f4b51208a152792445cce0448c9a4ba5879dd8750
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "5.4.0"
+  pie_chart:
+    dependency: "direct main"
+    description:
+      name: pie_chart
+      sha256: "58e6a46999ac938bfa1c3e5be414d6e149f037647197dca03ba3614324c12c82"
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "5.4.0"
@@ -1179,7 +1267,7 @@ packages:
     source: hosted
     version: "0.3.0"
   web_socket_channel:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: web_socket_channel
       sha256: d88238e5eac9a42bb43ca4e721edba3c08c6354d4a53063afaa568516217621b

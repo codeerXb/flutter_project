@@ -32,7 +32,7 @@ class Request {
       'sn': sn,
       'param': parameterNames
     };
-    return await App.post('/cpeMqtt/getAndSetDeviceSODNodes', data: data);
+    return await App.post('/cpeMqtt/getAndSetDeviceSODNodesOfApp', data: data);
   }
 
   //设置云端数据
@@ -41,7 +41,7 @@ class Request {
       'sn': sn,
       'param': parameterNames
     };
-    return await App.post('/cpeMqtt/getAndSetDeviceSODNodes', data: data);
+    return await App.post('/cpeMqtt/getAndSetDeviceSODNodesOfApp', data: data);
   }
 
   // 设置设备表数据
@@ -50,7 +50,7 @@ class Request {
       'sn': sn,
       'param': parameterNames
     };
-    return await App.post('/cpeMqtt/getAndSetDeviceSODTable', data: data);
+    return await App.post('/cpeMqtt/getAndSetDeviceSODTableOfApp', data: data);
   }
 
   //获取设备列表数据
@@ -59,7 +59,7 @@ class Request {
       'sn': sn,
       'param': parameterNames
     };
-    return await App.post('/cpeMqtt/getAndSetDeviceSODTable', data: data);
+    return await App.post('/cpeMqtt/getAndSetDeviceSODTableOfApp', data: data);
   }
 
   //添加或删除
@@ -68,7 +68,7 @@ class Request {
       'sn': sn,
       'param': objectName
     };
-    return await App.post('/cpeMqtt/getAndSetDeviceSODNodes', data: data);
+    return await App.post('/cpeMqtt/getAndSetDeviceSODNodesOfApp', data: data);
   }
 
   //修改

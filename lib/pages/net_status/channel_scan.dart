@@ -1,19 +1,13 @@
-import 'dart:async';
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import '../../core/utils/channel_progress.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import '../../config/base_config.dart';
 import '../../core/mqtt/mqtt_service.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'dart:convert';
-import 'package:flutter_template/core/request/request.dart';
-import 'package:flutter_template/core/http/http_app.dart';
 import './beans/scan_quality_bean.dart';
 import '../../pages/wifi_set/wlan/wlanBeans.dart';
 import '../../pages/wifi_set/wlan/wlan5gBeans.dart';
@@ -30,10 +24,8 @@ class _ChannelScanPageState extends State<ChannelScanPage>
     with TickerProviderStateMixin {
   MqttClient client = MqttServerClient(BaseConfig.mqttMainUrl, "flutter_client",
       maxConnectionAttempts: 10);
-      MqttClient clientChannel = MqttServerClient(BaseConfig.mqttMainUrl, "flutter_client",
-      maxConnectionAttempts: 10);
-      var getCurrentChannelTopic = "platform_server/apiv1/sma_currentChannel";
-      var setCurrentChannelTopic = "platform_server/apiv1/sma_setcurrentChannel";
+  // var getCurrentChannelTopic = "platform_server/apiv1/sma_currentChannel";
+  var setCurrentChannelTopic = "platform_server/apiv1/sma_setcurrentChannel";
   // 订阅的主题
   var subTopic = "";
   String sn = "";
@@ -60,8 +52,6 @@ class _ChannelScanPageState extends State<ChannelScanPage>
       printInfo(info: 'deviceSn$res');
       debugPrint('扫描执行了}');
       sn = res.toString();
-      // getScanParam();
-      // getCurrentChannnel();
       requestInitData();
       //   timer = Timer.periodic(const Duration(seconds: 60), (tm) {
 
@@ -91,146 +81,88 @@ class _ChannelScanPageState extends State<ChannelScanPage>
     _animationController.forward();
   }
 
-  Future get24gList() async {
-    // 获取SOD节点数据
-    var parameterNames = {
-      "method": "get",
-      "nodes": [
-        "wifiEnable",
-        "wifiMode",
-        "wifiHtmode",
-        "wifiChannel",
-        "wifiTxpower",
-        "wifiCountryChannelList_HT20"
-      ]
-    };
-    // 获取SOD节点数据
-    await Request().getACSNode(parameterNames, sn);
-    // var jsonObj = jsonDecode(res);
-    // var jsonModel = wlanBean.fromJson(jsonObj);
-    // wlanModel = jsonModel;
-    // debugPrint('wlan节点数据:----$jsonObj----}');
-  }
-
-  Future get5gList() async {
-    // 获取SOD节点数据
-    var parameterNames = {
-      "method": "get",
-      "nodes": [
-        "wifi5gEnable",
-        "wifi5gMode",
-        "wifi5gHtmode",
-        "wifi5gChannel",
-        "wifi5gTxpower",
-        "wifi5gCountryChannelList"
-      ]
-    };
-    await Request().getACSNode(parameterNames, sn);
-    // var jsonObj = jsonDecode(res);
-    // var jsonModel = wlanAdvancedBean.fromJson(jsonObj);
-    // advanceModel = jsonModel;
-    // debugPrint('wlan_5g数据:$jsonObj');
-  }
-
-  Future getScanParam() async {
-    return Future.wait([get24gList(), get5gList()]);
-  }
-
-  ///请求信道扫描的接口
-  // void requestWiFiScanData() {
-  //   var param = {
-  //     'sn': sn,
-  //     "band24gChannel": wlanModel!.data!.wifiCountryChannelListHT20,
-  //     "band5gChannel": advanceModel!.data!.wifi5gCountryChannelList
-  //   };
-  //   debugPrint('发送信道扫描的参数是:${param.toString()}');
-  //   App.post('/platform/cpeMqttWifiScan/queryWifiQuality', data: param)
-  //       .then((value) => debugPrint("返回${value.toString()}"));
-  // }
-
   requestInitData() {
     final sessionIdStr = StringUtil.generateRandomString(10);
     subTopic = "app/channelQuality/$sn";
-    var pushChannelTopic = "platform_server/apiv1/sma_server_3";
-    
+    // var pushChannelTopic = "platform_server/apiv1/sma_server_3";
+
     final sessionIdCha = StringUtil.generateRandomString(10);
-    var currentChannelTopic = "cpe/$sn";
+    var publishTopic = "cpe/$sn";
     var channelParms = {
-        "event": "mqtt2sodObj",
-        "sn": sn,
-        "sessionId": sessionIdCha,
-        "pubTopic" : getCurrentChannelTopic,
-        "param" : {
-          "method" : "get",
-          "nodes" : ["wifiCurrentChannel", "wifi5gCurrentChannel"]
-        }
-      };
+      "event": "mqtt2sodObj",
+      "sn": sn,
+      "sessionId": sessionIdCha,
+      "param": {
+        "method": "get",
+        "nodes": [
+          "wifiCurrentChannel",
+          "wifi5gCurrentChannel",
+          "wifiCountryChannelList_HT20",
+          "wifi5gCountryChannelList"
+        ]
+      }
+    };
 
-      final sessionIdScan = StringUtil.generateRandomString(10);
-      var scanNorParms = {
-        "event": "WifiChannelScan",
-        "sn": sn,
-        "sessionId": sessionIdScan,
-        "pubTopic" : pushChannelTopic
-      };
+    final sessionIdScan = StringUtil.generateRandomString(10);
+    var scanNorParms = {
+      "event": "WifiChannelScan",
+      "sn": sn,
+      "sessionId": sessionIdScan,
+    };
 
-      final sessionIdNor= StringUtil.generateRandomString(10);
-      var channelNorParms = {
-        "event": "mqtt2sodObj",
-        "sn": sn,
-        "sessionId": sessionIdNor,
-        "pubTopic" : pushChannelTopic,
-        "param" : {
-          "method" : "get",
-          "nodes" : [
-        "wifiEnable",
-        "wifiMode",
-        "wifiHtmode",
-        "wifiChannel",
-        "wifiTxpower",
-        "wifiCountryChannelList_HT20"
-      ]
-        }
-      };
+    // final sessionIdNor = StringUtil.generateRandomString(10);
+    // var channelNorParms = {
+    //   "event": "mqtt2sodObj",
+    //   "sn": sn,
+    //   "sessionId": sessionIdNor,
+    //   "param": {
+    //     "method": "get",
+    //     "nodes": [
+    //       "wifiEnable",
+    //       "wifiMode",
+    //       "wifiHtmode",
+    //       "wifiChannel",
+    //       "wifiTxpower",
+    //       "wifiCountryChannelList_HT20"
+    //     ]
+    //   }
+    // };
 
-      final sessionIdAdn= StringUtil.generateRandomString(10);
-      var channelAdnParms = {
-        "event": "mqtt2sodObj",
-        "sn": sn,
-        "sessionId": sessionIdAdn,
-        "pubTopic" : pushChannelTopic,
-        "param" : {
-          "method" : "get",
-          "nodes" : [
-        "wifi5gEnable",
-        "wifi5gMode",
-        "wifi5gHtmode",
-        "wifi5gChannel",
-        "wifi5gTxpower",
-        "wifi5gCountryChannelList"
-      ]
-        }
-      };
+    // final sessionIdAdn = StringUtil.generateRandomString(10);
+    // var channelAdnParms = {
+    //   "event": "mqtt2sodObj",
+    //   "sn": sn,
+    //   "sessionId": sessionIdAdn,
+    //   "param": {
+    //     "method": "get",
+    //     "nodes": [
+    //       "wifi5gEnable",
+    //       "wifi5gMode",
+    //       "wifi5gHtmode",
+    //       "wifi5gChannel",
+    //       "wifi5gTxpower",
+    //       "wifi5gCountryChannelList"
+    //     ]
+    //   }
+    // };
 
+    // var parameterNames = {
+    //   "event": "WifiChannelScan",
+    //   "sn": sn,
+    //   "sessionId": sessionIdStr,
+    // };
     connect().then((value) {
       client = value;
       debugPrint("执行到订阅这里了,订阅的主题是:$subTopic");
-      debugPrint("信道订阅的主题是:$currentChannelTopic");
+      debugPrint("信道订阅的主题是:$publishTopic");
       // var channelTopic = "platform_server/apiv1/sma_server_1";
-      var publishTopic = "cpe/$sn";
-      
-      var parameterNames = {
-        "event": "WifiChannelScan",
-        "sn": sn,
-        "sessionId": sessionIdStr,
-        "pubTopic" : "platform_server/apiv1/sma_server_3"
-      };
-      _publishMessage(currentChannelTopic, channelNorParms);
-      _publishMessage(currentChannelTopic, channelAdnParms);
-      _publishMessage(currentChannelTopic, channelParms);
+
+      // _publishMessage(publishTopic, channelNorParms);
+      // _publishMessage(publishTopic, channelAdnParms);
+      _publishMessage(publishTopic, channelParms);
       _publishMessage(publishTopic, scanNorParms);
-      _publishMessage(publishTopic, parameterNames);
-      client.subscribe(getCurrentChannelTopic, MqttQos.atLeastOnce);
+      // _publishMessage(publishTopic, parameterNames);
+      // client.subscribe(getCurrentChannelTopic, MqttQos.atLeastOnce);
       client.subscribe(subTopic, MqttQos.atLeastOnce);
       _getDeviceList();
     });
@@ -244,105 +176,46 @@ class _ChannelScanPageState extends State<ChannelScanPage>
     final String pt = const Utf8Decoder().convert(recMess.payload.message);
     String desString = "topic is <$topic>, payload is <-- $pt -->";
     debugPrint("string =$desString");
-    
-    if (topic == getCurrentChannelTopic) {
-      String result = pt.substring(0, pt.length - 1);
-    String desString = "topic is <$topic>, payload is <-- $result -->";
-    debugPrint("string =$desString");
-      Map datas = jsonDecode(result);
-      debugPrint("信道的数据1: =${datas["data"]["wifiCurrentChannel"]}");
-      debugPrint("信道的数据2: =${datas["data"]["wifi5gCurrentChannel"]}");
-      currentNormalChannel = datas["data"]["wifiCurrentChannel"];
-      currentAdvanceChannel = datas["data"]["wifi5gCurrentChannel"];
 
-      var isNormalStatus = false;
-        var isAdvanceStatus = false;
-        for (var normalModel in qualityBean.data!.band24GHz!) {
-          if (normalModel.channel == bastNormalChannel &&
-              normalModel.quality == "1") {
-            isNormalStatus = true;
-          }
-        }
-        for (var model in qualityBean.data!.band5GHz!) {
-          if (model.channel == bastAdvanceChannel && model.quality == "1") {
-            isAdvanceStatus = true;
-          }
-        }
-
-        Future.delayed(const Duration(milliseconds: 3000), () {
-          if (isNormalStatus && isAdvanceStatus) {
-            setState(() {
-              currentChannelState = "Great";
-              isUpdated = true;
-            });
+    if (topic == "app/channelQuality/$sn") {
+      final payloadModel = ScanQualityBean.fromJson(jsonDecode(pt));
+      currentNormalChannel = payloadModel.data!.wifiCurrentChannel!;
+      currentAdvanceChannel = payloadModel.data!.wifi5gCurrentChannel!;
+      currentChannelState = payloadModel.data!.wifiQuality!;
+      debugPrint("2.4G的list: =${payloadModel.data!.band24GHz}");
+      debugPrint("5G的list =${payloadModel.data!.band5GHz}");
+      debugPrint(
+          "2.4G的当前信道 =$currentNormalChannel --5G的当前信道:$currentAdvanceChannel---当前质量:$currentChannelState");
+      if (payloadModel.data!.band24GHz!.isNotEmpty ||
+          payloadModel.data!.band5GHz!.isNotEmpty) {
+        setState(() {
+          _offstage = true;
+          qualityBean = payloadModel;
+          if (currentChannelState == "Great") {
+            isUpdated = true;
           } else {
-            setState(() {
-              currentChannelState = "Normal";
-              isUpdated = false;
-            });
+            isUpdated = false;
           }
         });
-
-    }
-    else if(topic == setCurrentChannelTopic) {
+      }
+    } else if (topic == setCurrentChannelTopic) {
       String result = pt.substring(0, pt.length - 1);
-    String desString = "topic is <$topic>, payload is <-- $result -->";
-    debugPrint("string =$desString");
+      String desString = "topic is <$topic>, payload is <-- $result -->";
+      debugPrint("string =$desString");
       Map datas = jsonDecode(result);
       debugPrint("设置信道: =${datas["data"]}");
       if (datas["data"] == "Success") {
-        final sessionIdCha = StringUtil.generateRandomString(10);
-    var currentChannelTopic = "cpe/$sn";
-    var channelParms = {
-        "event": "mqtt2sodObj",
-        "sn": sn,
-        "sessionId": sessionIdCha,
-        "pubTopic" : getCurrentChannelTopic,
-        "param" : {
-          "method" : "get",
-          "nodes" : ["wifiCurrentChannel", "wifi5gCurrentChannel"]
-        }
-      };
-
-      _publishMessage(currentChannelTopic, channelParms);
-      client.subscribe(getCurrentChannelTopic, MqttQos.atLeastOnce);
-
-      }
-    }
-    else {
-      final payloadModel = ScanQualityBean.fromJson(jsonDecode(pt));
-    debugPrint("2.4G的list: =${payloadModel.data!.band24GHz}");
-    debugPrint("5G的list =${payloadModel.data!.band5GHz}");
-    debugPrint("2.4G的当前信道 =$currentNormalChannel --5G的当前信道:$currentAdvanceChannel");
-    if (payloadModel.data!.band24GHz!.isNotEmpty ||
-        payloadModel.data!.band5GHz!.isNotEmpty) {
-      var currentNormalStatus = false;
-      var currentAdvanceStatus = false;
-      for (var normalModel in payloadModel.data!.band24GHz!) {
-        if (normalModel.channel == currentNormalChannel &&
-            normalModel.quality == "1") {
-          currentNormalStatus = true;
-        }
-      }
-      for (var model in payloadModel.data!.band5GHz!) {
-        if (model.channel == currentAdvanceChannel && model.quality == "1") {
-          currentAdvanceStatus = true;
-        }
-      }
-      setState(() {
-        _offstage = true;
-        qualityBean = payloadModel;
-        if (currentNormalStatus && currentAdvanceStatus) {
+        setState(() {
           currentChannelState = "Great";
           isUpdated = true;
-        } else {
+        });
+      } else {
+        setState(() {
           currentChannelState = "Normal";
           isUpdated = false;
-        }
-      });
-    }
-    }
-    
+        });
+      }
+    } else {}
   }
 
 //  开启监听消息
@@ -352,104 +225,33 @@ class _ChannelScanPageState extends State<ChannelScanPage>
 
   // 发送消息
   void _publishMessage(String topic, Map<String, dynamic> message) {
-    debugPrint("======发送获取Applist的消息成功了=======");
-    debugPrint("======$message=======");
+    debugPrint("======发送的消息成功了=======");
+    debugPrint("===$topic===$message=======");
     var builder = MqttClientPayloadBuilder();
     var jsonData = json.encode(message);
     builder.addUTF8String(jsonData);
-
     client.publishMessage(topic, MqttQos.atLeastOnce, builder.payload!);
   }
 
-/**
- * "data": {
-    "wifiCurrentChannel": "7",
-    "wifi5gCurrentChannel": "153"
-  },
- */
-  /// 获取当前的信道
-  // Future getCurrentChannnel() async {
-  //   // 获取SOD节点数据
-  //   var parameterNames = {
-  //     "method": "get",
-  //     "nodes": ["wifiCurrentChannel", "wifi5gCurrentChannel"]
-  //   };
-
-  //   var res = await Request().getACSNode(parameterNames, sn);
-  //   var jsonObj = jsonDecode(res);
-  //     debugPrint('当前的信道是11111111:----$jsonObj----}');
-  //     currentNormalChannel = jsonObj["data"]["wifiCurrentChannel"];
-  //       currentAdvanceChannel = jsonObj["data"]["wifi5gCurrentChannel"];
-  //       debugPrint("2.4G的当前信道11 =$currentNormalChannel --5G的当前信道11=:$currentAdvanceChannel");
-  // }
-
   /// 设置最优信道
-  setUpBastChannnel(){
+  setUpBastChannnel() {
     final sessionIdCha = StringUtil.generateRandomString(10);
     var topic = "cpe/$sn";
     var parameters = {
-        "event": "mqtt2sodObj",
-        "sn": sn,
-        "sessionId": sessionIdCha,
-        "pubTopic" : setCurrentChannelTopic,
-        "param" : {
-          "method" : "set",
-          "nodes": {
-        "wifiChannel": bastNormalChannel,
-        "wifi5gChannel": bastAdvanceChannel
-      }
+      "event": "mqtt2sodObj",
+      "sn": sn,
+      "sessionId": sessionIdCha,
+      "pubTopic": setCurrentChannelTopic,
+      "param": {
+        "method": "set",
+        "nodes": {
+          "wifiChannel": bastNormalChannel,
+          "wifi5gChannel": bastAdvanceChannel
         }
-      };
-      _publishMessage(topic, parameters);
-      client.subscribe(setCurrentChannelTopic, MqttQos.atLeastOnce);
-    // var parameters = {
-    //   "method": "set",
-    //   "nodes": {
-    //     "wifiChannel": bastNormalChannel,
-    //     "wifi5gChannel": bastAdvanceChannel
-    //   }
-    // };
-    // var res = await Request().setACSNode(parameters, sn);
-    // var jsonObj = jsonDecode(res);
-    // debugPrint('返回的配置结果是:----$jsonObj----}');
-    // return jsonObj["code"];
-  }
-
-  channelResult() {
-    setUpBastChannnel();
-    // .then((res) {
-    //   if (res == 200) {
-    //     getCurrentChannnel();
-    //     // 遍历
-    //     var isNormalStatus = false;
-    //     var isAdvanceStatus = false;
-    //     for (var normalModel in qualityBean.data!.band24GHz!) {
-    //       if (normalModel.channel == bastNormalChannel &&
-    //           normalModel.quality == "1") {
-    //         isNormalStatus = true;
-    //       }
-    //     }
-    //     for (var model in qualityBean.data!.band5GHz!) {
-    //       if (model.channel == bastAdvanceChannel && model.quality == "1") {
-    //         isAdvanceStatus = true;
-    //       }
-    //     }
-
-    //     Future.delayed(const Duration(milliseconds: 3000), () {
-    //       if (isNormalStatus && isAdvanceStatus) {
-    //         setState(() {
-    //           currentChannelState = "Great";
-    //           isUpdated = true;
-    //         });
-    //       } else {
-    //         setState(() {
-    //           currentChannelState = "Normal";
-    //           isUpdated = false;
-    //         });
-    //       }
-    //     });
-    //   }
-    // });
+      }
+    };
+    _publishMessage(topic, parameters);
+    client.subscribe(setCurrentChannelTopic, MqttQos.atLeastOnce);
   }
 
   @override
@@ -539,10 +341,11 @@ class _ChannelScanPageState extends State<ChannelScanPage>
                                   child: InkWell(
                                     onTap: () {
                                       if (qualityBean
-                                          .data!.band24GHz!.isNotEmpty || currentNormalChannel.isNotEmpty) {
+                                              .data!.band24GHz!.isNotEmpty ||
+                                          currentNormalChannel.isNotEmpty) {
                                         Get.toNamed('/channelList', arguments: {
                                           "list": qualityBean.data!.band24GHz,
-                                          "currentNol" : currentNormalChannel
+                                          "currentNol": currentNormalChannel
                                         })?.then((value) {
                                           debugPrint(
                                               '2.4G逆传的值是:----$value----}');
@@ -588,11 +391,14 @@ class _ChannelScanPageState extends State<ChannelScanPage>
                                   child: InkWell(
                                     onTap: () {
                                       if (qualityBean
-                                          .data!.band5GHz!.isNotEmpty && currentAdvanceChannel.isNotEmpty) {
+                                              .data!.band5GHz!.isNotEmpty &&
+                                          currentAdvanceChannel.isNotEmpty) {
                                         Get.toNamed('/advancechannelList',
                                             arguments: {
-                                              "data": qualityBean.data!.band5GHz,
-                                              "currentChannel" : currentAdvanceChannel
+                                              "data":
+                                                  qualityBean.data!.band5GHz,
+                                              "currentChannel":
+                                                  currentAdvanceChannel
                                             })?.then((value) {
                                           debugPrint(
                                               '5G的逆传的值是:----$value----}');
@@ -649,7 +455,7 @@ class _ChannelScanPageState extends State<ChannelScanPage>
                                       onPressed: () {
                                         if (!isUpdated) {
                                           setState(() {
-                                            channelResult();
+                                            setUpBastChannnel();
                                             _animationController.reverse();
                                           });
                                         }

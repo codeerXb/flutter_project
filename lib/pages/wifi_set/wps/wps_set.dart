@@ -145,7 +145,6 @@ class _WpsSetState extends State<WpsSet> {
       _isLoading = true;
       loading = true;
     });
-
     var parameterNames = {
       "method": "get",
       "nodes": ["wifi5gWps", "wifi5gWpsMode", "wifi5gWpsClientPin"]

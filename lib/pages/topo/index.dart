@@ -148,7 +148,7 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
     var parameterNamesTable = {"method": "get", "table": "OnlineDeviceTable"};
     var res = await Request().getSODTable(parameterNamesTable, sn);
     var jsonObj = jsonDecode(res);
-
+    
     var resNode = await Request().getACSNode(parameterNames, sn);
     if (sx) {
       ToastUtils.toast(S.current.success);

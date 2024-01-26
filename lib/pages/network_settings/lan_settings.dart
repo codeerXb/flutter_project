@@ -175,7 +175,6 @@ class _LanSettingsState extends State<LanSettings> {
     //   "InternetGatewayDevice.WEB_GUI.Network.LANSettings.DHCP.EndIP",
     //   "InternetGatewayDevice.WEB_GUI.Network.LANSettings.DHCP.LeaseTime",
     // ];
-
     var parameterNames = {
       "method": "get",
       "nodes": [

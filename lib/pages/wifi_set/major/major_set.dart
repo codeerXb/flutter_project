@@ -13,7 +13,6 @@ import 'package:flutter_template/pages/wifi_set/major/major_datas.dart';
 import 'package:get/get.dart';
 import '../../../core/widget/custom_app_bar.dart';
 import '../../../generated/l10n.dart';
-
 /// 专业设置
 class MajorSet extends StatefulWidget {
   const MajorSet({Key? key}) : super(key: key);
@@ -99,12 +98,11 @@ class _MajorSetState extends State<MajorSet> {
     // var parameterNames = [
     //   "InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.CountryCode",
     // ];
-
     var parameterNames = {
       "method" : "get",
       "nodes" : ["wifiRegionCountry"]
     };
-
+    
     var res = await Request().getACSNode(parameterNames, sn);
     try {
       var jsonObj = jsonDecode(res);

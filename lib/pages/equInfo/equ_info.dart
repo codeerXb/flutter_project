@@ -11,7 +11,6 @@ import 'package:flutter_template/pages/login/login_controller.dart';
 import 'package:get/get.dart';
 import '../../core/widget/custom_app_bar.dart';
 import '../../generated/l10n.dart';
-
 /// 设备信息
 class EquInfo extends StatefulWidget {
   const EquInfo({Key? key}) : super(key: key);

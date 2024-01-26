@@ -4,6 +4,7 @@ import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/http/http_app.dart';
 // import 'package:get/get_connect/http/src/multipart/multipart_file.dart';
 import './model/equipment_data.dart';
+import '../../../core/utils/string_util.dart';
 
 class Request {
   Future<EquipmentData> getEquipmentData() async {
@@ -28,8 +29,10 @@ class Request {
 
   //获取云端数据
   Future getACSNode(parameterNames, sn) async {
+    final sessionIdCha = StringUtil.generateRandomString(10);
     Map<String, dynamic> data = {
       'sn': sn,
+      "sessionId" : sessionIdCha,
       'param': parameterNames
     };
     return await App.post('/cpeMqtt/getAndSetDeviceSODNodesOfApp', data: data);
@@ -37,8 +40,10 @@ class Request {
 
   //设置云端数据
   Future setACSNode(parameterNames, sn) async {
+    final sessionIdCha = StringUtil.generateRandomString(10);
     Map<String, dynamic> data = {
       'sn': sn,
+      "sessionId" : sessionIdCha,
       'param': parameterNames
     };
     return await App.post('/cpeMqtt/getAndSetDeviceSODNodesOfApp', data: data);
@@ -46,8 +51,10 @@ class Request {
 
   // 设置设备表数据
   Future setSODTable(parameterNames, sn) async {
+    final sessionIdCha = StringUtil.generateRandomString(10);
     Map<String, dynamic> data = {
       'sn': sn,
+      "sessionId" : sessionIdCha,
       'param': parameterNames
     };
     return await App.post('/cpeMqtt/getAndSetDeviceSODTableOfApp', data: data);
@@ -55,8 +62,10 @@ class Request {
 
   //获取设备列表数据
   Future getSODTable(parameterNames, sn) async {
+    final sessionIdCha = StringUtil.generateRandomString(10);
     Map<String, dynamic> data = {
       'sn': sn,
+      "sessionId" : sessionIdCha,
       'param': parameterNames
     };
     return await App.post('/cpeMqtt/getAndSetDeviceSODTableOfApp', data: data);
@@ -64,8 +73,10 @@ class Request {
 
   //添加或删除
   Future addOrDeleteObject(objectName, sn) async {
+    final sessionIdCha = StringUtil.generateRandomString(10);
     Map<String, dynamic> data = {
       'sn': sn,
+      "sessionId" : sessionIdCha,
       'param': objectName
     };
     return await App.post('/cpeMqtt/getAndSetDeviceSODNodesOfApp', data: data);

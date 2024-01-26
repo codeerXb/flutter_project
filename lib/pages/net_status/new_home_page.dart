@@ -17,7 +17,6 @@ import 'package:flutter_template/pages/net_status/model/net_connect_status.dart'
 import 'package:flutter_template/pages/net_status/model/online_device.dart';
 import 'package:flutter_template/pages/system_settings/model/maintain_data.dart';
 import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import '../../core/utils/string_util.dart';
 import 'package:get/get.dart';
@@ -110,7 +109,7 @@ class _HomePageState extends State<HomePage> {
   String speedTime = "";
 
   String userAccount = "";
-  // Timer? timer;
+  Timer? timer;
 
   String getRate(rate) {
     double rateKb = rate * 8 / 1000;
@@ -159,7 +158,7 @@ class _HomePageState extends State<HomePage> {
             obtainUserInformaition();
           }
           // getLastSpeed(sn);
-          requestTestSpeedData(sn);
+          // requestTestSpeedData(sn);
 
         });
       }
@@ -229,11 +228,23 @@ class _HomePageState extends State<HomePage> {
         "pubTopic": "$subTopic-sma_server_1"
       };
       _publishMessage(subTopic, parameterNames);
+      client.subscribe("$subTopic-sma_server_1", MqttQos.atLeastOnce);
     });
   }
 
   sendRequestDataSingle(String sn) {
-    client.subscribe("cpe/$sn-sma_server_1", MqttQos.atLeastOnce);
+    // requestTestSpeedData(sn);
+    subTopic = "cpe/$sn";
+    debugPrint("执行到订阅");
+    final sessionIdStr = StringUtil.generateRandomString(10);
+      var parameterNames = {
+        "event": "getSpeedtest",
+        "sn": sn,
+        "sessionId": sessionIdStr,
+        "pubTopic": "$subTopic-sma_server_1"
+      };
+      _publishMessage(subTopic, parameterNames);
+      client.subscribe("$subTopic-sma_server_1", MqttQos.atLeastOnce);
     _getDeviceList();
   }
 
@@ -249,7 +260,10 @@ class _HomePageState extends State<HomePage> {
     String desString = "topic is <$topic>, payload is <-- $result -->";
     debugPrint("string =$desString");
     final payloadModel = SpeedModel.fromJson(jsonDecode(result));
-    speedmodel = payloadModel;
+    setState(() {
+      speedmodel = payloadModel;
+    });
+    
     debugPrint("测速数据: =${speedmodel!.data!.download!}");
   }
 
@@ -261,7 +275,7 @@ class _HomePageState extends State<HomePage> {
   // 发送消息
   void _publishMessage(String topic, Map<String, dynamic> message) {
     debugPrint("======发送获取App测速的消息成功了=======");
-    debugPrint("======$message=======");
+    debugPrint("===$topic ===$message=======");
     var builder = MqttClientPayloadBuilder();
     var jsonData = json.encode(message);
     builder.addUTF8String(jsonData);
@@ -280,9 +294,11 @@ class _HomePageState extends State<HomePage> {
             color: Colors.grey,
           ),
           Text(
-            "Optimizing, please wait",
+            "Speed measurement in progress",
+            textAlign: TextAlign.center,
+            softWrap: true,
             style: TextStyle(fontSize: 15, color: Colors.black),
-          )
+          ),
         ],
       ),
     );
@@ -313,7 +329,6 @@ class _HomePageState extends State<HomePage> {
     //   "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.ProductModel",
     //   "InternetGatewayDevice.WEB_GUI.Ethernet.Status.ConnectStatus",
     // ];
-
     var parameterNames = {
       "method": "get",
       "nodes": ["systemProductModel", "lteMainStatusGet"]
@@ -760,8 +775,9 @@ class _HomePageState extends State<HomePage> {
                     ),
                     onPressed: () {
                       // getLastSpeed(sn);
-                      sendRequestDataSingle(sn);
-                      showSpeedDialog(context);
+                      // sendRequestDataSingle(sn);
+                      // showSpeedDialog(context);
+
                     },
                   ),
                   ElevatedButton(
@@ -815,10 +831,9 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder: (context) {
         return StatefulBuilder(builder: (context, state) {
-          Future.delayed(const Duration(milliseconds: 40000), () {
-            if (speedmodel != null) {
+          if (speedmodel != null) {
               debugPrint("测速执行");
-              if (mounted) {
+              if(mounted) {
                 state(() {
                   isLoad = true;
                   var timespeed = speedmodel!.data!.timestamp!.substring(0, 16);
@@ -837,8 +852,11 @@ class _HomePageState extends State<HomePage> {
                   debugPrint("数据是:$testUp -- $testDown -- $lantency");
                 });
               }
+              
             }
-          });
+          // Future.delayed(const Duration(milliseconds: 40000), () {
+            
+          // });
 
           return AlertDialog(
             title: const Center(
@@ -1461,8 +1479,8 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
     debugPrint('状态页面销毁');
     client.disconnect();
-    // timer?.cancel();
-    // timer = null;
+    timer?.cancel();
+    timer = null;
   }
 }
 

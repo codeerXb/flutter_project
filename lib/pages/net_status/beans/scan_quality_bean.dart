@@ -17,13 +17,18 @@ class ScanQualityBean {
 }
 
 class Param {
+  String? wifiQuality;
+  String? wifiCurrentChannel;
+  String? wifi5gCurrentChannel;
   List<Band5GHz>? band5GHz;
   List<Band24GHz>? band24GHz;
-  String? wifiQuality;
 
-  Param({this.band5GHz, this.band24GHz, this.wifiQuality});
+  Param({this.wifiQuality,this.band5GHz, this.band24GHz,this.wifiCurrentChannel,this.wifi5gCurrentChannel});
 // result = json['result'].map<result>((j) => result.fromjson(j).tolist();
   Param.fromJson(Map<String, dynamic> json) {
+    wifiQuality = json['wifiQuality'];
+    wifiCurrentChannel = json['wifiCurrentChannel'];
+    wifi5gCurrentChannel = json['wifi5gCurrentChannel'];
     if (json['band5GHz'] != null) {
       
       // band5GHz = json['band5GHz'].map<Band5GHz>((j) => Band5GHz.fromJson(j)).tolist();
@@ -39,18 +44,19 @@ class Param {
         band24GHz!.add(Band24GHz.fromJson(v));
       });
     }
-    wifiQuality = json['wifiQuality'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+    data['wifiQuality'] = wifiQuality;
+    data['wifiCurrentChannel'] = wifiCurrentChannel;
+    data['wifi5gCurrentChannel'] = wifi5gCurrentChannel;
     if (band5GHz != null) {
       data['band5GHz'] = band5GHz!.map((v) => v.toJson()).toList();
     }
     if (band24GHz != null) {
       data['band24GHz'] = band24GHz!.map((v) => v.toJson()).toList();
     }
-    data['wifiQuality'] = wifiQuality;
     return data;
   }
 }

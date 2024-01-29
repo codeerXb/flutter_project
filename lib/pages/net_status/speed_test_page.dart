@@ -37,50 +37,51 @@ class _SpeedTestHomeVCState extends State<SpeedTestHomeVC> {
     sharedGetData('deviceSn', String).then(((res) {
       debugPrint('deviceSn$res');
       sn = res.toString();
-    }));
-
-    sharedGetData('speedTime', String).then(((res) {
-      debugPrint('speedTime $res');
-      setState(() {
-        speedTime = res.toString();
-      });
-    }));
-    sharedGetData('testUp', String).then(((res) {
-      debugPrint('testUp $res');
-      setState(() {
-        testUp = res.toString();
-      });
-    }));
-    sharedGetData('testDown', String).then(((res) {
-      debugPrint('testDown $res');
-      setState(() {
-        testDown = res.toString();
-      });
-    }));
-    sharedGetData('lantency', String).then(((res) {
-      debugPrint('lantency $res');
-      setState(() {
-        lantency = res.toString();
-      });
-    }));
-
-    if (speedTime.isEmpty &&
-        testUp.isEmpty &&
-        testDown.isEmpty &&
-        lantency.isEmpty) {
       requestTestSpeedData(sn);
-    } else {
-      setState(() {
-        testLoading = true;
-      });
-    }
+    }));
 
-    Timer(const Duration(seconds: 600), () {
-      sharedAddAndUpdate("speedTime", String, "");
-      sharedAddAndUpdate("testUp", String, "");
-      sharedAddAndUpdate("testDown", String, "");
-      sharedAddAndUpdate("lantency", String, "");
-    });
+    // sharedGetData('speedTime', String).then(((res) {
+    //   debugPrint('speedTime $res');
+    //   setState(() {
+    //     speedTime = res.toString();
+    //   });
+    // }));
+    // sharedGetData('testUp', String).then(((res) {
+    //   debugPrint('testUp $res');
+    //   setState(() {
+    //     testUp = res.toString();
+    //   });
+    // }));
+    // sharedGetData('testDown', String).then(((res) {
+    //   debugPrint('testDown $res');
+    //   setState(() {
+    //     testDown = res.toString();
+    //   });
+    // }));
+    // sharedGetData('lantency', String).then(((res) {
+    //   debugPrint('lantency $res');
+    //   setState(() {
+    //     lantency = res.toString();
+    //   });
+    // }));
+
+    // if (speedTime.isEmpty &&
+    //     testUp.isEmpty &&
+    //     testDown.isEmpty &&
+    //     lantency.isEmpty) {
+    //   requestTestSpeedData(sn);
+    // } else {
+    //   setState(() {
+    //     testLoading = true;
+    //   });
+    // }
+
+    // Timer(const Duration(seconds: 600), () {
+    //   sharedAddAndUpdate("speedTime", String, "");
+    //   sharedAddAndUpdate("testUp", String, "");
+    //   sharedAddAndUpdate("testDown", String, "");
+    //   sharedAddAndUpdate("lantency", String, "");
+    // });
 
     super.initState();
   }

@@ -107,4 +107,23 @@ class StringUtil {
 
     return randomString;
   }
+
+  static String getRate(rate) {
+    double rateKb = rate * 8 / 1000;
+    String unit = 'Kbps';
+    if (rateKb >= 1000 * 1000) {
+      // gbps
+      rateKb = rateKb / 1000 / 1000;
+      unit = 'Gbps';
+    } else if (rateKb >= 1000 && rateKb <= 1000 * 1000) {
+      // mbps
+      rateKb = rateKb / 1000;
+      unit = 'Mbps';
+    } else {
+      // kbps
+      rateKb = rateKb;
+      unit = 'Kbps';
+    }
+    return rateKb.toStringAsFixed(2) + unit;
+  }
 }

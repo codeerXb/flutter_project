@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_template/core/request/request.dart';
@@ -12,6 +14,9 @@ import 'dart:async';
 import './beans/scan_quality_bean.dart';
 import 'package:get/get.dart';
 
+MqttServerClient client = MqttServerClient.withPort(
+    BaseConfig.mqttMainUrl, 'flutter_client', BaseConfig.websocketPort);
+
 class AdvanceChannelListPage extends StatefulWidget {
   const AdvanceChannelListPage({super.key});
 
@@ -20,15 +25,15 @@ class AdvanceChannelListPage extends StatefulWidget {
 }
 
 class _AdvanceChannelListPageState extends State<AdvanceChannelListPage> {
-    MqttClient client = MqttServerClient(BaseConfig.mqttMainUrl, "flutter_client",
-      maxConnectionAttempts: 10);
+    // MqttClient client = MqttServerClient(BaseConfig.mqttMainUrl, "flutter_client",
+    //   maxConnectionAttempts: 10);
   var setCurrentChannelTopic = "platform_server/apiv1/sma_setcurrentChannel5G";
   List<Band5GHz> listArray = [];
   String currentChannnel = "";
   String bastChannel = "";
   String sn = "";
   bool isLoaded = true;
-  Timer? timer;
+  // Timer? timer;
   @override
   void initState() {
     sharedGetData('deviceSn', String).then(((res) {
@@ -46,7 +51,50 @@ class _AdvanceChannelListPageState extends State<AdvanceChannelListPage> {
   }
 
 
-  void updateCurrentChannel() {
+  void updateCurrentChannel() async {
+
+    client.logging(on: false);
+    client.keepAlivePeriod = 60;
+    client.useWebSocket = true;
+    client.autoReconnect = true;
+    client.onDisconnected = onDisconnected;
+    client.onConnected = onConnected;
+    client.onSubscribed = onSubscribed;
+    client.pongCallback = pong;
+
+    final connMess = MqttConnectMessage()
+        .authenticateAs('admin', 'smawav')
+        .withWillTopic('willtopic')
+        .withWillMessage('My Will message')
+        .startClean()
+        .withWillQos(MqttQos.atLeastOnce);
+    print('Client connecting....');
+    client.connectionMessage = connMess;
+
+    try {
+      await client.connect();
+    } on NoConnectionException catch (e) {
+      print('Client exception: $e');
+      client.disconnect();
+    } on SocketException catch (e) {
+      print('Socket exception: $e');
+      client.disconnect();
+    }
+
+    if (client.connectionStatus!.state == MqttConnectionState.connected) {
+      print('Client connected');
+    } else {
+      print(
+          'Client connection failed - disconnecting, status is ${client.connectionStatus}');
+      client.disconnect();
+      exit(-1);
+    }
+
+    client.published!.listen((MqttPublishMessage message) {
+      print(
+          'Published topic: topic is ${message.variableHeader!.topicName}, with Qos ${message.header!.qos}');
+    });
+
     final sessionIdCha = StringUtil.generateRandomString(10);
     var topic = "cpe/$sn";
     var parameters = {
@@ -62,19 +110,14 @@ class _AdvanceChannelListPageState extends State<AdvanceChannelListPage> {
       }
     };
 
-    connect().then((value) {
-      client = value;
     _publishMessage(topic, parameters);
+
     client.subscribe(setCurrentChannelTopic, MqttQos.atLeastOnce);
-      _getDeviceList();
-    });
 
-  }
-
-  _getListTableData(List<MqttReceivedMessage<MqttMessage>> data) {
+    client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
     debugPrint("====================监听5G更新信道到新消息了======================");
-    final MqttPublishMessage recMess = data[0].payload as MqttPublishMessage;
-    final String topic = data[0].topic;
+    final MqttPublishMessage recMess = c![0].payload as MqttPublishMessage;
+    final String topic = c[0].topic;
     final String pt = const Utf8Decoder().convert(recMess.payload.message);
     // String desString = "topic is <$topic>, payload is <-- $pt -->";
     // debugPrint("string =$desString");
@@ -89,11 +132,30 @@ class _AdvanceChannelListPageState extends State<AdvanceChannelListPage> {
           currentChannnel = listArray[0].channel!;
         });
       }
+  });
+
   }
 
-  _getDeviceList() {
-    client.updates!.listen(_getListTableData);
+  void onSubscribed(String topic) {
+  print('Subscription confirmed for topic $topic');
+}
+
+void onDisconnected() {
+  print('OnDisconnected client callback - Client disconnection');
+  if (client.connectionStatus!.disconnectionOrigin ==
+      MqttDisconnectionOrigin.solicited) {
+    print('OnDisconnected callback is solicited, this is correct');
   }
+  // exit(-1);
+}
+
+void onConnected() {
+  print('OnConnected client callback - Client connection was sucessful');
+}
+
+void pong() {
+  print('Ping response client callback invoked');
+}
 
   // 发送消息
   void _publishMessage(String topic, Map<String, dynamic> message) {
@@ -175,7 +237,8 @@ class _AdvanceChannelListPageState extends State<AdvanceChannelListPage> {
 
   @override
   void dispose() {
-    timer?.cancel();
+    client.disconnect();
+    // timer?.cancel();
     super.dispose();
   }
 
@@ -186,7 +249,7 @@ class _AdvanceChannelListPageState extends State<AdvanceChannelListPage> {
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios),
             onPressed: () {
-              Get.back(result: currentChannnel);
+              Get.back(result: bastChannel);
             },
           ),
           title: const Text(
@@ -214,9 +277,10 @@ class _AdvanceChannelListPageState extends State<AdvanceChannelListPage> {
                             backgroundColor:
                                 MaterialStatePropertyAll(Colors.blue)),
                         onPressed: () {
+                          updateCurrentChannel();
                           setState(() {
                             isLoaded = false;
-                            updateCurrentChannel();
+                            
                           });
                         },
                         child: const Text(

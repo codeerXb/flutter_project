@@ -63,20 +63,21 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
                                   bottom: BorderSide(
                                       width: 1, color: Color(0xffe5e5e5)))),
                           child: ListView.separated(
-                              padding: EdgeInsets.zero,
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: deviceList.length,
-                              itemBuilder: (context, index) {
-                                return setUpContentView();
-                              },
-                              separatorBuilder: (context, index) {
-                                return Divider(
-                                  height: 20,
-                                  color: Colors.grey,
-                                );
-                              },),
-                              
+                            padding: EdgeInsets.only(top: 10,bottom: 10),
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: deviceList.length,
+                            itemBuilder: (context, index) {
+                              return setUpContentView();
+                            },
+                            separatorBuilder: (context, index) {
+                              return Divider(
+                                height: 20,
+                                thickness: 10,
+                                color: Color.fromARGB(255, 214, 208, 208),
+                              );
+                            },
+                          ),
                         );
                       }),
                     ),
@@ -112,19 +113,17 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
   }
 
   Widget setUpContentView() {
-    return IntrinsicHeight(
-      child: Column(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      border: Border(
-                                          bottom: BorderSide(
-                                              width: 1,
-                                              color: Color(0xffe5e5e5)))),
-            child: Padding(
-              padding: EdgeInsets.only(left: 10,right: 10),
-              child: Row(
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Container(
+          decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border(
+                  bottom: BorderSide(width: 1, color: Color(0xffe5e5e5)))),
+          child: Padding(
+            padding: EdgeInsets.only(left: 10, right: 10),
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
@@ -132,48 +131,61 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
                   style: TextStyle(fontSize: 15, color: Colors.black),
                 ),
                 IconButton(
-                  onPressed: (){
-
-                }, icon: Image.asset("assets/images/edit_parent.png",width: 20,height: 20,))
+                    onPressed: () {},
+                    icon: Image.asset(
+                      "assets/images/edit_parent.png",
+                      width: 20,
+                      height: 20,
+                    ))
               ],
             ),
-            ),
           ),
-          ListTile(
-            leading: Image.asset("assets/images/shopping.png",width: 20,height: 20,),
-            title: Text(
-                    "Next Step,Next Step,Next Step,Next Step",
-                    style: TextStyle(
-                        fontSize: 12, color: Colors.black),
-                  ),
+        ),
+        ListTile(
+          leading: Image.asset(
+            "assets/images/shopping.png",
+            width: 20,
+            height: 20,
           ),
-          ListTile(
-            leading: Image.asset("assets/images/shopping.png",width: 20,height: 20,),
-            title: Text(
-                    "Next Step,Next Step,Next Step,Next Step",
-                    style: TextStyle(
-                        fontSize: 12, color: Colors.black),
-                  ),
+          title: Text(
+            "Next Step,Next Step,Next Step,Next Step",
+            style: TextStyle(fontSize: 12, color: Colors.black),
           ),
-          ListTile(
-            leading: Image.asset("assets/images/shopping.png",width: 20,height: 20,),
-            title: Text(
-                    "Next Step,Next Step,Next Step,Next Step",
-                    style: TextStyle(
-                        fontSize: 12, color: Colors.black),
-                  ),
+        ),
+        ListTile(
+          leading: Image.asset(
+            "assets/images/shopping.png",
+            width: 20,
+            height: 20,
           ),
-          ListTile(
-            leading: Image.asset("assets/images/shopping.png",width: 20,height: 20,),
-            title: Text(
-                    "Next Step,Next Step,Next Step,Next Step",
-                    style: TextStyle(
-                        fontSize: 12, color: Colors.black),
-                  ),
+          title: Text(
+            "Next Step,Next Step,Next Step,Next Step",
+            style: TextStyle(fontSize: 12, color: Colors.black),
           ),
-        
-        ],
-      ),
+        ),
+        ListTile(
+          leading: Image.asset(
+            "assets/images/shopping.png",
+            width: 20,
+            height: 20,
+          ),
+          title: Text(
+            "Next Step,Next Step,Next Step,Next Step",
+            style: TextStyle(fontSize: 12, color: Colors.black),
+          ),
+        ),
+        ListTile(
+          leading: Image.asset(
+            "assets/images/shopping.png",
+            width: 20,
+            height: 20,
+          ),
+          title: Text(
+            "Next Step,Next Step,Next Step,Next Step",
+            style: TextStyle(fontSize: 12, color: Colors.black),
+          ),
+        ),
+      ],
     );
   }
 }

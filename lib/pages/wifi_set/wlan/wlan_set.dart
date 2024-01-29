@@ -665,7 +665,7 @@ class _WlanSetState extends State<WlanSet> {
         "wifiChannel": bandWidthIndex == 0
             ? wifiCountryChannelListHT20[channelIndex]
             : wifiCountryChannelListHT40[channelIndex],
-        "wifiTxpower": txPowerShowVal
+        "wifiTxpower": wifiTxpower[txPowerIndex]
       }
     };
 
@@ -753,7 +753,7 @@ class _WlanSetState extends State<WlanSet> {
         "wifi5gMode": modeVal5g[modeIndex5g],
         "wifi5gHtmode": bandWidthVal5g[bandWidthIndex5g],
         "wifi5gChannel": wifi5gCountryChannelList[channelIndex5g],
-        "wifi5gTxpower": txPower5gShowVal
+        "wifi5gTxpower": wifi5gTxpower[txPowerIndex5g]
       }
     };
 

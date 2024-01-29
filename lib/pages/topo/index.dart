@@ -683,7 +683,7 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
                               //   )),
                               // ),
                               //儿童上网
-                              /*
+                              
                               GestureDetector(
                                 onTap: () {
                                   // /parentList  /parent
@@ -713,7 +713,7 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
                                   ],
                                 )),
                               ),
-                              */
+                              
                               // 访客网路
                               GestureDetector(
                                 onTap: () {

@@ -64,9 +64,7 @@ class _UserRegisterState extends State<UserRegister>
 // 邮箱
   final TextEditingController _emailCodeController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  var dio = Dio(BaseOptions(
-    connectTimeout: 2000,
-  ));
+  var dio = Dio();
 
   @override
   void initState() {
@@ -77,6 +75,36 @@ class _UserRegisterState extends State<UserRegister>
   /// 点击空白  关闭输入键盘
   void closeKeyboard(BuildContext context) {
     FocusScope.of(context).requestFocus(blankNode);
+  }
+
+  requestRegisterData() {
+    final data = {"account": _emailController.text};
+    dio
+        .post(
+            '${BaseConfig.cloudBaseUrl}/platform/appCustomer/sendSmsOrEmailCode',
+            data: data)
+        .then((res) {
+      debugPrint("请求验证码接口:${data.toString()}");
+      var d = json.decode(res.toString());
+      debugPrint('响应------>$d');
+      if (d['code'] == 200) {
+        ToastUtils.toast(S.of(context).success);
+      } else {
+        if (d['code'] == 9991) {
+          ToastUtils.toast(S.current.accountIncorrect);
+        } else if (d['code'] == 9990) {
+          ToastUtils.toast(
+              "Verification codes are sent too frequently, please try again later.");
+        }
+      }
+    }).catchError((err) {
+      debugPrint('响应------>$err');
+      //相应超超时
+      if (err['code'] == DioErrorType.connectTimeout) {
+        debugPrint('timeout');
+        ToastUtils.error(S.current.contimeout);
+      }
+    });
   }
 
   @override
@@ -371,51 +399,28 @@ class _UserRegisterState extends State<UserRegister>
                         if (_emailController.text.isEmpty) {
                           ToastUtils.toast(S.of(context).phoneError);
                         } else {
-                          final data = {"account": _emailController.text};
-                          //发请求
-                          dio
-                              .post(
-                                  '${BaseConfig.cloudBaseUrl}/platform/appCustomer/sendSmsOrEmailCode',
-                                  data: data)
-                              .then((res) {
-                                debugPrint("请求验证码接口:${data.toString()}");
-                            var d = json.decode(res.toString());
-                            debugPrint('响应------>$d');
-                            if (d['code'] == 200) {
-                              ToastUtils.toast(S.of(context).success);
-                              if (emailCodeNum == 60) {
-                                //倒计时60s
-                                setState(() {
-                                  emailCodeStart = true;
-                                });
+                          if (emailCodeNum == 60) {
+                            //倒计时60s
+                            setState(() {
+                              emailCodeStart = true;
+                            });
 
-                                timer = Timer.periodic(
-                                    const Duration(seconds: 1), (time) {
-                                  setState(() {
-                                    emailCodeNum--;
-                                  });
-                                  if (emailCodeNum <= 1) {
-                                    timer?.cancel();
-                                    setState(() {
-                                      emailCodeNum = 60;
-                                      emailCodeStart = false;
-                                    });
-                                  }
+                            timer = Timer.periodic(const Duration(seconds: 1),
+                                (time) {
+                              setState(() {
+                                emailCodeNum--;
+                              });
+                              if (emailCodeNum <= 1) {
+                                timer?.cancel();
+                                setState(() {
+                                  emailCodeNum = 60;
+                                  emailCodeStart = false;
                                 });
                               }
-                            } else {
-                              if (d['code'] == 9991) {
-                                ToastUtils.toast(S.current.accountIncorrect);
-                              }
-                            }
-                          }).catchError((err) {
-                            debugPrint('响应------>$err');
-                            //相应超超时
-                            if (err['code'] == DioErrorType.connectTimeout) {
-                              debugPrint('timeout');
-                              ToastUtils.error(S.current.contimeout);
-                            }
-                          });
+                            });
+                          }
+                          //发请求
+                          requestRegisterData();
                         }
                       }),
                       child: Text(
@@ -432,72 +437,85 @@ class _UserRegisterState extends State<UserRegister>
               ),
 
               ListTileTheme(
-                horizontalTitleGap: 0,
-                child: CheckboxListTile(
-                  activeColor: Colors.blue,
-                  side:const BorderSide(color: Color.fromARGB(255, 120, 119, 119)),
-                  value: ischecked,
-                  title: RichText(
-                      text: TextSpan(
-                          text: "Read and agree",
-                          style:const TextStyle(color:  Color.fromARGB(255, 120, 119, 119), fontSize: 12.0),
-                          children: [
-                        TextSpan(
-                            text: "《Service terms》",
-                            style:const
-                                TextStyle(color: Color.fromARGB(255, 7, 96, 185), fontSize: 14.0),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                // String url = 'http://www.baidu.com';
-                                // if (await canlaunch(url)){
-                                //   await launch(url);
-                                // }
-                              }),
-                        const TextSpan(
-                          text: "and",
-                          style: TextStyle(color: Colors.black, fontSize: 12.0),
-                        ),
-                        TextSpan(
-                            text: "《Privacy policy》",
-                            style:const
-                                TextStyle(color: Color.fromARGB(255, 7, 96, 185), fontSize: 14.0),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                // String url = 'http://www.baidu.com';
-                                // if (await canlaunch(url)){
-                                //   await launch(url);
-                                // }
-                              })
-                      ])),
-                  // subtitle: Text('${_items[index]}'),
-                  controlAffinity: ListTileControlAffinity.leading,
-                  onChanged: (isChecked) {
-                    setState(() {
-                      ischecked = isChecked;
-                    });
-                  })
-                ),
+                  horizontalTitleGap: 0,
+                  child: CheckboxListTile(
+                      activeColor: Colors.blue,
+                      side: const BorderSide(
+                          color: Color.fromARGB(255, 120, 119, 119)),
+                      value: ischecked,
+                      title: RichText(
+                          text: TextSpan(
+                              text: "Read and agree",
+                              style: const TextStyle(
+                                  color: Color.fromARGB(255, 120, 119, 119),
+                                  fontSize: 12.0),
+                              children: [
+                            TextSpan(
+                                text: "《Service terms》",
+                                style: const TextStyle(
+                                    color: Color.fromARGB(255, 7, 96, 185),
+                                    fontSize: 14.0),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    // String url = 'http://www.baidu.com';
+                                    // if (await canlaunch(url)){
+                                    //   await launch(url);
+                                    // }
+                                  }),
+                            const TextSpan(
+                              text: "and",
+                              style: TextStyle(
+                                  color: Colors.black, fontSize: 12.0),
+                            ),
+                            TextSpan(
+                                text: "《Privacy policy》",
+                                style: const TextStyle(
+                                    color: Color.fromARGB(255, 7, 96, 185),
+                                    fontSize: 14.0),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    // String url = 'http://www.baidu.com';
+                                    // if (await canlaunch(url)){
+                                    //   await launch(url);
+                                    // }
+                                  })
+                          ])),
+                      // subtitle: Text('${_items[index]}'),
+                      controlAffinity: ListTileControlAffinity.leading,
+                      onChanged: (isChecked) {
+                        setState(() {
+                          ischecked = isChecked;
+                        });
+                      })),
               ListTileTheme(
-                horizontalTitleGap: 0,
-                child: CheckboxListTile(
-                  activeColor: Colors.blue,
-                  side: const BorderSide(color: Color.fromARGB(255, 120, 119, 119)),
-                  value: isCheckAgree,
-                  title:const Text("I agree to revice text message",
-                      style: TextStyle(color: Color.fromARGB(255, 120, 119, 119), fontSize: 12.0)),
-                  // subtitle: Text('${_items[index]}'),
-                  controlAffinity: ListTileControlAffinity.leading,
-                  onChanged: (isChecked) {
-                    setState(() {
-                      isCheckAgree = isChecked;
-                    });
-                  })
-                ),
+                  horizontalTitleGap: 0,
+                  child: CheckboxListTile(
+                      activeColor: Colors.blue,
+                      side: const BorderSide(
+                          color: Color.fromARGB(255, 120, 119, 119)),
+                      value: isCheckAgree,
+                      title: const Text("I agree to revice text message",
+                          style: TextStyle(
+                              color: Color.fromARGB(255, 120, 119, 119),
+                              fontSize: 12.0)),
+                      // subtitle: Text('${_items[index]}'),
+                      controlAffinity: ListTileControlAffinity.leading,
+                      onChanged: (isChecked) {
+                        setState(() {
+                          isCheckAgree = isChecked;
+                        });
+                      })),
 
               const Padding(
-                      padding: EdgeInsets.only(left: 25,right: 25),
-                      child: Text("Message and data rates may apply. Enter your phone number to subscribe to recurring Account updates to your phone from MOTOEYE. Msg freq may vary Reply HELP for help. Retry STOP to cancel.",style: TextStyle(color:  const Color.fromARGB(255, 120, 119, 119), fontSize: 12.0),softWrap: true,),
-                      ),
+                padding: EdgeInsets.only(left: 25, right: 25),
+                child: Text(
+                  "Message and data rates may apply. Enter your phone number to subscribe to recurring Account updates to your phone from MOTOEYE. Msg freq may vary Reply HELP for help. Retry STOP to cancel.",
+                  style: TextStyle(
+                      color: const Color.fromARGB(255, 120, 119, 119),
+                      fontSize: 12.0),
+                  softWrap: true,
+                ),
+              ),
 
               Padding(padding: EdgeInsets.only(top: 200.w)),
 
@@ -522,8 +540,9 @@ class _UserRegisterState extends State<UserRegister>
                     debugPrint(
                         "注册邮箱:${_emailController.text} -- ${AESUtil.generateAES(_emailPwdValue)} -- ${_emailCodeController.text}");
                     if (!ischecked! || !isCheckAgree!) {
-                      ToastUtils.toast("Please select to agree to the agreement");
-                      return ;
+                      ToastUtils.toast(
+                          "Please select to agree to the agreement");
+                      return;
                     }
                     //表单校验
                     if ((_EmailKey.currentState as FormState).validate()) {
@@ -871,74 +890,85 @@ class _UserRegisterState extends State<UserRegister>
                 ),
 
                 ListTileTheme(
-                  horizontalTitleGap: 0,
-                  child: CheckboxListTile(
-                    activeColor: Colors.blue,
-                    side:const BorderSide(color: Color.fromARGB(255, 120, 119, 119)),
-                    value: ischeckedPhone,
-                    title: RichText(
-                        text: TextSpan(
-                            text: "Read and agree",
-                            style:
-                                const TextStyle(color: Color.fromARGB(255, 120, 119, 119), fontSize: 12.0),
-                            children: [
-                          TextSpan(
-                              text: "《Service terms》",
-                              style:
-                                  const TextStyle(color: Color.fromARGB(255, 7, 96, 185), fontSize: 14.0),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  // String url = 'http://www.baidu.com';
-                                  // if (await canlaunch(url)){
-                                  //   await launch(url);
-                                  // }
-                                }),
-                          const TextSpan(
-                            text: "and",
-                            style:
-                                TextStyle(color: Colors.black, fontSize: 12.0),
-                          ),
-                          TextSpan(
-                              text: "《Privacy policy》",
-                              style:
-                                  const TextStyle(color: Color.fromARGB(255, 7, 96, 185), fontSize: 14.0),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  // String url = 'http://www.baidu.com';
-                                  // if (await canlaunch(url)){
-                                  //   await launch(url);
-                                  // }
-                                })
-                        ])),
-                    // subtitle: Text('${_items[index]}'),
-                    controlAffinity: ListTileControlAffinity.leading,
-                    onChanged: (isChecked) {
-                      setState(() {
-                        ischeckedPhone = isChecked;
-                      });
-                    })
-                  ),
+                    horizontalTitleGap: 0,
+                    child: CheckboxListTile(
+                        activeColor: Colors.blue,
+                        side: const BorderSide(
+                            color: Color.fromARGB(255, 120, 119, 119)),
+                        value: ischeckedPhone,
+                        title: RichText(
+                            text: TextSpan(
+                                text: "Read and agree",
+                                style: const TextStyle(
+                                    color: Color.fromARGB(255, 120, 119, 119),
+                                    fontSize: 12.0),
+                                children: [
+                              TextSpan(
+                                  text: "《Service terms》",
+                                  style: const TextStyle(
+                                      color: Color.fromARGB(255, 7, 96, 185),
+                                      fontSize: 14.0),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      // String url = 'http://www.baidu.com';
+                                      // if (await canlaunch(url)){
+                                      //   await launch(url);
+                                      // }
+                                    }),
+                              const TextSpan(
+                                text: "and",
+                                style: TextStyle(
+                                    color: Colors.black, fontSize: 12.0),
+                              ),
+                              TextSpan(
+                                  text: "《Privacy policy》",
+                                  style: const TextStyle(
+                                      color: Color.fromARGB(255, 7, 96, 185),
+                                      fontSize: 14.0),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      // String url = 'http://www.baidu.com';
+                                      // if (await canlaunch(url)){
+                                      //   await launch(url);
+                                      // }
+                                    })
+                            ])),
+                        // subtitle: Text('${_items[index]}'),
+                        controlAffinity: ListTileControlAffinity.leading,
+                        onChanged: (isChecked) {
+                          setState(() {
+                            ischeckedPhone = isChecked;
+                          });
+                        })),
                 ListTileTheme(
-                  horizontalTitleGap: 0,
-                  child: CheckboxListTile(
-                    activeColor: Colors.blue,
-                    side:const BorderSide(color: Color.fromARGB(255, 120, 119, 119)),
-                    value: isCheckAgreePhone,
-                    title:const Text("I agree to revice text message",
-                        style: TextStyle(color: Color.fromARGB(255, 120, 119, 119), fontSize: 12.0)),
-                    // subtitle: Text('${_items[index]}'),
-                    controlAffinity: ListTileControlAffinity.leading,
-                    onChanged: (isChecked) {
-                      setState(() {
-                        isCheckAgreePhone = isChecked;
-                      });
-                    })
-                ),
+                    horizontalTitleGap: 0,
+                    child: CheckboxListTile(
+                        activeColor: Colors.blue,
+                        side: const BorderSide(
+                            color: Color.fromARGB(255, 120, 119, 119)),
+                        value: isCheckAgreePhone,
+                        title: const Text("I agree to revice text message",
+                            style: TextStyle(
+                                color: Color.fromARGB(255, 120, 119, 119),
+                                fontSize: 12.0)),
+                        // subtitle: Text('${_items[index]}'),
+                        controlAffinity: ListTileControlAffinity.leading,
+                        onChanged: (isChecked) {
+                          setState(() {
+                            isCheckAgreePhone = isChecked;
+                          });
+                        })),
 
-                    const Padding(
-                      padding: EdgeInsets.only(left: 25,right: 25),
-                      child: Text("Message and data rates may apply. Enter your phone number to subscribe to recurring Account updates to your phone from MOTOEYE. Msg freq may vary Reply HELP for help. Retry STOP to cancel.",style: TextStyle(color:  const Color.fromARGB(255, 120, 119, 119), fontSize: 12.0),softWrap: true,),
-                      ),
+                const Padding(
+                  padding: EdgeInsets.only(left: 25, right: 25),
+                  child: Text(
+                    "Message and data rates may apply. Enter your phone number to subscribe to recurring Account updates to your phone from MOTOEYE. Msg freq may vary Reply HELP for help. Retry STOP to cancel.",
+                    style: TextStyle(
+                        color: const Color.fromARGB(255, 120, 119, 119),
+                        fontSize: 12.0),
+                    softWrap: true,
+                  ),
+                ),
 
                 Padding(padding: EdgeInsets.only(top: 200.w)),
 

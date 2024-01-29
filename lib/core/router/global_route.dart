@@ -73,7 +73,6 @@ import 'package:flutter_template/pages/setting/user_personal_information.dart';
 import 'package:flutter_template/pages/Ethernet/net/wan_status.dart';
 // import 'package:get/get.dart';
 import '../webscoket/scoket_service.dart';
-import '../mqtt/mqtt_client.dart';
 import '../../pages/net_status/channel_scan.dart';
 import '../../pages/net_status/channel_tables.dart';
 import '../../pages/net_status/channel_tables_advance.dart';
@@ -86,6 +85,7 @@ import '../../pages/parent_control/parent_device_page.dart';
 import '../../pages/parent_control/parent_time_list_page.dart';
 import '../../pages/parent_control/parent_creatTimPage.dart';
 import '../../pages/parent_control/new_parent_page.dart';
+import '../../pages/net_status/speed_test_page.dart';
 /// 路由
 class GlobalRouter {
   // 定义单例
@@ -314,8 +314,6 @@ class GlobalRouter {
         const WanStatusPage(),
     '/socketPage': (BuildContext context, {Object? args}) =>
         const SocketChannelPage(),
-    '/mqttPage': (BuildContext context, {Object? args}) =>
-        const MqttPage(),
     '/channelScan': (BuildContext context, {Object? args}) =>
         const ChannelScanPage(),
     '/channelList': (BuildContext context, {Object? args}) =>
@@ -338,6 +336,8 @@ class GlobalRouter {
         const ParentTimeListPage(),
     '/websiteCreatTimePage': (BuildContext context, {Object? args}) =>
         const ParentCreatTimePage(),
+    '/lanSpeedTestPage': (BuildContext context, {Object? args}) =>
+        const SpeedTestHomeVC(),
   };
 
   /// 监听route

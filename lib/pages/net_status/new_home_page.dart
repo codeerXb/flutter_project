@@ -26,8 +26,6 @@ import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import '../../pages/net_status/beans/speed_bean.dart';
 
-// import 'package:flutter_template/core/utils/screen_adapter.dart';
-// import 'package:get/get_connect/http/src/utils/utils.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -109,26 +107,7 @@ class _HomePageState extends State<HomePage> {
   String speedTime = "";
 
   String userAccount = "";
-  Timer? timer;
-
-  String getRate(rate) {
-    double rateKb = rate * 8 / 1000;
-    String unit = 'Kbps';
-    if (rateKb >= 1000 * 1000) {
-      // gbps
-      rateKb = rateKb / 1000 / 1000;
-      unit = 'Gbps';
-    } else if (rateKb >= 1000 && rateKb <= 1000 * 1000) {
-      // mbps
-      rateKb = rateKb / 1000;
-      unit = 'Mbps';
-    } else {
-      // kbps
-      rateKb = rateKb;
-      unit = 'Kbps';
-    }
-    return rateKb.toStringAsFixed(2) + unit;
-  }
+  // Timer? timer;
 
   String getPing(ping) {
     return '${ping}ms';
@@ -304,27 +283,25 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void getLastSpeed(String sn) {
-    App.get('/platform/cpeMqttSpeed/queryLatestOneSpeed', {'sn': sn})
-        .then((res) {
-      setState(() {
-        speedTime = res['data']['createTime'];
-        testUp = getRate(res['data']['upload']);
-        testDown = getRate(res['data']['download']);
-        lantency = getPing(res['data']['ping']);
-      });
-    }).catchError((err) {
-      printError(info: err.toString());
-    });
-  }
+  // void getLastSpeed(String sn) {
+  //   App.get('/platform/cpeMqttSpeed/queryLatestOneSpeed', {'sn': sn})
+  //       .then((res) {
+  //     setState(() {
+  //       speedTime = res['data']['createTime'];
+  //       testUp = getRate(res['data']['upload']);
+  //       testDown = getRate(res['data']['download']);
+  //       lantency = getPing(res['data']['ping']);
+  //     });
+  //   }).catchError((err) {
+  //     printError(info: err.toString());
+  //   });
+  // }
 
 //1连接
   var connectStatus = '1';
 
   /// 获取云端基础信息
   Future<void> getBasicInfo() async {
-    // Navigator.push(context, DialogRouter(LoadingDialog()));
-    printInfo(info: 'sn在这里有值吗-------$sn');
     // var parameterNames = [
     //   "InternetGatewayDevice.WEB_GUI.Overview.VersionInfo.ProductModel",
     //   "InternetGatewayDevice.WEB_GUI.Ethernet.Status.ConnectStatus",
@@ -346,7 +323,7 @@ class _HomePageState extends State<HomePage> {
       debugPrint('获取信息失败：${e.toString()}');
     }
   }
-
+/*
   ///  获取云端轮询信息
   Future<void> getTROnlineCount(sn) async {
     // 已用流量
@@ -399,6 +376,7 @@ class _HomePageState extends State<HomePage> {
       }
     }
   }
+  */
 
   /// 获取设备列表并更新在线数量  本地
   void updateOnlineCount() async {
@@ -685,7 +663,7 @@ class _HomePageState extends State<HomePage> {
             ToastUtils.toast(S.current.error);
           }
         });
-      } on FormatException catch (e) {
+      } on FormatException catch (error) {
         ToastUtils.toast(S.current.error);
       }
     }).catchError((onError) {
@@ -777,7 +755,7 @@ class _HomePageState extends State<HomePage> {
                       // getLastSpeed(sn);
                       // sendRequestDataSingle(sn);
                       // showSpeedDialog(context);
-
+                      Get.toNamed("/lanSpeedTestPage");
                     },
                   ),
                   ElevatedButton(
@@ -845,8 +823,8 @@ class _HomePageState extends State<HomePage> {
                   var timestr = "$year $newHour:$minute";
                   debugPrint("时间是:$timestr");
                   speedTime = timestr;
-                  testUp = getRate(speedmodel!.data!.upload!);
-                  testDown = getRate(speedmodel!.data!.download!);
+                  testUp = StringUtil.getRate(speedmodel!.data!.upload!);
+                  testDown = StringUtil.getRate(speedmodel!.data!.download!);
                   lantency = getPing(speedmodel!.data!.ping!);
 
                   debugPrint("数据是:$testUp -- $testDown -- $lantency");
@@ -980,28 +958,28 @@ class _HomePageState extends State<HomePage> {
   }
 
   // test speed
-  void testSpeed() async {
-    setState(() {
-      testLoading = true;
-    });
-    try {
-      Future.delayed(const Duration(milliseconds: 3000)).then((value) async {
-        final speed = await App.get(
-            '/platform/cpeMqttSpeed/queryLatestSpeed', {'sn': sn});
-        debugPrint(
-            '我的createTime${speed['data'].first['createTime']},${speed['data'].length.toString()}');
-        setState(() {
-          speedTime = speed['data'].first['createTime'];
-          testUp = getRate(speed['data'].first['upload']);
-          testDown = getRate(speed['data'].first['download']);
-          lantency = getPing(speed['data'].first['ping']);
-          testLoading = false;
-        });
-      });
-    } catch (e) {
-      printInfo(info: e.toString());
-    }
-  }
+  // void testSpeed() async {
+  //   setState(() {
+  //     testLoading = true;
+  //   });
+  //   try {
+  //     Future.delayed(const Duration(milliseconds: 3000)).then((value) async {
+  //       final speed = await App.get(
+  //           '/platform/cpeMqttSpeed/queryLatestSpeed', {'sn': sn});
+  //       debugPrint(
+  //           '我的createTime${speed['data'].first['createTime']},${speed['data'].length.toString()}');
+  //       setState(() {
+  //         speedTime = speed['data'].first['createTime'];
+  //         testUp = getRate(speed['data'].first['upload']);
+  //         testDown = getRate(speed['data'].first['download']);
+  //         lantency = getPing(speed['data'].first['ping']);
+  //         testLoading = false;
+  //       });
+  //     });
+  //   } catch (e) {
+  //     printInfo(info: e.toString());
+  //   }
+  // }
 
   Widget setUpHeadView() {
     return Container(
@@ -1010,9 +988,9 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            merchantName,
-            style:const TextStyle(fontSize: 20, color: Colors.black),
+        const Text(
+            "Codium Home Wi-Fi",
+            style: TextStyle(fontSize: 20, color: Colors.black),
             textAlign: TextAlign.center,
           ),
           // const SizedBox(
@@ -1076,7 +1054,7 @@ class _HomePageState extends State<HomePage> {
                 child: ElevatedButton(
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all<Color>(
-                      Color.fromARGB(255, 35, 197, 145)),
+                      const Color.fromARGB(255, 35, 197, 145)),
                 ),
                 child: Text(
                   "CHECK WIFI PERFORMANCE",
@@ -1247,7 +1225,7 @@ class _HomePageState extends State<HomePage> {
           // 不自动添加返回键
           automaticallyImplyLeading: false,
           title: InkWell(
-            overlayColor: const MaterialStatePropertyAll(Colors.transparent),
+            // overlayColor: const MaterialStatePropertyAll(Colors.transparent),
             // 下拉icon
             child: Ink(
               width: 1.sw,
@@ -1265,7 +1243,7 @@ class _HomePageState extends State<HomePage> {
                 //   size: 30.w,
                 //   color: Colors.white,
                 // ),
-                iconEnabledColor: Colors.black,
+                iconEnabledColor: Colors.white,
                 items: optionsList.map((option) {
                   // bool isSelected = option == currentDevice;
                   return DropdownMenuItem(
@@ -1479,8 +1457,8 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
     debugPrint('状态页面销毁');
     client.disconnect();
-    timer?.cancel();
-    timer = null;
+    // timer?.cancel();
+    // timer = null;
   }
 }
 

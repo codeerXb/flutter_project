@@ -9,9 +9,9 @@ import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import '../../pages/net_status/beans/speed_bean.dart';
 import '../../core/utils/string_util.dart';
 import 'dart:convert';
-
+String Id_Random = StringUtil.generateRandomString(10);
 MqttServerClient client = MqttServerClient.withPort(
-    BaseConfig.mqttMainUrl, 'flutter_client', BaseConfig.websocketPort);
+    BaseConfig.mqttMainUrl, 'client_$Id_Random', BaseConfig.websocketPort);
 
 class SpeedTestHomeVC extends StatefulWidget {
   const SpeedTestHomeVC({super.key});
@@ -26,9 +26,9 @@ class _SpeedTestHomeVCState extends State<SpeedTestHomeVC> {
   String downUnit = 'Kbps';
   String upUnit = 'Kbps';
 
-  String testUp = '0 Kbps';
-  String testDown = '0 Kbps';
-  String lantency = '0 ms';
+  String testUp = '';
+  String testDown = '';
+  String lantency = '';
   bool testLoading = false;
   String speedTime = "";
 
@@ -69,7 +69,7 @@ class _SpeedTestHomeVCState extends State<SpeedTestHomeVC> {
     //     testUp.isEmpty &&
     //     testDown.isEmpty &&
     //     lantency.isEmpty) {
-    //   requestTestSpeedData(sn);
+      
     // } else {
     //   setState(() {
     //     testLoading = true;
@@ -95,6 +95,7 @@ class _SpeedTestHomeVCState extends State<SpeedTestHomeVC> {
     client.onConnected = onConnected;
     client.onSubscribed = onSubscribed;
     client.pongCallback = pong;
+    client.setProtocolV311();
 
     final connMess = MqttConnectMessage()
         .authenticateAs('admin', 'smawav')
@@ -121,7 +122,7 @@ class _SpeedTestHomeVCState extends State<SpeedTestHomeVC> {
       print(
           'Client connection failed - disconnecting, status is ${client.connectionStatus}');
       client.disconnect();
-      exit(-1);
+      // exit(-1);
     }
 
     client.published!.listen((MqttPublishMessage message) {
@@ -224,7 +225,7 @@ class _SpeedTestHomeVCState extends State<SpeedTestHomeVC> {
             color: Colors.grey,
           ),
           Text(
-            "Speed measurement in progress",
+            "Speed test in progress",
             textAlign: TextAlign.center,
             softWrap: true,
             style: TextStyle(fontSize: 15, color: Colors.black),
@@ -251,7 +252,7 @@ class _SpeedTestHomeVCState extends State<SpeedTestHomeVC> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    "Recent speed test results",
+                    "Speed test results",
                     style: TextStyle(color: Colors.grey, fontSize: 15),
                   ),
                   const SizedBox(
@@ -279,7 +280,7 @@ class _SpeedTestHomeVCState extends State<SpeedTestHomeVC> {
                     height: 8,
                   ),
                   Text(
-                    'Lantency $lantency',
+                    'Latency $lantency',
                     style: const TextStyle(fontSize: 14),
                   )
                 ],

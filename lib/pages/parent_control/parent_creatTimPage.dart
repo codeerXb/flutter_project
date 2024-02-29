@@ -122,7 +122,7 @@ class _ParentCreatTimePageState extends State<ParentCreatTimePage> {
                   ),
                   onPressed: () {},
                   child: Text(
-                    "Finish",
+                    "Submit",
                     style: TextStyle(
                         fontSize: 32.sp, color: const Color(0xffffffff)),
                   ),
@@ -229,6 +229,9 @@ class _ParentCreatTimePageState extends State<ParentCreatTimePage> {
                     bottom: BorderSide(width: 1, color: Color(0xffe5e5e5)))),
             child: CheckboxListTile(
               value: checked[index],
+              side: const BorderSide(color: Colors.grey),
+              checkColor: Colors.white,
+              activeColor: Colors.green,
               title: Text(
                 weeks[index],
                 style: const TextStyle(fontSize: 15, color: Colors.black),

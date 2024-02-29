@@ -111,7 +111,7 @@ class _MajorSetState extends State<MajorSet> {
         // type = jsonObj["data"]["wifiRegionCountry"]["WEB_GUI"]["WiFi"]
         //     ["WLANSettings"]["CountryCode"]["_type"];
         var radioState = jsonObj["data"]["wifiRegionCountry"];
-        index = ['CN','US', 'FR', 'RU', 'SG', 'AU', 'CL', 'PL'].indexOf(radioState);
+        index = ['US', 'CN','FR', 'RU', 'SG', 'AU', 'CL', 'PL'].indexOf(radioState);
         //读取地区
         switch (radioState) {
           case 'CN':
@@ -290,8 +290,8 @@ class _MajorSetState extends State<MajorSet> {
                               var result = CommonPicker.showPicker(
                                 context: context,
                                 options: [
-                                  S.current.China,
                                   S.current.UnitedStates,
+                                  S.current.China,
                                   S.current.France,
                                   S.current.Russia,
                                   S.current.Singapore,
@@ -318,8 +318,8 @@ class _MajorSetState extends State<MajorSet> {
                                                 S.current.Poland
                                               ][index],
                                               val = [
-                                                'CN',
                                                 'US',
+                                                'CN',
                                                 'FR',
                                                 'RU',
                                                 'SG',

@@ -72,7 +72,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "EnableRebootScheduler":
             MessageLookupByLibrary.simpleMessage("Enable reboot scheduler"),
         "EnableScheduler":
-            MessageLookupByLibrary.simpleMessage("Date to reboot"),
+            MessageLookupByLibrary.simpleMessage("Reboot date"),
         "Environment": MessageLookupByLibrary.simpleMessage("Wi-Fi Coverage"),
         "Ethernet": MessageLookupByLibrary.simpleMessage("Ethernet"),
         "EthernetOnly": MessageLookupByLibrary.simpleMessage("Ethernet Only"),
@@ -195,7 +195,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "addDevice": MessageLookupByLibrary.simpleMessage("Add Device"),
         "advancedSet":
             MessageLookupByLibrary.simpleMessage("Advanced Settings"),
-        "aesRecommend": MessageLookupByLibrary.simpleMessage("AES(Recommened)"),
+        "aesRecommend": MessageLookupByLibrary.simpleMessage("AES(Recommended)"),
         "aivideo": MessageLookupByLibrary.simpleMessage("E-Learning"),
         "ascii32": MessageLookupByLibrary.simpleMessage("1~32 ASCII Character"),
         "autoLang": MessageLookupByLibrary.simpleMessage("Auto"),
@@ -212,6 +212,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Logout login failed, Please check the network!"),
         "clear": MessageLookupByLibrary.simpleMessage("Clear"),
         "clearCache": MessageLookupByLibrary.simpleMessage("Clear Cache"),
+        "delAccount": MessageLookupByLibrary.simpleMessage("Account Deletion"),
         "clickFactory": MessageLookupByLibrary.simpleMessage(
             "Please click factory reset to restore device to its factory settings"),
         "clickReboot": MessageLookupByLibrary.simpleMessage(
@@ -262,7 +263,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "examine": MessageLookupByLibrary.simpleMessage("Examine"),
         "failed": MessageLookupByLibrary.simpleMessage(
             "Failed to get the bound device"),
-        "fri": MessageLookupByLibrary.simpleMessage("fri"),
+        "fri": MessageLookupByLibrary.simpleMessage("Fri"),
         "game": MessageLookupByLibrary.simpleMessage("Game Booster"),
         "gameAcceleration":
             MessageLookupByLibrary.simpleMessage("Game Booster"),
@@ -307,7 +308,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "minute": MessageLookupByLibrary.simpleMessage("m"),
         "minutes": MessageLookupByLibrary.simpleMessage("Minutes"),
         "modification": MessageLookupByLibrary.simpleMessage("Edit"),
-        "mon": MessageLookupByLibrary.simpleMessage("mon"),
+        "mon": MessageLookupByLibrary.simpleMessage("Mon"),
         "monitor": MessageLookupByLibrary.simpleMessage("Monitor"),
         "month": MessageLookupByLibrary.simpleMessage("Mon"),
         "more": MessageLookupByLibrary.simpleMessage("View More"),

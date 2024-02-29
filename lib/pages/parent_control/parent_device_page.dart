@@ -26,7 +26,7 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
     return Scaffold(
         appBar: AppBar(
           title: const Text(
-            'Devices',
+            'Blacklist Configure',
             style: TextStyle(color: Colors.black, fontSize: 22),
           ),
           centerTitle: true,
@@ -34,16 +34,16 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
         ),
         body: Container(
           height: double.infinity,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: Colors.black12,
             borderRadius: BorderRadius.all(Radius.circular(8.0)),
           ),
-          padding: EdgeInsets.only(bottom: 20),
+          padding: const EdgeInsets.only(bottom: 20),
           child: Stack(
             children: [
               SingleChildScrollView(
                   child: ConstrainedBox(
-                constraints: BoxConstraints(
+                constraints: const BoxConstraints(
                   minHeight: 100,
                   // maxHeight: 100000
                 ),
@@ -51,11 +51,11 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Padding(
-                      padding: EdgeInsets.fromLTRB(15, 5, 15, 30),
+                      padding: const EdgeInsets.fromLTRB(15, 5, 15, 30),
                       child: Obx(() {
                         return Container(
-                          margin: EdgeInsets.only(top: 10),
-                          decoration: BoxDecoration(
+                          margin: const EdgeInsets.only(top: 10),
+                          decoration: const BoxDecoration(
                               color: Colors.white,
                               borderRadius:
                                   BorderRadius.all(Radius.circular(8.0)),
@@ -63,7 +63,7 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
                                   bottom: BorderSide(
                                       width: 1, color: Color(0xffe5e5e5)))),
                           child: ListView.separated(
-                            padding: EdgeInsets.only(top: 10,bottom: 10),
+                            padding: const EdgeInsets.only(top: 10,bottom: 10),
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             itemCount: deviceList.length,
@@ -71,7 +71,7 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
                               return setUpContentView();
                             },
                             separatorBuilder: (context, index) {
-                              return Divider(
+                              return const Divider(
                                 height: 20,
                                 thickness: 10,
                                 color: Color.fromARGB(255, 214, 208, 208),
@@ -84,29 +84,29 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
                   ],
                 ),
               )),
-              Positioned(
-                left: 80,
-                right: 80,
-                bottom: 20,
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    padding: MaterialStateProperty.all(
-                      EdgeInsets.only(top: 28.w, bottom: 28.w),
-                    ),
-                    shape: MaterialStateProperty.all(const StadiumBorder()),
-                    backgroundColor: MaterialStateProperty.all(
-                        const Color.fromARGB(255, 30, 104, 233)),
-                  ),
-                  onPressed: () {
-                    Get.toNamed("/websiteTimeListPage");
-                  },
-                  child: Text(
-                    "Next Step",
-                    style: TextStyle(
-                        fontSize: 32.sp, color: const Color(0xffffffff)),
-                  ),
-                ),
-              ),
+              // Positioned(
+              //   left: 80,
+              //   right: 80,
+              //   bottom: 20,
+              //   child: ElevatedButton(
+              //     style: ButtonStyle(
+              //       padding: MaterialStateProperty.all(
+              //         EdgeInsets.only(top: 28.w, bottom: 28.w),
+              //       ),
+              //       shape: MaterialStateProperty.all(const StadiumBorder()),
+              //       backgroundColor: MaterialStateProperty.all(
+              //           const Color.fromARGB(255, 30, 104, 233)),
+              //     ),
+              //     onPressed: () {
+              //       Get.toNamed("/websiteTimeListPage");
+              //     },
+              //     child: Text(
+              //       "Next Step",
+              //       style: TextStyle(
+              //           fontSize: 32.sp, color: const Color(0xffffffff)),
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ));
@@ -117,7 +117,7 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               color: Colors.white,
               border: Border(
                   bottom: BorderSide(width: 1, color: Color(0xffe5e5e5)))),
@@ -131,7 +131,9 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
                   style: TextStyle(fontSize: 15, color: Colors.black),
                 ),
                 IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Get.toNamed("/parentConfigPage");
+                    },
                     icon: Image.asset(
                       "assets/images/edit_parent.png",
                       width: 20,

@@ -17,6 +17,7 @@ import 'package:flutter_template/core/http/http_app.dart';
 import 'package:flutter_template/pages/login/model/equipment_data.dart';
 import 'package:location/location.dart';
 import 'package:geocode/geocode.dart';
+import '../../core/utils/string_util.dart';
 
 /// 选择上网方式
 class NetMode extends StatefulWidget {
@@ -38,6 +39,8 @@ class _NetModeState extends State<NetMode> {
       TextEditingController(); //备用DNS服务器(选填)
 
   bool checkedMac = false;
+
+  String? wifiGetWayUrl = "";
 
   void _selectIndex(int index) {
     setState(() {
@@ -138,21 +141,20 @@ class _NetModeState extends State<NetMode> {
   }
 
   void appLogin() {
-    Map<String, dynamic> data = {
-      'username': _account.trim(),
-      'password': _password.trim(),
-    };
-    XHttp.get('/action/appLogin', data).then((res) {
-      debugPrint('------登录------');
-      debugPrint(res);
-      // 以 { 或者 [ 开头的
-      RegExp exp = RegExp(r'^[{[]');
-      if (res != null && exp.hasMatch(res)) {
-        var localLoginRes = json.decode(res.toString());
-        printInfo(info: '登录返回$localLoginRes');
-        if (localLoginRes['code'] == 200) {
-          Map<String, dynamic> bindParma = {
-            "account" : userAccount,
+    // Map<String, dynamic> data = {
+    //   'username': _account.trim(),
+    //   'password': _password.trim(),
+    // };
+
+    Dio dio = Dio();
+
+    String url =
+        "http://$wifiGetWayUrl/action/appLogin?username=engineer&password=OPaviNb3o5qDKD1YPzp2X64Qsw0G3PMQLxOkLdp%2FWERkAphqhKCC00ZmZxOFOLBFN81FR7JprXF8lTkGpKdECl4IWbBiklCoAz1HsRUZYY%2BrbBFKGZO04NaawnWzqNEiHemaC0til1Hg6gkpc6DZVupOi8bGkEyCbpNQJN%2BU9zw=";
+    dio.get(url).then((response) {
+      var loginResJson = jsonDecode(response.toString());
+      if (loginResJson['code'] == 200) {
+        Map<String, dynamic> bindParma = {
+            "account": userAccount,
             "deviceSn": sn,
             "lon": longitudeString,
             "lat": latitudeString
@@ -194,8 +196,8 @@ class _NetModeState extends State<NetMode> {
               ToastUtils.error(S.current.contimeout);
             }
           });
-          loginController.setToken(localLoginRes['token']);
-          loginController.setSession(localLoginRes['sessionid']);
+          loginController.setToken(loginResJson['token']);
+          loginController.setSession(loginResJson['sessionid']);
           String userInfo = jsonEncode({
             "user": _account,
             "pwd": base64Encode(
@@ -207,9 +209,8 @@ class _NetModeState extends State<NetMode> {
             String,
             userInfo,
           );
-          sharedAddAndUpdate("token", String, localLoginRes['token']);
-          sharedAddAndUpdate("session", String, localLoginRes['sessionid']);
-        }
+          sharedAddAndUpdate("token", String, loginResJson['token']);
+          sharedAddAndUpdate("session", String, loginResJson['sessionid']);
       }
     }).catchError((err) {
       timer?.cancel();
@@ -250,6 +251,20 @@ class _NetModeState extends State<NetMode> {
         debugPrint('登录失败：${errRes.code}');
       }
     });
+
+    // XHttp.get('/action/appLogin', data).then((res) {
+    //   debugPrint('------登录------');
+    //   debugPrint(res);
+    //   // 以 { 或者 [ 开头的
+    //   RegExp exp = RegExp(r'^[{[]');
+    //   if (res != null && exp.hasMatch(res)) {
+    //     var localLoginRes = json.decode(res.toString());
+    //     printInfo(info: '登录返回$localLoginRes');
+    //     if (localLoginRes['code'] == 200) {
+          
+    //     }
+    //   }
+    // });
   }
 
   ///执行提交方法
@@ -453,10 +468,16 @@ class _NetModeState extends State<NetMode> {
 
   @override
   void initState() {
+    sharedGetData("baseLocalUrl", String).then((value) {
+      debugPrint("baseLocalUrl:${value.toString()}");
+      if (StringUtil.isNotEmpty(value)) {
+        wifiGetWayUrl = value as String;
+      }
+    });
     sharedGetData("user_phone", String).then((data) {
       debugPrint("当前获取的用户信息:${data.toString()}");
       if ((data.toString()).isNotEmpty) {
-        userAccount= data as String;
+        userAccount = data as String;
       }
     });
     getNetType();
@@ -904,12 +925,12 @@ class _NetModeState extends State<NetMode> {
                                       ),
 
                                       /// 账号
-                                      buildAccountTextField(),
-                                      Padding(
-                                          padding: EdgeInsets.only(top: 20.w)),
+                                      // buildAccountTextField(),
+                                      // Padding(
+                                      //     padding: EdgeInsets.only(top: 20.w)),
 
-                                      /// 密码
-                                      buildPasswordTextField(),
+                                      // /// 密码
+                                      // buildPasswordTextField(),
                                       Padding(
                                           padding: EdgeInsets.only(top: 20.w)),
 
@@ -931,7 +952,8 @@ class _NetModeState extends State<NetMode> {
                         width: double.infinity,
                         child: Column(
                           children: [
-                            const Text('Make sure the router is connected to power and plug in a network cable to the WAN port'),
+                            const Text(
+                                'Make sure the router is connected to power and plug in a network cable to the WAN port'),
                             Image.asset("assets/images/sureWan.png",
                                 fit: BoxFit.fitWidth,
                                 height: 600.w,

@@ -36,6 +36,7 @@ class _SettingState extends State<Setting> {
   String sn = '';
 
   String routeOnly = "";
+
   /// 用户信息
   UserModel userModel = UserModel();
   final LoginController loginController = Get.put(LoginController());
@@ -53,13 +54,19 @@ class _SettingState extends State<Setting> {
   //验证云平台登录
   String _User = '';
   String userAccount = "";
-
+  String localUrl = "";
   @override
   void initState() {
     sharedGetData("user_phone", String).then((data) {
       debugPrint("当前获取的用户信息:${data.toString()}");
       if (StringUtil.isNotEmpty(data)) {
         userAccount = data as String;
+      }
+    });
+    sharedGetData("baseLocalUrl", String).then((value) {
+      debugPrint("baseLocalUrl:${value.toString()}");
+      if (StringUtil.isNotEmpty(value)) {
+        localUrl = value as String;
       }
     });
     super.initState();
@@ -91,7 +98,6 @@ class _SettingState extends State<Setting> {
         routeOnly = res.toString();
       });
     }));
-
   }
 
   void appLogin() {
@@ -99,8 +105,8 @@ class _SettingState extends State<Setting> {
       _isLoading = true;
     });
     Map<String, dynamic> data = {
-      'username': _account.trim(),
-      'password': _password.trim(),
+      'username': "superadmin",
+      'password': "admin",
     };
     XHttp.get('/action/appLogin', data).then(
       (res) {
@@ -115,9 +121,9 @@ class _SettingState extends State<Setting> {
             loginController.setToken(localLoginRes['token']);
             loginController.setSession(localLoginRes['sessionid']);
             String userInfo = jsonEncode({
-              "user": _account,
+              "user": "superadmin",
               "pwd": base64Encode(
-                utf8.encode(_password),
+                utf8.encode("admin"),
               )
             });
             sharedAddAndUpdate(
@@ -175,8 +181,8 @@ class _SettingState extends State<Setting> {
       ToastUtils.toast(S.current.passwordEmpty);
     } else {
       Map<String, dynamic> data = {
-        'username': _account.trim(),
-        'password': _password.trim().trim(),
+        'username': "superadmin",
+        'password': "admin",
         'rememberMe': 'true',
         'ismoble': 'ismoble'
       };
@@ -459,8 +465,8 @@ class _SettingState extends State<Setting> {
                   /// LAN设置
                   lanSettings(),
                   // const Divider(),
-                  /// Wi-Fi覆盖图
-                  wifiMapping(),
+                  /// Wi-Fi覆盖图(暂时去掉)
+                  // wifiMapping(),
 
                   /// 系统设置
                   systemSettings(),
@@ -470,6 +476,9 @@ class _SettingState extends State<Setting> {
 
                   /// 清除缓存
                   clearCache(),
+
+                  ///注销账号
+                  deleteUserAccount()
                   // const Divider(),
                 ],
               ),
@@ -538,7 +547,7 @@ class _SettingState extends State<Setting> {
                       height: 60.w,
                       alignment: Alignment.topLeft,
                       child: Text(
-                        "${S.of(context).unblockdevice} $sn ${S.of(context).binding}",
+                        "${S.of(context).unblockdevice} $sn?",
                         style:
                             TextStyle(color: Colors.black45, fontSize: 22.sp),
                       ),
@@ -576,12 +585,9 @@ class _SettingState extends State<Setting> {
                       // 确定解绑
                       InkWell(
                         onTap: () {
-                          var param = {
-                            "account" : userAccount,
-                            "deviceSn" : sn
-                          };
-                          App.post(
-                                  '/platform/appCustomer/unBoundCpe',data: param)
+                          var param = {"account": userAccount, "deviceSn": sn};
+                          App.post('/platform/appCustomer/unBoundCpe',
+                                  data: param)
                               .then((res) {
                             var d = json.decode(res.toString());
                             debugPrint('响应------>$d');
@@ -781,12 +787,11 @@ class _SettingState extends State<Setting> {
         title: S.of(context).EthernetStatus,
         icon: const Image(image: AssetImage('assets/images/net_type.png')),
         callBack: () {
-          if(routeOnly == "1") {
+          if (routeOnly == "1") {
             Get.toNamed("/feed_back");
-          }else {
+          } else {
             Get.toNamed("/wanStatusPage");
           }
-          
         });
   }
 
@@ -821,6 +826,16 @@ class _SettingState extends State<Setting> {
           Get.toNamed("/clear_cache");
         });
   }
+
+  Widget deleteUserAccount() {
+    return CommonWidget.simpleWidgetWithMine(
+        title: S.of(context).delAccount,
+        icon: const Image(image: AssetImage('assets/images/Log out.png'),width: 25,height: 25,),
+        callBack: () {
+          Get.toNamed("/delAccountPage",arguments: {"userAccount" : userAccount});
+        });
+  }
+
 
   /// 关于我们
   Widget aboutUs() {
@@ -898,10 +913,10 @@ class _SettingState extends State<Setting> {
       barrierDismissible: false,
       builder: (context) => const Stack(
         children: [
-          Opacity(
-            opacity: 0.3,
-            child: ModalBarrier(dismissible: false, color: Colors.black),
-          ),
+          // Opacity(
+          //   opacity: 0.3,
+          //   child: ModalBarrier(dismissible: false, color: Colors.black),
+          // ),
           Center(
             child: CircularProgressIndicator(),
           ),
@@ -913,37 +928,57 @@ class _SettingState extends State<Setting> {
       var jsonRes = json.decode(res.toString());
       // 得到jsonRes.systemVersionSn,比对本地存储的sn
       sharedGetData('deviceSn', String).then((value) {
+        debugPrint("缓存中的设备是:${value.toString()}");
         if (value != null && value == jsonRes['systemVersionSn']) {
           // 本地存储设备的sn和设备返回的sn相同的时候
           // 尝试设备登录
-          // 获取本地存取的设备用户名密码
-          sharedGetData(sn, String).then((value) async {
-            if (value != null) {
-              var userInfo = jsonDecode(value.toString());
-              var user = userInfo["user"];
-              var pwd = utf8.decode(base64Decode(userInfo["pwd"]));
-              var loginRes = await XHttp.get('/action/appLogin', {
-                'username': user,
-                'password': pwd,
-              });
-              var loginResJson = jsonDecode(loginRes.toString());
-              if (loginResJson['code'] == 200) {
-                // 存储token和session
-                loginController.setSession(loginResJson['sessionid']);
-                sharedAddAndUpdate(
-                    "session", String, loginResJson['sessionid']);
-                loginController.setToken(loginResJson['token']);
-                sharedAddAndUpdate("token", String, loginResJson['token']);
-                // 跳转到wan-setting界面
-                Get.toNamed('/wan_settings');
-              }
-            } else {
-              showLoginDialog();
+          Dio dio = Dio();
+
+          String url =
+              "http://$localUrl/action/appLogin?username=engineer&password=OPaviNb3o5qDKD1YPzp2X64Qsw0G3PMQLxOkLdp%2FWERkAphqhKCC00ZmZxOFOLBFN81FR7JprXF8lTkGpKdECl4IWbBiklCoAz1HsRUZYY%2BrbBFKGZO04NaawnWzqNEiHemaC0til1Hg6gkpc6DZVupOi8bGkEyCbpNQJN%2BU9zw=";
+          dio.get(url).then((response) {
+            var loginResJson = jsonDecode(response.toString());
+            if (loginResJson['code'] == 200) {
+              // 存储token和session
+              loginController.setSession(loginResJson['sessionid']);
+              sharedAddAndUpdate("session", String, loginResJson['sessionid']);
+              loginController.setToken(loginResJson['token']);
+              sharedAddAndUpdate("token", String, loginResJson['token']);
+
+              Get.toNamed("/wan_settings");
             }
-          }).catchError((err) {
-            // 弹窗登录框
-            showLoginDialog();
           });
+          // 获取本地存取的设备用户名密码
+          // sharedGetData(sn, String).then((value) async {
+          //   debugPrint("缓存中的设备2是:${value.toString()}");
+          //   if (value != null) {
+          //     var userInfo = jsonDecode(value.toString());
+          //     var user = userInfo["user"];
+          //     var pwd = utf8.decode(base64Decode(userInfo["pwd"]));
+
+          //     var loginRes = await XHttp.get('/action/appLogin', {
+          //       'username': "engineer",
+          //       'password': "OPaviNb3o5qDKD1YPzp2X64Qsw0G3PMQLxOkLdp%2FWERkAphqhKCC00ZmZxOFOLBFN81FR7JprXF8lTkGpKdECl4IWbBiklCoAz1HsRUZYY%2BrbBFKGZO04NaawnWzqNEiHemaC0til1Hg6gkpc6DZVupOi8bGkEyCbpNQJN%2BU9zw=",
+          //     });
+          //     var loginResJson = jsonDecode(loginRes.toString());
+          //     if (loginResJson['code'] == 200) {
+          //       // 存储token和session
+          //       loginController.setSession(loginResJson['sessionid']);
+          //       sharedAddAndUpdate(
+          //           "session", String, loginResJson['sessionid']);
+          //       loginController.setToken(loginResJson['token']);
+          //       sharedAddAndUpdate("token", String, loginResJson['token']);
+          //       // 跳转到wan-setting界面
+          //       Get.toNamed('/wan_settings');
+          //     }
+
+          //   } else {
+          //     showLoginDialog();
+          //   }
+          // }).catchError((err) {
+          //   // 弹窗登录框
+          //   showLoginDialog();
+          // });
         } else {
           // sn不相同的情况
           // 提示“请连接设备WiFi后再操作”

@@ -77,8 +77,8 @@ class _UserRegisterState extends State<UserRegister>
     FocusScope.of(context).requestFocus(blankNode);
   }
 
-  requestRegisterData() {
-    final data = {"account": _emailController.text};
+  requestRegisterData(String accountString) {
+    final data = {"account": accountString};
     dio
         .post(
             '${BaseConfig.cloudBaseUrl}/platform/appCustomer/sendSmsOrEmailCode',
@@ -420,7 +420,7 @@ class _UserRegisterState extends State<UserRegister>
                             });
                           }
                           //发请求
-                          requestRegisterData();
+                          requestRegisterData(_emailController.text);
                         }
                       }),
                       child: Text(
@@ -456,11 +456,8 @@ class _UserRegisterState extends State<UserRegister>
                                     color: Color.fromARGB(255, 7, 96, 185),
                                     fontSize: 14.0),
                                 recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    // String url = 'http://www.baidu.com';
-                                    // if (await canlaunch(url)){
-                                    //   await launch(url);
-                                    // }
+                                  ..onTap = () async {
+                                    Get.toNamed("/privacyPage");
                                   }),
                             const TextSpan(
                               text: "and",
@@ -474,10 +471,7 @@ class _UserRegisterState extends State<UserRegister>
                                     fontSize: 14.0),
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
-                                    // String url = 'http://www.baidu.com';
-                                    // if (await canlaunch(url)){
-                                    //   await launch(url);
-                                    // }
+                                    Get.toNamed("/privacyPage");
                                   })
                           ])),
                       // subtitle: Text('${_items[index]}'),
@@ -511,7 +505,7 @@ class _UserRegisterState extends State<UserRegister>
                 child: Text(
                   "Message and data rates may apply. Enter your phone number to subscribe to recurring Account updates to your phone from MOTOEYE. Msg freq may vary Reply HELP for help. Retry STOP to cancel.",
                   style: TextStyle(
-                      color: const Color.fromARGB(255, 120, 119, 119),
+                      color: Color.fromARGB(255, 120, 119, 119),
                       fontSize: 12.0),
                   softWrap: true,
                 ),
@@ -830,18 +824,7 @@ class _UserRegisterState extends State<UserRegister>
                           if (_phoneVal == '') {
                             ToastUtils.toast(S.of(context).phoneError);
                           } else {
-                            final data = {"account": _phoneVal};
-                            //发请求
-                            dio
-                                .post(
-                                    '${BaseConfig.cloudBaseUrl}/platform/appCustomer/sendSmsOrEmailCode',
-                                    data: data)
-                                .then((res) {
-                              var d = json.decode(res.toString());
-                              debugPrint('响应------>$d');
-                              if (d['code'] == 200) {
-                                ToastUtils.toast(S.of(context).success);
-                                if (codeNum == 60) {
+                            if (codeNum == 60) {
                                   //倒计时60s
                                   setState(() {
                                     iscode = true;
@@ -861,19 +844,33 @@ class _UserRegisterState extends State<UserRegister>
                                     }
                                   });
                                 }
-                              } else {
-                                if (d['code'] == 9991) {
-                                  ToastUtils.toast(S.current.accountIncorrect);
-                                }
-                              }
-                            }).catchError((err) {
-                              debugPrint('响应------>$err');
-                              //相应超超时
-                              if (err['code'] == DioErrorType.connectTimeout) {
-                                debugPrint('timeout');
-                                ToastUtils.error(S.current.contimeout);
-                              }
-                            });
+
+                                requestRegisterData(_phoneVal);
+                            // final data = {"account": _phoneVal};
+                            // //发请求
+                            // dio
+                            //     .post(
+                            //         '${BaseConfig.cloudBaseUrl}/platform/appCustomer/sendSmsOrEmailCode',
+                            //         data: data)
+                            //     .then((res) {
+                            //   var d = json.decode(res.toString());
+                            //   debugPrint('响应------>$d');
+                            //   if (d['code'] == 200) {
+                            //     ToastUtils.toast(S.of(context).success);
+                                
+                            //   } else {
+                            //     if (d['code'] == 9991) {
+                            //       ToastUtils.toast(S.current.accountIncorrect);
+                            //     }
+                            //   }
+                            // }).catchError((err) {
+                            //   debugPrint('响应------>$err');
+                            //   //相应超超时
+                            //   if (err['code'] == DioErrorType.connectTimeout) {
+                            //     debugPrint('timeout');
+                            //     ToastUtils.error(S.current.contimeout);
+                            //   }
+                            // });
                           }
                         }),
                         child: Text(
@@ -910,10 +907,7 @@ class _UserRegisterState extends State<UserRegister>
                                       fontSize: 14.0),
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {
-                                      // String url = 'http://www.baidu.com';
-                                      // if (await canlaunch(url)){
-                                      //   await launch(url);
-                                      // }
+                                    Get.toNamed("/privacyPage");
                                     }),
                               const TextSpan(
                                 text: "and",
@@ -927,10 +921,7 @@ class _UserRegisterState extends State<UserRegister>
                                       fontSize: 14.0),
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {
-                                      // String url = 'http://www.baidu.com';
-                                      // if (await canlaunch(url)){
-                                      //   await launch(url);
-                                      // }
+                                      Get.toNamed("/privacyPage");
                                     })
                             ])),
                         // subtitle: Text('${_items[index]}'),

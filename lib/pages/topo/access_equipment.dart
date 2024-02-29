@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_template/config/base_config.dart';
 import 'package:flutter_template/core/http/http_app.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/utils/toast.dart';
@@ -11,7 +10,6 @@ import 'package:flutter_template/core/widget/custom_app_bar.dart';
 import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
 import 'package:flutter_template/pages/topo/model/equipment_datas.dart';
 import 'package:get/get.dart';
-
 import '../../generated/l10n.dart';
 
 class AccessEquipment extends StatefulWidget {
@@ -62,10 +60,10 @@ class _AccessEquipmentState extends State<AccessEquipment> {
       ToastUtils.error(d['message']);
     } else {
       ToastUtils.success(d['message']);
-      Navigator.pop(context);
       setState(() {
         Title = editTitleVal.text;
       });
+      Get.back();
     }
   }
 
@@ -82,10 +80,10 @@ class _AccessEquipmentState extends State<AccessEquipment> {
         return PopScope(
           canPop: false,
           onPopInvoked: (didPoped) async {
-            if(didPoped) {
-              Navigator.pop(context);
-              editTitleVal.text = Title;
+            if (didPoped) {
               return;
+            } else {
+              Navigator.pop(context);
             }
           },
           child: SingleChildScrollView(
@@ -230,135 +228,135 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                   padding: EdgeInsets.only(top: 10.sp),
                 ),
                 // 家长
-                InfoBox(
-                  boxCotainer: SizedBox(
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () {
-                        Get.toNamed("/parent", arguments: data);
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(S.current.parentalControl,
-                              style: TextStyle(fontSize: 30.sp)),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.arrow_forward_ios_outlined,
-                                color: const Color.fromRGBO(144, 147, 153, 1),
-                                size: 30.w,
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                // InfoBox(
+                //   boxCotainer: SizedBox(
+                //     child: GestureDetector(
+                //       behavior: HitTestBehavior.opaque,
+                //       onTap: () {
+                //         Get.toNamed("/parent", arguments: data);
+                //       },
+                //       child: Row(
+                //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //         children: [
+                //           Text(S.current.parentalControl,
+                //               style: TextStyle(fontSize: 30.sp)),
+                //           Row(
+                //             children: [
+                //               Icon(
+                //                 Icons.arrow_forward_ios_outlined,
+                //                 color: const Color.fromRGBO(144, 147, 153, 1),
+                //                 size: 30.w,
+                //               )
+                //             ],
+                //           ),
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                // ),
                 // 游戏
-                InfoBox(
-                  boxCotainer: SizedBox(
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () {
-                        // ToastUtils.toast(S.current.nogameAcceleration);
-                        // Get.toNamed("/parental_control", arguments: data);
-                        Get.snackbar(
-                          'Warning',
-                          S.current.nogameAcceleration,
-                          snackPosition: SnackPosition.TOP,
-                          duration: const Duration(seconds: 10),
-                          backgroundColor:
-                              const Color.fromARGB(132, 63, 63, 63),
-                          colorText: Colors.white,
-                          margin: const EdgeInsets.all(10),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 15),
-                          borderRadius: 10,
-                          animationDuration: const Duration(milliseconds: 200),
-                          mainButton: TextButton(
-                            onPressed: () {
-                              Get.back();
-                            },
-                            child: const Icon(
-                              Icons.close,
-                              color: Colors.red,
-                            ),
-                          ),
-                        );
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(S.current.gameAcceleration,
-                              style: TextStyle(fontSize: 30.sp)),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.arrow_forward_ios_outlined,
-                                color: const Color.fromRGBO(144, 147, 153, 1),
-                                size: 30.w,
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                // InfoBox(
+                //   boxCotainer: SizedBox(
+                //     child: GestureDetector(
+                //       behavior: HitTestBehavior.opaque,
+                //       onTap: () {
+                //         // ToastUtils.toast(S.current.nogameAcceleration);
+                //         // Get.toNamed("/parental_control", arguments: data);
+                //         Get.snackbar(
+                //           'Warning',
+                //           S.current.nogameAcceleration,
+                //           snackPosition: SnackPosition.TOP,
+                //           duration: const Duration(seconds: 10),
+                //           backgroundColor:
+                //               const Color.fromARGB(132, 63, 63, 63),
+                //           colorText: Colors.white,
+                //           margin: const EdgeInsets.all(10),
+                //           padding: const EdgeInsets.symmetric(
+                //               horizontal: 20, vertical: 15),
+                //           borderRadius: 10,
+                //           animationDuration: const Duration(milliseconds: 200),
+                //           mainButton: TextButton(
+                //             onPressed: () {
+                //               Get.back();
+                //             },
+                //             child: const Icon(
+                //               Icons.close,
+                //               color: Colors.red,
+                //             ),
+                //           ),
+                //         );
+                //       },
+                //       child: Row(
+                //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //         children: [
+                //           Text(S.current.gameAcceleration,
+                //               style: TextStyle(fontSize: 30.sp)),
+                //           Row(
+                //             children: [
+                //               Icon(
+                //                 Icons.arrow_forward_ios_outlined,
+                //                 color: const Color.fromRGBO(144, 147, 153, 1),
+                //                 size: 30.w,
+                //               )
+                //             ],
+                //           ),
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                // ),
                 // AI
-                InfoBox(
-                  boxCotainer: SizedBox(
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () {
-                        // ToastUtils.toast(S.current.noaivideo);
-                        // Get.toNamed("/parental_control", arguments: data);
-                        Get.snackbar(
-                          'Warning',
-                          S.current.noaivideo,
-                          isDismissible: true,
-                          snackPosition: SnackPosition.TOP,
-                          duration: const Duration(seconds: 10),
-                          backgroundColor:
-                              const Color.fromARGB(132, 63, 63, 63),
-                          colorText: Colors.white,
-                          margin: const EdgeInsets.all(10),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 15),
-                          borderRadius: 10,
-                          animationDuration: const Duration(milliseconds: 200),
-                          mainButton: TextButton(
-                            onPressed: () {
-                              Get.back();
-                            },
-                            child: const Icon(
-                              Icons.close,
-                              color: Colors.red,
-                            ),
-                          ),
-                        );
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(S.current.aivideo,
-                              style: TextStyle(fontSize: 30.sp)),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.arrow_forward_ios_outlined,
-                                color: const Color.fromRGBO(144, 147, 153, 1),
-                                size: 30.w,
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                // InfoBox(
+                //   boxCotainer: SizedBox(
+                //     child: GestureDetector(
+                //       behavior: HitTestBehavior.opaque,
+                //       onTap: () {
+                //         // ToastUtils.toast(S.current.noaivideo);
+                //         // Get.toNamed("/parental_control", arguments: data);
+                //         Get.snackbar(
+                //           'Warning',
+                //           S.current.noaivideo,
+                //           isDismissible: true,
+                //           snackPosition: SnackPosition.TOP,
+                //           duration: const Duration(seconds: 10),
+                //           backgroundColor:
+                //               const Color.fromARGB(132, 63, 63, 63),
+                //           colorText: Colors.white,
+                //           margin: const EdgeInsets.all(10),
+                //           padding: const EdgeInsets.symmetric(
+                //               horizontal: 20, vertical: 15),
+                //           borderRadius: 10,
+                //           animationDuration: const Duration(milliseconds: 200),
+                //           mainButton: TextButton(
+                //             onPressed: () {
+                //               Get.back();
+                //             },
+                //             child: const Icon(
+                //               Icons.close,
+                //               color: Colors.red,
+                //             ),
+                //           ),
+                //         );
+                //       },
+                //       child: Row(
+                //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //         children: [
+                //           Text(S.current.aivideo,
+                //               style: TextStyle(fontSize: 30.sp)),
+                //           Row(
+                //             children: [
+                //               Icon(
+                //                 Icons.arrow_forward_ios_outlined,
+                //                 color: const Color.fromRGBO(144, 147, 153, 1),
+                //                 size: 30.w,
+                //               )
+                //             ],
+                //           ),
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                // ),
               ],
             )),
       ),

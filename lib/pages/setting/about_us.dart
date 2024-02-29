@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_template/config/base_config.dart';
-import 'package:flutter_template/core/utils/toast.dart';
+// import 'package:flutter_template/config/base_config.dart';
+// import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:url_launcher/url_launcher.dart';
+// import 'package:url_launcher/url_launcher.dart';
 import '../../config/constant.dart';
 import '../../core/widget/common_widget.dart';
 import '../../core/widget/custom_app_bar.dart';
+import 'package:get/get.dart';
 
 /// 关于我们
 class AboutUs extends StatefulWidget {
@@ -25,30 +26,31 @@ class _AboutUsState extends State<AboutUs> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             /// 公司首页
-            CommonWidget.simpleWidgetWithUserDetail("Platform official website",
+            CommonWidget.simpleWidgetWithUserDetail("Website",
                 callBack: () {
-              debugPrint(
-                  "当前访问的URL地址:${BaseConfig.companyWebProtocol}${BaseConfig.companyWebUrl}");
-              launchUrl(
-                Uri(
-                    scheme: BaseConfig.companyWebProtocol,
-                    host: BaseConfig.companyWebUrl,path: ":8094/auth/login"),
-                mode: LaunchMode.inAppWebView,
-              );
+                  Get.toNamed("/commpanyWebsitePage");
+              // debugPrint(
+              //     "当前访问的URL地址:${BaseConfig.companyWebProtocol}${BaseConfig.companyWebUrl}");
+              // launchUrl(
+              //   Uri(
+                    
+              //       host: "https://codiumnetworks.com/"),
+              //   mode: LaunchMode.inAppWebView,
+              // );
             }),
 
             /// 技术服务
             CommonWidget.simpleWidgetWithUserDetail("Technical Support",
-                value: '13563254789', callBack: () {
-              launchUrl(Uri(scheme: 'tel', path: '13563254789'));
+                value: '', callBack: () {
+              // launchUrl(Uri(scheme: 'tel', path: '13563254789'));
             }),
 
             /// 服务条款
-            CommonWidget.simpleWidgetWithUserDetail("User Agreement",
-                callBack: () {
-              ToastUtils.toast("Feature is under development");
-            }),
-            aboutUs()
+            // CommonWidget.simpleWidgetWithUserDetail("User Agreement",
+            //     callBack: () {
+            //   ToastUtils.toast("Feature is under development");
+            // }),
+            // aboutUs()
 
             /// 公众号信息
             // weixin(),

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_template/config/base_config.dart';
 import 'package:flutter_template/core/http/http_app.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/utils/toast.dart';
@@ -11,14 +12,23 @@ import 'package:get/get.dart';
 import 'core/http/http.dart';
 import 'core/router/global_route.dart';
 import 'generated/l10n.dart';
+import 'package:network_info_plus/network_info_plus.dart';
 
 final GlobalRouter router = GlobalRouter();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // 初始化请求过滤器
-  XHttp.init();
   App.init();
+
+  final info = NetworkInfo();
+  final wifiGateway = await info.getWifiGatewayIP();
+  debugPrint('当前wifi的网关地址$wifiGateway');
+  BaseConfig.baseUrl = "https://$wifiGateway";
+  if (wifiGateway!.isNotEmpty){
+      sharedAddAndUpdate("baseLocalUrl", String, wifiGateway);
+    }
+  XHttp.init();
 
   //顶部状态栏透明
   SystemChrome.setSystemUIOverlayStyle(

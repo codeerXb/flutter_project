@@ -51,7 +51,7 @@ class _MyWidgetState extends State<Equipment> {
     getLocationInformation();
     // Future.delayed(const Duration(milliseconds: 2000), () {
     //   if (mounted) {
-        
+
     //   }
     //   return;
     // });
@@ -60,7 +60,8 @@ class _MyWidgetState extends State<Equipment> {
 
   //  查询绑定设备 App
   void getqueryingBoundDevices() {
-    App.get('/platform/appCustomer/queryCustomerCpe?account=$userAccount').then((res) {
+    App.get('/platform/appCustomer/queryCustomerCpe?account=$userAccount')
+        .then((res) {
       if (res == null || res.toString().isEmpty) {
         throw Exception('Response is empty.');
       }
@@ -83,8 +84,16 @@ class _MyWidgetState extends State<Equipment> {
           }
           return;
         } else {
+          appList = [];
           setState(() {
-            appList = d['data'];
+            var synArray = d['data'];
+            for (int i = 0; i < synArray.length; i++) {
+              if (synArray[i]["type"] != null) {
+                appList.add(synArray[i]);
+              }
+            }
+
+            // appList = d['data'];
           });
           getEquipmentData(d['data']);
         }
@@ -210,7 +219,7 @@ class _MyWidgetState extends State<Equipment> {
 
   void bundDevice(String sn, String vn) {
     Map<String, dynamic> bindParma = {
-      "account" : userAccount,
+      "account": userAccount,
       "deviceSn": sn,
       "lon": longitudeString,
       "lat": latitudeString
@@ -258,7 +267,6 @@ class _MyWidgetState extends State<Equipment> {
     if (mounted) {
       super.setState(fn);
     }
-    
   }
 
   @override

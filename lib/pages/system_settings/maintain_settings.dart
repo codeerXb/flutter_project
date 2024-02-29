@@ -603,7 +603,10 @@ class _MaintainSettingsState extends State<MaintainSettings> {
       child: Column(
         children: [
           buildItem(result, onTap: () {}),
-          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          const SizedBox(height: 15,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center, 
+            children: [
             InkWell(
               onTap: () {
                 Navigator.of(context).pop();

@@ -53,50 +53,48 @@ class _ParentTimeListPageState extends State<ParentTimeListPage> {
       ),
       body: Container(
         decoration: const BoxDecoration(
-              color: Colors.black12,
-              borderRadius: BorderRadius.all(Radius.circular(8.0)),
-              border:Border(
-                                bottom: BorderSide(
-                                    width: 1, color: Color(0xffe5e5e5)))
-              ),
+            color: Colors.black12,
+            borderRadius: BorderRadius.all(Radius.circular(8.0)),
+            border:
+                Border(bottom: BorderSide(width: 1, color: Color(0xffe5e5e5)))),
         child: Stack(
-        children: [
-          Column(
-            children: [
-              Column(
-                children: setupTimeListView(timeList),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              const Text(
-                "Supports up to 5 time configuration plans.",
-                style: TextStyle(fontSize: 12, color: Colors.grey),
-              )
-            ],
-          ),
-          Positioned(
-              left: 80,
-              right: 80,
-              bottom: 20,
-              child: ElevatedButton(
-                style: ButtonStyle(
-                  padding: MaterialStateProperty.all(
-                    EdgeInsets.only(top: 28.w, bottom: 28.w),
-                  ),
-                  shape: MaterialStateProperty.all(const StadiumBorder()),
-                  backgroundColor: MaterialStateProperty.all(
-                      const Color.fromARGB(255, 30, 104, 233)),
+          children: [
+            Column(
+              children: [
+                Column(
+                  children: setupTimeListView(timeList),
                 ),
-                onPressed: () {},
-                child: Text(
-                  "Submit",
-                  style: TextStyle(
-                      fontSize: 32.sp, color: const Color(0xffffffff)),
+                const SizedBox(
+                  height: 20,
                 ),
-              ))
-        ],
-      ),
+                const Text(
+                  "Supports up to 5 time configuration plans.",
+                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                )
+              ],
+            ),
+            // Positioned(
+            //     left: 80,
+            //     right: 80,
+            //     bottom: 20,
+            //     child: ElevatedButton(
+            //       style: ButtonStyle(
+            //         padding: MaterialStateProperty.all(
+            //           EdgeInsets.only(top: 28.w, bottom: 28.w),
+            //         ),
+            //         shape: MaterialStateProperty.all(const StadiumBorder()),
+            //         backgroundColor: MaterialStateProperty.all(
+            //             const Color.fromARGB(255, 30, 104, 233)),
+            //       ),
+            //       onPressed: () {},
+            //       child: Text(
+            //         "Submit",
+            //         style: TextStyle(
+            //             fontSize: 32.sp, color: const Color(0xffffffff)),
+            //       ),
+            //     ))
+          ],
+        ),
       ),
     );
   }
@@ -114,8 +112,8 @@ class _ParentTimeListPageState extends State<ParentTimeListPage> {
           child: ListTile(
             leading: Image.asset(
               "assets/images/time_parent.png",
-              width: 25,
-              height: 25,
+              width: 20,
+              height: 20,
             ),
             title: Text(
               timeMap["timeRange"],
@@ -128,12 +126,17 @@ class _ParentTimeListPageState extends State<ParentTimeListPage> {
               timeMap["dateRange"],
               style: const TextStyle(fontSize: 12, color: Colors.black),
             ),
-            trailing: IconButton(
-              onPressed: () {},
-              icon: Image.asset(
-                "assets/images/delete2.png",
-                width: 25,
-                height: 25,
+            trailing: Transform(
+              transform: Matrix4.translationValues(16, 0, 0),
+              child: IconButton(
+                onPressed: () {
+                  //delete
+                },
+                icon: Image.asset(
+                  "assets/images/delete2.png",
+                  width: 25,
+                  height: 25,
+                ),
               ),
             ),
           ),

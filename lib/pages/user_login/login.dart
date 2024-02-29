@@ -53,11 +53,11 @@ class _UserLoginState extends State<UserLogin>
       if (StringUtil.isNotEmpty(data)) {
         String loginInfo = data as String;
         setState(() {
-          phone.text = loginInfo;
+          email.text = loginInfo;
         });
       }
     });
-    // phone.text = '';
+    phone.text = '';
     password.text = '';
   }
 

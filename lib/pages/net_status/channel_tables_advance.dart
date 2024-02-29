@@ -13,9 +13,9 @@ import 'dart:convert';
 import 'dart:async';
 import './beans/scan_quality_bean.dart';
 import 'package:get/get.dart';
-
+String Id_Random = StringUtil.generateRandomString(10);
 MqttServerClient client = MqttServerClient.withPort(
-    BaseConfig.mqttMainUrl, 'flutter_client', BaseConfig.websocketPort);
+    BaseConfig.mqttMainUrl, 'client_$Id_Random', BaseConfig.websocketPort);
 
 class AdvanceChannelListPage extends StatefulWidget {
   const AdvanceChannelListPage({super.key});
@@ -33,6 +33,7 @@ class _AdvanceChannelListPageState extends State<AdvanceChannelListPage> {
   String bastChannel = "";
   String sn = "";
   bool isLoaded = true;
+  bool isUpdated = false;
   // Timer? timer;
   @override
   void initState() {
@@ -46,6 +47,14 @@ class _AdvanceChannelListPageState extends State<AdvanceChannelListPage> {
       currentChannnel = Get.arguments["currentChannel"];
       bastChannel = listArray[0].channel!;
     });
+
+    for (Band5GHz item in listArray) {
+      if (item.channel == currentChannnel && item.quality == "1") {
+        setState(() {
+          isUpdated = true;
+        });
+      }
+    }
 
     super.initState();
   }
@@ -61,6 +70,7 @@ class _AdvanceChannelListPageState extends State<AdvanceChannelListPage> {
     client.onConnected = onConnected;
     client.onSubscribed = onSubscribed;
     client.pongCallback = pong;
+    client.setProtocolV311();
 
     final connMess = MqttConnectMessage()
         .authenticateAs('admin', 'smawav')
@@ -87,7 +97,7 @@ class _AdvanceChannelListPageState extends State<AdvanceChannelListPage> {
       print(
           'Client connection failed - disconnecting, status is ${client.connectionStatus}');
       client.disconnect();
-      exit(-1);
+      // exit(-1);
     }
 
     client.published!.listen((MqttPublishMessage message) {
@@ -273,15 +283,19 @@ void pong() {
                     height: 100,
                     alignment: Alignment.topCenter,
                     child: OutlinedButton(
-                        style: const ButtonStyle(
-                            backgroundColor:
-                                MaterialStatePropertyAll(Colors.blue)),
+                        style:  ButtonStyle(
+                            backgroundColor: isUpdated ? const MaterialStatePropertyAll(
+                                                  Colors.grey) :
+                              const MaterialStatePropertyAll(Colors.blue)),
                         onPressed: () {
-                          updateCurrentChannel();
+                          if (!isUpdated) {
+                            updateCurrentChannel();
                           setState(() {
                             isLoaded = false;
                             
                           });
+                          }
+                          
                         },
                         child: const Text(
                           "Update",

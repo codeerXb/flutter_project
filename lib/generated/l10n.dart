@@ -63,7 +63,7 @@ class S {
   /// `Biometrics Authenticate`
   String get biometrics {
     return Intl.message(
-      'Biometrics Authenticate',
+      'Authentication',
       name: 'biometrics',
       desc: '',
       args: [],
@@ -760,6 +760,16 @@ class S {
     );
   }
 
+  // Account Deletion
+  String get delAccount {
+    return Intl.message(
+      'Account Deletion',
+      name: 'delAccount',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Network Status`
   String get state {
     return Intl.message(
@@ -1338,7 +1348,7 @@ class S {
 
   String get ByteReceive {
     return Intl.message(
-      'Bytes Receive',
+      'Bytes Received',
       name: 'BytesReceive',
       desc: '',
       args: [],
@@ -1356,7 +1366,7 @@ class S {
 
   String get  PacketReceive {
     return Intl.message(
-      'Packets Receive',
+      'Packets Received',
       name: 'PacketsReceive',
       desc: '',
       args: [],
@@ -1455,7 +1465,7 @@ class S {
   /// `AES(Recommened)`
   String get aesRecommend {
     return Intl.message(
-      'AES(Recommened)',
+      'AES(Recommended)',
       name: 'aesRecommend',
       desc: '',
       args: [],
@@ -1465,7 +1475,7 @@ class S {
   /// `None(Not Recommened)`
   String get emptyNORecommend {
     return Intl.message(
-      'None(Not Recommened)',
+      'None(Not Recommended)',
       name: 'emptyNORecommend',
       desc: '',
       args: [],
@@ -1815,8 +1825,8 @@ class S {
   /// `Hint`
   String get hint {
     return Intl.message(
-      'Hint',
-      name: 'hint',
+      'Tip',
+      name: 'Tip',
       desc: '',
       args: [],
     );
@@ -1985,7 +1995,7 @@ class S {
   /// `Date to reboot`
   String get EnableScheduler {
     return Intl.message(
-      'Date to reboot',
+      'Reboot date',
       name: 'EnableScheduler',
       desc: '',
       args: [],
@@ -1995,7 +2005,7 @@ class S {
   /// `Restart start time`
   String get DateReboot {
     return Intl.message(
-      'Restart time',
+      'Restart start time',
       name: 'DateReboot',
       desc: '',
       args: [],
@@ -2025,7 +2035,7 @@ class S {
   /// `mon`
   String get mon {
     return Intl.message(
-      'mon',
+      'Mon',
       name: 'mon',
       desc: '',
       args: [],
@@ -2065,7 +2075,7 @@ class S {
   /// `fri`
   String get fri {
     return Intl.message(
-      'fri',
+      'Fri',
       name: 'fri',
       desc: '',
       args: [],

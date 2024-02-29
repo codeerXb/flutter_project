@@ -36,12 +36,6 @@ class _InstalledState extends State<Installed> {
 
   List<Map<String, dynamic>> topData = [
     {
-      'img': 'assets/images/GooglePlay.webp',
-      'text': 'Google Play',
-      'code': '7001',
-      'select': true,
-    },
-    {
       'img': 'assets/images/Appstore.jpg',
       'text': 'Appstore',
       'code': '7002',

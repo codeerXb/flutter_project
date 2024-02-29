@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:get/get.dart';
-
-import '../../core/widget/common_box.dart';
 import '../../generated/l10n.dart';
 import '../toolbar/toolbar_controller.dart';
 
@@ -99,10 +95,10 @@ class _LanguageChangeState extends State<LanguageChange> {
           height: 1400.w,
           child: ListView(
             children: <Widget>[
+              _buildLanguageItem("English", "en_US"),
               _buildLanguageItem(S.current.autoLang, 'null'),
               // _buildLanguageItem("中文简体", "zh_CN"),
               _buildLanguageItem("Spanish", "sp_ES"),
-              _buildLanguageItem("English", "en_US"),
             ],
           ),
         ),

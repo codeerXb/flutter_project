@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,6 +28,7 @@ import 'package:mqtt_client/mqtt_server_client.dart';
 import '../../pages/net_status/beans/speed_bean.dart';
 
 
+String Id_Random = StringUtil.generateRandomString(10);
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
   @override
@@ -34,8 +36,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  MqttClient client = MqttServerClient(BaseConfig.mqttMainUrl, "flutter_client",
-      maxConnectionAttempts: 10);
+  MqttServerClient client = MqttServerClient.withPort(
+      BaseConfig.mqttMainUrl, "client_$Id_Random", BaseConfig.websocketPort);
   // 订阅的主题
   var subTopic = "";
   // bool isLoad = false;
@@ -53,6 +55,8 @@ class _HomePageState extends State<HomePage> {
   String mainUrl = "http://10.0.30.194:8000";
 
   String merchantName = "";
+
+  String lanSpeedUrl = "";
   // 请求获取设备名
   Future<String?> getDeviceName() async {
     var res = await Request().getEquipmentData();
@@ -134,11 +138,10 @@ class _HomePageState extends State<HomePage> {
           if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
             getBasicInfo();
             // getTROnlineCount(sn);
-            obtainUserInformaition();
+            // obtainUserInformaition();
           }
           // getLastSpeed(sn);
-          // requestTestSpeedData(sn);
-
+          requestTestSpeedData(sn);
         });
       }
     }));
@@ -178,78 +181,183 @@ class _HomePageState extends State<HomePage> {
     // });
   }
 
-  void obtainUserInformaition() async{
+  void obtainUserInformaition() async {
     Dio resDio = Dio();
     String url = "$mainUrl/saas/device/instance/$sn/tenant/info";
-    resDio.get(url).then((response){
-      Map<String,dynamic> data = response.data;
+    resDio.get(url).then((response) {
+      Map<String, dynamic> data = response.data;
       if (data["status"] == 200) {
         debugPrint("获取的租户信息:$merchantName");
         setState(() {
-          merchantName = data["result"]["name"];
+          if (data["result"] != null) {
+            merchantName = data["result"]["name"];
+          }
+          
         });
       }
-      
     });
-    
   }
 
   requestTestSpeedData(String sn) async {
-    subTopic = "cpe/$sn";
-    connect().then((value) {
-      client = value;
-      debugPrint("执行到订阅这里了,订阅的主题是:$subTopic");
-      final sessionIdStr = StringUtil.generateRandomString(10);
-      var parameterNames = {
-        "event": "getSpeedtest",
-        "sn": sn,
-        "sessionId": sessionIdStr,
-        "pubTopic": "$subTopic-sma_server_1"
-      };
-      _publishMessage(subTopic, parameterNames);
-      client.subscribe("$subTopic-sma_server_1", MqttQos.atLeastOnce);
+    client.logging(on: false);
+    client.keepAlivePeriod = 60;
+    client.useWebSocket = true;
+    client.autoReconnect = true;
+    client.onDisconnected = onDisconnected;
+    client.onConnected = onConnected;
+    client.onSubscribed = onSubscribed;
+    client.pongCallback = pong;
+    client.setProtocolV311();
+
+    final connMess = MqttConnectMessage()
+        .authenticateAs('admin', 'smawav')
+        .withWillTopic('willtopic')
+        .withWillMessage('My Will message')
+        .startClean()
+        .withWillQos(MqttQos.atLeastOnce);
+    print('Client connecting....');
+    client.connectionMessage = connMess;
+
+    try {
+      await client.connect();
+    } on NoConnectionException catch (e) {
+      print('Client exception: $e');
+      client.disconnect();
+    } on SocketException catch (e) {
+      print('Socket exception: $e');
+      client.disconnect();
+    }
+
+    if (client.connectionStatus!.state == MqttConnectionState.connected) {
+      print('Client connected');
+    } else {
+      print(
+          'Client connection failed - disconnecting, status is ${client.connectionStatus}');
+      client.disconnect();
+      // exit(-1);
+    }
+
+    client.published!.listen((MqttPublishMessage message) {
+      print(
+          'Published topic: topic is ${message.variableHeader!.topicName}, with Qos ${message.header!.qos}');
     });
+
+    final sessionIdCha = StringUtil.generateRandomString(10);
+    subTopic = "cpe/$sn";
+    var pubTopicStr = "cpe/$sn-lanspeedtest";
+    var channelParms = {
+      "event": "mqtt2sodObj",
+      "sn": sn,
+      "sessionId": sessionIdCha,
+      "pubTopic" : pubTopicStr,
+      "param": {
+        "method": "get",
+        "nodes": [
+          "networkLanSettingIp",
+        ]
+      }
+    };
+
+    _publishMessage(subTopic, channelParms);
+    client.subscribe(pubTopicStr, MqttQos.atLeastOnce);
+    client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
+      debugPrint("====================监听到新消息了======================");
+      final MqttPublishMessage recMess = c![0].payload as MqttPublishMessage;
+      final String topic = c[0].topic;
+      final String pt = const Utf8Decoder().convert(recMess.payload.message);
+      String desString = "topic is <$topic>, payload is <-- $pt -->";
+      String result = pt.substring(0, pt.length - 1);
+      debugPrint("string =$desString");
+      if (topic == pubTopicStr) {
+        Map datas = jsonDecode(result);
+        setState(() {
+          lanSpeedUrl = datas["data"]["networkLanSettingIp"];
+          debugPrint("lanspeedUrl: =$lanSpeedUrl");
+        });
+        
+      }
+    });
+
+
+    // connect().then((value) {
+    //   client = value;
+    //   debugPrint("执行到订阅这里了,订阅的主题是:$subTopic");
+    //   final sessionIdStr = StringUtil.generateRandomString(10);
+    //   var parameterNames = {
+    //     "event": "getSpeedtest",
+    //     "sn": sn,
+    //     "sessionId": sessionIdStr,
+    //     "pubTopic": "$subTopic-sma_server_1"
+    //   };
+    //   _publishMessage(subTopic, parameterNames);
+    //   client.subscribe("$subTopic-sma_server_1", MqttQos.atLeastOnce);
+    // });
   }
 
-  sendRequestDataSingle(String sn) {
-    // requestTestSpeedData(sn);
-    subTopic = "cpe/$sn";
-    debugPrint("执行到订阅");
-    final sessionIdStr = StringUtil.generateRandomString(10);
-      var parameterNames = {
-        "event": "getSpeedtest",
-        "sn": sn,
-        "sessionId": sessionIdStr,
-        "pubTopic": "$subTopic-sma_server_1"
-      };
-      _publishMessage(subTopic, parameterNames);
-      client.subscribe("$subTopic-sma_server_1", MqttQos.atLeastOnce);
-    _getDeviceList();
+  /// The subscribed callback
+  void onSubscribed(String topic) {
+    print('Subscription confirmed for topic $topic');
   }
+
+  /// The unsolicited disconnect callback
+  void onDisconnected() {
+    print('OnDisconnected client callback - Client disconnection');
+    if (client.connectionStatus!.disconnectionOrigin ==
+        MqttDisconnectionOrigin.solicited) {
+      print('OnDisconnected callback is solicited, this is correct');
+    }
+    // exit(-1);
+  }
+
+  /// The successful connect callback
+  void onConnected() {
+    print('OnConnected client callback - Client connection was sucessful');
+  }
+
+  /// Pong callback
+  void pong() {
+    print('Ping response client callback invoked');
+  }
+
+  // sendRequestDataSingle(String sn) {
+  //   // requestTestSpeedData(sn);
+  //   subTopic = "cpe/$sn";
+  //   debugPrint("执行到订阅");
+  //   final sessionIdStr = StringUtil.generateRandomString(10);
+  //   var parameterNames = {
+  //     "event": "getSpeedtest",
+  //     "sn": sn,
+  //     "sessionId": sessionIdStr,
+  //     "pubTopic": "$subTopic-sma_server_1"
+  //   };
+  //   _publishMessage(subTopic, parameterNames);
+  //   client.subscribe("$subTopic-sma_server_1", MqttQos.atLeastOnce);
+  //   _getDeviceList();
+  // }
 
   //  监听消息的具体实现
-  _getListTableData(List<MqttReceivedMessage<MqttMessage>> data) {
-    debugPrint("====================监听到新消息了======================");
-    final MqttPublishMessage recMess = data[0].payload as MqttPublishMessage;
-    final String topic = data[0].topic;
-    // final pt =
-    // MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
-    String pt = const Utf8Decoder().convert(recMess.payload.message);
-    String result = pt.substring(0, pt.length - 1);
-    String desString = "topic is <$topic>, payload is <-- $result -->";
-    debugPrint("string =$desString");
-    final payloadModel = SpeedModel.fromJson(jsonDecode(result));
-    setState(() {
-      speedmodel = payloadModel;
-    });
-    
-    debugPrint("测速数据: =${speedmodel!.data!.download!}");
-  }
+  // _getListTableData(List<MqttReceivedMessage<MqttMessage>> data) {
+  //   debugPrint("====================监听到新消息了======================");
+  //   final MqttPublishMessage recMess = data[0].payload as MqttPublishMessage;
+  //   final String topic = data[0].topic;
+  //   // final pt =
+  //   // MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+  //   String pt = const Utf8Decoder().convert(recMess.payload.message);
+  //   String result = pt.substring(0, pt.length - 1);
+  //   String desString = "topic is <$topic>, payload is <-- $result -->";
+  //   debugPrint("string =$desString");
+  //   final payloadModel = SpeedModel.fromJson(jsonDecode(result));
+  //   setState(() {
+  //     speedmodel = payloadModel;
+  //   });
+
+  //   debugPrint("测速数据: =${speedmodel!.data!.download!}");
+  // }
 
 //  开启监听消息
-  _getDeviceList() {
-    client.updates!.listen(_getListTableData);
-  }
+  // _getDeviceList() {
+  //   client.updates!.listen(_getListTableData);
+  // }
 
   // 发送消息
   void _publishMessage(String topic, Map<String, dynamic> message) {
@@ -722,6 +830,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<bool?> showWifiAlertDialog(BuildContext context) {
+    bool isIPad = MediaQuery.of(context).size.shortestSide > 600;
     return showDialog<bool>(
       context: context,
       builder: (context) {
@@ -732,69 +841,139 @@ class _HomePageState extends State<HomePage> {
             ),
             content: Container(
               padding: const EdgeInsets.only(top: 20),
-              width: 150,
-              height: 150,
+              width: isIPad ? MediaQuery.of(context).size.width - 300 : 260,
+              height: 260,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.blue),
-                    ),
-                    child: Text(
-                      "speed test",
-                      textAlign: TextAlign.center,
-                      // softWrap: true,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 36.sp,
-                      ),
-                    ),
-                    onPressed: () {
-                      // getLastSpeed(sn);
-                      // sendRequestDataSingle(sn);
-                      // showSpeedDialog(context);
-                      Get.toNamed("/lanSpeedTestPage");
-                    },
-                  ),
-                  ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.blue),
-                    ),
-                    child: Text(
-                      "channel scan",
-                      textAlign: TextAlign.center,
-                      softWrap: true,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 36.sp,
-                      ),
-                    ),
-                    onPressed: () {
-                      // showWifiScanContent();
-                      Navigator.of(context).pop();
-                      Get.offAllNamed('/channelScan');
-                    },
-                  ),
+                  SizedBox(
+                      width: isIPad ? MediaQuery.of(context).size.width - 350 : 250,
+                      height: 50,
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              const Color.fromRGBO(1, 113, 247, 1)),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              "assets/images/WANSPEEDTEST.png",
+                              width: 25,
+                              height: 25,
+                            ),
+                            Text(
+                              "WAN SPEEDTEST",
+                              textAlign: TextAlign.center,
+                              // softWrap: true,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 36.sp,
+                              ),
+                            ),
+                          ],
+                        ),
+                        onPressed: () {
+                          // getLastSpeed(sn);
+                          // sendRequestDataSingle(sn);
+                          // showSpeedDialog(context);
+                          Get.toNamed("/speedTestPage");
+                        },
+                      )),
+                  SizedBox(
+                      width: isIPad ? MediaQuery.of(context).size.width - 350 : 250,
+                      height: 50,
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              const Color.fromRGBO(1, 113, 247, 1)),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              "assets/images/LANSPEEDTEST.png",
+                              width: 25,
+                              height: 25,
+                            ),
+                            Text(
+                              "LAN SPEEDTEST",
+                              textAlign: TextAlign.center,
+                              // softWrap: true,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 36.sp,
+                              ),
+                            ),
+                          ],
+                        ),
+                        onPressed: () {
+                          Get.toNamed("/lanSpeedTestPage",arguments: {"lanspeedUrl" : lanSpeedUrl});
+                        },
+                      )),
+                  SizedBox(
+                      width: isIPad ? MediaQuery.of(context).size.width - 350 : 250,
+                      height: 50,
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              const Color.fromRGBO(1, 113, 247, 1)),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              "assets/images/CHANNELSCAN.png",
+                              width: 25,
+                              height: 25,
+                            ),
+                            Text(
+                              "CHANNEL SCAN",
+                              textAlign: TextAlign.center,
+                              // softWrap: true,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 36.sp,
+                              ),
+                            ),
+                          ],
+                        ),
+                        onPressed: () {
+                          // showWifiScanContent();
+                          Navigator.of(context).pop();
+                          Get.offAllNamed('/channelScan');
+                        },
+                      )),
                 ],
               ),
             ),
             actions: <Widget>[
-              TextButton(
-                child: const Text("Close",
-                    style: TextStyle(fontSize: 15, color: Colors.blue)),
-                onPressed: () => Navigator.of(context).pop(), // 关闭对话框
-              ),
-              TextButton(
-                child: const Text("OK",
-                    style: TextStyle(fontSize: 15, color: Colors.blue)),
-                onPressed: () {
-                  //关闭对话框并返回true
-                  Navigator.of(context).pop(true);
-                },
-              ),
+              Center(
+                child: SizedBox(
+                  width: 100,
+                  height: 50,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                        side: const BorderSide(color: Colors.blue, width: 1.0),
+                      ),
+                    ),
+                    child: Text(
+                      "OK",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 30.sp,
+                      ),
+                    ),
+                    onPressed: () {
+                      //关闭对话框并返回true
+                      Navigator.of(context).pop(true);
+                    },
+                  ),
+                ),
+              )
             ],
           );
         });
@@ -810,30 +989,29 @@ class _HomePageState extends State<HomePage> {
       builder: (context) {
         return StatefulBuilder(builder: (context, state) {
           if (speedmodel != null) {
-              debugPrint("测速执行");
-              if(mounted) {
-                state(() {
-                  isLoad = true;
-                  var timespeed = speedmodel!.data!.timestamp!.substring(0, 16);
-                  debugPrint("时间是:$timespeed");
-                  var year = timespeed.substring(0, 10);
-                  var hour = timespeed.substring(12, timespeed.length - 3);
-                  var minute = timespeed.substring(14, timespeed.length);
-                  var newHour = int.parse(hour) + 8;
-                  var timestr = "$year $newHour:$minute";
-                  debugPrint("时间是:$timestr");
-                  speedTime = timestr;
-                  testUp = StringUtil.getRate(speedmodel!.data!.upload!);
-                  testDown = StringUtil.getRate(speedmodel!.data!.download!);
-                  lantency = getPing(speedmodel!.data!.ping!);
+            debugPrint("测速执行");
+            if (mounted) {
+              state(() {
+                isLoad = true;
+                var timespeed = speedmodel!.data!.timestamp!.substring(0, 16);
+                debugPrint("时间是:$timespeed");
+                var year = timespeed.substring(0, 10);
+                var hour = timespeed.substring(12, timespeed.length - 3);
+                var minute = timespeed.substring(14, timespeed.length);
+                var newHour = int.parse(hour) + 8;
+                var timestr = "$year $newHour:$minute";
+                debugPrint("时间是:$timestr");
+                speedTime = timestr;
+                testUp = StringUtil.getRate(speedmodel!.data!.upload!);
+                testDown = StringUtil.getRate(speedmodel!.data!.download!);
+                lantency = getPing(speedmodel!.data!.ping!);
 
-                  debugPrint("数据是:$testUp -- $testDown -- $lantency");
-                });
-              }
-              
+                debugPrint("数据是:$testUp -- $testDown -- $lantency");
+              });
             }
+          }
           // Future.delayed(const Duration(milliseconds: 40000), () {
-            
+
           // });
 
           return AlertDialog(
@@ -981,18 +1159,21 @@ class _HomePageState extends State<HomePage> {
   //   }
   // }
 
-  Widget setUpHeadView() {
+  Widget setUpHeadView(BuildContext context) {
+    bool isIPad = MediaQuery.of(context).size.shortestSide > 600;
     return Container(
       padding: const EdgeInsets.only(top: 20),
       height: 500,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-        const Text(
-            "Codium Home Wi-Fi",
-            style: TextStyle(fontSize: 20, color: Colors.black),
+          const Text(
+            "Home Wi-Fi",
+            style: TextStyle(
+                fontSize: 22, color: Colors.black, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
+
           // const SizedBox(
           //   height: 20,
           // ),
@@ -1022,7 +1203,7 @@ class _HomePageState extends State<HomePage> {
                   Text(
                     "Securely Connected!",
                     style: TextStyle(
-                        fontSize: 15, color: Color.fromARGB(255, 3, 123, 132)),
+                        fontSize: 15, color: Color.fromRGBO(8, 180, 151, 1)),
                   ),
                 ],
               ),
@@ -1050,46 +1231,47 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           SizedBox(
-                height: 45,
-                child: ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(
-                      const Color.fromARGB(255, 35, 197, 145)),
-                ),
-                child: Text(
-                  "CHECK WIFI PERFORMANCE",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 36.sp,
-                  ),
-                ),
-                onPressed: () {
-                  showWifiAlertDialog(context);
-                },
+            height: isIPad ? 70 : 45,
+            child: ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                    const Color.fromARGB(255, 35, 197, 145)),
               ),
+              child: Text(
+                "Check Network Performance",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 36.sp,
+                ),
               ),
+              onPressed: () {
+                showWifiAlertDialog(context);
+              },
+            ),
+          ),
         ],
       ),
     );
   }
 
-  Widget setUpBottomView() {
+  Widget setUpBottomView(BuildContext context) {
+    bool isIPad = MediaQuery.of(context).size.shortestSide > 600;
     return SizedBox(
-      height: 200,
+      height: isIPad ? 400 : 200,
       child: Column(
         children: [
           Container(
             margin: EdgeInsets.only(bottom: 20.w),
             child: const Row(
               children: [
-                Padding(
-                  padding: EdgeInsets.only(left: 20),
-                  child: Text(
-                    'Device Control',
-                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22),
-                  ),
-                ),
+                // Padding(
+                //   padding: EdgeInsets.only(left: 20),
+                //   child: Text(
+                //     'Device Control',
+                //     style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22),
+                //   ),
+                // ),
               ],
             ),
           ),
@@ -1224,68 +1406,81 @@ class _HomePageState extends State<HomePage> {
           elevation: 0,
           // 不自动添加返回键
           automaticallyImplyLeading: false,
-          title: InkWell(
-            // overlayColor: const MaterialStatePropertyAll(Colors.transparent),
-            // 下拉icon
-            child: Ink(
-              width: 1.sw,
-              child: DropdownButton(
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 36.sp,
-                ),
-                dropdownColor:
-                    const Color.fromARGB(221, 174, 167, 167), // 设置下拉框的背景颜色
-                underline: Container(), //去除下划线
-                value: currentDevice,
-                // icon: Icon(
-                //   FontAwesomeIcons.chevronDown,
-                //   size: 30.w,
-                //   color: Colors.white,
-                // ),
-                iconEnabledColor: Colors.white,
-                items: optionsList.map((option) {
-                  // bool isSelected = option == currentDevice;
-                  return DropdownMenuItem(
-                    value: option,
-                    child: Row(
-                      children: [
-                        Text(option),
-                      ],
-                    ),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    loading = true;
-                    currentDevice = value.toString();
-                    String? deviceSn;
-                    for (var item in deviceList) {
-                      if (item['type'] == value.toString()) {
-                        deviceSn = item['deviceSn'];
-                      }
-                    }
-                    // 为了更新新的设备
-                    Get.offNamed("/get_equipment");
-                    Get.offNamed("/home");
-                    loginController.setUserEquipment(
-                        'deviceSn', deviceSn.toString());
-                    sharedAddAndUpdate("deviceSn", String, deviceSn.toString());
-                    loginController.setState('cloud');
-                    ToastUtils.toast('Save success');
-                    loading = false;
-                  });
-                },
-                onTap: (() {
-                  // WidgetsBinding.instance.addPostFrameCallback((_) {
-                  //   setState(() {
-                  //     isShowList = !isShowList;
-                  //   });
-                  // });
-                }),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const SizedBox(
+                width: 0,
               ),
-            ),
+              Image.asset(
+                "assets/images/codium_logo.png",
+                width: 50,
+                height: 50,
+              )
+            ],
           ),
+          // title: InkWell(
+          //   // overlayColor: const MaterialStatePropertyAll(Colors.transparent),
+          //   // 下拉icon
+          //   child: Ink(
+          //     width: 1.sw,
+          //     child: DropdownButton(
+          //       style: TextStyle(
+          //         color: Colors.black,
+          //         fontSize: 36.sp,
+          //       ),
+          //       dropdownColor:
+          //           const Color.fromARGB(221, 174, 167, 167), // 设置下拉框的背景颜色
+          //       underline: Container(), //去除下划线
+          //       value: currentDevice,
+          //       // icon: Icon(
+          //       //   FontAwesomeIcons.chevronDown,
+          //       //   size: 30.w,
+          //       //   color: Colors.white,
+          //       // ),
+          //       iconEnabledColor: Colors.white,
+          //       items: optionsList.map((option) {
+          //         // bool isSelected = option == currentDevice;
+          //         return DropdownMenuItem(
+          //           value: option,
+          //           child: Row(
+          //             children: [
+          //               Text(option),
+          //             ],
+          //           ),
+          //         );
+          //       }).toList(),
+          //       onChanged: (value) {
+          //         setState(() {
+          //           loading = true;
+          //           currentDevice = value.toString();
+          //           String? deviceSn;
+          //           for (var item in deviceList) {
+          //             if (item['type'] == value.toString()) {
+          //               deviceSn = item['deviceSn'];
+          //             }
+          //           }
+          //           // 为了更新新的设备
+          //           Get.offNamed("/get_equipment");
+          //           Get.offNamed("/home");
+          //           loginController.setUserEquipment(
+          //               'deviceSn', deviceSn.toString());
+          //           sharedAddAndUpdate("deviceSn", String, deviceSn.toString());
+          //           loginController.setState('cloud');
+          //           ToastUtils.toast('Save success');
+          //           loading = false;
+          //         });
+          //       },
+          //       onTap: (() {
+          //         // WidgetsBinding.instance.addPostFrameCallback((_) {
+          //         //   setState(() {
+          //         //     isShowList = !isShowList;
+          //         //   });
+          //         // });
+          //       }),
+          //     ),
+          //   ),
+          // ),
 
           backgroundColor: Colors.transparent,
         ),
@@ -1310,134 +1505,134 @@ class _HomePageState extends State<HomePage> {
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                      setUpHeadView(),
+                        setUpHeadView(context),
 
-                      // 网络环境
-                      // WhiteCard(
-                      //     height: 400,
-                      //     boxCotainer: Row(
-                      //       mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      //       children: [
-                      //         const Icon(
-                      //           Icons.thumb_up,
-                      //           size: 60,
-                      //           color: Colors.black,
-                      //         ),
-                      //         Expanded(
-                      //           child: Text(
-                      //             "your wifi network is securely connected!",
-                      //             textAlign: TextAlign.center,
-                      //             style: TextStyle(
-                      //                 fontSize: 60.sp,
-                      //                 fontWeight: FontWeight.bold,
-                      //                 color: const Color(0xff051220)),
-                      //           ),
-                      //         ),
-                      //         const Image(
-                      //             image: AssetImage(
-                      //                 'assets/images/Happinessicons.jpeg'),
-                      //             width: 60,
-                      //             height: 60),
-                      //       ],
-                      //     )),
+                        // 网络环境
+                        // WhiteCard(
+                        //     height: 400,
+                        //     boxCotainer: Row(
+                        //       mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        //       children: [
+                        //         const Icon(
+                        //           Icons.thumb_up,
+                        //           size: 60,
+                        //           color: Colors.black,
+                        //         ),
+                        //         Expanded(
+                        //           child: Text(
+                        //             "your wifi network is securely connected!",
+                        //             textAlign: TextAlign.center,
+                        //             style: TextStyle(
+                        //                 fontSize: 60.sp,
+                        //                 fontWeight: FontWeight.bold,
+                        //                 color: const Color(0xff051220)),
+                        //           ),
+                        //         ),
+                        //         const Image(
+                        //             image: AssetImage(
+                        //                 'assets/images/Happinessicons.jpeg'),
+                        //             width: 60,
+                        //             height: 60),
+                        //       ],
+                        //     )),
 
-                      //上传速率
-                      // WhiteCard(
-                      //     height: 400,
-                      //     boxCotainer: Column(
-                      //       mainAxisAlignment: MainAxisAlignment.start,
-                      //       children: [
-                      //         const Row(
-                      //           mainAxisAlignment: MainAxisAlignment.start,
-                      //           children: [
-                      //             Text(
-                      //               'Check WiFi Preformance',
-                      //               style: TextStyle(
-                      //                   color: Colors.black,
-                      //                   fontSize: 24,
-                      //                   fontWeight: FontWeight.bold),
-                      //             )
-                      //           ],
-                      //         ),
-                      //         const SizedBox(
-                      //           height: 40,
-                      //         ),
-                      //         Row(
-                      //           mainAxisAlignment:
-                      //               MainAxisAlignment.spaceAround,
-                      //           children: [
-                      //             ElevatedButton(
-                      //               style: ButtonStyle(
-                      //                 backgroundColor:
-                      //                     MaterialStateProperty.all<Color>(
-                      //                         Colors.blue),
-                      //               ),
-                      //               child: Text(
-                      //                 "CHECK WIFI PERFORMANCE",
-                      //                 textAlign: TextAlign.center,
-                      //                 style: TextStyle(
-                      //                   color: Colors.white,
-                      //                   fontSize: 36.sp,
-                      //                 ),
-                      //               ),
-                      //               onPressed: () {
-                      //                 showWifiAlertDialog(context);
-                      //               },
-                      //             ),
-                      //             // ElevatedButton(
-                      //             //   style: ButtonStyle(
-                      //             //     shape: MaterialStateProperty.all(
-                      //             //         const CircleBorder()),
-                      //             //     minimumSize:
-                      //             //         MaterialStateProperty.all<Size>(
-                      //             //             Size(100.w, 100.w)),
-                      //             //     backgroundColor:
-                      //             //         const MaterialStatePropertyAll(
-                      //             //             Color.fromRGBO(
-                      //             //                 235, 235, 235, 1)),
-                      //             //   ),
-                      //             //   onPressed: () {},
-                      //             //   child: const Column(
-                      //             //       mainAxisAlignment:
-                      //             //           MainAxisAlignment.center,
-                      //             //       children: [
-                      //             //         Image(
-                      //             //             image: AssetImage(
-                      //             //                 'assets/images/wlan.png')),
-                      //             //       ]),
-                      //             // ),
-                      //             // Expanded(
-                      //             //   child: ElevatedButton(
-                      //             //     style: ButtonStyle(
-                      //             //       backgroundColor:
-                      //             //           MaterialStateProperty.all<Color>(
-                      //             //               Colors.blue),
-                      //             //     ),
-                      //             //     child: Text(
-                      //             //       "channel scan",
-                      //             //       textAlign: TextAlign.center,
-                      //             //       style: TextStyle(
-                      //             //         color: Colors.white,
-                      //             //         fontSize: 36.sp,
-                      //             //       ),
-                      //             //     ),
-                      //             //     onPressed: () {
-                      //             //       showWifiScanContent();
-                      //             //     },
-                      //             //   ),
-                      //             // ),
-                      //           ],
-                      //         ),
-                      //       ],
-                      //     )),
-                      //  设备操作
-                      const SizedBox(
-                        height: 40,
-                      ),
+                        //上传速率
+                        // WhiteCard(
+                        //     height: 400,
+                        //     boxCotainer: Column(
+                        //       mainAxisAlignment: MainAxisAlignment.start,
+                        //       children: [
+                        //         const Row(
+                        //           mainAxisAlignment: MainAxisAlignment.start,
+                        //           children: [
+                        //             Text(
+                        //               'Check WiFi Preformance',
+                        //               style: TextStyle(
+                        //                   color: Colors.black,
+                        //                   fontSize: 24,
+                        //                   fontWeight: FontWeight.bold),
+                        //             )
+                        //           ],
+                        //         ),
+                        //         const SizedBox(
+                        //           height: 40,
+                        //         ),
+                        //         Row(
+                        //           mainAxisAlignment:
+                        //               MainAxisAlignment.spaceAround,
+                        //           children: [
+                        //             ElevatedButton(
+                        //               style: ButtonStyle(
+                        //                 backgroundColor:
+                        //                     MaterialStateProperty.all<Color>(
+                        //                         Colors.blue),
+                        //               ),
+                        //               child: Text(
+                        //                 "CHECK WIFI PERFORMANCE",
+                        //                 textAlign: TextAlign.center,
+                        //                 style: TextStyle(
+                        //                   color: Colors.white,
+                        //                   fontSize: 36.sp,
+                        //                 ),
+                        //               ),
+                        //               onPressed: () {
+                        //                 showWifiAlertDialog(context);
+                        //               },
+                        //             ),
+                        //             // ElevatedButton(
+                        //             //   style: ButtonStyle(
+                        //             //     shape: MaterialStateProperty.all(
+                        //             //         const CircleBorder()),
+                        //             //     minimumSize:
+                        //             //         MaterialStateProperty.all<Size>(
+                        //             //             Size(100.w, 100.w)),
+                        //             //     backgroundColor:
+                        //             //         const MaterialStatePropertyAll(
+                        //             //             Color.fromRGBO(
+                        //             //                 235, 235, 235, 1)),
+                        //             //   ),
+                        //             //   onPressed: () {},
+                        //             //   child: const Column(
+                        //             //       mainAxisAlignment:
+                        //             //           MainAxisAlignment.center,
+                        //             //       children: [
+                        //             //         Image(
+                        //             //             image: AssetImage(
+                        //             //                 'assets/images/wlan.png')),
+                        //             //       ]),
+                        //             // ),
+                        //             // Expanded(
+                        //             //   child: ElevatedButton(
+                        //             //     style: ButtonStyle(
+                        //             //       backgroundColor:
+                        //             //           MaterialStateProperty.all<Color>(
+                        //             //               Colors.blue),
+                        //             //     ),
+                        //             //     child: Text(
+                        //             //       "channel scan",
+                        //             //       textAlign: TextAlign.center,
+                        //             //       style: TextStyle(
+                        //             //         color: Colors.white,
+                        //             //         fontSize: 36.sp,
+                        //             //       ),
+                        //             //     ),
+                        //             //     onPressed: () {
+                        //             //       showWifiScanContent();
+                        //             //     },
+                        //             //   ),
+                        //             // ),
+                        //           ],
+                        //         ),
+                        //       ],
+                        //     )),
+                        //  设备操作
+                        const SizedBox(
+                          height: 40,
+                        ),
 
-                      setUpBottomView(),
-                    ],),
-                    
+                        setUpBottomView(context),
+                      ],
+                    ),
                   ),
                 ),
               )),

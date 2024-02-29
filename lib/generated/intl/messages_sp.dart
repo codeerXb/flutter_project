@@ -72,7 +72,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "EnableRebootScheduler":
             MessageLookupByLibrary.simpleMessage("Enable reboot scheduler"),
         "EnableScheduler":
-            MessageLookupByLibrary.simpleMessage("Date to reboot"),
+            MessageLookupByLibrary.simpleMessage("Reboot date"),
         "Environment": MessageLookupByLibrary.simpleMessage("Wi-Fi Coverage"),
         "Ethernet": MessageLookupByLibrary.simpleMessage("Ethernet"),
         "EthernetOnly": MessageLookupByLibrary.simpleMessage("Ethernet Only"),
@@ -196,7 +196,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "addDevice": MessageLookupByLibrary.simpleMessage("Add Device"),
         "advancedSet":
             MessageLookupByLibrary.simpleMessage("Advanced Settings"),
-        "aesRecommend": MessageLookupByLibrary.simpleMessage("AES(Recommened)"),
+        "aesRecommend": MessageLookupByLibrary.simpleMessage("AES(Recommended)"),
         "aivideo": MessageLookupByLibrary.simpleMessage("E-Learning"),
         "ascii32": MessageLookupByLibrary.simpleMessage("1~32 ASCII Character"),
         "autoLang": MessageLookupByLibrary.simpleMessage("Auto"),
@@ -213,6 +213,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Logout login failed, Please check the network!"),
         "clear": MessageLookupByLibrary.simpleMessage("Clear"),
         "clearCache": MessageLookupByLibrary.simpleMessage("Clear Cache"),
+        "delAccount": MessageLookupByLibrary.simpleMessage("Account Deletion"),
         "clickFactory": MessageLookupByLibrary.simpleMessage(
             "Please click factory reset to restore device to its factory settings"),
         "clickReboot": MessageLookupByLibrary.simpleMessage(

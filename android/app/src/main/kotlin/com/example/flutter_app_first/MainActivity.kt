@@ -1,4 +1,4 @@
-package com.example.flutter_template
+package com.Codium.CodiumHome
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 

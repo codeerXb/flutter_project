@@ -128,6 +128,19 @@ class _ForgetPasswordState extends State<ForgetPassword>
         ));
   }
 
+  void setUpSendMes(String accountStr) async {
+    final data = {"account": accountStr};
+    //发请求
+    var res = await dio.post(
+        '${BaseConfig.cloudBaseUrl}/platform/appCustomer/sendSmsOrEmailCode',
+        data: data);
+    var d = json.decode(res.toString());
+    debugPrint('响应------>$d');
+    d['code'] == 200
+        ? ToastUtils.toast('SMS sent successfully')
+        : ToastUtils.toast(d['message']);
+  }
+
   Widget setUpPhoneView() {
     return SingleChildScrollView(
       child: ConstrainedBox(
@@ -306,17 +319,6 @@ class _ForgetPasswordState extends State<ForgetPassword>
                                       ToastUtils.toast(
                                           'Mobile phone number format is wrong');
                                     } else {
-                                      final data = {"account": _phoneVal};
-                                      //发请求
-                                      var res = await dio.post(
-                                          '${BaseConfig.cloudBaseUrl}/platform/appCustomer/sendSmsOrEmailCode',
-                                          data: data);
-                                      var d = json.decode(res.toString());
-                                      debugPrint('响应------>$d');
-                                      d['code'] == 200
-                                          ? ToastUtils.toast(
-                                              'SMS sent successfully')
-                                          : ToastUtils.toast(d['message']);
                                       if (codeNum == 60) {
                                         //倒计时60s
                                         setState(() {
@@ -337,6 +339,7 @@ class _ForgetPasswordState extends State<ForgetPassword>
                                           }
                                         });
                                       }
+                                      setUpSendMes(_phoneController.text);
                                     }
                                   }),
                                   child: Text(
@@ -602,19 +605,7 @@ class _ForgetPasswordState extends State<ForgetPassword>
                                       ToastUtils.toast(
                                           'Mobile phone number format is wrong');
                                     } else {
-                                      final data = {
-                                        "account": _emailController.text
-                                      };
-                                      //发请求
-                                      var res = await dio.post(
-                                          '${BaseConfig.cloudBaseUrl}/platform/appCustomer/sendSmsOrEmailCode',
-                                          data: data);
-                                      var d = json.decode(res.toString());
-                                      debugPrint('响应------>$d');
-                                      d['code'] == 200
-                                          ? ToastUtils.toast(
-                                              'SMS sent successfully')
-                                          : ToastUtils.toast(d['message']);
+                                      
                                       if (emailCodeNum == 60) {
                                         //倒计时60s
                                         setState(() {
@@ -635,6 +626,7 @@ class _ForgetPasswordState extends State<ForgetPassword>
                                           }
                                         });
                                       }
+                                      setUpSendMes(_emailController.text);
                                     }
                                   }),
                                   child: Text(
@@ -691,6 +683,8 @@ class _ForgetPasswordState extends State<ForgetPassword>
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return 'Please enter password';
+                                }else if (value.trim().length < 6) {
+                                  return 'Password cannot be less than 6 characters';
                                 }
                                 return null;
                               },

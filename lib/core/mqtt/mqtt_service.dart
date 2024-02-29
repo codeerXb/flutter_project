@@ -56,7 +56,7 @@ Future<MqttClient> connect() async {
     debugPrint(
         'EMQX client connection failed - disconnecting, status is ${client.connectionStatus}');
     client.disconnect();
-    exit(-1);
+    // exit(-1);
   }
 
   return client;

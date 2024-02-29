@@ -683,37 +683,36 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
                               //   )),
                               // ),
                               //儿童上网
-                              
+                              /*
                               GestureDetector(
                                 onTap: () {
-                                  // /parentList  /parent
+                                  
                                   Get.toNamed('/parentList');
                                 },
                                 child: GardCard(
                                     boxCotainer: Row(
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                      MainAxisAlignment.center,
                                   children: [
                                     Icon(Icons.child_care,
                                         color: const Color.fromRGBO(
                                             95, 141, 255, 1),
                                         size: 60.sp),
-                                    ConstrainedBox(
-                                      constraints: BoxConstraints(
-                                        maxWidth: ScreenAdapter.width(180),
-                                      ),
-                                      child: FittedBox(
-                                        child: Text(
-                                          S.of(context).parent,
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(fontSize: 30.w),
+                                        const SizedBox(
+                                          width: 5,
                                         ),
-                                      ),
-                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Text(
+                                          S.of(context).parent,
+                                          textAlign: TextAlign.left,
+                                          softWrap: true,
+                                          style: TextStyle(fontSize: 30.w),
+                                        ))
                                   ],
                                 )),
                               ),
-                              
+                              */
                               // 访客网路
                               GestureDetector(
                                 onTap: () {
@@ -722,7 +721,7 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
                                 child: GardCard(
                                     boxCotainer: Row(
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                      MainAxisAlignment.center,
                                   children: [
                                     Image(
                                       width: ScreenAdapter.width(80),
@@ -731,21 +730,20 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
                                           'assets/images/visitor_net.png'),
                                       fit: BoxFit.cover,
                                     ),
-                                    ConstrainedBox(
-                                      constraints: BoxConstraints(
-                                        maxWidth: 180.w,
-                                      ),
-                                      child: FittedBox(
-                                        child: Text(
-                                          S.current.visitorNet,
-                                          textAlign: TextAlign.right,
+                                    const SizedBox(
+                                          width: 5,
                                         ),
-                                      ),
-                                    ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Text(
+                                          S.current.visitorNet,
+                                          textAlign: TextAlign.left,
+                                          style: TextStyle(fontSize: 30.w),
+                                        )),
                                   ],
                                 )),
                               ),
-
+                              
                               // Device Info
                               GestureDetector(
                                 onTap: () {
@@ -754,7 +752,7 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
                                 child: GardCard(
                                     boxCotainer: Row(
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                      MainAxisAlignment.center,
                                   children: [
                                     Image(
                                         width: 60.w,
@@ -762,12 +760,16 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
                                         image: const AssetImage(
                                             'assets/images/equ_info.png'),
                                         fit: BoxFit.cover),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
                                     Expanded(
+                                      flex: 2,
                                       child: Text(
                                         S.current.deviceInfo,
-                                        textAlign: TextAlign.center,
-                                        style: const TextStyle(
-                                            fontSize: 13, color: Colors.black),
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
+                                            fontSize: 30.w, color: Colors.black),
                                       ),
                                     ),
                                   ],
@@ -781,7 +783,7 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
                                 child: GardCard(
                                     boxCotainer: Row(
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                      MainAxisAlignment.center,
                                   children: [
                                     Image(
                                         width: 70.w,
@@ -789,16 +791,17 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
                                         image: const AssetImage(
                                             'assets/images/DNS.png'),
                                         fit: BoxFit.cover),
-                                    ConstrainedBox(
-                                      constraints: BoxConstraints(
-                                        maxWidth: 180.w,
-                                      ),
-                                      child: FittedBox(
-                                        child: Text(
-                                          S.current.dnsSettings,
-                                          textAlign: TextAlign.right,
+                                        const SizedBox(
+                                          width: 5,
                                         ),
-                                      ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Text(
+                                          S.current.dnsSettings,
+                                          textAlign: TextAlign.left,
+                                          style: TextStyle(
+                                            fontSize: 30.w, color: Colors.black),
+                                        )
                                     ),
                                   ],
                                 )),
@@ -811,7 +814,7 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
                                 child: GardCard(
                                     boxCotainer: Row(
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                      MainAxisAlignment.center,
                                   children: [
                                     Image(
                                         width: 70.w,
@@ -819,17 +822,18 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
                                         image: const AssetImage(
                                             'assets/images/lan.png'),
                                         fit: BoxFit.cover),
-                                    ConstrainedBox(
-                                      constraints: BoxConstraints(
-                                        maxWidth: 180.w,
-                                      ),
-                                      child: FittedBox(
-                                        child: Text(
-                                          S.current.lanSettings,
-                                          textAlign: TextAlign.right,
+                                        const SizedBox(
+                                          width: 5,
                                         ),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Text(
+                                          S.current.lanSettings,
+                                          textAlign: TextAlign.left,
+                                          style: TextStyle(
+                                            fontSize: 30.w, color: Colors.black),
+                                        )
                                       ),
-                                    ),
                                   ],
                                 )),
                               ),

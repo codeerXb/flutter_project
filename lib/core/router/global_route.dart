@@ -84,8 +84,12 @@ import '../../pages/parent_control/website_creat_page.dart';
 import '../../pages/parent_control/parent_device_page.dart';
 import '../../pages/parent_control/parent_time_list_page.dart';
 import '../../pages/parent_control/parent_creatTimPage.dart';
-import '../../pages/parent_control/new_parent_page.dart';
 import '../../pages/net_status/speed_test_page.dart';
+import '../../pages/net_status/lan_speed_test_page.dart';
+import '../../pages/user_login/privacy_page.dart';
+import '../../pages/parent_control/parent_device_timeList.dart';
+import '../../pages/setting/company_website_page.dart';
+import 'package:flutter_template/pages/setting/logout_account.dart';
 /// 路由
 class GlobalRouter {
   // 定义单例
@@ -336,8 +340,18 @@ class GlobalRouter {
         const ParentTimeListPage(),
     '/websiteCreatTimePage': (BuildContext context, {Object? args}) =>
         const ParentCreatTimePage(),
-    '/lanSpeedTestPage': (BuildContext context, {Object? args}) =>
+    '/speedTestPage': (BuildContext context, {Object? args}) =>
         const SpeedTestHomeVC(),
+    '/lanSpeedTestPage': (BuildContext context, {Object? args}) =>
+        const LanSpeedPage(),
+    '/privacyPage': (BuildContext context, {Object? args}) =>
+        const PrivacyPage(),
+    '/timeConfigPage': (BuildContext context, {Object? args}) =>
+        const TimeConfigListPage(),
+    '/commpanyWebsitePage': (BuildContext context, {Object? args}) =>
+        const CompanyWebsitePage(),
+    '/delAccountPage': (BuildContext context, {Object? args}) =>
+        const DelAccountPage(),
   };
 
   /// 监听route

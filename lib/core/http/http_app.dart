@@ -94,6 +94,22 @@ class App {
     }
   }
 
+  ///delete请求
+  static Future delete(String url,
+      {Map<String, dynamic>? params, Map<String, dynamic>? data}) async {
+    try {
+      Response response = await appdio.delete(url,
+          queryParameters: params != null
+              ? {...params}
+              : null,
+          options: Options(responseType: ResponseType.plain),
+          data: data);
+      return response.data;
+    } on DioError {
+      rethrow;
+    }
+  }
+
   // 上传文件
   static Future uploadFile(String url, Map<String, dynamic> data) async {
     Response response = await appdio.post(url,

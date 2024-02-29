@@ -51,11 +51,11 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.example.flutter_template"
+        applicationId "com.Codium.CodiumHome"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-build-configuration.
         minSdkVersion 23
-        targetSdkVersion 30
+        targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
@@ -76,6 +76,15 @@ android {
             signingConfig signingConfigs.release
         }
     }
+
+    applicationVariants.all { variant ->
+    variant.outputs.all {
+        def appName = 'Wi-Fi@Home'
+           def buildType = variant.name // 包类型，debug 还是 release
+           def version = variant.versionName // 版本号
+        outputFileName = "${appName}_${buildType}_${version}.apk"
+    }
+}
 }
 
 flutter {

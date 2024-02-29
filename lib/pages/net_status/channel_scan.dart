@@ -14,8 +14,9 @@ import '../../pages/wifi_set/wlan/wlanBeans.dart';
 import '../../pages/wifi_set/wlan/wlan5gBeans.dart';
 import '../.././core/utils/string_util.dart';
 
+String Id_Random = StringUtil.generateRandomString(10);
 MqttServerClient client = MqttServerClient.withPort(
-      BaseConfig.mqttMainUrl, 'flutter_client', BaseConfig.websocketPort);
+      BaseConfig.mqttMainUrl, 'client_$Id_Random', BaseConfig.websocketPort);
 
 class ChannelScanPage extends StatefulWidget {
   const ChannelScanPage({super.key});
@@ -88,6 +89,7 @@ class _ChannelScanPageState extends State<ChannelScanPage>
     client.onConnected = onConnected;
     client.onSubscribed = onSubscribed;
     client.pongCallback = pong;
+    client.setProtocolV311();
 
     final connMess = MqttConnectMessage()
         .authenticateAs('admin', 'smawav')
@@ -114,7 +116,7 @@ class _ChannelScanPageState extends State<ChannelScanPage>
       print(
           'Client connection failed - disconnecting, status is ${client.connectionStatus}');
       client.disconnect();
-      exit(-1);
+      // exit(-1);
     }
 
     client.published!.listen((MqttPublishMessage message) {

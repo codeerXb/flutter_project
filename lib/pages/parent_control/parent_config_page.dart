@@ -62,7 +62,6 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
 
   @override
   void initState() {
-
     super.initState();
   }
 
@@ -117,55 +116,55 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
         body: Container(
           height: double.infinity,
           decoration: const BoxDecoration(color: Colors.black12),
-          padding: EdgeInsets.only(bottom: 20),
+          padding: const EdgeInsets.only(bottom: 20),
           child: SingleChildScrollView(
               child: ConstrainedBox(
-            constraints: BoxConstraints(
+            constraints: const BoxConstraints(
               minHeight: 100,
               // maxHeight: 100000
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
+                // Padding(
+                //   padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                //   child: SizedBox(
+                //     height: 75,
+                //     child: Card(
+                //       margin: EdgeInsets.all(5),
+                //       elevation: 2,
+                //       color: Colors.white,
+                //       shape: RoundedRectangleBorder(
+                //         side: const BorderSide(color: Colors.white, width: 0.5),
+                //         borderRadius: BorderRadius.circular(8),
+                //       ),
+                //       clipBehavior: Clip.antiAlias,
+                //       child: Row(
+                //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //         children: [
+                //           Padding(padding:const EdgeInsets.only(left: 15,right: 10),
+                //           child: Image.asset("assets/images/name.png",width: 25,height: 25,)
+                //           ),
+                //           Expanded(
+                //               child: TextField(
+                //             controller: nameController,
+                //             autofocus: true,
+                //             focusNode: fousNode,
+                //             keyboardType: TextInputType.text,
+                //             decoration:const InputDecoration(
+                //               // prefixIcon:
+                //               border: InputBorder.none,
+                //               // labelText: 'User Name',
+                //               hintText: 'Enter Your Name',
+                //             ),
+                //           ))
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                // ),
                 Padding(
-                  padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                  child: SizedBox(
-                    height: 75,
-                    child: Card(
-                      margin: EdgeInsets.all(5),
-                      elevation: 2,
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        side: const BorderSide(color: Colors.white, width: 0.5),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      clipBehavior: Clip.antiAlias,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(padding:const EdgeInsets.only(left: 15,right: 10),
-                          child: Image.asset("assets/images/name.png",width: 25,height: 25,)
-                          ),
-                          Expanded(
-                              child: TextField(
-                            controller: nameController,
-                            autofocus: true,
-                            focusNode: fousNode,
-                            keyboardType: TextInputType.text,
-                            decoration:const InputDecoration(
-                              // prefixIcon: 
-                              border: InputBorder.none,
-                              // labelText: 'User Name',
-                              hintText: 'Enter Your Name',
-                            ),
-                          ))
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Offstage(
-                  offstage: !switchValue,
+                  padding:const EdgeInsets.fromLTRB(0, 10, 0, 0),
                   child: ListView(
                     padding: EdgeInsets.zero,
                     shrinkWrap: true,
@@ -173,17 +172,21 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
                     children: _buildList(),
                   ),
                 ),
+                // Offstage(
+                //   offstage: !switchValue,
+                //   child:
+                // ),
                 Card(
-                  margin: EdgeInsets.all(5),
+                  margin:const EdgeInsets.only(left: 20,right: 20,bottom: 1),
                   elevation: 2,
                   color: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    side: const BorderSide(color: Colors.white, width: 0.5),
-                    borderRadius: BorderRadius.circular(8),
+                  shape: const RoundedRectangleBorder(
+                    side: BorderSide(color: Colors.white, width: 0.5),
+                    borderRadius: BorderRadius.only(topLeft: Radius.circular(8),topRight: Radius.circular(8)),
                   ),
                   clipBehavior: Clip.antiAlias,
                   child: ListTile(
-                    contentPadding: EdgeInsets.only(left: 20,right: 5),
+                    contentPadding:const EdgeInsets.only(left: 20, right: 5),
                     horizontalTitleGap: 5,
                     leading: Image.asset(
                       'assets/images/weblist.png',
@@ -196,7 +199,13 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
                     ),
                     trailing: IconButton(
                       onPressed: () {
-                        Get.toNamed("/websiteConfigPage");
+                        Get.toNamed("/websiteConfigPage",arguments: {"websites" : websiteList})?.then((results){
+                          if (results != null) {
+                            websiteList = results;
+                          debugPrint("输入的网站是:$websiteList");
+                          }
+                          
+                        });
                       },
                       icon: Image.asset(
                         'assets/images/edit_parent.png',
@@ -206,26 +215,30 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
                     ),
                   ),
                 ),
-                ListView.builder(
+                Obx(() => ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    itemCount: 5,
+                    itemCount: websiteList.length,
                     itemBuilder: (context, index) {
                       return Container(
-                        margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
-                        decoration: BoxDecoration(
+                        margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                        decoration: const BoxDecoration(
                             color: Colors.white,
                             border: Border(
                                 bottom: BorderSide(
                                     width: 1, color: Color(0xffe5e5e5)))),
                         child: ListTile(
-                        title: Text(
-                          "www.baidu.com",
-                          style: TextStyle(fontSize: 15, color: Colors.black),
+                          title: Padding(
+                            padding: const EdgeInsets.only(left: 20),
+                            child: Text(
+                            websiteList[index],
+                            style: const TextStyle(fontSize: 15, color: Colors.black),
+                          ),
+                          )
                         ),
-                      ),
                       );
-                    }),
+                    }),),
+                
                 SizedBox(
                   width: 150,
                   child: ElevatedButton(
@@ -238,10 +251,10 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
                           const Color.fromARGB(255, 30, 104, 233)),
                     ),
                     onPressed: () {
-                      Get.toNamed("/websiteDevicePage");
+                      
                     },
                     child: Text(
-                      "Next Step",
+                      "Submit",
                       style: TextStyle(
                           fontSize: 32.sp, color: const Color(0xffffffff)),
                     ),
@@ -323,7 +336,8 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
               ],
             ),
           )),
-        ));
+        )
+        );
   }
 
   void _itemChange(String itemValue, String type, bool isSelected) {
@@ -346,7 +360,7 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
         } else {
           _selectedshopItems.remove(itemValue);
         }
-      }else {
+      } else {
         if (isSelected) {
           _selectedappStoreItems.add(itemValue);
         } else {
@@ -419,7 +433,7 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
         borderRadius: BorderRadius.circular(8),
       ),
       clipBehavior: Clip.antiAlias,
-      margin: const EdgeInsets.all(5),
+      margin: const EdgeInsets.only(left: 20,right: 20,bottom: 10),
       child: ExpansionTile(
         title: Row(
           children: [
@@ -442,30 +456,30 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
   }
 
   Widget generateTypeIcon(String type) {
-    if(type == "Shopping") {
+    if (type == "Shopping") {
       return Image.asset(
-              'assets/images/shopping.png',
-              width: 25,
-              height: 25,
-            );
-    }else if (type == "Video") {
+        'assets/images/shopping.png',
+        width: 25,
+        height: 25,
+      );
+    } else if (type == "Video") {
       return Image.asset(
-              'assets/images/video.png',
-              width: 25,
-              height: 25,
-            );
-    }else if(type == "Social Media") {
+        'assets/images/video.png',
+        width: 25,
+        height: 25,
+      );
+    } else if (type == "Social Media") {
       return Image.asset(
-              'assets/images/social media.png',
-              width: 25,
-              height: 25,
-            );
-    }else {
+        'assets/images/social media.png',
+        width: 25,
+        height: 25,
+      );
+    } else {
       return Image.asset(
-              'assets/images/app store.png',
-              width: 25,
-              height: 25,
-            );
+        'assets/images/app store.png',
+        width: 25,
+        height: 25,
+      );
     }
   }
 

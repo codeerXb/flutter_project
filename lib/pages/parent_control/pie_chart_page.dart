@@ -47,11 +47,11 @@ class _PieChartPageState extends State<PieChartPage> {
   ];
 
   List<OrdinalData> ordinalDataList = [
-    OrdinalData(domain: 'Shopping', measure: 3, color: Color.fromRGBO(2, 123, 254, 1)),
-    OrdinalData(domain: 'Video', measure: 5, color: Color.fromRGBO(88, 86, 215, 1)),
-    OrdinalData(domain: 'App Store', measure: 2, color: Color.fromRGBO(255, 149, 0, 1)),
-    OrdinalData(domain: 'Social', measure: 6, color: Color.fromRGBO(53, 199, 89, 1)),
-    OrdinalData(domain: 'Website', measure: 4, color: Color.fromRGBO(255, 165, 40, 1))
+    OrdinalData(domain: 'Shopping', measure: 130, color:const Color.fromRGBO(2, 123, 254, 1)),
+    OrdinalData(domain: 'Video', measure: 250, color:const Color.fromRGBO(88, 86, 215, 1)),
+    OrdinalData(domain: 'App Store', measure: 200, color:const Color.fromRGBO(255, 149, 0, 1)),
+    OrdinalData(domain: 'Social', measure: 260, color:const Color.fromRGBO(53, 199, 89, 1)),
+    OrdinalData(domain: 'Website', measure: 140, color:const Color.fromRGBO(255, 165, 40, 1))
   ];
 
   List resList = [
@@ -182,13 +182,10 @@ class _PieChartPageState extends State<PieChartPage> {
                     height: 30,
                   ),
 
-                  ListView.separated(
+                  ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: 5,
-                    separatorBuilder: (context, index) {
-                      return const Divider(height: 1.0, color: Colors.black12);
-                    },
                     itemBuilder: (BuildContext context, int index) {
                       return getAppcationTypeList(resList[index]["imgurl"],
                           resList[index]["title"], resList[index]["time"]);
@@ -217,14 +214,15 @@ class _PieChartPageState extends State<PieChartPage> {
         ElevatedButton(
                   style: ButtonStyle(
                     padding: MaterialStateProperty.all(
-                      EdgeInsets.fromLTRB(10.w, 28.w, 10.w, 28.w)
+                      EdgeInsets.fromLTRB(20.w, 28.w, 20.w, 28.w)
                     ),
                     shape: MaterialStateProperty.all(const StadiumBorder()),
                     backgroundColor: MaterialStateProperty.all(
                         const Color.fromARGB(255, 30, 104, 233)),
                   ),
                   onPressed: () {
-                    Get.toNamed("/parentConfigPage");
+                    // Get.toNamed("/parentConfigPage");
+                    Get.toNamed("/websiteDevicePage");
                   },
                   child: Text(
                     "Blacklist Configure",
@@ -236,14 +234,14 @@ class _PieChartPageState extends State<PieChartPage> {
                 ElevatedButton(
                   style: ButtonStyle(
                     padding: MaterialStateProperty.all(
-                      EdgeInsets.fromLTRB(10.w, 28.w, 10.w, 28.w),
+                      EdgeInsets.fromLTRB(20.w, 28.w, 20.w, 28.w),
                     ),
                     shape: MaterialStateProperty.all(const StadiumBorder()),
                     backgroundColor: MaterialStateProperty.all(
-                        Color.fromRGBO(52, 199, 89, 1)),
+                        const Color.fromRGBO(52, 199, 89, 1)),
                   ),
                   onPressed: () {
-                    // Get.toNamed("/websiteTimeListPage");
+                    Get.toNamed("/timeConfigPage");
                   },
                   child: Text(
                     "Use Time Configure",
@@ -260,7 +258,8 @@ class _PieChartPageState extends State<PieChartPage> {
       onTap: () {
         Get.toNamed("/parentDetailList");
       },
-      child: SizedBox(
+      child: Container(
+        decoration:const BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: Colors.black12))),
         height: 60,
         child: ListTile(
           leading: Image.asset(

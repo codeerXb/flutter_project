@@ -15,6 +15,13 @@ class _ParentWebSitePageState extends State<ParentWebSitePage> {
   FocusNode fousNode = FocusNode();
   bool switchValue = true;
   TextEditingController textController = TextEditingController();
+
+  @override
+  void initState() {
+    websites = Get.arguments["websites"];
+    debugPrint("输入的网站是:$websites");
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -162,7 +169,9 @@ class _ParentWebSitePageState extends State<ParentWebSitePage> {
                       backgroundColor: MaterialStateProperty.all(
                           const Color.fromARGB(255, 30, 104, 233)),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Get.back(result: websites);
+                    },
                     child: Text(
                       "Finish",
                       style: TextStyle(

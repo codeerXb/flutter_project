@@ -627,7 +627,7 @@ class _UserLoginState extends State<UserLogin>
         return loginId;
       }
     }).then((value) {
-      debugPrint('请求云平台登录id：$value');
+      debugPrint('请求云平台登录id：$value'); 
       if (value != null) {
         requestInquireRouterDevice(value);
       }else {

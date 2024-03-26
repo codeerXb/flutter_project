@@ -1,5 +1,6 @@
+
 import 'package:flutter/material.dart';
-import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import 'package:get/get.dart';
 
 class LanSpeedPage extends StatefulWidget {
@@ -10,7 +11,8 @@ class LanSpeedPage extends StatefulWidget {
 }
 
 class _LanSpeedPageState extends State<LanSpeedPage> {
-  final flutterWebViewPlugin = FlutterWebviewPlugin();
+  late final WebViewController _controller;
+  // final flutterWebViewPlugin = FlutterWebviewPlugin();
   String url = "";
 
   @override
@@ -24,13 +26,34 @@ class _LanSpeedPageState extends State<LanSpeedPage> {
       }
       
     });
-    flutterWebViewPlugin.close();
+    
     super.initState();
+
+    _controller = WebViewController()
+  ..setJavaScriptMode(JavaScriptMode.unrestricted)
+  ..setBackgroundColor(const Color(0x00000000))
+  ..setNavigationDelegate(
+    NavigationDelegate(
+      onProgress: (int progress) {
+        // Update loading bar.
+      },
+      onPageStarted: (String url) {},
+      onPageFinished: (String url) {},
+      onWebResourceError: (WebResourceError error) {},
+      onNavigationRequest: (NavigationRequest request) {
+        if (request.url.startsWith('https://www.youtube.com/')) {
+          return NavigationDecision.prevent;
+        }
+        return NavigationDecision.navigate;
+      },
+    ),
+  )
+  ..loadRequest(Uri.parse(url));
   }
 
   @override
   void dispose() {
-    flutterWebViewPlugin.dispose();
+    // flutterWebViewPlugin.dispose();
     super.dispose();
   }
 
@@ -43,17 +66,6 @@ class _LanSpeedPageState extends State<LanSpeedPage> {
             style: TextStyle(fontSize: 20, color: Colors.black),
           ),
         ),
-        body: Container(
-          child: WebviewScaffold(
-            url: url,
-            //当WebView没加载出来前显示
-            initialChild: Container(
-              color: Colors.white,
-              child: const Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
-          ),
-        ));
+        body: WebViewWidget(controller: _controller));
   }
 }

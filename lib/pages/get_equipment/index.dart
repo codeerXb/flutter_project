@@ -428,7 +428,7 @@ class _MyWidgetState extends State<Equipment> {
                       ],
                     ),
                   ),
-                if (appList.isNotEmpty)
+                if (isExistCloudDevice && appList.isNotEmpty)
                   SizedBox(
                     height: 400.w,
                     child: ListView.builder(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/core/utils/toast.dart';
 import 'package:get/get.dart';
 
 class ParentWebSitePage extends StatefulWidget {
@@ -11,15 +12,18 @@ class ParentWebSitePage extends StatefulWidget {
 }
 
 class _ParentWebSitePageState extends State<ParentWebSitePage> {
-  RxList websites = [].obs;
+  List websites = [];
   FocusNode fousNode = FocusNode();
   bool switchValue = true;
   TextEditingController textController = TextEditingController();
 
   @override
   void initState() {
-    websites = Get.arguments["websites"];
-    debugPrint("输入的网站是:$websites");
+    setState(() {
+      websites = Get.arguments["websites"];
+      debugPrint("输入的网站是:$websites");
+    });
+    
     super.initState();
   }
   @override
@@ -27,8 +31,8 @@ class _ParentWebSitePageState extends State<ParentWebSitePage> {
     return Scaffold(
         appBar: AppBar(
           title: const Text(
-            'Website List',
-            style: TextStyle(color: Colors.black, fontSize: 22),
+            'Website Black List',
+            style: TextStyle(color: Colors.black, fontSize: 22,fontWeight: FontWeight.w500),
           ),
           centerTitle: true,
           backgroundColor: Colors.white,
@@ -59,7 +63,7 @@ class _ParentWebSitePageState extends State<ParentWebSitePage> {
         body: Container(
           height: double.infinity,
           decoration: const BoxDecoration(
-            color: Colors.black12,
+            color: Color.fromRGBO(242, 242, 247, 1),
             borderRadius: BorderRadius.all(Radius.circular(8.0)),
           ),
           padding: const EdgeInsets.only(bottom: 20),
@@ -103,7 +107,14 @@ class _ParentWebSitePageState extends State<ParentWebSitePage> {
                                 padding: const EdgeInsets.only(right: 10),
                                 child: TextButton(
                                     onPressed: () {
-                                      websites.add(textController.text);
+                                      if(GetUtils.isURL(textController.text)) {
+                                        setState(() {
+                                          websites.add(textController.text);
+                                        });
+                                      }else {
+                                        ToastUtils.toast("Please enter the correct website address");
+                                      }
+                                      
                                     },
                                     child: const Text(
                                       "Add",
@@ -118,8 +129,7 @@ class _ParentWebSitePageState extends State<ParentWebSitePage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(15, 5, 15, 30),
-                  child: Obx(() {
-                    return Container(
+                  child: Container(
                       decoration: const BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.all(Radius.circular(8.0)),
@@ -155,8 +165,7 @@ class _ParentWebSitePageState extends State<ParentWebSitePage> {
                               ),
                             );
                           }),
-                    );
-                  }),
+                    ),
                 ),
                 SizedBox(
                   width: 150,

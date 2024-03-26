@@ -1,24 +1,16 @@
-import 'dart:async';
 import 'dart:convert';
 import 'dart:developer' as logPrint;
-import 'dart:io';
 import 'dart:math';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/steps_widget%20copy%202.dart';
 import 'package:flutter_template/generated/l10n.dart';
-
 import 'package:flutter_template/pages/odu/model/odu_data.dart';
 import 'package:get/get.dart';
 import 'radar_map_model.dart';
 import 'radar_widget.dart';
-import 'package:flutter_template/pages/wifi_set/visitor/2.4GHZ_visitor/2.4GHZ_datas.dart';
-import 'package:get/get_rx/src/rx_typedefs/rx_typedefs.dart';
-import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import 'dart:convert' as convert;
@@ -32,7 +24,6 @@ class ODU extends StatefulWidget {
 random(min, max) {
   // + min  表示生成一个最小数 min 到最大数之间的是数字
   var num = Random().nextInt(max) + min;
-  // floor() 返回的是一个整数。
   return num.toDouble();
 }
 

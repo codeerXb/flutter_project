@@ -830,12 +830,16 @@ class _SettingState extends State<Setting> {
   Widget deleteUserAccount() {
     return CommonWidget.simpleWidgetWithMine(
         title: S.of(context).delAccount,
-        icon: const Image(image: AssetImage('assets/images/Log out.png'),width: 25,height: 25,),
+        icon: const Image(
+          image: AssetImage('assets/images/Log out.png'),
+          width: 25,
+          height: 25,
+        ),
         callBack: () {
-          Get.toNamed("/delAccountPage",arguments: {"userAccount" : userAccount});
+          Get.toNamed("/delAccountPage",
+              arguments: {"userAccount": userAccount});
         });
   }
-
 
   /// 关于我们
   Widget aboutUs() {
@@ -904,10 +908,10 @@ class _SettingState extends State<Setting> {
   /// 点击回调
   clickWanSettings() async {
     // 本地请求参数，请求获取sn
-    Map<String, dynamic> data = {
-      'method': 'obj_get',
-      'param': '["systemVersionSn"]',
-    };
+    // Map<String, dynamic> data = {
+    //   'method': 'obj_get',
+    //   'param': '["systemVersionSn"]',
+    // };
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -924,30 +928,41 @@ class _SettingState extends State<Setting> {
       ),
     );
     try {
-      var res = await XHttp.get('/pub/pub_data.html', data);
-      var jsonRes = json.decode(res.toString());
+      // var res = await XHttp.get('/pub/pub_data.html', data);
+      // var jsonRes = json.decode(res.toString());
       // 得到jsonRes.systemVersionSn,比对本地存储的sn
       sharedGetData('deviceSn', String).then((value) {
         debugPrint("缓存中的设备是:${value.toString()}");
-        if (value != null && value == jsonRes['systemVersionSn']) {
-          // 本地存储设备的sn和设备返回的sn相同的时候
-          // 尝试设备登录
+        if (value != null) {
           Dio dio = Dio();
-
           String url =
               "http://$localUrl/action/appLogin?username=engineer&password=OPaviNb3o5qDKD1YPzp2X64Qsw0G3PMQLxOkLdp%2FWERkAphqhKCC00ZmZxOFOLBFN81FR7JprXF8lTkGpKdECl4IWbBiklCoAz1HsRUZYY%2BrbBFKGZO04NaawnWzqNEiHemaC0til1Hg6gkpc6DZVupOi8bGkEyCbpNQJN%2BU9zw=";
-          dio.get(url).then((response) {
-            var loginResJson = jsonDecode(response.toString());
-            if (loginResJson['code'] == 200) {
-              // 存储token和session
-              loginController.setSession(loginResJson['sessionid']);
-              sharedAddAndUpdate("session", String, loginResJson['sessionid']);
-              loginController.setToken(loginResJson['token']);
-              sharedAddAndUpdate("token", String, loginResJson['token']);
+          try {
+            dio.get(url).then((response) {
+              var loginResJson = jsonDecode(response.toString());
+              if (loginResJson['code'] == 200) {
+                // 存储token和session
+                loginController.setSession(loginResJson['sessionid']);
+                sharedAddAndUpdate(
+                    "session", String, loginResJson['sessionid']);
+                loginController.setToken(loginResJson['token']);
+                sharedAddAndUpdate("token", String, loginResJson['token']);
 
-              Get.toNamed("/wan_settings");
-            }
-          });
+                
+              }
+            }, onError: (e) {
+              ToastUtils.showDialogPopup(
+                context,
+                S.current.warningSnNotSame,
+                title: S.current.hint,
+                leftBtnText: "",
+                rightBtnText: S.current.confirm,
+              );
+            });
+          } on DioError catch (e) {
+            ToastUtils.toast(e.toString());
+          }
+
           // 获取本地存取的设备用户名密码
           // sharedGetData(sn, String).then((value) async {
           //   debugPrint("缓存中的设备2是:${value.toString()}");
@@ -1060,7 +1075,8 @@ class _SettingState extends State<Setting> {
         title: S.of(context).wanSettings,
         icon: const Image(image: AssetImage('assets/images/wan.png')),
         callBack: () {
-          clickWanSettings();
+          // clickWanSettings();
+          Get.toNamed("/wan_settings");
         });
   }
 

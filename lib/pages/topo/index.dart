@@ -21,6 +21,8 @@ import 'package:flutter_template/pages/topo/model/equipment_datas.dart';
 import 'package:get/get.dart';
 import '../../generated/l10n.dart';
 import 'package:flutter_template/core/utils/screen_adapter.dart';
+import '../parent_control/Model/terminal_equipmentBean.dart';
+
 
 typedef void OnItemPressed(bool result);
 
@@ -41,6 +43,7 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   // 实时在线设备数量
   int _onlineCount = 0;
+  List<EquipmentInfo> equipmentDatas = [];
 
   @override
   void initState() {
@@ -53,6 +56,7 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
       printInfo(info: 'deviceSn$res');
       setState(() {
         sn = res.toString();
+        requesTerminalEquipment(sn);
         //状态为local 请求本地  状态为cloud  请求云端
         printInfo(info: 'state--${loginController.login.state}');
         if (mounted) {
@@ -74,6 +78,24 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
         // }
       });
     }));
+  }
+
+  void requesTerminalEquipment(String sn) {
+    App.get('/platform/parentControlApp/queryDeviceInfoBySn?sn=$sn').then((res){
+      final terminalModel = TerminalEquipmentBeans.fromJson(res);
+      if (terminalModel.code == 200 && terminalModel.data != null) {
+        equipmentDatas = terminalModel.data!;
+        debugPrint("获取的终端设备列表:${equipmentDatas[0].mac} -- ${equipmentDatas[0].name}");
+      }else {
+        ToastUtils.toast(terminalModel.message!);
+      }
+    }).catchError((error){
+      ToastUtils.error(error.toString());
+    });
+  }
+
+  void requestDefaultDeviceStatistics() {
+
   }
 
   @override
@@ -609,7 +631,7 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
                                   .map(
                                     (e) => TopoItems(
                                       onItemPressed: handleItemPressed,
-                                      title: e.hostName.toString(),
+                                      title: (e.hostName.toString().isEmpty || e.hostName.toString() == "*") ? "Unknown Device" : e.hostName.toString(),
                                       isNative: false,
                                       isShow: true,
                                       topoData: e,
@@ -687,7 +709,7 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
                               GestureDetector(
                                 onTap: () {
                                   
-                                  Get.toNamed('/parentList');
+                                  Get.toNamed('/parentList',arguments: {"equipments" : equipmentDatas});
                                 },
                                 child: GardCard(
                                     boxCotainer: Row(
@@ -880,7 +902,7 @@ class _TopoItemsState extends State<TopoItems> {
         if (widget.topoData!.mac == 'B4:4C:3B:9E:46:3D') {
           Get.toNamed("/video_play");
         } else {
-          Get.toNamed("/access_equipment", arguments: widget.topoData)
+          Get.toNamed("/access_equipment", arguments: {"deviceItemModel" : widget.topoData})
               ?.then((value) {
             if (value) {
               widget.onItemPressed(value);
@@ -943,7 +965,6 @@ class _TopoItemsState extends State<TopoItems> {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          // const Text('datdadada'),
         ],
       ),
     );

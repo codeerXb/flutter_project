@@ -61,7 +61,6 @@ class _AdvanceChannelListPageState extends State<AdvanceChannelListPage> {
 
 
   void updateCurrentChannel() async {
-
     client.logging(on: false);
     client.keepAlivePeriod = 60;
     client.useWebSocket = true;
@@ -78,40 +77,44 @@ class _AdvanceChannelListPageState extends State<AdvanceChannelListPage> {
         .withWillMessage('My Will message')
         .startClean()
         .withWillQos(MqttQos.atLeastOnce);
-    print('Client connecting....');
+    debugPrint('Client connecting....');
     client.connectionMessage = connMess;
 
     try {
       await client.connect();
     } on NoConnectionException catch (e) {
-      print('Client exception: $e');
+      debugPrint('Client exception: $e');
       client.disconnect();
     } on SocketException catch (e) {
-      print('Socket exception: $e');
+      debugPrint('Socket exception: $e');
       client.disconnect();
     }
 
     if (client.connectionStatus!.state == MqttConnectionState.connected) {
-      print('Client connected');
+      debugPrint('Client connected');
     } else {
-      print(
+      debugPrint(
           'Client connection failed - disconnecting, status is ${client.connectionStatus}');
       client.disconnect();
       // exit(-1);
     }
 
     client.published!.listen((MqttPublishMessage message) {
-      print(
+      debugPrint(
           'Published topic: topic is ${message.variableHeader!.topicName}, with Qos ${message.header!.qos}');
     });
 
     final sessionIdCha = StringUtil.generateRandomString(10);
     var topic = "cpe/$sn";
+    final topicSb = StringBuffer();
+    topicSb.write(setCurrentChannelTopic);
+    topicSb.write(sn);
+    final currentChannelTopic = topicSb.toString();
     var parameters = {
       "event": "mqtt2sodObj",
       "sn": sn,
       "sessionId": sessionIdCha,
-      "pubTopic": setCurrentChannelTopic,
+      "pubTopic": currentChannelTopic,
       "param": {
         "method": "set",
         "nodes": {
@@ -132,8 +135,8 @@ class _AdvanceChannelListPageState extends State<AdvanceChannelListPage> {
     // String desString = "topic is <$topic>, payload is <-- $pt -->";
     // debugPrint("string =$desString");
     String result = pt.substring(0, pt.length - 1);
-      String desString = "topic is <$topic>, payload is <-- $result -->";
-      debugPrint("string =$desString");
+    String desString = "topic is <$topic>, payload is <-- $result -->";
+    debugPrint("string =$desString");
     Map datas = jsonDecode(result);
       debugPrint("设置信道: =${datas["data"]}");
       if (datas["data"] == "Success") {
@@ -147,24 +150,24 @@ class _AdvanceChannelListPageState extends State<AdvanceChannelListPage> {
   }
 
   void onSubscribed(String topic) {
-  print('Subscription confirmed for topic $topic');
+  debugPrint('Subscription confirmed for topic $topic');
 }
 
 void onDisconnected() {
-  print('OnDisconnected client callback - Client disconnection');
+  debugPrint('OnDisconnected client callback - Client disconnection');
   if (client.connectionStatus!.disconnectionOrigin ==
       MqttDisconnectionOrigin.solicited) {
-    print('OnDisconnected callback is solicited, this is correct');
+    debugPrint('OnDisconnected callback is solicited, this is correct');
   }
   // exit(-1);
 }
 
 void onConnected() {
-  print('OnConnected client callback - Client connection was sucessful');
+  debugPrint('OnConnected client callback - Client connection was sucessful');
 }
 
 void pong() {
-  print('Ping response client callback invoked');
+  debugPrint('Ping response client callback invoked');
 }
 
   // 发送消息

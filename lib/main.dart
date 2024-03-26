@@ -25,7 +25,7 @@ Future<void> main() async {
   final wifiGateway = await info.getWifiGatewayIP();
   debugPrint('当前wifi的网关地址$wifiGateway');
   BaseConfig.baseUrl = "https://$wifiGateway";
-  if (wifiGateway!.isNotEmpty){
+  if (wifiGateway != null && wifiGateway.isNotEmpty){
       sharedAddAndUpdate("baseLocalUrl", String, wifiGateway);
     }
   XHttp.init();

@@ -21,14 +21,15 @@ import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
 import 'package:flutter/cupertino.dart';
 import '../../core/utils/string_util.dart';
 import 'package:get/get.dart';
-import '../../core/mqtt/mqtt_service.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import '../../config/base_config.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import '../../pages/net_status/beans/speed_bean.dart';
-
+import "../../core/utils/color_utils.dart";
 
 String Id_Random = StringUtil.generateRandomString(10);
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
   @override
@@ -38,6 +39,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   MqttServerClient client = MqttServerClient.withPort(
       BaseConfig.mqttMainUrl, "client_$Id_Random", BaseConfig.websocketPort);
+  // late StreamSubscription<ConnectivityResult> _connectivitySubscription;
+  // String _netType = "";
   // 订阅的主题
   var subTopic = "";
   // bool isLoad = false;
@@ -46,6 +49,9 @@ class _HomePageState extends State<HomePage> {
 
   SpeedModel? speedmodel;
 
+  bool inProduction = const bool.fromEnvironment("dart.vm.product");
+
+  var reqUrl = "http://3.234.163.231:18083";// "http://10.0.30.43:18083"
   /// 点击空白  关闭输入键盘
   void closeKeyboard(BuildContext context) {
     FocusScope.of(context).requestFocus(blankNode);
@@ -111,7 +117,9 @@ class _HomePageState extends State<HomePage> {
   String speedTime = "";
 
   String userAccount = "";
-  // Timer? timer;
+
+  bool isConnectedNet = true;
+  Timer? soundTimer;
 
   String getPing(ping) {
     return '${ping}ms';
@@ -119,6 +127,12 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    
+    // 设置网络变化监听
+    // connectListener();
+    // 获取网络连接状态
+    // getConnectType();
+
     sharedGetData("user_phone", String).then((data) {
       debugPrint("当前获取的用户信息:${data.toString()}");
       if (StringUtil.isNotEmpty(data)) {
@@ -131,6 +145,12 @@ class _HomePageState extends State<HomePage> {
     sharedGetData('deviceSn', String).then(((res) {
       printInfo(info: 'deviceSn$res');
       if (mounted) {
+        if (inProduction) {
+          requestDeviceStatus(res.toString());
+        }else {
+          debugPrint("debug模式不执行");
+        }
+        
         setState(() {
           sn = res.toString();
           //状态为local 请求本地  状态为cloud  请求云端
@@ -145,41 +165,83 @@ class _HomePageState extends State<HomePage> {
         });
       }
     }));
-
-    // 之前是设置的 2秒,方便调试改为1分钟
-    // timer = Timer.periodic(const Duration(seconds: 60), (t) async {
-    //   if (mounted) {
-    //     printInfo(info: '定时获取的state--${loginController.login.state}');
-    //     if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
-    //       // getTROnlineCount(sn);
-    //     }
-    //     if (loginController.login.state == 'local') {
-    //       // 获取设备类型
-    //       getDeviceName();
-    //       // 获取流量
-    //       // getUsedFlow();
-    //       // 获取设备列表并更新在线数量
-    //       updateOnlineCount();
-    //       // 获取网络连接状态和上下行速率并更新
-    //       // updateStatus();
-    //     }
-    //   } else {
-    //     timer?.cancel();
-    //   }
-    // });
-
-    // 获取套餐总量
-    // sharedGetData('c_type', int).then((value) {
-    //   printInfo(info: 'c_typevalue---$value');
-    //   if (value != null) {
-    //     setState(() => _comboType = int.parse(value.toString()));
-    //   }
-    // });
-
-    // sharedGetData('c_contain', double).then((value) {
-    //   printInfo(info: 'c_containvalue---$value');
-    // });
   }
+
+  void requestDeviceStatus(String sn) {
+    soundTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        requestRouterStatus(sn);
+    });
+  }
+
+  requestRouterStatus(String sn) {
+    BaseOptions options = BaseOptions();
+    ///请求header的配置
+    options.headers["authorization"] = "Basic YWRtaW46YWRtaW4xMjM=";
+    final dio = Dio(options);
+    dio
+        .get(
+            '$reqUrl/api/v4/clients/cpe_$sn')
+        .then((res) {
+      debugPrint('请求的连接状态地址:$reqUrl/api/v4/clients/cpe_$sn');
+      var d = json.decode(res.toString());
+      debugPrint('requestRouterStatus响应------>$d');
+      if (d['code'] == 0) {
+        setState(() {
+          if (d["data"] != null && d["data"].isNotEmpty) {
+            isConnectedNet = d["data"][0]["connected"];
+            debugPrint("当前是否连接对应的WiFi:$isConnectedNet");
+          }else {
+            isConnectedNet = false;
+          }
+        
+      });
+      } else {
+        setState(() {
+          isConnectedNet = false;
+        });
+        // ToastUtils.toast("Connection to server timed out");
+      }
+    }).catchError((err) {
+      setState(() {
+        isConnectedNet = false;
+      });
+      // ToastUtils.toast("Connection to server timed out");
+    });
+  }
+
+/// 获取联网类型
+  // void getConnectType() async {
+  //   var connectResult = await (Connectivity().checkConnectivity());
+
+  //   if (connectResult == ConnectivityResult.mobile) {
+  //     _netType = "mobile";
+  //   } else if (connectResult == ConnectivityResult.wifi) {
+  //     _netType = "WIFi";
+  //   } else if (connectResult == ConnectivityResult.none){
+  //     _netType = "none";
+  //   }else {
+  //     _netType = "other";
+  //   }
+  //   setState(() { });
+  // }
+
+  /// 判断网络是否连接
+  // Future<bool> isConnected() async {
+  //   var connectResult = await (Connectivity().checkConnectivity());
+  //   return connectResult != ConnectivityResult.none;
+  // }
+
+  /// 设置网络切换监听
+  // connectListener() async {
+  //   _connectivitySubscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+  //     debugPrint("当前的网络是$result");
+  //     if (result == ConnectivityResult.wifi || result == ConnectivityResult.mobile) {
+        
+  //     }else if (result == ConnectivityResult.none) {
+  //     }else {}
+  //   });
+  //   setState(() { });
+  // }
 
   void obtainUserInformaition() async {
     Dio resDio = Dio();
@@ -192,7 +254,6 @@ class _HomePageState extends State<HomePage> {
           if (data["result"] != null) {
             merchantName = data["result"]["name"];
           }
-          
         });
       }
     });
@@ -215,30 +276,30 @@ class _HomePageState extends State<HomePage> {
         .withWillMessage('My Will message')
         .startClean()
         .withWillQos(MqttQos.atLeastOnce);
-    print('Client connecting....');
+    debugPrint('Client connecting....');
     client.connectionMessage = connMess;
 
     try {
       await client.connect();
     } on NoConnectionException catch (e) {
-      print('Client exception: $e');
+      debugPrint('Client exception: $e');
       client.disconnect();
     } on SocketException catch (e) {
-      print('Socket exception: $e');
+      debugPrint('Socket exception: $e');
       client.disconnect();
     }
 
     if (client.connectionStatus!.state == MqttConnectionState.connected) {
-      print('Client connected');
+      debugPrint('Client connected');
     } else {
-      print(
+      debugPrint(
           'Client connection failed - disconnecting, status is ${client.connectionStatus}');
       client.disconnect();
       // exit(-1);
     }
 
     client.published!.listen((MqttPublishMessage message) {
-      print(
+      debugPrint(
           'Published topic: topic is ${message.variableHeader!.topicName}, with Qos ${message.header!.qos}');
     });
 
@@ -249,7 +310,7 @@ class _HomePageState extends State<HomePage> {
       "event": "mqtt2sodObj",
       "sn": sn,
       "sessionId": sessionIdCha,
-      "pubTopic" : pubTopicStr,
+      "pubTopic": pubTopicStr,
       "param": {
         "method": "get",
         "nodes": [
@@ -258,8 +319,18 @@ class _HomePageState extends State<HomePage> {
       }
     };
 
+    final sessionIdConfig = StringUtil.generateRandomString(10);
+    var configTopicStr = "cpe/$sn-parentConfig";
+    var configParms = {
+      "event": "getParentControlConfig",
+      "sn": sn,
+      "sessionId": sessionIdConfig,
+      "pubTopic": configTopicStr
+    };
+    _publishMessage(subTopic, configParms);
     _publishMessage(subTopic, channelParms);
     client.subscribe(pubTopicStr, MqttQos.atLeastOnce);
+    client.subscribe(configTopicStr, MqttQos.atLeastOnce);
     client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
       debugPrint("====================监听到新消息了======================");
       final MqttPublishMessage recMess = c![0].payload as MqttPublishMessage;
@@ -274,10 +345,13 @@ class _HomePageState extends State<HomePage> {
           lanSpeedUrl = datas["data"]["networkLanSettingIp"];
           debugPrint("lanspeedUrl: =$lanSpeedUrl");
         });
-        
+      } else if (topic == configTopicStr) {
+        Map datas = jsonDecode(result);
+        var configEnable = datas["data"]["enable"];
+        debugPrint("家长控制开关 =$configEnable");
+        sharedAddAndUpdate("configEnable", String, configEnable);
       }
     });
-
 
     // connect().then((value) {
     //   client = value;
@@ -296,27 +370,27 @@ class _HomePageState extends State<HomePage> {
 
   /// The subscribed callback
   void onSubscribed(String topic) {
-    print('Subscription confirmed for topic $topic');
+    debugPrint('Subscription confirmed for topic $topic');
   }
 
   /// The unsolicited disconnect callback
   void onDisconnected() {
-    print('OnDisconnected client callback - Client disconnection');
+    debugPrint('OnDisconnected client callback - Client disconnection');
     if (client.connectionStatus!.disconnectionOrigin ==
         MqttDisconnectionOrigin.solicited) {
-      print('OnDisconnected callback is solicited, this is correct');
+      debugPrint('OnDisconnected callback is solicited, this is correct');
     }
     // exit(-1);
   }
 
   /// The successful connect callback
   void onConnected() {
-    print('OnConnected client callback - Client connection was sucessful');
+    debugPrint('OnConnected client callback - Client connection was sucessful');
   }
 
   /// Pong callback
   void pong() {
-    print('Ping response client callback invoked');
+    debugPrint('Ping response client callback invoked');
   }
 
   // sendRequestDataSingle(String sn) {
@@ -840,14 +914,49 @@ class _HomePageState extends State<HomePage> {
               child: Text(""),
             ),
             content: Container(
-              padding: const EdgeInsets.only(top: 20),
+              padding: const EdgeInsets.only(top: 10),
               width: isIPad ? MediaQuery.of(context).size.width - 300 : 260,
-              height: 260,
+              height: 160,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  // SizedBox(
+                  //     width: isIPad
+                  //         ? MediaQuery.of(context).size.width - 350
+                  //         : 250,
+                  //     height: 50,
+                  //     child: ElevatedButton(
+                  //       style: ButtonStyle(
+                  //         backgroundColor: MaterialStateProperty.all<Color>(
+                  //             const Color.fromRGBO(1, 113, 247, 1)),
+                  //       ),
+                  //       child: Row(
+                  //         mainAxisAlignment: MainAxisAlignment.center,
+                  //         children: [
+                  //           Image.asset(
+                  //             "assets/images/WANSPEEDTEST.png",
+                  //             width: 25,
+                  //             height: 25,
+                  //           ),
+                  //           Text(
+                  //             "WAN SPEEDTEST",
+                  //             textAlign: TextAlign.center,
+                  //             // softWrap: true,
+                  //             style: TextStyle(
+                  //               color: Colors.white,
+                  //               fontSize: 36.sp,
+                  //             ),
+                  //           ),
+                  //         ],
+                  //       ),
+                  //       onPressed: () {
+                  //         Get.toNamed("/speedTestPage");
+                  //       },
+                  //     )),
                   SizedBox(
-                      width: isIPad ? MediaQuery.of(context).size.width - 350 : 250,
+                      width: isIPad
+                          ? MediaQuery.of(context).size.width - 350
+                          : 250,
                       height: 50,
                       child: ElevatedButton(
                         style: ButtonStyle(
@@ -858,12 +967,12 @@ class _HomePageState extends State<HomePage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Image.asset(
-                              "assets/images/WANSPEEDTEST.png",
+                              "assets/images/speed_test_icon.png",//"assets/images/speed_test_icon.png",
                               width: 25,
                               height: 25,
                             ),
                             Text(
-                              "WAN SPEEDTEST",
+                              " SPEEDTEST",//" SPEEDTEST",
                               textAlign: TextAlign.center,
                               // softWrap: true,
                               style: TextStyle(
@@ -874,45 +983,14 @@ class _HomePageState extends State<HomePage> {
                           ],
                         ),
                         onPressed: () {
-                          // getLastSpeed(sn);
-                          // sendRequestDataSingle(sn);
-                          // showSpeedDialog(context);
-                          Get.toNamed("/speedTestPage");
+                          Get.toNamed("/lanSpeedTestPage",
+                              arguments: {"lanspeedUrl": lanSpeedUrl});
                         },
                       )),
                   SizedBox(
-                      width: isIPad ? MediaQuery.of(context).size.width - 350 : 250,
-                      height: 50,
-                      child: ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                              const Color.fromRGBO(1, 113, 247, 1)),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset(
-                              "assets/images/LANSPEEDTEST.png",
-                              width: 25,
-                              height: 25,
-                            ),
-                            Text(
-                              "LAN SPEEDTEST",
-                              textAlign: TextAlign.center,
-                              // softWrap: true,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 36.sp,
-                              ),
-                            ),
-                          ],
-                        ),
-                        onPressed: () {
-                          Get.toNamed("/lanSpeedTestPage",arguments: {"lanspeedUrl" : lanSpeedUrl});
-                        },
-                      )),
-                  SizedBox(
-                      width: isIPad ? MediaQuery.of(context).size.width - 350 : 250,
+                      width: isIPad
+                          ? MediaQuery.of(context).size.width - 350
+                          : 250,
                       height: 50,
                       child: ElevatedButton(
                         style: ButtonStyle(
@@ -1173,58 +1251,41 @@ class _HomePageState extends State<HomePage> {
                 fontSize: 22, color: Colors.black, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
-
-          // const SizedBox(
-          //   height: 20,
-          // ),
-          Image.asset(
-            "assets/images/home_new.png",
+          Image.asset(isConnectedNet == true ? "assets/images/home_new.png" :
+            "assets/images/home_disconnect.png",
             width: 260,
             height: 260,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(
-                "assets/images/zan_home.png",
+              Image.asset(isConnectedNet == true ?
+                "assets/images/zan_home.png" : "assets/images/homeWarn.png",
                 width: 30,
                 height: 30,
               ),
               const SizedBox(
                 width: 5,
               ),
-              const Column(
+              Column(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Text(
+                  const Text(
                     "Your wifi network is",
                     style: TextStyle(fontSize: 15, color: Colors.black),
                   ),
-                  Text(
-                    "Securely Connected!",
+                  Text(isConnectedNet == true ?
+                    "Securely Connected!" : "Disconnected",
                     style: TextStyle(
-                        fontSize: 15, color: Color.fromRGBO(8, 180, 151, 1)),
+                        fontSize: 15, color: isConnectedNet == true ? const Color.fromRGBO(8, 180, 151, 1) : ColorUtils.hexToColor("#FBB063")),
                   ),
                 ],
               ),
-              // Expanded(
-              //     child: RichText(
-              //   text: const TextSpan(
-              //       text: "Your wifi network is",
-              //       style: TextStyle(fontSize: 15, color: Colors.black),
-              //       children: [
-              //         TextSpan(
-              //             text: "Securely Connected!",
-              //             style: TextStyle(
-              //                 fontSize: 15,
-              //                 color: Colors.red))
-              //       ]),
-              // )),
               const SizedBox(
                 width: 5,
               ),
-              Image.asset(
-                "assets/images/icon_home.png",
+              Image.asset(isConnectedNet == true ? 
+                "assets/images/icon_home.png" : "assets/images/homeSad.png",
                 width: 30,
                 height: 30,
               )
@@ -1235,9 +1296,9 @@ class _HomePageState extends State<HomePage> {
             child: ElevatedButton(
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all<Color>(
-                    const Color.fromARGB(255, 35, 197, 145)),
+                    isConnectedNet == true ? const Color.fromARGB(255, 35, 197, 145) : ColorUtils.hexToColor("#FBB063")),
               ),
-              child: Text(
+              child: Text( 
                 "Check Network Performance",
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -1261,19 +1322,8 @@ class _HomePageState extends State<HomePage> {
       height: isIPad ? 400 : 200,
       child: Column(
         children: [
-          Container(
-            margin: EdgeInsets.only(bottom: 20.w),
-            child: const Row(
-              children: [
-                // Padding(
-                //   padding: EdgeInsets.only(left: 20),
-                //   child: Text(
-                //     'Device Control',
-                //     style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22),
-                //   ),
-                // ),
-              ],
-            ),
+          const SizedBox(
+            height: 20,
           ),
           Padding(
             padding: const EdgeInsets.only(top: 10),
@@ -1397,247 +1447,125 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    if (loadingDevice) {
-      return const Center(
-          child: SizedBox(width: 100, height: 100, child: WaterLoading()));
-    } else {
-      return Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          // 不自动添加返回键
-          automaticallyImplyLeading: false,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              const SizedBox(
-                width: 0,
+    return loadingDevice
+        ? const Center(
+            child: SizedBox(width: 100, height: 100, child: WaterLoading()))
+        : Scaffold(
+            appBar: AppBar(
+              elevation: 0,
+              // 不自动添加返回键
+              automaticallyImplyLeading: false,
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    width: 0,
+                  ),
+                  Image.asset(
+                    "assets/images/codium_logo.png",
+                    width: 50,
+                    height: 50,
+                  )
+                ],
               ),
-              Image.asset(
-                "assets/images/codium_logo.png",
-                width: 50,
-                height: 50,
-              )
-            ],
-          ),
-          // title: InkWell(
-          //   // overlayColor: const MaterialStatePropertyAll(Colors.transparent),
-          //   // 下拉icon
-          //   child: Ink(
-          //     width: 1.sw,
-          //     child: DropdownButton(
-          //       style: TextStyle(
-          //         color: Colors.black,
-          //         fontSize: 36.sp,
-          //       ),
-          //       dropdownColor:
-          //           const Color.fromARGB(221, 174, 167, 167), // 设置下拉框的背景颜色
-          //       underline: Container(), //去除下划线
-          //       value: currentDevice,
-          //       // icon: Icon(
-          //       //   FontAwesomeIcons.chevronDown,
-          //       //   size: 30.w,
-          //       //   color: Colors.white,
-          //       // ),
-          //       iconEnabledColor: Colors.white,
-          //       items: optionsList.map((option) {
-          //         // bool isSelected = option == currentDevice;
-          //         return DropdownMenuItem(
-          //           value: option,
-          //           child: Row(
-          //             children: [
-          //               Text(option),
-          //             ],
-          //           ),
-          //         );
-          //       }).toList(),
-          //       onChanged: (value) {
-          //         setState(() {
-          //           loading = true;
-          //           currentDevice = value.toString();
-          //           String? deviceSn;
-          //           for (var item in deviceList) {
-          //             if (item['type'] == value.toString()) {
-          //               deviceSn = item['deviceSn'];
-          //             }
-          //           }
-          //           // 为了更新新的设备
-          //           Get.offNamed("/get_equipment");
-          //           Get.offNamed("/home");
-          //           loginController.setUserEquipment(
-          //               'deviceSn', deviceSn.toString());
-          //           sharedAddAndUpdate("deviceSn", String, deviceSn.toString());
-          //           loginController.setState('cloud');
-          //           ToastUtils.toast('Save success');
-          //           loading = false;
-          //         });
-          //       },
-          //       onTap: (() {
-          //         // WidgetsBinding.instance.addPostFrameCallback((_) {
-          //         //   setState(() {
-          //         //     isShowList = !isShowList;
-          //         //   });
-          //         // });
-          //       }),
-          //     ),
-          //   ),
-          // ),
+              // title: InkWell(
+              //   // overlayColor: const MaterialStatePropertyAll(Colors.transparent),
+              //   // 下拉icon
+              //   child: Ink(
+              //     width: 1.sw,
+              //     child: DropdownButton(
+              //       style: TextStyle(
+              //         color: Colors.black,
+              //         fontSize: 36.sp,
+              //       ),
+              //       dropdownColor:
+              //           const Color.fromARGB(221, 174, 167, 167), // 设置下拉框的背景颜色
+              //       underline: Container(), //去除下划线
+              //       value: currentDevice,
+              //       // icon: Icon(
+              //       //   FontAwesomeIcons.chevronDown,
+              //       //   size: 30.w,
+              //       //   color: Colors.white,
+              //       // ),
+              //       iconEnabledColor: Colors.white,
+              //       items: optionsList.map((option) {
+              //         // bool isSelected = option == currentDevice;
+              //         return DropdownMenuItem(
+              //           value: option,
+              //           child: Row(
+              //             children: [
+              //               Text(option),
+              //             ],
+              //           ),
+              //         );
+              //       }).toList(),
+              //       onChanged: (value) {
+              //         setState(() {
+              //           loading = true;
+              //           currentDevice = value.toString();
+              //           String? deviceSn;
+              //           for (var item in deviceList) {
+              //             if (item['type'] == value.toString()) {
+              //               deviceSn = item['deviceSn'];
+              //             }
+              //           }
+              //           // 为了更新新的设备
+              //           Get.offNamed("/get_equipment");
+              //           Get.offNamed("/home");
+              //           loginController.setUserEquipment(
+              //               'deviceSn', deviceSn.toString());
+              //           sharedAddAndUpdate("deviceSn", String, deviceSn.toString());
+              //           loginController.setState('cloud');
+              //           ToastUtils.toast('Save success');
+              //           loading = false;
+              //         });
+              //       },
+              //       onTap: (() {
+              //         // WidgetsBinding.instance.addPostFrameCallback((_) {
+              //         //   setState(() {
+              //         //     isShowList = !isShowList;
+              //         //   });
+              //         // });
+              //       }),
+              //     ),
+              //   ),
+              // ),
 
-          backgroundColor: Colors.transparent,
-        ),
-        backgroundColor: Colors.white,
-        body: loading
-            ? const Center(
-                child: SizedBox(
-                  height: 80,
-                  width: 80,
-                  child: WaterLoading(
-                    color: Color.fromARGB(255, 65, 167, 251),
-                  ),
-                ),
-              )
-            : SafeArea(
-                child: GestureDetector(
-                onTap: () => closeKeyboard(context),
-                behavior: HitTestBehavior.opaque,
-                child: Container(
-                  decoration: const BoxDecoration(color: Color(0xFFF0F0F0)),
-                  height: double.infinity,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        setUpHeadView(context),
-
-                        // 网络环境
-                        // WhiteCard(
-                        //     height: 400,
-                        //     boxCotainer: Row(
-                        //       mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        //       children: [
-                        //         const Icon(
-                        //           Icons.thumb_up,
-                        //           size: 60,
-                        //           color: Colors.black,
-                        //         ),
-                        //         Expanded(
-                        //           child: Text(
-                        //             "your wifi network is securely connected!",
-                        //             textAlign: TextAlign.center,
-                        //             style: TextStyle(
-                        //                 fontSize: 60.sp,
-                        //                 fontWeight: FontWeight.bold,
-                        //                 color: const Color(0xff051220)),
-                        //           ),
-                        //         ),
-                        //         const Image(
-                        //             image: AssetImage(
-                        //                 'assets/images/Happinessicons.jpeg'),
-                        //             width: 60,
-                        //             height: 60),
-                        //       ],
-                        //     )),
-
-                        //上传速率
-                        // WhiteCard(
-                        //     height: 400,
-                        //     boxCotainer: Column(
-                        //       mainAxisAlignment: MainAxisAlignment.start,
-                        //       children: [
-                        //         const Row(
-                        //           mainAxisAlignment: MainAxisAlignment.start,
-                        //           children: [
-                        //             Text(
-                        //               'Check WiFi Preformance',
-                        //               style: TextStyle(
-                        //                   color: Colors.black,
-                        //                   fontSize: 24,
-                        //                   fontWeight: FontWeight.bold),
-                        //             )
-                        //           ],
-                        //         ),
-                        //         const SizedBox(
-                        //           height: 40,
-                        //         ),
-                        //         Row(
-                        //           mainAxisAlignment:
-                        //               MainAxisAlignment.spaceAround,
-                        //           children: [
-                        //             ElevatedButton(
-                        //               style: ButtonStyle(
-                        //                 backgroundColor:
-                        //                     MaterialStateProperty.all<Color>(
-                        //                         Colors.blue),
-                        //               ),
-                        //               child: Text(
-                        //                 "CHECK WIFI PERFORMANCE",
-                        //                 textAlign: TextAlign.center,
-                        //                 style: TextStyle(
-                        //                   color: Colors.white,
-                        //                   fontSize: 36.sp,
-                        //                 ),
-                        //               ),
-                        //               onPressed: () {
-                        //                 showWifiAlertDialog(context);
-                        //               },
-                        //             ),
-                        //             // ElevatedButton(
-                        //             //   style: ButtonStyle(
-                        //             //     shape: MaterialStateProperty.all(
-                        //             //         const CircleBorder()),
-                        //             //     minimumSize:
-                        //             //         MaterialStateProperty.all<Size>(
-                        //             //             Size(100.w, 100.w)),
-                        //             //     backgroundColor:
-                        //             //         const MaterialStatePropertyAll(
-                        //             //             Color.fromRGBO(
-                        //             //                 235, 235, 235, 1)),
-                        //             //   ),
-                        //             //   onPressed: () {},
-                        //             //   child: const Column(
-                        //             //       mainAxisAlignment:
-                        //             //           MainAxisAlignment.center,
-                        //             //       children: [
-                        //             //         Image(
-                        //             //             image: AssetImage(
-                        //             //                 'assets/images/wlan.png')),
-                        //             //       ]),
-                        //             // ),
-                        //             // Expanded(
-                        //             //   child: ElevatedButton(
-                        //             //     style: ButtonStyle(
-                        //             //       backgroundColor:
-                        //             //           MaterialStateProperty.all<Color>(
-                        //             //               Colors.blue),
-                        //             //     ),
-                        //             //     child: Text(
-                        //             //       "channel scan",
-                        //             //       textAlign: TextAlign.center,
-                        //             //       style: TextStyle(
-                        //             //         color: Colors.white,
-                        //             //         fontSize: 36.sp,
-                        //             //       ),
-                        //             //     ),
-                        //             //     onPressed: () {
-                        //             //       showWifiScanContent();
-                        //             //     },
-                        //             //   ),
-                        //             // ),
-                        //           ],
-                        //         ),
-                        //       ],
-                        //     )),
-                        //  设备操作
-                        const SizedBox(
-                          height: 40,
-                        ),
-
-                        setUpBottomView(context),
-                      ],
+              backgroundColor: Colors.transparent,
+            ),
+            backgroundColor: Colors.white,
+            body: loading
+                ? const Center(
+                    child: SizedBox(
+                      height: 80,
+                      width: 80,
+                      child: WaterLoading(
+                        color: Color.fromARGB(255, 65, 167, 251),
+                      ),
                     ),
-                  ),
-                ),
-              )),
-      );
-    }
+                  )
+                : SafeArea(
+                    child: GestureDetector(
+                    onTap: () => closeKeyboard(context),
+                    behavior: HitTestBehavior.opaque,
+                    child: Container(
+                      decoration: const BoxDecoration(color: Color(0xFFF0F0F0)),
+                      height: double.infinity,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            setUpHeadView(context),
+                            //  设备操作
+                            const SizedBox(
+                              height: 40,
+                            ),
+                            setUpBottomView(context),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )),
+          );
   }
 
   @override
@@ -1652,8 +1580,7 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
     debugPrint('状态页面销毁');
     client.disconnect();
-    // timer?.cancel();
-    // timer = null;
+    // _connectivitySubscription.cancel();
   }
 }
 

@@ -1,7 +1,18 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:get/get.dart';
+import '../.././core/utils/string_util.dart';
+import '../../config/base_config.dart';
+import 'package:mqtt_client/mqtt_client.dart';
+import 'package:mqtt_client/mqtt_server_client.dart';
+import "./Model/black_config_list_bean.dart";
 
+String clientRandom = StringUtil.generateRandomString(10);
+String clientId = "client_$clientRandom";
 class ParentDevicePage extends StatefulWidget {
   const ParentDevicePage({super.key});
 
@@ -10,15 +21,136 @@ class ParentDevicePage extends StatefulWidget {
 }
 
 class _ParentDevicePageState extends State<ParentDevicePage> {
-  RxList deviceList = [].obs;
+  MqttServerClient client = MqttServerClient.withPort(
+      BaseConfig.mqttMainUrl, clientId, BaseConfig.websocketPort);
   bool? cancheck = false;
+  String sn = "";
+  String subTopic = "";
+  BlackListConfigBeans? blackConfigModel;
+  
+
+  // var contenttypes = [
+  //   {"type" : "shopping","sels": "hbjjjjj"},
+  //   {"type" : "vedio","sels": "hbjjjjj"},
+  //   {"type" : "app store","sels": "hbjjjjj"},
+  //   {"type" : "social","sels": "hbjjjjj"},
+  //   {"type" : "website","sels": "hbjjjjj"},
+
+  // ];
   @override
   void initState() {
-    for (int i = 1; i < 5; i++) {
-      deviceList.add("device$i");
+    sharedGetData('deviceSn', String).then(((res) {
+      printInfo(info: 'deviceSn$res');
+      sn = res.toString();
+      requestBlackConfigList(sn);
+    }));
+    super.initState();
+  }
+
+  requestBlackConfigList(String sn) async {
+    client.logging(on: false);
+    client.keepAlivePeriod = 60;
+    client.useWebSocket = true;
+    client.autoReconnect = true;
+    client.onDisconnected = onDisconnected;
+    client.onConnected = onConnected;
+    client.onSubscribed = onSubscribed;
+    client.pongCallback = pong;
+    client.setProtocolV311();
+
+    final connMess = MqttConnectMessage()
+        .authenticateAs('admin', 'smawav')
+        .withWillTopic('willtopic')
+        .withWillMessage('My Will message')
+        .startClean()
+        .withWillQos(MqttQos.atLeastOnce);
+    debugPrint('Client connecting....');
+    client.connectionMessage = connMess;
+
+    try {
+      await client.connect();
+    } on NoConnectionException catch (e) {
+      debugPrint('Client exception: $e');
+      client.disconnect();
+    } on SocketException catch (e) {
+      debugPrint('Socket exception: $e');
+      client.disconnect();
     }
 
-    super.initState();
+    if (client.connectionStatus!.state == MqttConnectionState.connected) {
+      debugPrint('Client connected');
+    } else {
+      debugPrint(
+          'Client connection failed - disconnecting, status is ${client.connectionStatus}');
+      client.disconnect();
+    }
+
+    client.published!.listen((MqttPublishMessage message) {
+      debugPrint(
+          'Published topic: topic is ${message.variableHeader!.topicName}, with Qos ${message.header!.qos}');
+    });
+
+    final sessionIdStr = StringUtil.generateRandomString(10);
+    var publishTopic = "cpe/$sn";
+    var parms = {
+      "event": "ParentControl",
+      "sn": sn,
+      "sessionId": sessionIdStr,
+      "param": {"method" : "get",
+                "data": {
+                      "config": "appfilter2"
+                  }
+        }
+    };
+
+    _publishMessage(publishTopic, parms);
+    subTopic = "app/parentControl/allBlackList/$sn";
+    client.subscribe(subTopic, MqttQos.atLeastOnce);
+
+    client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
+      final MqttPublishMessage recMess = c![0].payload as MqttPublishMessage;
+      final String topic = c[0].topic;
+      final String pt = const Utf8Decoder().convert(recMess.payload.message);
+      String desString = "topic is <$topic>, payload is <-- $pt -->";
+      debugPrint("string =$desString");
+      final blackListBean = BlackListConfigBeans.fromJson(jsonDecode(pt));
+      debugPrint("规则列表数据:$blackListBean");
+      if (blackListBean.param != null && blackListBean.param!.isNotEmpty) {
+        setState(() {
+          blackConfigModel = blackListBean;
+        });
+      }
+    });
+  }
+
+  void onSubscribed(String topic) {
+    debugPrint('Subscription confirmed for topic $topic');
+  }
+
+  void onDisconnected() {
+    debugPrint('OnDisconnected client callback - Client disconnection');
+    if (client.connectionStatus!.disconnectionOrigin ==
+        MqttDisconnectionOrigin.solicited) {
+      debugPrint('OnDisconnected callback is solicited, this is correct');
+    }
+  }
+
+  void onConnected() {
+    debugPrint('OnConnected client callback - Client connection was sucessful');
+  }
+
+  void pong() {
+    debugPrint('Ping response client callback invoked');
+  }
+
+  // 发送消息
+  void _publishMessage(String topic, Map<String, dynamic> message) {
+    debugPrint("======发送的消息成功了=======");
+    debugPrint("===$topic===$message=======");
+    var builder = MqttClientPayloadBuilder();
+    var jsonData = json.encode(message);
+    builder.addUTF8String(jsonData);
+    client.publishMessage(topic, MqttQos.atLeastOnce, builder.payload!);
   }
 
   @override
@@ -27,7 +159,7 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
         appBar: AppBar(
           title: const Text(
             'Blacklist Configure',
-            style: TextStyle(color: Colors.black, fontSize: 22),
+            style: TextStyle(color: Colors.black, fontSize: 22,fontWeight: FontWeight.w500),
           ),
           centerTitle: true,
           backgroundColor: Colors.white,
@@ -52,8 +184,7 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.fromLTRB(15, 5, 15, 30),
-                      child: Obx(() {
-                        return Container(
+                      child: blackConfigModel != null ? Container(
                           margin: const EdgeInsets.only(top: 10),
                           decoration: const BoxDecoration(
                               color: Colors.white,
@@ -66,9 +197,9 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
                             padding: const EdgeInsets.only(top: 10,bottom: 10),
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
-                            itemCount: deviceList.length,
+                            itemCount: blackConfigModel!.param!.length,
                             itemBuilder: (context, index) {
-                              return setUpContentView();
+                              return setUpContentView(blackConfigModel!.param![index].deviceName!,blackConfigModel!.param![index].deviceRule!,blackConfigModel!.param![index].mac!);
                             },
                             separatorBuilder: (context, index) {
                               return const Divider(
@@ -78,8 +209,7 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
                               );
                             },
                           ),
-                        );
-                      }),
+                        ) : Container(),
                     ),
                   ],
                 ),
@@ -112,7 +242,7 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
         ));
   }
 
-  Widget setUpContentView() {
+  Widget setUpContentView(String deviceName, DeviceRule contentTypes,String mac) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -122,17 +252,23 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
               border: Border(
                   bottom: BorderSide(width: 1, color: Color(0xffe5e5e5)))),
           child: Padding(
-            padding: EdgeInsets.only(left: 10, right: 10),
+            padding: const EdgeInsets.only(left: 10, right: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Device",
-                  style: TextStyle(fontSize: 15, color: Colors.black),
+                  deviceName,
+                  style: const TextStyle(fontSize: 15, color: Colors.black),
                 ),
                 IconButton(
                     onPressed: () {
-                      Get.toNamed("/parentConfigPage");
+                      String methodType = "";
+                      if (contentTypes.appStore!.isEmpty && contentTypes.socialMedia!.isEmpty && contentTypes.video!.isEmpty &&contentTypes.eCommercePortalAccessTimes!.isEmpty && contentTypes.websiteList!.isEmpty) {
+                        methodType = "add";
+                      }else {
+                        methodType = "set";
+                      }
+                      Get.toNamed("/parentConfigPage",arguments: {"mac" : mac, "method" : methodType});
                     },
                     icon: Image.asset(
                       "assets/images/edit_parent.png",
@@ -143,51 +279,126 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
             ),
           ),
         ),
-        ListTile(
-          leading: Image.asset(
-            "assets/images/shopping.png",
-            width: 20,
-            height: 20,
-          ),
-          title: Text(
-            "Next Step,Next Step,Next Step,Next Step",
-            style: TextStyle(fontSize: 12, color: Colors.black),
-          ),
-        ),
-        ListTile(
-          leading: Image.asset(
-            "assets/images/shopping.png",
-            width: 20,
-            height: 20,
-          ),
-          title: Text(
-            "Next Step,Next Step,Next Step,Next Step",
-            style: TextStyle(fontSize: 12, color: Colors.black),
-          ),
-        ),
-        ListTile(
-          leading: Image.asset(
-            "assets/images/shopping.png",
-            width: 20,
-            height: 20,
-          ),
-          title: Text(
-            "Next Step,Next Step,Next Step,Next Step",
-            style: TextStyle(fontSize: 12, color: Colors.black),
-          ),
-        ),
-        ListTile(
-          leading: Image.asset(
-            "assets/images/shopping.png",
-            width: 20,
-            height: 20,
-          ),
-          title: Text(
-            "Next Step,Next Step,Next Step,Next Step",
-            style: TextStyle(fontSize: 12, color: Colors.black),
-          ),
-        ),
+
+        Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: buildSelectedContent(contentTypes),
+        )
       ],
     );
+  }
+
+  List<Widget> buildSelectedContent(DeviceRule contents) {
+    List<Widget> seles = [];
+    var imgName = "";
+    // var allTypeNames = <String>[];
+    if (contents.appStore != null && contents.appStore!.isNotEmpty) {
+      imgName = "assets/images/app store.png";
+      var appNames = <String>[];
+      for (CategoryInfo element in contents.appStore!) {
+        appNames.add(element.appName!);
+      }
+      var appString = appNames.join(",");
+      seles.add(ListTile(
+          leading: Image.asset(
+            imgName,
+            width: 20,
+            height: 20,
+          ),
+          title: Text(
+            appString,
+            style: const TextStyle(fontSize: 12, color: Colors.black),
+          ),
+        ));
+    }
+
+    if (contents.socialMedia != null && contents.socialMedia!.isNotEmpty) {
+      imgName = "assets/images/social media.png";
+      var appNames = <String>[];
+      for (CategoryInfo element in contents.socialMedia!) {
+        appNames.add(element.appName!);
+      }
+      var appString = appNames.join(",");
+      seles.add(ListTile(
+          leading: Image.asset(
+            imgName,
+            width: 20,
+            height: 20,
+          ),
+          title: Text(
+            appString,
+            style: const TextStyle(fontSize: 12, color: Colors.black),
+          ),
+        ));
+    }
+
+    if (contents.video != null && contents.video!.isNotEmpty) {
+      imgName = "assets/images/video.png";
+      var appNames = <String>[];
+      for (CategoryInfo element in contents.video!) {
+        appNames.add(element.appName!);
+      }
+      var appString = appNames.join(",");
+      seles.add(ListTile(
+          leading: Image.asset(
+            imgName,
+            width: 20,
+            height: 20,
+          ),
+          title: Text(
+            appString,
+            style: const TextStyle(fontSize: 12, color: Colors.black),
+          ),
+        ));
+    }
+
+    if (contents.eCommercePortalAccessTimes != null && contents.eCommercePortalAccessTimes!.isNotEmpty) {
+      imgName = "assets/images/shopping.png";
+      var appNames = <String>[];
+      for (CategoryInfo element in contents.eCommercePortalAccessTimes!) {
+        appNames.add(element.appName!);
+      }
+      var appString = appNames.join(",");
+      seles.add(ListTile(
+          leading: Image.asset(
+            imgName,
+            width: 20,
+            height: 20,
+          ),
+          title: Text(
+            appString,
+            style: const TextStyle(fontSize: 12, color: Colors.black),
+          ),
+        ));
+    }
+
+    if (contents.websiteList != null && contents.websiteList!.isNotEmpty) {
+      imgName = "assets/images/weblist.png";
+      var appNames = <String>[];
+      for (CategoryInfo element in contents.websiteList!) {
+        appNames.add(element.appName!);
+      }
+      var appString = appNames.join(",");
+      seles.add(ListTile(
+          leading: Image.asset(
+            imgName,
+            width: 20,
+            height: 20,
+          ),
+          title: Text(
+            appString,
+            style: const TextStyle(fontSize: 12, color: Colors.black),
+          ),
+        ));
+    }
+
+    
+    return seles;
+  }
+
+  @override
+  void dispose() {
+    client.disconnect();
+    super.dispose();
   }
 }

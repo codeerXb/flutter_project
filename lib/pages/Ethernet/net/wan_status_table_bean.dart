@@ -1,9 +1,9 @@
-class Wan_status_table_bean {
+class WanStatusTableBean {
   List<Data>? data;
 
-  Wan_status_table_bean({this.data});
+  WanStatusTableBean({this.data});
 
-  Wan_status_table_bean.fromJson(Map<String, dynamic> json) {
+  WanStatusTableBean.fromJson(Map<String, dynamic> json) {
     if (json['data'] != null) {
       data = <Data>[];
       json['data'].forEach((v) {
@@ -13,7 +13,7 @@ class Wan_status_table_bean {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data =  Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     if (this.data != null) {
       data['data'] = this.data!.map((v) => v.toJson()).toList();
     }
@@ -59,7 +59,7 @@ class Data {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['Name'] = name;
     data['RecvBytes'] = recvBytes;

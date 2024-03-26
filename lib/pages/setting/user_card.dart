@@ -1,13 +1,18 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/widget/common_widget.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
-import 'package:flutter_template/pages/parent_control/index.dart';
-
+import 'package:flutter_template/core/http/http_app.dart';
 import 'package:get/get.dart';
-
 import '../../generated/l10n.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:flutter/foundation.dart';
+import '../../core/utils/toast.dart';
 
 class UserCard extends StatefulWidget {
   final String name;
@@ -23,7 +28,10 @@ class _UserCardState extends State<UserCard> {
   //手机号
   String _userPhone = 'null';
   String sn = 'null';
+  String downloadImageUrl = "";
+  String fileImage = "";
 
+  late XFile _image;
   @override
   void initState() {
     super.initState();
@@ -39,6 +47,31 @@ class _UserCardState extends State<UserCard> {
         sn = res.toString();
       });
     }));
+
+    // sharedGetData('imageUrl', String).then(((image) {
+    //   setState(() {
+    //     downloadImageUrl = image.toString();
+    //   });
+    // }));
+  }
+
+  Future getImage() async {
+    var image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    _upLoadImage(image!);
+    setState(() {
+      _image = image;
+      fileImage = image.path;
+    });
+  }
+
+  _upLoadImage(XFile image) async {
+    App.uploadImg(image).then((response) {
+      var dic = jsonDecode(response);
+      if (dic["code"] == 200) {
+        ToastUtils.toast("Upload successful");
+        
+      }
+    });
   }
 
   @override
@@ -66,9 +99,16 @@ class _UserCardState extends State<UserCard> {
               contentPadding: EdgeInsets.only(
                   top: 20.w, bottom: 20.w, left: 40.w, right: 40.w),
               //图片
-              leading: ClipOval(
-                  child: Image.asset('assets/images/people.png',
-                      fit: BoxFit.fitWidth, height: 50, width: 50)),
+              leading: InkWell(
+                onTap: () {
+                  getImage();
+                },
+                child: downloadImageUrl.isEmpty
+                    ? ClipOval(
+                        child: Image.asset('assets/images/people.png',
+                            fit: BoxFit.fitWidth, height: 50, width: 50))
+                    : (fileImage.isNotEmpty ? ClipOval(child: Image.file(File(_image.path),fit: BoxFit.fitWidth,height: 50, width: 50)) : ClipOval(child: Image.network(downloadImageUrl,fit: BoxFit.fitWidth, height: 50, width: 50),)),
+              ),
               //中间文字
               title: Text(
                   _userPhone != 'null' ? _userPhone : S.of(context).noLogin,

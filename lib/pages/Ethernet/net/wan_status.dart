@@ -87,14 +87,13 @@ class _WanStatusPageState extends State<WanStatusPage> {
       var tableJsonString = const JsonEncoder.withIndent('  ').convert(jsonObj);
       // 输出格式化的JSON字符串
       debugPrint("wan_status:格式化数据输出:$tableJsonString");
-
-      var model = Wan_status_table_bean.fromJson(jsonObj);
+      var model = WanStatusTableBean.fromJson(jsonObj);
 
       var result = await Request().getACSNode(parameterNames, sn);
       Map<String, dynamic> dict = jsonDecode(result);
       var nodeJsonString = const JsonEncoder.withIndent('  ').convert(dict);
       debugPrint("获取的网路状态数据:$nodeJsonString");
-      var nodeModel = wan_status_bean.fromJson(dict);
+      var nodeModel = WanStatusBean.fromJson(dict);
 
       setState(() {
 

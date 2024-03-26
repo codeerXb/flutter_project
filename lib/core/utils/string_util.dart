@@ -126,4 +126,19 @@ class StringUtil {
     }
     return rateKb.toStringAsFixed(2) + unit;
   }
+
+  static String getUnitlessRate(rate) {
+    double rateKb = rate * 8 / 1000;
+    if (rateKb >= 1000 * 1000) {
+      // gbps
+      rateKb = rateKb / 1000 / 1000;
+    } else if (rateKb >= 1000 && rateKb <= 1000 * 1000) {
+      // mbps
+      rateKb = rateKb / 1000;
+    } else {
+      // kbps
+      rateKb = rateKb;
+    }
+    return rateKb.toStringAsFixed(2);
+  }
 }

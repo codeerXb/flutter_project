@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:d_chart/d_chart.dart';
+import 'package:get/get.dart';
+import './Model/statistics_time_list.dart';
 
 class ParentDetailListPage extends StatefulWidget {
   const ParentDetailListPage({super.key});
@@ -9,27 +11,39 @@ class ParentDetailListPage extends StatefulWidget {
 }
 
 class _ParentDetailListPageState extends State<ParentDetailListPage> {
+
+  RxList appTimeList = [].obs;
+
+  @override
+  void initState() {
+    appTimeList = Get.arguments["timeArray"];
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: const Text("E-Commerce Portal Access Times",
-              style: TextStyle(fontSize: 24, color: Colors.black)),
+              style: TextStyle(fontSize: 22, color: Colors.black,fontWeight: FontWeight.w500)),
           centerTitle: true,
           elevation: 1,
         ),
         body: Container(
           // height: double.infinity,
-          padding: EdgeInsets.all(20),
-          child: ListView.builder(
-              itemCount: 20,
+          padding: const EdgeInsets.all(20),
+          child: Obx(() {
+            return ListView.builder(
+              itemCount: appTimeList.length,
               itemBuilder: (BuildContext context, int index) {
-                return createLineChart();
-              }),
+                return createLineChart(appTimeList[index].appName,appTimeList[index].visitTime);
+              });
+          }),
         ));
   }
 
-  Widget createLineChart() {
+  Widget createLineChart(String appName, String timeValue) {
+    double timeP = int.parse(timeValue) / int.parse(appTimeList[0].visitTime);
+    double timev = timeP.toStringAsFixed(1) as double;
     return ConstrainedBox(
           constraints: BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width - 40,
@@ -39,34 +53,40 @@ class _ParentDetailListPageState extends State<ParentDetailListPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "app",
-                style: TextStyle(
+                appName,
+                style: const TextStyle(
                     fontSize: 16,
                     color: Colors.black,
                     fontWeight: FontWeight.w700),
               ),
-              SizedBox(
-                width: 5,
+              const SizedBox(
+                width: 15,
               ),
-              Expanded(
-                  child: SizedBox(
+            Expanded(
+              child: SizedBox(
                 height: 25,
                 child: DChartSingleBar(
                   radius: BorderRadius.circular(5),
                   foregroundLabelAlign: Alignment.centerLeft,
-                  backgroundColor: Colors.green,
-                  foregroundColor: Colors.green,
-                  value: 0.7,
+                  backgroundColor: Colors.white,
+                  foregroundColor: const Color.fromRGBO(2, 123, 254, 1),
+                  backgroundLabelAlign: Alignment.bottomRight,
+                  backgroundLabelPadding: const EdgeInsets.only(right: 20),
+                  backgroundLabel: Text(
+                "${timeValue}s",
+                style: const TextStyle(fontSize: 14, color: Colors.blue),
+              ),
+                  value: timev,
                   max: 1.0,
                 ),
               )),
-              SizedBox(
-                width: 5,
-              ),
-              Text(
-                "300s",
-                style: TextStyle(fontSize: 14, color: Colors.blue),
-              ),
+              // SizedBox(
+              //   width: 5,
+              // ),
+              // Text(
+              //   "300s",
+              //   style: TextStyle(fontSize: 14, color: Colors.blue),
+              // ),
             ],
           ),
         );

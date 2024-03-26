@@ -1,9 +1,9 @@
-class wan_status_bean {
+class WanStatusBean {
   Data? data;
 
-  wan_status_bean({this.data});
+  WanStatusBean({this.data});
 
-  wan_status_bean.fromJson(Map<String, dynamic> json) {
+  WanStatusBean.fromJson(Map<String, dynamic> json) {
     data = json['data'] != null ? Data.fromJson(json['data']) : null;
   }
 

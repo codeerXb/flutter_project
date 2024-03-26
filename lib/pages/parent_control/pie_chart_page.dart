@@ -1,13 +1,25 @@
+import 'dart:io';
+import 'dart:math';
+import 'dart:convert';
 import 'package:d_chart/d_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:easy_pie_chart/easy_pie_chart.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:d_chart/commons/data_model.dart';
-import 'package:d_chart/ordinal/bar.dart';
 import 'package:get/get.dart';
+import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter_switch/flutter_switch.dart';
-import 'package:d_chart/d_chart.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../.././core/utils/string_util.dart';
+import '../../config/base_config.dart';
+import 'package:mqtt_client/mqtt_client.dart';
+import 'package:mqtt_client/mqtt_server_client.dart';
+import "./Model/terminal_equipmentBean.dart";
+import "./Model/statistics_beans.dart";
+import "./Model/statistics_time_list.dart";
+
+String clientRandom = StringUtil.generateRandomString(10);
+String clientId = "client_$clientRandom";
 
 class PieChartPage extends StatefulWidget {
   const PieChartPage({super.key});
@@ -17,68 +29,318 @@ class PieChartPage extends StatefulWidget {
 }
 
 class _PieChartPageState extends State<PieChartPage> {
+  MqttServerClient client = MqttServerClient.withPort(
+      BaseConfig.mqttMainUrl, clientId, BaseConfig.websocketPort);
   var key = GlobalKey<_PieChartPageState>();
   bool _isOpenControlInRow = true;
-  List<String> devices = [
-    'Item1',
-    'Item2',
-    'Item3',
-    'Item4',
-    'Item5',
-    'Item6',
-    'Item7',
-    'Item8'
-  ];
+  List<EquipmentInfo> devices = [];
   String? selectedValue;
+  String selectedMacAddress = "";
   String dropDownValue = "one";
-  final List<PieData> pies = [
-    PieData(value: 15, color: const Color(0xfffdcb6e)),
-    PieData(value: 35, color: const Color(0xff0984e3)),
-    PieData(value: 45, color: Colors.lightGreen),
-    PieData(value: 25, color: const Color(0xfffd79a8)),
-    PieData(value: 5, color: const Color(0xff6c5ce7))
-  ];
-  final List<NumericData> piedata = [
-    NumericData(domain: 15, measure: 100),
-    NumericData(domain: 25, measure: 200),
-    NumericData(domain: 45, measure: 400),
-    NumericData(domain: 25, measure: 200),
-    NumericData(domain: 5, measure: 50),
-  ];
+  StatisticsBeans? staBeans;
+  AppTimeListBeans? timeListModel;
 
   List<OrdinalData> ordinalDataList = [
-    OrdinalData(domain: 'Shopping', measure: 130, color:const Color.fromRGBO(2, 123, 254, 1)),
-    OrdinalData(domain: 'Video', measure: 250, color:const Color.fromRGBO(88, 86, 215, 1)),
-    OrdinalData(domain: 'App Store', measure: 200, color:const Color.fromRGBO(255, 149, 0, 1)),
-    OrdinalData(domain: 'Social', measure: 260, color:const Color.fromRGBO(53, 199, 89, 1)),
-    OrdinalData(domain: 'Website', measure: 140, color:const Color.fromRGBO(255, 165, 40, 1))
+    // OrdinalData(
+    //     domain: 'E-Commerce',
+    //     measure: 130,
+    //     color: const Color.fromRGBO(2, 123, 254, 1)),
+    // OrdinalData(
+    //     domain: 'Video',
+    //     measure: 250,
+    //     color: const Color.fromRGBO(88, 86, 215, 1)),
+    // OrdinalData(
+    //     domain: 'App Store',
+    //     measure: 200,
+    //     color: const Color.fromRGBO(255, 149, 0, 1)),
+    // OrdinalData(
+    //     domain: 'Social',
+    //     measure: 260,
+    //     color: const Color.fromRGBO(53, 199, 89, 1)),
+    // OrdinalData(
+    //     domain: 'Website',
+    //     measure: 140,
+    //     color: const Color.fromRGBO(255, 214, 0, 1))
   ];
 
-  List resList = [
-    {
-      "imgurl": "assets/images/shopping.png",
-      "title": "E-Commerce Portal Access Times",
-      "time": "123mins"
-    },
-    {"imgurl": "assets/images/video.png", "title": "Video", "time": "123mins"},
-    {
-      "imgurl": "assets/images/app store.png",
-      "title": "App Store",
-      "time": "123mins"
-    },
-    {
-      "imgurl": "assets/images/social media.png",
-      "title": "Social Media",
-      "time": "123mins"
-    },
-    {
-      "imgurl": "assets/images/weblist.png",
-      "title": "Website List",
-      "time": "123mins"
-    },
+  List<StatisticsTypeData> resList = [
+    // {
+    //   "imgurl": "assets/images/shopping.png",
+    //   "title": "E-Commerce Portal Access Times",
+    //   "time": "123mins"
+    // },
+    // {"imgurl": "assets/images/video.png", "title": "Video", "time": "123mins"},
+    // {
+    //   "imgurl": "assets/images/app store.png",
+    //   "title": "App Store",
+    //   "time": "123mins"
+    // },
+    // {
+    //   "imgurl": "assets/images/social media.png",
+    //   "title": "Social Media",
+    //   "time": "123mins"
+    // },
+    // {
+    //   "imgurl": "assets/images/weblist.png",
+    //   "title": "Website",
+    //   "time": "123mins"
+    // },
   ];
 
   String tapIndex = "";
+  String sn = "";
+  String subTopic = "";
+
+  @override
+  void initState() {
+    if (mounted) {
+      setState(() {
+        devices = Get.arguments["equipments"];
+      });
+    }
+
+    sharedGetData('configEnable', String).then(((res) {
+      printInfo(info: 'configEnable$res');
+      var configSw = res.toString();
+      setState(() {
+        _isOpenControlInRow = configSw == "1" ? true : false;
+      });
+    }));
+
+    sharedGetData('deviceSn', String).then(((res) {
+      printInfo(info: 'deviceSn$res');
+      sn = res.toString();
+      requestData(sn, devices[0].mac!);
+    }));
+
+    super.initState();
+  }
+
+  requestData(String sn, String macAddress) async {
+    client.logging(on: false);
+    client.keepAlivePeriod = 60;
+    client.useWebSocket = true;
+    client.autoReconnect = true;
+    client.onDisconnected = onDisconnected;
+    client.onConnected = onConnected;
+    client.onSubscribed = onSubscribed;
+    client.pongCallback = pong;
+    client.setProtocolV311();
+
+    final connMess = MqttConnectMessage()
+        .authenticateAs('admin', 'smawav')
+        .withWillTopic('willtopic')
+        .withWillMessage('My Will message')
+        .startClean()
+        .withWillQos(MqttQos.atLeastOnce);
+    debugPrint('Client connecting....');
+    client.connectionMessage = connMess;
+
+    try {
+      await client.connect();
+    } on NoConnectionException catch (e) {
+      debugPrint('Client exception: $e');
+      client.disconnect();
+    } on SocketException catch (e) {
+      debugPrint('Socket exception: $e');
+      client.disconnect();
+    }
+
+    if (client.connectionStatus!.state == MqttConnectionState.connected) {
+      debugPrint('Client connected');
+    } else {
+      debugPrint(
+          'Client connection failed - disconnecting, status is ${client.connectionStatus}');
+      client.disconnect();
+    }
+
+    client.published!.listen((MqttPublishMessage message) {
+      debugPrint(
+          'Published topic: topic is ${message.variableHeader!.topicName}, with Qos ${message.header!.qos}');
+    });
+
+    final sessionIdStr = StringUtil.generateRandomString(10);
+    var publishTopic = "cpe/$sn";
+    var statisticsParms = {
+      "event": "getParentControlAppClassVisitTime",
+      "sn": sn,
+      "sessionId": sessionIdStr,
+      "param": {"mac": macAddress}
+    };
+
+    final appTimeSessionId = StringUtil.generateRandomString(10);
+    var appTimeParms = {
+      "event": "getParentControlDevVisitTime",
+      "sn": sn,
+      "sessionId": appTimeSessionId,
+      "param": {"mac": macAddress}
+    };
+
+    _publishMessage(publishTopic, statisticsParms);
+    _publishMessage(publishTopic, appTimeParms);
+
+    subTopic = "app/appClassVisitTime/$sn";
+    var timeListTopic = "app/appVisitTime/$sn";
+    client.subscribe(subTopic, MqttQos.atLeastOnce);
+    client.subscribe(timeListTopic, MqttQos.atLeastOnce);
+    client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
+      final MqttPublishMessage recMess = c![0].payload as MqttPublishMessage;
+      final String topic = c[0].topic;
+      final String pt = const Utf8Decoder().convert(recMess.payload.message);
+      String desString = "topic is <$topic>, payload is <-- $pt -->";
+      debugPrint("string =$desString");
+      if (topic == "app/appClassVisitTime/$sn") {
+        final statisticsInfoModel = StatisticsBeans.fromJson(jsonDecode(pt));
+        staBeans = statisticsInfoModel;
+        List<OrdinalData> pieDatas = [];
+        List<StatisticsTypeData> timeDatas = [];
+        if (statisticsInfoModel.param != null) {
+          if (statisticsInfoModel.param!.visitTimeList!.isNotEmpty) {
+            for (VisitTimeList item
+                in statisticsInfoModel.param!.visitTimeList!) {
+              if (item.typeName == "Social") {
+                if (item.visitTime != "0") {
+                  pieDatas.add(OrdinalData(
+                      domain: 'Social',
+                      measure: int.parse(item.visitTime!),
+                      color: const Color.fromRGBO(53, 199, 89, 1)));
+                }
+
+                timeDatas.add(StatisticsTypeData(
+                    "assets/images/social media.png",
+                    "Social Media",
+                    "${int.parse(item.visitTime!)}mins"));
+              } else if (item.typeName == "Video") {
+                if (item.visitTime != "0") {
+                  pieDatas.add(OrdinalData(
+                      domain: 'Video',
+                      measure: int.parse(item.visitTime!),
+                      color: const Color.fromRGBO(88, 86, 215, 1)));
+                }
+
+                timeDatas.add(StatisticsTypeData("assets/images/video.png",
+                    "Video", "${int.parse(item.visitTime!)}mins"));
+              } else if (item.typeName == "E-Commerce") {
+                if (item.visitTime != "0") {
+                  pieDatas.add(OrdinalData(
+                      domain: 'E-Commerce',
+                      measure: int.parse(item.visitTime!),
+                      color: const Color.fromRGBO(2, 123, 254, 1)));
+                }
+
+                timeDatas.add(StatisticsTypeData(
+                    "assets/images/shopping.png",
+                    "E-Commerce Portal Access Times",
+                    "${int.parse(item.visitTime!)}mins"));
+              } else if (item.typeName == "App Store") {
+                if (item.visitTime != "0") {
+                  pieDatas.add(OrdinalData(
+                    domain: 'App Store',
+                    measure: int.parse(item.visitTime!),
+                    color: const Color.fromRGBO(255, 149, 0, 1)));
+                }
+                timeDatas.add(StatisticsTypeData("assets/images/app store.png",
+                    "App Store", "${int.parse(item.visitTime!)}mins"));
+              } else {
+                if (item.visitTime != "0") {
+                  pieDatas.add(OrdinalData(
+                    domain: 'Website',
+                    measure: int.parse(item.visitTime!),
+                    color: const Color.fromRGBO(255, 214, 0, 1)));
+                }
+                
+                timeDatas.add(StatisticsTypeData("assets/images/weblist.png",
+                    "Website", "${int.parse(item.visitTime!)}mins"));
+              }
+            }
+            debugPrint("数据统计源:$pieDatas");
+            debugPrint("分类统计源:$timeDatas");
+            if (mounted) {
+              setState(() {
+                ordinalDataList = pieDatas;
+                resList = timeDatas;
+              });
+            }
+          }
+        }
+      } else if (topic == "app/appVisitTime/$sn") {
+        final appTimeListModel = AppTimeListBeans.fromJson(jsonDecode(pt));
+        if (appTimeListModel.param != null &&
+            appTimeListModel.param!.isNotEmpty) {
+          timeListModel = appTimeListModel;
+          debugPrint("单个App的分类:${timeListModel!.param![0].social}");
+          debugPrint("单个App的分类:$timeListModel");
+        }
+      } else if (topic == "cpe/$sn/_parent_config") {
+        String result = pt.substring(0, pt.length - 1);
+        Map datas = jsonDecode(result);
+        var res = datas["data"];
+        debugPrint("家长控制设置结果 =$res");
+      }else {}
+    });
+  }
+
+  void onSubscribed(String topic) {
+    debugPrint('Subscription confirmed for topic $topic');
+  }
+
+  void onDisconnected() {
+    debugPrint('OnDisconnected client callback - Client disconnection');
+    if (client.connectionStatus!.disconnectionOrigin ==
+        MqttDisconnectionOrigin.solicited) {
+      debugPrint('OnDisconnected callback is solicited, this is correct');
+    }
+  }
+
+  void onConnected() {
+    debugPrint('OnConnected client callback - Client connection was sucessful');
+  }
+
+  void pong() {
+    debugPrint('Ping response client callback invoked');
+  }
+
+  // 发送消息
+  void _publishMessage(String topic, Map<String, dynamic> message) {
+    debugPrint("======发送的消息成功了=======");
+    debugPrint("===$topic===$message=======");
+    var builder = MqttClientPayloadBuilder();
+    var jsonData = json.encode(message);
+    builder.addUTF8String(jsonData);
+    client.publishMessage(topic, MqttQos.atLeastOnce, builder.payload!);
+  }
+
+  void uploadParentConfigData() {
+    final sessionIdCha = StringUtil.generateRandomString(10);
+    var topic = "cpe/$sn";
+    var pubtopic = "cpe/$sn/_parent_config";
+    var parameters = {
+      "event": "setParentControlConfig",
+      "sn": sn,
+      "sessionId": sessionIdCha,
+      "pubTopic": pubtopic,
+      "param": {
+        "enable": _isOpenControlInRow == true ? "1" : '0',
+        "work_mode" : "0",
+        "rules" : {
+          "chatapps": "",
+            "shoppingapps": "",
+            "downloadapps": "",
+            "websiteapps":"",
+            "videoapps": ""
+        },
+        "time": {
+            "time_mode": "1",
+            "days": "0 1 2 3 4 5 6",
+            "start_time": "00:00",
+            "end_time": "23:59"
+        },
+        "users": ""
+      }
+    };
+    _publishMessage(topic, parameters);
+    client.subscribe(pubtopic, MqttQos.atLeastOnce);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,12 +348,13 @@ class _PieChartPageState extends State<PieChartPage> {
       appBar: AppBar(
         title: const Text(
           "Parental Control Dashboard",
-          style: TextStyle(fontSize: 22, color: Colors.black),
+          style: TextStyle(
+              fontSize: 18, color: Colors.black, fontWeight: FontWeight.w500),
         ),
-        centerTitle: true,
+        // centerTitle: true,
         actions: [
           FlutterSwitch(
-            width: 80.0,
+            width: 70.0,
             height: 40.0,
             activeText: "ON",
             inactiveText: "OFF",
@@ -105,16 +368,18 @@ class _PieChartPageState extends State<PieChartPage> {
             onToggle: (val) {
               setState(() {
                 _isOpenControlInRow = val;
+                uploadParentConfigData();
               });
             },
           ),
           const SizedBox(
-            width: 15,
+            width: 5,
           )
         ],
       ),
       backgroundColor: Colors.white,
-      body: setUpBodyContent(),
+      body:
+          resList.isEmpty ? setLoadingIndicator() : setUpBodyContent(),
     );
   }
 
@@ -124,11 +389,18 @@ class _PieChartPageState extends State<PieChartPage> {
       child: DChartPieO(
         key: key,
         data: ordinalDataList,
+        customLabel: (ordinalData, index) {
+          double res =
+              ordinalData.measure / int.parse(staBeans!.param!.totalVisitTime!);
+          return "${ordinalData.domain} ${"${(res * 100).ceil()}%"}";
+        },
         configRenderPie: ConfigRenderPie(
             arcWidth: 40,
             // arcRatio: 0.1,
             strokeWidthPx: 0.0,
             arcLabelDecorator: ArcLabelDecorator(
+                labelPadding: 0,
+                showLeaderLines: false,
                 labelPosition: ArcLabelPosition.outside,
                 outsideLabelStyle: const LabelStyle(fontSize: 12),
                 leaderLineStyle: const ArcLabelLeaderLineStyle(
@@ -142,65 +414,126 @@ class _PieChartPageState extends State<PieChartPage> {
       child: ConstrainedBox(
         constraints: BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width,
-            maxHeight: MediaQuery.of(context).size.height - 20,
-            minHeight: 100),
+            maxHeight: 950,
+            minHeight: MediaQuery.of(context).size.height - 20),
         child: _isOpenControlInRow
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                // crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  SizedBox(
-                    height: 50,
-                    child: setDropdownMenue(),
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  SizedBox(height: 240, child: getPieChart()),
-                  // EasyPieChart(
-                  //   key: key,
-                  //   children: pies,
-                  //   pieType: PieType.fill,
-                  //   onTap: (index) {
-                  //     Get.toNamed("/parentDetailList");
-                  //     debugPrint("当前选中的是$index");
-                  //   },
-                  //   start: 180,
-                  //   size: 400,
-                  //   style: const TextStyle(
-                  //       fontSize: 20,
-                  //       color: Colors.black,
-                  //       backgroundColor: Colors.white),
-                  //   // child: Text("当前占比30%"),
-                  //   // centerStyle: TextStyle(fontSize: 16,color: Colors.black),
-                  // ),
+            ? Container(
+                decoration: const BoxDecoration(
+                    color: Color.fromRGBO(242, 242, 242, 1)),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  // crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(
+                              color: const Color.fromRGBO(242, 242, 242, 1),
+                              width: 0.5),
+                          borderRadius: BorderRadius.circular((8))),
+                      child: Column(
+                        children: [
+                          const SizedBox(
+                            height: 30,
+                          ),
+                          SizedBox(
+                            height: 50,
+                            child: setDropdownMenue(),
+                          ),
+                          const SizedBox(
+                            height: 30,
+                          ),
+                          SizedBox(height: 240, child: ordinalDataList.isEmpty ? Container() : getPieChart()),
+                          // EasyPieChart(
+                          //   key: key,
+                          //   children: pies,
+                          //   pieType: PieType.fill,
+                          //   onTap: (index) {
+                          //     Get.toNamed("/parentDetailList");
+                          //     debugPrint("当前选中的是$index");
+                          //   },
+                          //   start: 180,
+                          //   size: 400,
+                          //   style: const TextStyle(
+                          //       fontSize: 20,
+                          //       color: Colors.black,
+                          //       backgroundColor: Colors.white),
+                          //   // child: Text("当前占比30%"),
+                          //   // centerStyle: TextStyle(fontSize: 16,color: Colors.black),
+                          // ),
 
-                  const SizedBox(
-                    height: 30,
-                  ),
+                          const SizedBox(
+                            height: 30,
+                          ),
 
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: 5,
-                    itemBuilder: (BuildContext context, int index) {
-                      return getAppcationTypeList(resList[index]["imgurl"],
-                          resList[index]["title"], resList[index]["time"]);
-                    },
-                  ),
+                          ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: resList.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return getAppcationTypeList(
+                                  resList[index].imageUrl!,
+                                  resList[index].typeName!,
+                                  resList[index].time!);
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width - 20,
+                      height: 150,
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(
+                              color: const Color.fromRGBO(242, 242, 242, 1),
+                              width: 0.5),
+                          borderRadius: BorderRadius.circular((8))),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Image.asset(
+                                "assets/images/parentConfig.png",
+                                width: 30,
+                                height: 30,
+                              ),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                "Global Configuration",
+                                style: TextStyle(
+                                    fontSize: 40.sp,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          setUpFooterView()
+                        ],
+                      ),
+                    )
 
-                  setUpFooterView()
-                  // SizedBox(
-                  //   height: 80,
-                  //   child: buildCustomWidget(),
-                  // ),
-                  // SizedBox(
-                  //   height: 20,
-                  // )
-                ],
+                    // SizedBox(
+                    //   height: 80,
+                    //   child: buildCustomWidget(),
+                    // ),
+                    // SizedBox(
+                    //   height: 20,
+                    // )
+                  ],
+                ),
               )
             : Container(),
       ),
@@ -209,46 +542,52 @@ class _PieChartPageState extends State<PieChartPage> {
 
   Widget setUpFooterView() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        ElevatedButton(
-                  style: ButtonStyle(
-                    padding: MaterialStateProperty.all(
-                      EdgeInsets.fromLTRB(20.w, 28.w, 20.w, 28.w)
-                    ),
-                    shape: MaterialStateProperty.all(const StadiumBorder()),
-                    backgroundColor: MaterialStateProperty.all(
-                        const Color.fromARGB(255, 30, 104, 233)),
-                  ),
-                  onPressed: () {
-                    // Get.toNamed("/parentConfigPage");
-                    Get.toNamed("/websiteDevicePage");
-                  },
-                  child: Text(
-                    "Blacklist Configure",
-                    style: TextStyle(
-                        fontSize: 32.sp, color: const Color(0xffffffff)),
-                  ),
-                ),
-
-                ElevatedButton(
-                  style: ButtonStyle(
-                    padding: MaterialStateProperty.all(
-                      EdgeInsets.fromLTRB(20.w, 28.w, 20.w, 28.w),
-                    ),
-                    shape: MaterialStateProperty.all(const StadiumBorder()),
-                    backgroundColor: MaterialStateProperty.all(
-                        const Color.fromRGBO(52, 199, 89, 1)),
-                  ),
-                  onPressed: () {
-                    Get.toNamed("/timeConfigPage");
-                  },
-                  child: Text(
-                    "Use Time Configure",
-                    style: TextStyle(
-                        fontSize: 32.sp, color: const Color(0xffffffff)),
-                  ),
-                ),
+        SizedBox(
+          width: 160,
+          height: 60,
+          child: ElevatedButton(
+            style: ButtonStyle(
+              // padding: MaterialStateProperty.all(
+              //     EdgeInsets.fromLTRB(20.w, 28.w, 20.w, 28.w)),
+              shape: MaterialStateProperty.all(const StadiumBorder()),
+              backgroundColor: MaterialStateProperty.all(
+                  const Color.fromARGB(255, 30, 104, 233)),
+            ),
+            onPressed: () {
+              // Get.toNamed("/parentConfigPage");
+              Get.toNamed("/websiteDevicePage");
+            },
+            child: Text(
+              "Blacklist Configure",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 32.sp, color: const Color(0xffffffff)),
+            ),
+          ),
+        ),
+        SizedBox(
+          width: 160,
+          height: 60,
+          child: ElevatedButton(
+            style: ButtonStyle(
+              // padding: MaterialStateProperty.all(
+              //   EdgeInsets.fromLTRB(20.w, 28.w, 20.w, 28.w),
+              // ),
+              shape: MaterialStateProperty.all(const StadiumBorder()),
+              backgroundColor: MaterialStateProperty.all(
+                  const Color.fromRGBO(52, 199, 89, 1)),
+            ),
+            onPressed: () {
+              Get.toNamed("/timeConfigPage");
+            },
+            child: Text(
+              "Use Time Configure",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 32.sp, color: const Color(0xffffffff)),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -256,12 +595,57 @@ class _PieChartPageState extends State<PieChartPage> {
   Widget getAppcationTypeList(String imgPath, String title, String totalTime) {
     return InkWell(
       onTap: () {
-        Get.toNamed("/parentDetailList");
+        if (timeListModel!.param!.isNotEmpty) {
+          if (title == "Social Media" &&
+              timeListModel!.param![0].social!.isNotEmpty) {
+            List<Social> timeList = [];
+            timeList = timeListModel!.param![0].social!;
+            if (totalTime != "0") {
+              Get.toNamed("/parentDetailList",
+                  arguments: {"timeArray": timeList});
+            }
+          } else if (title == "Video" &&
+              timeListModel!.param![1].video!.isNotEmpty) {
+            List<Video> timeList = [];
+            timeList = timeListModel!.param![1].video!;
+            if (totalTime != "0") {
+              Get.toNamed("/parentDetailList",
+                  arguments: {"timeArray": timeList});
+            }
+          } else if (title == "E-Commerce Portal Access Times" &&
+              timeListModel!.param![2].eCommerce!.isNotEmpty) {
+            List<ECommerce> timeList = [];
+            timeList = timeListModel!.param![2].eCommerce!;
+            if (totalTime != "0") {
+              Get.toNamed("/parentDetailList",
+                  arguments: {"timeArray": timeList});
+            }
+          } else if (title == "App Store" &&
+              timeListModel!.param![3].appStore!.isNotEmpty) {
+            List<AppStore> timeList = [];
+            timeList = timeListModel!.param![3].appStore!;
+            if (totalTime != "0") {
+              Get.toNamed("/parentDetailList",
+                  arguments: {"timeArray": timeList});
+            }
+          } else if (title == "Website" &&
+              timeListModel!.param![4].website!.isNotEmpty) {
+            List<Website> timeList = [];
+            timeList = timeListModel!.param![4].website!;
+            if (totalTime != "0") {
+              Get.toNamed("/parentDetailList",
+                  arguments: {"timeArray": timeList});
+            }
+          } else {}
+        }
       },
       child: Container(
-        decoration:const BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: Colors.black12))),
-        height: 60,
+        decoration: const BoxDecoration(
+            border:
+                Border(bottom: BorderSide(width: 1, color: Colors.black12))),
+        height: 70,
         child: ListTile(
+          contentPadding: const EdgeInsets.only(left: 10,right: 10),
           leading: Image.asset(
             imgPath,
             width: 20,
@@ -269,11 +653,16 @@ class _PieChartPageState extends State<PieChartPage> {
           ),
           title: Text(
             title,
-            style: TextStyle(fontSize: 16, color: Colors.black),
+            style: const TextStyle(fontSize: 16, color: Colors.black),
           ),
-          trailing: Text(
+          subtitle: Text(
             totalTime,
-            style: TextStyle(fontSize: 16, color: Colors.black),
+            style: const TextStyle(fontSize: 16, color: Colors.black),
+          ),
+          trailing: Image.asset(
+            "assets/images/parent_time_back.png",
+            width: 20,
+            height: 20,
           ),
         ),
       ),
@@ -281,37 +670,16 @@ class _PieChartPageState extends State<PieChartPage> {
   }
 
   Widget setDropdownMenue() {
-    return
-        // DropdownButton<String>(
-        //   value: dropDownValue,
-        //   icon: Icon(Icons.keyboard_arrow_down),
-        //   items: devices.map((String items) {
-        //     return DropdownMenuItem(value: items, child: Text(items));
-        //   }).toList(),
-        //   onChanged: (String? newValue) {
-        //     setState(() {
-        //       dropDownValue = newValue!;
-        //     });
-        //   },
-        // );
-        Center(
-        child: DropdownButtonHideUnderline(
+    return Center(
+      child: DropdownButtonHideUnderline(
         child: DropdownButton2<String>(
           isExpanded: true,
-          hint: const Row(
+          hint: Row(
             children: [
-              // Icon(
-              //   Icons.list,
-              //   size: 16,
-              //   color: Colors.yellow,
-              // ),
-              // SizedBox(
-              //   width: 4,
-              // ),
               Expanded(
                 child: Text(
-                  'Select Item',
-                  style: TextStyle(
+                  devices[0].name!,
+                  style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
@@ -322,10 +690,10 @@ class _PieChartPageState extends State<PieChartPage> {
             ],
           ),
           items: devices
-              .map((String item) => DropdownMenuItem<String>(
-                    value: item,
+              .map((EquipmentInfo item) => DropdownMenuItem<String>(
+                    value: item.name,
                     child: Text(
-                      item,
+                      item.name!,
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
@@ -339,6 +707,13 @@ class _PieChartPageState extends State<PieChartPage> {
           onChanged: (String? value) {
             setState(() {
               selectedValue = value;
+              for (var item in devices) {
+                if (item.name == value) {
+                  selectedMacAddress = item.mac!;
+                }
+              }
+              // 请求统计信息
+              requestData(sn, selectedMacAddress);
             });
           },
           buttonStyleData: ButtonStyleData(
@@ -350,7 +725,7 @@ class _PieChartPageState extends State<PieChartPage> {
               border: Border.all(
                 color: Colors.white,
               ),
-              color: Color.fromRGBO(247, 248, 250, 1),
+              color: const Color.fromRGBO(247, 248, 250, 1),
             ),
             elevation: 0,
           ),
@@ -472,6 +847,31 @@ class _PieChartPageState extends State<PieChartPage> {
       ],
     );
   }
+
+  Widget setLoadingIndicator() {
+    return const Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CupertinoActivityIndicator(
+            animating: true,
+            radius: 20,
+            color: Colors.grey,
+          ),
+          Text(
+            "Loading, please wait",
+            style: TextStyle(fontSize: 15, color: Colors.black),
+          )
+        ],
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    client.disconnect();
+    super.dispose();
+  }
 }
 
 class CustomCard extends StatelessWidget {
@@ -483,4 +883,11 @@ class CustomCard extends StatelessWidget {
     return Card(
         child: Padding(padding: const EdgeInsets.all(20.0), child: child));
   }
+}
+
+class StatisticsTypeData {
+  String? imageUrl;
+  String? typeName;
+  String? time;
+  StatisticsTypeData(this.imageUrl, this.typeName, this.time);
 }

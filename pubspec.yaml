@@ -3,7 +3,7 @@ description: A new Flutter application for router.
 
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.0+9
+version: 1.1.0+11
 
 environment:
   sdk: ">=2.17.3 <3.3.0"
@@ -50,7 +50,7 @@ dependencies:
   # 获取版本信息
   package_info_plus: ^4.0.2
   # 图片选择 -- 头像上传
-  image_picker: ^1.0.0
+  image_picker: ^1.0.7
   # 权限
   permission_handler: ^10.0.0
   # 文件选择器
@@ -73,7 +73,7 @@ dependencies:
   # wifi信息获取
   wifi_info_plugin_plus: ^2.0.2
   #网络监测
-  connectivity_plus: ^4.0.1
+  connectivity_plus: ^5.0.2
   # 震动的插件
   vibration: ^1.7.7
   # 获取mac地址(暂时去掉)
@@ -81,7 +81,7 @@ dependencies:
   #选择时间
   progressive_time_picker: ^0.0.9
   # 身份验证
-  local_auth: ^2.1.6
+  local_auth: ^2.1.8
   # 设备信息
   device_info_plus: ^8.0.0
   # wifi信息
@@ -103,7 +103,11 @@ dependencies:
   dropdown_button2: ^2.3.9
   flutter_spinner_time_picker: ^0.2.1
   flutter_switch: ^0.3.2
-  flutter_webview_plugin: ^0.4.0
+  webview_flutter: ^4.5.0
+  flutter_internet_speed_test: ^1.5.0
+
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

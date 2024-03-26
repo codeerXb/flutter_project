@@ -90,6 +90,7 @@ import '../../pages/user_login/privacy_page.dart';
 import '../../pages/parent_control/parent_device_timeList.dart';
 import '../../pages/setting/company_website_page.dart';
 import 'package:flutter_template/pages/setting/logout_account.dart';
+import '../../pages/net_status/home_speed_test.dart';
 /// 路由
 class GlobalRouter {
   // 定义单例
@@ -343,7 +344,7 @@ class GlobalRouter {
     '/speedTestPage': (BuildContext context, {Object? args}) =>
         const SpeedTestHomeVC(),
     '/lanSpeedTestPage': (BuildContext context, {Object? args}) =>
-        const LanSpeedPage(),
+        const HomeSpeedPage(),
     '/privacyPage': (BuildContext context, {Object? args}) =>
         const PrivacyPage(),
     '/timeConfigPage': (BuildContext context, {Object? args}) =>

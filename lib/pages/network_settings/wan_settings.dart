@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
+import 'package:flutter_template/core/request/request.dart';
 // import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
@@ -74,13 +75,18 @@ class _WanSettingsState extends State<WanSettings> {
   final TextEditingController secondaryDNS4 = TextEditingController();
   @override
   void initState() {
-    super.initState();
-    getData();
+    sharedGetData('deviceSn', String).then(((res) {
+      printInfo(info: 'deviceSn$res');
+      sn = res.toString();
+      getData(sn);
+    }));
+    
     sharedGetData('systemRouterOnly', String).then(((res) {
       printInfo(info: 'systemRouter$res');
       systemRouter = res.toString();
       debugPrint("当前拿到的值是:$systemRouter");
     }));
+    super.initState();
   }
 
   @override
@@ -122,21 +128,42 @@ class _WanSettingsState extends State<WanSettings> {
   final LoginController loginController = Get.put(LoginController());
 
   // 只读取本地数据
-  Future getData() async {
-    Map<String, dynamic> data = {
-      'method': 'obj_get',
-      'param':
-          '["systemVersionSn","systemProductModel","ethernetConnectMode","ethernetConnectOnly","ethernetConnectPriority","ethernetIp","ethernetMask","ethernetDefaultGateway","ethernetPrimaryDns","ethernetSecondaryDns","ethernetMtu","ethernetDetectServer","systemCurrentPlatform","wifiEzmeshEnable"]',
+  Future getData(String sn) async {
+    // Map<String, dynamic> data = {
+    //   'method': 'obj_get',
+    //   'param':
+    //       '["systemVersionSn","systemProductModel","ethernetConnectMode","ethernetConnectOnly","ethernetConnectPriority","ethernetIp","ethernetMask","ethernetDefaultGateway","ethernetPrimaryDns","ethernetSecondaryDns","ethernetMtu","ethernetDetectServer","systemCurrentPlatform","wifiEzmeshEnable"]',
+    // };
+    var parameterNames = {
+      "method": "get",
+      "nodes": [
+      "systemVersionSn",
+      "systemProductModel",
+      "ethernetConnectMode",
+      "ethernetConnectOnly",
+      "ethernetConnectPriority",
+      "ethernetIp","ethernetMask",
+      "ethernetDefaultGateway",
+      "ethernetPrimaryDns",
+      "ethernetSecondaryDns",
+      "ethernetMtu",
+      "ethernetDetectServer",
+      "systemCurrentPlatform",
+      "wifiEzmeshEnable"
+      ]
     };
-    try {
-      var response = await XHttp.get('/data.html', data);
-      var d = json.decode(response.toString());
 
+    try {
+      // var response = await XHttp.get('/data.html', data);
+      var response = await Request().getACSNode(parameterNames, sn);
+      var d = json.decode(response.toString());
+      debugPrint("WanSettings请求返回的数据:$d");
       // 验证成功更新数据
       setState(() {
-        netdata = netDatas.fromJson(d);
+        // netdata = netDatas.fromJson(d);
+        
         //连接模式
-        switch (netdata.ethernetConnectMode.toString()) {
+        switch (d["data"]["ethernetConnectMode"]) {
           case 'dhcp':
             showVal = S.current.DynamicIP;
             break;
@@ -148,20 +175,20 @@ class _WanSettingsState extends State<WanSettings> {
             break;
         }
         val = ['dhcp', 'static', 'lanonly']
-            .indexOf(netdata.ethernetConnectMode.toString());
-        //仅以太网
-        isCheck = netdata.ethernetConnectOnly.toString() == '1' ? true : false;
-        //优先级 == '1' 4g
-        priorityVal = netdata.ethernetConnectPriority.toString() == '1'
+            .indexOf(d["data"]["ethernetConnectMode"]);
+        //仅以太网 
+        isCheck = d["data"]["ethernetConnectOnly"] == '1' ? true : false;
+        //优先级 == '1' 4g 
+        priorityVal = d["data"]["ethernetConnectPriority"] == '1'
             ? '4G/5G'
             : S.current.Ethernet;
         priorityIndex = [S.current.Ethernet, '4G/5G'].indexOf(priorityVal);
-        //mtu
-        mtu.text = netdata.ethernetMtu.toString();
-        //检测服务器
-        server.text = netdata.ethernetDetectServer.toString();
-        // IP地址
-        ipVal = netdata.ethernetIp.toString();
+        //mtu 
+        mtu.text = d["data"]["ethernetMtu"];
+        //检测服务器 
+        server.text = d["data"]["ethernetDetectServer"];
+        // IP地址 
+        ipVal = d["data"]["ethernetIp"];
         if (ipVal != "" && ipVal != null) {
           ipVal1.text = ipVal.split('.')[0];
           ipVal2.text = ipVal.split('.')[1];
@@ -170,8 +197,8 @@ class _WanSettingsState extends State<WanSettings> {
         } else {
           ipVal1.text = ipVal2.text = ipVal3.text = ipVal4.text = "";
         }
-        // 子网掩码
-        maskVal = netdata.ethernetMask.toString();
+        // 子网掩码 
+        maskVal = d["data"]["ethernetMask"];
         if (maskVal != "" && maskVal != null) {
           maskVal1.text = maskVal.split('.')[0];
           maskVal2.text = maskVal.split('.')[1];
@@ -180,8 +207,8 @@ class _WanSettingsState extends State<WanSettings> {
         } else {
           maskVal1.text = maskVal2.text = maskVal3.text = maskVal4.text = "";
         }
-        // 默认网关
-        gatewayVal = netdata.ethernetDefaultGateway.toString();
+        // 默认网关 
+        gatewayVal = d["data"]["ethernetDefaultGateway"];
         if (gatewayVal != "" && gatewayVal != null) {
           gatewayVal1.text = gatewayVal.split('.')[0];
           gatewayVal2.text = gatewayVal.split('.')[1];
@@ -191,8 +218,8 @@ class _WanSettingsState extends State<WanSettings> {
           gatewayVal1.text =
               gatewayVal2.text = gatewayVal3.text = gatewayVal4.text = "";
         }
-        // 主DNS
-        primaryDNS = netdata.ethernetPrimaryDns.toString();
+        // 主DNS 
+        primaryDNS = d["data"]["ethernetPrimaryDns"];
         if (primaryDNS != "" && primaryDNS != null) {
           primaryDNS1.text = primaryDNS.split('.')[0];
           primaryDNS2.text = primaryDNS.split('.')[1];
@@ -202,8 +229,8 @@ class _WanSettingsState extends State<WanSettings> {
           primaryDNS1.text =
               primaryDNS2.text = primaryDNS3.text = primaryDNS4.text = "";
         }
-        // 辅DNS
-        secondaryDNS = netdata.ethernetSecondaryDns.toString();
+        // 辅DNS 
+        secondaryDNS = d["data"]["ethernetSecondaryDns"];
         if (secondaryDNS != "" && secondaryDNS != null) {
           secondaryDNS1.text = secondaryDNS.split('.')[0];
           secondaryDNS2.text = secondaryDNS.split('.')[1];
@@ -308,13 +335,22 @@ class _WanSettingsState extends State<WanSettings> {
   WanNetworkModel wanNetwork = WanNetworkModel();
 
   void getWanVal() async {
-    Map<String, dynamic> data = {
-      'method': 'obj_get',
-      'param': '["networkWanSettingsMode"]',
+    // Map<String, dynamic> data = {
+    //   'method': 'obj_get',
+    //   'param': '["networkWanSettingsMode"]',
+    // };
+    var parameterNames = {
+      "method": "get",
+      "nodes": [
+      "networkWanSettingsMode"
+      ]
     };
     try {
-      var response = await XHttp.get('/data.html', data);
+      var response = await Request().getACSNode(parameterNames, sn);
       var d = json.decode(response.toString());
+      debugPrint("请求返回的数据:$d");
+
+      // var response = await XHttp.get('/data.html', data);
       setState(() {
         wanSettingVal = WanSettingData.fromJson(d);
         if (wanSettingVal.networkWanSettingsMode.toString() == 'nat') {
@@ -336,12 +372,17 @@ class _WanSettingsState extends State<WanSettings> {
     }
   }
 
-  void setWanData() {
-    Map<String, dynamic> data = {
-      'method': 'obj_set',
-      'param': '{"networkWanSettingsMode":"$wanVal"}',
-    };
-    XHttp.get('/data.html', data).then((res) {
+  void setWanData() async {
+    // Map<String, dynamic> data = {
+    //   'method': 'obj_set',
+    //   'param': '{"networkWanSettingsMode":"$wanVal"}',
+    // };
+    var parameterNames = {
+      "method": "set",
+      "nodes": {
+        "networkWanSettingsMode": wanVal
+    }};
+    Request().setACSNode(parameterNames, sn).then((res) {
       try {
         var d = json.decode(res.toString());
         setState(() {

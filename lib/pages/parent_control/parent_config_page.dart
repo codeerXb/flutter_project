@@ -1,12 +1,20 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_template/generated/l10n.dart';
+import 'package:flutter_template/core/utils/shared_preferences_util.dart';
+import 'package:flutter_template/core/utils/toast.dart';
 import 'package:get/get.dart';
-import 'package:time_picker_sheet/widget/sheet.dart';
-import 'package:time_picker_sheet/widget/time_picker.dart';
-import 'package:flutter_spinner_time_picker/flutter_spinner_time_picker.dart';
-// import 'package:flutter/cupertino.dart';
-import 'package:flutter_switch/flutter_switch.dart';
+import 'package:flutter_template/core/http/http_app.dart';
+import './Model/device_rule_config.dart';
+import '../.././core/utils/string_util.dart';
+import '../../config/base_config.dart';
+import 'package:mqtt_client/mqtt_client.dart';
+import 'package:mqtt_client/mqtt_server_client.dart';
+
+String clientRandom = StringUtil.generateRandomString(10);
+String clientId = "client_$clientRandom";
 
 class ParentConfigPage extends StatefulWidget {
   const ParentConfigPage({super.key});
@@ -16,6 +24,8 @@ class ParentConfigPage extends StatefulWidget {
 }
 
 class _ParentConfigPageState extends State<ParentConfigPage> {
+  MqttServerClient client = MqttServerClient.withPort(
+      BaseConfig.mqttMainUrl, clientId, BaseConfig.websocketPort);
   FocusNode fousNode = FocusNode();
   TextEditingController nameController = TextEditingController();
   var currentPanelIndex = 0; // 当前panel的index
@@ -26,43 +36,237 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
   final List<String> _selectedItems = [];
   final List<String> _selectedvideoItems = [];
   final List<String> _selectedshopItems = [];
-  final List<String> _selectedwebItems = [];
   final List<String> _selectedappStoreItems = [];
-  var datasMap = {
-    "Shopping": [
-      'Flutter',
-      'Node.js',
-      'React Native',
-      'Java',
-      'Docker',
-      'MySQL'
-    ],
-    "Video": ['ddd', 'FDSSSSs', 'TTTTTTTT', 'JHHHHH', 'DYYYYYYr', 'MQQQQQQL'],
-    "App Store": ['ertt', '43rr', 'Rrrre', 'gggg', 'Docggr', 'Mgg'],
-    "Social Media": [
-      'ffff',
-      'Nfhtyuty',
-      'Rgfdfgdfe',
-      'Java',
-      'Dggr',
-      'Merterdfvdgdf'
-    ],
-    // "Website List": [
-    //   '6yrtybnfg',
-    //   'ffffZxdqwqw',
-    //   '2werujjff',
-    //   'Java',
-    //   'Dottt',
-    //   'Mthrr'
-    // ],
+  var shopflag = true;
+  var socialflag = true;
+  var videoflag = true;
+  var appflag = true;
+
+  Map<String, List<ApplicationInfo>> datasMap = {
+    "E-Commerce Portal Access Times": [],
+    "Video": [],
+    "App Store": [],
+    "Social Media": []
   };
 
   bool switchValue = true;
-  RxList websiteList = [].obs;
+  List websiteList = [];
+  String sn = "";
+  String macAddress = "";
+  DeviceRule? ruleBean;
+  String methodType = "";
+  var macName = "";
+  List<String> urlList = [];
 
   @override
   void initState() {
+    macAddress = Get.arguments["mac"];
+    macName = macAddress.replaceAll(":", "");
+    methodType = Get.arguments["method"];
+    sharedGetData('deviceSn', String).then(((res) {
+      printInfo(info: 'deviceSn$res');
+      sn = res.toString();
+      requestSingleDeviceRule(sn);
+    }));
     super.initState();
+  }
+
+  void requestSingleDeviceRule(String sn) {
+    App.get('/platform/parentControlApp/queryBlacklistRuleBySnAndMac?sn=$sn&mac=$macAddress')
+        .then((res) {
+      final ruleModel = DeviceRuleBeans.fromJson(res);
+      if (ruleModel.code == 200 && ruleModel.data != null) {
+        ruleBean = ruleModel.data!.deviceRule;
+        debugPrint("获取的设备配置规则:$ruleBean");
+
+        setState(() {
+          datasMap = {
+            "E-Commerce Portal Access Times":
+                ruleBean!.eCommercePortalAccessTimes!,
+            "Video": ruleBean!.video!,
+            "App Store": ruleBean!.appStore!,
+            "Social Media": ruleBean!.socialMedia!
+          };
+          for (ApplicationInfo element in ruleBean!.websiteList!) {
+            websiteList.add(element.url);
+          }
+
+          // datasMap.forEach((key, value) {
+          //   if (key == "E-Commerce Portal Access Times") {
+          //     value = ruleBean!.eCommercePortalAccessTimes!;
+          //   } else if (key == "Video") {
+          //     value = ruleBean!.video!;
+          //   } else if (key == "App Store") {
+          //     value = ruleBean!.appStore!;
+          //   } else if (key == "Social Media") {
+          //     value = ruleBean!.socialMedia!;
+          //   } else if (key == "Website List") {
+          //     value = ruleBean!.websiteList!;
+          //   } else {}
+          // });
+        });
+        debugPrint("组装的规则数据:$datasMap");
+      } else {
+        ToastUtils.toast(ruleModel.message!);
+      }
+    }).catchError((error) {
+      ToastUtils.error(error.toString());
+    });
+  }
+
+  dealwithDeviceRuleAction(
+      String sn, String? methodType, List<String> urlArray) async {
+    client.logging(on: false);
+    client.keepAlivePeriod = 60;
+    client.useWebSocket = true;
+    client.autoReconnect = true;
+    client.onDisconnected = onDisconnected;
+    client.onConnected = onConnected;
+    client.onSubscribed = onSubscribed;
+    client.pongCallback = pong;
+    client.setProtocolV311();
+
+    final connMess = MqttConnectMessage()
+        .authenticateAs('admin', 'smawav')
+        .withWillTopic('willtopic')
+        .withWillMessage('My Will message')
+        .startClean()
+        .withWillQos(MqttQos.atLeastOnce);
+    debugPrint('Client connecting....');
+    client.connectionMessage = connMess;
+
+    try {
+      await client.connect();
+    } on NoConnectionException catch (e) {
+      debugPrint('Client exception: $e');
+      client.disconnect();
+    } on SocketException catch (e) {
+      debugPrint('Socket exception: $e');
+      client.disconnect();
+    }
+
+    if (client.connectionStatus!.state == MqttConnectionState.connected) {
+      debugPrint('Client connected');
+    } else {
+      debugPrint(
+          'Client connection failed - disconnecting, status is ${client.connectionStatus}');
+      client.disconnect();
+    }
+
+    client.published!.listen((MqttPublishMessage message) {
+      debugPrint(
+          'Published topic: topic is ${message.variableHeader!.topicName}, with Qos ${message.header!.qos}');
+    });
+
+    final sessionIdStr = StringUtil.generateRandomString(10);
+    var publishTopic = "cpe/$sn";
+
+    if (urlArray.isEmpty) {
+      var subTopic = "cpe/$sn/deleteRule";
+      var parms = {
+        "event": "ParentControl",
+        "sn": sn,
+        "sessionId": sessionIdStr,
+        "pubTopic": subTopic,
+        "param": {
+          "method": "delete",
+          "data": {"config": "appfilter2", "section": macName}
+        }
+      };
+      _publishMessage(publishTopic, parms);
+      client.subscribe(subTopic, MqttQos.atLeastOnce);
+    } else {
+      if (methodType == "add") {
+        var subTopic = "cpe/$sn/addRule";
+        var parms = {
+          "event": "ParentControl",
+          "sn": sn,
+          "sessionId": sessionIdStr,
+          "pubTopic": subTopic,
+          "param": {
+            "method": "add",
+            "data": {
+              "config": "appfilter2",
+              "type": "rule",
+              "name": macName,
+              "values": {"url": urlArray, "mac": macAddress}
+            }
+          }
+        };
+        _publishMessage(publishTopic, parms);
+        client.subscribe(subTopic, MqttQos.atLeastOnce);
+      } else {
+        var subTopic = "cpe/$sn/setRule";
+        var parms = {
+          "event": "ParentControl",
+          "sn": sn,
+          "sessionId": sessionIdStr,
+          "pubTopic": subTopic,
+          "param": {
+            "method": "set",
+            "data": {
+              "config": "appfilter2",
+              "type": "rule",
+              "name": macName,
+              "values": {"url": urlArray, "mac": macAddress}
+            }
+          }
+        };
+        _publishMessage(publishTopic, parms);
+        client.subscribe(subTopic, MqttQos.atMostOnce);
+      }
+    }
+
+    client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
+      final MqttPublishMessage recMess = c![0].payload as MqttPublishMessage;
+      final String topic = c[0].topic;
+      final String pt = const Utf8Decoder().convert(recMess.payload.message);
+      String desString = "topic is <$topic>, payload is <-- $pt -->";
+      debugPrint("string =$desString");
+      if (topic == "cpe/$sn/addRule") {
+        Map datas = jsonDecode(pt);
+        var message = datas["data"];
+        ToastUtils.toast(message);
+      } else if (topic == "cpe/$sn/setRule") {
+        Map datas = jsonDecode(pt);
+        var message = datas["data"];
+        ToastUtils.toast(message);
+      } else {
+        Map datas = jsonDecode(pt);
+        var message = datas["data"];
+        ToastUtils.toast(message);
+      }
+    });
+  }
+
+  void onSubscribed(String topic) {
+    debugPrint('Subscription confirmed for topic $topic');
+  }
+
+  void onDisconnected() {
+    debugPrint('OnDisconnected client callback - Client disconnection');
+    if (client.connectionStatus!.disconnectionOrigin ==
+        MqttDisconnectionOrigin.solicited) {
+      debugPrint('OnDisconnected callback is solicited, this is correct');
+    }
+  }
+
+  void onConnected() {
+    debugPrint('OnConnected client callback - Client connection was sucessful');
+  }
+
+  void pong() {
+    debugPrint('Ping response client callback invoked');
+  }
+
+  // 发送消息
+  void _publishMessage(String topic, Map<String, dynamic> message) {
+    debugPrint("======发送的消息成功了=======");
+    debugPrint("===$topic===${jsonEncode(message)}=======");
+    var builder = MqttClientPayloadBuilder();
+    var jsonData = json.encode(message);
+    builder.addUTF8String(jsonData);
+    client.publishMessage(topic, MqttQos.atLeastOnce, builder.payload!);
   }
 
   @override
@@ -71,7 +275,8 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
         appBar: AppBar(
           title: const Text(
             'Configure',
-            style: TextStyle(color: Colors.black, fontSize: 22),
+            style: TextStyle(
+                color: Colors.black, fontSize: 22, fontWeight: FontWeight.w500),
           ),
           centerTitle: true,
           backgroundColor: Colors.white,
@@ -113,261 +318,195 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
           //   )
           // ],
         ),
-        body: Container(
-          height: double.infinity,
-          decoration: const BoxDecoration(color: Colors.black12),
-          padding: const EdgeInsets.only(bottom: 20),
-          child: SingleChildScrollView(
-              child: ConstrainedBox(
-            constraints: const BoxConstraints(
-              minHeight: 100,
-              // maxHeight: 100000
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                // Padding(
-                //   padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                //   child: SizedBox(
-                //     height: 75,
-                //     child: Card(
-                //       margin: EdgeInsets.all(5),
-                //       elevation: 2,
-                //       color: Colors.white,
-                //       shape: RoundedRectangleBorder(
-                //         side: const BorderSide(color: Colors.white, width: 0.5),
-                //         borderRadius: BorderRadius.circular(8),
-                //       ),
-                //       clipBehavior: Clip.antiAlias,
-                //       child: Row(
-                //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //         children: [
-                //           Padding(padding:const EdgeInsets.only(left: 15,right: 10),
-                //           child: Image.asset("assets/images/name.png",width: 25,height: 25,)
-                //           ),
-                //           Expanded(
-                //               child: TextField(
-                //             controller: nameController,
-                //             autofocus: true,
-                //             focusNode: fousNode,
-                //             keyboardType: TextInputType.text,
-                //             decoration:const InputDecoration(
-                //               // prefixIcon:
-                //               border: InputBorder.none,
-                //               // labelText: 'User Name',
-                //               hintText: 'Enter Your Name',
-                //             ),
-                //           ))
-                //         ],
-                //       ),
-                //     ),
-                //   ),
-                // ),
-                Padding(
-                  padding:const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                  child: ListView(
-                    padding: EdgeInsets.zero,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: _buildList(),
+        body: ruleBean != null
+            ? Container(
+                height: double.infinity,
+                decoration: const BoxDecoration(
+                    color: Color.fromRGBO(242, 242, 247, 1)),
+                padding: const EdgeInsets.only(bottom: 20),
+                child: SingleChildScrollView(
+                    child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    minHeight: 100,
+                    // maxHeight: 100000
                   ),
-                ),
-                // Offstage(
-                //   offstage: !switchValue,
-                //   child:
-                // ),
-                Card(
-                  margin:const EdgeInsets.only(left: 20,right: 20,bottom: 1),
-                  elevation: 2,
-                  color: Colors.white,
-                  shape: const RoundedRectangleBorder(
-                    side: BorderSide(color: Colors.white, width: 0.5),
-                    borderRadius: BorderRadius.only(topLeft: Radius.circular(8),topRight: Radius.circular(8)),
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                  child: ListTile(
-                    contentPadding:const EdgeInsets.only(left: 20, right: 5),
-                    horizontalTitleGap: 5,
-                    leading: Image.asset(
-                      'assets/images/weblist.png',
-                      width: 25,
-                      height: 25,
-                    ),
-                    title: const Text(
-                      "Website List",
-                      style: TextStyle(fontSize: 16, color: Colors.black),
-                    ),
-                    trailing: IconButton(
-                      onPressed: () {
-                        Get.toNamed("/websiteConfigPage",arguments: {"websites" : websiteList})?.then((results){
-                          if (results != null) {
-                            websiteList = results;
-                          debugPrint("输入的网站是:$websiteList");
-                          }
-                          
-                        });
-                      },
-                      icon: Image.asset(
-                        'assets/images/edit_parent.png',
-                        width: 20,
-                        height: 20,
-                      ),
-                    ),
-                  ),
-                ),
-                Obx(() => ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: websiteList.length,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                        decoration: const BoxDecoration(
-                            color: Colors.white,
-                            border: Border(
-                                bottom: BorderSide(
-                                    width: 1, color: Color(0xffe5e5e5)))),
-                        child: ListTile(
-                          title: Padding(
-                            padding: const EdgeInsets.only(left: 20),
-                            child: Text(
-                            websiteList[index],
-                            style: const TextStyle(fontSize: 15, color: Colors.black),
-                          ),
-                          )
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      // Padding(
+                      //   padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                      //   child: SizedBox(
+                      //     height: 75,
+                      //     child: Card(
+                      //       margin: EdgeInsets.all(5),
+                      //       elevation: 2,
+                      //       color: Colors.white,
+                      //       shape: RoundedRectangleBorder(
+                      //         side: const BorderSide(color: Colors.white, width: 0.5),
+                      //         borderRadius: BorderRadius.circular(8),
+                      //       ),
+                      //       clipBehavior: Clip.antiAlias,
+                      //       child: Row(
+                      //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //         children: [
+                      //           Padding(padding:const EdgeInsets.only(left: 15,right: 10),
+                      //           child: Image.asset("assets/images/name.png",width: 25,height: 25,)
+                      //           ),
+                      //           Expanded(
+                      //               child: TextField(
+                      //             controller: nameController,
+                      //             autofocus: true,
+                      //             focusNode: fousNode,
+                      //             keyboardType: TextInputType.text,
+                      //             decoration:const InputDecoration(
+                      //               // prefixIcon:
+                      //               border: InputBorder.none,
+                      //               // labelText: 'User Name',
+                      //               hintText: 'Enter Your Name',
+                      //             ),
+                      //           ))
+                      //         ],
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                        child: ListView(
+                          padding: EdgeInsets.zero,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          children: _buildList(datasMap),
                         ),
-                      );
-                    }),),
-                
-                SizedBox(
-                  width: 150,
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      padding: MaterialStateProperty.all(
-                        EdgeInsets.only(top: 28.w, bottom: 28.w),
                       ),
-                      shape: MaterialStateProperty.all(const StadiumBorder()),
-                      backgroundColor: MaterialStateProperty.all(
-                          const Color.fromARGB(255, 30, 104, 233)),
-                    ),
-                    onPressed: () {
-                      
-                    },
-                    child: Text(
-                      "Submit",
-                      style: TextStyle(
-                          fontSize: 32.sp, color: const Color(0xffffffff)),
-                    ),
-                  ),
-                ),
-                // setUpWeeklyView(),
-                // Center(
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.spaceAround,
-                //     children: <Widget>[
-                //       Column(
-                //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //         children: [
-                //           Text(
-                //               'Time ${dateTimeSelected.hour}:${dateTimeSelected.minute}'),
-                //           ElevatedButton(
-                //             onPressed: () => _openTimePickerSheet(context),
-                //             child: Text('Starting time'),
-                //           ),
-                //         ],
-                //       ),
-                //       Column(
-                //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //         children: [
-                //           Text(
-                //               'Time ${endTimeSelected.hour}:${endTimeSelected.minute}'),
-                //           ElevatedButton(
-                //             onPressed: () => _openConfigTimePickerSheet(context),
-                //             child: Text('End Time'),
-                //           ),
-                //         ],
-                //       ),
-                //     ],
-                //   ),
-                // ),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                //   children: [
-                //     Column(
-                //       children: [
-                //         const Text(
-                //           'Starting Time:',
-                //           style: TextStyle(fontSize: 18),
-                //         ),
-                //         const SizedBox(height: 10),
-                //         Text(
-                //           '${selectedTime.hour}:${selectedTime.minute.toString().padLeft(2, '0')}',
-                //           style: const TextStyle(
-                //               fontSize: 30, fontWeight: FontWeight.bold),
-                //         ),
-                //         const SizedBox(height: 20),
-                //         FilledButton(
-                //           onPressed: _showTimePicker,
-                //           child: const Text('Pick a Time'),
-                //         ),
-                //       ],
-                //     ),
-                //     Column(
-                //       children: [
-                //         const Text(
-                //           'End Time:',
-                //           style: TextStyle(fontSize: 18),
-                //         ),
-                //         const SizedBox(height: 10),
-                //         Text(
-                //           '${selectedTime.hour}:${selectedTime.minute.toString().padLeft(2, '0')}',
-                //           style: const TextStyle(
-                //               fontSize: 30, fontWeight: FontWeight.bold),
-                //         ),
-                //         const SizedBox(height: 20),
-                //         FilledButton(
-                //           onPressed: _showTimePicker,
-                //           child: const Text('Pick a Time'),
-                //         ),
-                //       ],
-                //     )
-                //   ],
-                // ),
-              ],
-            ),
-          )),
-        )
-        );
-  }
+                      // Offstage(
+                      //   offstage: !switchValue,
+                      //   child:
+                      // ),
+                      Container(
+                        margin: const EdgeInsets.only(
+                            left: 20, right: 20, bottom: 1),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(
+                              width: 1, color: const Color(0xffe5e5e5)),
+                          borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(8.0),
+                              topRight: Radius.circular(8.0)),
+                        ),
+                        // clipBehavior: Clip.antiAlias,
+                        child: ListTile(
+                          contentPadding:
+                              const EdgeInsets.only(left: 20, right: 5),
+                          horizontalTitleGap: 5,
+                          leading: Image.asset(
+                            'assets/images/weblist.png',
+                            width: 25,
+                            height: 25,
+                          ),
+                          title: const Text(
+                            "Website List",
+                            style: TextStyle(fontSize: 16, color: Colors.black),
+                          ),
+                          trailing: IconButton(
+                            onPressed: () {
+                              Get.toNamed("/websiteConfigPage",
+                                      arguments: {"websites": websiteList})
+                                  ?.then((results) {
+                                if (results != null) {
+                                  setState(() {
+                                    List inputUrlArray = [];
+                                    websiteList = [];
+                                    inputUrlArray.addAll(results);
+                                    websiteList.addAll(inputUrlArray);
+                                    debugPrint("输入的网站是:$websiteList");
+                                  });
+                                }
+                              });
+                            },
+                            icon: Image.asset(
+                              'assets/images/edit_parent.png',
+                              width: 20,
+                              height: 20,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(left: 20, right: 20),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(
+                              width: 1, color: const Color(0xffe5e5e5)),
+                          borderRadius: const BorderRadius.only(
+                              bottomLeft: Radius.circular(8.0),
+                              bottomRight: Radius.circular(8.0)),
+                        ),
+                        child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: websiteList.length,
+                            itemBuilder: (context, index) {
+                              return Container(
+                                margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    border: Border(
+                                        bottom: BorderSide(
+                                            width: 1,
+                                            color: Color(0xffe5e5e5)))),
+                                child: ListTile(
+                                    title: Padding(
+                                  padding: const EdgeInsets.only(left: 20),
+                                  child: Text(
+                                    websiteList[index],
+                                    style: const TextStyle(
+                                        fontSize: 15, color: Colors.black),
+                                  ),
+                                )),
+                              );
+                            }),
+                      ),
 
-  void _itemChange(String itemValue, String type, bool isSelected) {
-    setState(() {
-      if (type == "Social Media") {
-        if (isSelected) {
-          _selectedItems.add(itemValue);
-        } else {
-          _selectedItems.remove(itemValue);
-        }
-      } else if (type == "Video") {
-        if (isSelected) {
-          _selectedvideoItems.add(itemValue);
-        } else {
-          _selectedvideoItems.remove(itemValue);
-        }
-      } else if (type == "Shopping") {
-        if (isSelected) {
-          _selectedshopItems.add(itemValue);
-        } else {
-          _selectedshopItems.remove(itemValue);
-        }
-      } else {
-        if (isSelected) {
-          _selectedappStoreItems.add(itemValue);
-        } else {
-          _selectedappStoreItems.remove(itemValue);
-        }
-      }
-    });
+                      const SizedBox(
+                        height: 15,
+                      ),
+
+                      SizedBox(
+                        width: 150,
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                            padding: MaterialStateProperty.all(
+                              EdgeInsets.only(top: 28.w, bottom: 28.w),
+                            ),
+                            shape: MaterialStateProperty.all(
+                                const StadiumBorder()),
+                            backgroundColor: MaterialStateProperty.all(
+                                const Color.fromARGB(255, 30, 104, 233)),
+                          ),
+                          onPressed: () {
+                            if (websiteList.isNotEmpty) {
+                              for (var element in websiteList) {
+                                urlList.add(element);
+                              }
+                            }
+                            debugPrint("所有选择的网站是:$urlList");
+                            dealwithDeviceRuleAction(sn, methodType, urlList);
+                          },
+                          child: Text(
+                            "Submit",
+                            style: TextStyle(
+                                fontSize: 32.sp,
+                                color: const Color(0xffffffff)),
+                          ),
+                        ),
+                      ),
+                      
+                    ],
+                  ),
+                )),
+              )
+            : Container());
   }
 
 /*
@@ -415,7 +554,7 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
   }
 */
 
-  List<Widget> _buildList() {
+  List<Widget> _buildList(Map<String, List<ApplicationInfo>> datasMap) {
     List<Widget> widgets = [];
     for (var key in datasMap.keys) {
       widgets.add(_generateExpansionTileWidget(key, datasMap[key]));
@@ -424,39 +563,72 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
   }
 
   /// 生成 ExpansionTile 组件
-  Widget _generateExpansionTileWidget(title, List<String>? names) {
-    return Card(
-      elevation: 2,
-      color: Colors.white,
-      shape: RoundedRectangleBorder(
-        side: const BorderSide(color: Colors.white, width: 0.5),
-        borderRadius: BorderRadius.circular(8),
+  Widget _generateExpansionTileWidget(title, List<ApplicationInfo>? names) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border.all(width: 1, color: const Color(0xffe5e5e5)),
+        borderRadius: const BorderRadius.all(Radius.circular(8.0)),
       ),
-      clipBehavior: Clip.antiAlias,
-      margin: const EdgeInsets.only(left: 20,right: 20,bottom: 10),
+      // clipBehavior: Clip.antiAlias,
+      margin: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
       child: ExpansionTile(
         title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             generateTypeIcon(title),
             const SizedBox(
               width: 5,
             ),
-            Text(
+            Expanded(
+                child: Text(
               title,
               style: const TextStyle(color: Colors.black, fontSize: 16),
-            )
+              softWrap: true,
+            ))
           ],
         ),
-        children: names!.map((name) => _generateWidget(name, title)).toList(),
+        
+        children: names!.map((name) {
+          if (shopflag == true || socialflag == true || videoflag == true || appflag == true) {
+            if (title == "Social Media") {
+            if (name.selectedFlag == "1" && socialflag == true) {
+              socialflag = false;
+              _selectedItems.add(name.appName!);
+              urlList.add(name.url!);
+            }
+          } else if (title == "Video") {
+            if (name.selectedFlag == "1" && videoflag == true ) {
+              videoflag = false;
+              _selectedvideoItems.add(name.appName!);
+              urlList.add(name.url!);
+            }
+          } else if (title == "E-Commerce Portal Access Times") {
+            if (name.selectedFlag == "1" && shopflag == true) {
+              shopflag = false;
+              _selectedshopItems.add(name.appName!);
+              urlList.add(name.url!);
+            }
+          } else {
+            if (name.selectedFlag == "1" && appflag == true) {
+              appflag = false;
+              _selectedappStoreItems.add(name.appName!);
+              urlList.add(name.url!);
+            }
+          }
+          }
+          
+          return _generateWidget(name, title);
+        }).toList(),
         onExpansionChanged: (value) {
-          debugPrint("当前的是: $value");
+          debugPrint("当前是否打开: $value");
         },
       ),
     );
   }
 
   Widget generateTypeIcon(String type) {
-    if (type == "Shopping") {
+    if (type == "E-Commerce Portal Access Times") {
       return Image.asset(
         'assets/images/shopping.png',
         width: 25,
@@ -484,20 +656,66 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
   }
 
   /// 生成 ExpansionTile 下的 ListView 的单个组件
-  Widget _generateWidget(name, String type) {
+  Widget _generateWidget(ApplicationInfo name, String type) {
     /// 使用该组件可以使宽度撑满
     return CheckboxListTile(
-        value: isContainApplication(type, name),
-        title: Text(name),
+        value: name.selectedFlag == "1" ? true : false,
+        title: Text(
+          "${name.appName}",
+          style: const TextStyle(color: Colors.black, fontSize: 14),
+          softWrap: true,
+        ),
         // subtitle: Text('${_items[index]}'),
         controlAffinity: ListTileControlAffinity.trailing,
         onChanged: (isChecked) {
           setState(() {
-            _itemChange(name, type, isChecked!);
-            debugPrint(
-                "当前的是${_selectedItems.join(" ")} --$_selectedshopItems --$_selectedvideoItems --$_selectedappStoreItems --- index : $isChecked");
+            name.selectedFlag = isChecked == true ? "1" : "0";
           });
+          _itemChange(name.appName!, name.url!, type, isChecked!, name);
+          
+          debugPrint(
+                "当前的是$_selectedItems --$_selectedshopItems --$_selectedvideoItems --$_selectedappStoreItems --- urlList : $urlList");
         });
+  }
+
+  void _itemChange(String itemValue, String url, String type, bool isSelected,
+      ApplicationInfo selectedItem) {
+    if (type == "Social Media") {
+      if (isSelected) {
+        _selectedItems.add(itemValue);
+        urlList.add(url);
+      } else {
+        _selectedItems.remove(itemValue);
+        urlList.remove(url);
+      }
+    } else if (type == "Video") {
+      if (isSelected) {
+        _selectedvideoItems.add(itemValue);
+        urlList.add(url);
+      } else {
+        _selectedvideoItems.remove(itemValue);
+        urlList.remove(url);
+      }
+    } else if (type == "E-Commerce Portal Access Times") {
+      if (isSelected) {
+        _selectedshopItems.add(itemValue);
+        urlList.add(url);
+      } else {
+        _selectedshopItems.remove(itemValue);
+        urlList.remove(url);
+      }
+    } else {
+      if (isSelected) {
+        _selectedappStoreItems.add(itemValue);
+        urlList.add(url);
+      } else {
+        _selectedappStoreItems.remove(itemValue);
+        urlList.remove(url);
+      }
+    }
+    // setState(() {
+
+    // });
   }
 
   bool isContainApplication(String type, String name) {
@@ -514,188 +732,9 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
     return iscontain;
   }
 
-  // Widget setUpWeeklyView() {
-  //   return Row(
-  //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  //     children: [
-  //       //Mon
-  //       Expanded(
-  //         child: TextButton(
-  //           style: ButtonStyle(
-  //               fixedSize: MaterialStateProperty.all(const Size(10, 10))),
-  //           onPressed: () {
-  //             setState(() {
-  //               date = 'Mon';
-  //             });
-  //           },
-  //           child: ConstrainedBox(
-  //               constraints: BoxConstraints(maxWidth: 150.w),
-  //               child: FittedBox(
-  //                 child: Text(
-  //                   'Mon',
-  //                   style: TextStyle(
-  //                       color: date == 'Mon' ? Colors.blue : Colors.black54),
-  //                 ),
-  //               )),
-  //         ),
-  //       ),
-
-  //       //Tue
-  //       Expanded(
-  //         child: TextButton(
-  //           onPressed: () {
-  //             setState(() {
-  //               date = 'Tue';
-  //             });
-  //           },
-  //           child: FittedBox(
-  //             child: Text(
-  //               'Tue',
-  //               style: TextStyle(
-  //                   color: date == 'Tue' ? Colors.blue : Colors.black54),
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-
-  //       //Wed
-  //       Expanded(
-  //         child: TextButton(
-  //           onPressed: () {
-  //             setState(() {
-  //               date = 'Wed';
-  //             });
-  //           },
-  //           child: FittedBox(
-  //             child: Text(
-  //               'Wed',
-  //               style: TextStyle(
-  //                   color: date == 'Wed' ? Colors.blue : Colors.black54),
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-
-  //       //Thu
-  //       Expanded(
-  //         child: TextButton(
-  //           onPressed: () {
-  //             setState(() {
-  //               date = 'Thu';
-  //             });
-  //           },
-  //           child: FittedBox(
-  //             child: Text(
-  //               'Thu',
-  //               style: TextStyle(
-  //                   color: date == 'Thu' ? Colors.blue : Colors.black54),
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-
-  //       // Fri
-  //       Expanded(
-  //         child: TextButton(
-  //           onPressed: () {
-  //             setState(() {
-  //               date = 'Fri';
-  //             });
-  //           },
-  //           child: FittedBox(
-  //             child: Text(
-  //               'Fri',
-  //               style: TextStyle(
-  //                   color: date == 'Fri' ? Colors.blue : Colors.black54),
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-
-  //       // Sat
-  //       Expanded(
-  //         child: TextButton(
-  //           onPressed: () {
-  //             setState(() {
-  //               date = 'Sat';
-  //             });
-  //           },
-  //           child: FittedBox(
-  //             child: Text(
-  //               'Sat',
-  //               style: TextStyle(
-  //                   color: date == 'Sat' ? Colors.blue : Colors.black54),
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-
-  //       // Sun
-  //       Expanded(
-  //         child: TextButton(
-  //           onPressed: () {
-  //             setState(() {
-  //               date = 'Sun';
-  //             });
-  //           },
-  //           child: FittedBox(
-  //             child: Text(
-  //               'Sun',
-  //               style: TextStyle(
-  //                   color: date == 'Sun' ? Colors.blue : Colors.black54),
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
-
-  // void _openTimePickerSheet(BuildContext context) async {
-  //   final resultStart = await TimePicker.show<DateTime?>(
-  //     context: context,
-  //     sheet: TimePickerSheet(
-  //       sheetTitle: 'Please set time',
-  //       minuteTitle: 'Minute',
-  //       hourTitle: 'Hour',
-  //       saveButtonText: 'Save',
-  //       sheetCloseIconColor: Colors.grey,
-  //       saveButtonColor: Colors.blue,
-  //       hourTitleStyle: const TextStyle(
-  //           color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
-  //       minuteTitleStyle: const TextStyle(
-  //           color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
-  //     ),
-  //   );
-
-  //   if (resultStart != null) {
-  //     setState(() {
-  //       dateTimeSelected = resultStart;
-  //     });
-  //   }
-  // }
-
-  // void _openConfigTimePickerSheet(BuildContext context) async {
-  //   final resultEnd = await TimePicker.show<DateTime?>(
-  //     context: context,
-  //     sheet: TimePickerSheet(
-  //       sheetTitle: 'Please set time',
-  //       minuteTitle: 'Minute',
-  //       hourTitle: 'Hour',
-  //       saveButtonText: 'Save',
-  //       sheetCloseIconColor: Colors.grey,
-  //       saveButtonColor: Colors.blue,
-  //       hourTitleStyle: const TextStyle(
-  //           color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
-  //       minuteTitleStyle: const TextStyle(
-  //           color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
-  //     ),
-  //   );
-
-  //   if (resultEnd != null) {
-  //     setState(() {
-  //       endTimeSelected = resultEnd;
-  //     });
-  //   }
-  // }
+  @override
+  void dispose() {
+    client.disconnect();
+    super.dispose();
+  }
 }

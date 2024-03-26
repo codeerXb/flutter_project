@@ -670,7 +670,7 @@ class _NetStatusState extends State<NetStatus> {
       "nodes": {"systemFactoryReset": "1","systemReboot": "1"}
     };
     var res = await Request().setACSNode(parameterNames, sn);
-     try {
+    try {
       var jsonObj = jsonDecode(res);
       debugPrint('响应------>$jsonObj');
       if (jsonObj['code'] == 200) {

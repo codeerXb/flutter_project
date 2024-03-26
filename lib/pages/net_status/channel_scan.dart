@@ -97,34 +97,32 @@ class _ChannelScanPageState extends State<ChannelScanPage>
         .withWillMessage('My Will message')
         .startClean()
         .withWillQos(MqttQos.atLeastOnce);
-    print('Client connecting....');
+    debugPrint('Client connecting....');
     client.connectionMessage = connMess;
 
     try {
       await client.connect();
     } on NoConnectionException catch (e) {
-      print('Client exception: $e');
+      debugPrint('Client exception: $e');
       client.disconnect();
     } on SocketException catch (e) {
-      print('Socket exception: $e');
+      debugPrint('Socket exception: $e');
       client.disconnect();
     }
 
     if (client.connectionStatus!.state == MqttConnectionState.connected) {
-      print('Client connected');
+      debugPrint('Client connected');
     } else {
-      print(
+      debugPrint(
           'Client connection failed - disconnecting, status is ${client.connectionStatus}');
       client.disconnect();
       // exit(-1);
     }
 
     client.published!.listen((MqttPublishMessage message) {
-      print(
+      debugPrint(
           'Published topic: topic is ${message.variableHeader!.topicName}, with Qos ${message.header!.qos}');
     });
-
-    // var pushChannelTopic = "platform_server/apiv1/sma_server_3";
 
     final sessionIdCha = StringUtil.generateRandomString(10);
     var publishTopic = "cpe/$sn";
@@ -156,15 +154,13 @@ class _ChannelScanPageState extends State<ChannelScanPage>
     subTopic = "app/channelQuality/$sn";
     client.subscribe(subTopic, MqttQos.atLeastOnce);
     client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
-      debugPrint("====================监听到新消息了======================");
       final MqttPublishMessage recMess = c![0].payload as MqttPublishMessage;
       final String topic = c[0].topic;
       final String pt = const Utf8Decoder().convert(recMess.payload.message);
       String desString = "topic is <$topic>, payload is <-- $pt -->";
       debugPrint("string =$desString");
       final payloadModel = ScanQualityBean.fromJson(jsonDecode(pt));
-      if (topic == subTopic) {
-        
+      if (topic == subTopic) { 
         currentNormalChannel = payloadModel.data!.wifiCurrentChannel!;
         currentAdvanceChannel = payloadModel.data!.wifi5gCurrentChannel!;
         currentChannelState = payloadModel.data!.wifiQuality!;
@@ -188,7 +184,7 @@ class _ChannelScanPageState extends State<ChannelScanPage>
         }
       } else if (topic == setCurrentChannelTopic) {
         final recMess = c[0].payload as MqttPublishMessage;
-    final pt = MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+        final pt = MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
         // String result = pt.substring(0, pt.length - 1);
         String desString = "topic is <$topic>, payload is <-- $pt -->";
         debugPrint("string =$desString");
@@ -212,97 +208,32 @@ class _ChannelScanPageState extends State<ChannelScanPage>
       } else {}
     });
 
-    // final sessionIdNor = StringUtil.generateRandomString(10);
-    // var channelNorParms = {
-    //   "event": "mqtt2sodObj",
-    //   "sn": sn,
-    //   "sessionId": sessionIdNor,
-    //   "param": {
-    //     "method": "get",
-    //     "nodes": [
-    //       "wifiEnable",
-    //       "wifiMode",
-    //       "wifiHtmode",
-    //       "wifiChannel",
-    //       "wifiTxpower",
-    //       "wifiCountryChannelList_HT20"
-    //     ]
-    //   }
-    // };
-
-    // final sessionIdAdn = StringUtil.generateRandomString(10);
-    // var channelAdnParms = {
-    //   "event": "mqtt2sodObj",
-    //   "sn": sn,
-    //   "sessionId": sessionIdAdn,
-    //   "param": {
-    //     "method": "get",
-    //     "nodes": [
-    //       "wifi5gEnable",
-    //       "wifi5gMode",
-    //       "wifi5gHtmode",
-    //       "wifi5gChannel",
-    //       "wifi5gTxpower",
-    //       "wifi5gCountryChannelList"
-    //     ]
-    //   }
-    // };
-
-    // var parameterNames = {
-    //   "event": "WifiChannelScan",
-    //   "sn": sn,
-    //   "sessionId": sessionIdStr,
-    // };
-    // connect().then((value) {
-    //   client = value;
-    //   debugPrint("执行到订阅这里了,订阅的主题是:$subTopic");
-    //   debugPrint("信道订阅的主题是:$publishTopic");
-    // var channelTopic = "platform_server/apiv1/sma_server_1";
-
-    // _publishMessage(publishTopic, channelNorParms);
-    // _publishMessage(publishTopic, channelAdnParms);
-
-    // _publishMessage(publishTopic, parameterNames);
-    // client.subscribe(getCurrentChannelTopic, MqttQos.atLeastOnce);
-
-    //   _getDeviceList();
-    // });
   }
 
   /// The subscribed callback
   void onSubscribed(String topic) {
-    print('Subscription confirmed for topic $topic');
+    debugPrint('Subscription confirmed for topic $topic');
   }
 
   /// The unsolicited disconnect callback
   void onDisconnected() {
-    print('OnDisconnected client callback - Client disconnection');
+    debugPrint('OnDisconnected client callback - Client disconnection');
     if (client.connectionStatus!.disconnectionOrigin ==
         MqttDisconnectionOrigin.solicited) {
-      print('OnDisconnected callback is solicited, this is correct');
+      debugPrint('OnDisconnected callback is solicited, this is correct');
     }
     // exit(-1);
   }
 
   /// The successful connect callback
   void onConnected() {
-    print('OnConnected client callback - Client connection was sucessful');
+    debugPrint('OnConnected client callback - Client connection was sucessful');
   }
 
   /// Pong callback
   void pong() {
-    print('Ping response client callback invoked');
+    debugPrint('Ping response client callback invoked');
   }
-
-  //  监听消息的具体实现
-  // _getListTableData(List<MqttReceivedMessage<MqttMessage>> data) {
-
-  // }
-
-//  开启监听消息
-  // _getDeviceList() {
-  //   client.updates!.listen(_getListTableData);
-  // }
 
   // 发送消息
   void _publishMessage(String topic, Map<String, dynamic> message) {

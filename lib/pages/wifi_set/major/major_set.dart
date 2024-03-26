@@ -114,6 +114,9 @@ class _MajorSetState extends State<MajorSet> {
         index = ['US', 'CN','FR', 'RU', 'SG', 'AU', 'CL', 'PL'].indexOf(radioState);
         //读取地区
         switch (radioState) {
+          case 'US':
+            showVal = S.current.UnitedStates;
+            break;
           case 'CN':
             showVal = S.current.China;
             break;
@@ -122,9 +125,6 @@ class _MajorSetState extends State<MajorSet> {
             break;
           case 'RU':
             showVal = S.current.Russia;
-            break;
-          case 'US':
-            showVal = S.current.UnitedStates;
             break;
           case 'SG':
             showVal = S.current.Singapore;
@@ -308,8 +308,8 @@ class _MajorSetState extends State<MajorSet> {
                                         setState(() => {
                                               index = selectedValue,
                                               showVal = [
-                                                S.current.China,
                                                 S.current.UnitedStates,
+                                                S.current.China,
                                                 S.current.France,
                                                 S.current.Russia,
                                                 S.current.Singapore,

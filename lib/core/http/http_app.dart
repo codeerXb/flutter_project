@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
@@ -8,6 +10,7 @@ import 'package:flutter_template/generated/l10n.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../config/base_config.dart';
 import 'package:dio/adapter.dart';
+import 'package:http_parser/http_parser.dart';
 
 class App {
   App._internal();
@@ -119,11 +122,15 @@ class App {
   }
 
   // 上传图片
-  static Future uploadImg(XFile img) async {
+  static Future uploadImg(XFile image) async {
+    String path = image.path;
+    var name = path.substring(path.lastIndexOf("/") + 1, path.length);
+    var suffix = name.substring(name.lastIndexOf(".") + 1, name.length);
     final FormData formData = FormData.fromMap({
       'file': await MultipartFile.fromFile(
-        img.path,
-        filename: img.name,
+        path,
+        filename: name,
+        contentType: MediaType.parse("image/$suffix")
       )
     });
     // Send FormData

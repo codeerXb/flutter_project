@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_template/core/http/http_app.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 // import 'package:flutter_template/core/widget/custom_app_bar.dart';
 import 'package:flutter_template/generated/l10n.dart';
@@ -14,6 +15,7 @@ import '../toolbar/toolbar_controller.dart';
 import '../../core/utils/string_util.dart';
 import 'package:flutter/services.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import '../topo/model/Inquire_bean.dart';
 
 /// 用户登录
 class UserLogin extends StatefulWidget {
@@ -611,28 +613,26 @@ class _UserLoginState extends State<UserLogin>
           ToastUtils.error(S.current.accountOrPwdError);
         }
         debugPrint("$d");
-        return;
+        return null;
       } else {
         debugPrint('用户$data,登录信息${d.toString()}');
-        // 是否存储了设备sn
-        sharedGetData('deviceSn', String).then((sn) {
-          if (sn != null) {
-            debugPrint('设备sn号$sn');
-            Get.offNamed("/home");
-            toolbarController.setPageIndex(0);
-          } else {
-            Get.offNamed("/get_equipment");
-          }
-        });
         //存储用户信息
         sharedAddAndUpdate("user_token", String, (d['data']['token']));
         sharedAddAndUpdate("user_phone", String, (d['data']['account']));
         sharedAddAndUpdate(
             "loginUserInfo", String, jsonEncode(d['data'])); //把云平台登录信息保存到本地
+        int loginId = d['data']['id'];
+        return loginId;
+      }
+    }).then((value) {
+      debugPrint('请求云平台登录id：$value');
+      if (value != null) {
+        requestInquireRouterDevice(value);
+      }else {
+        return;
       }
     }).catchError((err) {
       debugPrint('请求云平台登录接口报错：$err');
-
       // 响应超时
       if ((err is DioError && err.type == DioErrorType.connectTimeout)) {
         debugPrint('timeout');
@@ -644,6 +644,25 @@ class _UserLoginState extends State<UserLogin>
       setState(() {
         _isLoading = false;
       });
+    });
+  }
+
+  void requestInquireRouterDevice(int id) {
+    App.get('/platform/appCustomer/get?id=$id').then((res) {
+      final inquireModel = InquireInfoBean.fromJson(res);
+      if (inquireModel.code == 200 && inquireModel.data!.customerCpeVOList != null) {
+        var inquireSn = inquireModel.data!.customerCpeVOList![0].deviceSn;
+        debugPrint("获取的查询到的设备号:$inquireSn");
+        if (inquireSn!.isNotEmpty) {
+          sharedAddAndUpdate("deviceSn", String, inquireSn);
+          Get.offNamed("/home");
+          toolbarController.setPageIndex(0);
+        } else {
+          Get.offNamed("/get_equipment");
+        }
+      } 
+    }).catchError((error) {
+      ToastUtils.error(error.toString());
     });
   }
 }

@@ -69,40 +69,45 @@ class _ChannelListPageState extends State<ChannelListPage> {
         .withWillMessage('My Will message')
         .startClean()
         .withWillQos(MqttQos.atLeastOnce);
-    print('Client connecting....');
+    debugPrint('Client connecting....');
     client.connectionMessage = connMess;
 
     try {
       await client.connect();
     } on NoConnectionException catch (e) {
-      print('Client exception: $e');
+      debugPrint('Client exception: $e');
       client.disconnect();
     } on SocketException catch (e) {
-      print('Socket exception: $e');
+      debugPrint('Socket exception: $e');
       client.disconnect();
     }
 
     if (client.connectionStatus!.state == MqttConnectionState.connected) {
-      print('Client connected');
+      debugPrint('Client connected');
     } else {
-      print(
+      debugPrint(
           'Client connection failed - disconnecting, status is ${client.connectionStatus}');
       client.disconnect();
       // exit(-1);
     }
 
     client.published!.listen((MqttPublishMessage message) {
-      print(
+      debugPrint(
           'Published topic: topic is ${message.variableHeader!.topicName}, with Qos ${message.header!.qos}');
     });
 
     final sessionIdCha = StringUtil.generateRandomString(10);
     var topic = "cpe/$sn";
+    final topicSb = StringBuffer();
+    topicSb.write(setCurrentChannelTopic);
+    topicSb.write(sn);
+    final currentChannelTopic = topicSb.toString();
+    debugPrint("当前自定义的主题:$currentChannelTopic"); 
     var parameters = {
       "event": "mqtt2sodObj",
       "sn": sn,
       "sessionId": sessionIdCha,
-      "pubTopic": setCurrentChannelTopic,
+      "pubTopic": currentChannelTopic,
       "param": {
         "method": "set",
         "nodes": {
@@ -159,24 +164,24 @@ class _ChannelListPageState extends State<ChannelListPage> {
   }
 
 void onSubscribed(String topic) {
-  print('Subscription confirmed for topic $topic');
+  debugPrint('Subscription confirmed for topic $topic');
 }
 
 void onDisconnected() {
-  print('OnDisconnected client callback - Client disconnection');
+  debugPrint('OnDisconnected client callback - Client disconnection');
   if (client.connectionStatus!.disconnectionOrigin ==
       MqttDisconnectionOrigin.solicited) {
-    print('OnDisconnected callback is solicited, this is correct');
+    debugPrint('OnDisconnected callback is solicited, this is correct');
   }
   // exit(-1);
 }
 
 void onConnected() {
-  print('OnConnected client callback - Client connection was sucessful');
+  debugPrint('OnConnected client callback - Client connection was sucessful');
 }
 
 void pong() {
-  print('Ping response client callback invoked');
+  debugPrint('Ping response client callback invoked');
 }
 
   /// 获取当前的信道

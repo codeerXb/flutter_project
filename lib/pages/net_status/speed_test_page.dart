@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../config/base_config.dart';
@@ -8,7 +9,7 @@ import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import '../../pages/net_status/beans/speed_bean.dart';
 import '../../core/utils/string_util.dart';
-import 'dart:convert';
+
 String Id_Random = StringUtil.generateRandomString(10);
 MqttServerClient client = MqttServerClient.withPort(
     BaseConfig.mqttMainUrl, 'client_$Id_Random', BaseConfig.websocketPort);
@@ -39,50 +40,6 @@ class _SpeedTestHomeVCState extends State<SpeedTestHomeVC> {
       sn = res.toString();
       requestTestSpeedData(sn);
     }));
-
-    // sharedGetData('speedTime', String).then(((res) {
-    //   debugPrint('speedTime $res');
-    //   setState(() {
-    //     speedTime = res.toString();
-    //   });
-    // }));
-    // sharedGetData('testUp', String).then(((res) {
-    //   debugPrint('testUp $res');
-    //   setState(() {
-    //     testUp = res.toString();
-    //   });
-    // }));
-    // sharedGetData('testDown', String).then(((res) {
-    //   debugPrint('testDown $res');
-    //   setState(() {
-    //     testDown = res.toString();
-    //   });
-    // }));
-    // sharedGetData('lantency', String).then(((res) {
-    //   debugPrint('lantency $res');
-    //   setState(() {
-    //     lantency = res.toString();
-    //   });
-    // }));
-
-    // if (speedTime.isEmpty &&
-    //     testUp.isEmpty &&
-    //     testDown.isEmpty &&
-    //     lantency.isEmpty) {
-      
-    // } else {
-    //   setState(() {
-    //     testLoading = true;
-    //   });
-    // }
-
-    // Timer(const Duration(seconds: 600), () {
-    //   sharedAddAndUpdate("speedTime", String, "");
-    //   sharedAddAndUpdate("testUp", String, "");
-    //   sharedAddAndUpdate("testDown", String, "");
-    //   sharedAddAndUpdate("lantency", String, "");
-    // });
-
     super.initState();
   }
 
@@ -103,30 +60,30 @@ class _SpeedTestHomeVCState extends State<SpeedTestHomeVC> {
         .withWillMessage('My Will message')
         .startClean()
         .withWillQos(MqttQos.atLeastOnce);
-    print('Client connecting....');
+    debugPrint('Client connecting....');
     client.connectionMessage = connMess;
 
     try {
       await client.connect();
     } on NoConnectionException catch (e) {
-      print('Client exception: $e');
+      debugPrint('Client exception: $e');
       client.disconnect();
     } on SocketException catch (e) {
-      print('Socket exception: $e');
+      debugPrint('Socket exception: $e');
       client.disconnect();
     }
 
     if (client.connectionStatus!.state == MqttConnectionState.connected) {
-      print('Client connected');
+      debugPrint('Client connected');
     } else {
-      print(
+      debugPrint(
           'Client connection failed - disconnecting, status is ${client.connectionStatus}');
       client.disconnect();
       // exit(-1);
     }
 
     client.published!.listen((MqttPublishMessage message) {
-      print(
+      debugPrint(
           'Published topic: topic is ${message.variableHeader!.topicName}, with Qos ${message.header!.qos}');
     });
 
@@ -153,19 +110,16 @@ class _SpeedTestHomeVCState extends State<SpeedTestHomeVC> {
       debugPrint("string =$desString");
       final payloadModel = SpeedModel.fromJson(jsonDecode(result));
       setState(() {
-        // speedmodel = payloadModel;
         testLoading = true;
         var timespeed = payloadModel.data!.timestamp!.substring(0, 16);
-        debugPrint("时间是:$timespeed");
         var year = timespeed.substring(0, 10);
         var hour = timespeed.substring(12, timespeed.length - 3);
         var minute = timespeed.substring(14, timespeed.length);
         var newHour = int.parse(hour) + 8;
         var timestr = "$year $newHour:$minute";
-        debugPrint("时间是:$timestr");
         speedTime = timestr;
-        testUp = StringUtil.getRate(payloadModel.data!.upload!);
-        testDown = StringUtil.getRate(payloadModel.data!.download!);
+        testUp = StringUtil.getUnitlessRate(payloadModel.data!.upload!);
+        testDown = StringUtil.getUnitlessRate(payloadModel.data!.download!);
         lantency = getPing(payloadModel.data!.ping!);
 
         sharedAddAndUpdate("speedTime", String, speedTime);
@@ -183,24 +137,24 @@ class _SpeedTestHomeVCState extends State<SpeedTestHomeVC> {
   }
 
   void onSubscribed(String topic) {
-    print('Subscription confirmed for topic $topic');
+    debugPrint('Subscription confirmed for topic $topic');
   }
 
   void onDisconnected() {
-    print('OnDisconnected client callback - Client disconnection');
+    debugPrint('OnDisconnected client callback - Client disconnection');
     if (client.connectionStatus!.disconnectionOrigin ==
         MqttDisconnectionOrigin.solicited) {
-      print('OnDisconnected callback is solicited, this is correct');
+      debugPrint('OnDisconnected callback is solicited, this is correct');
     }
     // exit(-1);
   }
 
   void onConnected() {
-    print('OnConnected client callback - Client connection was sucessful');
+    debugPrint('OnConnected client callback - Client connection was sucessful');
   }
 
   void pong() {
-    print('Ping response client callback invoked');
+    debugPrint('Ping response client callback invoked');
   }
 
   // 发送消息

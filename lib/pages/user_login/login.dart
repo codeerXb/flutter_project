@@ -621,6 +621,8 @@ class _UserLoginState extends State<UserLogin>
         sharedAddAndUpdate("user_phone", String, (d['data']['account']));
         sharedAddAndUpdate(
             "loginUserInfo", String, jsonEncode(d['data'])); //把云平台登录信息保存到本地
+        sharedAddAndUpdate(
+        "userAvatar", String, jsonEncode(d['data']["avatar"]));
         int loginId = d['data']['id'];
         return loginId;
       }

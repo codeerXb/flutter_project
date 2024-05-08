@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:d_chart/d_chart.dart';
 import 'package:get/get.dart';
-import './Model/statistics_time_list.dart';
 
 class ParentDetailListPage extends StatefulWidget {
   const ParentDetailListPage({super.key});
@@ -12,11 +11,14 @@ class ParentDetailListPage extends StatefulWidget {
 
 class _ParentDetailListPageState extends State<ParentDetailListPage> {
 
-  RxList appTimeList = [].obs;
+  List appTimeList = [];
 
   @override
   void initState() {
-    appTimeList = Get.arguments["timeArray"];
+    setState(() {
+      appTimeList = Get.arguments["timeArray"];
+    });
+    
     super.initState();
   }
   @override
@@ -24,26 +26,23 @@ class _ParentDetailListPageState extends State<ParentDetailListPage> {
     return Scaffold(
         appBar: AppBar(
           title: const Text("E-Commerce Portal Access Times",
-              style: TextStyle(fontSize: 22, color: Colors.black,fontWeight: FontWeight.w500)),
+              style: TextStyle(fontSize: 18, color: Colors.black,fontWeight: FontWeight.w500)),
           centerTitle: true,
           elevation: 1,
         ),
         body: Container(
-          // height: double.infinity,
           padding: const EdgeInsets.all(20),
-          child: Obx(() {
-            return ListView.builder(
+          child: ListView.builder(
               itemCount: appTimeList.length,
               itemBuilder: (BuildContext context, int index) {
                 return createLineChart(appTimeList[index].appName,appTimeList[index].visitTime);
-              });
-          }),
+              }),
         ));
   }
 
   Widget createLineChart(String appName, String timeValue) {
     double timeP = int.parse(timeValue) / int.parse(appTimeList[0].visitTime);
-    double timev = timeP.toStringAsFixed(1) as double;
+    double timev = double.parse(timeP.toStringAsFixed(1));
     return ConstrainedBox(
           constraints: BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width - 40,
@@ -80,13 +79,13 @@ class _ParentDetailListPageState extends State<ParentDetailListPage> {
                   max: 1.0,
                 ),
               )),
-              // SizedBox(
-              //   width: 5,
-              // ),
-              // Text(
-              //   "300s",
-              //   style: TextStyle(fontSize: 14, color: Colors.blue),
-              // ),
+            const SizedBox(
+                width: 5,
+              ),
+              Text(
+                "$timeValue mins",
+                style: const TextStyle(fontSize: 14, color: Colors.blue,fontWeight: FontWeight.w600),
+              ),
             ],
           ),
         );

@@ -40,52 +40,9 @@ class _PieChartPageState extends State<PieChartPage> {
   StatisticsBeans? staBeans;
   AppTimeListBeans? timeListModel;
 
-  List<OrdinalData> ordinalDataList = [
-    // OrdinalData(
-    //     domain: 'E-Commerce',
-    //     measure: 130,
-    //     color: const Color.fromRGBO(2, 123, 254, 1)),
-    // OrdinalData(
-    //     domain: 'Video',
-    //     measure: 250,
-    //     color: const Color.fromRGBO(88, 86, 215, 1)),
-    // OrdinalData(
-    //     domain: 'App Store',
-    //     measure: 200,
-    //     color: const Color.fromRGBO(255, 149, 0, 1)),
-    // OrdinalData(
-    //     domain: 'Social',
-    //     measure: 260,
-    //     color: const Color.fromRGBO(53, 199, 89, 1)),
-    // OrdinalData(
-    //     domain: 'Website',
-    //     measure: 140,
-    //     color: const Color.fromRGBO(255, 214, 0, 1))
-  ];
+  List<OrdinalData> ordinalDataList = [];
 
-  List<StatisticsTypeData> resList = [
-    // {
-    //   "imgurl": "assets/images/shopping.png",
-    //   "title": "E-Commerce Portal Access Times",
-    //   "time": "123mins"
-    // },
-    // {"imgurl": "assets/images/video.png", "title": "Video", "time": "123mins"},
-    // {
-    //   "imgurl": "assets/images/app store.png",
-    //   "title": "App Store",
-    //   "time": "123mins"
-    // },
-    // {
-    //   "imgurl": "assets/images/social media.png",
-    //   "title": "Social Media",
-    //   "time": "123mins"
-    // },
-    // {
-    //   "imgurl": "assets/images/weblist.png",
-    //   "title": "Website",
-    //   "time": "123mins"
-    // },
-  ];
+  List<StatisticsTypeData> resList = [];
 
   String tapIndex = "";
   String sn = "";
@@ -110,7 +67,10 @@ class _PieChartPageState extends State<PieChartPage> {
     sharedGetData('deviceSn', String).then(((res) {
       printInfo(info: 'deviceSn$res');
       sn = res.toString();
-      requestData(sn, devices[0].mac!);
+      if (devices.isNotEmpty) {
+        requestData(sn, devices[0].mac!.toLowerCase());
+      }
+      
     }));
 
     super.initState();
@@ -235,20 +195,20 @@ class _PieChartPageState extends State<PieChartPage> {
               } else if (item.typeName == "App Store") {
                 if (item.visitTime != "0") {
                   pieDatas.add(OrdinalData(
-                    domain: 'App Store',
-                    measure: int.parse(item.visitTime!),
-                    color: const Color.fromRGBO(255, 149, 0, 1)));
+                      domain: 'App Store',
+                      measure: int.parse(item.visitTime!),
+                      color: const Color.fromRGBO(255, 149, 0, 1)));
                 }
                 timeDatas.add(StatisticsTypeData("assets/images/app store.png",
                     "App Store", "${int.parse(item.visitTime!)}mins"));
               } else {
                 if (item.visitTime != "0") {
                   pieDatas.add(OrdinalData(
-                    domain: 'Website',
-                    measure: int.parse(item.visitTime!),
-                    color: const Color.fromRGBO(255, 214, 0, 1)));
+                      domain: 'Website',
+                      measure: int.parse(item.visitTime!),
+                      color: const Color.fromRGBO(255, 214, 0, 1)));
                 }
-                
+
                 timeDatas.add(StatisticsTypeData("assets/images/weblist.png",
                     "Website", "${int.parse(item.visitTime!)}mins"));
               }
@@ -276,7 +236,12 @@ class _PieChartPageState extends State<PieChartPage> {
         Map datas = jsonDecode(result);
         var res = datas["data"];
         debugPrint("家长控制设置结果 =$res");
-      }else {}
+      } else {
+        String result = pt.substring(0, pt.length - 1);
+        Map datas = jsonDecode(result);
+        var res = datas["data"];
+        debugPrint("规则配置设置结果 =$res");
+      }
     });
   }
 
@@ -321,25 +286,47 @@ class _PieChartPageState extends State<PieChartPage> {
       "pubTopic": pubtopic,
       "param": {
         "enable": _isOpenControlInRow == true ? "1" : '0',
-        "work_mode" : "0",
-        "rules" : {
+        "work_mode": "0",
+        "rules": {
           "chatapps": "",
-            "shoppingapps": "",
-            "downloadapps": "",
-            "websiteapps":"",
-            "videoapps": ""
+          "shoppingapps": "",
+          "downloadapps": "",
+          "websiteapps": "",
+          "videoapps": ""
         },
         "time": {
-            "time_mode": "1",
-            "days": "0 1 2 3 4 5 6",
-            "start_time": "00:00",
-            "end_time": "23:59"
+          "time_mode": "1",
+          "days": "0 1 2 3 4 5 6",
+          "start_time": "00:00",
+          "end_time": "23:59"
         },
         "users": ""
       }
     };
     _publishMessage(topic, parameters);
     client.subscribe(pubtopic, MqttQos.atLeastOnce);
+  }
+
+  void setRulesToTakeEffect() {
+    final sessionIdCha = StringUtil.generateRandomString(10);
+    var topic = "cpe/$sn";
+    var pubtopic = "cpe/$sn/setRule";
+    var parameters = {
+      "event": "ParentControl",
+      "sn": sn,
+      "sessionId": sessionIdCha,
+      "pubTopic": pubtopic,
+      "param": {
+        "method": "set",
+        "data": {
+          "config": "appfilter2",
+          "type": "global",
+          "name": "global",
+          "values": {"enable": _isOpenControlInRow == true ? "1" : '0'}
+        }
+      }
+    };
+    _publishMessage(topic, parameters);
   }
 
   @override
@@ -369,6 +356,7 @@ class _PieChartPageState extends State<PieChartPage> {
               setState(() {
                 _isOpenControlInRow = val;
                 uploadParentConfigData();
+                setRulesToTakeEffect();
               });
             },
           ),
@@ -378,8 +366,7 @@ class _PieChartPageState extends State<PieChartPage> {
         ],
       ),
       backgroundColor: Colors.white,
-      body:
-          resList.isEmpty ? setLoadingIndicator() : setUpBodyContent(),
+      body: resList.isEmpty ? setLoadingIndicator() : setUpBodyContent(),
     );
   }
 
@@ -444,7 +431,11 @@ class _PieChartPageState extends State<PieChartPage> {
                           const SizedBox(
                             height: 30,
                           ),
-                          SizedBox(height: 240, child: ordinalDataList.isEmpty ? Container() : getPieChart()),
+                          SizedBox(
+                              height: 240,
+                              child: ordinalDataList.isEmpty
+                                  ? const Center(child: Text("No statistics yet",style: TextStyle(color: Colors.black,fontSize: 20,fontWeight: FontWeight.bold),),)
+                                  : getPieChart()),
                           // EasyPieChart(
                           //   key: key,
                           //   children: pies,
@@ -595,7 +586,7 @@ class _PieChartPageState extends State<PieChartPage> {
   Widget getAppcationTypeList(String imgPath, String title, String totalTime) {
     return InkWell(
       onTap: () {
-        if (timeListModel!.param!.isNotEmpty) {
+        if (timeListModel != null && timeListModel!.param!.isNotEmpty) {
           if (title == "Social Media" &&
               timeListModel!.param![0].social!.isNotEmpty) {
             List<Social> timeList = [];
@@ -645,7 +636,7 @@ class _PieChartPageState extends State<PieChartPage> {
                 Border(bottom: BorderSide(width: 1, color: Colors.black12))),
         height: 70,
         child: ListTile(
-          contentPadding: const EdgeInsets.only(left: 10,right: 10),
+          contentPadding: const EdgeInsets.only(left: 10, right: 10),
           leading: Image.asset(
             imgPath,
             width: 20,
@@ -678,7 +669,7 @@ class _PieChartPageState extends State<PieChartPage> {
             children: [
               Expanded(
                 child: Text(
-                  devices[0].name!,
+                  devices[0].name! == "*" ? "Unknown Device" : devices[0].name!,
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
@@ -693,7 +684,7 @@ class _PieChartPageState extends State<PieChartPage> {
               .map((EquipmentInfo item) => DropdownMenuItem<String>(
                     value: item.name,
                     child: Text(
-                      item.name!,
+                      item.name! == "*" ? "Unknown Device" :item.name!,
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
@@ -713,7 +704,7 @@ class _PieChartPageState extends State<PieChartPage> {
                 }
               }
               // 请求统计信息
-              requestData(sn, selectedMacAddress);
+              requestData(sn, selectedMacAddress.toLowerCase());
             });
           },
           buttonStyleData: ButtonStyleData(

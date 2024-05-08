@@ -49,9 +49,9 @@ class _ConnectedDeviceState extends State<ConnectedDevice>
       int id = 0;
 
       d['data']['wifiDevices'].addAll(d['data']['lanDevices']);
-      deviceList = d['data']['wifiDevices'];
-
-      for (var item in deviceList) {
+      if ((d['data']['wifiDevices'] as List).isNotEmpty) {
+        deviceList = d['data']['wifiDevices'];
+        for (var item in deviceList) {
         OnlineDeviceTable device = OnlineDeviceTable.fromJson({
           'id': id,
           'LeaseTime': '1',
@@ -64,6 +64,8 @@ class _ConnectedDeviceState extends State<ConnectedDevice>
         id++;
       }
       topoData = EquipmentDatas(onlineDeviceTable: onlineDeviceTable, max: 255);
+      }
+      
     });
   }
 
@@ -93,7 +95,7 @@ class _ConnectedDeviceState extends State<ConnectedDevice>
           for (var item in offDeviceList) {
             OnlineDeviceTable device = OnlineDeviceTable.fromJson({
               'id': id,
-              'LeaseTime': item.leaseTime ?? "" ,
+              'LeaseTime': item.leaseTime ?? "",
               'Type': item.connection ?? 'LAN',
               'HostName': item.name ?? "",
               'IP': item.ipaddress ?? "",
@@ -214,13 +216,14 @@ class OnlinePage extends StatelessWidget {
                   },
                   child: Card(
                     clipBehavior: Clip.hardEdge,
-                    elevation: 5, //设置卡片阴影的深度
+                    elevation: 2, //设置卡片阴影的深度
+                    margin: const EdgeInsets.only(top: 10,left: 10,right: 10),
                     shape: const RoundedRectangleBorder(
                       //设置卡片圆角
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
                     ),
-                    child: Container(
-                      decoration: const BoxDecoration(),
+                    child: SizedBox(
+                      height: 90,
                       child: ListTile(
                           //图片
                           leading: ClipOval(
@@ -229,16 +232,16 @@ class OnlinePage extends StatelessWidget {
                           //中间文字
                           title: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Expanded(
-                                child: SizedBox(
-                                  child:
-                                      //显示的文字
-                                      Text(
-                                    (deviceList[index]['name'] == "" || deviceList[index]['name'] == "*") ? "Unknow Device" :  deviceList[index]['name'],
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                  ),
+                                child: Text(
+                                  (deviceList[index]['name'] == "" ||
+                                          deviceList[index]['name'] == "*")
+                                      ? "Unknow Device"
+                                      : deviceList[index]['name'],
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
                                 ),
                               ),
                               // icon
@@ -257,7 +260,6 @@ class OnlinePage extends StatelessWidget {
                                         ))
                             ],
                           ),
-
                           //title下方显示的内容
                           subtitle: Row(
                             children: [
@@ -302,13 +304,14 @@ class OfflinePage extends StatelessWidget {
                   },
                   child: Card(
                     clipBehavior: Clip.hardEdge,
-                    elevation: 5, //设置卡片阴影的深度
+                    elevation: 1, //设置卡片阴影的深度
+                    margin: const EdgeInsets.only(top: 10,left: 10,right: 10),
                     shape: const RoundedRectangleBorder(
                       //设置卡片圆角
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
                     ),
-                    child: Container(
-                      decoration: const BoxDecoration(),
+                    child: SizedBox(
+                      height: 60,
                       child: ListTile(
                         //图片
                         leading: ClipOval(
@@ -317,19 +320,18 @@ class OfflinePage extends StatelessWidget {
                         //中间文字
                         title: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Expanded(
-                              child: SizedBox(
-                                child:
-                                    //显示的文字
-                                    Text(
-                                  (offDeviceList[index].name! == "" || offDeviceList[index].name! == "*")
-                                      ? "Unknow Device"
-                                      : offDeviceList[index].name!,
-                                  style: const TextStyle(color: Colors.grey),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                ),
+                              child: //显示的文字
+                                  Text(
+                                (offDeviceList[index].name! == "" ||
+                                        offDeviceList[index].name! == "*")
+                                    ? "Unknow Device"
+                                    : offDeviceList[index].name!,
+                                style: const TextStyle(color: Colors.grey),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
                               ),
                             ),
                           ],

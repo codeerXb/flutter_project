@@ -349,19 +349,20 @@ class _WanSettingsState extends State<WanSettings> {
       var response = await Request().getACSNode(parameterNames, sn);
       var d = json.decode(response.toString());
       debugPrint("请求返回的数据:$d");
-
+      final model = WanSettingData.fromJson(d);
       // var response = await XHttp.get('/data.html', data);
       setState(() {
-        wanSettingVal = WanSettingData.fromJson(d);
-        if (wanSettingVal.networkWanSettingsMode.toString() == 'nat') {
+        wanSettingVal = model;
+        debugPrint("networkWanSettingsMode : ${d["data"]["networkWanSettingsMode"]}");
+        if (d["data"]["networkWanSettingsMode"] == 'nat') {
           wanShowVal = 'NAT';
           wanIndex = 0;
         }
-        if (wanSettingVal.networkWanSettingsMode.toString() == 'bridge') {
+        if (d["data"]["networkWanSettingsMode"] == 'bridge') {
           wanShowVal = S.current.BRIDGE;
           wanIndex = 1;
         }
-        if (wanSettingVal.networkWanSettingsMode.toString() == 'router') {
+        if (d["data"]["networkWanSettingsMode"] == 'router') {
           wanShowVal = 'ROUTER';
           wanIndex = 2;
         }
@@ -387,7 +388,7 @@ class _WanSettingsState extends State<WanSettings> {
         var d = json.decode(res.toString());
         setState(() {
           wanNetwork = WanNetworkModel.fromJson(d);
-          if (wanNetwork.success == true) {
+          if (d["data"] == "Success") {
             ToastUtils.toast(S.current.success);
           } else {
             ToastUtils.toast(S.current.error);

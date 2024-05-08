@@ -21,6 +21,7 @@ import '../../core/utils/string_util.dart';
 import '../../core/widget/custom_app_bar.dart';
 import '../../generated/l10n.dart';
 
+
 /// 我的页面
 class Setting extends StatefulWidget {
   const Setting({Key? key}) : super(key: key);
@@ -69,7 +70,7 @@ class _SettingState extends State<Setting> {
         localUrl = value as String;
       }
     });
-    super.initState();
+    
     sharedGetData("loginInfo", List).then((data) {
       if (StringUtil.isNotEmpty(data)) {
         List<String> loginInfo = data as List<String>;
@@ -94,10 +95,14 @@ class _SettingState extends State<Setting> {
 
     sharedGetData("systemRouterOnly", String).then(((res) {
       debugPrint("获取的systemRouterOnly $res");
-      setState(() {
-        routeOnly = res.toString();
-      });
+      if (res != null) {
+        setState(() {
+          routeOnly = res.toString();
+        });
+      }
     }));
+
+    super.initState();
   }
 
   void appLogin() {
@@ -470,6 +475,9 @@ class _SettingState extends State<Setting> {
 
                   /// 系统设置
                   systemSettings(),
+
+                  /// router版本升级
+                  routerVersionUpgrade(),
 
                   /// 关于我们
                   aboutUs(),
@@ -876,6 +884,20 @@ class _SettingState extends State<Setting> {
     );
   }
 
+  Widget routerVersionUpgrade() {
+    return CommonWidget.simpleWidgetWithMine(
+        title: S.of(context).RouterUpgrade,
+        icon: const Image(
+          image: AssetImage('assets/images/router_upgrade.png'),
+          width: 25,
+          height: 25,
+        ),
+        callBack: () {
+          Get.toNamed("/routerUpgradePage");
+          
+        });
+  }
+
   /// 图表
   Widget chartCal() {
     return Container(
@@ -947,8 +969,6 @@ class _SettingState extends State<Setting> {
                     "session", String, loginResJson['sessionid']);
                 loginController.setToken(loginResJson['token']);
                 sharedAddAndUpdate("token", String, loginResJson['token']);
-
-                
               }
             }, onError: (e) {
               ToastUtils.showDialogPopup(

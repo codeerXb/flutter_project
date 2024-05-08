@@ -39,7 +39,7 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
   final TextEditingController addressController = TextEditingController();
   String addressText = "";
   // avatar
-  late var avatar = '';
+  // late var avatar = '';
   File? _imageFile;
   String _imageFileAvatar = '';
   // 点击空白  关闭键盘 时传的一个对象
@@ -55,25 +55,30 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    sharedGetData('imageUrl', String).then(((image) {
+      if (image != null) {
+        setState(() {
+          _imageFile = File(image.toString());
+        });
+      }
+    }));
     super.initState();
     name = Get.arguments["name"];
     debugPrint("用户名是:$name");
     sharedGetData('loginUserInfo', String).then(((res) {
-      setState(() {
-        loginUserInfo = jsonDecode(res.toString());
-        // 页面初始更新数据
-        nicknameController.text = loginUserInfo['nickname'] ?? '';
-        phoneController.text = loginUserInfo['phone'] ?? '';
-        emailController.text = loginUserInfo['email'] ?? '';
-        addressController.text = loginUserInfo['address'] ?? '';
-        _imageFileAvatar = loginUserInfo['avatar'] ?? '';
-        printInfo(info: '_imageFileAvatar$_imageFileAvatar');
-      });
-      printInfo(info: '_imageFile$_imageFile');
+      if (res != null) {
+        setState(() {
+          loginUserInfo = jsonDecode(res.toString());
+          // 页面初始更新数据
+          nicknameController.text = loginUserInfo['nickname'] ?? '';
+          phoneController.text = loginUserInfo['phone'] ?? '';
+          emailController.text = loginUserInfo['email'] ?? '';
+          addressController.text = loginUserInfo['address'] ?? '';
+          _imageFileAvatar = loginUserInfo['avatar'] ?? '';
+          printInfo(info: '_imageFileAvatar$_imageFileAvatar');
+        });
+      }
     }));
-    printInfo(info: '_imageFile33333333$_imageFile');
-
     nicknameController.addListener(() {
       debugPrint('监听名字：${nicknameController.text}');
     });
@@ -90,45 +95,100 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
 
   Future<void> _getImage(ImageSource source) async {
     // 先判断是否授权相机和相册权限
-    requestMediaPermission();
+    if (source == ImageSource.camera) {
+      checkCameraPermissions();
+    } else if (source == ImageSource.gallery) {
+      checkGalleryPermissions();
+    }
     // 获取照片
-    final pickedFile = await ImagePicker().pickImage(source: source);
-    setState(() {
-      _imageFile = File(pickedFile!.path);
-      Navigator.pop(context);
-    });
-    // 上传图片
-    var res = await App.uploadImg(pickedFile!);
-    avatar = res['data'];
+    final pickedFile =
+        await ImagePicker().pickImage(source: source, imageQuality: 80);
+    if (pickedFile != null) {
+      App.uploadImg(pickedFile).then((response) {
+        var dic = jsonDecode(jsonEncode(response));
+        if (dic["code"] == 200) {
+          ToastUtils.toast("Upload successful");
+          Navigator.pop(context);
+          setState(() {
+            _imageFileAvatar = dic["data"];
+            _imageFile = File(pickedFile.path);
+            sharedAddAndUpdate("imageUrl", String, pickedFile.path);
+          });
+        }
+      });
+    }
   }
 
   void _showImagePicker(BuildContext context) {
     showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return SafeArea(
-          child: Column(
+        context: context,
+        builder: (context) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: const Icon(Icons.camera_alt),
-                title: const Text("camera"),
-                onTap: () {
-                  _getImage(ImageSource.camera);
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.image),
-                title: const Text("photo album"),
+            children: <Widget>[
+              GestureDetector(
                 onTap: () {
                   _getImage(ImageSource.gallery);
                 },
+                child: const SizedBox(
+                  height: 60,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(Icons.photo),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Text('Photo')
+                    ],
+                  ),
+                ),
+              ),
+              const Divider(
+                height: 1.0,
+                indent: 0,
+                color: Colors.grey,
+              ),
+              GestureDetector(
+                onTap: () {
+                  _getImage(ImageSource.camera);
+                },
+                child: const SizedBox(
+                  height: 60,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(Icons.camera),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Text('Camera')
+                    ],
+                  ),
+                ),
+              ),
+              const Divider(
+                height: 1.0,
+                indent: 0,
+                color: Colors.grey,
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: const SizedBox(
+                  height: 60,
+                  child: Center(
+                    child: Text('Cancel'),
+                  ),
+                ),
               ),
             ],
-          ),
-        );
-      },
-    );
+          );
+        });
   }
 
   // 修改信息 云端
@@ -136,7 +196,7 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
     var objectName = {
       "id": loginUserInfo['id'],
       "nickname": nicknameController.text,
-      "avatar": avatar,
+      "avatar": _imageFileAvatar,
       "phone": phoneController.text,
       "email": emailController.text,
       "address": addressController.text,
@@ -159,53 +219,34 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
   }
 
   /// 检查是否授权
-  Future<bool> checkGalleryPermissions() async {
+  checkGalleryPermissions() async {
     PermissionStatus status = await Permission.photos.request();
-    if (status == PermissionStatus.granted) {
-      return true;
-    } else {
-      return false;
+    if (status != PermissionStatus.granted) {
+      openAppSettings();
+      return;
     }
   }
 
-  /// 获取相机/相册权限
-  requestMediaPermission() async {
-    if (!await checkGalleryPermissions()) {
-      bool isShown = await Permission.photos.shouldShowRequestRationale;
-      debugPrint("当前是否获取了访问相册的权限:$isShown");
-      if (isShown) {
-        debugPrint("打开了弹窗");
-        showDialog(
-            context: context,
-            builder: (BuildContext context) => AlertDialog(
-                  title: const Text("Permission request"),
-                  content: Text(
-                      "Camera related permissions are required, is it allowed?"),
-                  actions: <Widget>[
-                    OutlinedButton(
-                      child: Text("deny"),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                    OutlinedButton(
-                      child: Text("allow"),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        openAppSettings();
-                      },
-                    ),
-                  ],
-                ));
-      } else {
-        debugPrint("执行到这里了");
-        // openAppSettings();
-      }
+  checkCameraPermissions() async {
+    PermissionStatus status = await Permission.camera.request();
+    if (status != PermissionStatus.granted) {
+      openAppSettings();
+      return;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: customAppbar(context: context, title: 'ACCOUNT'),
+    return Scaffold(// customAppbar(context: context, title: 'ACCOUNT')
+        appBar: AppBar(
+          leading: IconButton(onPressed: (){
+            Get.back(result: _imageFile?.path);
+          }, 
+          icon: const Icon(Icons.arrow_back_ios)
+          ),
+          title: const Text("ACCOUNT",style: TextStyle(color: Colors.black,fontWeight:FontWeight.bold,fontSize: 20),),
+          centerTitle: true,
+        ),
         body: loading
             ? const Center(
                 child: SizedBox(
@@ -258,21 +299,25 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
                                 image: _imageFile != null
                                     ? DecorationImage(
                                         image: FileImage(_imageFile!),
-                                        fit: BoxFit.cover)
-                                    : DecorationImage(
+                                        fit: BoxFit.cover,onError: (exception, stackTrace) {
+                                          
+                                        },)
+                                    : _imageFileAvatar.isNotEmpty ? DecorationImage(
                                         image: NetworkImage(_imageFileAvatar),
+                                        fit: BoxFit.cover,
+                                        onError: (exception, stackTrace) {
+                                          
+                                        },
+                                      ) : const DecorationImage(
+                                        image: AssetImage("assets/images/user_info_icon.png"),
                                         fit: BoxFit.cover,
                                       ),
                               ),
-                              child: _imageFile == null &&
-                                      loginUserInfo['avatar'] == ''
-                                  ? Icon(
+                              child: Icon(
                                       Icons.camera_alt,
                                       size: 50.w,
                                       color: Colors.lightBlue,
-                                    )
-                                  : Icon(Icons.camera_alt,
-                                      size: 50.w, color: Colors.lightBlue),
+                                    ),
                             ),
                           ),
                           SizedBox(height: 20.w),
@@ -474,7 +519,9 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
-                                          Text(S.of(context).update,style:const TextStyle(color: Colors.white)),
+                                          Text(S.of(context).update,
+                                              style: const TextStyle(
+                                                  color: Colors.white)),
                                         ],
                                       ),
                                     )),
@@ -487,5 +534,13 @@ class _UserPersonalInformationState extends State<UserPersonalInformation> {
                   ),
                 ),
               ));
+  }
+
+  @override
+  void setState(VoidCallback fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+    
   }
 }

@@ -25,9 +25,9 @@ Future<void> main() async {
   final wifiGateway = await info.getWifiGatewayIP();
   debugPrint('当前wifi的网关地址$wifiGateway');
   BaseConfig.baseUrl = "https://$wifiGateway";
-  if (wifiGateway != null && wifiGateway.isNotEmpty){
-      sharedAddAndUpdate("baseLocalUrl", String, wifiGateway);
-    }
+  if (wifiGateway != null && wifiGateway.isNotEmpty) {
+    sharedAddAndUpdate("baseLocalUrl", String, wifiGateway);
+  }
   XHttp.init();
 
   //顶部状态栏透明
@@ -85,21 +85,16 @@ class _MyAppState extends State<MyApp> {
                 String lang = res.toString();
                 debugPrint('当前设置的语言1$lang---$locale---${lang.isNotEmpty}');
                 if (lang != 'null') {
-                  if (lang == 'zh_CN') {
-                    debugPrint('当前设置的语言1-1');
-                    S.load(const Locale('zh', 'CN'));
-                    return const Locale('zh', 'CN');
-                  } else if (lang == 'en_US') {
-                    debugPrint('当前设置的语言1-2');
+                  if (lang == 'en_US') {
                     S.load(const Locale('en', 'US'));
                     return const Locale('en', 'US');
-                  } else if (locale == null) {
-                    debugPrint('当前设置的语言1-3');
-                    return null;
                   }
+                } else {
+                  S.load(const Locale('en', 'US'));
+                  return const Locale('en', 'US');
                 }
               });
-              debugPrint('当前设置的语言1-4');
+
               if (locale.toString().split('_').length > 1) {
                 S.load(Locale(locale.toString().split('_')[0],
                     locale.toString().split('_')[1]));
@@ -114,7 +109,6 @@ class _MyAppState extends State<MyApp> {
             fallbackLocale: const Locale('en', 'US'),
             key: navigatorKey,
             title: 'router',
-            // 不显示debug标签
             debugShowCheckedModeBanner: false,
             initialRoute: '/',
             onGenerateRoute: ((settings) {

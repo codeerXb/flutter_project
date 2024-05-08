@@ -126,6 +126,7 @@ class _AccessEquipmentState extends State<AccessEquipment> {
       "event": "mqtt2sodTable",
       "sn": sn,
       "sessionId": sessionIdStr,
+      "pubTopic": "app/macFilterData/$sn",
       "param": {"method": "get", "table": "FwMacFilterTable"}
     };
     final nodePubTopic = "cpe/$sn/nodePubTopic";
@@ -182,6 +183,7 @@ class _AccessEquipmentState extends State<AccessEquipment> {
         debugPrint("设备安全策略:$securityPolicy");
         setState(() {
           policyType = securityPolicy;
+          _switchValue = deviceControlStatus();
         });
         
       } else {}

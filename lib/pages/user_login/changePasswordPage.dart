@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:time_picker_sheet/widget/sheet.dart';
-import 'package:time_picker_sheet/widget/time_picker.dart';
+import 'package:time_picker_sheet_fork/widget/sheet.dart';
+import 'package:time_picker_sheet_fork/widget/time_picker.dart';
 
 class ChangePasswordPage extends StatefulWidget {
   const ChangePasswordPage({Key? key}) : super(key: key);
@@ -19,8 +19,11 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
         sheetTitle: 'Please set time',
         minuteTitle: 'Minute',
         hourTitle: 'Hour',
-        saveButtonText: 'Save',
-      ),
+        minuteTitleStyle: const TextStyle(color: Colors.black,fontSize: 16),
+        hourTitleStyle: const TextStyle(color: Colors.black,fontSize: 16),
+        sheetCloseIconColor: Colors.black,
+        saveButtonWidget: const Text('Save', style: TextStyle(color: Colors.white)),
+      ),// 'Save'
     );
 
     if (result != null) {

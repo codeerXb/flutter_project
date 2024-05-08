@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:css_filter/css_filter.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_template/config/base_config.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/http/http_app.dart';
 import 'package:flutter_template/core/request/request.dart';
@@ -20,11 +20,17 @@ import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
 import 'package:flutter_template/pages/topo/model/equipment_datas.dart';
 import 'package:get/get.dart';
 import '../../generated/l10n.dart';
+import '../../core/utils/string_util.dart';
 import 'package:flutter_template/core/utils/screen_adapter.dart';
 import '../parent_control/Model/terminal_equipmentBean.dart';
-
+import '../../config/base_config.dart';
+import 'package:mqtt_client/mqtt_client.dart';
+import 'package:mqtt_client/mqtt_server_client.dart';
+import '../../core/utils/logger.dart';
 
 typedef void OnItemPressed(bool result);
+
+String Id_Random = StringUtil.generateRandomString(10);
 
 //网络拓扑
 class Topo extends StatefulWidget {
@@ -35,9 +41,12 @@ class Topo extends StatefulWidget {
 }
 
 class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
+  MqttServerClient client = MqttServerClient.withPort(
+      BaseConfig.mqttMainUrl, "client_$Id_Random", BaseConfig.websocketPort);
   EquipmentDatas topoData = EquipmentDatas(onlineDeviceTable: [], max: null);
   final LoginController loginController = Get.put(LoginController());
   String sn = '';
+  var subTopic = "";
   Map<String, dynamic> onlineCount = {};
   List<String> deviceNames = [];
   late AnimationController _animationController;
@@ -60,48 +69,39 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
         //状态为local 请求本地  状态为cloud  请求云端
         printInfo(info: 'state--${loginController.login.state}');
         if (mounted) {
+          // requestOrder(sn);
           getDevices();
-          getTREquinfoDatas();
+          Future.delayed(const Duration(seconds: 2),(){
+            getTREquinfoDatas(sn);
+          });
+          
+          requestParentCofingStatus(sn);
         }
-        // if (loginController.login.state == 'cloud' && sn.isNotEmpty) {
-        //   if (mounted) {
-        //     getTRTopoData(false);
-        //   }
-        // }
-        // if (loginController.login.state == 'local') {
-        //   if (mounted) {
-        //     // 获取设备列表并更新在线数量
-        //     getTopoData(false);
-        //     //获取网络链接状态
-        //     updateStatus();
-        //   }
-        // }
       });
     }));
   }
 
-  void requesTerminalEquipment(String sn) {
-    App.get('/platform/parentControlApp/queryDeviceInfoBySn?sn=$sn').then((res){
-      final terminalModel = TerminalEquipmentBeans.fromJson(res);
-      if (terminalModel.code == 200 && terminalModel.data != null) {
-        equipmentDatas = terminalModel.data!;
-        debugPrint("获取的终端设备列表:${equipmentDatas[0].mac} -- ${equipmentDatas[0].name}");
-      }else {
-        ToastUtils.toast(terminalModel.message!);
-      }
-    }).catchError((error){
-      ToastUtils.error(error.toString());
+  requestOrder(String sn) async {
+    await Future.wait<dynamic>([getTREquinfoDatas(sn),getDevices()]).then((e){
+      XLogger.getLogger().d("result --- $e");
+    }).catchError((e){
     });
   }
 
-  void requestDefaultDeviceStatistics() {
-
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
+  void requesTerminalEquipment(String sn) {
+    App.get('/platform/parentControlApp/queryDeviceInfoBySn?sn=$sn')
+        .then((res) {
+      final terminalModel = TerminalEquipmentBeans.fromJson(res);
+      if (terminalModel.code == 200 && terminalModel.data != null) {
+        equipmentDatas = terminalModel.data!;
+        // debugPrint(
+        //     "获取的终端设备列表:${equipmentDatas[0].mac} -- ${equipmentDatas[0].name}");
+      } else {
+        ToastUtils.toast(terminalModel.message!);
+      }
+    }).catchError((error) {
+      ToastUtils.error(error.toString());
+    });
   }
 
   final ToolbarController toolbarController = Get.put(ToolbarController());
@@ -157,10 +157,9 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
 
   //  获取在线设备  云端
   getTRTopoData(sx) async {
-    printInfo(info: 'sn在这里有值吗-------$sn');
     var parameterNames = {
       "method": "get",
-      "nodes": ["lteMainStatusGet", "wifiEnable","wifi5gEnable"]
+      "nodes": ["lteMainStatusGet", "wifiEnable", "wifi5gEnable"]
     };
     // var parameterNames = [
     //   "InternetGatewayDevice.WEB_GUI.Overview.DeviceList",
@@ -170,7 +169,7 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
     var parameterNamesTable = {"method": "get", "table": "OnlineDeviceTable"};
     var res = await Request().getSODTable(parameterNamesTable, sn);
     var jsonObj = jsonDecode(res);
-    
+
     var resNode = await Request().getACSNode(parameterNames, sn);
     if (sx) {
       ToastUtils.toast(S.current.success);
@@ -237,8 +236,7 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
         setState(() {
           topoData = EquipmentDatas(onlineDeviceTable: [], max: null);
         });
-        print('The provided string is not valid JSON');
-        print(e);
+        debugPrint(e.toString());
       }
     }).catchError((onError) {
       // ToastUtils.toast('获取在线设备失败');
@@ -262,29 +260,31 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
       var res = await App.post('/cpeMqtt/getDevicesTable', data: form);
 
       var d = json.decode(res.toString());
-      if (d['code'] != 200) {
-      } else {
+
+      if (d['code'] == 200) {
         if (mounted) {
           setState(() {
             List<OnlineDeviceTable>? onlineDeviceTable = [];
             int id = 0;
-
             d['data']['wifiDevices'].addAll(d['data']['lanDevices']);
-            d['data']['wifiDevices'].forEach((item) {
-              OnlineDeviceTable device = OnlineDeviceTable.fromJson({
-                'id': id,
-                'LeaseTime': '1',
-                'Type': item['connection'] ?? 'LAN',
-                'HostName': item['name'],
-                'IP': item['IPAddress'],
-                'MAC': item['MACAddress'] ?? item['MacAddress']
+            if ((d['data']['wifiDevices'] as List).isNotEmpty) {
+              d['data']['wifiDevices'].forEach((item) {
+                OnlineDeviceTable device = OnlineDeviceTable.fromJson({
+                  'id': id,
+                  'LeaseTime': '1',
+                  'Type': item['connection'] ?? 'LAN',
+                  'HostName': item['name'],
+                  'IP': item['IPAddress'],
+                  'MAC': item['MACAddress'] ?? item['MacAddress']
+                });
+                onlineDeviceTable.add(device);
+                id++;
               });
-              onlineDeviceTable.add(device);
-              id++;
-            });
-            _onlineCount = onlineDeviceTable.length;
-            topoData =
-                EquipmentDatas(onlineDeviceTable: onlineDeviceTable, max: 255);
+              _onlineCount = onlineDeviceTable.length;
+              topoData = EquipmentDatas(
+                  onlineDeviceTable: onlineDeviceTable, max: 255);
+            }
+
             // ToastUtils.toast(S.current.success);
           });
         }
@@ -305,12 +305,7 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
 //1连接
   var ConnectStatus = '';
 // 云端
-  getTREquinfoDatas() async {
-    printInfo(info: 'sn在这里有值吗-------$sn');
-    if (sn == '') {
-      var value = await sharedGetData('deviceSn', String);
-      sn = value.toString();
-    }
+  getTREquinfoDatas(String sn) async {
     var parameterNames = {
       "method": "get",
       "nodes": ["lteMainStatusGet"]
@@ -338,6 +333,111 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
     if (result == true && mounted) {
       getDevices();
     }
+  }
+
+  requestParentCofingStatus(String sn) async {
+    client.logging(on: false);
+    client.keepAlivePeriod = 60;
+    client.useWebSocket = true;
+    client.autoReconnect = true;
+    client.onDisconnected = onDisconnected;
+    client.onConnected = onConnected;
+    client.onSubscribed = onSubscribed;
+    client.pongCallback = pong;
+    client.setProtocolV311();
+
+    final connMess = MqttConnectMessage()
+        .authenticateAs('admin', 'smawav')
+        .withWillTopic('willtopic')
+        .withWillMessage('My Will message')
+        .startClean()
+        .withWillQos(MqttQos.atLeastOnce);
+    debugPrint('Client connecting....');
+    client.connectionMessage = connMess;
+
+    try {
+      await client.connect();
+    } on NoConnectionException catch (e) {
+      debugPrint('Client exception: $e');
+      client.disconnect();
+    } on SocketException catch (e) {
+      debugPrint('Socket exception: $e');
+      client.disconnect();
+    }
+
+    if (client.connectionStatus!.state == MqttConnectionState.connected) {
+      debugPrint('Client connected');
+    } else {
+      debugPrint(
+          'Client connection failed - disconnecting, status is ${client.connectionStatus}');
+      client.disconnect();
+      // exit(-1);
+    }
+
+    client.published!.listen((MqttPublishMessage message) {
+      debugPrint(
+          'Published topic: topic is ${message.variableHeader!.topicName}, with Qos ${message.header!.qos}');
+    });
+
+    subTopic = "cpe/$sn";
+    final sessionIdConfig = StringUtil.generateRandomString(10);
+    var configTopicStr = "cpe/$sn-parentConfig";
+    var configParms = {
+      "event": "getParentControlConfig",
+      "sn": sn,
+      "sessionId": sessionIdConfig,
+      "pubTopic": configTopicStr
+    };
+    _publishMessage(subTopic, configParms);
+    client.subscribe(configTopicStr, MqttQos.atLeastOnce);
+    client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
+      debugPrint("====================监听到新消息了======================");
+      final MqttPublishMessage recMess = c![0].payload as MqttPublishMessage;
+      final String topic = c[0].topic;
+      final String pt = const Utf8Decoder().convert(recMess.payload.message);
+      String desString = "topic is <$topic>, payload is <-- $pt -->";
+      String result = pt.substring(0, pt.length - 1);
+      debugPrint("string =$desString");
+      Map datas = jsonDecode(result);
+      var configEnable = datas["data"]["enable"];
+      debugPrint("家长控制开关 =$configEnable");
+      sharedAddAndUpdate("configEnable", String, configEnable);
+    });
+  }
+
+  /// The subscribed callback
+  void onSubscribed(String topic) {
+    debugPrint('Subscription confirmed for topic $topic');
+  }
+
+  /// The unsolicited disconnect callback
+  void onDisconnected() {
+    debugPrint('OnDisconnected client callback - Client disconnection');
+    if (client.connectionStatus!.disconnectionOrigin ==
+        MqttDisconnectionOrigin.solicited) {
+      debugPrint('OnDisconnected callback is solicited, this is correct');
+    }
+    // exit(-1);
+  }
+
+  /// The successful connect callback
+  void onConnected() {
+    debugPrint('OnConnected client callback - Client connection was sucessful');
+  }
+
+  /// Pong callback
+  void pong() {
+    debugPrint('Ping response client callback invoked');
+  }
+
+  void _publishMessage(String topic, Map<String, dynamic> message) {
+    debugPrint("======发送获取App测速的消息成功了=======");
+    debugPrint("===$topic ===$message=======");
+    var builder = MqttClientPayloadBuilder();
+    var jsonData = json.encode(message);
+    builder.addUTF8String(jsonData);
+
+    client.publishMessage(topic, MqttQos.atLeastOnce, builder.payload!);
   }
 
   @override
@@ -631,7 +731,10 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
                                   .map(
                                     (e) => TopoItems(
                                       onItemPressed: handleItemPressed,
-                                      title: (e.hostName.toString().isEmpty || e.hostName.toString() == "*") ? "Unknown Device" : e.hostName.toString(),
+                                      title: (e.hostName.toString().isEmpty ||
+                                              e.hostName.toString() == "*")
+                                          ? "Unknown Device"
+                                          : e.hostName.toString(),
                                       isNative: false,
                                       isShow: true,
                                       topoData: e,
@@ -657,217 +760,214 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
                 //       child: Text(S.of(context).NoDeviceConnected)),
                 // ),
                 //2*3网格
-                        Container(
-                          margin: EdgeInsets.only(
-                              left: 30.w, right: 30.0.w, top: 20.w),
-                          height: 480.w,
-                          child: GridView(
-                            physics:
-                                const NeverScrollableScrollPhysics(), //禁止滚动
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2, //一行的Widget数量
-                              childAspectRatio: 2, //宽高比为1
-                              crossAxisSpacing: 16, //横轴方向子元素的间距
+                Container(
+                  margin: EdgeInsets.only(left: 30.w, right: 30.0.w, top: 20.w),
+                  height: 480.w,
+                  child: GridView(
+                    physics: const NeverScrollableScrollPhysics(), //禁止滚动
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2, //一行的Widget数量
+                      childAspectRatio: 2, //宽高比为1
+                      crossAxisSpacing: 16, //横轴方向子元素的间距
+                    ),
+                    children: <Widget>[
+                      // 接入设备
+                      // GestureDetector(
+                      //   onTap: () {
+                      //     Get.toNamed('/connected_device');
+                      //   },
+                      //   child: GardCard(
+                      //       boxCotainer: Row(
+                      //     mainAxisAlignment:
+                      //         MainAxisAlignment.spaceBetween,
+                      //     children: [
+                      //       Icon(Icons.devices_other_rounded,
+                      //           color: const Color.fromRGBO(
+                      //               95, 141, 255, 1),
+                      //           size: 60.sp),
+                      //       Expanded(
+                      //         child: Column(
+                      //           mainAxisAlignment:
+                      //               MainAxisAlignment.center,
+                      //           children: [
+                      //             Text(S.current.device),
+                      //             Text(
+                      //               '$_onlineCount ${S.current.line}',
+                      //               style: TextStyle(
+                      //                   color: Colors.black54,
+                      //                   fontSize:
+                      //                       ScreenAdapter.fontSize(25)),
+                      //             ),
+                      //           ],
+                      //         ),
+                      //       )
+                      //     ],
+                      //   )),
+                      // ),
+                      //儿童上网
+
+                      GestureDetector(
+                        onTap: () {
+                          Get.toNamed('/parentList',
+                              arguments: {"equipments": equipmentDatas});
+                        },
+                        child: GardCard(
+                            boxCotainer: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.child_care,
+                                color: const Color.fromRGBO(95, 141, 255, 1),
+                                size: 60.sp),
+                            const SizedBox(
+                              width: 5,
                             ),
-                            children: <Widget>[
-                              // 接入设备
-                              // GestureDetector(
-                              //   onTap: () {
-                              //     Get.toNamed('/connected_device');
-                              //   },
-                              //   child: GardCard(
-                              //       boxCotainer: Row(
-                              //     mainAxisAlignment:
-                              //         MainAxisAlignment.spaceBetween,
-                              //     children: [
-                              //       Icon(Icons.devices_other_rounded,
-                              //           color: const Color.fromRGBO(
-                              //               95, 141, 255, 1),
-                              //           size: 60.sp),
-                              //       Expanded(
-                              //         child: Column(
-                              //           mainAxisAlignment:
-                              //               MainAxisAlignment.center,
-                              //           children: [
-                              //             Text(S.current.device),
-                              //             Text(
-                              //               '$_onlineCount ${S.current.line}',
-                              //               style: TextStyle(
-                              //                   color: Colors.black54,
-                              //                   fontSize:
-                              //                       ScreenAdapter.fontSize(25)),
-                              //             ),
-                              //           ],
-                              //         ),
-                              //       )
-                              //     ],
-                              //   )),
-                              // ),
-                              //儿童上网
-                              /*
-                              GestureDetector(
-                                onTap: () {
-                                  
-                                  Get.toNamed('/parentList',arguments: {"equipments" : equipmentDatas});
-                                },
-                                child: GardCard(
-                                    boxCotainer: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.child_care,
-                                        color: const Color.fromRGBO(
-                                            95, 141, 255, 1),
-                                        size: 60.sp),
-                                        const SizedBox(
-                                          width: 5,
-                                        ),
-                                    Expanded(
-                                      flex: 2,
-                                      child: Text(
-                                          S.of(context).parent,
-                                          textAlign: TextAlign.left,
-                                          softWrap: true,
-                                          style: TextStyle(fontSize: 30.w),
-                                        ))
-                                  ],
+                            Expanded(
+                                flex: 2,
+                                child: Text(
+                                  S.of(context).parent,
+                                  textAlign: TextAlign.left,
+                                  softWrap: true,
+                                  style: TextStyle(fontSize: 30.w),
+                                ))
+                          ],
+                        )),
+                      ),
+
+                      // 访客网路
+                      GestureDetector(
+                        onTap: () {
+                          Get.toNamed("/visitor_net");
+                        },
+                        child: GardCard(
+                            boxCotainer: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image(
+                              width: ScreenAdapter.width(80),
+                              height: ScreenAdapter.height(80),
+                              image: const AssetImage(
+                                  'assets/images/visitor_net.png'),
+                              fit: BoxFit.cover,
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Expanded(
+                                flex: 2,
+                                child: Text(
+                                  S.current.visitorNet,
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(fontSize: 30.w),
                                 )),
+                          ],
+                        )),
+                      ),
+
+                      // Device Info
+                      GestureDetector(
+                        onTap: () {
+                          Get.toNamed("/common_problem");
+                        },
+                        child: GardCard(
+                            boxCotainer: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image(
+                                width: 60.w,
+                                height: 60.w,
+                                image: const AssetImage(
+                                    'assets/images/equ_info.png'),
+                                fit: BoxFit.cover),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: Text(
+                                S.current.deviceInfo,
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                    fontSize: 30.w, color: Colors.black),
                               ),
-                              */
-                              // 访客网路
-                              GestureDetector(
-                                onTap: () {
-                                  Get.toNamed("/visitor_net");
-                                },
-                                child: GardCard(
-                                    boxCotainer: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.center,
-                                  children: [
-                                    Image(
-                                      width: ScreenAdapter.width(80),
-                                      height: ScreenAdapter.height(80),
-                                      image: const AssetImage(
-                                          'assets/images/visitor_net.png'),
-                                      fit: BoxFit.cover,
-                                    ),
-                                    const SizedBox(
-                                          width: 5,
-                                        ),
-                                    Expanded(
-                                      flex: 2,
-                                      child: Text(
-                                          S.current.visitorNet,
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(fontSize: 30.w),
-                                        )),
-                                  ],
+                            ),
+                          ],
+                        )),
+                      ),
+                      // DNS Setting
+                      GestureDetector(
+                        onTap: () {
+                          Get.toNamed("/dns_settings");
+                        },
+                        child: GardCard(
+                            boxCotainer: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image(
+                                width: 70.w,
+                                height: 70.w,
+                                image:
+                                    const AssetImage('assets/images/DNS.png'),
+                                fit: BoxFit.cover),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Expanded(
+                                flex: 2,
+                                child: Text(
+                                  S.current.dnsSettings,
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                      fontSize: 30.w, color: Colors.black),
                                 )),
-                              ),
-                              
-                              // Device Info
-                              GestureDetector(
-                                onTap: () {
-                                  Get.toNamed("/common_problem");
-                                },
-                                child: GardCard(
-                                    boxCotainer: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.center,
-                                  children: [
-                                    Image(
-                                        width: 60.w,
-                                        height: 60.w,
-                                        image: const AssetImage(
-                                            'assets/images/equ_info.png'),
-                                        fit: BoxFit.cover),
-                                        const SizedBox(
-                                          width: 5,
-                                        ),
-                                    Expanded(
-                                      flex: 2,
-                                      child: Text(
-                                        S.current.deviceInfo,
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                            fontSize: 30.w, color: Colors.black),
-                                      ),
-                                    ),
-                                  ],
+                          ],
+                        )),
+                      ),
+                      // LAN Setting
+                      GestureDetector(
+                        onTap: () {
+                          Get.toNamed("/lan_settings");
+                        },
+                        child: GardCard(
+                            boxCotainer: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image(
+                                width: 70.w,
+                                height: 70.w,
+                                image:
+                                    const AssetImage('assets/images/lan.png'),
+                                fit: BoxFit.cover),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Expanded(
+                                flex: 2,
+                                child: Text(
+                                  S.current.lanSettings,
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                      fontSize: 30.w, color: Colors.black),
                                 )),
-                              ),
-                              // DNS Setting
-                              GestureDetector(
-                                onTap: () {
-                                  Get.toNamed("/dns_settings");
-                                },
-                                child: GardCard(
-                                    boxCotainer: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.center,
-                                  children: [
-                                    Image(
-                                        width: 70.w,
-                                        height: 70.w,
-                                        image: const AssetImage(
-                                            'assets/images/DNS.png'),
-                                        fit: BoxFit.cover),
-                                        const SizedBox(
-                                          width: 5,
-                                        ),
-                                    Expanded(
-                                      flex: 2,
-                                      child: Text(
-                                          S.current.dnsSettings,
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(
-                                            fontSize: 30.w, color: Colors.black),
-                                        )
-                                    ),
-                                  ],
-                                )),
-                              ),
-                              // LAN Setting
-                              GestureDetector(
-                                onTap: () {
-                                  Get.toNamed("/lan_settings");
-                                },
-                                child: GardCard(
-                                    boxCotainer: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.center,
-                                  children: [
-                                    Image(
-                                        width: 70.w,
-                                        height: 70.w,
-                                        image: const AssetImage(
-                                            'assets/images/lan.png'),
-                                        fit: BoxFit.cover),
-                                        const SizedBox(
-                                          width: 5,
-                                        ),
-                                    Expanded(
-                                      flex: 2,
-                                      child: Text(
-                                          S.current.lanSettings,
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(
-                                            fontSize: 30.w, color: Colors.black),
-                                        )
-                                      ),
-                                  ],
-                                )),
-                              ),
-                            ],
-                          ),
-                        ),
+                          ],
+                        )),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
         ),
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    client.disconnect();
+    super.dispose();
   }
 }
 
@@ -902,8 +1002,8 @@ class _TopoItemsState extends State<TopoItems> {
         if (widget.topoData!.mac == 'B4:4C:3B:9E:46:3D') {
           Get.toNamed("/video_play");
         } else {
-          Get.toNamed("/access_equipment", arguments: {"deviceItemModel" : widget.topoData})
-              ?.then((value) {
+          Get.toNamed("/access_equipment",
+              arguments: {"deviceItemModel": widget.topoData})?.then((value) {
             if (value) {
               widget.onItemPressed(value);
             }

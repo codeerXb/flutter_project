@@ -21,7 +21,6 @@ import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
 import 'package:flutter/cupertino.dart';
 import '../../core/utils/string_util.dart';
 import 'package:get/get.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 import '../../config/base_config.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
@@ -319,18 +318,18 @@ class _HomePageState extends State<HomePage> {
       }
     };
 
-    final sessionIdConfig = StringUtil.generateRandomString(10);
-    var configTopicStr = "cpe/$sn-parentConfig";
-    var configParms = {
-      "event": "getParentControlConfig",
-      "sn": sn,
-      "sessionId": sessionIdConfig,
-      "pubTopic": configTopicStr
-    };
-    _publishMessage(subTopic, configParms);
+    // final sessionIdConfig = StringUtil.generateRandomString(10);
+    // var configTopicStr = "cpe/$sn-parentConfig";
+    // var configParms = {
+    //   "event": "getParentControlConfig",
+    //   "sn": sn,
+    //   "sessionId": sessionIdConfig,
+    //   "pubTopic": configTopicStr
+    // };
+    // _publishMessage(subTopic, configParms);
     _publishMessage(subTopic, channelParms);
     client.subscribe(pubTopicStr, MqttQos.atLeastOnce);
-    client.subscribe(configTopicStr, MqttQos.atLeastOnce);
+    // client.subscribe(configTopicStr, MqttQos.atLeastOnce);
     client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
       debugPrint("====================监听到新消息了======================");
       final MqttPublishMessage recMess = c![0].payload as MqttPublishMessage;
@@ -345,11 +344,6 @@ class _HomePageState extends State<HomePage> {
           lanSpeedUrl = datas["data"]["networkLanSettingIp"];
           debugPrint("lanspeedUrl: =$lanSpeedUrl");
         });
-      } else if (topic == configTopicStr) {
-        Map datas = jsonDecode(result);
-        var configEnable = datas["data"]["enable"];
-        debugPrint("家长控制开关 =$configEnable");
-        sharedAddAndUpdate("configEnable", String, configEnable);
       }
     });
 

@@ -3,15 +3,16 @@ class BaseConfig {
   /// 服务器路径
   static var baseUrl = "";
   // Debug请求地址
-  static const cloudBaseUrl = "http://10.0.30.43:8003";
+  // static const cloudBaseUrl = "http://172.16.11.111:8003";
   //(新aws公网地址)
-  // static const cloudBaseUrl = "http://3.234.163.231:8000/web";
+  static const cloudBaseUrl = "http://222.71.171.172:18000/web";
 
   /// websocket服务器地址:
-  static const mqttMainUrl = "ws://10.0.30.43:8083/mqtt"; // 测试地址
-  static const websocketPort = 8083;
-  // AWS地址
-  // static const mqttMainUrl = "ws://3.234.163.231:8083/mqtt";
+  // static const mqttMainUrl = "ws://172.16.11.111:8083/mqtt"; // 测试地址
+  // static const websocketPort = 8083;
+  static const websocketPort = 18083;
+  // 生产地址
+  static const mqttMainUrl = "ws://222.71.171.172:18083/mqtt";
 
   /// 版本更新路径
   // static const updateUrl = "$baseUrl/";

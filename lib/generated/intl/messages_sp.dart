@@ -159,6 +159,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "SureRouterConnected": MessageLookupByLibrary.simpleMessage(
             "Make sure the router is connected to the power supply and the WAN port is plugged in with an Ethernet cable"),
         "SystemSettings": MessageLookupByLibrary.simpleMessage("System"),
+        "RouterUpgrade" : MessageLookupByLibrary.simpleMessage("Router Upgrade"),
         "TestSignal": MessageLookupByLibrary.simpleMessage("Signal Coverage"),
         "Thu": MessageLookupByLibrary.simpleMessage("Thu"),
         "TimeLengthStatistics":

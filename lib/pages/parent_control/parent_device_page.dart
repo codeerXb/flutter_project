@@ -13,6 +13,7 @@ import "./Model/black_config_list_bean.dart";
 
 String clientRandom = StringUtil.generateRandomString(10);
 String clientId = "client_$clientRandom";
+
 class ParentDevicePage extends StatefulWidget {
   const ParentDevicePage({super.key});
 
@@ -27,16 +28,9 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
   String sn = "";
   String subTopic = "";
   BlackListConfigBeans? blackConfigModel;
-  
 
-  // var contenttypes = [
-  //   {"type" : "shopping","sels": "hbjjjjj"},
-  //   {"type" : "vedio","sels": "hbjjjjj"},
-  //   {"type" : "app store","sels": "hbjjjjj"},
-  //   {"type" : "social","sels": "hbjjjjj"},
-  //   {"type" : "website","sels": "hbjjjjj"},
+  bool loading = false;
 
-  // ];
   @override
   void initState() {
     sharedGetData('deviceSn', String).then(((res) {
@@ -96,11 +90,10 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
       "event": "ParentControl",
       "sn": sn,
       "sessionId": sessionIdStr,
-      "param": {"method" : "get",
-                "data": {
-                      "config": "appfilter2"
-                  }
-        }
+      "param": {
+        "method": "get",
+        "data": {"config": "appfilter2"}
+      }
     };
 
     _publishMessage(publishTopic, parms);
@@ -117,6 +110,7 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
       debugPrint("规则列表数据:$blackListBean");
       if (blackListBean.param != null && blackListBean.param!.isNotEmpty) {
         setState(() {
+          loading = true;
           blackConfigModel = blackListBean;
         });
       }
@@ -159,16 +153,17 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
         appBar: AppBar(
           title: const Text(
             'Blacklist Configure',
-            style: TextStyle(color: Colors.black, fontSize: 22,fontWeight: FontWeight.w500),
+            style: TextStyle(
+                color: Colors.black, fontSize: 22, fontWeight: FontWeight.w500),
           ),
           centerTitle: true,
           backgroundColor: Colors.white,
         ),
-        body: Container(
+        body: loading ? Container(
           height: double.infinity,
           decoration: const BoxDecoration(
             color: Colors.black12,
-            borderRadius: BorderRadius.all(Radius.circular(8.0)),
+            // borderRadius: BorderRadius.all(Radius.circular(8.0)),
           ),
           padding: const EdgeInsets.only(bottom: 20),
           child: Stack(
@@ -184,32 +179,30 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.fromLTRB(15, 5, 15, 30),
-                      child: blackConfigModel != null ? Container(
-                          margin: const EdgeInsets.only(top: 10),
-                          decoration: const BoxDecoration(
-                              color: Colors.white,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8.0)),
-                              border: Border(
-                                  bottom: BorderSide(
-                                      width: 1, color: Color(0xffe5e5e5)))),
-                          child: ListView.separated(
-                            padding: const EdgeInsets.only(top: 10,bottom: 10),
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: blackConfigModel!.param!.length,
-                            itemBuilder: (context, index) {
-                              return setUpContentView(blackConfigModel!.param![index].deviceName!,blackConfigModel!.param![index].deviceRule!,blackConfigModel!.param![index].mac!);
-                            },
-                            separatorBuilder: (context, index) {
-                              return const Divider(
-                                height: 20,
-                                thickness: 10,
-                                color: Color.fromARGB(255, 214, 208, 208),
-                              );
-                            },
-                          ),
-                        ) : Container(),
+                      child: blackConfigModel != null
+                          ? ListView.separated(
+                                padding:
+                                    const EdgeInsets.only(top: 10, bottom: 10),
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: blackConfigModel!.param!.length,
+                                itemBuilder: (context, index) {
+                                  return setUpContentView(
+                                      blackConfigModel!
+                                          .param![index].deviceName!,
+                                      blackConfigModel!
+                                          .param![index].deviceRule!,
+                                      blackConfigModel!.param![index].mac!);
+                                },
+                                separatorBuilder: (context, index) {
+                                  return const Divider(
+                                    height: 10,
+                                    thickness: 0,
+                                    color: Colors.black12,
+                                  );
+                                },
+                              )
+                          : Container(),
                     ),
                   ],
                 ),
@@ -239,52 +232,80 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
               // ),
             ],
           ),
-        ));
+        ): const Center(
+                      child: CircularProgressIndicator(
+                        backgroundColor: Color.fromRGBO(215, 220, 220, 0.3),
+                      ),
+                    ));
   }
 
-  Widget setUpContentView(String deviceName, DeviceRule contentTypes,String mac) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Container(
-          decoration: const BoxDecoration(
-              color: Colors.white,
-              border: Border(
-                  bottom: BorderSide(width: 1, color: Color(0xffe5e5e5)))),
-          child: Padding(
-            padding: const EdgeInsets.only(left: 10, right: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  deviceName,
-                  style: const TextStyle(fontSize: 15, color: Colors.black),
-                ),
-                IconButton(
-                    onPressed: () {
-                      String methodType = "";
-                      if (contentTypes.appStore!.isEmpty && contentTypes.socialMedia!.isEmpty && contentTypes.video!.isEmpty &&contentTypes.eCommercePortalAccessTimes!.isEmpty && contentTypes.websiteList!.isEmpty) {
-                        methodType = "add";
-                      }else {
-                        methodType = "set";
-                      }
-                      Get.toNamed("/parentConfigPage",arguments: {"mac" : mac, "method" : methodType});
-                    },
-                    icon: Image.asset(
-                      "assets/images/edit_parent.png",
-                      width: 20,
-                      height: 20,
-                    ))
-              ],
+  Widget setUpContentView(
+      String deviceName, DeviceRule contentTypes, String mac) {
+    return ClipRRect(
+      // padding: const EdgeInsets.only(bottom: 2),
+      borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+      // decoration: const BoxDecoration(
+      //     color: Colors.white,
+      //     borderRadius: BorderRadius.all(Radius.circular(8.0)),
+      //     border: Border(bottom: BorderSide(width: 1, color: Colors.black12))
+      //     ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            decoration: const BoxDecoration(
+                color: Colors.white,
+                border: Border(
+                    bottom: BorderSide(width: 1, color: Color(0xffe5e5e5)))),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10, right: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    deviceName,
+                    style: const TextStyle(fontSize: 15, color: Colors.black),
+                  ),
+                  IconButton(
+                      onPressed: () {
+                        String methodType = "";
+                        if (contentTypes.appStore!.isEmpty &&
+                            contentTypes.socialMedia!.isEmpty &&
+                            contentTypes.video!.isEmpty &&
+                            contentTypes.eCommercePortalAccessTimes!.isEmpty &&
+                            contentTypes.websiteList!.isEmpty) {
+                          methodType = "add";
+                        } else {
+                          methodType = "set";
+                        }
+                        Get.toNamed("/parentConfigPage",
+                            arguments: {"mac": mac, "method": methodType})?.then((value){
+                              if(value == "success") {
+                                requestBlackConfigList(sn);
+                              }
+                            });
+                      },
+                      icon: Image.asset(
+                        "assets/images/edit_parent.png",
+                        width: 20,
+                        height: 20,
+                      ))
+                ],
+              ),
             ),
           ),
-        ),
-
-        Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: buildSelectedContent(contentTypes),
-        )
-      ],
+          Container(
+            padding: const EdgeInsets.only(bottom: 10),
+            decoration: const BoxDecoration(
+                color: Colors.white,
+                ),
+            child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: buildSelectedContent(contentTypes),
+          ),
+          )
+        ],
+      ),
     );
   }
 
@@ -299,17 +320,19 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
         appNames.add(element.appName!);
       }
       var appString = appNames.join(",");
-      seles.add(ListTile(
-          leading: Image.asset(
-            imgName,
-            width: 20,
-            height: 20,
-          ),
-          title: Text(
-            appString,
-            style: const TextStyle(fontSize: 12, color: Colors.black),
-          ),
-        ));
+      seles.add(SizedBox(height: 40, child: ListTile(
+        leading: Image.asset(
+          imgName,
+          width: 15,
+          height: 15,
+        ),
+        title: Text(
+          appString,
+          style: const TextStyle(fontSize: 12, color: Colors.black),
+          overflow: TextOverflow.ellipsis,
+          softWrap: false,
+        ),
+      )));
     }
 
     if (contents.socialMedia != null && contents.socialMedia!.isNotEmpty) {
@@ -319,17 +342,19 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
         appNames.add(element.appName!);
       }
       var appString = appNames.join(",");
-      seles.add(ListTile(
-          leading: Image.asset(
-            imgName,
-            width: 20,
-            height: 20,
-          ),
-          title: Text(
-            appString,
-            style: const TextStyle(fontSize: 12, color: Colors.black),
-          ),
-        ));
+      seles.add(SizedBox(height: 40,child: ListTile(
+        leading: Image.asset(
+          imgName,
+          width: 15,
+          height: 15,
+        ),
+        title: Text(
+          appString,
+          style: const TextStyle(fontSize: 12, color: Colors.black),
+          overflow: TextOverflow.ellipsis,
+          softWrap: false,
+        ),
+      ),));
     }
 
     if (contents.video != null && contents.video!.isNotEmpty) {
@@ -339,37 +364,42 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
         appNames.add(element.appName!);
       }
       var appString = appNames.join(",");
-      seles.add(ListTile(
-          leading: Image.asset(
-            imgName,
-            width: 20,
-            height: 20,
-          ),
-          title: Text(
-            appString,
-            style: const TextStyle(fontSize: 12, color: Colors.black),
-          ),
-        ));
+      seles.add(SizedBox(height: 40,child: ListTile(
+        leading: Image.asset(
+          imgName,
+          width: 15,
+          height: 15,
+        ),
+        title: Text(
+          appString,
+          style: const TextStyle(fontSize: 12, color: Colors.black),
+          overflow: TextOverflow.ellipsis,
+          softWrap: false,
+        ),
+      ),));
     }
 
-    if (contents.eCommercePortalAccessTimes != null && contents.eCommercePortalAccessTimes!.isNotEmpty) {
+    if (contents.eCommercePortalAccessTimes != null &&
+        contents.eCommercePortalAccessTimes!.isNotEmpty) {
       imgName = "assets/images/shopping.png";
       var appNames = <String>[];
       for (CategoryInfo element in contents.eCommercePortalAccessTimes!) {
         appNames.add(element.appName!);
       }
       var appString = appNames.join(",");
-      seles.add(ListTile(
-          leading: Image.asset(
-            imgName,
-            width: 20,
-            height: 20,
-          ),
-          title: Text(
-            appString,
-            style: const TextStyle(fontSize: 12, color: Colors.black),
-          ),
-        ));
+      seles.add(SizedBox(height: 40,child: ListTile(
+        leading: Image.asset(
+          imgName,
+          width: 15,
+          height: 15,
+        ),
+        title: Text(
+          appString,
+          style: const TextStyle(fontSize: 12, color: Colors.black),
+          overflow: TextOverflow.ellipsis,
+          softWrap: false,
+        ),
+      )));
     }
 
     if (contents.websiteList != null && contents.websiteList!.isNotEmpty) {
@@ -379,20 +409,21 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
         appNames.add(element.appName!);
       }
       var appString = appNames.join(",");
-      seles.add(ListTile(
-          leading: Image.asset(
-            imgName,
-            width: 20,
-            height: 20,
-          ),
-          title: Text(
-            appString,
-            style: const TextStyle(fontSize: 12, color: Colors.black),
-          ),
-        ));
+      seles.add(SizedBox(height: 40,child: ListTile(
+        leading: Image.asset(
+          imgName,
+          width: 15,
+          height: 15,
+        ),
+        title: Text(
+          appString,
+          style: const TextStyle(fontSize: 12, color: Colors.black),
+          overflow: TextOverflow.ellipsis,
+          softWrap: false,
+        ),
+      )));
     }
 
-    
     return seles;
   }
 

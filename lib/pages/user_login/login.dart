@@ -603,7 +603,7 @@ class _UserLoginState extends State<UserLogin>
     };
     debugPrint("用户登录的信息----${data.toString()}");
     // 根据输入的用户名密码登录云平台
-    dio
+    App
         .post('${BaseConfig.cloudBaseUrl}/platform/appCustomer/login',
             data: data)
         .then((res) {
@@ -622,7 +622,9 @@ class _UserLoginState extends State<UserLogin>
         sharedAddAndUpdate(
             "loginUserInfo", String, jsonEncode(d['data'])); //把云平台登录信息保存到本地
         sharedAddAndUpdate(
-        "userAvatar", String, jsonEncode(d['data']["avatar"]));
+        "userAvatar", String, d['data']["avatar"]);
+        sharedAddAndUpdate(
+        "userId", int, d['data']['id']);
         int loginId = d['data']['id'];
         return loginId;
       }

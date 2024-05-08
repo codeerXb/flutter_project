@@ -7,6 +7,7 @@ import '../../config/constant.dart';
 import '../../core/widget/common_widget.dart';
 import '../../core/widget/custom_app_bar.dart';
 import 'package:get/get.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 /// 关于我们
 class AboutUs extends StatefulWidget {
@@ -17,6 +18,28 @@ class AboutUs extends StatefulWidget {
 }
 
 class _AboutUsState extends State<AboutUs> {
+  String appVersion = "";
+  @override
+  void initState() {
+    _initPackageInfo();
+    super.initState();
+  }
+
+  void _initPackageInfo() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+    String appName = packageInfo.appName;
+    String packageName = packageInfo.packageName;
+    String version = packageInfo.version;
+    String buildNumber = packageInfo.buildNumber;
+
+    setState(() {
+      appVersion = version;
+    });
+
+    debugPrint("版本信息:$appName -- $packageName -- $version -- $buildNumber --");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,14 +49,13 @@ class _AboutUsState extends State<AboutUs> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             /// 公司首页
-            CommonWidget.simpleWidgetWithUserDetail("Website",
-                callBack: () {
-                  Get.toNamed("/commpanyWebsitePage");
+            CommonWidget.simpleWidgetWithUserDetail("Website", callBack: () {
+              Get.toNamed("/commpanyWebsitePage");
               // debugPrint(
               //     "当前访问的URL地址:${BaseConfig.companyWebProtocol}${BaseConfig.companyWebUrl}");
               // launchUrl(
               //   Uri(
-                    
+
               //       host: "https://codiumnetworks.com/"),
               //   mode: LaunchMode.inAppWebView,
               // );
@@ -50,7 +72,7 @@ class _AboutUsState extends State<AboutUs> {
             //     callBack: () {
             //   ToastUtils.toast("Feature is under development");
             // }),
-            // aboutUs()
+            aboutUs()
 
             /// 公众号信息
             // weixin(),
@@ -62,17 +84,22 @@ class _AboutUsState extends State<AboutUs> {
 
   Widget aboutUs() {
     return Container(
-      padding: EdgeInsets.only(top: 50.w),
-      child: const Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+      padding: EdgeInsets.only(top: 30.w,left: 20),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        border: Border(bottom: BorderSide(color: Colors.black12,width: 1.0))
+      ),
+      child:  Row(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             "Version :",
-            style: TextStyle(fontSize: 16, color: Colors.black54),
+            style: TextStyle(fontSize: 16, color: Colors.black54,fontWeight: FontWeight.w600),
           ),
+          const SizedBox(width: 10,),
           Text(
-            "V1.1.0",
-            style: TextStyle(fontSize: 14, color: Colors.black54),
+            appVersion,
+            style: const TextStyle(fontSize: 16, color: Colors.black54),
           ),
         ],
       ),

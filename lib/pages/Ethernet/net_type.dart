@@ -187,8 +187,8 @@ class _NetTypeState extends State<NetType> {
           connectStatusValue = 'Disconnected';
         }
 
-        String? onlineTime = prefix["OnlineTime"];
-        if (onlineTime!.isNotEmpty) {
+        String? onlineTime = prefix["systemOnlineTime"];
+        if (onlineTime != "") {
         var time = int.parse(onlineTime.toString());
         day = time ~/ (24 * 3600);
         hour = (time - day * 24 * 3600) ~/ 3600;

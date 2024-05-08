@@ -134,7 +134,7 @@ class App {
       )
     });
     // Send FormData
-    Response response = await appdio.post('/file/upload', data: formData);
+    Response response = await appdio.post('/platform/deviceFiles/upload', data: formData);
     return response.data;
   }
 

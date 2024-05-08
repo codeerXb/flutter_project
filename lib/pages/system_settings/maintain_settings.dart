@@ -16,8 +16,8 @@ import '../../core/utils/toast.dart';
 import '../../core/widget/common_box.dart';
 import '../../generated/l10n.dart';
 import 'model/maintain_data.dart';
-import 'package:time_picker_sheet/widget/sheet.dart';
-import 'package:time_picker_sheet/widget/time_picker.dart';
+import 'package:time_picker_sheet_fork/widget/sheet.dart';
+import 'package:time_picker_sheet_fork/widget/time_picker.dart';
 /// 维护设置
 class MaintainSettings extends StatefulWidget {
   const MaintainSettings({Key? key}) : super(key: key);
@@ -58,7 +58,10 @@ class _MaintainSettingsState extends State<MaintainSettings> {
         sheetTitle: 'Please set time',
         minuteTitle: 'Minute',
         hourTitle: 'Hour',
-        saveButtonText: 'Save',
+        minuteTitleStyle: const TextStyle(color: Colors.black,fontSize: 16),
+        hourTitleStyle: const TextStyle(color: Colors.black,fontSize: 16),
+        sheetCloseIconColor: Colors.black,
+        saveButtonWidget: const Text('Save', style: TextStyle(color: Colors.black)),
       ),
     );
 

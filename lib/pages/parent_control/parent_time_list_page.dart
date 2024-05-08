@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_template/core/http/http_app.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import '../.././core/utils/string_util.dart';
 import '../../config/base_config.dart';
@@ -83,7 +82,12 @@ class _ParentTimeListPageState extends State<ParentTimeListPage> {
               onPressed: () {
                 if (timeList.length < 5) {
                   Get.toNamed("/websiteCreatTimePage",
-                      arguments: {"mac": macAddress});
+                      arguments: {"mac": macAddress})?.then((value){
+                        if (value == "Success") {
+                          requestSingleDeviceTime(sn);
+                        }
+                        
+                      });
                 } else {
                   ToastUtils.toast(
                       "Supports up to 5 time configuration plans.");
@@ -278,7 +282,7 @@ class _ParentTimeListPageState extends State<ParentTimeListPage> {
       "pubTopic": subTopic,
       "param": {
         "method": "del",
-        "table": {"table": "FwIpFilterTable", "id": id}
+        "table": {"table": "FwParentControlTable", "id": id}
       }
     };
 
@@ -297,7 +301,28 @@ class _ParentTimeListPageState extends State<ParentTimeListPage> {
       Map datas = jsonDecode(result);
       var message = datas["data"];
       ToastUtils.toast(message);
+      if (message == "Success") {
+        getTableData();
+        Future.delayed( const Duration(seconds: 2),() {
+          requestSingleDeviceTime(sn);
+        });
+      }
     });
+  }
+
+  getTableData() {
+    final sessionId = StringUtil.generateRandomString(10);
+    var topic = "cpe/$sn";
+    var parameters = {
+      "event": "mqtt2sodTable",
+      "sn": sn,
+      "sessionId": sessionId,
+      "param": {
+        "method": "get",
+        "table": "FwParentControlTable"
+      }
+    };
+    _publishMessage(topic, parameters);
   }
 
   void onSubscribed(String topic) {

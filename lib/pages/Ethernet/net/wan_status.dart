@@ -128,18 +128,18 @@ class _WanStatusPageState extends State<WanStatusPage> {
         String sendPacketSpeed = sendPacketB.toStringAsFixed(2);
         packetSentValue = "$sendPacketSpeed B";
 
-        double downBy = double.parse(nodeModel.data!.systemDataRateDlCurrent!);
+        double downBy = double.parse(nodeModel.data!.systemDataRateDlCurrent ?? "");
         double rateB = downBy / (1000 * 1000);
         debugPrint("下载的速率是:$rateB");
         String downSpeed = rateB.toStringAsFixed(4);
         downStreamValue = "$downSpeed Mbps";
-        double upBites = double.parse(nodeModel.data!.systemDataRateUlCurrent!);
+        double upBites = double.parse(nodeModel.data!.systemDataRateUlCurrent ?? "");
         double upB = upBites / (1000 * 1000);
         debugPrint("上传的速率是:$upB");
         var upSpeed =  upB.toStringAsFixed(4);
         upStreamValue = "$upSpeed Mbps";
 
-        macAddressValue = nodeModel.data!.networkWanSettingsMac!;
+        macAddressValue = nodeModel.data!.networkWanSettingsMac ?? "";
 
         var connectStatus = nodeModel.data!.lteMainStatusGet;
         if (connectStatus == 'connected') {
@@ -167,9 +167,9 @@ class _WanStatusPageState extends State<WanStatusPage> {
             S.of(context).minute;
       });
     } catch (e) {
+      debugPrint('获取以太网信息失败：${e.toString()}');
       ToastUtils.error('Request Failed');
       Get.back();
-      debugPrint('获取以太网信息失败：${e.toString()}');
     } finally {
       setState(() {
         loading = false;
@@ -266,5 +266,12 @@ class _WanStatusPageState extends State<WanStatusPage> {
               ),
             ),
     );
+  }
+
+  @override
+  void setState(VoidCallback fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
   }
 }

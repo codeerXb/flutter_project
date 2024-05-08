@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 import 'package:get/get.dart';
 import '../.././core/utils/string_util.dart';
 import '../../config/base_config.dart';
@@ -30,9 +30,11 @@ class _TimeConfigListPageState extends State<TimeConfigListPage> {
   TimeConfigListBeans? datas;
   bool? cancheck = false;
 
+  bool loading = false;
+  bool _isOpen = false;
+
   @override
   void initState() {
-
     sharedGetData('deviceSn', String).then(((res) {
       printInfo(info: 'deviceSn$res');
       sn = res.toString();
@@ -90,11 +92,11 @@ class _TimeConfigListPageState extends State<TimeConfigListPage> {
       "event": "mqtt2sodTable",
       "sn": sn,
       "sessionId": sessionIdStr,
-      "param": {"method" : "get","table": "FwParentControlTable"}
+      "param": {"method": "get", "table": "FwParentControlTable"}
     };
 
     _publishMessage(publishTopic, parms);
-    
+
     subTopic = "app/parentControl/allTime/$sn";
     client.subscribe(subTopic, MqttQos.atLeastOnce);
 
@@ -104,15 +106,21 @@ class _TimeConfigListPageState extends State<TimeConfigListPage> {
       final String pt = const Utf8Decoder().convert(recMess.payload.message);
       String desString = "topic is <$topic>, payload is <-- $pt -->";
       debugPrint("string =$desString");
-      final timeListModel = TimeConfigListBeans.fromJson(jsonDecode(pt));
-      debugPrint("时间列表数据:$timeListModel");
-      if (timeListModel.param != null && timeListModel.param!.isNotEmpty) {
-        setState(() {
-        datas = timeListModel;
-      });
-        
+      if (topic == subTopic) {
+        final timeListModel = TimeConfigListBeans.fromJson(jsonDecode(pt));
+        debugPrint("时间列表数据:$timeListModel");
+        if (timeListModel.param != null && timeListModel.param!.isNotEmpty) {
+          setState(() {
+            loading = true;
+            datas = timeListModel;
+          });
+        }
+      }else {
+        String result = pt.substring(0, pt.length - 1);
+        Map datas = jsonDecode(result);
+        var res = datas["data"];
+        debugPrint("时间规则设置结果 =$res");
       }
-      
     });
   }
 
@@ -146,69 +154,124 @@ class _TimeConfigListPageState extends State<TimeConfigListPage> {
     client.publishMessage(topic, MqttQos.atLeastOnce, builder.payload!);
   }
 
+  setTimeRulesEffected() {
+    final sessionId = StringUtil.generateRandomString(10);
+    var topic = "cpe/$sn";
+    var pubtopic = "cpe/$sn/setTimeRule";
+    var parameters = {
+      "event": "mqtt2sodObj",
+      "sn": sn,
+      "sessionId": sessionId,
+      "pubTopic": pubtopic,
+      "param": {
+        "method": "set",
+        "nodes": {"securityParentControlEnable": _isOpen == true ? "1" : '0'}
+      }
+    };
+    _publishMessage(topic, parameters);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: const Text(
             'Use Time Configure',
-            style: TextStyle(color: Colors.black, fontSize: 22,fontWeight: FontWeight.w500),
+            style: TextStyle(
+                color: Colors.black, fontSize: 22, fontWeight: FontWeight.w500),
           ),
           centerTitle: true,
+          actions: [
+            FlutterSwitch(
+              width: 70.0,
+              height: 40.0,
+              activeText: "ON",
+              inactiveText: "OFF",
+              activeColor: Colors.green,
+              activeTextColor: Colors.white,
+              inactiveTextColor: Colors.blue[50]!,
+              value: _isOpen,
+              valueFontSize: 12.0,
+              borderRadius: 30.0,
+              showOnOff: true,
+              onToggle: (val) {
+                setState(() {
+                  _isOpen = val;
+                  setTimeRulesEffected();
+                });
+              },
+            )
+          ],
           backgroundColor: Colors.white,
         ),
-        body: Container(
-          height: double.infinity,
-          decoration: const BoxDecoration(
-            color: Color.fromRGBO(242, 242, 247, 1),
-            // borderRadius: BorderRadius.all(Radius.circular(8.0)),
-          ),
-          padding: const EdgeInsets.only(bottom: 20),
-          child: Stack(
-            children: [
-              SingleChildScrollView(
-                  child: ConstrainedBox(
-                constraints: const BoxConstraints(
-                  minHeight: 100,
-                  // maxHeight: 100000
+        body: loading
+            ? Container(
+                height: double.infinity,
+                decoration: const BoxDecoration(
+                  color: Color.fromRGBO(242, 242, 247, 1),
+                  // borderRadius: BorderRadius.all(Radius.circular(8.0)),
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                padding: const EdgeInsets.only(bottom: 20),
+                child: Stack(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(15, 5, 15, 30),
-                      child: datas == null ?  Container() :  SizedBox(
-                          child: ListView.separated(
-                            padding: const EdgeInsets.only(top: 10, bottom: 10),
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: datas!.param?.length ?? 0,
-                            itemBuilder: (context, index) {
-                              return setUpContentView(datas!.param![index].deviceName!,datas!.param![index].deviceTimeRule!,datas!.param![index].mac);
-                            },
-                            separatorBuilder: (context, index) {
-                              return const SizedBox(
-                                height: 10,
-                              );
-                            },
+                    SingleChildScrollView(
+                        child: ConstrainedBox(
+                      constraints: const BoxConstraints(
+                        minHeight: 100,
+                        // maxHeight: 100000
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(15, 5, 15, 30),
+                            child: datas == null
+                                ? Container()
+                                : SizedBox(
+                                    child: ListView.separated(
+                                      padding: const EdgeInsets.only(
+                                          top: 10, bottom: 10),
+                                      shrinkWrap: true,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      itemCount: datas!.param?.length ?? 0,
+                                      itemBuilder: (context, index) {
+                                        return setUpContentView(
+                                            datas!.param![index].deviceName!,
+                                            datas!
+                                                .param![index].deviceTimeRule!,
+                                            datas!.param![index].mac);
+                                      },
+                                      separatorBuilder: (context, index) {
+                                        return const SizedBox(
+                                          height: 10,
+                                        );
+                                      },
+                                    ),
+                                  ),
                           ),
-                        ),
-                    ),
+                        ],
+                      ),
+                    )),
                   ],
                 ),
-              )),
-            ],
-          ),
-        ));
+              )
+            : const Center(
+                child: CircularProgressIndicator(
+                  backgroundColor: Color.fromRGBO(215, 220, 220, 0.3),
+                ),
+              ));
   }
 
-  Widget setUpContentView(String deviceName,List<DeviceTimeRule> timeArray,String? macAddress) {
-    return Container(
-      decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-          border:
-              Border(bottom: BorderSide(width: 1, color: Color(0xffe5e5e5)))),
+  Widget setUpContentView(
+      String deviceName, List<DeviceTimeRule> timeArray, String? macAddress) {
+    return ClipRRect(
+      borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+      // decoration: const BoxDecoration(
+      //     color: Colors.white,
+      //     borderRadius: BorderRadius.all(Radius.circular(8.0)),
+      //     border:
+      //         Border(bottom: BorderSide(width: 1, color: Color(0xffe5e5e5)))),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -231,7 +294,8 @@ class _TimeConfigListPageState extends State<TimeConfigListPage> {
                   ),
                   IconButton(
                       onPressed: () {
-                        Get.toNamed("/websiteTimeListPage",arguments: {"mac" : macAddress});
+                        Get.toNamed("/websiteTimeListPage",
+                            arguments: {"mac": macAddress});
                       },
                       icon: Image.asset(
                         "assets/images/edit_parent.png",
@@ -242,35 +306,42 @@ class _TimeConfigListPageState extends State<TimeConfigListPage> {
               ),
             ),
           ),
-          timeConfigListView(timeArray),
+          Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+            ),
+            child: timeConfigListView(timeArray),
+          ),
         ],
       ),
     );
   }
 
   Widget timeConfigListView(List<DeviceTimeRule> times) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Image.asset(
-            "assets/images/time_parent.png",
-            width: 20,
-            height: 20,
-          ),
-          const SizedBox(
-            width: 15,
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: timeListItemCell(times),
+    return times.isNotEmpty
+        ? Container(
+            padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Image.asset(
+                  "assets/images/time_parent.png",
+                  width: 20,
+                  height: 20,
+                ),
+                const SizedBox(
+                  width: 15,
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: timeListItemCell(times),
+                )
+              ],
+            ),
           )
-        ],
-      ),
-    );
+        : Container();
   }
 
   List<Widget> timeListItemCell(List<DeviceTimeRule> timeConfigs) {
@@ -278,10 +349,8 @@ class _TimeConfigListPageState extends State<TimeConfigListPage> {
     for (DeviceTimeRule item in timeConfigs) {
       listTime.add(SizedBox(
         height: 30,
-        child: Text(
-          "${item.timeStart} - ${item.timeStop} ${item.weekdays}",
-          style: const TextStyle(fontSize: 12, color: Colors.black)
-        ),
+        child: Text("${item.timeStart} - ${item.timeStop} ${item.weekdays}",
+            style: const TextStyle(fontSize: 12, color: Colors.black)),
       ));
     }
     return listTime;

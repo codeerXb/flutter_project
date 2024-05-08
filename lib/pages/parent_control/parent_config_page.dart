@@ -76,10 +76,9 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
         .then((res) {
       final ruleModel = DeviceRuleBeans.fromJson(res);
       if (ruleModel.code == 200 && ruleModel.data != null) {
-        ruleBean = ruleModel.data!.deviceRule;
-        debugPrint("获取的设备配置规则:$ruleBean");
-
         setState(() {
+          ruleBean = ruleModel.data!.deviceRule;
+          debugPrint("获取的设备配置规则:$ruleBean");
           datasMap = {
             "E-Commerce Portal Access Times":
                 ruleBean!.eCommercePortalAccessTimes!,
@@ -174,7 +173,12 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
         }
       };
       _publishMessage(publishTopic, parms);
-      client.subscribe(subTopic, MqttQos.atLeastOnce);
+      Future.delayed(const Duration(seconds: 2),(){
+        ToastUtils.toast("Submitted successfully");
+        sleep(const Duration(seconds: 1));
+        Get.back(result: "success");
+      });
+      // client.subscribe(subTopic, MqttQos.atLeastOnce);
     } else {
       if (methodType == "add") {
         var subTopic = "cpe/$sn/addRule";
@@ -194,7 +198,12 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
           }
         };
         _publishMessage(publishTopic, parms);
-        client.subscribe(subTopic, MqttQos.atLeastOnce);
+        Future.delayed(const Duration(seconds: 2),(){
+        ToastUtils.toast("Submitted successfully");
+        sleep(const Duration(seconds: 1));
+        Get.back(result: "success");
+      });
+        // client.subscribe(subTopic, MqttQos.atLeastOnce);
       } else {
         var subTopic = "cpe/$sn/setRule";
         var parms = {
@@ -213,7 +222,12 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
           }
         };
         _publishMessage(publishTopic, parms);
-        client.subscribe(subTopic, MqttQos.atMostOnce);
+        Future.delayed(const Duration(seconds: 2),(){
+        ToastUtils.toast("Submitted successfully");
+        sleep(const Duration(seconds: 1));
+        Get.back(result: "success");
+      });
+        // client.subscribe(subTopic, MqttQos.atMostOnce);
       }
     }
 
@@ -491,6 +505,8 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
                               }
                             }
                             debugPrint("所有选择的网站是:$urlList");
+                            urlList = urlList.toSet().toList();
+                            debugPrint("最终选择的网站是:$urlList");
                             dealwithDeviceRuleAction(sn, methodType, urlList);
                           },
                           child: Text(
@@ -506,7 +522,11 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
                   ),
                 )),
               )
-            : Container());
+            : const Center(
+                      child: CircularProgressIndicator(
+                        backgroundColor: Color.fromRGBO(215, 220, 220, 0.3),
+                      ),
+                    ));
   }
 
 /*
@@ -681,14 +701,14 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
   void _itemChange(String itemValue, String url, String type, bool isSelected,
       ApplicationInfo selectedItem) {
     if (type == "Social Media") {
-      if (isSelected) {
+      if (isSelected && !isContainApplication(type, itemValue)) {
         _selectedItems.add(itemValue);
         urlList.add(url);
       } else {
         _selectedItems.remove(itemValue);
         urlList.remove(url);
       }
-    } else if (type == "Video") {
+    } else if (type == "Video" && !isContainApplication(type, itemValue)) {
       if (isSelected) {
         _selectedvideoItems.add(itemValue);
         urlList.add(url);
@@ -696,7 +716,7 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
         _selectedvideoItems.remove(itemValue);
         urlList.remove(url);
       }
-    } else if (type == "E-Commerce Portal Access Times") {
+    } else if (type == "E-Commerce Portal Access Times" && !isContainApplication(type, itemValue)) {
       if (isSelected) {
         _selectedshopItems.add(itemValue);
         urlList.add(url);
@@ -704,7 +724,7 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
         _selectedshopItems.remove(itemValue);
         urlList.remove(url);
       }
-    } else {
+    } else if (type == "App Store" && !isContainApplication(type, itemValue)) {
       if (isSelected) {
         _selectedappStoreItems.add(itemValue);
         urlList.add(url);
@@ -712,7 +732,7 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
         _selectedappStoreItems.remove(itemValue);
         urlList.remove(url);
       }
-    }
+    }else {}
     // setState(() {
 
     // });
@@ -724,7 +744,7 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
       iscontain = _selectedItems.contains(name);
     } else if (type == "Video") {
       iscontain = _selectedvideoItems.contains(name);
-    } else if (type == "Shopping") {
+    } else if (type == "E-Commerce Portal Access Times") {
       iscontain = _selectedshopItems.contains(name);
     } else {
       iscontain = _selectedappStoreItems.contains(name);

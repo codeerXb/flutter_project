@@ -11,9 +11,11 @@ import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:get/get.dart';
 import 'package:flutter_spinner_time_picker/flutter_spinner_time_picker.dart';
+import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 
 String clientRandom = StringUtil.generateRandomString(10);
 String clientId = "client_$clientRandom";
+
 class ParentCreatTimePage extends StatefulWidget {
   const ParentCreatTimePage({super.key});
 
@@ -40,7 +42,15 @@ class _ParentCreatTimePageState extends State<ParentCreatTimePage> {
     "Every Sunday"
   ];
 
-  List ruleWeeks = ["Mon","Tue","Wed","Thur","Fri","Sat","Sun",];
+  List ruleWeeks = [
+    "Mon",
+    "Tue",
+    "Wed",
+    "Thu",
+    "Fri",
+    "Sat",
+    "Sun",
+  ];
 
   List<bool> checked = List<bool>.filled(7, false);
   List checkWeeks = [];
@@ -93,7 +103,8 @@ class _ParentCreatTimePageState extends State<ParentCreatTimePage> {
     }
   }
 
-  uploadDeviceTimeConfig(String sn,String weekDays ,String startTime,String endTime,String mac) async {
+  uploadDeviceTimeConfig(BuildContext context, String sn, String weekDays,
+      String startTime, String endTime, String mac) async {
     client.logging(on: false);
     client.keepAlivePeriod = 60;
     client.useWebSocket = true;
@@ -143,22 +154,25 @@ class _ParentCreatTimePageState extends State<ParentCreatTimePage> {
       "event": "mqtt2sodTable",
       "sn": sn,
       "sessionId": sessionIdStr,
-      "pubTopic" : subTopic,
-      "param": {"method" : "add","table": {
-            "table": "FwParentControlTable",
-            "value":{
-              "Name":"test",
-              "Weekdays":weekDays,
-              "TimeStart":startTime,
-              "TimeStop":endTime,
-              "Host":mac,
-              "Target":"DROP"
-            }
-        }}
+      "pubTopic": subTopic,
+      "param": {
+        "method": "add",
+        "table": {
+          "table": "FwParentControlTable",
+          "value": {
+            "Name": "test",
+            "Weekdays": weekDays,
+            "TimeStart": startTime,
+            "TimeStop": endTime,
+            "Host": mac,
+            "Target": "DROP"
+          }
+        }
+      }
     };
 
     _publishMessage(publishTopic, parms);
-    
+
     client.subscribe(subTopic, MqttQos.atLeastOnce);
 
     client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
@@ -171,7 +185,27 @@ class _ParentCreatTimePageState extends State<ParentCreatTimePage> {
       Map datas = jsonDecode(result);
       var message = datas["data"];
       ToastUtils.toast(message);
+      final progress = ProgressHUD.of(context);
+      if (message == "Success") {
+        getTableData();
+        progress!.dismiss();
+        Future.delayed(const Duration(seconds: 2), () {
+          Get.back(result: message);
+        });
+      }
     });
+  }
+
+  getTableData() {
+    final sessionId = StringUtil.generateRandomString(10);
+    var topic = "cpe/$sn";
+    var parameters = {
+      "event": "mqtt2sodTable",
+      "sn": sn,
+      "sessionId": sessionId,
+      "param": {"method": "get", "table": "FwParentControlTable"}
+    };
+    _publishMessage(topic, parameters);
   }
 
   void onSubscribed(String topic) {
@@ -207,59 +241,69 @@ class _ParentCreatTimePageState extends State<ParentCreatTimePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "Time",
-          style: TextStyle(fontSize: 22, color: Colors.black,fontWeight: FontWeight.w500),
+        appBar: AppBar(
+          title: const Text(
+            "Time",
+            style: TextStyle(
+                fontSize: 22, color: Colors.black, fontWeight: FontWeight.w500),
+          ),
+          centerTitle: true,
         ),
-        centerTitle: true,
-      ),
-      body: Container(
-        height: double.infinity,
-        decoration: const BoxDecoration(
-          color: Color.fromRGBO(242, 242, 247, 1),
-        ),
-        child: Stack(
-          children: [
-            SingleChildScrollView(
-                child: Column(
-              children: [
-                createTimeRange(),
-                const SizedBox(
-                  height: 20,
-                ),
-                setUpWeeklyView(),
-              ],
-            )),
-            Positioned(
-                left: 80,
-                right: 80,
-                bottom: 20,
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    padding: MaterialStateProperty.all(
-                      EdgeInsets.only(top: 28.w, bottom: 28.w),
-                    ),
-                    shape: MaterialStateProperty.all(const StadiumBorder()),
-                    backgroundColor: MaterialStateProperty.all(
-                        const Color.fromARGB(255, 30, 104, 233)),
-                  ),
-                  onPressed: () {
-                    final startT = '${selectedStartTime.hour}:${selectedStartTime.minute.toString().padLeft(2, '0')}';
-                    final endT = '${selectedEndTime.hour}:${selectedEndTime.minute.toString().padLeft(2, '0')}';
-                    final weeks = checkWeeks.join(",");
-                    uploadDeviceTimeConfig(sn, weeks, startT, endT, macAddress);
-                  },
-                  child: Text(
-                    "Submit",
-                    style: TextStyle(
-                        fontSize: 32.sp, color: const Color(0xffffffff)),
-                  ),
-                ))
-          ],
-        ),
-      ),
-    );
+        body: ProgressHUD(
+          child: Builder(builder: ((context) {
+            return Container(
+              height: double.infinity,
+              decoration: const BoxDecoration(
+                color: Color.fromRGBO(242, 242, 247, 1),
+              ),
+              child: Stack(
+                children: [
+                  SingleChildScrollView(
+                      child: Column(
+                    children: [
+                      createTimeRange(),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      setUpWeeklyView(),
+                    ],
+                  )),
+                  Positioned(
+                      left: 80,
+                      right: 80,
+                      bottom: 20,
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          padding: MaterialStateProperty.all(
+                            EdgeInsets.only(top: 28.w, bottom: 28.w),
+                          ),
+                          shape:
+                              MaterialStateProperty.all(const StadiumBorder()),
+                          backgroundColor: MaterialStateProperty.all(
+                              const Color.fromARGB(255, 30, 104, 233)),
+                        ),
+                        onPressed: () {
+                          final startT =
+                              '${selectedStartTime.hour}:${selectedStartTime.minute.toString().padLeft(2, '0')}';
+                          final endT =
+                              '${selectedEndTime.hour}:${selectedEndTime.minute.toString().padLeft(2, '0')}';
+                          final weeks = checkWeeks.join(",");
+                          final progress = ProgressHUD.of(context);
+                          progress?.show();
+                          uploadDeviceTimeConfig(
+                              context, sn, weeks, startT, endT, macAddress);
+                        },
+                        child: Text(
+                          "Submit",
+                          style: TextStyle(
+                              fontSize: 32.sp, color: const Color(0xffffffff)),
+                        ),
+                      ))
+                ],
+              ),
+            );
+          })),
+        ));
   }
 
   Widget createTimeRange() {
@@ -284,7 +328,6 @@ class _ParentCreatTimePageState extends State<ParentCreatTimePage> {
                 SizedBox(
                   width: 5,
                 ),
-
                 Text('End Time',
                     style: TextStyle(color: Colors.black, fontSize: 14)),
               ],

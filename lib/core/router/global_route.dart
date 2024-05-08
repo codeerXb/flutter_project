@@ -91,6 +91,7 @@ import '../../pages/parent_control/parent_device_timeList.dart';
 import '../../pages/setting/company_website_page.dart';
 import 'package:flutter_template/pages/setting/logout_account.dart';
 import '../../pages/net_status/home_speed_test.dart';
+import 'package:flutter_template/pages/setting/router_version_upgrade.dart';
 /// 路由
 class GlobalRouter {
   // 定义单例
@@ -353,6 +354,8 @@ class GlobalRouter {
         const CompanyWebsitePage(),
     '/delAccountPage': (BuildContext context, {Object? args}) =>
         const DelAccountPage(),
+    '/routerUpgradePage': (BuildContext context, {Object? args}) =>
+        const RouterUpgradePage(),
   };
 
   /// 监听route

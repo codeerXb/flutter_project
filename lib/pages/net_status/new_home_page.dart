@@ -50,7 +50,7 @@ class _HomePageState extends State<HomePage> {
 
   bool inProduction = const bool.fromEnvironment("dart.vm.product");
 
-  var reqUrl = "http://3.234.163.231:18083";// "http://10.0.30.43:18083"
+  var reqUrl = "http://222.71.171.172:38083";
   /// 点击空白  关闭输入键盘
   void closeKeyboard(BuildContext context) {
     FocusScope.of(context).requestFocus(blankNode);
@@ -139,8 +139,7 @@ class _HomePageState extends State<HomePage> {
         getqueryingBoundDevices();
       }
     });
-    super.initState();
-
+  
     sharedGetData('deviceSn', String).then(((res) {
       printInfo(info: 'deviceSn$res');
       if (mounted) {
@@ -164,6 +163,8 @@ class _HomePageState extends State<HomePage> {
         });
       }
     }));
+
+    super.initState();
   }
 
   void requestDeviceStatus(String sn) {
@@ -346,20 +347,6 @@ class _HomePageState extends State<HomePage> {
         });
       }
     });
-
-    // connect().then((value) {
-    //   client = value;
-    //   debugPrint("执行到订阅这里了,订阅的主题是:$subTopic");
-    //   final sessionIdStr = StringUtil.generateRandomString(10);
-    //   var parameterNames = {
-    //     "event": "getSpeedtest",
-    //     "sn": sn,
-    //     "sessionId": sessionIdStr,
-    //     "pubTopic": "$subTopic-sma_server_1"
-    //   };
-    //   _publishMessage(subTopic, parameterNames);
-    //   client.subscribe("$subTopic-sma_server_1", MqttQos.atLeastOnce);
-    // });
   }
 
   /// The subscribed callback
@@ -386,46 +373,6 @@ class _HomePageState extends State<HomePage> {
   void pong() {
     debugPrint('Ping response client callback invoked');
   }
-
-  // sendRequestDataSingle(String sn) {
-  //   // requestTestSpeedData(sn);
-  //   subTopic = "cpe/$sn";
-  //   debugPrint("执行到订阅");
-  //   final sessionIdStr = StringUtil.generateRandomString(10);
-  //   var parameterNames = {
-  //     "event": "getSpeedtest",
-  //     "sn": sn,
-  //     "sessionId": sessionIdStr,
-  //     "pubTopic": "$subTopic-sma_server_1"
-  //   };
-  //   _publishMessage(subTopic, parameterNames);
-  //   client.subscribe("$subTopic-sma_server_1", MqttQos.atLeastOnce);
-  //   _getDeviceList();
-  // }
-
-  //  监听消息的具体实现
-  // _getListTableData(List<MqttReceivedMessage<MqttMessage>> data) {
-  //   debugPrint("====================监听到新消息了======================");
-  //   final MqttPublishMessage recMess = data[0].payload as MqttPublishMessage;
-  //   final String topic = data[0].topic;
-  //   // final pt =
-  //   // MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
-  //   String pt = const Utf8Decoder().convert(recMess.payload.message);
-  //   String result = pt.substring(0, pt.length - 1);
-  //   String desString = "topic is <$topic>, payload is <-- $result -->";
-  //   debugPrint("string =$desString");
-  //   final payloadModel = SpeedModel.fromJson(jsonDecode(result));
-  //   setState(() {
-  //     speedmodel = payloadModel;
-  //   });
-
-  //   debugPrint("测速数据: =${speedmodel!.data!.download!}");
-  // }
-
-//  开启监听消息
-  // _getDeviceList() {
-  //   client.updates!.listen(_getListTableData);
-  // }
 
   // 发送消息
   void _publishMessage(String topic, Map<String, dynamic> message) {
@@ -1573,6 +1520,7 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     super.dispose();
     debugPrint('状态页面销毁');
+    soundTimer?.cancel();
     client.disconnect();
     // _connectivitySubscription.cancel();
   }

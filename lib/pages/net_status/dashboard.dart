@@ -295,7 +295,6 @@ class _DashboardState extends State<Dashboard> {
   @override
   void dispose() {
     super.dispose();
-    debugPrint('销毁');
     timer?.cancel();
     timer = null;
   }

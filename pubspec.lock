@@ -289,14 +289,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.3.9"
-  easy_pie_chart:
-    dependency: "direct main"
-    description:
-      name: easy_pie_chart
-      sha256: "4b08684a42bd12a633604fbb55891bef0f07a68f2f37b2c9737bd4da16d17105"
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "1.0.0"
   encrypt:
     dependency: "direct main"
     description:

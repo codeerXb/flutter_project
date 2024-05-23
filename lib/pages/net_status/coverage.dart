@@ -182,7 +182,6 @@ class _TestEditState extends State<TestEdit> {
                 height: 600.w,
                 child: Swiper.children(
                   onIndexChanged: (int index) {
-                    // print("当前索引: ${index + 1}");
                     setState(() {
                       currentSwiperIndex = index;
 

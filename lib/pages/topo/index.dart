@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:css_filter/css_filter.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,6 +28,8 @@ import '../../config/base_config.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import '../../core/utils/logger.dart';
+import '../../core/event_bus/eventbus_utils.dart';
+import '../../core/event_bus/config_event.dart';
 
 typedef void OnItemPressed(bool result);
 
@@ -54,6 +57,8 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
   int _onlineCount = 0;
   List<EquipmentInfo> equipmentDatas = [];
 
+  bool _isClick = false;
+
   @override
   void initState() {
     super.initState();
@@ -71,20 +76,35 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
         if (mounted) {
           // requestOrder(sn);
           getDevices();
-          Future.delayed(const Duration(seconds: 2),(){
+          Future.delayed(const Duration(seconds: 2), () {
             getTREquinfoDatas(sn);
           });
-          
           requestParentCofingStatus(sn);
         }
       });
     }));
+
+    eventBus.on<FlagEvent>().listen((event) {
+      if (mounted) {
+        setState(() {
+          XLogger.getLogger().d("配置状态是:${event.flag}");
+          _isClick = event.flag;
+          if (_isClick) {
+            Future.delayed(const Duration(seconds: 2), () {
+              requestParentCofingStatus(sn);
+            });
+          }
+        });
+      }
+    });
   }
 
   requestOrder(String sn) async {
-    await Future.wait<dynamic>([getTREquinfoDatas(sn),getDevices()]).then((e){
-      XLogger.getLogger().d("result --- $e");
-    }).catchError((e){
+    await Future.wait<void>([getTREquinfoDatas(sn), getDevices()])
+        .then((value) {
+      XLogger.getLogger().d("result --- $value");
+    }).catchError((error) {
+      XLogger.getLogger().e("result --- $error");
     });
   }
 
@@ -247,7 +267,7 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
   bool loading = true;
 
   //终端设备列表
-  getDevices() async {
+  Future<void> getDevices() async {
     if (mounted) {
       setState(() {
         loading = true;
@@ -303,9 +323,9 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
   }
 
 //1连接
-  var ConnectStatus = '';
+  var connectStatus = '';
 // 云端
-  getTREquinfoDatas(String sn) async {
+  Future<void> getTREquinfoDatas(String sn) async {
     var parameterNames = {
       "method": "get",
       "nodes": ["lteMainStatusGet"]
@@ -320,7 +340,7 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
         setState(() {
           // ConnectStatus = d['data']['InternetGatewayDevice']['WEB_GUI']
           //     ['Ethernet']['Status']['ConnectStatus']['_value'];
-          ConnectStatus = d['data']['lteMainStatusGet'];
+          connectStatus = d['data']['lteMainStatusGet'];
         });
       }
     } catch (e) {
@@ -431,8 +451,7 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
   }
 
   void _publishMessage(String topic, Map<String, dynamic> message) {
-    debugPrint("======发送获取App测速的消息成功了=======");
-    debugPrint("===$topic ===$message=======");
+    debugPrint("===发送$topic ===$message=======");
     var builder = MqttClientPayloadBuilder();
     var jsonData = json.encode(message);
     builder.addUTF8String(jsonData);
@@ -539,7 +558,7 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
                       //     _wanStatus == '0' &&
                       //         _simStatus == '0' &&
                       //         loginController.login.state == 'local')
-                      if (ConnectStatus == '0')
+                      if (connectStatus == '0')
                         Center(
                             child: Padding(
                           padding: EdgeInsets.only(top: 25.w),
@@ -967,6 +986,7 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
   void dispose() {
     _animationController.dispose();
     client.disconnect();
+    // eventBus.destroy();
     super.dispose();
   }
 }

@@ -14,6 +14,7 @@ import '../../config/base_config.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import '../../pages/net_status/beans/speed_bean.dart';
+import "../../core/utils/logger.dart";
 
 String Id_Random = StringUtil.generateRandomString(10);
 MqttServerClient client = MqttServerClient.withPort(
@@ -169,7 +170,7 @@ class _HomeSpeedPageState extends State<HomeSpeedPage> {
       String pt = const Utf8Decoder().convert(recMess.payload.message);
       String result = pt.substring(0, pt.length - 1);
       String desString = "topic is <$topic>, payload is <-- $result -->";
-      debugPrint("string =$desString");
+      XLogger.getLogger().d("string =$desString");
       final payloadModel = SpeedModel.fromJson(jsonDecode(result));
       if (payloadModel.data != null) {
         setState(() {
@@ -177,7 +178,7 @@ class _HomeSpeedPageState extends State<HomeSpeedPage> {
           deviceName = sn;
           testUp = StringUtil.getUnitlessRate(payloadModel.data!.upload!);
           testDown = StringUtil.getUnitlessRate(payloadModel.data!.download!);
-          debugPrint("数据是:$testUp -- $testDown");
+          XLogger.getLogger().d("数据是:$testUp -- $testDown");
         });
       }else {
         Future.delayed(const Duration(seconds: 3),(){
@@ -219,7 +220,6 @@ class _HomeSpeedPageState extends State<HomeSpeedPage> {
 
   // 发送消息
   void _publishMessage(String topic, Map<String, dynamic> message) {
-    debugPrint("======发送获取App测速的消息成功了=======");
     debugPrint("===$topic ===$message=======");
     var builder = MqttClientPayloadBuilder();
     var jsonData = json.encode(message);
@@ -239,13 +239,11 @@ class _HomeSpeedPageState extends State<HomeSpeedPage> {
         downloadTestServer: downUrl,
         uploadTestServer: upLoadUrl,
         onStarted: () {
-          debugPrint("当前测速的地址:$downUrl,---$upLoadUrl");
           setState(() => _testInProgress = true);
         },
         onCompleted: (TestResult download, TestResult upload) {
           if (kDebugMode) {
-            print(
-                'the transfer rate ${download.transferRate}, ${upload.transferRate}');
+            XLogger.getLogger().d('the transfer rate ${download.transferRate}, ${upload.transferRate}');
           }
           setState(() {
             _downloadRate = download.transferRate;
@@ -278,10 +276,8 @@ class _HomeSpeedPageState extends State<HomeSpeedPage> {
           });
         },
         onError: (String errorMessage, String speedTestError) {
-          debugPrint("当前测速的地址:$downUrl,---$upLoadUrl");
           if (kDebugMode) {
-            print(
-                'the errorMessage $errorMessage, the speedTestError $speedTestError');
+            XLogger.getLogger().e('the errorMessage $errorMessage, the speedTestError $speedTestError');
           }
           // reset();
         },

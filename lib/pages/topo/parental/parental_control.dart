@@ -64,7 +64,7 @@ class _ParentalControlState extends State<ParentalControl> {
           }
         });
       } on FormatException catch (e) {
-        print(e);
+
         // ToastUtils.toast(S.current.error);
       }
     }).catchError((onError) {

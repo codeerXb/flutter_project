@@ -34,7 +34,7 @@ class _TopoItemState extends State<TopoItem> {
           Get.toNamed("/video_play");
         } else {
           Get.toNamed("/access_equipment", arguments: widget.topoData)
-              ?.then((value) => getFn());
+              ?.then((value) {});
         }
       },
       child: Column(
@@ -96,9 +96,5 @@ class _TopoItemState extends State<TopoItem> {
         ],
       ),
     );
-  }
-
-  getFn() {
-    print('123');
   }
 }

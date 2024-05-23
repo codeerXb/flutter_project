@@ -17,6 +17,8 @@ import 'package:mqtt_client/mqtt_server_client.dart';
 import "./Model/terminal_equipmentBean.dart";
 import "./Model/statistics_beans.dart";
 import "./Model/statistics_time_list.dart";
+import '../../core/event_bus/eventbus_utils.dart';
+import '../../core/event_bus/config_event.dart';
 
 String clientRandom = StringUtil.generateRandomString(10);
 String clientId = "client_$clientRandom";
@@ -329,6 +331,10 @@ class _PieChartPageState extends State<PieChartPage> {
     _publishMessage(topic, parameters);
   }
 
+  void _chageSwitchStatus() {
+    eventBus.fire(FlagEvent(true));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -355,6 +361,7 @@ class _PieChartPageState extends State<PieChartPage> {
             onToggle: (val) {
               setState(() {
                 _isOpenControlInRow = val;
+                _chageSwitchStatus();
                 uploadParentConfigData();
                 setRulesToTakeEffect();
               });
@@ -750,7 +757,7 @@ class _PieChartPageState extends State<PieChartPage> {
       ),
     );
   }
-
+/*
   Widget setUpTopView() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -787,7 +794,7 @@ class _PieChartPageState extends State<PieChartPage> {
       ],
     );
   }
-
+*/
   Widget buildCustomWidget() {
     return Center(
       child: Align(
@@ -861,6 +868,7 @@ class _PieChartPageState extends State<PieChartPage> {
   @override
   void dispose() {
     client.disconnect();
+    // eventBus.destroy();
     super.dispose();
   }
 }

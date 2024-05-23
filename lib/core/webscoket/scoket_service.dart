@@ -1,7 +1,5 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class SocketChannelPage extends StatefulWidget {
@@ -10,10 +8,6 @@ class SocketChannelPage extends StatefulWidget {
   @override
   State<SocketChannelPage> createState() => _SocketChannelPageState();
 }
-//ws://3.234.163.231:8083/mqtt
-// ws://10.0.30.194:15674/ws
-// wss://echo.websocket.events
-// ws://172.16.11.201:8083/mqtt
 var wsUrl = Uri.parse('ws://10.0.30.194:15674/ws');
 
 class _SocketChannelPageState extends State<SocketChannelPage> {

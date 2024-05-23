@@ -664,6 +664,8 @@ class _UserLoginState extends State<UserLogin>
         } else {
           Get.offNamed("/get_equipment");
         }
+      }else {
+        Get.offNamed("/get_equipment");
       } 
     }).catchError((error) {
       ToastUtils.error(error.toString());

@@ -35,7 +35,6 @@ class _ChartDemoState extends State<ChartDemo> {
       canCheckBiometrics = await auth.canCheckBiometrics;
     } on PlatformException catch (e) {
       canCheckBiometrics = false;
-      print(e);
     }
     if (!mounted) {
       return;

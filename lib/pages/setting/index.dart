@@ -375,14 +375,6 @@ class _SettingState extends State<Setting> {
 
   @override
   Widget build(BuildContext context) {
-    Size screenSize = MediaQuery.of(context).size;
-    double screenWidth = screenSize.width;
-    double screenHeight = screenSize.height;
-
-    // 获取设备像素密度
-    double devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
-
-    XLogger.getLogger().d("当前屏幕的尺寸:$screenWidth -- 屏幕分辨率:$devicePixelRatio");
     return Scaffold(
       appBar: customAppbar(
           title: S.of(context).advancedSet,

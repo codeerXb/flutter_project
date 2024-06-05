@@ -179,6 +179,7 @@ class _TimeConfigListPageState extends State<TimeConfigListPage> {
             'Use Time Configure',
             style: TextStyle(
                 color: Colors.black, fontSize: 22, fontWeight: FontWeight.w500),
+                textScaler: TextScaler.noScaling
           ),
           centerTitle: true,
           actions: [
@@ -291,6 +292,7 @@ class _TimeConfigListPageState extends State<TimeConfigListPage> {
                   Text(
                     deviceName,
                     style: const TextStyle(fontSize: 15, color: Colors.black),
+                    textScaler: TextScaler.noScaling
                   ),
                   IconButton(
                       onPressed: () {
@@ -350,7 +352,7 @@ class _TimeConfigListPageState extends State<TimeConfigListPage> {
       listTime.add(SizedBox(
         height: 30,
         child: Text("${item.timeStart} - ${item.timeStop} ${item.weekdays}",
-            style: const TextStyle(fontSize: 12, color: Colors.black)),
+            style: const TextStyle(fontSize: 12, color: Colors.black),textScaler: TextScaler.noScaling),
       ));
     }
     return listTime;
@@ -369,6 +371,7 @@ class _TimeConfigListPageState extends State<TimeConfigListPage> {
           Text(
             "Loading, please wait",
             style: TextStyle(fontSize: 15, color: Colors.black),
+            textScaler: TextScaler.noScaling
           )
         ],
       ),

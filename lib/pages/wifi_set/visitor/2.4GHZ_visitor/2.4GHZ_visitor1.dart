@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
@@ -452,12 +453,13 @@ class _Visitor1State extends State<Visitor1> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text('SSID',
+                                  textAlign: TextAlign.left,
                                       style: TextStyle(
                                           color: const Color.fromARGB(
                                               255, 5, 0, 0),
                                           fontSize: 28.sp)),
                                   SizedBox(
-                                    width: 300.w,
+                                    width: Platform.isAndroid ? 400.w : 300.w,
                                     child: TextFormField(
                                       textAlign: TextAlign.right,
                                       controller: ssidVal,
@@ -470,6 +472,7 @@ class _Visitor1State extends State<Visitor1> {
                                             fontSize: 26.sp,
                                             color: const Color(0xff737A83)),
                                         border: InputBorder.none,
+                                        labelStyle: TextStyle(fontSize: 16)
                                       ),
                                     ),
                                   ),

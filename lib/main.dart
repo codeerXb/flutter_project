@@ -80,7 +80,6 @@ class _MyAppState extends State<MyApp> {
             ],
             supportedLocales: S.delegate.supportedLocales,
             localeResolutionCallback: (locale, supportedLocales) {
-              debugPrint('当前设置的语言lang$language');
               sharedGetData('lang', String).then((res) {
                 String lang = res.toString();
                 debugPrint('当前设置的语言1$lang---$locale---${lang.isNotEmpty}');
@@ -105,7 +104,7 @@ class _MyAppState extends State<MyApp> {
                 return Locale(locale.toString().split('_')[0], null);
               }
             },
-            locale: Get.deviceLocale,
+            locale: const Locale('en', 'US'),
             fallbackLocale: const Locale('en', 'US'),
             key: navigatorKey,
             title: 'router',

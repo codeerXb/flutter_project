@@ -33,6 +33,7 @@ class _ParentWebSitePageState extends State<ParentWebSitePage> {
           title: const Text(
             'Website Black List',
             style: TextStyle(color: Colors.black, fontSize: 22,fontWeight: FontWeight.w500),
+            textScaler: TextScaler.noScaling
           ),
           centerTitle: true,
           backgroundColor: Colors.white,

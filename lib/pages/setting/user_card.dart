@@ -236,7 +236,7 @@ class _UserCardState extends State<UserCard> {
       },
       child: Container(
         margin: const EdgeInsets.all(15),
-        width: MediaQuery.of(context).size.width - 20,
+        width: MediaQuery.of(context).size.width - 10,
         height: 150,
         decoration: BoxDecoration(
             color: Colors.white,
@@ -288,14 +288,14 @@ class _UserCardState extends State<UserCard> {
                           ),
                         )),
             ),
-            const SizedBox(
-              width: 10,
-            ),
+            // const SizedBox(
+            //   width: 5,
+            // ),
             Expanded(
                 flex: 1,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
                         _userPhone != 'null'
@@ -306,13 +306,13 @@ class _UserCardState extends State<UserCard> {
                                 color: Color.fromARGB(255, 54, 152, 244),
                                 fontSize: 16)
                             : TextStyle(
-                                fontSize: 40.sp, color: Colors.black38)),
+                                fontSize: 40.sp, color: Colors.black38),textScaler: TextScaler.noScaling,),
                     Text(
                         _userPhone != 'null'
                             ? '${S.of(context).currentDeive} $sn'
                             : S.of(context).Remote,
                         style:
-                            TextStyle(fontSize: 27.sp, color: Colors.black38))
+                            TextStyle(fontSize: 27.sp, color: Colors.black38),textScaler: TextScaler.noScaling)
                   ],
                 )),
             Expanded(
@@ -341,9 +341,10 @@ class _UserCardState extends State<UserCard> {
                               ? S.of(context).logOut
                               : S.of(context).login,
                           style: const TextStyle(color: Colors.white, fontSize: 15),
+                          textScaler: TextScaler.noScaling,
                         ),
                       ),
-                    SizedBox(width: 10.w),
+                    // SizedBox(width: 10.w),
                     GestureDetector(
                       onTap: () {
                         loginOut();

@@ -67,6 +67,7 @@ class _ParentTimeListPageState extends State<ParentTimeListPage> {
           "Time",
           style: TextStyle(
               fontSize: 22, color: Colors.black, fontWeight: FontWeight.w500),
+              textScaler: TextScaler.noScaling
         ),
         centerTitle: true,
         actions: [
@@ -149,10 +150,12 @@ class _ParentTimeListPageState extends State<ParentTimeListPage> {
             "${timeArray[index].timeStart} - ${timeArray[index].timeStop}",
             style: const TextStyle(
                 fontSize: 15, color: Colors.black, fontWeight: FontWeight.bold),
+                textScaler: TextScaler.noScaling
           ),
           subtitle: Text(
             "${timeArray[index].weekdays}",
             style: const TextStyle(fontSize: 12, color: Colors.black),
+            textScaler: TextScaler.noScaling
           ),
           trailing: Transform(
             transform: Matrix4.translationValues(16, 0, 0),
@@ -161,9 +164,9 @@ class _ParentTimeListPageState extends State<ParentTimeListPage> {
                 //delete
                 setState(() {
                   debugPrint("获取的列表索引:$index -- 删除的选项id是:${timeArray[index].id}");
+                  final indexId = timeArray[index].id;
+                  delDeviceTimeAction(sn, indexId);
                   timeArray.removeAt(index);
-                  final indexId = index + 1;
-                  delDeviceTimeAction(sn, "$indexId");
                 });
               },
               icon: Image.asset(
@@ -200,10 +203,12 @@ class _ParentTimeListPageState extends State<ParentTimeListPage> {
                   fontSize: 15,
                   color: Colors.black,
                   fontWeight: FontWeight.bold),
+                  textScaler: TextScaler.noScaling
             ),
             subtitle: Text(
               "${timeArray[i].weekdays}",
               style: const TextStyle(fontSize: 12, color: Colors.black),
+              textScaler: TextScaler.noScaling
             ),
             trailing: Transform(
               transform: Matrix4.translationValues(16, 0, 0),

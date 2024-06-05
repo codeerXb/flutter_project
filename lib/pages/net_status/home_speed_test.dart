@@ -308,6 +308,7 @@ class _HomeSpeedPageState extends State<HomeSpeedPage> {
         title: const Text(
           'SpeedTest',
           style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
+          textScaler: TextScaler.noScaling,
         ),
       ),
       body: Container(
@@ -323,6 +324,7 @@ class _HomeSpeedPageState extends State<HomeSpeedPage> {
                   fontSize: 18.0,
                   fontWeight: FontWeight.normal,
                 ),
+                textScaler: TextScaler.noScaling,
               ),
               const SizedBox(
                 height: 10,
@@ -333,6 +335,7 @@ class _HomeSpeedPageState extends State<HomeSpeedPage> {
                   fontSize: 18.0,
                   fontWeight: FontWeight.bold,
                 ),
+                textScaler: TextScaler.noScaling,
               ),
               const SizedBox(
                 height: 10,
@@ -371,10 +374,11 @@ class _HomeSpeedPageState extends State<HomeSpeedPage> {
                                           fontSize: 16,
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold),
+                                          textScaler: TextScaler.noScaling,
                                     ),
                                   ],
                                 ),
-                                Text('$_unitText Download'),
+                                Text('$_unitText Download',textScaler: TextScaler.noScaling,),
                               ],
                             ),
                             Image.asset(
@@ -404,103 +408,107 @@ class _HomeSpeedPageState extends State<HomeSpeedPage> {
                                           fontSize: 16,
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold),
+                                          textScaler: TextScaler.noScaling,
                                     ),
                                   ],
                                 ),
-                                Text('$_unitText Upload'),
+                                Text('$_unitText Upload',textScaler: TextScaler.noScaling,),
                               ],
                             ),
                           ],
                         ),
-                        Transform.translate(
-                          offset: const Offset(1.3, -16),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(
-                                width: 16,
-                              ),
-                              Image.asset(
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(
+                              width: 16,
+                            ),
+                            Transform.translate(
+                              offset: Platform.isAndroid ? const Offset(1.5, -16) : const Offset(1.6, -16),
+                              child: Image.asset(
                                 "assets/images/speed_device.png",
                                 width: 130,
                                 height: 210,
                               ),
-                            ],
-                          ),
+                            )
+                          ],
                         ),
-                        Transform.translate(
-                          offset: const Offset(0, -32),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Image.asset(
-                                        "assets/images/speed_down.png",
-                                        width: 25,
-                                        height: 25,
-                                      ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text(
-                                        '$_downloadRate',
-                                        style: const TextStyle(
-                                            fontSize: 16,
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ],
-                                  ),
-                                  Text('$_unitText Download'),
-                                ],
-                              ),
-                              Image.asset(
-                                "assets/images/speed_mobile.png",
-                                width: 130,
-                                height: 210,
-                              ),
-                              Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Image.asset(
-                                        "assets/images/speed_upload.png",
-                                        width: 25,
-                                        height: 25,
-                                      ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text(
-                                        '$_uploadRate',
-                                        style: const TextStyle(
-                                            fontSize: 16,
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ],
-                                  ),
-                                  Text('$_unitText Upload'),
-                                ],
-                              ),
-                            ],
-                          ),
-                        )
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Column(
+                              mainAxisAlignment:
+                              MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Image.asset(
+                                      "assets/images/speed_down.png",
+                                      width: 25,
+                                      height: 25,
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      '$_downloadRate',
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold),
+                                          textScaler: TextScaler.noScaling,
+                                    ),
+                                  ],
+                                ),
+                                Text('$_unitText Download',textScaler: TextScaler.noScaling,),
+                              ],
+                            ),
+                            Transform.translate(
+                                offset: Platform.isAndroid ? const Offset(0.5, -32) : const Offset(0, -32),
+                                child: Image.asset(
+                                  "assets/images/speed_mobile.png",
+                                  width: 130,
+                                  height: 210,
+                                ),
+                            ),
+
+                            Column(
+                              mainAxisAlignment:
+                              MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Image.asset(
+                                      "assets/images/speed_upload.png",
+                                      width: 25,
+                                      height: 25,
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      '$_uploadRate',
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold),
+                                          textScaler: TextScaler.noScaling,
+                                    ),
+                                  ],
+                                ),
+                                Text('$_unitText Upload',textScaler: TextScaler.noScaling,),
+                              ],
+                            ),
+                          ],
+                        ),
                       ],
                     ),
             ],

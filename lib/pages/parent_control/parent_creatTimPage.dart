@@ -246,6 +246,7 @@ class _ParentCreatTimePageState extends State<ParentCreatTimePage> {
             "Time",
             style: TextStyle(
                 fontSize: 22, color: Colors.black, fontWeight: FontWeight.w500),
+                textScaler: TextScaler.noScaling
           ),
           centerTitle: true,
         ),
@@ -412,6 +413,7 @@ class _ParentCreatTimePageState extends State<ParentCreatTimePage> {
                 title: Text(
                   weeks[index],
                   style: const TextStyle(fontSize: 15, color: Colors.black),
+                  textScaler: TextScaler.noScaling
                 ),
                 controlAffinity: ListTileControlAffinity.trailing,
                 onChanged: (isChecked) {

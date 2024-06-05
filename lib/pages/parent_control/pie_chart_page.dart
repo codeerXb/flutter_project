@@ -343,6 +343,7 @@ class _PieChartPageState extends State<PieChartPage> {
           "Parental Control Dashboard",
           style: TextStyle(
               fontSize: 18, color: Colors.black, fontWeight: FontWeight.w500),
+              textScaler: TextScaler.noScaling
         ),
         // centerTitle: true,
         actions: [
@@ -408,7 +409,7 @@ class _PieChartPageState extends State<PieChartPage> {
       child: ConstrainedBox(
         constraints: BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width,
-            maxHeight: 950,
+            maxHeight: double.infinity,
             minHeight: MediaQuery.of(context).size.height - 20),
         child: _isOpenControlInRow
             ? Container(
@@ -441,7 +442,11 @@ class _PieChartPageState extends State<PieChartPage> {
                           SizedBox(
                               height: 240,
                               child: ordinalDataList.isEmpty
-                                  ? const Center(child: Text("No statistics yet",style: TextStyle(color: Colors.black,fontSize: 20,fontWeight: FontWeight.bold),),)
+                                  ? const Center(
+                                    child: Text("No statistics yet",
+                                  style: TextStyle(color: Colors.black,fontSize: 20,fontWeight: FontWeight.bold),
+                                  textScaler: TextScaler.noScaling
+                                  ),)
                                   : getPieChart()),
                           // EasyPieChart(
                           //   key: key,
@@ -512,6 +517,7 @@ class _PieChartPageState extends State<PieChartPage> {
                                     fontSize: 40.sp,
                                     color: Colors.black,
                                     fontWeight: FontWeight.w500),
+                                    textScaler: TextScaler.noScaling
                               ),
                             ],
                           ),
@@ -540,10 +546,10 @@ class _PieChartPageState extends State<PieChartPage> {
 
   Widget setUpFooterView() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         SizedBox(
-          width: 160,
+          width: 140,
           height: 60,
           child: ElevatedButton(
             style: ButtonStyle(
@@ -561,11 +567,12 @@ class _PieChartPageState extends State<PieChartPage> {
               "Blacklist Configure",
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 32.sp, color: const Color(0xffffffff)),
+              textScaler: TextScaler.noScaling
             ),
           ),
         ),
         SizedBox(
-          width: 160,
+          width: 140,
           height: 60,
           child: ElevatedButton(
             style: ButtonStyle(
@@ -583,6 +590,7 @@ class _PieChartPageState extends State<PieChartPage> {
               "Use Time Configure",
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 32.sp, color: const Color(0xffffffff)),
+              textScaler: TextScaler.noScaling
             ),
           ),
         ),
@@ -641,7 +649,7 @@ class _PieChartPageState extends State<PieChartPage> {
         decoration: const BoxDecoration(
             border:
                 Border(bottom: BorderSide(width: 1, color: Colors.black12))),
-        height: 70,
+        height: 80,
         child: ListTile(
           contentPadding: const EdgeInsets.only(left: 10, right: 10),
           leading: Image.asset(
@@ -652,10 +660,12 @@ class _PieChartPageState extends State<PieChartPage> {
           title: Text(
             title,
             style: const TextStyle(fontSize: 16, color: Colors.black),
+            textScaler: TextScaler.noScaling
           ),
           subtitle: Text(
             totalTime,
             style: const TextStyle(fontSize: 16, color: Colors.black),
+            textScaler: TextScaler.noScaling
           ),
           trailing: Image.asset(
             "assets/images/parent_time_back.png",
@@ -683,6 +693,7 @@ class _PieChartPageState extends State<PieChartPage> {
                     color: Colors.black,
                   ),
                   overflow: TextOverflow.ellipsis,
+                  textScaler: TextScaler.noScaling
                 ),
               ),
             ],
@@ -698,6 +709,7 @@ class _PieChartPageState extends State<PieChartPage> {
                         color: Colors.black,
                       ),
                       overflow: TextOverflow.ellipsis,
+                      textScaler: TextScaler.noScaling
                     ),
                   ))
               .toList(),
@@ -837,6 +849,7 @@ class _PieChartPageState extends State<PieChartPage> {
             title,
             style: const TextStyle(fontSize: 15, color: Colors.black),
             softWrap: true,
+            textScaler: TextScaler.noScaling
           ),
         ),
         const SizedBox(
@@ -859,6 +872,7 @@ class _PieChartPageState extends State<PieChartPage> {
           Text(
             "Loading, please wait",
             style: TextStyle(fontSize: 15, color: Colors.black),
+            textScaler: TextScaler.noScaling
           )
         ],
       ),

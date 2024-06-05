@@ -32,14 +32,18 @@ class _DelAccountPageState extends State<DelAccountPage> {
           centerTitle: true,
           backgroundColor: Colors.white,
         ),
-        body: Container(
+        body: SingleChildScrollView(
+          child: ConstrainedBox(constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width,minHeight:10 ,maxHeight: MediaQuery.of(context).size.height),
+          child: Container(
+          height: double.infinity,
             decoration: const BoxDecoration(
               color: Color.fromRGBO(247, 248, 251, 1),
             ),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const SizedBox(
-                  height: 150,
+                  height: 100,
                 ),
                 Container(
                   height: 350,
@@ -126,7 +130,8 @@ class _DelAccountPageState extends State<DelAccountPage> {
                   ),
                 )
               ],
-            )));
+            )),),
+        ));
   }
 
   logOutUserAccount() {

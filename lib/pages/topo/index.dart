@@ -848,6 +848,7 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
                                   textAlign: TextAlign.left,
                                   softWrap: true,
                                   style: TextStyle(fontSize: 30.w),
+                                  textScaler: TextScaler.noScaling,
                                 ))
                           ],
                         )),
@@ -878,6 +879,7 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
                                   S.current.visitorNet,
                                   textAlign: TextAlign.left,
                                   style: TextStyle(fontSize: 30.w),
+                                  textScaler: TextScaler.noScaling,
                                 )),
                           ],
                         )),
@@ -908,6 +910,7 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
                                 textAlign: TextAlign.left,
                                 style: TextStyle(
                                     fontSize: 30.w, color: Colors.black),
+                                textScaler: TextScaler.noScaling,
                               ),
                             ),
                           ],
@@ -938,6 +941,7 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                       fontSize: 30.w, color: Colors.black),
+                                  textScaler: TextScaler.noScaling,
                                 )),
                           ],
                         )),
@@ -967,6 +971,7 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                       fontSize: 30.w, color: Colors.black),
+                                  textScaler: TextScaler.noScaling,
                                 )),
                           ],
                         )),

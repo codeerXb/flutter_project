@@ -1,6 +1,7 @@
 // ignore_for_file: unrelated_type_equality_checks
 
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -1124,6 +1125,7 @@ class _MaintainSettingsState extends State<MaintainSettings> {
                             rowtem: Text(
                               S.current.clickFactory,
                             ),
+                            height: Platform.isAndroid ? 110 : 90,
                           ),
                         ],
                       ),

@@ -445,6 +445,7 @@ class _DnsSettingsState extends State<DnsSettings> {
             : Container(
                 decoration: const BoxDecoration(
                     color: Color.fromRGBO(240, 240, 240, 1)),
+                width: double.infinity,
                 height: 1400.w,
                 child: SingleChildScrollView(
                   child: InkWell(
@@ -471,18 +472,19 @@ class _DnsSettingsState extends State<DnsSettings> {
                               BottomLine(
                                 rowtem: Row(
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     ConstrainedBox(
                                         constraints: BoxConstraints(
                                           maxWidth: 160.w,
                                         ),
-                                        child: FittedBox(
-                                          child: Text(
+                                        child: Text(
                                             S.of(context).PrimaryDNS,
-                                            softWrap: false,
+                                            softWrap: true,
+                                            style: const TextStyle(fontSize: 14),
+                                            textScaler: TextScaler.noScaling,
                                           ),
-                                        )),
+                                          ),
                                     Row(
                                       children: [
                                         OtpInput(dsnMain, false),
@@ -510,12 +512,11 @@ class _DnsSettingsState extends State<DnsSettings> {
                                         constraints: BoxConstraints(
                                           maxWidth: 160.w,
                                         ),
-                                        child: FittedBox(
-                                          child: Text(
+                                        child: Text(
                                             S.of(context).SecondaryDNS,
-                                            softWrap: false,
-                                          ),
-                                        )),
+                                            softWrap: true,
+                                            textScaler: TextScaler.noScaling,
+                                          ),),
                                     Row(
                                       children: [
                                         OtpInput(dsnAssist, false),

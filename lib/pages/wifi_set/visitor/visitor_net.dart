@@ -78,8 +78,10 @@ class _VisitorNetState extends State<VisitorNet> {
     debugPrint("获取的5G的网络数据:$parsedJson5G");
     var model24g = guestModel.fromJson(parsedJson24G);
     var model5g = guestModel.fromJson(parsedJson5G);
-    guest24Model = model24g;
-    guest5gModel = model5g;
+    setState(() {
+      guest24Model = model24g;
+      guest5gModel = model5g;
+    });
     // var prefix24g = (await jsonDecode(res24G)['data'] as List)
     //     .map((e) => e as Map<String, dynamic>)
     //     .toList();
@@ -105,6 +107,7 @@ class _VisitorNetState extends State<VisitorNet> {
       //     ['WiFi']['WLANSettings']['2']['SSIDProfile'];
 
       setState(() {
+        
         // data_2g.wiFiSsidTable![0].enable =
         //     prefix24g['1']['Enable']['_value'] ? '1' : '0';
         data_2g.wiFiSsidTable![1].enable = guest24Model!.data![1].enable;
@@ -251,7 +254,7 @@ class _VisitorNetState extends State<VisitorNet> {
                     const TitleWidger(title: '2.4GHZ'),
                     //访客 enable == '1'启用
                     CommonWidget.simpleWidgetWithMine(
-                        title: 'guest1',
+                        title: '${guest24Model!.data![1].ssid}',
                         icon: IconButton(
                           onPressed: () {
                             setState(() {
@@ -389,7 +392,7 @@ class _VisitorNetState extends State<VisitorNet> {
                           }
                         }),
                     CommonWidget.simpleWidgetWithMine(
-                        title: 'guest2',
+                        title: '${guest24Model!.data![2].ssid}',
                         icon: IconButton(
                           onPressed: () {
                             setState(() {
@@ -534,7 +537,7 @@ class _VisitorNetState extends State<VisitorNet> {
                           }
                         }),
                     CommonWidget.simpleWidgetWithMine(
-                        title: 'guest3',
+                        title: '${guest24Model!.data![3].ssid}',
                         icon: IconButton(
                           onPressed: () {
                             setState(() {
@@ -681,7 +684,7 @@ class _VisitorNetState extends State<VisitorNet> {
                     const TitleWidger(title: '5GHZ'),
                     //访客
                     CommonWidget.simpleWidgetWithMine(
-                        title: 'guest4',
+                        title: '${guest5gModel!.data![1].ssid}',
                         icon: IconButton(
                           onPressed: () {
                             setState(() {
@@ -826,7 +829,7 @@ class _VisitorNetState extends State<VisitorNet> {
                           }
                         }),
                     CommonWidget.simpleWidgetWithMine(
-                        title: 'guest5',
+                        title: '${guest5gModel!.data![2].ssid}',
                         icon: IconButton(
                           onPressed: () {
                             setState(() {
@@ -973,7 +976,7 @@ class _VisitorNetState extends State<VisitorNet> {
                           }
                         }),
                     CommonWidget.simpleWidgetWithMine(
-                        title: 'guest6',
+                        title: '${guest5gModel!.data![3].ssid}',
                         icon: IconButton(
                           onPressed: () {
                             setState(() {

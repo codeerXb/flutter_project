@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/http/http_app.dart';
+import 'package:flutter_template/core/utils/logger.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_widget.dart';
@@ -16,11 +17,11 @@ import 'package:flutter_template/pages/login/model/exception_login.dart';
 import 'package:flutter_template/pages/setting/user_card.dart';
 import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import '../../core/utils/shared_preferences_util.dart';
 import '../../core/utils/string_util.dart';
 import '../../core/widget/custom_app_bar.dart';
 import '../../generated/l10n.dart';
-
 
 /// 我的页面
 class Setting extends StatefulWidget {
@@ -70,7 +71,7 @@ class _SettingState extends State<Setting> {
         localUrl = value as String;
       }
     });
-    
+
     sharedGetData("loginInfo", List).then((data) {
       if (StringUtil.isNotEmpty(data)) {
         List<String> loginInfo = data as List<String>;
@@ -374,6 +375,14 @@ class _SettingState extends State<Setting> {
 
   @override
   Widget build(BuildContext context) {
+    Size screenSize = MediaQuery.of(context).size;
+    double screenWidth = screenSize.width;
+    double screenHeight = screenSize.height;
+
+    // 获取设备像素密度
+    double devicePixelRatio = MediaQuery.of(context).devicePixelRatio;
+
+    XLogger.getLogger().d("当前屏幕的尺寸:$screenWidth -- 屏幕分辨率:$devicePixelRatio");
     return Scaffold(
       appBar: customAppbar(
           title: S.of(context).advancedSet,
@@ -894,7 +903,6 @@ class _SettingState extends State<Setting> {
         ),
         callBack: () {
           Get.toNamed("/routerUpgradePage");
-          
         });
   }
 

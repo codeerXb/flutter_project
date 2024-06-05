@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 class OtpInput extends StatelessWidget {
@@ -9,7 +11,7 @@ class OtpInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 25,
-      width: 55,
+      width: Platform.isAndroid ? 50 : 55,
       child: Center(
         child: TextField(
           autofocus: autoFocus,

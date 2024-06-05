@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -113,7 +114,8 @@ class _UserRegisterState extends State<UserRegister>
         appBar: AppBar(
           title: Text(
             S.of(context).register,
-            style: TextStyle(fontSize: 40.sp, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 50.sp, fontWeight: FontWeight.bold),
+            textScaler: TextScaler.noScaling,
           ),
           backgroundColor: Colors.white,
           centerTitle: true,
@@ -148,33 +150,38 @@ class _UserRegisterState extends State<UserRegister>
                   child: Text(
                     "Phone",
                     style: TextStyle(fontSize: 18),
+                    textScaler: TextScaler.noScaling,
                   ),
                 ),
                 Tab(
                   child: Text(
                     "Email",
                     style: TextStyle(fontSize: 18),
+                    textScaler: TextScaler.noScaling,
                   ),
                 ),
               ]),
         ),
-        body: TabBarView(
+        body: MediaQuery(data:MediaQuery.of(context).copyWith(textScaler: TextScaler.noScaling),
+        child: TabBarView(
           controller: _tabController,
           children: [createPhoneView(), createEmailView()],
-        ));
+        )));
   }
 
   Widget createEmailView() {
     return SingleChildScrollView(
       child: ConstrainedBox(
-        constraints:
+        constraints: Platform.isAndroid ? BoxConstraints(minHeight: MediaQuery.of(context).size.height - 20) :
             BoxConstraints(maxHeight: MediaQuery.of(context).size.height - 20),
         child: GestureDetector(
           onTap: () => closeKeyboard(context),
           behavior: HitTestBehavior.opaque,
           child: Form(
             key: _EmailKey,
-            child: Column(children: [
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
               Padding(padding: EdgeInsets.only(top: 50.w)),
 
               //logo&文字
@@ -218,7 +225,7 @@ class _UserRegisterState extends State<UserRegister>
                         decoration: InputDecoration(
                             icon: const Icon(Icons.perm_identity),
                             // 表单提示信息
-                            hintText: S.of(context).phoneLabel,
+                            hintText: "Enter your eamil",
                             hintStyle: TextStyle(
                                 fontSize: 32.sp,
                                 color: const Color(0xff737A83)),
@@ -332,6 +339,7 @@ class _UserRegisterState extends State<UserRegister>
                               fontSize: 32.sp, color: const Color(0xff737A83)),
                           // 取消自带的下边框
                           border: InputBorder.none,
+                          
                         ),
                         onChanged: (String value) => _emailAgainVal = value,
                         validator: (value) {
@@ -428,6 +436,7 @@ class _UserRegisterState extends State<UserRegister>
                             ? '$emailCodeNum${S.current.second}'
                             : S.of(context).getVerficationCode,
                         style: TextStyle(color: Colors.blue, fontSize: 30.w),
+                        textScaler: TextScaler.noScaling,
                       )),
                 ],
               ),
@@ -473,7 +482,7 @@ class _UserRegisterState extends State<UserRegister>
                                   ..onTap = () {
                                     Get.toNamed("/privacyPage");
                                   })
-                          ])),
+                          ]),),
                       // subtitle: Text('${_items[index]}'),
                       controlAffinity: ListTileControlAffinity.leading,
                       onChanged: (isChecked) {
@@ -491,7 +500,9 @@ class _UserRegisterState extends State<UserRegister>
                       title: const Text("I agree to revice text message",
                           style: TextStyle(
                               color: Color.fromARGB(255, 120, 119, 119),
-                              fontSize: 12.0)),
+                              fontSize: 12.0),
+                              textScaler: TextScaler.noScaling,
+                              ),
                       // subtitle: Text('${_items[index]}'),
                       controlAffinity: ListTileControlAffinity.leading,
                       onChanged: (isChecked) {
@@ -508,6 +519,7 @@ class _UserRegisterState extends State<UserRegister>
                       color: Color.fromARGB(255, 120, 119, 119),
                       fontSize: 12.0),
                   softWrap: true,
+                  textScaler: TextScaler.noScaling,
                 ),
               ),
 
@@ -581,7 +593,7 @@ class _UserRegisterState extends State<UserRegister>
   Widget createPhoneView() {
     return SingleChildScrollView(
       child: ConstrainedBox(
-        constraints:
+        constraints: Platform.isAndroid ? BoxConstraints(minHeight: MediaQuery.of(context).size.height - 20) :
             BoxConstraints(maxHeight: MediaQuery.of(context).size.height - 20),
         child: GestureDetector(
           onTap: () => closeKeyboard(context),
@@ -589,6 +601,7 @@ class _UserRegisterState extends State<UserRegister>
           child: Form(
             key: _PhoneKey,
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(padding: EdgeInsets.only(top: 50.w)),
 
@@ -634,7 +647,7 @@ class _UserRegisterState extends State<UserRegister>
                           decoration: InputDecoration(
                               icon: const Icon(Icons.perm_identity),
                               // 表单提示信息
-                              hintText: S.of(context).phoneLabel,
+                              hintText: "Enter your phone number",
                               hintStyle: TextStyle(
                                   fontSize: 32.sp,
                                   color: const Color(0xff737A83)),
@@ -923,7 +936,9 @@ class _UserRegisterState extends State<UserRegister>
                                     ..onTap = () {
                                       Get.toNamed("/privacyPage");
                                     })
-                            ])),
+                            ]),
+                            textScaler: TextScaler.noScaling,
+                            ),
                         // subtitle: Text('${_items[index]}'),
                         controlAffinity: ListTileControlAffinity.leading,
                         onChanged: (isChecked) {
@@ -941,7 +956,9 @@ class _UserRegisterState extends State<UserRegister>
                         title: const Text("I agree to revice text message",
                             style: TextStyle(
                                 color: Color.fromARGB(255, 120, 119, 119),
-                                fontSize: 12.0)),
+                                fontSize: 12.0),
+                                textScaler: TextScaler.noScaling,
+                                ),
                         // subtitle: Text('${_items[index]}'),
                         controlAffinity: ListTileControlAffinity.leading,
                         onChanged: (isChecked) {
@@ -955,9 +972,10 @@ class _UserRegisterState extends State<UserRegister>
                   child: Text(
                     "Message and data rates may apply. Enter your phone number to subscribe to recurring Account updates to your phone from MOTOEYE. Msg freq may vary Reply HELP for help. Retry STOP to cancel.",
                     style: TextStyle(
-                        color: const Color.fromARGB(255, 120, 119, 119),
+                        color:  Color.fromARGB(255, 120, 119, 119),
                         fontSize: 12.0),
                     softWrap: true,
+                    textScaler: TextScaler.noScaling,
                   ),
                 ),
 

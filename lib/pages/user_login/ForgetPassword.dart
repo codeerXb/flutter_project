@@ -345,9 +345,9 @@ class _ForgetPasswordState extends State<ForgetPassword>
                                   child: Text(
                                     isCode ? '$codeNum Second' : 'Verify Code',
                                     softWrap: true,
-                                    textAlign: TextAlign.left,
+                                    textAlign: TextAlign.right,
                                     style: TextStyle(
-                                        color: Colors.blue, fontSize: 20.w),
+                                        color: Colors.blue, fontSize: 30.w),
                                   )),
                             )),
                       ],
@@ -636,7 +636,7 @@ class _ForgetPasswordState extends State<ForgetPassword>
                                     softWrap: true,
                                     textAlign: TextAlign.right,
                                     style: TextStyle(
-                                        color: Colors.blue, fontSize: 20.w),
+                                        color: Colors.blue, fontSize: 30.w),
                                   )),
                             )),
                       ],

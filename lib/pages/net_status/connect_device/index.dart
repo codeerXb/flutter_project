@@ -118,7 +118,7 @@ class _ConnectedDeviceState extends State<ConnectedDevice>
   void initState() {
     super.initState();
     getDeviceListFn();
-    // getOffLineListFn();
+    getOffLineListFn();
     _tabController = TabController(length: 2, vsync: this);
   }
 

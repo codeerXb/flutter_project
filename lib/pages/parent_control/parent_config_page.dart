@@ -291,6 +291,7 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
             'Configure',
             style: TextStyle(
                 color: Colors.black, fontSize: 22, fontWeight: FontWeight.w500),
+                textScaler: TextScaler.noScaling
           ),
           centerTitle: true,
           backgroundColor: Colors.white,
@@ -421,6 +422,7 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
                           title: const Text(
                             "Website List",
                             style: TextStyle(fontSize: 16, color: Colors.black),
+                            textScaler: TextScaler.noScaling
                           ),
                           trailing: IconButton(
                             onPressed: () {
@@ -605,6 +607,7 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
               title,
               style: const TextStyle(color: Colors.black, fontSize: 16),
               softWrap: true,
+              textScaler: TextScaler.noScaling
             ))
           ],
         ),

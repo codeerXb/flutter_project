@@ -155,6 +155,7 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
             'Blacklist Configure',
             style: TextStyle(
                 color: Colors.black, fontSize: 22, fontWeight: FontWeight.w500),
+                textScaler: TextScaler.noScaling
           ),
           centerTitle: true,
           backgroundColor: Colors.white,
@@ -331,6 +332,7 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
           style: const TextStyle(fontSize: 12, color: Colors.black),
           overflow: TextOverflow.ellipsis,
           softWrap: false,
+          textScaler: TextScaler.noScaling
         ),
       )));
     }
@@ -353,6 +355,7 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
           style: const TextStyle(fontSize: 12, color: Colors.black),
           overflow: TextOverflow.ellipsis,
           softWrap: false,
+          textScaler: TextScaler.noScaling
         ),
       ),));
     }
@@ -375,6 +378,7 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
           style: const TextStyle(fontSize: 12, color: Colors.black),
           overflow: TextOverflow.ellipsis,
           softWrap: false,
+          textScaler: TextScaler.noScaling
         ),
       ),));
     }
@@ -398,6 +402,7 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
           style: const TextStyle(fontSize: 12, color: Colors.black),
           overflow: TextOverflow.ellipsis,
           softWrap: false,
+          textScaler: TextScaler.noScaling
         ),
       )));
     }
@@ -420,6 +425,7 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
           style: const TextStyle(fontSize: 12, color: Colors.black),
           overflow: TextOverflow.ellipsis,
           softWrap: false,
+          textScaler: TextScaler.noScaling
         ),
       )));
     }

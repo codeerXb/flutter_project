@@ -1925,7 +1925,7 @@ class _WlanSetState extends State<WlanSet> {
                                             fontSize: 28.sp),
                                       ),
                                       SizedBox(
-                                        width: 250.w,
+                                        width: (MediaQuery.of(context).size.width - 40).w,
                                         child: TextFormField(
                                           autovalidateMode:
                                               AutovalidateMode.always,

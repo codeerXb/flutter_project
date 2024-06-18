@@ -15,6 +15,7 @@ import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import '../../pages/net_status/beans/speed_bean.dart';
 import "../../core/utils/logger.dart";
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 String Id_Random = StringUtil.generateRandomString(10);
 MqttServerClient client = MqttServerClient.withPort(
@@ -64,7 +65,7 @@ class _HomeSpeedPageState extends State<HomeSpeedPage> {
         upLoadUrl = "http://$baseUrl/pub/upload?n=$random";
       }
     });
-
+    debugPrint("下载地址:$downUrl  上传地址:$upLoadUrl");
     routerSpeedTestF();
     super.initState();
   }
@@ -72,7 +73,6 @@ class _HomeSpeedPageState extends State<HomeSpeedPage> {
   getCurrentDeviceIp(String sn) {
     final info = NetworkInfo();
     info.getWifiIP().then((wifiIp) {
-      debugPrint('当前wifi的iP地址$wifiIp');
       requestEquipmentList(sn, wifiIp!);
     });
   }
@@ -107,7 +107,8 @@ class _HomeSpeedPageState extends State<HomeSpeedPage> {
 
   requestTestSpeedData(String sn) async {
     client.logging(on: false);
-    client.keepAlivePeriod = 60;
+    client.keepAlivePeriod = 30;
+    client.disconnectOnNoResponsePeriod = 10;
     client.useWebSocket = true;
     client.autoReconnect = true;
     client.onDisconnected = onDisconnected;
@@ -425,11 +426,11 @@ class _HomeSpeedPageState extends State<HomeSpeedPage> {
                               width: 16,
                             ),
                             Transform.translate(
-                              offset: Platform.isAndroid ? const Offset(1.5, -16) : const Offset(1.6, -16),
+                              offset: const Offset(1.6, -16),
                               child: Image.asset(
                                 "assets/images/speed_device.png",
-                                width: 130,
-                                height: 210,
+                                width: 230.w,
+                                height: 310.h,
                               ),
                             )
                           ],
@@ -469,11 +470,11 @@ class _HomeSpeedPageState extends State<HomeSpeedPage> {
                               ],
                             ),
                             Transform.translate(
-                                offset: Platform.isAndroid ? const Offset(0.5, -32) : const Offset(0, -32),
+                                offset: Platform.isAndroid ?  const Offset(0, -26) : const Offset(0.5, -32),
                                 child: Image.asset(
                                   "assets/images/speed_mobile.png",
-                                  width: 130,
-                                  height: 210,
+                                  width: 230.w,
+                                  height: 310.h,
                                 ),
                             ),
 

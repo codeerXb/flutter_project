@@ -90,19 +90,40 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
             websiteList.add(element.url);
           }
 
-          // datasMap.forEach((key, value) {
-          //   if (key == "E-Commerce Portal Access Times") {
-          //     value = ruleBean!.eCommercePortalAccessTimes!;
-          //   } else if (key == "Video") {
-          //     value = ruleBean!.video!;
-          //   } else if (key == "App Store") {
-          //     value = ruleBean!.appStore!;
-          //   } else if (key == "Social Media") {
-          //     value = ruleBean!.socialMedia!;
-          //   } else if (key == "Website List") {
-          //     value = ruleBean!.websiteList!;
-          //   } else {}
-          // });
+          datasMap.forEach((key, value) {
+            if (key == "E-Commerce Portal Access Times") {
+              value = ruleBean!.eCommercePortalAccessTimes!;
+              for (var element in value) {
+                if(element.selectedFlag == "1") {
+                  urlList.add(element.url!);
+                }
+              }
+
+            } else if (key == "Video") {
+              value = ruleBean!.video!;
+              for (var element in value) {
+                if(element.selectedFlag == "1") {
+                  urlList.add(element.url!);
+                }
+              }
+            } else if (key == "App Store") {
+              value = ruleBean!.appStore!;
+              for (var element in value) {
+                if(element.selectedFlag == "1") {
+                  urlList.add(element.url!);
+                }
+              }
+            } else if (key == "Social Media") {
+              value = ruleBean!.socialMedia!;
+              for (var element in value) {
+                if(element.selectedFlag == "1") {
+                  urlList.add(element.url!);
+                }
+              }
+            } else if (key == "Website List") {
+              value = ruleBean!.websiteList!;
+            } else {}
+          });
         });
         debugPrint("组装的规则数据:$datasMap");
       } else {
@@ -173,7 +194,7 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
         }
       };
       _publishMessage(publishTopic, parms);
-      Future.delayed(const Duration(seconds: 2),(){
+      Future.delayed(const Duration(seconds: 2), () {
         ToastUtils.toast("Submitted successfully");
         sleep(const Duration(seconds: 1));
         Get.back(result: "success");
@@ -198,11 +219,11 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
           }
         };
         _publishMessage(publishTopic, parms);
-        Future.delayed(const Duration(seconds: 2),(){
-        ToastUtils.toast("Submitted successfully");
-        sleep(const Duration(seconds: 1));
-        Get.back(result: "success");
-      });
+        Future.delayed(const Duration(seconds: 2), () {
+          ToastUtils.toast("Submitted successfully");
+          sleep(const Duration(seconds: 1));
+          Get.back(result: "success");
+        });
         // client.subscribe(subTopic, MqttQos.atLeastOnce);
       } else {
         var subTopic = "cpe/$sn/setRule";
@@ -216,17 +237,17 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
             "data": {
               "config": "appfilter2",
               "type": "rule",
-              "name": macName,
+              "section": macName,
               "values": {"url": urlArray, "mac": macAddress}
             }
           }
         };
         _publishMessage(publishTopic, parms);
-        Future.delayed(const Duration(seconds: 2),(){
-        ToastUtils.toast("Submitted successfully");
-        sleep(const Duration(seconds: 1));
-        Get.back(result: "success");
-      });
+        Future.delayed(const Duration(seconds: 2), () {
+          ToastUtils.toast("Submitted successfully");
+          sleep(const Duration(seconds: 1));
+          Get.back(result: "success");
+        });
         // client.subscribe(subTopic, MqttQos.atMostOnce);
       }
     }
@@ -287,12 +308,12 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text(
-            'Configure',
-            style: TextStyle(
-                color: Colors.black, fontSize: 22, fontWeight: FontWeight.w500),
-                textScaler: TextScaler.noScaling
-          ),
+          title: const Text('Configure',
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w500),
+              textScaler: TextScaler.noScaling),
           centerTitle: true,
           backgroundColor: Colors.white,
           // actions: [
@@ -419,11 +440,10 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
                             width: 25,
                             height: 25,
                           ),
-                          title: const Text(
-                            "Website List",
-                            style: TextStyle(fontSize: 16, color: Colors.black),
-                            textScaler: TextScaler.noScaling
-                          ),
+                          title: const Text("Website List",
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.black),
+                              textScaler: TextScaler.noScaling),
                           trailing: IconButton(
                             onPressed: () {
                               Get.toNamed("/websiteConfigPage",
@@ -519,16 +539,15 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
                           ),
                         ),
                       ),
-                      
                     ],
                   ),
                 )),
               )
             : const Center(
-                      child: CircularProgressIndicator(
-                        backgroundColor: Color.fromRGBO(215, 220, 220, 0.3),
-                      ),
-                    ));
+                child: CircularProgressIndicator(
+                  backgroundColor: Color.fromRGBO(215, 220, 220, 0.3),
+                ),
+              ));
   }
 
 /*
@@ -603,44 +622,60 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
               width: 5,
             ),
             Expanded(
-                child: Text(
-              title,
-              style: const TextStyle(color: Colors.black, fontSize: 16),
-              softWrap: true,
-              textScaler: TextScaler.noScaling
-            ))
+                child: Text(title,
+                    style: const TextStyle(color: Colors.black, fontSize: 16),
+                    softWrap: true,
+                    textScaler: TextScaler.noScaling))
           ],
         ),
-        
         children: names!.map((name) {
-          if (shopflag == true || socialflag == true || videoflag == true || appflag == true) {
+          if (shopflag == true ||
+              socialflag == true ||
+              videoflag == true ||
+              appflag == true) {
             if (title == "Social Media") {
-            if (name.selectedFlag == "1" && socialflag == true) {
-              socialflag = false;
-              _selectedItems.add(name.appName!);
-              urlList.add(name.url!);
-            }
-          } else if (title == "Video") {
-            if (name.selectedFlag == "1" && videoflag == true ) {
-              videoflag = false;
-              _selectedvideoItems.add(name.appName!);
-              urlList.add(name.url!);
-            }
-          } else if (title == "E-Commerce Portal Access Times") {
-            if (name.selectedFlag == "1" && shopflag == true) {
-              shopflag = false;
-              _selectedshopItems.add(name.appName!);
-              urlList.add(name.url!);
-            }
-          } else {
-            if (name.selectedFlag == "1" && appflag == true) {
-              appflag = false;
-              _selectedappStoreItems.add(name.appName!);
-              urlList.add(name.url!);
+              // debugPrint("Social Media元素选中的状态是:${name.selectedFlag}");
+              // if (name.selectedFlag == "1" && socialflag == true) {
+              //   socialflag = false;
+              //   _selectedItems.add(name.appName!);
+              //   urlList.add(name.url!);
+              // } else {
+              //   _selectedItems.remove(name.appName!);
+              //   urlList.remove(name.url!);
+              // }
+            } else if (title == "Video") {
+              // debugPrint("Video元素选中的状态是:${name.selectedFlag}");
+              // if (name.selectedFlag == "1" && videoflag == true) {
+              //   videoflag = false;
+              //   _selectedvideoItems.add(name.appName!);
+              //   urlList.add(name.url!);
+              // }else {
+              //   _selectedvideoItems.remove(name.appName!);
+              //   urlList.remove(name.url!);
+              // }
+            } else if (title == "E-Commerce Portal Access Times") {
+              // debugPrint("E-Commerce元素选中的状态是:${name.selectedFlag}");
+              // if (name.selectedFlag == "1" && shopflag == true) {
+              //   shopflag = false;
+              //   _selectedshopItems.add(name.appName!);
+              //   urlList.add(name.url!);
+              // }else {
+              //   _selectedshopItems.remove(name.appName!);
+              //   urlList.remove(name.url!);
+              // }
+            } else {
+              // debugPrint("App Store元素选中的状态是:${name.selectedFlag}");
+              // if (name.selectedFlag == "1" && appflag == true) {
+              //   appflag = false;
+              //   _selectedappStoreItems.add(name.appName!);
+              //   urlList.add(name.url!);
+              // }else {
+              //   _selectedappStoreItems.remove(name.appName!);
+              //   urlList.remove(name.url!);
+              // }
             }
           }
-          }
-          
+
           return _generateWidget(name, title);
         }).toList(),
         onExpansionChanged: (value) {
@@ -695,15 +730,16 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
             name.selectedFlag = isChecked == true ? "1" : "0";
           });
           _itemChange(name.appName!, name.url!, type, isChecked!, name);
-          
+
           debugPrint(
-                "当前的是$_selectedItems --$_selectedshopItems --$_selectedvideoItems --$_selectedappStoreItems --- urlList : $urlList");
+              "当前的是$_selectedItems --$_selectedshopItems --$_selectedvideoItems --$_selectedappStoreItems --- urlList : $urlList");
         });
   }
 
   void _itemChange(String itemValue, String url, String type, bool isSelected,
       ApplicationInfo selectedItem) {
     if (type == "Social Media") {
+      debugPrint("Social Media元素选中的状态是:$isSelected");
       if (isSelected && !isContainApplication(type, itemValue)) {
         _selectedItems.add(itemValue);
         urlList.add(url);
@@ -712,6 +748,7 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
         urlList.remove(url);
       }
     } else if (type == "Video" && !isContainApplication(type, itemValue)) {
+      debugPrint("Video元素选中的状态是:$isSelected");
       if (isSelected) {
         _selectedvideoItems.add(itemValue);
         urlList.add(url);
@@ -719,7 +756,9 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
         _selectedvideoItems.remove(itemValue);
         urlList.remove(url);
       }
-    } else if (type == "E-Commerce Portal Access Times" && !isContainApplication(type, itemValue)) {
+    } else if (type == "E-Commerce Portal Access Times" &&
+        !isContainApplication(type, itemValue)) {
+      debugPrint("E-Commerce元素选中的状态是:$isSelected");
       if (isSelected) {
         _selectedshopItems.add(itemValue);
         urlList.add(url);
@@ -728,6 +767,7 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
         urlList.remove(url);
       }
     } else if (type == "App Store" && !isContainApplication(type, itemValue)) {
+      debugPrint("App Store元素选中的状态是:$isSelected");
       if (isSelected) {
         _selectedappStoreItems.add(itemValue);
         urlList.add(url);
@@ -735,7 +775,7 @@ class _ParentConfigPageState extends State<ParentConfigPage> {
         _selectedappStoreItems.remove(itemValue);
         urlList.remove(url);
       }
-    }else {}
+    } else {}
     // setState(() {
 
     // });

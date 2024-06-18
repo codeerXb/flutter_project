@@ -145,13 +145,15 @@ class _NetModeState extends State<NetMode> {
     //   'username': _account.trim(),
     //   'password': _password.trim(),
     // };
-
+    
     Dio dio = Dio();
 
     String url =
-        "http://$wifiGetWayUrl/action/appLogin?username=engineer&password=OPaviNb3o5qDKD1YPzp2X64Qsw0G3PMQLxOkLdp%2FWERkAphqhKCC00ZmZxOFOLBFN81FR7JprXF8lTkGpKdECl4IWbBiklCoAz1HsRUZYY%2BrbBFKGZO04NaawnWzqNEiHemaC0til1Hg6gkpc6DZVupOi8bGkEyCbpNQJN%2BU9zw=";
+        "$wifiGetWayUrl/action/appLogin?username=engineer&password=OPaviNb3o5qDKD1YPzp2X64Qsw0G3PMQLxOkLdp%2FWERkAphqhKCC00ZmZxOFOLBFN81FR7JprXF8lTkGpKdECl4IWbBiklCoAz1HsRUZYY%2BrbBFKGZO04NaawnWzqNEiHemaC0til1Hg6gkpc6DZVupOi8bGkEyCbpNQJN%2BU9zw=";
+    debugPrint('$url=====');
     dio.get(url).then((response) {
       var loginResJson = jsonDecode(response.toString());
+      debugPrint('结果返回=====$loginResJson');
       if (loginResJson['code'] == 200) {
         Map<String, dynamic> bindParma = {
             "account": userAccount,
@@ -211,7 +213,7 @@ class _NetModeState extends State<NetMode> {
           );
           sharedAddAndUpdate("token", String, loginResJson['token']);
           sharedAddAndUpdate("session", String, loginResJson['sessionid']);
-      }
+      }else {debugPrint('appLogin出错了=====');}
     }).catchError((err) {
       timer?.cancel();
       timer = null;
@@ -405,11 +407,11 @@ class _NetModeState extends State<NetMode> {
               const Color.fromARGB(255, 30, 104, 233)),
         ),
         onPressed: () {
-          printInfo(info: '登录成功了');
-          if ((_formKey.currentState as FormState).validate()) {
-            onSubmit(context);
-            appLogin();
-          }
+          // onSubmit(context);
+          appLogin();
+          // if ((_formKey.currentState as FormState).validate()) {
+            
+          // }
         },
         child: Text(
           S.of(context).login,
@@ -576,6 +578,7 @@ class _NetModeState extends State<NetMode> {
                                 handleSave(
                                     ' {"ethernetConnectMode":"dhcp","ethernetMtu":"1500","ethernetConnectOnly":"1","ethernetDetectServer":"0"}');
                                 currentStep += 2;
+                                debugPrint("当前的步骤是:======$currentStep======");
                               } else {
                                 currentStep += 1;
                                 if (currentStep == 2) {

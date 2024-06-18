@@ -15,6 +15,8 @@ import '../../../core/widget/custom_app_bar.dart';
 import '../../../generated/l10n.dart';
 import '../../login/login_controller.dart';
 import '../visitor/guest_model.dart';
+import '../../../core/utils/global_nav_context.dart';
+import '../../../core/utils/logger.dart';
 
 /// 访客网络
 class VisitorNet extends StatefulWidget {
@@ -107,7 +109,6 @@ class _VisitorNetState extends State<VisitorNet> {
       //     ['WiFi']['WLANSettings']['2']['SSIDProfile'];
 
       setState(() {
-        
         // data_2g.wiFiSsidTable![0].enable =
         //     prefix24g['1']['Enable']['_value'] ? '1' : '0';
         data_2g.wiFiSsidTable![1].enable = guest24Model!.data![1].enable;
@@ -253,874 +254,1032 @@ class _VisitorNetState extends State<VisitorNet> {
                     Padding(padding: EdgeInsets.only(top: 10.w)),
                     const TitleWidger(title: '2.4GHZ'),
                     //访客 enable == '1'启用
-                    CommonWidget.simpleWidgetWithMine(
-                        title: '${guest24Model!.data![1].ssid}',
-                        icon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              if (data_2g.wiFiSsidTable![1].enable == '1') {
-                                data_2g.wiFiSsidTable![1].enable = '0';
-                                guest24Model!.data![1].enable = "0";
-                                //guest1
-                                var parameterNames = {
-                                  "method": "set",
-                                  "table": {
-                                    "table": "WiFiSsidTable",
-                                    "value": [
-                                      {
-                                        "id": guest24Model!.data![1].id,
-                                        "Enable": guest24Model!.data![1].enable,
-                                        "SsidHide":
-                                            guest24Model!.data![1].ssidHide,
-                                        "ApIsolate":
-                                            guest24Model!.data![1].apIsolate,
-                                        "ShowPasswd":
-                                            guest24Model!.data![1].showPasswd,
-                                        "Is4Guest":
-                                            guest24Model!.data![1].is4Guest,
-                                        "PasswordLength": guest24Model!
-                                            .data![1].passwordLength,
-                                        "PasswordIndex": guest24Model!
-                                            .data![1].passwordIndex,
-                                        "MaxClient":
-                                            guest24Model!.data![1].maxClient,
-                                        "Ssid": guest24Model!.data![1].ssid,
-                                        "Key": guest24Model!.data![1].key,
-                                        "Password1":
-                                            guest24Model!.data![1].password1,
-                                        "Password2":
-                                            guest24Model!.data![1].password2,
-                                        "Password3":
-                                            guest24Model!.data![1].password3,
-                                        "Password4":
-                                            guest24Model!.data![1].password4,
-                                        "Encryption":
-                                            guest24Model!.data![1].encryption,
-                                        "SsidMac":
-                                            guest24Model!.data![1].ssidMac,
-                                        "AllowAccessIntranet": guest24Model!
-                                            .data![1].allowAccessIntranet,
-                                        "wifiRadiusServerIP": guest24Model!
-                                            .data![1].wifiRadiusServerIP,
-                                        "wifiRadiusServerPort": guest24Model!
-                                            .data![1].wifiRadiusServerPort,
-                                        "wifiRadiusSharedKey": guest24Model!
-                                            .data![1].wifiRadiusSharedKey
-                                      }
-                                    ]
-                                  }
-                                };
-                                setData(parameterNames);
-                                // setData([
-                                //   '${prefix}1.SSIDProfile.2.Enable',
-                                //   false,
-                                //   'xsd:boolean'
-                                // ]);
-                                // handleSave(
-                                //     '{"table":"WiFiSsidTable","value":[{"id":1,"Enable":"0"}]}');
-                              } else {
-                                data_2g.wiFiSsidTable![1].enable = '1';
-                                guest24Model!.data![1].enable = "1";
-                                //启用
-                                var parameterNames = {
-                                  "method": "set",
-                                  "table": {
-                                    "table": "WiFiSsidTable",
-                                    "value": [
-                                      {
-                                        "id": guest24Model!.data![1].id,
-                                        "Enable": guest24Model!.data![1].enable,
-                                        "SsidHide":
-                                            guest24Model!.data![1].ssidHide,
-                                        "ApIsolate":
-                                            guest24Model!.data![1].apIsolate,
-                                        "ShowPasswd":
-                                            guest24Model!.data![1].showPasswd,
-                                        "Is4Guest":
-                                            guest24Model!.data![1].is4Guest,
-                                        "PasswordLength": guest24Model!
-                                            .data![1].passwordLength,
-                                        "PasswordIndex": guest24Model!
-                                            .data![1].passwordIndex,
-                                        "MaxClient":
-                                            guest24Model!.data![1].maxClient,
-                                        "Ssid": guest24Model!.data![1].ssid,
-                                        "Key": guest24Model!.data![1].key,
-                                        "Password1":
-                                            guest24Model!.data![1].password1,
-                                        "Password2":
-                                            guest24Model!.data![1].password2,
-                                        "Password3":
-                                            guest24Model!.data![1].password3,
-                                        "Password4":
-                                            guest24Model!.data![1].password4,
-                                        "Encryption":
-                                            guest24Model!.data![1].encryption,
-                                        "SsidMac":
-                                            guest24Model!.data![1].ssidMac,
-                                        "AllowAccessIntranet": guest24Model!
-                                            .data![1].allowAccessIntranet,
-                                        "wifiRadiusServerIP": guest24Model!
-                                            .data![1].wifiRadiusServerIP,
-                                        "wifiRadiusServerPort": guest24Model!
-                                            .data![1].wifiRadiusServerPort,
-                                        "wifiRadiusSharedKey": guest24Model!
-                                            .data![1].wifiRadiusSharedKey
-                                      }
-                                    ]
-                                  }
-                                };
-                                setData(parameterNames);
-                                // handleSave(
-                                //     '{"table":"WiFiSsidTable","value":[{"id":1,"Enable":"1"}]}');
-                              }
-                            });
-                          },
-                          icon: Icon(
-                            data_2g.wiFiSsidTable![1].enable == '1'
-                                ? Icons.check_box
-                                : Icons.check_box_outline_blank,
-                            color: Colors.blue,
-                            size: 50.w,
+                    InkWell(
+                      onTap: () {
+                        Get.toNamed("/visitor_one");
+                      },
+                      child: Container(
+                        decoration: const BoxDecoration(color: Colors.white),
+                        child: ListTile(
+                          title: Text(
+                            '${guest24Model!.data![1].ssid}',
+                            style: const TextStyle(fontSize: 14),
+                            textScaler: TextScaler.noScaling,
                           ),
+                          trailing: const Icon(Icons.chevron_right,
+                              color: Colors.grey),
                         ),
-                        callBack: () {
-                          if (data_2g.wiFiSsidTable![1].enable == '1') {
-                            Get.toNamed("/visitor_one");
-                          } else {
-                            ToastUtils.toast(S.of(context).notEnable);
-                          }
-                        }),
-                    CommonWidget.simpleWidgetWithMine(
-                        title: '${guest24Model!.data![2].ssid}',
-                        icon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              if (data_2g.wiFiSsidTable![2].enable == '1') {
-                                //guest2
-                                data_2g.wiFiSsidTable![2].enable = '0';
-                                guest24Model!.data![2].enable = "0";
-                                var parameterNames = {
-                                  "method": "set",
-                                  "table": {
-                                    "table": "WiFiSsidTable",
-                                    "value": [
-                                      {
-                                        "id": guest24Model!.data![2].id,
-                                        "Enable": guest24Model!.data![2].enable,
-                                        "SsidHide":
-                                            guest24Model!.data![2].ssidHide,
-                                        "ApIsolate":
-                                            guest24Model!.data![2].apIsolate,
-                                        "ShowPasswd":
-                                            guest24Model!.data![2].showPasswd,
-                                        "Is4Guest":
-                                            guest24Model!.data![2].is4Guest,
-                                        "PasswordLength": guest24Model!
-                                            .data![2].passwordLength,
-                                        "PasswordIndex": guest24Model!
-                                            .data![2].passwordIndex,
-                                        "MaxClient":
-                                            guest24Model!.data![2].maxClient,
-                                        "Ssid": guest24Model!.data![2].ssid,
-                                        "Key": guest24Model!.data![2].key,
-                                        "Password1":
-                                            guest24Model!.data![2].password1,
-                                        "Password2":
-                                            guest24Model!.data![2].password2,
-                                        "Password3":
-                                            guest24Model!.data![2].password3,
-                                        "Password4":
-                                            guest24Model!.data![2].password4,
-                                        "Encryption":
-                                            guest24Model!.data![2].encryption,
-                                        "SsidMac":
-                                            guest24Model!.data![2].ssidMac,
-                                        "AllowAccessIntranet": guest24Model!
-                                            .data![2].allowAccessIntranet,
-                                        "wifiRadiusServerIP": guest24Model!
-                                            .data![2].wifiRadiusServerIP,
-                                        "wifiRadiusServerPort": guest24Model!
-                                            .data![2].wifiRadiusServerPort,
-                                        "wifiRadiusSharedKey": guest24Model!
-                                            .data![2].wifiRadiusSharedKey
-                                      }
-                                    ]
-                                  }
-                                };
-                                setData(parameterNames);
-
-                                // setData([
-                                //   '${prefix}1.SSIDProfile.3.Enable',
-                                //   false,
-                                //   'xsd:boolean'
-                                // ]);
-                                // handleSave(
-                                //     '{"table":"WiFiSsidTable","value":[{"id":2,"Enable":"0"}]}');
-                              } else {
-                                //启用
-                                data_2g.wiFiSsidTable![2].enable = '1';
-                                guest24Model!.data![2].enable = "1";
-                                var parameterNames = {
-                                  "method": "set",
-                                  "table": {
-                                    "table": "WiFiSsidTable",
-                                    "value": [
-                                      {
-                                        "id": guest24Model!.data![2].id,
-                                        "Enable": guest24Model!.data![2].enable,
-                                        "SsidHide":
-                                            guest24Model!.data![2].ssidHide,
-                                        "ApIsolate":
-                                            guest24Model!.data![2].apIsolate,
-                                        "ShowPasswd":
-                                            guest24Model!.data![2].showPasswd,
-                                        "Is4Guest":
-                                            guest24Model!.data![2].is4Guest,
-                                        "PasswordLength": guest24Model!
-                                            .data![2].passwordLength,
-                                        "PasswordIndex": guest24Model!
-                                            .data![2].passwordIndex,
-                                        "MaxClient":
-                                            guest24Model!.data![2].maxClient,
-                                        "Ssid": guest24Model!.data![2].ssid,
-                                        "Key": guest24Model!.data![2].key,
-                                        "Password1":
-                                            guest24Model!.data![2].password1,
-                                        "Password2":
-                                            guest24Model!.data![2].password2,
-                                        "Password3":
-                                            guest24Model!.data![2].password3,
-                                        "Password4":
-                                            guest24Model!.data![2].password4,
-                                        "Encryption":
-                                            guest24Model!.data![2].encryption,
-                                        "SsidMac":
-                                            guest24Model!.data![2].ssidMac,
-                                        "AllowAccessIntranet": guest24Model!
-                                            .data![2].allowAccessIntranet,
-                                        "wifiRadiusServerIP": guest24Model!
-                                            .data![2].wifiRadiusServerIP,
-                                        "wifiRadiusServerPort": guest24Model!
-                                            .data![2].wifiRadiusServerPort,
-                                        "wifiRadiusSharedKey": guest24Model!
-                                            .data![2].wifiRadiusSharedKey
-                                      }
-                                    ]
-                                  }
-                                };
-                                setData(parameterNames);
-
-                                // setData([
-                                //   '${prefix}1.SSIDProfile.3.Enable',
-                                //   true,
-                                //   'xsd:boolean'
-                                // ]);
-                                // handleSave(
-                                //     '{"table":"WiFiSsidTable","value":[{"id":2,"Enable":"1"}]}');
-                              }
-                            });
-                          },
-                          icon: Icon(
-                            data_2g.wiFiSsidTable![2].enable == '1'
-                                ? Icons.check_box
-                                : Icons.check_box_outline_blank,
-                            color: Colors.blue,
-                            size: 50.w,
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Get.toNamed("/visitor_two");
+                      },
+                      child: Container(
+                        decoration: const BoxDecoration(color: Colors.white),
+                        child: ListTile(
+                          title: Text(
+                            '${guest24Model!.data![2].ssid}',
+                            style: const TextStyle(fontSize: 14),
+                            textScaler: TextScaler.noScaling,
                           ),
+                          trailing: const Icon(Icons.chevron_right,
+                              color: Colors.grey),
                         ),
-                        callBack: () {
-                          if (data_2g.wiFiSsidTable![2].enable == '1') {
-                            Get.toNamed("/visitor_two");
-                          } else {
-                            ToastUtils.toast(S.of(context).notEnable);
-                          }
-                        }),
-                    CommonWidget.simpleWidgetWithMine(
-                        title: '${guest24Model!.data![3].ssid}',
-                        icon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              if (data_2g.wiFiSsidTable![3].enable == '1') {
-                                data_2g.wiFiSsidTable![3].enable = '0';
-                                //gusest3
-                                guest24Model!.data![3].enable = "0";
-                                var parameterNames = {
-                                  "method": "set",
-                                  "table": {
-                                    "table": "WiFiSsidTable",
-                                    "value": [
-                                      {
-                                        "id": guest24Model!.data![3].id,
-                                        "Enable": guest24Model!.data![3].enable,
-                                        "SsidHide":
-                                            guest24Model!.data![3].ssidHide,
-                                        "ApIsolate":
-                                            guest24Model!.data![3].apIsolate,
-                                        "ShowPasswd":
-                                            guest24Model!.data![3].showPasswd,
-                                        "Is4Guest":
-                                            guest24Model!.data![3].is4Guest,
-                                        "PasswordLength": guest24Model!
-                                            .data![3].passwordLength,
-                                        "PasswordIndex": guest24Model!
-                                            .data![3].passwordIndex,
-                                        "MaxClient":
-                                            guest24Model!.data![3].maxClient,
-                                        "Ssid": guest24Model!.data![3].ssid,
-                                        "Key": guest24Model!.data![3].key,
-                                        "Password1":
-                                            guest24Model!.data![3].password1,
-                                        "Password2":
-                                            guest24Model!.data![3].password2,
-                                        "Password3":
-                                            guest24Model!.data![3].password3,
-                                        "Password4":
-                                            guest24Model!.data![3].password4,
-                                        "Encryption":
-                                            guest24Model!.data![3].encryption,
-                                        "SsidMac":
-                                            guest24Model!.data![3].ssidMac,
-                                        "AllowAccessIntranet": guest24Model!
-                                            .data![3].allowAccessIntranet,
-                                        "wifiRadiusServerIP": guest24Model!
-                                            .data![3].wifiRadiusServerIP,
-                                        "wifiRadiusServerPort": guest24Model!
-                                            .data![3].wifiRadiusServerPort,
-                                        "wifiRadiusSharedKey": guest24Model!
-                                            .data![3].wifiRadiusSharedKey
-                                      }
-                                    ]
-                                  }
-                                };
-                                setData(parameterNames);
-                                // setData([
-                                //   '${prefix}1.SSIDProfile.4.Enable',
-                                //   false,
-                                //   'xsd:boolean'
-                                // ]);
-                                // handleSave(
-                                //     '{"table":"WiFiSsidTable","value":[{"id":3,"Enable":"0"}]}');
-                              } else {
-                                data_2g.wiFiSsidTable![3].enable = '1';
-                                //启用
-                                guest24Model!.data![3].enable = "1";
-                                var parameterNames = {
-                                  "method": "set",
-                                  "table": {
-                                    "table": "WiFiSsidTable",
-                                    "value": [
-                                      {
-                                        "id": guest24Model!.data![3].id,
-                                        "Enable": guest24Model!.data![3].enable,
-                                        "SsidHide":
-                                            guest24Model!.data![3].ssidHide,
-                                        "ApIsolate":
-                                            guest24Model!.data![3].apIsolate,
-                                        "ShowPasswd":
-                                            guest24Model!.data![3].showPasswd,
-                                        "Is4Guest":
-                                            guest24Model!.data![3].is4Guest,
-                                        "PasswordLength": guest24Model!
-                                            .data![3].passwordLength,
-                                        "PasswordIndex": guest24Model!
-                                            .data![3].passwordIndex,
-                                        "MaxClient":
-                                            guest24Model!.data![3].maxClient,
-                                        "Ssid": guest24Model!.data![3].ssid,
-                                        "Key": guest24Model!.data![3].key,
-                                        "Password1":
-                                            guest24Model!.data![3].password1,
-                                        "Password2":
-                                            guest24Model!.data![3].password2,
-                                        "Password3":
-                                            guest24Model!.data![3].password3,
-                                        "Password4":
-                                            guest24Model!.data![3].password4,
-                                        "Encryption":
-                                            guest24Model!.data![3].encryption,
-                                        "SsidMac":
-                                            guest24Model!.data![3].ssidMac,
-                                        "AllowAccessIntranet": guest24Model!
-                                            .data![3].allowAccessIntranet,
-                                        "wifiRadiusServerIP": guest24Model!
-                                            .data![3].wifiRadiusServerIP,
-                                        "wifiRadiusServerPort": guest24Model!
-                                            .data![3].wifiRadiusServerPort,
-                                        "wifiRadiusSharedKey": guest24Model!
-                                            .data![3].wifiRadiusSharedKey
-                                      }
-                                    ]
-                                  }
-                                };
-                                setData(parameterNames);
-
-                                // setData([
-                                //   '${prefix}1.SSIDProfile.4.Enable',
-                                //   true,
-                                //   'xsd:boolean'
-                                // ]);
-                                // handleSave(
-                                //     '{"table":"WiFiSsidTable","value":[{"id":3,"Enable":"1"}]}');
-                              }
-                            });
-                          },
-                          icon: Icon(
-                            data_2g.wiFiSsidTable![3].enable == '1'
-                                ? Icons.check_box
-                                : Icons.check_box_outline_blank,
-                            color: Colors.blue,
-                            size: 50.w,
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Get.toNamed("/visitor_three");
+                      },
+                      child: Container(
+                        decoration: const BoxDecoration(color: Colors.white),
+                        child: ListTile(
+                          title: Text(
+                            '${guest24Model!.data![3].ssid}',
+                            style: const TextStyle(fontSize: 14),
+                            textScaler: TextScaler.noScaling,
                           ),
+                          trailing: const Icon(Icons.chevron_right,
+                              color: Colors.grey),
                         ),
-                        callBack: () {
-                          if (data_2g.wiFiSsidTable![3].enable == '1') {
-                            Get.toNamed("/visitor_three");
-                          } else {
-                            ToastUtils.toast(S.of(context).notEnable);
-                          }
-                        }),
+                      ),
+                    ),
+                    // CommonWidget.simpleWidgetWithMine(
+                    //     title: '${guest24Model!.data![1].ssid}',
+                    //     icon: IconButton(
+                    //       onPressed: () {
+                    //         setState(() {
+                    //           /*
+                    //           if (data_2g.wiFiSsidTable![1].enable == '1') {
+                    //             data_2g.wiFiSsidTable![1].enable = '0';
+                    //             guest24Model!.data![1].enable = "0";
+                    //             //guest1
+                    //             var parameterNames = {
+                    //               "method": "set",
+                    //               "table": {
+                    //                 "table": "WiFiSsidTable",
+                    //                 "value": [
+                    //                   {
+                    //                     "id": guest24Model!.data![1].id,
+                    //                     "Enable": guest24Model!.data![1].enable,
+                    //                     "SsidHide":
+                    //                         guest24Model!.data![1].ssidHide,
+                    //                     "ApIsolate":
+                    //                         guest24Model!.data![1].apIsolate,
+                    //                     "ShowPasswd":
+                    //                         guest24Model!.data![1].showPasswd,
+                    //                     "Is4Guest":
+                    //                         guest24Model!.data![1].is4Guest,
+                    //                     "PasswordLength": guest24Model!
+                    //                         .data![1].passwordLength,
+                    //                     "PasswordIndex": guest24Model!
+                    //                         .data![1].passwordIndex,
+                    //                     "MaxClient":
+                    //                         guest24Model!.data![1].maxClient,
+                    //                     "Ssid": guest24Model!.data![1].ssid,
+                    //                     "Key": guest24Model!.data![1].key,
+                    //                     "Password1":
+                    //                         guest24Model!.data![1].password1,
+                    //                     "Password2":
+                    //                         guest24Model!.data![1].password2,
+                    //                     "Password3":
+                    //                         guest24Model!.data![1].password3,
+                    //                     "Password4":
+                    //                         guest24Model!.data![1].password4,
+                    //                     "Encryption":
+                    //                         guest24Model!.data![1].encryption,
+                    //                     "SsidMac":
+                    //                         guest24Model!.data![1].ssidMac,
+                    //                     "AllowAccessIntranet": guest24Model!
+                    //                         .data![1].allowAccessIntranet,
+                    //                     "wifiRadiusServerIP": guest24Model!
+                    //                         .data![1].wifiRadiusServerIP,
+                    //                     "wifiRadiusServerPort": guest24Model!
+                    //                         .data![1].wifiRadiusServerPort,
+                    //                     "wifiRadiusSharedKey": guest24Model!
+                    //                         .data![1].wifiRadiusSharedKey
+                    //                   }
+                    //                 ]
+                    //               }
+                    //             };
+                    //             setData(parameterNames);
+                    //             // setData([
+                    //             //   '${prefix}1.SSIDProfile.2.Enable',
+                    //             //   false,
+                    //             //   'xsd:boolean'
+                    //             // ]);
+                    //             // handleSave(
+                    //             //     '{"table":"WiFiSsidTable","value":[{"id":1,"Enable":"0"}]}');
+                    //           } else {
+                    //             data_2g.wiFiSsidTable![1].enable = '1';
+                    //             guest24Model!.data![1].enable = "1";
+                    //             //启用
+                    //             var parameterNames = {
+                    //               "method": "set",
+                    //               "table": {
+                    //                 "table": "WiFiSsidTable",
+                    //                 "value": [
+                    //                   {
+                    //                     "id": guest24Model!.data![1].id,
+                    //                     "Enable": guest24Model!.data![1].enable,
+                    //                     "SsidHide":
+                    //                         guest24Model!.data![1].ssidHide,
+                    //                     "ApIsolate":
+                    //                         guest24Model!.data![1].apIsolate,
+                    //                     "ShowPasswd":
+                    //                         guest24Model!.data![1].showPasswd,
+                    //                     "Is4Guest":
+                    //                         guest24Model!.data![1].is4Guest,
+                    //                     "PasswordLength": guest24Model!
+                    //                         .data![1].passwordLength,
+                    //                     "PasswordIndex": guest24Model!
+                    //                         .data![1].passwordIndex,
+                    //                     "MaxClient":
+                    //                         guest24Model!.data![1].maxClient,
+                    //                     "Ssid": guest24Model!.data![1].ssid,
+                    //                     "Key": guest24Model!.data![1].key,
+                    //                     "Password1":
+                    //                         guest24Model!.data![1].password1,
+                    //                     "Password2":
+                    //                         guest24Model!.data![1].password2,
+                    //                     "Password3":
+                    //                         guest24Model!.data![1].password3,
+                    //                     "Password4":
+                    //                         guest24Model!.data![1].password4,
+                    //                     "Encryption":
+                    //                         guest24Model!.data![1].encryption,
+                    //                     "SsidMac":
+                    //                         guest24Model!.data![1].ssidMac,
+                    //                     "AllowAccessIntranet": guest24Model!
+                    //                         .data![1].allowAccessIntranet,
+                    //                     "wifiRadiusServerIP": guest24Model!
+                    //                         .data![1].wifiRadiusServerIP,
+                    //                     "wifiRadiusServerPort": guest24Model!
+                    //                         .data![1].wifiRadiusServerPort,
+                    //                     "wifiRadiusSharedKey": guest24Model!
+                    //                         .data![1].wifiRadiusSharedKey
+                    //                   }
+                    //                 ]
+                    //               }
+                    //             };
+                    //             setData(parameterNames);
+                    //             // handleSave(
+                    //             //     '{"table":"WiFiSsidTable","value":[{"id":1,"Enable":"1"}]}');
+                    //           }
+                    //           */
+                    //           data_2g.wiFiSsidTable![1].enable = '1';
+                    //             guest24Model!.data![1].enable = "1";
+                    //             //启用
+                    //             var parameterNames = {
+                    //               "method": "set",
+                    //               "table": {
+                    //                 "table": "WiFiSsidTable",
+                    //                 "value": [
+                    //                   {
+                    //                     "id": guest24Model!.data![1].id,
+                    //                     "Enable": guest24Model!.data![1].enable,
+                    //                     "SsidHide":
+                    //                         guest24Model!.data![1].ssidHide,
+                    //                     "ApIsolate":
+                    //                         guest24Model!.data![1].apIsolate,
+                    //                     "ShowPasswd":
+                    //                         guest24Model!.data![1].showPasswd,
+                    //                     "Is4Guest":
+                    //                         guest24Model!.data![1].is4Guest,
+                    //                     "PasswordLength": guest24Model!
+                    //                         .data![1].passwordLength,
+                    //                     "PasswordIndex": guest24Model!
+                    //                         .data![1].passwordIndex,
+                    //                     "MaxClient":
+                    //                         guest24Model!.data![1].maxClient,
+                    //                     "Ssid": guest24Model!.data![1].ssid,
+                    //                     "Key": guest24Model!.data![1].key,
+                    //                     "Password1":
+                    //                         guest24Model!.data![1].password1,
+                    //                     "Password2":
+                    //                         guest24Model!.data![1].password2,
+                    //                     "Password3":
+                    //                         guest24Model!.data![1].password3,
+                    //                     "Password4":
+                    //                         guest24Model!.data![1].password4,
+                    //                     "Encryption":
+                    //                         guest24Model!.data![1].encryption,
+                    //                     "SsidMac":
+                    //                         guest24Model!.data![1].ssidMac,
+                    //                     "AllowAccessIntranet": guest24Model!
+                    //                         .data![1].allowAccessIntranet,
+                    //                     "wifiRadiusServerIP": guest24Model!
+                    //                         .data![1].wifiRadiusServerIP,
+                    //                     "wifiRadiusServerPort": guest24Model!
+                    //                         .data![1].wifiRadiusServerPort,
+                    //                     "wifiRadiusSharedKey": guest24Model!
+                    //                         .data![1].wifiRadiusSharedKey
+                    //                   }
+                    //                 ]
+                    //               }
+                    //             };
+                    //             setData(parameterNames);
+                    //         });
+                    //       },
+                    //       icon: Icon(
+                    //         data_2g.wiFiSsidTable![1].enable == '1'
+                    //             ? Icons.check_box
+                    //             : Icons.check_box_outline_blank,
+                    //         color: Colors.blue,
+                    //         size: 0.w,
+                    //       ),
+                    //     ),
+                    //     callBack: () {
+                    //       Get.toNamed("/visitor_one");
+
+                    //       // if (data_2g.wiFiSsidTable![1].enable == '1') {
+                    //       //   Get.toNamed("/visitor_one");
+                    //       // } else {
+                    //       //   ToastUtils.toast(S.of(context).notEnable);
+                    //       // }
+                    //     }),
+                    // CommonWidget.simpleWidgetWithMine(
+                    //     title: '${guest24Model!.data![2].ssid}',
+                    //     icon: IconButton(
+                    //       onPressed: () {
+                    //         setState(() {
+                    //           if (data_2g.wiFiSsidTable![2].enable == '1') {
+                    //             //guest2
+                    //             data_2g.wiFiSsidTable![2].enable = '0';
+                    //             guest24Model!.data![2].enable = "0";
+                    //             var parameterNames = {
+                    //               "method": "set",
+                    //               "table": {
+                    //                 "table": "WiFiSsidTable",
+                    //                 "value": [
+                    //                   {
+                    //                     "id": guest24Model!.data![2].id,
+                    //                     "Enable": guest24Model!.data![2].enable,
+                    //                     "SsidHide":
+                    //                         guest24Model!.data![2].ssidHide,
+                    //                     "ApIsolate":
+                    //                         guest24Model!.data![2].apIsolate,
+                    //                     "ShowPasswd":
+                    //                         guest24Model!.data![2].showPasswd,
+                    //                     "Is4Guest":
+                    //                         guest24Model!.data![2].is4Guest,
+                    //                     "PasswordLength": guest24Model!
+                    //                         .data![2].passwordLength,
+                    //                     "PasswordIndex": guest24Model!
+                    //                         .data![2].passwordIndex,
+                    //                     "MaxClient":
+                    //                         guest24Model!.data![2].maxClient,
+                    //                     "Ssid": guest24Model!.data![2].ssid,
+                    //                     "Key": guest24Model!.data![2].key,
+                    //                     "Password1":
+                    //                         guest24Model!.data![2].password1,
+                    //                     "Password2":
+                    //                         guest24Model!.data![2].password2,
+                    //                     "Password3":
+                    //                         guest24Model!.data![2].password3,
+                    //                     "Password4":
+                    //                         guest24Model!.data![2].password4,
+                    //                     "Encryption":
+                    //                         guest24Model!.data![2].encryption,
+                    //                     "SsidMac":
+                    //                         guest24Model!.data![2].ssidMac,
+                    //                     "AllowAccessIntranet": guest24Model!
+                    //                         .data![2].allowAccessIntranet,
+                    //                     "wifiRadiusServerIP": guest24Model!
+                    //                         .data![2].wifiRadiusServerIP,
+                    //                     "wifiRadiusServerPort": guest24Model!
+                    //                         .data![2].wifiRadiusServerPort,
+                    //                     "wifiRadiusSharedKey": guest24Model!
+                    //                         .data![2].wifiRadiusSharedKey
+                    //                   }
+                    //                 ]
+                    //               }
+                    //             };
+                    //             setData(parameterNames);
+
+                    //             // setData([
+                    //             //   '${prefix}1.SSIDProfile.3.Enable',
+                    //             //   false,
+                    //             //   'xsd:boolean'
+                    //             // ]);
+                    //             // handleSave(
+                    //             //     '{"table":"WiFiSsidTable","value":[{"id":2,"Enable":"0"}]}');
+                    //           } else {
+                    //             //启用
+                    //             data_2g.wiFiSsidTable![2].enable = '1';
+                    //             guest24Model!.data![2].enable = "1";
+                    //             var parameterNames = {
+                    //               "method": "set",
+                    //               "table": {
+                    //                 "table": "WiFiSsidTable",
+                    //                 "value": [
+                    //                   {
+                    //                     "id": guest24Model!.data![2].id,
+                    //                     "Enable": guest24Model!.data![2].enable,
+                    //                     "SsidHide":
+                    //                         guest24Model!.data![2].ssidHide,
+                    //                     "ApIsolate":
+                    //                         guest24Model!.data![2].apIsolate,
+                    //                     "ShowPasswd":
+                    //                         guest24Model!.data![2].showPasswd,
+                    //                     "Is4Guest":
+                    //                         guest24Model!.data![2].is4Guest,
+                    //                     "PasswordLength": guest24Model!
+                    //                         .data![2].passwordLength,
+                    //                     "PasswordIndex": guest24Model!
+                    //                         .data![2].passwordIndex,
+                    //                     "MaxClient":
+                    //                         guest24Model!.data![2].maxClient,
+                    //                     "Ssid": guest24Model!.data![2].ssid,
+                    //                     "Key": guest24Model!.data![2].key,
+                    //                     "Password1":
+                    //                         guest24Model!.data![2].password1,
+                    //                     "Password2":
+                    //                         guest24Model!.data![2].password2,
+                    //                     "Password3":
+                    //                         guest24Model!.data![2].password3,
+                    //                     "Password4":
+                    //                         guest24Model!.data![2].password4,
+                    //                     "Encryption":
+                    //                         guest24Model!.data![2].encryption,
+                    //                     "SsidMac":
+                    //                         guest24Model!.data![2].ssidMac,
+                    //                     "AllowAccessIntranet": guest24Model!
+                    //                         .data![2].allowAccessIntranet,
+                    //                     "wifiRadiusServerIP": guest24Model!
+                    //                         .data![2].wifiRadiusServerIP,
+                    //                     "wifiRadiusServerPort": guest24Model!
+                    //                         .data![2].wifiRadiusServerPort,
+                    //                     "wifiRadiusSharedKey": guest24Model!
+                    //                         .data![2].wifiRadiusSharedKey
+                    //                   }
+                    //                 ]
+                    //               }
+                    //             };
+                    //             setData(parameterNames);
+
+                    //             // setData([
+                    //             //   '${prefix}1.SSIDProfile.3.Enable',
+                    //             //   true,
+                    //             //   'xsd:boolean'
+                    //             // ]);
+                    //             // handleSave(
+                    //             //     '{"table":"WiFiSsidTable","value":[{"id":2,"Enable":"1"}]}');
+                    //           }
+                    //         });
+                    //       },
+                    //       icon: Icon(
+                    //         data_2g.wiFiSsidTable![2].enable == '1'
+                    //             ? Icons.check_box
+                    //             : Icons.check_box_outline_blank,
+                    //         color: Colors.blue,
+                    //         size: 50.w,
+                    //       ),
+                    //     ),
+                    //     callBack: () {
+                    //       if (data_2g.wiFiSsidTable![2].enable == '1') {
+                    //         Get.toNamed("/visitor_two");
+                    //       } else {
+                    //         ToastUtils.toast(S.of(context).notEnable);
+                    //       }
+                    //     }),
+                    // CommonWidget.simpleWidgetWithMine(
+                    //     title: '${guest24Model!.data![3].ssid}',
+                    //     icon: IconButton(
+                    //       onPressed: () {
+                    //         setState(() {
+                    //           if (data_2g.wiFiSsidTable![3].enable == '1') {
+                    //             data_2g.wiFiSsidTable![3].enable = '0';
+                    //             //gusest3
+                    //             guest24Model!.data![3].enable = "0";
+                    //             var parameterNames = {
+                    //               "method": "set",
+                    //               "table": {
+                    //                 "table": "WiFiSsidTable",
+                    //                 "value": [
+                    //                   {
+                    //                     "id": guest24Model!.data![3].id,
+                    //                     "Enable": guest24Model!.data![3].enable,
+                    //                     "SsidHide":
+                    //                         guest24Model!.data![3].ssidHide,
+                    //                     "ApIsolate":
+                    //                         guest24Model!.data![3].apIsolate,
+                    //                     "ShowPasswd":
+                    //                         guest24Model!.data![3].showPasswd,
+                    //                     "Is4Guest":
+                    //                         guest24Model!.data![3].is4Guest,
+                    //                     "PasswordLength": guest24Model!
+                    //                         .data![3].passwordLength,
+                    //                     "PasswordIndex": guest24Model!
+                    //                         .data![3].passwordIndex,
+                    //                     "MaxClient":
+                    //                         guest24Model!.data![3].maxClient,
+                    //                     "Ssid": guest24Model!.data![3].ssid,
+                    //                     "Key": guest24Model!.data![3].key,
+                    //                     "Password1":
+                    //                         guest24Model!.data![3].password1,
+                    //                     "Password2":
+                    //                         guest24Model!.data![3].password2,
+                    //                     "Password3":
+                    //                         guest24Model!.data![3].password3,
+                    //                     "Password4":
+                    //                         guest24Model!.data![3].password4,
+                    //                     "Encryption":
+                    //                         guest24Model!.data![3].encryption,
+                    //                     "SsidMac":
+                    //                         guest24Model!.data![3].ssidMac,
+                    //                     "AllowAccessIntranet": guest24Model!
+                    //                         .data![3].allowAccessIntranet,
+                    //                     "wifiRadiusServerIP": guest24Model!
+                    //                         .data![3].wifiRadiusServerIP,
+                    //                     "wifiRadiusServerPort": guest24Model!
+                    //                         .data![3].wifiRadiusServerPort,
+                    //                     "wifiRadiusSharedKey": guest24Model!
+                    //                         .data![3].wifiRadiusSharedKey
+                    //                   }
+                    //                 ]
+                    //               }
+                    //             };
+                    //             setData(parameterNames);
+                    //             // setData([
+                    //             //   '${prefix}1.SSIDProfile.4.Enable',
+                    //             //   false,
+                    //             //   'xsd:boolean'
+                    //             // ]);
+                    //             // handleSave(
+                    //             //     '{"table":"WiFiSsidTable","value":[{"id":3,"Enable":"0"}]}');
+                    //           } else {
+                    //             data_2g.wiFiSsidTable![3].enable = '1';
+                    //             //启用
+                    //             guest24Model!.data![3].enable = "1";
+                    //             var parameterNames = {
+                    //               "method": "set",
+                    //               "table": {
+                    //                 "table": "WiFiSsidTable",
+                    //                 "value": [
+                    //                   {
+                    //                     "id": guest24Model!.data![3].id,
+                    //                     "Enable": guest24Model!.data![3].enable,
+                    //                     "SsidHide":
+                    //                         guest24Model!.data![3].ssidHide,
+                    //                     "ApIsolate":
+                    //                         guest24Model!.data![3].apIsolate,
+                    //                     "ShowPasswd":
+                    //                         guest24Model!.data![3].showPasswd,
+                    //                     "Is4Guest":
+                    //                         guest24Model!.data![3].is4Guest,
+                    //                     "PasswordLength": guest24Model!
+                    //                         .data![3].passwordLength,
+                    //                     "PasswordIndex": guest24Model!
+                    //                         .data![3].passwordIndex,
+                    //                     "MaxClient":
+                    //                         guest24Model!.data![3].maxClient,
+                    //                     "Ssid": guest24Model!.data![3].ssid,
+                    //                     "Key": guest24Model!.data![3].key,
+                    //                     "Password1":
+                    //                         guest24Model!.data![3].password1,
+                    //                     "Password2":
+                    //                         guest24Model!.data![3].password2,
+                    //                     "Password3":
+                    //                         guest24Model!.data![3].password3,
+                    //                     "Password4":
+                    //                         guest24Model!.data![3].password4,
+                    //                     "Encryption":
+                    //                         guest24Model!.data![3].encryption,
+                    //                     "SsidMac":
+                    //                         guest24Model!.data![3].ssidMac,
+                    //                     "AllowAccessIntranet": guest24Model!
+                    //                         .data![3].allowAccessIntranet,
+                    //                     "wifiRadiusServerIP": guest24Model!
+                    //                         .data![3].wifiRadiusServerIP,
+                    //                     "wifiRadiusServerPort": guest24Model!
+                    //                         .data![3].wifiRadiusServerPort,
+                    //                     "wifiRadiusSharedKey": guest24Model!
+                    //                         .data![3].wifiRadiusSharedKey
+                    //                   }
+                    //                 ]
+                    //               }
+                    //             };
+                    //             setData(parameterNames);
+
+                    //             // setData([
+                    //             //   '${prefix}1.SSIDProfile.4.Enable',
+                    //             //   true,
+                    //             //   'xsd:boolean'
+                    //             // ]);
+                    //             // handleSave(
+                    //             //     '{"table":"WiFiSsidTable","value":[{"id":3,"Enable":"1"}]}');
+                    //           }
+                    //         });
+                    //       },
+                    //       icon: Icon(
+                    //         data_2g.wiFiSsidTable![3].enable == '1'
+                    //             ? Icons.check_box
+                    //             : Icons.check_box_outline_blank,
+                    //         color: Colors.blue,
+                    //         size: 50.w,
+                    //       ),
+                    //     ),
+                    //     callBack: () {
+                    //       if (data_2g.wiFiSsidTable![3].enable == '1') {
+                    //         Get.toNamed("/visitor_three");
+                    //       } else {
+                    //         ToastUtils.toast(S.of(context).notEnable);
+                    //       }
+                    //     }),
                     Padding(padding: EdgeInsets.only(top: 10.w)),
                     const TitleWidger(title: '5GHZ'),
                     //访客
-                    CommonWidget.simpleWidgetWithMine(
-                        title: '${guest5gModel!.data![1].ssid}',
-                        icon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              if (data_5g.wiFi5GSsidTable![1].enable == '1') {
-                                //5G guest1
-                                guest5gModel!.data![1].enable = "0";
-                                //guest1
-                                var parameterNames = {
-                                  "method": "set",
-                                  "table": {
-                                    "table": "WiFi5GSsidTable",
-                                    "value": [
-                                      {
-                                        "id": guest5gModel!.data![1].id,
-                                        "Enable": guest5gModel!.data![1].enable,
-                                        "SsidHide":
-                                            guest5gModel!.data![1].ssidHide,
-                                        "ApIsolate":
-                                            guest5gModel!.data![1].apIsolate,
-                                        "ShowPasswd":
-                                            guest5gModel!.data![1].showPasswd,
-                                        "Is4Guest":
-                                            guest5gModel!.data![1].is4Guest,
-                                        "PasswordLength": guest5gModel!
-                                            .data![1].passwordLength,
-                                        "PasswordIndex": guest5gModel!
-                                            .data![1].passwordIndex,
-                                        "MaxClient":
-                                            guest5gModel!.data![1].maxClient,
-                                        "Ssid": guest5gModel!.data![1].ssid,
-                                        "Key": guest5gModel!.data![1].key,
-                                        "Password1":
-                                            guest5gModel!.data![1].password1,
-                                        "Password2":
-                                            guest5gModel!.data![1].password2,
-                                        "Password3":
-                                            guest5gModel!.data![1].password3,
-                                        "Password4":
-                                            guest5gModel!.data![1].password4,
-                                        "Encryption":
-                                            guest5gModel!.data![1].encryption,
-                                        "SsidMac":
-                                            guest5gModel!.data![1].ssidMac,
-                                        "AllowAccessIntranet": guest5gModel!
-                                            .data![1].allowAccessIntranet,
-                                        "wifiRadiusServerIP": guest5gModel!
-                                            .data![1].wifiRadiusServerIP,
-                                        "wifiRadiusServerPort": guest5gModel!
-                                            .data![1].wifiRadiusServerPort,
-                                        "wifiRadiusSharedKey": guest5gModel!
-                                            .data![1].wifiRadiusSharedKey
-                                      }
-                                    ]
-                                  }
-                                };
-                                setData(parameterNames);
-
-                                // setData([
-                                //   '${prefix}2.SSIDProfile.2.Enable',
-                                //   false,
-                                //   'xsd:boolean'
-                                // ]);
-                                // handleSave(
-                                //     '{"table":"WiFi5GSsidTable","value":[{"id":1,"Enable":"0"}]}');
-                              } else {
-                                //启用
-                                data_5g.wiFi5GSsidTable![1].enable = '1';
-                                guest5gModel!.data![1].enable = "1";
-                                //guest1
-                                var parameterNames = {
-                                  "method": "set",
-                                  "table": {
-                                    "table": "WiFi5GSsidTable",
-                                    "value": [
-                                      {
-                                        "id": guest5gModel!.data![1].id,
-                                        "Enable": guest5gModel!.data![1].enable,
-                                        "SsidHide":
-                                            guest5gModel!.data![1].ssidHide,
-                                        "ApIsolate":
-                                            guest5gModel!.data![1].apIsolate,
-                                        "ShowPasswd":
-                                            guest5gModel!.data![1].showPasswd,
-                                        "Is4Guest":
-                                            guest5gModel!.data![1].is4Guest,
-                                        "PasswordLength": guest5gModel!
-                                            .data![1].passwordLength,
-                                        "PasswordIndex": guest5gModel!
-                                            .data![1].passwordIndex,
-                                        "MaxClient":
-                                            guest5gModel!.data![1].maxClient,
-                                        "Ssid": guest5gModel!.data![1].ssid,
-                                        "Key": guest5gModel!.data![1].key,
-                                        "Password1":
-                                            guest5gModel!.data![1].password1,
-                                        "Password2":
-                                            guest5gModel!.data![1].password2,
-                                        "Password3":
-                                            guest5gModel!.data![1].password3,
-                                        "Password4":
-                                            guest5gModel!.data![1].password4,
-                                        "Encryption":
-                                            guest5gModel!.data![1].encryption,
-                                        "SsidMac":
-                                            guest5gModel!.data![1].ssidMac,
-                                        "AllowAccessIntranet": guest5gModel!
-                                            .data![1].allowAccessIntranet,
-                                        "wifiRadiusServerIP": guest5gModel!
-                                            .data![1].wifiRadiusServerIP,
-                                        "wifiRadiusServerPort": guest5gModel!
-                                            .data![1].wifiRadiusServerPort,
-                                        "wifiRadiusSharedKey": guest5gModel!
-                                            .data![1].wifiRadiusSharedKey
-                                      }
-                                    ]
-                                  }
-                                };
-                                setData(parameterNames);
-                                // setData([
-                                //   '${prefix}2.SSIDProfile.2.Enable',
-                                //   true,
-                                //   'xsd:boolean'
-                                // ]);
-                                // handleSave(
-                                //     '{"table":"WiFi5GSsidTable","value":[{"id":1,"Enable":"1"}]}');
-                              }
-                            });
-                          },
-                          icon: Icon(
-                            data_5g.wiFi5GSsidTable![1].enable == '1'
-                                ? Icons.check_box
-                                : Icons.check_box_outline_blank,
-                            color: Colors.blue,
-                            size: 50.w,
+                    InkWell(
+                      onTap: () {
+                        Get.toNamed("/visitor_four");
+                      },
+                      child: Container(
+                        decoration: const BoxDecoration(color: Colors.white),
+                        child: ListTile(
+                          title: Text(
+                            '${guest5gModel!.data![1].ssid}',
+                            style: const TextStyle(fontSize: 14),
+                            textScaler: TextScaler.noScaling,
                           ),
+                          trailing: const Icon(Icons.chevron_right,
+                              color: Colors.grey),
                         ),
-                        callBack: () {
-                          if (data_5g.wiFi5GSsidTable![1].enable == '1') {
-                            Get.toNamed("/visitor_four");
-                          } else {
-                            ToastUtils.toast(S.of(context).notEnable);
-                          }
-                        }),
-                    CommonWidget.simpleWidgetWithMine(
-                        title: '${guest5gModel!.data![2].ssid}',
-                        icon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              if (data_5g.wiFi5GSsidTable![2].enable == '1') {
-                                //5G guest2
-                                data_5g.wiFi5GSsidTable![2].enable = '0';
-                                guest5gModel!.data![2].enable = "0";
-                                //guest1
-                                var parameterNames = {
-                                  "method": "set",
-                                  "table": {
-                                    "table": "WiFi5GSsidTable",
-                                    "value": [
-                                      {
-                                        "id": guest5gModel!.data![2].id,
-                                        "Enable": guest5gModel!.data![2].enable,
-                                        "SsidHide":
-                                            guest5gModel!.data![2].ssidHide,
-                                        "ApIsolate":
-                                            guest5gModel!.data![2].apIsolate,
-                                        "ShowPasswd":
-                                            guest5gModel!.data![2].showPasswd,
-                                        "Is4Guest":
-                                            guest5gModel!.data![2].is4Guest,
-                                        "PasswordLength": guest5gModel!
-                                            .data![2].passwordLength,
-                                        "PasswordIndex": guest5gModel!
-                                            .data![2].passwordIndex,
-                                        "MaxClient":
-                                            guest5gModel!.data![2].maxClient,
-                                        "Ssid": guest5gModel!.data![2].ssid,
-                                        "Key": guest5gModel!.data![2].key,
-                                        "Password1":
-                                            guest5gModel!.data![2].password1,
-                                        "Password2":
-                                            guest5gModel!.data![2].password2,
-                                        "Password3":
-                                            guest5gModel!.data![2].password3,
-                                        "Password4":
-                                            guest5gModel!.data![2].password4,
-                                        "Encryption":
-                                            guest5gModel!.data![2].encryption,
-                                        "SsidMac":
-                                            guest5gModel!.data![2].ssidMac,
-                                        "AllowAccessIntranet": guest5gModel!
-                                            .data![2].allowAccessIntranet,
-                                        "wifiRadiusServerIP": guest5gModel!
-                                            .data![2].wifiRadiusServerIP,
-                                        "wifiRadiusServerPort": guest5gModel!
-                                            .data![2].wifiRadiusServerPort,
-                                        "wifiRadiusSharedKey": guest5gModel!
-                                            .data![2].wifiRadiusSharedKey
-                                      }
-                                    ]
-                                  }
-                                };
-                                setData(parameterNames);
-
-                                // setData([
-                                //   '${prefix}2.SSIDProfile.3.Enable',
-                                //   false,
-                                //   'xsd:boolean'
-                                // ]);
-                                // handleSave(
-                                //     '{"table":"WiFi5GSsidTable","value":[{"id":2,"Enable":"0"}]}');
-                              } else {
-                                //启用
-                                data_5g.wiFi5GSsidTable![2].enable = '1';
-                                guest5gModel!.data![2].enable = "1";
-                                //guest1
-                                var parameterNames = {
-                                  "method": "set",
-                                  "table": {
-                                    "table": "WiFi5GSsidTable",
-                                    "value": [
-                                      {
-                                        "id": guest5gModel!.data![2].id,
-                                        "Enable": guest5gModel!.data![2].enable,
-                                        "SsidHide":
-                                            guest5gModel!.data![2].ssidHide,
-                                        "ApIsolate":
-                                            guest5gModel!.data![2].apIsolate,
-                                        "ShowPasswd":
-                                            guest5gModel!.data![2].showPasswd,
-                                        "Is4Guest":
-                                            guest5gModel!.data![2].is4Guest,
-                                        "PasswordLength": guest5gModel!
-                                            .data![2].passwordLength,
-                                        "PasswordIndex": guest5gModel!
-                                            .data![2].passwordIndex,
-                                        "MaxClient":
-                                            guest5gModel!.data![2].maxClient,
-                                        "Ssid": guest5gModel!.data![2].ssid,
-                                        "Key": guest5gModel!.data![2].key,
-                                        "Password1":
-                                            guest5gModel!.data![2].password1,
-                                        "Password2":
-                                            guest5gModel!.data![2].password2,
-                                        "Password3":
-                                            guest5gModel!.data![2].password3,
-                                        "Password4":
-                                            guest5gModel!.data![2].password4,
-                                        "Encryption":
-                                            guest5gModel!.data![2].encryption,
-                                        "SsidMac":
-                                            guest5gModel!.data![2].ssidMac,
-                                        "AllowAccessIntranet": guest5gModel!
-                                            .data![2].allowAccessIntranet,
-                                        "wifiRadiusServerIP": guest5gModel!
-                                            .data![2].wifiRadiusServerIP,
-                                        "wifiRadiusServerPort": guest5gModel!
-                                            .data![2].wifiRadiusServerPort,
-                                        "wifiRadiusSharedKey": guest5gModel!
-                                            .data![2].wifiRadiusSharedKey
-                                      }
-                                    ]
-                                  }
-                                };
-                                setData(parameterNames);
-
-                                // setData([
-                                //   '${prefix}2.SSIDProfile.3.Enable',
-                                //   true,
-                                //   'xsd:boolean'
-                                // ]);
-                                // handleSave(
-                                //     '{"table":"WiFi5GSsidTable","value":[{"id":2,"Enable":"1"}]}');
-                              }
-                            });
-                          },
-                          icon: Icon(
-                            data_5g.wiFi5GSsidTable![2].enable == '1'
-                                ? Icons.check_box
-                                : Icons.check_box_outline_blank,
-                            color: Colors.blue,
-                            size: 50.w,
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Get.toNamed("/visitor_five");
+                      },
+                      child: Container(
+                        decoration: const BoxDecoration(color: Colors.white),
+                        child: ListTile(
+                          title: Text(
+                            '${guest5gModel!.data![2].ssid}',
+                            style: const TextStyle(fontSize: 14),
+                            textScaler: TextScaler.noScaling,
                           ),
+                          trailing: const Icon(Icons.chevron_right,
+                              color: Colors.grey),
                         ),
-                        callBack: () {
-                          if (data_5g.wiFi5GSsidTable![2].enable == '1') {
-                            Get.toNamed("/visitor_five");
-                          } else {
-                            ToastUtils.toast(S.of(context).notEnable);
-                          }
-                        }),
-                    CommonWidget.simpleWidgetWithMine(
-                        title: '${guest5gModel!.data![3].ssid}',
-                        icon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              if (data_5g.wiFi5GSsidTable![3].enable == '1') {
-                                //5G guest3
-                                data_5g.wiFi5GSsidTable![3].enable = '0';
-                                guest5gModel!.data![3].enable = "0";
-                                //guest1
-                                var parameterNames = {
-                                  "method": "set",
-                                  "table": {
-                                    "table": "WiFi5GSsidTable",
-                                    "value": [
-                                      {
-                                        "id": guest5gModel!.data![3].id,
-                                        "Enable": guest5gModel!.data![3].enable,
-                                        "SsidHide":
-                                            guest5gModel!.data![3].ssidHide,
-                                        "ApIsolate":
-                                            guest5gModel!.data![3].apIsolate,
-                                        "ShowPasswd":
-                                            guest5gModel!.data![3].showPasswd,
-                                        "Is4Guest":
-                                            guest5gModel!.data![3].is4Guest,
-                                        "PasswordLength": guest5gModel!
-                                            .data![3].passwordLength,
-                                        "PasswordIndex": guest5gModel!
-                                            .data![3].passwordIndex,
-                                        "MaxClient":
-                                            guest5gModel!.data![3].maxClient,
-                                        "Ssid": guest5gModel!.data![3].ssid,
-                                        "Key": guest5gModel!.data![3].key,
-                                        "Password1":
-                                            guest5gModel!.data![3].password1,
-                                        "Password2":
-                                            guest5gModel!.data![3].password2,
-                                        "Password3":
-                                            guest5gModel!.data![3].password3,
-                                        "Password4":
-                                            guest5gModel!.data![3].password4,
-                                        "Encryption":
-                                            guest5gModel!.data![3].encryption,
-                                        "SsidMac":
-                                            guest5gModel!.data![3].ssidMac,
-                                        "AllowAccessIntranet": guest5gModel!
-                                            .data![3].allowAccessIntranet,
-                                        "wifiRadiusServerIP": guest5gModel!
-                                            .data![3].wifiRadiusServerIP,
-                                        "wifiRadiusServerPort": guest5gModel!
-                                            .data![3].wifiRadiusServerPort,
-                                        "wifiRadiusSharedKey": guest5gModel!
-                                            .data![3].wifiRadiusSharedKey
-                                      }
-                                    ]
-                                  }
-                                };
-                                setData(parameterNames);
-
-                                // setData([
-                                //   '${prefix}2.SSIDProfile.4.Enable',
-                                //   false,
-                                //   'xsd:boolean'
-                                // ]);
-                                // handleSave(
-                                //     '{"table":"WiFi5GSsidTable","value":[{"id":3,"Enable":"0"}]}');
-                              } else {
-                                //启用
-                                data_5g.wiFi5GSsidTable![3].enable = '1';
-                                guest5gModel!.data![3].enable = "1";
-                                //guest1
-                                var parameterNames = {
-                                  "method": "set",
-                                  "table": {
-                                    "table": "WiFi5GSsidTable",
-                                    "value": [
-                                      {
-                                        "id": guest5gModel!.data![3].id,
-                                        "Enable": guest5gModel!.data![3].enable,
-                                        "SsidHide":
-                                            guest5gModel!.data![3].ssidHide,
-                                        "ApIsolate":
-                                            guest5gModel!.data![3].apIsolate,
-                                        "ShowPasswd":
-                                            guest5gModel!.data![3].showPasswd,
-                                        "Is4Guest":
-                                            guest5gModel!.data![3].is4Guest,
-                                        "PasswordLength": guest5gModel!
-                                            .data![3].passwordLength,
-                                        "PasswordIndex": guest5gModel!
-                                            .data![3].passwordIndex,
-                                        "MaxClient":
-                                            guest5gModel!.data![3].maxClient,
-                                        "Ssid": guest5gModel!.data![3].ssid,
-                                        "Key": guest5gModel!.data![3].key,
-                                        "Password1":
-                                            guest5gModel!.data![3].password1,
-                                        "Password2":
-                                            guest5gModel!.data![3].password2,
-                                        "Password3":
-                                            guest5gModel!.data![3].password3,
-                                        "Password4":
-                                            guest5gModel!.data![3].password4,
-                                        "Encryption":
-                                            guest5gModel!.data![3].encryption,
-                                        "SsidMac":
-                                            guest5gModel!.data![3].ssidMac,
-                                        "AllowAccessIntranet": guest5gModel!
-                                            .data![3].allowAccessIntranet,
-                                        "wifiRadiusServerIP": guest5gModel!
-                                            .data![3].wifiRadiusServerIP,
-                                        "wifiRadiusServerPort": guest5gModel!
-                                            .data![3].wifiRadiusServerPort,
-                                        "wifiRadiusSharedKey": guest5gModel!
-                                            .data![3].wifiRadiusSharedKey
-                                      }
-                                    ]
-                                  }
-                                };
-                                setData(parameterNames);
-                                // setData([
-                                //   '${prefix}2.SSIDProfile.4.Enable',
-                                //   true,
-                                //   'xsd:boolean'
-                                // ]);
-                                // handleSave(
-                                //     '{"table":"WiFi5GSsidTable","value":[{"id":3,"Enable":"1"}]}');
-                              }
-                            });
-                          },
-                          icon: Icon(
-                            data_5g.wiFi5GSsidTable![3].enable == '1'
-                                ? Icons.check_box
-                                : Icons.check_box_outline_blank,
-                            color: Colors.blue,
-                            size: 50.w,
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Get.toNamed("/visitor_six");
+                      },
+                      child: Container(
+                        decoration: const BoxDecoration(color: Colors.white),
+                        child: ListTile(
+                          title: Text(
+                            '${guest5gModel!.data![3].ssid}',
+                            style: const TextStyle(fontSize: 14),
+                            textScaler: TextScaler.noScaling,
                           ),
+                          trailing: const Icon(Icons.chevron_right,
+                              color: Colors.grey),
                         ),
-                        callBack: () {
-                          if (data_5g.wiFi5GSsidTable![3].enable == '1') {
-                            Get.toNamed("/visitor_six");
-                          } else {
-                            ToastUtils.toast(S.of(context).notEnable);
-                          }
-                        }),
+                      ),
+                    ),
+                    // CommonWidget.simpleWidgetWithMine(
+                    //     title: '${guest5gModel!.data![1].ssid}',
+                    //     icon: IconButton(
+                    //       onPressed: () {
+                    //         setState(() {
+                    //           if (data_5g.wiFi5GSsidTable![1].enable == '1') {
+                    //             //5G guest1
+                    //             guest5gModel!.data![1].enable = "0";
+                    //             //guest1
+                    //             var parameterNames = {
+                    //               "method": "set",
+                    //               "table": {
+                    //                 "table": "WiFi5GSsidTable",
+                    //                 "value": [
+                    //                   {
+                    //                     "id": guest5gModel!.data![1].id,
+                    //                     "Enable": guest5gModel!.data![1].enable,
+                    //                     "SsidHide":
+                    //                         guest5gModel!.data![1].ssidHide,
+                    //                     "ApIsolate":
+                    //                         guest5gModel!.data![1].apIsolate,
+                    //                     "ShowPasswd":
+                    //                         guest5gModel!.data![1].showPasswd,
+                    //                     "Is4Guest":
+                    //                         guest5gModel!.data![1].is4Guest,
+                    //                     "PasswordLength": guest5gModel!
+                    //                         .data![1].passwordLength,
+                    //                     "PasswordIndex": guest5gModel!
+                    //                         .data![1].passwordIndex,
+                    //                     "MaxClient":
+                    //                         guest5gModel!.data![1].maxClient,
+                    //                     "Ssid": guest5gModel!.data![1].ssid,
+                    //                     "Key": guest5gModel!.data![1].key,
+                    //                     "Password1":
+                    //                         guest5gModel!.data![1].password1,
+                    //                     "Password2":
+                    //                         guest5gModel!.data![1].password2,
+                    //                     "Password3":
+                    //                         guest5gModel!.data![1].password3,
+                    //                     "Password4":
+                    //                         guest5gModel!.data![1].password4,
+                    //                     "Encryption":
+                    //                         guest5gModel!.data![1].encryption,
+                    //                     "SsidMac":
+                    //                         guest5gModel!.data![1].ssidMac,
+                    //                     "AllowAccessIntranet": guest5gModel!
+                    //                         .data![1].allowAccessIntranet,
+                    //                     "wifiRadiusServerIP": guest5gModel!
+                    //                         .data![1].wifiRadiusServerIP,
+                    //                     "wifiRadiusServerPort": guest5gModel!
+                    //                         .data![1].wifiRadiusServerPort,
+                    //                     "wifiRadiusSharedKey": guest5gModel!
+                    //                         .data![1].wifiRadiusSharedKey
+                    //                   }
+                    //                 ]
+                    //               }
+                    //             };
+                    //             setData(parameterNames);
+
+                    //             // setData([
+                    //             //   '${prefix}2.SSIDProfile.2.Enable',
+                    //             //   false,
+                    //             //   'xsd:boolean'
+                    //             // ]);
+                    //             // handleSave(
+                    //             //     '{"table":"WiFi5GSsidTable","value":[{"id":1,"Enable":"0"}]}');
+                    //           } else {
+                    //             //启用
+                    //             data_5g.wiFi5GSsidTable![1].enable = '1';
+                    //             guest5gModel!.data![1].enable = "1";
+                    //             //guest1
+                    //             var parameterNames = {
+                    //               "method": "set",
+                    //               "table": {
+                    //                 "table": "WiFi5GSsidTable",
+                    //                 "value": [
+                    //                   {
+                    //                     "id": guest5gModel!.data![1].id,
+                    //                     "Enable": guest5gModel!.data![1].enable,
+                    //                     "SsidHide":
+                    //                         guest5gModel!.data![1].ssidHide,
+                    //                     "ApIsolate":
+                    //                         guest5gModel!.data![1].apIsolate,
+                    //                     "ShowPasswd":
+                    //                         guest5gModel!.data![1].showPasswd,
+                    //                     "Is4Guest":
+                    //                         guest5gModel!.data![1].is4Guest,
+                    //                     "PasswordLength": guest5gModel!
+                    //                         .data![1].passwordLength,
+                    //                     "PasswordIndex": guest5gModel!
+                    //                         .data![1].passwordIndex,
+                    //                     "MaxClient":
+                    //                         guest5gModel!.data![1].maxClient,
+                    //                     "Ssid": guest5gModel!.data![1].ssid,
+                    //                     "Key": guest5gModel!.data![1].key,
+                    //                     "Password1":
+                    //                         guest5gModel!.data![1].password1,
+                    //                     "Password2":
+                    //                         guest5gModel!.data![1].password2,
+                    //                     "Password3":
+                    //                         guest5gModel!.data![1].password3,
+                    //                     "Password4":
+                    //                         guest5gModel!.data![1].password4,
+                    //                     "Encryption":
+                    //                         guest5gModel!.data![1].encryption,
+                    //                     "SsidMac":
+                    //                         guest5gModel!.data![1].ssidMac,
+                    //                     "AllowAccessIntranet": guest5gModel!
+                    //                         .data![1].allowAccessIntranet,
+                    //                     "wifiRadiusServerIP": guest5gModel!
+                    //                         .data![1].wifiRadiusServerIP,
+                    //                     "wifiRadiusServerPort": guest5gModel!
+                    //                         .data![1].wifiRadiusServerPort,
+                    //                     "wifiRadiusSharedKey": guest5gModel!
+                    //                         .data![1].wifiRadiusSharedKey
+                    //                   }
+                    //                 ]
+                    //               }
+                    //             };
+                    //             setData(parameterNames);
+                    //             // setData([
+                    //             //   '${prefix}2.SSIDProfile.2.Enable',
+                    //             //   true,
+                    //             //   'xsd:boolean'
+                    //             // ]);
+                    //             // handleSave(
+                    //             //     '{"table":"WiFi5GSsidTable","value":[{"id":1,"Enable":"1"}]}');
+                    //           }
+                    //         });
+                    //       },
+                    //       icon: Icon(
+                    //         data_5g.wiFi5GSsidTable![1].enable == '1'
+                    //             ? Icons.check_box
+                    //             : Icons.check_box_outline_blank,
+                    //         color: Colors.blue,
+                    //         size: 50.w,
+                    //       ),
+                    //     ),
+                    //     callBack: () {
+                    //       if (data_5g.wiFi5GSsidTable![1].enable == '1') {
+                    //         Get.toNamed("/visitor_four");
+                    //       } else {
+                    //         ToastUtils.toast(S.of(context).notEnable);
+                    //       }
+                    //     }),
+                    // CommonWidget.simpleWidgetWithMine(
+                    //     title: '${guest5gModel!.data![2].ssid}',
+                    //     icon: IconButton(
+                    //       onPressed: () {
+                    //         setState(() {
+                    //           if (data_5g.wiFi5GSsidTable![2].enable == '1') {
+                    //             //5G guest2
+                    //             data_5g.wiFi5GSsidTable![2].enable = '0';
+                    //             guest5gModel!.data![2].enable = "0";
+                    //             //guest1
+                    //             var parameterNames = {
+                    //               "method": "set",
+                    //               "table": {
+                    //                 "table": "WiFi5GSsidTable",
+                    //                 "value": [
+                    //                   {
+                    //                     "id": guest5gModel!.data![2].id,
+                    //                     "Enable": guest5gModel!.data![2].enable,
+                    //                     "SsidHide":
+                    //                         guest5gModel!.data![2].ssidHide,
+                    //                     "ApIsolate":
+                    //                         guest5gModel!.data![2].apIsolate,
+                    //                     "ShowPasswd":
+                    //                         guest5gModel!.data![2].showPasswd,
+                    //                     "Is4Guest":
+                    //                         guest5gModel!.data![2].is4Guest,
+                    //                     "PasswordLength": guest5gModel!
+                    //                         .data![2].passwordLength,
+                    //                     "PasswordIndex": guest5gModel!
+                    //                         .data![2].passwordIndex,
+                    //                     "MaxClient":
+                    //                         guest5gModel!.data![2].maxClient,
+                    //                     "Ssid": guest5gModel!.data![2].ssid,
+                    //                     "Key": guest5gModel!.data![2].key,
+                    //                     "Password1":
+                    //                         guest5gModel!.data![2].password1,
+                    //                     "Password2":
+                    //                         guest5gModel!.data![2].password2,
+                    //                     "Password3":
+                    //                         guest5gModel!.data![2].password3,
+                    //                     "Password4":
+                    //                         guest5gModel!.data![2].password4,
+                    //                     "Encryption":
+                    //                         guest5gModel!.data![2].encryption,
+                    //                     "SsidMac":
+                    //                         guest5gModel!.data![2].ssidMac,
+                    //                     "AllowAccessIntranet": guest5gModel!
+                    //                         .data![2].allowAccessIntranet,
+                    //                     "wifiRadiusServerIP": guest5gModel!
+                    //                         .data![2].wifiRadiusServerIP,
+                    //                     "wifiRadiusServerPort": guest5gModel!
+                    //                         .data![2].wifiRadiusServerPort,
+                    //                     "wifiRadiusSharedKey": guest5gModel!
+                    //                         .data![2].wifiRadiusSharedKey
+                    //                   }
+                    //                 ]
+                    //               }
+                    //             };
+                    //             setData(parameterNames);
+
+                    //             // setData([
+                    //             //   '${prefix}2.SSIDProfile.3.Enable',
+                    //             //   false,
+                    //             //   'xsd:boolean'
+                    //             // ]);
+                    //             // handleSave(
+                    //             //     '{"table":"WiFi5GSsidTable","value":[{"id":2,"Enable":"0"}]}');
+                    //           } else {
+                    //             //启用
+                    //             data_5g.wiFi5GSsidTable![2].enable = '1';
+                    //             guest5gModel!.data![2].enable = "1";
+                    //             //guest1
+                    //             var parameterNames = {
+                    //               "method": "set",
+                    //               "table": {
+                    //                 "table": "WiFi5GSsidTable",
+                    //                 "value": [
+                    //                   {
+                    //                     "id": guest5gModel!.data![2].id,
+                    //                     "Enable": guest5gModel!.data![2].enable,
+                    //                     "SsidHide":
+                    //                         guest5gModel!.data![2].ssidHide,
+                    //                     "ApIsolate":
+                    //                         guest5gModel!.data![2].apIsolate,
+                    //                     "ShowPasswd":
+                    //                         guest5gModel!.data![2].showPasswd,
+                    //                     "Is4Guest":
+                    //                         guest5gModel!.data![2].is4Guest,
+                    //                     "PasswordLength": guest5gModel!
+                    //                         .data![2].passwordLength,
+                    //                     "PasswordIndex": guest5gModel!
+                    //                         .data![2].passwordIndex,
+                    //                     "MaxClient":
+                    //                         guest5gModel!.data![2].maxClient,
+                    //                     "Ssid": guest5gModel!.data![2].ssid,
+                    //                     "Key": guest5gModel!.data![2].key,
+                    //                     "Password1":
+                    //                         guest5gModel!.data![2].password1,
+                    //                     "Password2":
+                    //                         guest5gModel!.data![2].password2,
+                    //                     "Password3":
+                    //                         guest5gModel!.data![2].password3,
+                    //                     "Password4":
+                    //                         guest5gModel!.data![2].password4,
+                    //                     "Encryption":
+                    //                         guest5gModel!.data![2].encryption,
+                    //                     "SsidMac":
+                    //                         guest5gModel!.data![2].ssidMac,
+                    //                     "AllowAccessIntranet": guest5gModel!
+                    //                         .data![2].allowAccessIntranet,
+                    //                     "wifiRadiusServerIP": guest5gModel!
+                    //                         .data![2].wifiRadiusServerIP,
+                    //                     "wifiRadiusServerPort": guest5gModel!
+                    //                         .data![2].wifiRadiusServerPort,
+                    //                     "wifiRadiusSharedKey": guest5gModel!
+                    //                         .data![2].wifiRadiusSharedKey
+                    //                   }
+                    //                 ]
+                    //               }
+                    //             };
+                    //             setData(parameterNames);
+
+                    //             // setData([
+                    //             //   '${prefix}2.SSIDProfile.3.Enable',
+                    //             //   true,
+                    //             //   'xsd:boolean'
+                    //             // ]);
+                    //             // handleSave(
+                    //             //     '{"table":"WiFi5GSsidTable","value":[{"id":2,"Enable":"1"}]}');
+                    //           }
+                    //         });
+                    //       },
+                    //       icon: Icon(
+                    //         data_5g.wiFi5GSsidTable![2].enable == '1'
+                    //             ? Icons.check_box
+                    //             : Icons.check_box_outline_blank,
+                    //         color: Colors.blue,
+                    //         size: 50.w,
+                    //       ),
+                    //     ),
+                    //     callBack: () {
+                    //       if (data_5g.wiFi5GSsidTable![2].enable == '1') {
+                    //         Get.toNamed("/visitor_five");
+                    //       } else {
+                    //         ToastUtils.toast(S.of(context).notEnable);
+                    //       }
+                    //     }),
+                    // CommonWidget.simpleWidgetWithMine(
+                    //     title: '${guest5gModel!.data![3].ssid}',
+                    //     icon: IconButton(
+                    //       onPressed: () {
+                    //         setState(() {
+                    //           if (data_5g.wiFi5GSsidTable![3].enable == '1') {
+                    //             //5G guest3
+                    //             data_5g.wiFi5GSsidTable![3].enable = '0';
+                    //             guest5gModel!.data![3].enable = "0";
+                    //             //guest1
+                    //             var parameterNames = {
+                    //               "method": "set",
+                    //               "table": {
+                    //                 "table": "WiFi5GSsidTable",
+                    //                 "value": [
+                    //                   {
+                    //                     "id": guest5gModel!.data![3].id,
+                    //                     "Enable": guest5gModel!.data![3].enable,
+                    //                     "SsidHide":
+                    //                         guest5gModel!.data![3].ssidHide,
+                    //                     "ApIsolate":
+                    //                         guest5gModel!.data![3].apIsolate,
+                    //                     "ShowPasswd":
+                    //                         guest5gModel!.data![3].showPasswd,
+                    //                     "Is4Guest":
+                    //                         guest5gModel!.data![3].is4Guest,
+                    //                     "PasswordLength": guest5gModel!
+                    //                         .data![3].passwordLength,
+                    //                     "PasswordIndex": guest5gModel!
+                    //                         .data![3].passwordIndex,
+                    //                     "MaxClient":
+                    //                         guest5gModel!.data![3].maxClient,
+                    //                     "Ssid": guest5gModel!.data![3].ssid,
+                    //                     "Key": guest5gModel!.data![3].key,
+                    //                     "Password1":
+                    //                         guest5gModel!.data![3].password1,
+                    //                     "Password2":
+                    //                         guest5gModel!.data![3].password2,
+                    //                     "Password3":
+                    //                         guest5gModel!.data![3].password3,
+                    //                     "Password4":
+                    //                         guest5gModel!.data![3].password4,
+                    //                     "Encryption":
+                    //                         guest5gModel!.data![3].encryption,
+                    //                     "SsidMac":
+                    //                         guest5gModel!.data![3].ssidMac,
+                    //                     "AllowAccessIntranet": guest5gModel!
+                    //                         .data![3].allowAccessIntranet,
+                    //                     "wifiRadiusServerIP": guest5gModel!
+                    //                         .data![3].wifiRadiusServerIP,
+                    //                     "wifiRadiusServerPort": guest5gModel!
+                    //                         .data![3].wifiRadiusServerPort,
+                    //                     "wifiRadiusSharedKey": guest5gModel!
+                    //                         .data![3].wifiRadiusSharedKey
+                    //                   }
+                    //                 ]
+                    //               }
+                    //             };
+                    //             setData(parameterNames);
+
+                    //             // setData([
+                    //             //   '${prefix}2.SSIDProfile.4.Enable',
+                    //             //   false,
+                    //             //   'xsd:boolean'
+                    //             // ]);
+                    //             // handleSave(
+                    //             //     '{"table":"WiFi5GSsidTable","value":[{"id":3,"Enable":"0"}]}');
+                    //           } else {
+                    //             //启用
+                    //             data_5g.wiFi5GSsidTable![3].enable = '1';
+                    //             guest5gModel!.data![3].enable = "1";
+                    //             //guest1
+                    //             var parameterNames = {
+                    //               "method": "set",
+                    //               "table": {
+                    //                 "table": "WiFi5GSsidTable",
+                    //                 "value": [
+                    //                   {
+                    //                     "id": guest5gModel!.data![3].id,
+                    //                     "Enable": guest5gModel!.data![3].enable,
+                    //                     "SsidHide":
+                    //                         guest5gModel!.data![3].ssidHide,
+                    //                     "ApIsolate":
+                    //                         guest5gModel!.data![3].apIsolate,
+                    //                     "ShowPasswd":
+                    //                         guest5gModel!.data![3].showPasswd,
+                    //                     "Is4Guest":
+                    //                         guest5gModel!.data![3].is4Guest,
+                    //                     "PasswordLength": guest5gModel!
+                    //                         .data![3].passwordLength,
+                    //                     "PasswordIndex": guest5gModel!
+                    //                         .data![3].passwordIndex,
+                    //                     "MaxClient":
+                    //                         guest5gModel!.data![3].maxClient,
+                    //                     "Ssid": guest5gModel!.data![3].ssid,
+                    //                     "Key": guest5gModel!.data![3].key,
+                    //                     "Password1":
+                    //                         guest5gModel!.data![3].password1,
+                    //                     "Password2":
+                    //                         guest5gModel!.data![3].password2,
+                    //                     "Password3":
+                    //                         guest5gModel!.data![3].password3,
+                    //                     "Password4":
+                    //                         guest5gModel!.data![3].password4,
+                    //                     "Encryption":
+                    //                         guest5gModel!.data![3].encryption,
+                    //                     "SsidMac":
+                    //                         guest5gModel!.data![3].ssidMac,
+                    //                     "AllowAccessIntranet": guest5gModel!
+                    //                         .data![3].allowAccessIntranet,
+                    //                     "wifiRadiusServerIP": guest5gModel!
+                    //                         .data![3].wifiRadiusServerIP,
+                    //                     "wifiRadiusServerPort": guest5gModel!
+                    //                         .data![3].wifiRadiusServerPort,
+                    //                     "wifiRadiusSharedKey": guest5gModel!
+                    //                         .data![3].wifiRadiusSharedKey
+                    //                   }
+                    //                 ]
+                    //               }
+                    //             };
+                    //             setData(parameterNames);
+                    //             // setData([
+                    //             //   '${prefix}2.SSIDProfile.4.Enable',
+                    //             //   true,
+                    //             //   'xsd:boolean'
+                    //             // ]);
+                    //             // handleSave(
+                    //             //     '{"table":"WiFi5GSsidTable","value":[{"id":3,"Enable":"1"}]}');
+                    //           }
+                    //         });
+                    //       },
+                    //       icon: Icon(
+                    //         data_5g.wiFi5GSsidTable![3].enable == '1'
+                    //             ? Icons.check_box
+                    //             : Icons.check_box_outline_blank,
+                    //         color: Colors.blue,
+                    //         size: 50.w,
+                    //       ),
+                    //     ),
+                    //     callBack: () {
+                    //       if (data_5g.wiFi5GSsidTable![3].enable == '1') {
+                    //         Get.toNamed("/visitor_six");
+                    //       } else {
+                    //         ToastUtils.toast(S.of(context).notEnable);
+                    //       }
+                    //     }),
                   ],
                 ),
               ),

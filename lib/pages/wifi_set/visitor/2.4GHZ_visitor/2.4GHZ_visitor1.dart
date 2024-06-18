@@ -36,6 +36,7 @@ class _Visitor1State extends State<Visitor1> {
   String sn = '';
   String type = '';
   bool loading = false;
+  bool enableCheck = false;
   //是否允许访问内网
   bool networkCheck = false;
   //隐藏SSID网络
@@ -151,8 +152,8 @@ class _Visitor1State extends State<Visitor1> {
       // };
 
       var data = model.data![1];
-
       setState(() {
+        enableCheck = data.enable == "0" ? false : true;
         //是否允许访问内网
         networkCheck = data.allowAccessIntranet == "0" ? false : true;
         //ssid
@@ -224,16 +225,6 @@ class _Visitor1State extends State<Visitor1> {
 // 设置 云端
   setData() async {
     Object? sn = await sharedGetData('deviceSn', String);
-    // String prefix =
-    //     'InternetGatewayDevice.WEB_GUI.WiFi.WLANSettings.1.SSIDProfile.2.';
-    // [
-    //     ['${prefix}AccessToIntranet', networkCheck, 'xsd:boolean'],
-    //     ['${prefix}SSID', ssidVal.text, 'xsd:string'],
-    //     ['${prefix}MaxNoOfDev', maxVal.text, 'xsd:unsignedInt'],
-    //     ['${prefix}HideSSIDBroadcast', showSsid, 'xsd:boolean'],
-    //     ['${prefix}APIsolation', apVAl, 'xsd:boolean'],
-    //     ['${prefix}EncryptionMode', '$safeVal+$wpaVal', 'xsd:string']];
-
     var parameterNames = {
       "method": "set",
       "table": {
@@ -241,26 +232,26 @@ class _Visitor1State extends State<Visitor1> {
         "value": [
           {
             "id": dataModel!.data![1].id,
-            "Enable": dataModel!.data![1].enable,
+            "Enable": enableCheck == false ? "0" : "1",
             "SsidHide": showSsid == false ? "0" : "1",
             "ApIsolate": apVAl == false ? "0" : "1",
-            "ShowPasswd": dataModel!.data![1].showPasswd,
-            "Is4Guest": dataModel!.data![1].is4Guest,
-            "PasswordLength": dataModel!.data![1].passwordLength,
-            "PasswordIndex": dataModel!.data![1].passwordIndex,
+            // "ShowPasswd": dataModel!.data![1].showPasswd,
+            // "Is4Guest": dataModel!.data![1].is4Guest,
+            // "PasswordLength": dataModel!.data![1].passwordLength,
+            // "PasswordIndex": dataModel!.data![1].passwordIndex,
             "MaxClient": maxVal.text,
             "Ssid": ssidVal.text,
             "Key": password.text,
-            "Password1": dataModel!.data![1].password1,
-            "Password2": dataModel!.data![1].password2,
-            "Password3": dataModel!.data![1].password3,
-            "Password4": dataModel!.data![1].password4,
+            // "Password1": dataModel!.data![1].password1,
+            // "Password2": dataModel!.data![1].password2,
+            // "Password3": dataModel!.data![1].password3,
+            // "Password4": dataModel!.data![1].password4,
             "Encryption": '$safeVal+$wpaVal',
-            "SsidMac": dataModel!.data![1].ssidMac,
+            // "SsidMac": dataModel!.data![1].ssidMac,
             "AllowAccessIntranet": networkCheck == false ? "0" : "1",
-            "wifiRadiusServerIP": dataModel!.data![1].wifiRadiusServerIP,
-            "wifiRadiusServerPort": dataModel!.data![1].wifiRadiusServerPort,
-            "wifiRadiusSharedKey": dataModel!.data![1].wifiRadiusSharedKey
+            // "wifiRadiusServerIP": dataModel!.data![1].wifiRadiusServerIP,
+            // "wifiRadiusServerPort": dataModel!.data![1].wifiRadiusServerPort,
+            // "wifiRadiusSharedKey": dataModel!.data![1].wifiRadiusSharedKey
           }
         ]
       }
@@ -282,6 +273,57 @@ class _Visitor1State extends State<Visitor1> {
     }
   }
 
+  set5GData() async {
+    Object? sn = await sharedGetData('deviceSn', String);
+
+    var parameterNames = {
+      "method": "set",
+      "table": {
+        "table": "WiFi5GSsidTable",
+        "value": [
+          {
+            "id": dataModel!.data![1].id,
+            "Enable": enableCheck == false ? "0" : "1",
+            "SsidHide": showSsid == false ? "0" : "1",
+            "ApIsolate": apVAl == false ? "0" : "1",
+            // "ShowPasswd": dataModel!.data![1].showPasswd,
+            // "Is4Guest": dataModel!.data![1].is4Guest,
+            // "PasswordLength": dataModel!.data![1].passwordLength,
+            // "PasswordIndex": dataModel!.data![1].passwordIndex,
+            "MaxClient": maxVal.text,
+            "Ssid": ssidVal.text,
+            "Key": password.text,
+            // "Password1": dataModel!.data![1].password1,
+            // "Password2": dataModel!.data![1].password2,
+            // "Password3": dataModel!.data![1].password3,
+            // "Password4": dataModel!.data![1].password4,
+            "Encryption": '$safeVal+$wpaVal',
+            // "SsidMac": dataModel!.data![1].ssidMac,
+            "AllowAccessIntranet": networkCheck == false ? "0" : "1",
+            // "wifiRadiusServerIP": dataModel!.data![1].wifiRadiusServerIP,
+            // "wifiRadiusServerPort": dataModel!.data![1].wifiRadiusServerPort,
+            // "wifiRadiusSharedKey": dataModel!.data![1].wifiRadiusSharedKey
+          }
+        ]
+      }
+    };
+
+    if (password.text.length < 8 || password.text.length > 16) {
+      ToastUtils.toast("Password cannot exceed 8 characters");
+      return;
+    }
+    try {
+      var res = await Request().setSODTable(parameterNames, sn);
+      var jsonObj = jsonDecode(res);
+      printInfo(info: '----$jsonObj');
+      if (jsonObj['code'] == 200) {
+        ToastUtils.toast('Save success');
+      }
+    } catch (e) {
+      printError(info: e.toString());
+    }
+  }
+
   // 提交
   Future<void> _saveData() async {
     setState(() {
@@ -291,6 +333,7 @@ class _Visitor1State extends State<Visitor1> {
       // 云端请求赋值
       try {
         setData();
+        set5GData();
       } catch (e) {
         debugPrint('云端请求出错：${e.toString()}');
         Get.back();
@@ -344,7 +387,9 @@ class _Visitor1State extends State<Visitor1> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar:
-            customAppbar(context: context, title: 'guest1', actions: <Widget>[
+            customAppbar(context: context, 
+            title: 'Guest WiFi', 
+            actions: <Widget>[
           Container(
             margin: EdgeInsets.all(20.w),
             child: OutlinedButton(
@@ -426,6 +471,31 @@ class _Visitor1State extends State<Visitor1> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
+                                  Text("Enable",
+                                      style: TextStyle(
+                                          color: const Color.fromARGB(
+                                              255, 5, 0, 0),
+                                          fontSize: 28.sp)),
+                                  Row(
+                                    children: [
+                                      Switch(
+                                        value: enableCheck,
+                                        onChanged: (newVal) {
+                                          setState(() {
+                                            enableCheck = newVal;
+                                          });
+                                        },
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                            BottomLine(
+                              rowtem: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
                                   Text(S.of(context).AllowAccess,
                                       style: TextStyle(
                                           color: const Color.fromARGB(
@@ -472,7 +542,7 @@ class _Visitor1State extends State<Visitor1> {
                                             fontSize: 26.sp,
                                             color: const Color(0xff737A83)),
                                         border: InputBorder.none,
-                                        labelStyle: TextStyle(fontSize: 16)
+                                        labelStyle: const TextStyle(fontSize: 16)
                                       ),
                                     ),
                                   ),
@@ -580,18 +650,18 @@ class _Visitor1State extends State<Visitor1> {
                                       if (safeIndex != selectedValue &&
                                           selectedValue != null)
                                         {
-                                          setState(() => {
-                                                safeIndex = selectedValue,
+                                          setState(() {
+                                                safeIndex = selectedValue;
                                                 safeShowVal = [
                                                   'WPA-PSK',
                                                   'WPA2-PSK',
                                                   'WPA-PSK&WPA2-PSK'
-                                                ][safeIndex],
+                                                ][safeIndex];
                                                 safeVal = [
                                                   'psk',
                                                   'psk2',
                                                   'psk-mixed'
-                                                ][safeIndex]
+                                                ][safeIndex];
                                               })
                                         }
                                     });
@@ -642,18 +712,18 @@ class _Visitor1State extends State<Visitor1> {
                                       if (wpaIndex != selectedValue &&
                                           selectedValue != null)
                                         {
-                                          setState(() => {
-                                                wpaIndex = selectedValue,
+                                          setState(() {
+                                                wpaIndex = selectedValue;
                                                 wpaShowVal = [
                                                   S.current.aesRecommend,
                                                   'TKIP',
                                                   'TKIP&AES'
-                                                ][wpaIndex],
+                                                ][wpaIndex];
                                                 wpaVal = [
                                                   'aes',
                                                   'tkip',
                                                   'tkip+aes'
-                                                ][wpaIndex]
+                                                ][wpaIndex];
                                               })
                                         }
                                     });

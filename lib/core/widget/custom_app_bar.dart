@@ -20,7 +20,8 @@ AppBar customAppbar(
     centerTitle: true,
     title: Text(
       title,
-      style: TextStyle(color: titleColor, fontSize: 18,fontWeight:FontWeight.bold ),
+      style: TextStyle(color: titleColor, fontSize: 18,fontWeight:FontWeight.bold),
+      textScaler: TextScaler.noScaling,
     ),
     backgroundColor: backgroundColor,
     elevation: 0,

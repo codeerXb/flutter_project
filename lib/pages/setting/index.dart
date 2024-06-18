@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/http/http_app.dart';
-import 'package:flutter_template/core/utils/logger.dart';
+// import 'package:flutter_template/core/utils/logger.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_widget.dart';
@@ -17,7 +17,6 @@ import 'package:flutter_template/pages/login/model/exception_login.dart';
 import 'package:flutter_template/pages/setting/user_card.dart';
 import 'package:flutter_template/pages/toolbar/toolbar_controller.dart';
 import 'package:get/get.dart';
-import 'package:logger/logger.dart';
 import '../../core/utils/shared_preferences_util.dart';
 import '../../core/utils/string_util.dart';
 import '../../core/widget/custom_app_bar.dart';
@@ -33,7 +32,6 @@ class Setting extends StatefulWidget {
 
 class _SettingState extends State<Setting> {
   final ToolbarController toolbarController = Get.put(ToolbarController());
-
   // 获取sn
   String sn = '';
 
@@ -102,7 +100,6 @@ class _SettingState extends State<Setting> {
         });
       }
     }));
-
     super.initState();
   }
 
@@ -958,7 +955,7 @@ class _SettingState extends State<Setting> {
         if (value != null) {
           Dio dio = Dio();
           String url =
-              "http://$localUrl/action/appLogin?username=engineer&password=OPaviNb3o5qDKD1YPzp2X64Qsw0G3PMQLxOkLdp%2FWERkAphqhKCC00ZmZxOFOLBFN81FR7JprXF8lTkGpKdECl4IWbBiklCoAz1HsRUZYY%2BrbBFKGZO04NaawnWzqNEiHemaC0til1Hg6gkpc6DZVupOi8bGkEyCbpNQJN%2BU9zw=";
+              "$localUrl/action/appLogin?username=engineer&password=OPaviNb3o5qDKD1YPzp2X64Qsw0G3PMQLxOkLdp%2FWERkAphqhKCC00ZmZxOFOLBFN81FR7JprXF8lTkGpKdECl4IWbBiklCoAz1HsRUZYY%2BrbBFKGZO04NaawnWzqNEiHemaC0til1Hg6gkpc6DZVupOi8bGkEyCbpNQJN%2BU9zw=";
           try {
             dio.get(url).then((response) {
               var loginResJson = jsonDecode(response.toString());
@@ -1172,7 +1169,7 @@ class _SettingState extends State<Setting> {
         title: S.of(context).visitorNet,
         icon: const Image(image: AssetImage('assets/images/visitor_net.png')),
         callBack: () {
-          Get.toNamed("/visitor_net");
+          Get.toNamed("/visitor_one");
         });
   }
 

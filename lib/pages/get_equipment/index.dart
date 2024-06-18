@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/http/http_app.dart';
+import 'package:flutter_template/core/utils/logger.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/generated/l10n.dart';
@@ -92,10 +93,10 @@ class _MyWidgetState extends State<Equipment> {
                 appList.add(synArray[i]);
               }
             }
-
-            // appList = d['data'];
+            XLogger.getLogger().d("查询到的设备列表是:$appList");
+            getEquipmentData(appList);
           });
-          getEquipmentData(d['data']);
+          
         }
       }
     }).catchError((onError) {
@@ -287,6 +288,7 @@ class _MyWidgetState extends State<Equipment> {
           title: Text(
             S.of(context).DiscoveryEqu,
             style: const TextStyle(color: Colors.black),
+            textScaler: TextScaler.noScaling,
           ),
           elevation: 0,
           backgroundColor: const Color.fromARGB(255, 255, 255, 255),

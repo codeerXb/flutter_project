@@ -111,11 +111,21 @@ class _ParentWebSitePageState extends State<ParentWebSitePage> {
                                       if(GetUtils.isURL(textController.text)) {
                                         setState(() {
                                           websites.add(textController.text);
+                                          websites = websites.toSet().toList();
                                         });
+                                        
                                       }else {
                                         ToastUtils.toast("Please enter the correct website address");
                                       }
-                                      
+                                      // for (var element in websites) {
+                                      //   if (textController.text == element) {
+                                          
+                                      //     ToastUtils.toast("The website address you entered already exists");
+                                      //     setState(() {
+                                      //       websites.remove(element);
+                                      //     });
+                                      //   }
+                                      // }
                                     },
                                     child: const Text(
                                       "Add",
@@ -156,7 +166,12 @@ class _ParentWebSitePageState extends State<ParentWebSitePage> {
                                       fontSize: 15, color: Colors.black),
                                 ),
                                 trailing: IconButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    websites.removeAt(index);
+                                    setState(() {
+                                      
+                                    });
+                                  },
                                   icon: Image.asset(
                                     "assets/images/delete2.png",
                                     width: 25,

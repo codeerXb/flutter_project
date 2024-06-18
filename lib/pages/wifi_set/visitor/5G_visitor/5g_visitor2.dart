@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -336,7 +337,7 @@ class _Visitor5State extends State<Visitor5> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar:
-            customAppbar(context: context, title: 'guest5', actions: <Widget>[
+            customAppbar(context: context, title: dataModel != null ? '${dataModel!.data![2].ssid}' : "", actions: <Widget>[
           Container(
             margin: EdgeInsets.all(20.w),
             child: OutlinedButton(
@@ -450,7 +451,7 @@ class _Visitor5State extends State<Visitor5> {
                                               255, 5, 0, 0),
                                           fontSize: 28.sp)),
                                   SizedBox(
-                                    width: 300.w,
+                                    width: Platform.isAndroid ? 400.w : 300.w,
                                     child: TextFormField(
                                       textAlign: TextAlign.right,
                                       controller: ssidVal,
@@ -570,18 +571,18 @@ class _Visitor5State extends State<Visitor5> {
                                       if (safeIndex != selectedValue &&
                                           selectedValue != null)
                                         {
-                                          setState(() => {
-                                                safeIndex = selectedValue,
+                                          setState(() {
+                                                safeIndex = selectedValue;
                                                 safeShowVal = [
                                                   'WPA-PSK',
                                                   'WPA2-PSK',
                                                   'WPA-PSK&WPA2-PSK'
-                                                ][safeIndex],
+                                                ][safeIndex];
                                                 safeVal = [
                                                   'psk',
                                                   'psk2',
                                                   'psk-mixed'
-                                                ][safeIndex]
+                                                ][safeIndex];
                                               })
                                         }
                                     });
@@ -632,18 +633,18 @@ class _Visitor5State extends State<Visitor5> {
                                       if (wpaIndex != selectedValue &&
                                           selectedValue != null)
                                         {
-                                          setState(() => {
-                                                wpaIndex = selectedValue,
+                                          setState(() {
+                                                wpaIndex = selectedValue;
                                                 wpaShowVal = [
                                                   S.current.aesRecommend,
                                                   'TKIP',
                                                   'TKIP&AES'
-                                                ][wpaIndex],
+                                                ][wpaIndex];
                                                 wpaVal = [
                                                   'aes',
                                                   'tkip',
                                                   'tkip+aes'
-                                                ][wpaIndex]
+                                                ][wpaIndex];
                                               })
                                         }
                                     });

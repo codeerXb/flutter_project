@@ -40,6 +40,29 @@ class _TimeConfigListPageState extends State<TimeConfigListPage> {
       sn = res.toString();
       requestData(sn);
     }));
+    sharedGetData('toggle', bool).then(((res) {
+      var stu = res as bool;
+      setState(() {
+        _isOpen = stu;
+      });
+    }));
+
+    sharedGetData('click', String).then(((res) {
+      var stus = res.toString();
+      if (stus.isNotEmpty) {
+        sharedGetData('datas', String).then(((res) {
+          final pt = res.toString();
+          if (pt.isNotEmpty) {
+            final timeListModel = TimeConfigListBeans.fromJson(jsonDecode(pt));
+            setState(() {
+              loading = true;
+              datas = timeListModel;
+            });
+          } else {}
+        }));
+      }
+    }));
+
     super.initState();
   }
 
@@ -52,6 +75,7 @@ class _TimeConfigListPageState extends State<TimeConfigListPage> {
     client.onConnected = onConnected;
     client.onSubscribed = onSubscribed;
     client.pongCallback = pong;
+    client.onAutoReconnect = reconnect;
     client.setProtocolV311();
 
     final connMess = MqttConnectMessage()
@@ -100,6 +124,8 @@ class _TimeConfigListPageState extends State<TimeConfigListPage> {
     subTopic = "app/parentControl/allTime/$sn";
     client.subscribe(subTopic, MqttQos.atLeastOnce);
 
+    getTimeRulesStatus();
+
     client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
       final MqttPublishMessage recMess = c![0].payload as MqttPublishMessage;
       final String topic = c[0].topic;
@@ -107,6 +133,7 @@ class _TimeConfigListPageState extends State<TimeConfigListPage> {
       String desString = "topic is <$topic>, payload is <-- $pt -->";
       debugPrint("string =$desString");
       if (topic == subTopic) {
+        sharedAddAndUpdate("datas", String, pt);
         final timeListModel = TimeConfigListBeans.fromJson(jsonDecode(pt));
         debugPrint("时间列表数据:$timeListModel");
         if (timeListModel.param != null && timeListModel.param!.isNotEmpty) {
@@ -115,10 +142,18 @@ class _TimeConfigListPageState extends State<TimeConfigListPage> {
             datas = timeListModel;
           });
         }
-      }else {
+      } else if (topic == "cpe/$sn/getTimeRule") {
         String result = pt.substring(0, pt.length - 1);
         Map datas = jsonDecode(result);
-        var res = datas["data"];
+        var res = datas["data"]["securityParentControlEnable"] as String;
+        debugPrint("时间规则状态 =$res");
+        setState(() {
+          _isOpen = res == "1" ? true : false;
+        });
+      } else {
+        String result = pt.substring(0, pt.length - 1);
+        Map datas = jsonDecode(result);
+        var res = datas["data"] as String;
         debugPrint("时间规则设置结果 =$res");
       }
     });
@@ -144,6 +179,10 @@ class _TimeConfigListPageState extends State<TimeConfigListPage> {
     debugPrint('Ping response client callback invoked');
   }
 
+  void reconnect() {
+    debugPrint('reconnect response client callback invoked');
+  }
+
   // 发送消息
   void _publishMessage(String topic, Map<String, dynamic> message) {
     debugPrint("======发送的消息成功了=======");
@@ -152,6 +191,24 @@ class _TimeConfigListPageState extends State<TimeConfigListPage> {
     var jsonData = json.encode(message);
     builder.addUTF8String(jsonData);
     client.publishMessage(topic, MqttQos.atLeastOnce, builder.payload!);
+  }
+
+  getTimeRulesStatus() {
+    final sessionId = StringUtil.generateRandomString(10);
+    var topic = "cpe/$sn";
+    var pubtopic = "cpe/$sn/getTimeRule";
+    var parameters = {
+      "event": "mqtt2sodObj",
+      "sn": sn,
+      "sessionId": sessionId,
+      "pubTopic": pubtopic,
+      "param": {
+        "method": "get",
+        "nodes": ["securityParentControlEnable"]
+      }
+    };
+    _publishMessage(topic, parameters);
+    client.subscribe(pubtopic, MqttQos.atLeastOnce);
   }
 
   setTimeRulesEffected() {
@@ -169,18 +226,19 @@ class _TimeConfigListPageState extends State<TimeConfigListPage> {
       }
     };
     _publishMessage(topic, parameters);
+    client.subscribe(pubtopic, MqttQos.atLeastOnce);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text(
-            'Use Time Configure',
-            style: TextStyle(
-                color: Colors.black, fontSize: 22, fontWeight: FontWeight.w500),
-                textScaler: TextScaler.noScaling
-          ),
+          title: const Text('Use Time Configure',
+              style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w500),
+              textScaler: TextScaler.noScaling),
           centerTitle: true,
           actions: [
             FlutterSwitch(
@@ -196,10 +254,12 @@ class _TimeConfigListPageState extends State<TimeConfigListPage> {
               borderRadius: 30.0,
               showOnOff: true,
               onToggle: (val) {
+                sharedAddAndUpdate("toggle", bool, val);
+                sharedAddAndUpdate("click", String, "clickY");
                 setState(() {
                   _isOpen = val;
-                  setTimeRulesEffected();
                 });
+                setTimeRulesEffected();
               },
             )
           ],
@@ -289,11 +349,9 @@ class _TimeConfigListPageState extends State<TimeConfigListPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    deviceName,
-                    style: const TextStyle(fontSize: 15, color: Colors.black),
-                    textScaler: TextScaler.noScaling
-                  ),
+                  Text(deviceName,
+                      style: const TextStyle(fontSize: 15, color: Colors.black),
+                      textScaler: TextScaler.noScaling),
                   IconButton(
                       onPressed: () {
                         Get.toNamed("/websiteTimeListPage",
@@ -352,7 +410,8 @@ class _TimeConfigListPageState extends State<TimeConfigListPage> {
       listTime.add(SizedBox(
         height: 30,
         child: Text("${item.timeStart} - ${item.timeStop} ${item.weekdays}",
-            style: const TextStyle(fontSize: 12, color: Colors.black),textScaler: TextScaler.noScaling),
+            style: const TextStyle(fontSize: 12, color: Colors.black),
+            textScaler: TextScaler.noScaling),
       ));
     }
     return listTime;
@@ -368,14 +427,20 @@ class _TimeConfigListPageState extends State<TimeConfigListPage> {
             radius: 20,
             color: Colors.grey,
           ),
-          Text(
-            "Loading, please wait",
-            style: TextStyle(fontSize: 15, color: Colors.black),
-            textScaler: TextScaler.noScaling
-          )
+          Text("Loading, please wait",
+              style: TextStyle(fontSize: 15, color: Colors.black),
+              textScaler: TextScaler.noScaling)
         ],
       ),
     );
+  }
+
+  @override
+  void setState(VoidCallback fn) {
+    if(mounted) {
+      super.setState(fn);
+    }
+    
   }
 
   @override

@@ -282,7 +282,10 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
                         Get.toNamed("/parentConfigPage",
                             arguments: {"mac": mac, "method": methodType})?.then((value){
                               if(value == "success") {
-                                requestBlackConfigList(sn);
+                                Stream.periodic(const Duration(seconds: 1)).take(1).listen((event) {
+                                  requestBlackConfigList(sn);
+                                });
+                                
                               }
                             });
                       },
@@ -431,6 +434,14 @@ class _ParentDevicePageState extends State<ParentDevicePage> {
     }
 
     return seles;
+  }
+
+  @override
+  void setState(VoidCallback fn) {
+    if(mounted) {
+      super.setState(fn);
+    }
+    
   }
 
   @override

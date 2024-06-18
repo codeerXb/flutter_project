@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -55,13 +56,11 @@ class _ParentCreatTimePageState extends State<ParentCreatTimePage> {
   List<bool> checked = List<bool>.filled(7, false);
   List checkWeeks = [];
 
-  // bool? monCheck = false;
-  // bool? tusCheck = false;
-  // bool? wedCheck = false;
-  // bool? turCheck = false;
-  // bool? friCheck = false;
-  // bool? satuCheck = false;
-  // bool? sunCheck = false;
+  var startTimeHour = 0;
+  var startTimeMinute = 0;
+
+  var endTimeHour = 0;
+  var endTimeMinute = 0;
 
   @override
   void initState() {
@@ -71,6 +70,14 @@ class _ParentCreatTimePageState extends State<ParentCreatTimePage> {
     }));
     macAddress = Get.arguments["mac"];
     super.initState();
+
+    setState(() {
+      startTimeHour = selectedStartTime.hour;
+      startTimeMinute = selectedStartTime.minute;
+
+      endTimeHour = selectedEndTime.hour;
+      endTimeMinute = selectedEndTime.minute;
+    });
   }
 
   void _showStartTimePicker() async {
@@ -79,11 +86,12 @@ class _ParentCreatTimePageState extends State<ParentCreatTimePage> {
       initTime: selectedStartTime,
       is24HourFormat: true,
     );
-
     if (pickedTime != null) {
       setState(() {
         selectedStartTime = pickedTime;
-        debugPrint("当前选择的时间是:${pickedTime.hour}:${pickedTime.minute}");
+        startTimeHour = pickedTime.hour;
+        startTimeMinute = pickedTime.minute;
+        debugPrint("当前选择开始时间是:${pickedTime.hour}:${pickedTime.minute}");
       });
     }
   }
@@ -98,7 +106,9 @@ class _ParentCreatTimePageState extends State<ParentCreatTimePage> {
     if (pickedTime != null) {
       setState(() {
         selectedEndTime = pickedTime;
-        debugPrint("当前选择的时间是:${pickedTime.hour}:${pickedTime.minute}");
+        endTimeHour = pickedTime.hour;
+        endTimeMinute = pickedTime.minute;
+        debugPrint("当前选择结束时间是:${pickedTime.hour}:${pickedTime.minute}");
       });
     }
   }
@@ -291,6 +301,15 @@ class _ParentCreatTimePageState extends State<ParentCreatTimePage> {
                           final weeks = checkWeeks.join(",");
                           final progress = ProgressHUD.of(context);
                           progress?.show();
+                          if(checkWeeks.isEmpty) {
+                            progress?.dismiss();
+                            ToastUtils.toast("Please select day of week");
+                            return;
+                          }else if (!checkSelectTimeRegulation()){
+                            progress?.dismiss();
+                            ToastUtils.toast("Please set the start and end time correctly");
+                            return;
+                          }
                           uploadDeviceTimeConfig(
                               context, sn, weeks, startT, endT, macAddress);
                         },
@@ -305,6 +324,24 @@ class _ParentCreatTimePageState extends State<ParentCreatTimePage> {
             );
           })),
         ));
+  }
+
+  bool checkSelectTimeRegulation() {
+    debugPrint("当前选择的开始时间是:$startTimeHour");
+    debugPrint("当前选择的结束时间是:$endTimeHour");
+    debugPrint("当前选择的开始分钟是:$startTimeMinute");
+    debugPrint("当前选择的结束分钟是:$endTimeMinute");
+    if (startTimeHour > endTimeHour) {
+      return false;
+    }else if (startTimeHour == endTimeHour) {
+      if (startTimeMinute >= endTimeMinute) {
+        return false;
+      }else {
+        return true;
+      }
+    }else {
+      return true;
+    }
   }
 
   Widget createTimeRange() {

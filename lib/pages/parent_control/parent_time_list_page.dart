@@ -361,6 +361,14 @@ class _ParentTimeListPageState extends State<ParentTimeListPage> {
   }
 
   @override
+  void setState(VoidCallback fn) {
+    if(mounted) {
+      super.setState(fn);
+    }
+    
+  }
+
+  @override
   void dispose() {
     client.disconnect();
     super.dispose();

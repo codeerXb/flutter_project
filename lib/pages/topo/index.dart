@@ -857,7 +857,7 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
                       // 访客网路
                       GestureDetector(
                         onTap: () {
-                          Get.toNamed("/visitor_net");
+                          Get.toNamed("/visitor_one");
                         },
                         child: GardCard(
                             boxCotainer: Row(

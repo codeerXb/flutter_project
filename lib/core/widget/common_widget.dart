@@ -132,7 +132,7 @@ class CommonWidget {
     return InkWell(
       splashColor: Colors.transparent, // 溅墨色（波纹色）
       highlightColor: Colors.transparent, // 点击时的背景色（高亮色）
-      onTap: () => {callBack == null ? print("没有传递回调函数") : callBack()},
+      onTap: () => {callBack == null ? debugPrint("没有传递回调函数") : callBack()},
       child: Container(
           width: Constant.defaultWidth,
           height: 150.w,
@@ -233,7 +233,7 @@ class CommonWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           InkWell(
-            onTap: () => {callBack == null ? print("没有传递回调函数") : callBack()},
+            onTap: () => {callBack == null ? debugPrint("没有传递回调函数") : callBack()},
             child: Container(
               width: 100.w,
               height: 100.w,
@@ -411,7 +411,7 @@ class CommonWidget {
                 Container(
                   padding: EdgeInsets.only(left: 20.w),
                   alignment: Alignment.centerLeft,
-                  child: Text(title),
+                  child: Text(title,textScaler: TextScaler.noScaling,),
                 ),
               ],
             ),

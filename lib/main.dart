@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -13,6 +14,7 @@ import 'core/http/http.dart';
 import 'core/router/global_route.dart';
 import 'generated/l10n.dart';
 import 'package:network_info_plus/network_info_plus.dart';
+import 'core/utils/global_nav_context.dart';
 
 final GlobalRouter router = GlobalRouter();
 
@@ -24,9 +26,16 @@ Future<void> main() async {
   final info = NetworkInfo();
   final wifiGateway = await info.getWifiGatewayIP();
   debugPrint('当前wifi的网关地址$wifiGateway');
-  BaseConfig.baseUrl = "https://$wifiGateway";
+  if (Platform.isAndroid) {
+    BaseConfig.baseUrl = "http://192.168.1.1";
+    debugPrint('安卓设备wifi的网关地址${BaseConfig.baseUrl}');
+  }else {
+    BaseConfig.baseUrl = "http://$wifiGateway";
+    debugPrint('iOSwifi的网关地址${BaseConfig.baseUrl}');
+  }
+  
   if (wifiGateway != null && wifiGateway.isNotEmpty) {
-    sharedAddAndUpdate("baseLocalUrl", String, wifiGateway);
+    sharedAddAndUpdate("baseLocalUrl", String, BaseConfig.baseUrl);
   }
   XHttp.init();
 
@@ -37,6 +46,8 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -45,8 +56,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-
   final ToolbarController toolbarController = Get.put(ToolbarController());
   String language = 'en_US';
   @override
@@ -71,7 +80,8 @@ class _MyAppState extends State<MyApp> {
         splitScreenMode: true,
         builder: (context, child) {
           //国际化
-          return ToastUtils.init(GetMaterialApp(
+          return ToastUtils.init(
+            GetMaterialApp(
             localizationsDelegates: const [
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
@@ -106,7 +116,7 @@ class _MyAppState extends State<MyApp> {
             },
             locale: const Locale('en', 'US'),
             fallbackLocale: const Locale('en', 'US'),
-            key: navigatorKey,
+            navigatorKey: GlobalContext.navigatorKey,
             title: 'router',
             debugShowCheckedModeBanner: false,
             initialRoute: '/',

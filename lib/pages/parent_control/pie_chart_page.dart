@@ -5,6 +5,7 @@ import 'package:d_chart/d_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:d_chart/commons/data_model.dart';
+import 'package:pie_chart/pie_chart.dart';
 import 'package:get/get.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -34,6 +35,7 @@ class _PieChartPageState extends State<PieChartPage> {
   MqttServerClient client = MqttServerClient.withPort(
       BaseConfig.mqttMainUrl, clientId, BaseConfig.websocketPort);
   var key = GlobalKey<_PieChartPageState>();
+  var pieKey = const ValueKey("pie");
   bool _isOpenControlInRow = true;
   List<EquipmentInfo> devices = [];
   String? selectedValue;
@@ -46,6 +48,11 @@ class _PieChartPageState extends State<PieChartPage> {
 
   List<StatisticsTypeData> resList = [];
 
+  List<OrdinalData> pieDataList = [
+    OrdinalData(domain: 'Nan', measure: 100, color: Colors.red),
+];
+
+
   String tapIndex = "";
   String sn = "";
   String subTopic = "";
@@ -53,8 +60,14 @@ class _PieChartPageState extends State<PieChartPage> {
   @override
   void initState() {
     if (mounted) {
+      var equements = Get.arguments["equipments"];
+        for (int i = 0; i < equements.length; i++) {
+          if (((i+1) < equements.length && equements[i].name == equements[i + 1].name) || equements[i].name == "*") {
+            equements.removeAt(i);
+          }
+        }
       setState(() {
-        devices = Get.arguments["equipments"];
+        devices = equements;
       });
     }
 
@@ -80,7 +93,7 @@ class _PieChartPageState extends State<PieChartPage> {
 
   requestData(String sn, String macAddress) async {
     client.logging(on: false);
-    client.keepAlivePeriod = 60;
+    client.keepAlivePeriod = 30;
     client.useWebSocket = true;
     client.autoReconnect = true;
     client.onDisconnected = onDisconnected;
@@ -201,6 +214,7 @@ class _PieChartPageState extends State<PieChartPage> {
                       measure: int.parse(item.visitTime!),
                       color: const Color.fromRGBO(255, 149, 0, 1)));
                 }
+
                 timeDatas.add(StatisticsTypeData("assets/images/app store.png",
                     "App Store", "${int.parse(item.visitTime!)}mins"));
               } else {
@@ -230,7 +244,6 @@ class _PieChartPageState extends State<PieChartPage> {
         if (appTimeListModel.param != null &&
             appTimeListModel.param!.isNotEmpty) {
           timeListModel = appTimeListModel;
-          debugPrint("单个App的分类:${timeListModel!.param![0].social}");
           debugPrint("单个App的分类:$timeListModel");
         }
       } else if (topic == "cpe/$sn/_parent_config") {
@@ -257,6 +270,7 @@ class _PieChartPageState extends State<PieChartPage> {
         MqttDisconnectionOrigin.solicited) {
       debugPrint('OnDisconnected callback is solicited, this is correct');
     }
+    // exit(-1);
   }
 
   void onConnected() {
@@ -385,9 +399,8 @@ class _PieChartPageState extends State<PieChartPage> {
         key: key,
         data: ordinalDataList,
         customLabel: (ordinalData, index) {
-          double res =
-              ordinalData.measure / int.parse(staBeans!.param!.totalVisitTime!);
-          return "${ordinalData.domain} ${"${(res * 100).ceil()}%"}";
+          double res = ordinalData.measure / int.parse(staBeans!.param!.totalVisitTime!);
+          return (ordinalDataList.isEmpty || staBeans!.param!.totalVisitTime == "0") ? ordinalData.domain : "${ordinalData.domain} ${"${(res * 100).ceil()}%"}";
         },
         configRenderPie: ConfigRenderPie(
             arcWidth: 40,
@@ -400,6 +413,30 @@ class _PieChartPageState extends State<PieChartPage> {
                 outsideLabelStyle: const LabelStyle(fontSize: 12),
                 leaderLineStyle: const ArcLabelLeaderLineStyle(
                     color: Colors.black, length: 20, thickness: 1.0))),
+      ),
+    );
+  }
+
+  Widget NANStatisticsDataPieView() {
+    return AspectRatio(
+      aspectRatio: 16 / 9,
+      child: DChartPieO(
+        key: pieKey,
+        data: pieDataList,
+        customLabel: (ordinalData, index) {
+          return "No statistics yet";
+        },
+        configRenderPie: ConfigRenderPie(
+            arcWidth: 100,
+            // arcRatio: 0.1,
+            strokeWidthPx: 0.0,
+            arcLabelDecorator: ArcLabelDecorator(
+                labelPadding: 0,
+                showLeaderLines: false,
+                labelPosition: ArcLabelPosition.outside,
+                outsideLabelStyle: const LabelStyle(fontSize: 16),
+                leaderLineStyle: const ArcLabelLeaderLineStyle(
+                    color: Colors.black, length: 40, thickness: 1.0))),
       ),
     );
   }
@@ -441,13 +478,7 @@ class _PieChartPageState extends State<PieChartPage> {
                           ),
                           SizedBox(
                               height: 240,
-                              child: ordinalDataList.isEmpty
-                                  ? const Center(
-                                    child: Text("No statistics yet",
-                                  style: TextStyle(color: Colors.black,fontSize: 20,fontWeight: FontWeight.bold),
-                                  textScaler: TextScaler.noScaling
-                                  ),)
-                                  : getPieChart()),
+                              child: ordinalDataList.isEmpty ? NANStatisticsDataPieView() : getPieChart()),
                           // EasyPieChart(
                           //   key: key,
                           //   children: pies,

@@ -225,7 +225,7 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
             id++;
           }
         });
-        print('onlineDeviceTable$onlineDeviceTable');
+        debugPrint('onlineDeviceTable---$onlineDeviceTable----');
         topoData =
             EquipmentDatas(onlineDeviceTable: onlineDeviceTable, max: 255);
       });

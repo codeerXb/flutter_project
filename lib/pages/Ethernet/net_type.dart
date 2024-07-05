@@ -134,16 +134,6 @@ class _NetTypeState extends State<NetType> {
       ]
     };
     try {
-      // var parameterNames = [
-      //   "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.AddressingType",
-      //   "InternetGatewayDevice.WEB_GUI.Ethernet.Status.LinkStatus",
-      //   "InternetGatewayDevice.WEB_GUI.Ethernet.Status.ConnectStatus",
-      //   "InternetGatewayDevice.WEB_GUI.Overview.SystemInfo.OnlineTime",
-      //   "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.ExternalIPAddress",
-      //   "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.SubnetMask",
-      //   "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.DefaultGateway",
-      //   "InternetGatewayDevice.WANDevice.1.WANConnectionDevice.1.WANIPConnection.1.DNSServers",
-      // ];
       var res = await Request().getACSNode(parameterNames, sn);
       Map<String, dynamic> d = jsonDecode(res);
       var prettyJsonString = const JsonEncoder.withIndent('  ').convert(d);
@@ -167,8 +157,8 @@ class _NetTypeState extends State<NetType> {
         defaultGatewayValue = prefix["networkWanSettingsGateway"];
 
         var dNSServers = prefix["networkWanSettingsDns"];
-        primaryDNSValue = dNSServers.split(',')[0];
-        secondaryDNSValue = dNSServers.split(',')[1];
+        primaryDNSValue = dNSServers.split('.')[0];
+        secondaryDNSValue = dNSServers.split('.')[1];
 
         // var prefix1 =
         //     d["data"]["InternetGatewayDevice"]["WEB_GUI"]["Ethernet"]["Status"];

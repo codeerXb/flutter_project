@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_template/core/event_bus/eventbus_utils.dart';
 import 'package:flutter_template/core/http/http_app.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/utils/toast.dart';
@@ -167,6 +168,7 @@ class _ParentTimeListPageState extends State<ParentTimeListPage> {
                   final indexId = timeArray[index].id;
                   delDeviceTimeAction(sn, indexId);
                   timeArray.removeAt(index);
+                  eventBus.fire("delTimeConfig");
                 });
               },
               icon: Image.asset(

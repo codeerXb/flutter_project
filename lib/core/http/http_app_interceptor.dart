@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/generated/l10n.dart';
-
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter_template/pages/login/login_controller.dart';
 // ignore: library_prefixes
 import 'package:get/get.dart' as GetX;
@@ -21,10 +21,12 @@ class HttpAppInterceptors extends InterceptorsWrapper {
     String appLoginFlag = 'true';
     Object? authorization = await sharedGetData("user_token", String);
     debugPrint('authorization--$authorization');
-
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    final currentVersionCode = packageInfo.version;
     Map<String, dynamic> header = {
       "Authorization": authorization,
       "appLoginFlag": appLoginFlag.toString(),
+      "appVersionCode" : currentVersionCode
     };
     options.headers = header;
     options.path = options.uri.toString();

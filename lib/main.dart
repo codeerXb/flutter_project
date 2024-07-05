@@ -15,11 +15,13 @@ import 'core/router/global_route.dart';
 import 'generated/l10n.dart';
 import 'package:network_info_plus/network_info_plus.dart';
 import 'core/utils/global_nav_context.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 final GlobalRouter router = GlobalRouter();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  getCurrentAppVersion();
   // 初始化请求过滤器
   App.init();
 
@@ -28,10 +30,10 @@ Future<void> main() async {
   debugPrint('当前wifi的网关地址$wifiGateway');
   if (Platform.isAndroid) {
     BaseConfig.baseUrl = "http://192.168.1.1";
-    debugPrint('安卓设备wifi的网关地址${BaseConfig.baseUrl}');
+    // debugPrint('安卓设备wifi的网关地址${BaseConfig.baseUrl}');
   }else {
     BaseConfig.baseUrl = "http://$wifiGateway";
-    debugPrint('iOSwifi的网关地址${BaseConfig.baseUrl}');
+    // debugPrint('iOSwifi的网关地址${BaseConfig.baseUrl}');
   }
   
   if (wifiGateway != null && wifiGateway.isNotEmpty) {
@@ -45,6 +47,13 @@ Future<void> main() async {
 
   runApp(const MyApp());
 }
+
+  Future<void> getCurrentAppVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    String currentVersionCode = packageInfo.version;
+    debugPrint("当前的App版本是:$currentVersionCode");
+    sharedAddAndUpdate("currentAppVersion", String, currentVersionCode);
+  }
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 

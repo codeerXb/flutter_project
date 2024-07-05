@@ -172,25 +172,76 @@ class _HomeSpeedPageState extends State<HomeSpeedPage> {
       String result = pt.substring(0, pt.length - 1);
       String desString = "topic is <$topic>, payload is <-- $result -->";
       XLogger.getLogger().d("string =$desString");
-      final payloadModel = SpeedModel.fromJson(jsonDecode(result));
-      if (payloadModel.data != null) {
+      
+      Map datas = jsonDecode(result);
+      var resType = datas["data"]["type"] as String;
+      XLogger.getLogger().d("测速类型是:$resType");
+      if (resType.isNotEmpty) {
         setState(() {
           _testInProgress = false;
           deviceName = sn;
-          testUp = StringUtil.getUnitlessRate(payloadModel.data!.upload!);
-          testDown = StringUtil.getUnitlessRate(payloadModel.data!.download!);
-          XLogger.getLogger().d("数据是:$testUp -- $testDown");
-        });
-      }else {
-        Future.delayed(const Duration(seconds: 3),(){
-          setState(() {
-            _testInProgress = false;
-
-          testUp = StringUtil.getUnitlessRate(0);
-          testDown = StringUtil.getUnitlessRate(0);
-          });
         });
       }
+      switch (resType) {
+        case "ping": 
+        Map pingMap = datas["data"]["ping"];
+        double pingResult = pingMap["latency"] as double;
+        XLogger.getLogger().d("延迟率是:$pingResult");
+        break;
+        case "download":
+        Map downMap = datas["data"]["download"];
+        var downRate = downMap["bandwidth"];
+        var downResult = StringUtil.getUnitlessRate(downRate);
+        setState(() {
+          testDown = downResult;
+        });
+        XLogger.getLogger().d("下载的速率是:$downResult");
+        break;
+        case "upload":
+        Map uploadMap = datas["data"]["upload"];
+        var uploadRate = uploadMap["bandwidth"];
+        var uploadResult = StringUtil.getUnitlessRate(uploadRate);
+        setState(() {
+          testUp = uploadResult;
+        });
+        XLogger.getLogger().d("上传的速率是:$uploadResult");
+        break;
+        case "result":
+        Map pingMap = datas["data"]["ping"];
+        Map downMap = datas["data"]["download"];
+        Map uploadMap = datas["data"]["upload"];
+        double pingResult = pingMap["latency"] as double;
+        var downRate = StringUtil.getUnitlessRate(downMap["bandwidth"]);
+        var uploadRate = StringUtil.getUnitlessRate(uploadMap["bandwidth"]);
+        setState(() {
+          testDown = downRate;
+          testUp = uploadRate;
+        });
+        Future.delayed(const Duration(seconds: 1),(){
+          ToastUtils.toast("Speed measurement completed");
+        });
+        XLogger.getLogger().d("最终测速结果是:$pingResult---$downRate---$uploadRate");
+        break;
+      }
+      
+      // final payloadModel = SpeedModel.fromJson(jsonDecode(result));
+      // if (payloadModel.data != null) {
+      //   setState(() {
+      //     _testInProgress = false;
+      //     deviceName = sn;
+      //     testUp = StringUtil.getUnitlessRate(payloadModel.data!.upload!);
+      //     testDown = StringUtil.getUnitlessRate(payloadModel.data!.download!);
+      //     XLogger.getLogger().d("数据是:$testUp -- $testDown");
+      //   });
+      // }else {
+      //   Future.delayed(const Duration(seconds: 3),(){
+      //     setState(() {
+      //       _testInProgress = false;
+      //     testUp = StringUtil.getUnitlessRate(0);
+      //     testDown = StringUtil.getUnitlessRate(0);
+      //     });
+      //   });
+      // }
     });
   }
 
@@ -256,12 +307,12 @@ class _HomeSpeedPageState extends State<HomeSpeedPage> {
             _testInProgress = false;
           });
 
-          Future.delayed(const Duration(seconds: 5), () {
-            setState(() {
-              _testInProgress = true;
-              deviceName = sn;
-            });
-          });
+          // Future.delayed(const Duration(seconds: 5), () {
+          //   setState(() {
+          //     _testInProgress = true;
+          //     deviceName = sn;
+          //   });
+          // });
         },
         onProgress: (double percent, TestResult data) {
           if (kDebugMode) {
@@ -470,7 +521,7 @@ class _HomeSpeedPageState extends State<HomeSpeedPage> {
                               ],
                             ),
                             Transform.translate(
-                                offset: Platform.isAndroid ?  const Offset(0, -26) : const Offset(0.5, -32),
+                                offset: Platform.isAndroid ?  const Offset(0, -26) : const Offset(4, -32),
                                 child: Image.asset(
                                   "assets/images/speed_mobile.png",
                                   width: 230.w,

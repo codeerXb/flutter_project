@@ -117,10 +117,10 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
         // debugPrint(
         //     "获取的终端设备列表:${equipmentDatas[0].mac} -- ${equipmentDatas[0].name}");
       } else {
-        ToastUtils.toast(terminalModel.message!);
+        XLogger.getLogger().e("${terminalModel.message}");
       }
     }).catchError((error) {
-      ToastUtils.error(error.toString());
+      XLogger.getLogger().e(error.toString());
     });
   }
 
@@ -762,7 +762,7 @@ class _TopoState extends State<Topo> with SingleTickerProviderStateMixin {
                                   .toList(),
                             ),
                           // NoDevice
-                          if (!topoData.onlineDeviceTable!.isNotEmpty)
+                          if (topoData.onlineDeviceTable!.isEmpty)
                             Center(
                               child: Container(
                                   margin: EdgeInsets.only(top: 50.sp),

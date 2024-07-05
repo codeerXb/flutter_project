@@ -492,13 +492,13 @@ class _WanSettingsState extends State<WanSettings> {
                                         if (val != selectedValue &&
                                             selectedValue != null)
                                           {
-                                            setState(() => {
-                                                  val = selectedValue,
+                                            setState(() {
+                                                  val = selectedValue;
                                                   showVal = [
                                                     S.current.DynamicIP,
                                                     S.current.staticIP,
                                                     S.current.LANOnly
-                                                  ][val],
+                                                  ][val];
                                                 })
                                           }
                                       }
@@ -577,12 +577,12 @@ class _WanSettingsState extends State<WanSettings> {
                                       if (priorityIndex != selectedValue &&
                                           selectedValue != null)
                                         {
-                                          setState(() => {
-                                                priorityIndex = selectedValue,
+                                          setState(() {
+                                                priorityIndex = selectedValue;
                                                 priorityVal = [
                                                   S.current.Ethernet,
                                                   '4G/5G'
-                                                ][priorityIndex],
+                                                ][priorityIndex];
                                               })
                                         }
                                     });
@@ -833,6 +833,7 @@ class _WanSettingsState extends State<WanSettings> {
                                     width: 420.w,
                                     child: TextFormField(
                                       textAlign: TextAlign.right,
+                                      keyboardType: TextInputType.emailAddress,
                                       controller: server,
                                       style: TextStyle(
                                           fontSize: 26.sp,
@@ -862,13 +863,13 @@ class _WanSettingsState extends State<WanSettings> {
                                     if (wanIndex != selectedValue &&
                                         selectedValue != null)
                                       {
-                                        setState(() => {
-                                              wanIndex = selectedValue,
+                                        setState(() {
+                                              wanIndex = selectedValue;
                                               wanShowVal = [
                                                 'NAT',
                                                 S.current.BRIDGE,
                                                 'ROUTER'
-                                              ][wanIndex],
+                                              ][wanIndex];
                                               // if (wanIndex == 0)
                                               //   {
                                               //     wanVal = 'nat',

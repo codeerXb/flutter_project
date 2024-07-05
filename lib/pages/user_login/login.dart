@@ -616,9 +616,16 @@ class _UserLoginState extends State<UserLogin>
         return null;
       } else {
         debugPrint('用户$data,登录信息${d.toString()}');
+        String appversion = d['data']['appVersion'] ?? "";
+        // appVersionStatus
+        int isupdatedApp = d['data']['appVersionStatus'] ?? 0;
+        debugPrint("获取的远程版本号是:----$appversion 远程更新状态:$isupdatedApp----");
         //存储用户信息
         sharedAddAndUpdate("user_token", String, (d['data']['token']));
         sharedAddAndUpdate("user_phone", String, (d['data']['account']));
+        sharedAddAndUpdate("app_version", String, appversion);
+        sharedAddAndUpdate("isupdatedApp", int, isupdatedApp);
+
         sharedAddAndUpdate(
             "loginUserInfo", String, jsonEncode(d['data'])); //把云平台登录信息保存到本地
         sharedAddAndUpdate(

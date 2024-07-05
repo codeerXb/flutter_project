@@ -409,7 +409,7 @@ class _SettingState extends State<Setting> {
                   // 网络测试
                   // test(),
                   // 添加设备
-                  addEquipments(),
+                  // addEquipments(),
 
                   //解绑
                   unbindingDevice(),
@@ -430,6 +430,9 @@ class _SettingState extends State<Setting> {
 
                   /// WPS设置
                   wpsSet(),
+
+                  /// WiFi访问控制
+                  // accessControl(),
                   // const Divider(),
                   TitleWidger(title: S.of(context).deviceInfo),
 
@@ -1190,6 +1193,16 @@ class _SettingState extends State<Setting> {
         icon: const Image(image: AssetImage('assets/images/WPS.png')),
         callBack: () {
           Get.toNamed("/wps_set");
+        });
+  }
+
+  /// 访问控制
+  Widget accessControl() {
+    return CommonWidget.simpleWidgetWithMine(
+        title: "AccessControl",
+        icon: const Image(image: AssetImage('assets/images/WPS.png')),
+        callBack: () {
+          Get.toNamed("/access_control");
         });
   }
 

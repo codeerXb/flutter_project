@@ -92,6 +92,10 @@ import '../../pages/setting/company_website_page.dart';
 import 'package:flutter_template/pages/setting/logout_account.dart';
 import '../../pages/net_status/home_speed_test.dart';
 import 'package:flutter_template/pages/setting/router_version_upgrade.dart';
+import '../../pages/setting/access_control.dart';
+import '../../pages/setting/access_blacklist_set.dart';
+import '../../pages/setting/access_control_devices.dart';
+import '../../pages/setting/edit_access_control_devices.dart';
 /// 路由
 class GlobalRouter {
   // 定义单例
@@ -356,6 +360,14 @@ class GlobalRouter {
         const DelAccountPage(),
     '/routerUpgradePage': (BuildContext context, {Object? args}) =>
         const RouterUpgradePage(),
+    '/access_control': (BuildContext context, {Object? args}) =>
+        const AccessController(),
+    '/access_blacklist': (BuildContext context, {Object? args}) =>
+        const AccessBlackList(),
+    '/access_devices': (BuildContext context, {Object? args}) =>
+        const AccessControlDevicesPage(),
+    '/edit_access_devices': (BuildContext context, {Object? args}) =>
+        const EditAccessBlackList(),
   };
 
   /// 监听route

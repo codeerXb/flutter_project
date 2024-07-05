@@ -2,19 +2,17 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_template/core/event_bus/eventbus_utils.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import '../../config/base_config.dart';
-import '../../core/mqtt/mqtt_service.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import '../.././core/utils/string_util.dart';
 import 'dart:convert';
 import './beans/scan_quality_bean.dart';
 import 'package:get/get.dart';
-String Id_Random = StringUtil.generateRandomString(10);
-MqttServerClient client = MqttServerClient.withPort(
-    BaseConfig.mqttMainUrl, 'client_$Id_Random', BaseConfig.websocketPort);
 
+String Id_Random = StringUtil.generateRandomString(10);
 class ChannelListPage extends StatefulWidget {
   const ChannelListPage({super.key});
 
@@ -23,7 +21,10 @@ class ChannelListPage extends StatefulWidget {
 }
 
 class _ChannelListPageState extends State<ChannelListPage> {
+  MqttServerClient client = MqttServerClient.withPort(
+    BaseConfig.mqttMainUrl, 'client_$Id_Random', BaseConfig.websocketPort);
   var setCurrentChannelTopic = "platform_server/apiv1/sma_setcurrentChannel2.4";
+  var getCurrentChannelTopic = "platform_server/apiv1/sma_currentChannel";
   List<Band24GHz> listArray = [];
   String currentChannnel = "";
   String bastChannel = "";
@@ -31,6 +32,7 @@ class _ChannelListPageState extends State<ChannelListPage> {
   // Timer? timer;
   bool isLoaded = true;
   bool isUpdated = false;
+  bool canClick = false;
   @override
   void initState() {
     sharedGetData('deviceSn', String).then(((res) {
@@ -40,7 +42,6 @@ class _ChannelListPageState extends State<ChannelListPage> {
     setState(() {
       listArray = Get.arguments["list"];
       currentChannnel = Get.arguments["currentNol"];
-      bastChannel = listArray[0].channel!;
     });
     for (Band24GHz item in listArray) {
       if (item.channel == currentChannnel && item.quality == "1") {
@@ -102,7 +103,7 @@ class _ChannelListPageState extends State<ChannelListPage> {
     topicSb.write(setCurrentChannelTopic);
     topicSb.write(sn);
     final currentChannelTopic = topicSb.toString();
-    debugPrint("当前自定义的主题:$currentChannelTopic"); 
+    debugPrint("当前自定义的主题:$currentChannelTopic");
     var parameters = {
       "event": "mqtt2sodObj",
       "sn": sn,
@@ -118,7 +119,11 @@ class _ChannelListPageState extends State<ChannelListPage> {
 
     _publishMessage(topic, parameters);
 
-    client.subscribe(setCurrentChannelTopic, MqttQos.atLeastOnce);
+    client.subscribe(currentChannelTopic, MqttQos.atLeastOnce);
+
+    setState(() {
+      isLoaded = false;
+    });
 
     client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
       debugPrint("====================监听2.4G更新信道到新消息了======================");
@@ -135,23 +140,16 @@ class _ChannelListPageState extends State<ChannelListPage> {
           isLoaded = true;
           currentChannnel = listArray[0].channel!;
         });
+        
+        Future.delayed(const Duration(seconds: 1),(){
+          getCurrentChannnel();
+        });
+        
+        eventBus.fire("getCurrentChannnel");
       }
     });
 
-    // connect().then((value) {
-    //   client = value;
-
-    //   _getDeviceList();
-    // });
   }
-
-  // _getListTableData(List<MqttReceivedMessage<MqttMessage>> data) {
-
-  // }
-
-  // _getDeviceList() {
-  //   client.updates!.listen(_getListTableData);
-  // }
 
   // 发送消息
   void _publishMessage(String topic, Map<String, dynamic> message) {
@@ -163,87 +161,45 @@ class _ChannelListPageState extends State<ChannelListPage> {
     client.publishMessage(topic, MqttQos.atLeastOnce, builder.payload!);
   }
 
-void onSubscribed(String topic) {
-  debugPrint('Subscription confirmed for topic $topic');
-}
-
-void onDisconnected() {
-  debugPrint('OnDisconnected client callback - Client disconnection');
-  if (client.connectionStatus!.disconnectionOrigin ==
-      MqttDisconnectionOrigin.solicited) {
-    debugPrint('OnDisconnected callback is solicited, this is correct');
+  void onSubscribed(String topic) {
+    debugPrint('Subscription confirmed for topic $topic');
   }
-  // exit(-1);
-}
 
-void onConnected() {
-  debugPrint('OnConnected client callback - Client connection was sucessful');
-}
+  void onDisconnected() {
+    debugPrint('OnDisconnected client callback - Client disconnection');
+    if (client.connectionStatus!.disconnectionOrigin ==
+        MqttDisconnectionOrigin.solicited) {
+      debugPrint('OnDisconnected callback is solicited, this is correct');
+    }
+    // exit(-1);
+  }
 
-void pong() {
-  debugPrint('Ping response client callback invoked');
-}
+  void onConnected() {
+    debugPrint('OnConnected client callback - Client connection was sucessful');
+  }
+
+  void pong() {
+    debugPrint('Ping response client callback invoked');
+  }
 
   /// 获取当前的信道
-  // Future getCurrentChannnel() async {
-  //   // 获取SOD节点数据
-  //   var parameterNames = {
-  //     "method": "get",
-  //     "nodes": ["wifiCurrentChannel"]
-  //   };
-
-  //   var res = await Request().getACSNode(parameterNames, sn);
-  //   var jsonObj = jsonDecode(res);
-  //   var currentChannelRes = jsonObj["data"]["wifiCurrentChannel"];
-  //   setState(() {
-  //     currentChannnel = currentChannelRes;
-  //   });
-  //   debugPrint('当前的信道是:----$jsonObj----}');
-  // }
-
-  /// 设置最优信道
-  // Future<int> setUpBastChannnel() async {
-  //   var parameters = {
-  //     "method": "set",
-  //     "nodes": {"wifiChannel": bastChannel}
-  //   };
-  //   var res = await Request().setACSNode(parameters, sn);
-  //   var jsonObj = jsonDecode(res);
-  //   debugPrint('返回的配置结果是:----$jsonObj----}');
-  //   return jsonObj["code"];
-  // }
-
-  // getChannelResult() {
-  //   setUpBastChannnel().then((res) {
-  //     debugPrint('返回的结果是:----$res----}');
-  //     if (res == 200) {
-  //       timer = Timer.periodic(const Duration(milliseconds: 1000), (t) {
-  //         getDeviceRestratResult().then((value) {
-  //           if (value == "0") {
-  //             t.cancel();
-  //             getCurrentChannnel();
-  //             setState(() {
-  //               isLoaded = true;
-  //             });
-  //           }
-  //         });
-  //       });
-  //     }
-  //   });
-  // }
-
-  // Future<String> getDeviceRestratResult() async {
-  //   var parameterNames = {
-  //     "method": "get",
-  //     "nodes": ["wifiIsRestart"]
-  //   };
-
-  //   var res = await Request().getACSNode(parameterNames, sn);
-  //   var jsonObj = jsonDecode(res);
-  //   var restartRes = jsonObj["data"]["wifiIsRestart"];
-  //   debugPrint('当前的信道是:----$restartRes----}');
-  //   return restartRes;
-  // }
+  Future getCurrentChannnel() async {
+    final sessionIdCha = StringUtil.generateRandomString(10);
+    var topic = "cpe/$sn";
+    // 获取SOD节点数据
+    var parameterNames = {
+      "event": "mqtt2sodObj",
+      "sn": sn,
+      "sessionId": sessionIdCha,
+      "pubTopic": getCurrentChannelTopic,
+      "param": {
+        "method": "get",
+        "nodes": ["wifiCurrentChannel"]
+      }
+    };
+    _publishMessage(topic, parameterNames);
+    client.subscribe(getCurrentChannelTopic, MqttQos.atLeastOnce);
+  }
 
   @override
   void setState(VoidCallback fn) {
@@ -266,7 +222,7 @@ void pong() {
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios),
             onPressed: () {
-              Get.back(result: bastChannel);
+              Get.back(result: canClick ? bastChannel : currentChannnel);
             },
           ),
           title: const Text(
@@ -291,18 +247,18 @@ void pong() {
                     alignment: Alignment.topCenter,
                     child: OutlinedButton(
                         style: ButtonStyle(
-                            backgroundColor: isUpdated ? const MaterialStatePropertyAll(
-                                                  Colors.grey) :
-                              const MaterialStatePropertyAll(Colors.blue)),
+                            backgroundColor: isUpdated
+                                ? const MaterialStatePropertyAll(Colors.grey)
+                                : const MaterialStatePropertyAll(Colors.blue)),
                         onPressed: () {
                           if (!isUpdated) {
-                            updateCurrentChannel();
-                          setState(() {
-                            isLoaded = false;
+                            setState(() {
+                              canClick = true;
+                              bastChannel = listArray[0].channel!;
+                              updateCurrentChannel();
+                            });
                             
-                          });
                           }
-                          
                         },
                         child: const Text(
                           "Update",
@@ -338,7 +294,8 @@ void pong() {
               height: 10,
               child: LinearProgressIndicator(
                 backgroundColor: Colors.grey[200],
-                valueColor: const AlwaysStoppedAnimation(Colors.blue),
+                valueColor: AlwaysStoppedAnimation(
+                    paintingIndicatorColor(double.parse(model.quality!))),
                 value: double.parse(model.quality!),
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -357,6 +314,16 @@ void pong() {
         ],
       ),
     );
+  }
+
+  Color paintingIndicatorColor(double value) {
+    if (value > 0.0 && value <= 0.4) {
+      return Colors.red;
+    } else if (value > 0.4 && value <= 0.7) {
+      return Colors.yellow;
+    } else {
+      return Colors.blue;
+    }
   }
 
   Widget setLoadingIndicator() {

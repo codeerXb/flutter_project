@@ -24,6 +24,7 @@ class Data {
   String? wifiTxpower;
   String? wifiCountryChannelListHT20;
   String? wifiCountryChannelListHT40;
+  String? wifiCountryChannelList;
 
   Data(
       {this.wifiEnable,
@@ -32,7 +33,8 @@ class Data {
       this.wifiChannel,
       this.wifiTxpower,
       this.wifiCountryChannelListHT20,
-      this.wifiCountryChannelListHT40
+      this.wifiCountryChannelListHT40,
+      this.wifiCountryChannelList
       });
 
   Data.fromJson(Map<String, dynamic> json) {
@@ -43,6 +45,7 @@ class Data {
     wifiTxpower = json['wifiTxpower'];
     wifiCountryChannelListHT20 = json['wifiCountryChannelList_HT20'];
     wifiCountryChannelListHT40 = json['wifiCountryChannelList_HT40'];
+    wifiCountryChannelList = json['wifiCountryChannelList'];
   }
 
   Map<String, dynamic> toJson() {
@@ -54,6 +57,7 @@ class Data {
     data['wifiTxpower'] = wifiTxpower;
     data['wifiCountryChannelList_HT20'] = wifiCountryChannelListHT20;
     data['wifiCountryChannelList_HT40'] = wifiCountryChannelListHT40;
+    data['wifiCountryChannelList'] = wifiCountryChannelList;
     return data;
   }
 }

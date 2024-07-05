@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_template/core/event_bus/eventbus_utils.dart';
 import 'package:flutter_template/core/request/request.dart';
 import 'package:flutter_template/core/utils/shared_preferences_util.dart';
 import '../../config/base_config.dart';
@@ -13,10 +14,8 @@ import 'dart:convert';
 import 'dart:async';
 import './beans/scan_quality_bean.dart';
 import 'package:get/get.dart';
-String Id_Random = StringUtil.generateRandomString(10);
-MqttServerClient client = MqttServerClient.withPort(
-    BaseConfig.mqttMainUrl, 'client_$Id_Random', BaseConfig.websocketPort);
 
+String id_random = StringUtil.generateRandomString(10);
 class AdvanceChannelListPage extends StatefulWidget {
   const AdvanceChannelListPage({super.key});
 
@@ -25,15 +24,17 @@ class AdvanceChannelListPage extends StatefulWidget {
 }
 
 class _AdvanceChannelListPageState extends State<AdvanceChannelListPage> {
-    // MqttClient client = MqttServerClient(BaseConfig.mqttMainUrl, "flutter_client",
-    //   maxConnectionAttempts: 10);
+    MqttServerClient client = MqttServerClient.withPort(
+    BaseConfig.mqttMainUrl, 'client_$id_random', BaseConfig.websocketPort);
   var setCurrentChannelTopic = "platform_server/apiv1/sma_setcurrentChannel5G";
+  var getCurrentChannelTopic = "platform_server/apiv1/sma_currentChannel";
   List<Band5GHz> listArray = [];
   String currentChannnel = "";
   String bastChannel = "";
   String sn = "";
   bool isLoaded = true;
   bool isUpdated = false;
+  bool isClick = false;
   // Timer? timer;
   @override
   void initState() {
@@ -45,7 +46,6 @@ class _AdvanceChannelListPageState extends State<AdvanceChannelListPage> {
     setState(() {
       listArray = Get.arguments["data"];
       currentChannnel = Get.arguments["currentChannel"];
-      bastChannel = listArray[0].channel!;
     });
 
     for (Band5GHz item in listArray) {
@@ -125,7 +125,10 @@ class _AdvanceChannelListPageState extends State<AdvanceChannelListPage> {
 
     _publishMessage(topic, parameters);
 
-    client.subscribe(setCurrentChannelTopic, MqttQos.atLeastOnce);
+    client.subscribe(currentChannelTopic, MqttQos.atLeastOnce);
+    setState(() {
+      isLoaded = false;
+    });
 
     client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
     debugPrint("====================监听5G更新信道到新消息了======================");
@@ -144,6 +147,12 @@ class _AdvanceChannelListPageState extends State<AdvanceChannelListPage> {
           isLoaded = true;
           currentChannnel = listArray[0].channel!;
         });
+        
+        Future.delayed(const Duration(seconds: 1),() {
+          getCurrentChannnel();
+        });
+        
+        eventBus.fire("getCurrentChannnel");
       }
   });
 
@@ -182,65 +191,25 @@ void pong() {
 
 
   /// 获取当前的信道
-  // Future getCurrentChannnel() async {
-  //   // 获取SOD节点数据
-  //   var parameterNames = {
-  //     "method": "get",
-  //     "nodes": ["wifi5gCurrentChannel"]
-  //   };
+  Future getCurrentChannnel() async {
+    final sessionIdCha = StringUtil.generateRandomString(10);
+    var topic = "cpe/$sn";
+    // 获取SOD节点数据
+    var parameterNames = {
+      "event": "mqtt2sodObj",
+      "sn": sn,
+      "sessionId": sessionIdCha,
+      "pubTopic": getCurrentChannelTopic,
+      "param": {
+        "method": "get",
+        "nodes": ["wifi5gCurrentChannel"]
+      }
+    };
+    _publishMessage(topic, parameterNames);
+    client.subscribe(getCurrentChannelTopic, MqttQos.atLeastOnce);
+  }
 
-  //   var res = await Request().getACSNode(parameterNames, sn);
-  //   var jsonObj = jsonDecode(res);
-  //   var currentChannelRes = jsonObj["data"]["wifi5gCurrentChannel"];
-  //   setState(() {
-  //     currentChannnel = currentChannelRes;
-  //   });
-  //   debugPrint('当前的信道是:----$jsonObj----}');
-  // }
-
-  /// 设置最优信道
-  // Future<int> setUpBastChannnel() async {
-  //   var parameters = {
-  //     "method": "set",
-  //     "nodes": {"wifi5gChannel": bastChannel}
-  //   };
-  //   var res = await Request().setACSNode(parameters, sn);
-  //   var jsonObj = jsonDecode(res);
-  //   debugPrint('返回的配置结果是:----$jsonObj----}');
-  //   return jsonObj["code"];
-  // }
-
-  // getChannelResult() {
-  //   setUpBastChannnel().then((res) {
-  //     if (res == 200) {
-  //       timer = Timer.periodic(const Duration(milliseconds: 1000), (timer) {
-  //         getDeviceRestratResult().then((value) {
-  //           if (value == "0") {
-  //             timer.cancel();
-  //             getCurrentChannnel();
-  //             setState(() {
-  //               isLoaded = true;
-  //             });
-  //           }
-  //         });
-  //       });
-  //     }
-  //   });
-  // }
-
-  // Future<String> getDeviceRestratResult() async {
-  //   var parameterNames = {
-  //     "method": "get",
-  //     "nodes": ["wifi5gIsRestart"]
-  //   };
-
-  //   var res = await Request().getACSNode(parameterNames, sn);
-  //   var jsonObj = jsonDecode(res);
-  //   var restartRes = jsonObj["data"]["wifi5gIsRestart"];
-  //   debugPrint('当前的结果是:----$restartRes----}');
-  //   return restartRes;
-  // }
-
+  
   @override
   void setState(VoidCallback fn) {
     if (mounted) {
@@ -262,7 +231,7 @@ void pong() {
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios),
             onPressed: () {
-              Get.back(result: bastChannel);
+              Get.back(result: isClick ? bastChannel : currentChannnel);
             },
           ),
           title: const Text(
@@ -292,10 +261,10 @@ void pong() {
                               const MaterialStatePropertyAll(Colors.blue)),
                         onPressed: () {
                           if (!isUpdated) {
-                            updateCurrentChannel();
                           setState(() {
-                            isLoaded = false;
-                            
+                            isClick = true;
+                            bastChannel = listArray[0].channel!;
+                            updateCurrentChannel();
                           });
                           }
                           
@@ -333,7 +302,7 @@ void pong() {
               height: 10,
               child: LinearProgressIndicator(
                 backgroundColor: Colors.grey[200],
-                valueColor: const AlwaysStoppedAnimation(Colors.blue),
+                valueColor: AlwaysStoppedAnimation(paintingIndicatorColor(double.parse(model.quality!))),
                 value: double.parse(model.quality!),
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -352,6 +321,17 @@ void pong() {
         ],
       ),
     );
+  }
+
+  Color paintingIndicatorColor(double value) {
+    if (value > 0.0 && value <= 0.4) {
+      return Colors.red;
+    }else if (value > 0.4 && value <= 0.7) {
+      return Colors.yellow;
+    }else {
+      return Colors.blue;
+    }
+    
   }
 
   Widget showLoadingIndicator() {

@@ -26,6 +26,7 @@ import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import '../../pages/net_status/beans/speed_bean.dart';
 import "../../core/utils/color_utils.dart";
+import "../../pages/net_status/version_update.dart";
 
 String Id_Random = StringUtil.generateRandomString(10);
 
@@ -1391,7 +1392,7 @@ class _HomePageState extends State<HomePage> {
     return loadingDevice
         ? const Center(
             child: SizedBox(width: 100, height: 100, child: WaterLoading()))
-        : Scaffold(
+        : UpdaterPage(Scaffold(
             appBar: AppBar(
               elevation: 0,
               // 不自动添加返回键
@@ -1500,13 +1501,14 @@ class _HomePageState extends State<HomePage> {
                             const SizedBox(
                               height: 40,
                             ),
+                            
                             setUpBottomView(context),
                           ],
                         ),
                       ),
                     ),
                   )),
-          );
+          ));
   }
 
   @override

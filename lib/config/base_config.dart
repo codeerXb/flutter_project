@@ -26,7 +26,7 @@ class BaseConfig {
   ///高德定位Android key和iOS key
   static const gdIosKey = "c59c6723ee079e25746cda7e37e11101";
 
-  static const Map<String, dynamic> header = {
+  static Map<String, dynamic> header = {
     // 'Accept': 'application/json,*/*',
     // 'Content-Type': 'application/json',
   };

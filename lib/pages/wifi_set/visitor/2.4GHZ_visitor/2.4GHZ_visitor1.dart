@@ -533,6 +533,7 @@ class _Visitor1State extends State<Visitor1> {
                                     child: TextFormField(
                                       textAlign: TextAlign.right,
                                       controller: ssidVal,
+                                      keyboardType: TextInputType.emailAddress,
                                       style: TextStyle(
                                           fontSize: 26.sp,
                                           color: const Color(0xff051220)),
@@ -775,6 +776,7 @@ class _Visitor1State extends State<Visitor1> {
                                       textAlign: TextAlign.right,
                                       obscureText: passwordValShow,
                                       controller: password,
+                                      keyboardType: TextInputType.emailAddress,
                                       style: TextStyle(
                                           fontSize: 26.sp,
                                           color: const Color(0xff051220)),

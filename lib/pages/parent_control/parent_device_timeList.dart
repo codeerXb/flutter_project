@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
+import 'package:flutter_template/core/event_bus/eventbus_utils.dart';
 import 'package:get/get.dart';
 import '../.././core/utils/string_util.dart';
 import '../../config/base_config.dart';
@@ -64,6 +65,9 @@ class _TimeConfigListPageState extends State<TimeConfigListPage> {
     }));
 
     super.initState();
+    eventBus.on<String>().listen((event) {
+      requestData(sn);
+    });
   }
 
   void requestData(String sn) async {

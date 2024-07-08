@@ -1,5 +1,7 @@
 {
   "java.configuration.updateBuildConfiguration": "interactive",
   "cmake.sourceDirectory": "${workspaceFolder}/linux",
-  "dart.flutterSdkPath": "D:\\flutter1\\flutter"
+  "dart.flutterSdkPath": "D:\\flutter1\\flutter",
+  "editor.accessibilityPageSize": 14,
+  "editor.fontSize": 16
 }

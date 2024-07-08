@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/request/request.dart';
@@ -392,11 +393,11 @@ class _Visitor1State extends State<Visitor1> {
             actions: <Widget>[
           Container(
             margin: EdgeInsets.all(20.w),
-            child: OutlinedButton(
+            child: TextButton(
               onPressed: loading ? null : _saveData,
-              style: OutlinedButton.styleFrom(
-                side:const BorderSide(width: 1.5,color: Colors.blue),
-              ),
+              // style: OutlinedButton.styleFrom(
+              //   side:const BorderSide(width: 1.5,color: Colors.blue),
+              // ),
               child: Row(
                 children: [
                   if (loading)
@@ -442,7 +443,8 @@ class _Visitor1State extends State<Visitor1> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        TitleWidger(title: S.of(context).Settings),
+                        // TitleWidger(title: S.of(context).Settings),
+                        const Padding(padding: EdgeInsets.only(top: 15)),
                         InfoBox(
                             boxCotainer: Column(
                           children: [
@@ -478,7 +480,8 @@ class _Visitor1State extends State<Visitor1> {
                                           fontSize: 28.sp)),
                                   Row(
                                     children: [
-                                      Switch(
+                                      CupertinoSwitch(
+                                        activeColor: Colors.blue,
                                         value: enableCheck,
                                         onChanged: (newVal) {
                                           setState(() {
@@ -503,7 +506,8 @@ class _Visitor1State extends State<Visitor1> {
                                           fontSize: 28.sp)),
                                   Row(
                                     children: [
-                                      Switch(
+                                      CupertinoSwitch(
+                                        activeColor: Colors.blue,
                                         value: networkCheck,
                                         onChanged: (newVal) {
                                           setState(() {
@@ -595,7 +599,8 @@ class _Visitor1State extends State<Visitor1> {
                                           fontSize: 28.sp)),
                                   Row(
                                     children: [
-                                      Switch(
+                                      CupertinoSwitch(
+                                        activeColor: Colors.blue,
                                         value: showSsid,
                                         onChanged: (newVal) {
                                           setState(() {

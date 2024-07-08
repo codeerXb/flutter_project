@@ -8,6 +8,9 @@ class ScreenAdapter{
   static height(num v){
     return v.h;
   }
+  static radius(double r) {
+    return ScreenUtil().radius(r);
+  }
   static fontSize(num v){
     return v.sp;
   }

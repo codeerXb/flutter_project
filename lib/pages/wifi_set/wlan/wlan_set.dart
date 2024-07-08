@@ -5,7 +5,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_template/core/http/http.dart';
 import 'package:flutter_template/core/utils/toast.dart';
 import 'package:flutter_template/core/widget/common_box.dart';
 import 'package:flutter_template/core/widget/common_picker.dart';
@@ -13,7 +12,7 @@ import 'package:flutter_template/core/widget/water_loading.dart';
 import 'package:flutter_template/pages/wifi_set/wlan/wlan_datas.dart';
 import 'package:flutter_template/pages/wifi_set/wlan/channel_list.dart';
 import 'package:get/get.dart';
-import '../../../core/http/http_app.dart';
+import '../../../core/utils/color_utils.dart';
 import '../../../core/utils/shared_preferences_util.dart';
 import '../../../core/widget/custom_app_bar.dart';
 import '../../../generated/l10n.dart';
@@ -644,8 +643,7 @@ class _WlanSetState extends State<WlanSet> {
         debugPrint("获取到的索引2:$securityIndex5g - $encryptionIndex5g");
         if (securityWpa2Option.contains(securityOpt[securityIndex5g])) {
           wpaEncryOptions5G = encryptionOpt;
-        } else if (securityWpa3Option
-            .contains(securityOpt[securityIndex5g])) {
+        } else if (securityWpa3Option.contains(securityOpt[securityIndex5g])) {
           wpaEncryOptions5G = encryptionWpa3Option;
         } else {}
         password5.text = wpaKey;
@@ -1149,40 +1147,41 @@ class _WlanSetState extends State<WlanSet> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: customAppbar(
-            context: context,
-            title: S.of(context).wlanSet,
-            actions: <Widget>[
-              Container(
-                margin: EdgeInsets.all(20.w),
-                child: OutlinedButton(
-                  onPressed: _isLoading ? null : _saveData,
-                  style: OutlinedButton.styleFrom(
-                    side: const BorderSide(width: 1.5, color: Colors.blue),
-                  ),
-                  child: Row(
-                    children: [
-                      if (_isLoading)
-                        const SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                          ),
-                        ),
-                      if (!_isLoading)
-                        Text(
-                          S.current.save,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: _isLoading ? Colors.grey : Colors.blue,
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ),
-            ]),
+          context: context,
+          title: S.of(context).wlanSet,
+          // actions: <Widget>[
+          //   Container(
+          //     margin: EdgeInsets.all(20.w),
+          //     child: OutlinedButton(
+          //       onPressed: _isLoading ? null : _saveData,
+          //       style: OutlinedButton.styleFrom(
+          //         side: const BorderSide(width: 1.5, color: Colors.blue),
+          //       ),
+          //       child: Row(
+          //         children: [
+          //           if (_isLoading)
+          //             const SizedBox(
+          //               width: 24,
+          //               height: 24,
+          //               child: CircularProgressIndicator(
+          //                 strokeWidth: 2,
+          //               ),
+          //             ),
+          //           if (!_isLoading)
+          //             Text(
+          //               S.current.save,
+          //               style: TextStyle(
+          //                 fontSize: 32.sp,
+          //                 fontWeight: FontWeight.w500,
+          //                 color: _isLoading ? Colors.grey : Colors.blue,
+          //               ),
+          //             ),
+          //         ],
+          //       ),
+          //     ),
+          //   ),
+          // ]
+        ),
         body: loading
             ? const Center(
                 child: SizedBox(
@@ -1196,13 +1195,14 @@ class _WlanSetState extends State<WlanSet> {
             : GestureDetector(
                 onTap: () => closeKeyboard(context),
                 behavior: HitTestBehavior.opaque,
-                child: Container(
+                child: SafeArea(
+                    child: Container(
                   decoration: const BoxDecoration(
                       color: Color.fromRGBO(240, 240, 240, 1)),
                   height: double.infinity,
                   child: SingleChildScrollView(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         //一般设置
                         TitleWidger(title: S.of(context).General),
@@ -1973,10 +1973,32 @@ class _WlanSetState extends State<WlanSet> {
                                 ),
                             ],
                           )),
+                        Center(
+                          child: SizedBox(
+                            width: (MediaQuery.of(context).size.width + 250).w,
+                            height: 80.h,
+                            child: OutlinedButton(
+                                style: OutlinedButton.styleFrom(
+                                  backgroundColor:
+                                      ColorUtils.hexToColor("#2B7AFB"),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(48.r),
+                                  ),
+                                ),
+                                onPressed: _isLoading ? null : _saveData,
+                                child: Text(
+                                  "Save",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 32.sp,
+                                      fontWeight: FontWeight.w700),
+                                )),
+                          ),
+                        )
                       ],
                     ),
                   ),
-                ),
+                )),
               ));
   }
 }

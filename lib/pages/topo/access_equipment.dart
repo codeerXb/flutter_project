@@ -441,9 +441,10 @@ class _AccessEquipmentState extends State<AccessEquipment> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Row(children: [
-                        TitleWidger(title: S.current.deviceInfo),
-                      ]),
+                      // Row(children: [
+                      //   TitleWidger(title: S.current.deviceInfo),
+                      // ]),
+                      const Padding(padding: EdgeInsets.only(top: 10)),
                       InfoBox(
                         boxCotainer: Column(
                           children: [

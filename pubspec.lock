@@ -525,6 +525,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.1.2"
+  grouped_scroll_view:
+    dependency: "direct main"
+    description:
+      name: grouped_scroll_view
+      sha256: "11e9fe97c03b94a56343ac8631dbe78607258458565b6b2f2c8c323dbde61ffd"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.1.3"
   html:
     dependency: transitive
     description:
@@ -1114,6 +1122,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  sliver_tools:
+    dependency: transitive
+    description:
+      name: sliver_tools
+      sha256: eae28220badfb9d0559207badcbbc9ad5331aac829a88cb0964d330d2a4636a6
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.2.12"
   source_span:
     dependency: transitive
     description:

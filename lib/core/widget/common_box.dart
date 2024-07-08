@@ -59,7 +59,7 @@ class TitleWidger extends StatelessWidget {
       margin: EdgeInsets.only(top: 10.w, bottom: 20.w, left: 30.w, right: 30.w),
       child: Text(
         title,
-        style: TextStyle(color: Colors.blueAccent, fontSize: 32.sp),
+        style: TextStyle(color: Colors.black, fontSize: 32.sp,fontWeight: FontWeight.w500),
       ),
     );
   }
@@ -77,7 +77,7 @@ class InfoBox extends StatelessWidget {
         margin: EdgeInsets.only(bottom: 20.w, left: 30.w, right: 30.w),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(18.w),
+          borderRadius: BorderRadius.circular(36.w),
         ),
         child: boxCotainer);
   }
